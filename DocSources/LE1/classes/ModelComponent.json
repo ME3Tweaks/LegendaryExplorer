@@ -1,0 +1,41 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "Model": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 8400898
+    },
+    "ZoneIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8400898
+    },
+    "ComponentIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8400898
+    },
+    "Nodes": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8400898
+    },
+    "Edges": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8400898
+    },
+    "Elements": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8400898
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 2155872658,
+  "configname": "None",
+  "documentation": null
+}

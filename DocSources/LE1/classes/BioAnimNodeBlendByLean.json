@@ -1,0 +1,41 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "BlendDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "BlendAcrossDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxLeanAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fLeanAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fLastLeanAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bSwitchingLean": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

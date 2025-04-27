@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "MaterialExpressionEditorX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 144115222435594240
+    },
+    "MaterialExpressionEditorY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 144115222435594240
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217875,
+  "configname": "None",
+  "documentation": null
+}

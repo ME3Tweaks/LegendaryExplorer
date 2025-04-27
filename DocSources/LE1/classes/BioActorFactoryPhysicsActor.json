@@ -1,0 +1,10 @@
+{
+  "parent": "ActorFactoryRigidBody",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 142618774,
+  "configname": "Editor",
+  "documentation": null
+}

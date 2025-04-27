@@ -1,0 +1,40 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "lstRecords": {
+      "type": "SaveGameRecord",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ActiveCharId": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    }
+  },
+  "states": {},
+  "classflags": 136315034,
+  "configname": "UI",
+  "documentation": null
+}

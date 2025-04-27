@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Nodes": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Triangles": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "classdef": "TerrainComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

@@ -1,0 +1,16 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "LastCoverAction": {
+      "type": "ECoverAction",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,70 @@
+{
+  "parent": "BioPawn",
+  "package": "SFXGame",
+  "variables": {
+    "PrimaryWeapon": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "SecondaryWeapon": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SwitchToBackupWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SwitchToBackupWeapon()"
+    },
+    "DrawPrimaryWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawPrimaryWeapon()"
+    },
+    "Internal_UpdatePrimaryAndSecondaryWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "NewWeaponName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Internal_UpdatePrimaryAndSecondaryWeapons(Name NewWeaponName)"
+    },
+    "UpdatePrimaryAndSecondaryWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdatePrimaryAndSecondaryWeapons()"
+    },
+    "OnWeaponFired": {
+      "documentation": null,
+      "signature_members": {
+        "InWeapon": {
+          "type": "BioWeaponRanged",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponFired(BioWeaponRanged InWeapon)"
+    },
+    "PlayerAcquiredCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayerAcquiredCover()"
+    }
+  },
+  "states": {},
+  "classflags": 10486326,
+  "configname": "Game",
+  "documentation": null
+}

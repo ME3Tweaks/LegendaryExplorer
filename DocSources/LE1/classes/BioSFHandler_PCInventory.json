@@ -1,0 +1,124 @@
+{
+  "parent": "BioSFHandler_Inventory",
+  "package": "SFXGame",
+  "variables": {
+    "maxSquadSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {
+    "InitializeModsSection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeModsSection()"
+    },
+    "UpdateInvSlotIcons": {
+      "documentation": null,
+      "signature_members": {
+        "bDeferUpdateFilterIcons": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateInvSlotIcons(optional bool bDeferUpdateFilterIcons)"
+    },
+    "UpdateTeamBox": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateTeamBox()"
+    },
+    "InitializeInventoryHelper": {
+      "documentation": null,
+      "signature_members": {
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeInventoryHelper(const out array<string> lstArguments)"
+    },
+    "PopulateInvItems": {
+      "documentation": null,
+      "signature_members": {
+        "lstParams": {
+          "type": "ASParams",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateInvItems(array<ASParams> lstParams)"
+    },
+    "SetItemFilterSlot": {
+      "documentation": null,
+      "signature_members": {
+        "nFilter": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetItemFilterSlot(int nFilter)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "Parameters": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> Parameters)"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    }
+  },
+  "states": {},
+  "classflags": 10485790,
+  "configname": "UI",
+  "documentation": null
+}

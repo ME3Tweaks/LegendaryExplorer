@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "EPBE_Top": {
+      "value": 0,
+      "documentation": null
+    },
+    "EPBE_Bottom": {
+      "value": 1,
+      "documentation": null
+    },
+    "EPBE_Left": {
+      "value": 2,
+      "documentation": null
+    },
+    "EPBE_Right": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

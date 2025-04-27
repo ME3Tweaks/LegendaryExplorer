@@ -1,0 +1,23 @@
+{
+  "parent": "UILabel",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "RemovedFromParent": {
+      "documentation": null,
+      "signature_members": {
+        "WidgetOwner": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemovedFromParent(UIScreenObject WidgetOwner)"
+    }
+  },
+  "states": {},
+  "classflags": 10486294,
+  "configname": "UI",
+  "documentation": null
+}

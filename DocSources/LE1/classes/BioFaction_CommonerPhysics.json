@@ -1,0 +1,10 @@
+{
+  "parent": "BioFaction_Commoner",
+  "package": "SFXStrategicAI",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 4114,
+  "configname": "None",
+  "documentation": null
+}

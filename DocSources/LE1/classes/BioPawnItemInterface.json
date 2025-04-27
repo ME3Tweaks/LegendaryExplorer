@@ -1,0 +1,255 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "__QuickSlotIter__Delegate": {
+      "type": "QuickSlotIter",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__EBioWeaponTypeOp__Delegate": {
+      "type": "EBioWeaponTypeOp",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_oFriend": {
+      "type": "BioPawnBehavior",
+      "documentation": null,
+      "flags": 67117056
+    }
+  },
+  "functions": {
+    "PrevQuickSlot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PrevQuickSlot()"
+    },
+    "NextQuickSlot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NextQuickSlot()"
+    },
+    "ChangeToQuickSlot": {
+      "documentation": null,
+      "signature_members": {
+        "eSlot": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ChangeToQuickSlot(EBioItemWeaponRangedType eSlot)"
+    },
+    "DeactivateCurrentQuickSlot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DeactivateCurrentQuickSlot()"
+    },
+    "ActivateCurrentQuickSlot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ActivateCurrentQuickSlot()"
+    },
+    "ClearQuickSlot": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int ClearQuickSlot(EBioItemWeaponRangedType Type)"
+    },
+    "SetQuickSlot": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nInvItem": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int SetQuickSlot(EBioItemWeaponRangedType Type, int nInvItem)"
+    },
+    "UpdatePawnAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "eSlot": {
+          "type": "EBioEquipmentSlot",
+          "documentation": null,
+          "flags": 128
+        },
+        "Pawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdatePawnAppearance(EBioEquipmentSlot eSlot, BioPawn Pawn)"
+    },
+    "Unequip": {
+      "documentation": null,
+      "signature_members": {
+        "eSlot": {
+          "type": "EBioEquipmentSlot",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int Unequip(EBioEquipmentSlot eSlot)"
+    },
+    "Equip": {
+      "documentation": null,
+      "signature_members": {
+        "nItemIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int Equip(int nItemIndex)"
+    },
+    "CreateClassFromString": {
+      "documentation": null,
+      "signature_members": {
+        "clsBase": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "sClass": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<Object> CreateClassFromString(Class<Object> clsBase, string sClass)"
+    },
+    "GetStringEntryIN": {
+      "documentation": null,
+      "signature_members": {
+        "tbl": {
+          "type": "Bio2DA",
+          "documentation": null,
+          "flags": 128
+        },
+        "nRow": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmColumn": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "S": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringEntryIN(Bio2DA tbl, int nRow, Name nmColumn, out string S)"
+    },
+    "GetIntEntryIN": {
+      "documentation": null,
+      "signature_members": {
+        "tbl": {
+          "type": "Bio2DA",
+          "documentation": null,
+          "flags": 128
+        },
+        "nRow": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmColumn": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "N": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetIntEntryIN(Bio2DA tbl, int nRow, Name nmColumn, out int N)"
+    },
+    "GetNameEntryIN": {
+      "documentation": null,
+      "signature_members": {
+        "tbl": {
+          "type": "Bio2DA",
+          "documentation": null,
+          "flags": 128
+        },
+        "nRow": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmColumn": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nm": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetNameEntryIN(Bio2DA tbl, int nRow, Name nmColumn, out Name nm)"
+    },
+    "IsArmored": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsArmored()"
+    },
+    "EBioWeaponTypeOp": {
+      "documentation": null,
+      "signature_members": {
+        "eSlot": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EBioWeaponTypeOp(out EBioItemWeaponRangedType eSlot)"
+    },
+    "QuickSlotIter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool QuickSlotIter()"
+    }
+  },
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

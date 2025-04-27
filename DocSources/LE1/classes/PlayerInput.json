@@ -1,0 +1,431 @@
+{
+  "parent": "Input",
+  "package": "Engine",
+  "variables": {
+    "LastAxisKeyName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 2
+    },
+    "ZeroTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "SmoothedMouse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "GAMEPAD_DEADZONE": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "DoubleClickTimer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "DoubleClickTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 278528
+    },
+    "MouseSensitivity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 278528
+    },
+    "aBaseX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aBaseY": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aBaseZ": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aMouseX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aMouseY": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aForward": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aTurn": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aStrafe": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aUp": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aLookUp": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aRightAnalogTrigger": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aLeftAnalogTrigger": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aPS3AccelX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aPS3AccelY": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aPS3AccelZ": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aPS3Gyro": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "GamepadAnalogSensitivity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "RawJoyUp": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "RawJoyRight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "RawJoyLookRight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "RawJoyLookUp": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "MoveForwardSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "MoveStrafeSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "LookRightScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "LookUpScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "MouseSamples": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "MouseSamplingTotal": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "AutoUnlockTurnTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bUsingGamepad": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bInvertMouse": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 278528
+    },
+    "bInvertTurn": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 278528
+    },
+    "bWasForward": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bWasBack": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bWasLeft": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bWasRight": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEdgeForward": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEdgeBack": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEdgeLeft": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEdgeRight": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEnableMouseSmoothing": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 278528
+    },
+    "bEnableFOVScaling": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bLockTurnUntilRelease": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bStrafe": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4
+    },
+    "bXAxis": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4
+    },
+    "bYAxis": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4
+    }
+  },
+  "functions": {
+    "SmoothMouse": {
+      "documentation": null,
+      "signature_members": {
+        "aMouse": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "SampleCount": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float SmoothMouse(float aMouse, float DeltaTime, out byte SampleCount, int Index)"
+    },
+    "ClearSmoothing": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearSmoothing()"
+    },
+    "SmartJump": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SmartJump()"
+    },
+    "Jump": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Jump()"
+    },
+    "ProcessInputMatching": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessInputMatching(float DeltaTime)"
+    },
+    "CheckForDoubleClickMove": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "EDoubleClickDir",
+      "signature": "EDoubleClickDir CheckForDoubleClickMove(float DeltaTime)"
+    },
+    "CatchDoubleClickInput": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CatchDoubleClickInput()"
+    },
+    "PlayerInput": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayerInput(float DeltaTime)"
+    },
+    "AdjustMouseSensitivity": {
+      "documentation": null,
+      "signature_members": {
+        "FOVScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustMouseSensitivity(float FOVScale)"
+    },
+    "PostProcessInput": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PostProcessInput(float DeltaTime)"
+    },
+    "PreProcessInput": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PreProcessInput(float DeltaTime)"
+    },
+    "DrawHUD": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": "HUD",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawHUD(HUD H)"
+    },
+    "SetSensitivity": {
+      "documentation": null,
+      "signature_members": {
+        "F": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSensitivity(float F)"
+    },
+    "InvertTurn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InvertTurn()"
+    },
+    "InvertMouse": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InvertMouse()"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "Input",
+  "documentation": null
+}

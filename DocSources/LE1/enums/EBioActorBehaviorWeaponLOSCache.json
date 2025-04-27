@@ -1,0 +1,45 @@
+{
+  "EnumValues": {
+    "BIO_WLC_CENTER": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_WLC_CENTER_CROUCHED": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_WLC_LEAN_LEFT": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_WLC_LEAN_LEFT_CROUCHED": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_WLC_LEAN_RIGHT": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_WLC_LEAN_RIGHT_CROUCHED": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIO_WLC_STEP_LEFT": {
+      "value": 6,
+      "documentation": null
+    },
+    "BIO_WLC_STEP_LEFT_CROUCHED": {
+      "value": 7,
+      "documentation": null
+    },
+    "BIO_WLC_STEP_RIGHT": {
+      "value": 8,
+      "documentation": null
+    },
+    "BIO_WLC_STEP_RIGHT_CROUCHED": {
+      "value": 9,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

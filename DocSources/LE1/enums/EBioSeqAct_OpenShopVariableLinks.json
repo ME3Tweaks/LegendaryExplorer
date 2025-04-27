@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIOSEQACT_OPENSHOP_VARIABLE_LINK_PRICE_ADJUSTMENT": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIOSEQACT_OPENSHOP_VARIABLE_LINK_SHOP": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIOSEQACT_OPENSHOP_VARIABLE_LINK_OVERRIDE": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

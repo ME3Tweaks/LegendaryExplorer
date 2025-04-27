@@ -1,0 +1,23 @@
+{
+  "parent": "BioSeqAct_ModifyProperty",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

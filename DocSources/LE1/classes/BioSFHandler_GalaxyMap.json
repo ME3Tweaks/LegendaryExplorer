@@ -1,0 +1,86 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_pGalaxyMapImages2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fScrollValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fCursorDeltaX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fCursorDeltaY": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fLeftStickX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fLeftStickY": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bClosingPlanet": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bWaitingForMsgBox": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bInPlanetPanel": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "TravelConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TravelConfirm(bool bAPressed, int nContext)"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    }
+  },
+  "states": {},
+  "classflags": 136315034,
+  "configname": "UI",
+  "documentation": null
+}

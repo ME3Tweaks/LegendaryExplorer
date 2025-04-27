@@ -1,0 +1,13 @@
+{
+  "members": {
+    "ParameterValue": {
+      "type": "Texture",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "MaterialInstanceTimeVarying",
+  "extends": "ParameterValueOverTime",
+  "documentation": null,
+  "modifiers": 1
+}

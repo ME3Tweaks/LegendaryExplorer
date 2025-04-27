@@ -1,0 +1,51 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_pOriginalPropMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null,
+      "flags": 67641352
+    },
+    "m_pPawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pProp": {
+      "type": "SkeletalMeshActor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nmAttachedSocket": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_TempInterpGroup": {
+      "type": "InterpGroup",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bBothInputPinsAreConnected": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bStartedSuccessfully": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_eWeaponToClone": {
+      "type": "EBioItemWeaponRangedType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

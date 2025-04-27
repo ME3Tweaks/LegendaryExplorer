@@ -1,0 +1,89 @@
+{
+  "parent": "AnimNotify_Scripted",
+  "package": "Engine",
+  "variables": {
+    "RotAmplitude": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 131072
+    },
+    "RotFrequency": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 131072
+    },
+    "LocAmplitude": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 131072
+    },
+    "LocFrequency": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 131072
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "ShakeParams": {
+      "type": "CameraShake",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "Duration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 131072
+    },
+    "FOVAmplitude": {
+      "type": "float",
+      "documentation": null,
+      "flags": 131072
+    },
+    "FOVFrequency": {
+      "type": "float",
+      "documentation": null,
+      "flags": 131072
+    },
+    "ShakeRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDoControllerVibration": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseBoneLocation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Notify": {
+      "documentation": null,
+      "signature_members": {
+        "Owner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "AnimSeqInstigator": {
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Notify(Actor Owner, AnimNodeSequence AnimSeqInstigator)"
+    }
+  },
+  "states": {},
+  "classflags": 144715922,
+  "configname": "None",
+  "documentation": null
+}

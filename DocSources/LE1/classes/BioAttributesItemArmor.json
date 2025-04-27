@@ -1,0 +1,98 @@
+{
+  "parent": "BioAttributesItemXModdable",
+  "package": "SFXGame",
+  "variables": {
+    "m_weightVisualOverride": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_modelVariant": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_materialConfig": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_headGearModelVariant": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_headGearMaterialConfig": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_visor": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_facePlate": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ResistanceDamage": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ResistanceTech": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_StabilityMovementPenalty": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ResistanceToxic": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_MaterialFlags": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fInitialResistanceDamage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_fInitialResistanceTech": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_fInitialStabilityMovementPenalty": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_fInitialResistanceToxic": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    }
+  },
+  "functions": {
+    "DescribeAttributes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeAttributes()"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

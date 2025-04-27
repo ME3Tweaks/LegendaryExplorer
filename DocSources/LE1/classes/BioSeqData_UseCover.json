@@ -1,0 +1,106 @@
+{
+  "parent": "BioSeqData_StateBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_vHidingLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "oCoverObject": {
+      "type": "BioCoverInterface",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIsInCover": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bTerminateCover": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "GetCrouchByCoverType": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCrouchByCoverType(int SlotIdx)"
+    },
+    "Empty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Empty()"
+    },
+    "UnClaim": {
+      "documentation": null,
+      "signature_members": {
+        "OldClaim": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bUnclaimAll": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UnClaim(Controller OldClaim, int SlotIdx, bool bUnclaimAll)"
+    },
+    "Claim": {
+      "documentation": null,
+      "signature_members": {
+        "NewClaim": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Claim(Controller NewClaim, int SlotIdx)"
+    },
+    "UpdateHideLocation": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateHideLocation(BioPawn pPawn, int SlotIdx)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

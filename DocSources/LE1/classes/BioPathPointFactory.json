@@ -1,0 +1,10 @@
+{
+  "parent": "ActorFactory",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 12310,
+  "configname": "Editor",
+  "documentation": null
+}

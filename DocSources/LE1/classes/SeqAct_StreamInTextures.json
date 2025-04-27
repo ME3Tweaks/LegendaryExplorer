@@ -1,0 +1,65 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "Engine",
+  "variables": {
+    "LocationActors": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ForceMaterials": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Seconds": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "StopTimestamp": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "CinematicTextureGroups": {
+      "type": "TextureGroupContainer",
+      "documentation": null,
+      "flags": 3
+    },
+    "SelectedCinematicTextureGroups": {
+      "type": "int",
+      "documentation": null,
+      "flags": 12290
+    },
+    "bStreamingActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

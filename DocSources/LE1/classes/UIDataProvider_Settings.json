@@ -1,0 +1,80 @@
+{
+  "parent": "UIDynamicDataProvider",
+  "package": "Engine",
+  "variables": {
+    "SettingsArrayProviders": {
+      "type": "SettingsArrayProvider",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Settings": {
+      "type": "Settings",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsAListRow": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "OnSettingValueUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "SettingName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSettingValueUpdated(Name SettingName)"
+    },
+    "ArrayProviderPropertyChanged": {
+      "documentation": null,
+      "signature_members": {
+        "SourceProvider": {
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
+        },
+        "PropTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ArrayProviderPropertyChanged(UIDataProvider SourceProvider, optional Name PropTag)"
+    },
+    "ProviderInstanceUnbound": {
+      "documentation": null,
+      "signature_members": {
+        "DataSourceInstance": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProviderInstanceUnbound(Object DataSourceInstance)"
+    },
+    "ProviderInstanceBound": {
+      "documentation": null,
+      "signature_members": {
+        "DataSourceInstance": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProviderInstanceBound(Object DataSourceInstance)"
+    }
+  },
+  "states": {},
+  "classflags": 136315034,
+  "configname": "None",
+  "documentation": null
+}

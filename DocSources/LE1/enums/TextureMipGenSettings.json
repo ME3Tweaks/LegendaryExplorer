@@ -1,0 +1,57 @@
+{
+  "EnumValues": {
+    "TMGS_FromTextureGroup": {
+      "value": 0,
+      "documentation": null
+    },
+    "TMGS_SimpleAverage": {
+      "value": 1,
+      "documentation": null
+    },
+    "TMGS_Sharpen0": {
+      "value": 2,
+      "documentation": null
+    },
+    "TMGS_Sharpen1": {
+      "value": 3,
+      "documentation": null
+    },
+    "TMGS_Sharpen2": {
+      "value": 4,
+      "documentation": null
+    },
+    "TMGS_Sharpen3": {
+      "value": 5,
+      "documentation": null
+    },
+    "TMGS_Sharpen4": {
+      "value": 6,
+      "documentation": null
+    },
+    "TMGS_Sharpen5": {
+      "value": 7,
+      "documentation": null
+    },
+    "TMGS_Sharpen6": {
+      "value": 8,
+      "documentation": null
+    },
+    "TMGS_Sharpen7": {
+      "value": 9,
+      "documentation": null
+    },
+    "TMGS_Sharpen8": {
+      "value": 10,
+      "documentation": null
+    },
+    "TMGS_Sharpen9": {
+      "value": 11,
+      "documentation": null
+    },
+    "TMGS_Sharpen10": {
+      "value": 12,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

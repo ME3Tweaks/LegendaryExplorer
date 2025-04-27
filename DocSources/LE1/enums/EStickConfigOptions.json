@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "SCO_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "SCO_SouthPaw": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

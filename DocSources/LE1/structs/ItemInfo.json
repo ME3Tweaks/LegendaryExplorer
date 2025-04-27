@@ -1,0 +1,123 @@
+{
+  "members": {
+    "m_rawStats": {
+      "type": "BioInventoryGuiInterfaceItemStats",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ItemName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_lstXMods": {
+      "type": "XModInfo",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "itemRef": {
+      "type": "BioItem",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "ItemCategoryDescription": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "ItemCategoryName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "nItemCategoryGuiIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ItemSubcategoryRacialLabel": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "ManufacturerName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "ManufacturerDescription": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "nManufacturerIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nManufacturerID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "BonusesDescription": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "sophistication": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_price": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_plotConditional": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "InvIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "FilteredIndexOverride": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nmShopGUIImageID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bIsEquippable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bIsNew": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "ItemSubcategoryRace": {
+      "type": "EBioAttributesItemRaceType",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eSlot": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioInventoryGuiInterface",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

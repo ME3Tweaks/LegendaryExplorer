@@ -1,0 +1,28 @@
+{
+  "members": {
+    "ItemId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "Manufacturer": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "PlotConditionalID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "sophistication": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "SFXSaveGame",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

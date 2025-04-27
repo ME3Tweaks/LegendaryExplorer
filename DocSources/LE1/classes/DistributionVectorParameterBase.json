@@ -1,0 +1,41 @@
+{
+  "parent": "DistributionVectorConstant",
+  "package": "Engine",
+  "variables": {
+    "MinInput": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxInput": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinOutput": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxOutput": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "ParameterName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "ParamModes": {
+      "type": "DistributionParamMode",
+      "documentation": null,
+      "flags": 524297
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142618771,
+  "configname": "None",
+  "documentation": null
+}

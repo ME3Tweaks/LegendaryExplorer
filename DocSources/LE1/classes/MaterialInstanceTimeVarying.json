@@ -1,0 +1,219 @@
+{
+  "parent": "MaterialInstance",
+  "package": "Engine",
+  "variables": {
+    "FontParameterValues": {
+      "type": "FontParameterValueOverTime",
+      "documentation": null,
+      "flags": 4194307
+    },
+    "ScalarParameterValues": {
+      "type": "ScalarParameterValueOverTime",
+      "documentation": null,
+      "flags": 4194307
+    },
+    "TextureParameterValues": {
+      "type": "TextureParameterValueOverTime",
+      "documentation": null,
+      "flags": 4194307
+    },
+    "VectorParameterValues": {
+      "type": "VectorParameterValueOverTime",
+      "documentation": null,
+      "flags": 4194307
+    },
+    "Duration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bAutoActivateAll": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetMaxDurationFromAllParameters": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMaxDurationFromAllParameters()"
+    },
+    "ClearParameterValues": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearParameterValues()"
+    },
+    "SetFontParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "FontValue": {
+          "type": "Font",
+          "documentation": null,
+          "flags": 128
+        },
+        "FontPage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFontParameterValue(Name ParameterName, Font FontValue, int FontPage)"
+    },
+    "SetVectorStartTime": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVectorStartTime(Name ParameterName, float Value)"
+    },
+    "SetVectorCurveParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "InterpCurveVector",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVectorCurveParameterValue(Name ParameterName, const out InterpCurveVector Value)"
+    },
+    "SetVectorParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "LinearColor",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVectorParameterValue(Name ParameterName, const out LinearColor Value)"
+    },
+    "SetTextureParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "Texture",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTextureParameterValue(Name ParameterName, Texture Value)"
+    },
+    "SetDuration": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDuration(float Value)"
+    },
+    "SetScalarStartTime": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScalarStartTime(Name ParameterName, float Value)"
+    },
+    "SetScalarCurveParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "InterpCurveFloat",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScalarCurveParameterValue(Name ParameterName, const out InterpCurveFloat Value)"
+    },
+    "SetScalarParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScalarParameterValue(Name ParameterName, float Value)"
+    },
+    "SetParent": {
+      "documentation": null,
+      "signature_members": {
+        "NewParent": {
+          "type": "MaterialInterface",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetParent(MaterialInterface NewParent)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

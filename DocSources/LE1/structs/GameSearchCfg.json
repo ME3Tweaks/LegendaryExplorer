@@ -1,0 +1,43 @@
+{
+  "members": {
+    "SearchResults": {
+      "type": "UIDataProvider_Settings",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "GameSearchClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "DefaultGameSettingsClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "SearchResultsProviderClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "DesiredSettingsProvider": {
+      "type": "UIDataProvider_Settings",
+      "documentation": null,
+      "flags": 0
+    },
+    "Search": {
+      "type": "OnlineGameSearch",
+      "documentation": null,
+      "flags": 0
+    },
+    "SearchName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "UIDataStore_OnlineGameSearch",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

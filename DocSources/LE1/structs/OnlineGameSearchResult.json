@@ -1,0 +1,18 @@
+{
+  "members": {
+    "PlatformData": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "GameSettings": {
+      "type": "OnlineGameSettings",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "classdef": "OnlineGameSearch",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

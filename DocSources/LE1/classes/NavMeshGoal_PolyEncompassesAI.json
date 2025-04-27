@@ -1,0 +1,29 @@
+{
+  "parent": "NavMeshPathGoalEvaluator",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "MakeSureAIFits": {
+      "documentation": null,
+      "signature_members": {
+        "NavHandle": {
+          "type": "NavigationHandle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MakeSureAIFits(NavigationHandle NavHandle)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

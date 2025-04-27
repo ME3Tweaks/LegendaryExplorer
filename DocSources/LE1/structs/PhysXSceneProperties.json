@@ -1,0 +1,33 @@
+{
+  "members": {
+    "PrimaryScene": {
+      "type": "PhysXSimulationProperties",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "CompartmentRigidBody": {
+      "type": "PhysXSimulationProperties",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "CompartmentFluid": {
+      "type": "PhysXSimulationProperties",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "CompartmentCloth": {
+      "type": "PhysXSimulationProperties",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "CompartmentSoftBody": {
+      "type": "PhysXSimulationProperties",
+      "documentation": null,
+      "flags": 67108865
+    }
+  },
+  "classdef": "WorldInfo",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

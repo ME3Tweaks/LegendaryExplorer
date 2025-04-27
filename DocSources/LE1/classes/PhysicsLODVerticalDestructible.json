@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "MaxDynamicChunkCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 20480
+    },
+    "DebrisLifetime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 20480
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217878,
+  "configname": "Engine",
+  "documentation": null
+}

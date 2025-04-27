@@ -1,0 +1,33 @@
+{
+  "members": {
+    "m_sMap": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sImageResource": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sSWFStopPoint": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_nAreaId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nMapNameRef": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSaveGame",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

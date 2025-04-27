@@ -1,0 +1,73 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "FormationPos": {
+      "type": "FormationPosition",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "MaxFormationMembers": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bUseOffsetPositions": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetEscapeDistance": {
+      "documentation": null,
+      "signature_members": {
+        "Idx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetEscapeDistance(int Idx)"
+    },
+    "GetFormationFacing": {
+      "documentation": null,
+      "signature_members": {
+        "Idx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "aInvertFormation": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator GetFormationFacing(int Idx, bool aInvertFormation)"
+    },
+    "GetFormationOffset": {
+      "documentation": null,
+      "signature_members": {
+        "Idx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "aInvertFormation": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetFormationOffset(int Idx, bool aInvertFormation)"
+    }
+  },
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,277 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_sFooterText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sFileName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sEditableRootName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sCameraRootName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sAnimNodeName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sLoadSaveNodeName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sNewLoadSaveNodeName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sStateNodeName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sActionMappingName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_oPropertyEditorNodes": {
+      "type": "BioPropertyEditorBaseNode",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fHUDRelativePropertyEditorOriginX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fHUDRelativePropertyEditorOriginY": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fPropertyEditorSizeX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fPropertyEditorSizeY": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fPropertyEditorRelativeColumnOneX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fPropertyEditorRelativeColumnTwoX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fPropertyEditorRelativeColumnThreeX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fPropertyEditorRelativeColumnY": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fColumnHeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bIsActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDebugBones": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bSortByType": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bSortByName": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "filterString": {
+      "documentation": null,
+      "signature_members": {
+        "Input": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "string",
+      "signature": "string filterString(string Input)"
+    },
+    "DrawToHUD": {
+      "documentation": null,
+      "signature_members": {
+        "oHUD": {
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawToHUD(BioHUD oHUD)"
+    },
+    "DrawBones": {
+      "documentation": null,
+      "signature_members": {
+        "oHUD": {
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawBones(BioHUD oHUD)"
+    },
+    "PerformRightShoulderAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformRightShoulderAction()"
+    },
+    "PerformLeftShoulderAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformLeftShoulderAction()"
+    },
+    "PerformRightTriggerAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformRightTriggerAction()"
+    },
+    "PerformLeftTriggerAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformLeftTriggerAction()"
+    },
+    "ActivateMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ActivateMainMenu()"
+    },
+    "PerformLeftAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformLeftAction()"
+    },
+    "PerformRightAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformRightAction()"
+    },
+    "PerformDownAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformDownAction()"
+    },
+    "PerformUpAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformUpAction()"
+    },
+    "PerformDeactivateAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformDeactivateAction()"
+    },
+    "PerformActivateAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformActivateAction()"
+    },
+    "CreateNodeTestData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CreateNodeTestData()"
+    },
+    "WriteTreeDataToHUD": {
+      "documentation": null,
+      "signature_members": {
+        "oHUD": {
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WriteTreeDataToHUD(BioHUD oHUD)"
+    },
+    "UpdateSystem": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateSystem(float fDeltaTime)"
+    },
+    "DeactivateSystem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DeactivateSystem()"
+    },
+    "ActivateSystem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ActivateSystem()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Initialize()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

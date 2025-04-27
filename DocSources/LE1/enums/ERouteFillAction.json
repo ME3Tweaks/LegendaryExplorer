@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "RFA_Overwrite": {
+      "value": 0,
+      "documentation": null
+    },
+    "RFA_Add": {
+      "value": 1,
+      "documentation": null
+    },
+    "RFA_Remove": {
+      "value": 2,
+      "documentation": null
+    },
+    "RFA_Clear": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

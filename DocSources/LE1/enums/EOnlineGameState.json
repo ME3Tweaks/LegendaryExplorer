@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "OGS_NoSession": {
+      "value": 0,
+      "documentation": null
+    },
+    "OGS_Pending": {
+      "value": 1,
+      "documentation": null
+    },
+    "OGS_Starting": {
+      "value": 2,
+      "documentation": null
+    },
+    "OGS_InProgress": {
+      "value": 3,
+      "documentation": null
+    },
+    "OGS_Ending": {
+      "value": 4,
+      "documentation": null
+    },
+    "OGS_Ended": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

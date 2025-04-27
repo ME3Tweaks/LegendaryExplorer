@@ -1,0 +1,142 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "fLegalTimeout": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fShowLegalTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srNoLoginStart": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srConfirmNoLoginStart": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srCancelNoLoginStart": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bPressedStart": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "StartTimeout": {
+      "documentation": null,
+      "signature_members": {
+        "bShowLegal": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "StartTimeout(bool bShowLegal)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "AdvanceScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AdvanceScreen()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "DisplayNoProfileConfirmation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayNoProfileConfirmation()"
+    },
+    "Callback_LoginComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bIsOpening": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_LoginComplete(bool bIsOpening)"
+    },
+    "CheckLogin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckLogin()"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
+  "documentation": null
+}

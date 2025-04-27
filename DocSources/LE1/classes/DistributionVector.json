@@ -1,0 +1,44 @@
+{
+  "parent": "Component",
+  "package": "Core",
+  "variables": {
+    "VfTable_FCurveEdInterface": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "bCanBeBaked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIsDirty": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetVectorValue": {
+      "documentation": null,
+      "signature_members": {
+        "F": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "LastExtreme": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetVectorValue(optional float F, optional int LastExtreme)"
+    }
+  },
+  "states": {},
+  "classflags": 134230163,
+  "configname": "None",
+  "documentation": null
+}

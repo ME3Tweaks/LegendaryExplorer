@@ -1,0 +1,13 @@
+{
+  "members": {
+    "Emitters": {
+      "type": "ParticleEmitterReplayFrame",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "classdef": "ParticleSystemReplay",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,23 @@
+{
+  "members": {
+    "BlendTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "BlendExp": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "BlendFunction": {
+      "type": "EViewTargetBlendFunction",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "Camera",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

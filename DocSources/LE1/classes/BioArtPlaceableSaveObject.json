@@ -1,0 +1,35 @@
+{
+  "parent": "BioActorSaveObject",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "LoadPositionAndOrientation": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadPositionAndOrientation(Actor O)"
+    },
+    "SavePositionAndOrientation": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SavePositionAndOrientation(Actor O)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

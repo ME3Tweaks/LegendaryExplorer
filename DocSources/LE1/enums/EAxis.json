@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "AXIS_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "AXIS_X": {
+      "value": 1,
+      "documentation": null
+    },
+    "AXIS_Y": {
+      "value": 2,
+      "documentation": null
+    },
+    "AXIS_BLANK": {
+      "value": 3,
+      "documentation": null
+    },
+    "AXIS_Z": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,31 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "JumpDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIsFalling": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bMovePawn": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bUseFarFallAnims": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

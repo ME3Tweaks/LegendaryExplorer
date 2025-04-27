@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Cells": {
+      "type": "UIListElementCell",
+      "documentation": null,
+      "flags": 71434305
+    },
+    "DataSource": {
+      "type": "UIListItemDataBinding",
+      "documentation": null,
+      "flags": 2
+    },
+    "ElementWidget": {
+      "type": "UIObject",
+      "documentation": null,
+      "flags": 67239937
+    },
+    "ElementState": {
+      "type": "EUIListElementState",
+      "documentation": null,
+      "flags": 16916481
+    }
+  },
+  "classdef": "UIComp_ListPresenter",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

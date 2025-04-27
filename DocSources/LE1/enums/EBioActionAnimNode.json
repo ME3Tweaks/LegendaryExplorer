@@ -1,0 +1,49 @@
+{
+  "EnumValues": {
+    "ACTION_ANIM_NODE_POSTURE": {
+      "value": 0,
+      "documentation": null
+    },
+    "ACTION_ANIM_NODE_MOUNT": {
+      "value": 1,
+      "documentation": null
+    },
+    "ACTION_ANIM_NODE_HESITATE": {
+      "value": 2,
+      "documentation": null
+    },
+    "ACTION_ANIM_NODE_FALL": {
+      "value": 3,
+      "documentation": null
+    },
+    "ACTION_ANIM_NODE_BIOTIC": {
+      "value": 4,
+      "documentation": null
+    },
+    "ACTION_ANIM_NODE_DEATH": {
+      "value": 5,
+      "documentation": null
+    },
+    "ACTION_ANIM_NODE_DIE": {
+      "value": 6,
+      "documentation": null
+    },
+    "ACTION_ANIM_NODE_TECH": {
+      "value": 7,
+      "documentation": null
+    },
+    "ACTION_ANIM_NODE_MATINEE": {
+      "value": 8,
+      "documentation": null
+    },
+    "ACTION_ANIM_NODE_GETUP": {
+      "value": 9,
+      "documentation": null
+    },
+    "ACTION_ANIM_NODE_GESTURES": {
+      "value": 10,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

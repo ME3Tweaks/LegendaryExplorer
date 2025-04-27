@@ -1,0 +1,31 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Coordinate": {
+      "type": "ExpressionInput",
+      "documentation": null,
+      "flags": 0
+    },
+    "Time": {
+      "type": "ExpressionInput",
+      "documentation": null,
+      "flags": 0
+    },
+    "SpeedX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SpeedY": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134226066,
+  "configname": "None",
+  "documentation": null
+}

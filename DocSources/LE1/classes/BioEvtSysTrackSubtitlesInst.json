@@ -1,0 +1,16 @@
+{
+  "parent": "BioInterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "m_bAddRefTlkTable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4096
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

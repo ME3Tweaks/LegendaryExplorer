@@ -1,0 +1,36 @@
+{
+  "parent": "ParticleModuleCollision",
+  "package": "SFXGame",
+  "variables": {
+    "CollisionEmitter": {
+      "type": "string",
+      "documentation": null,
+      "flags": 37748745
+    },
+    "ColorParams": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "DecalTemplate": {
+      "type": "BioDecalComponent",
+      "documentation": null,
+      "flags": 101187593
+    },
+    "CollisionEmitterTemplate": {
+      "type": "ParticleSystem",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEnableMultiHitDecal": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142618770,
+  "configname": "None",
+  "documentation": null
+}

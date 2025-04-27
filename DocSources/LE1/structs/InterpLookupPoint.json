@@ -1,0 +1,18 @@
+{
+  "members": {
+    "GroupName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "Time": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "InterpTrackMove",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

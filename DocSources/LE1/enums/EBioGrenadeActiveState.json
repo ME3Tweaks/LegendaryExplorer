@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BIO_GRENADE_ACTIVE_STATE_THROW": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_GRENADE_ACTIVE_STATE_DETONATE": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

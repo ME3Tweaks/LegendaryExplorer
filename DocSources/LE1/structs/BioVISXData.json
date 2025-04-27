@@ -1,0 +1,23 @@
+{
+  "members": {
+    "oPhysMat": {
+      "type": "PhysicalMaterial",
+      "documentation": null,
+      "flags": 0
+    },
+    "oVFXTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverrideWeapon": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioVISXModSet",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

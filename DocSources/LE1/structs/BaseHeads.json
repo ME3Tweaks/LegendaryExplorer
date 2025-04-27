@@ -1,0 +1,13 @@
+{
+  "members": {
+    "m_fBaseHeadSettings": {
+      "type": "BaseSliders",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "classdef": "BioMorphFaceFrontEnd",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

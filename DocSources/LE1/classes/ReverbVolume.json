@@ -1,0 +1,39 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "Settings": {
+      "type": "ReverbSettings",
+      "documentation": null,
+      "flags": 1
+    },
+    "NextLowerPriorityVolume": {
+      "type": "ReverbVolume",
+      "documentation": null,
+      "flags": 16785410
+    },
+    "Priority": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "UnTouch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UnTouch(Actor Other)"
+    }
+  },
+  "states": {},
+  "classflags": 144704178,
+  "configname": "None",
+  "documentation": null
+}

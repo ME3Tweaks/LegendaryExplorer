@@ -1,0 +1,21 @@
+{
+  "parent": "PBRuleNodeBase",
+  "package": "Engine",
+  "variables": {
+    "SplitSetup": {
+      "type": "RBSplitInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "SplitAxis": {
+      "type": "EProcBuildingAxis",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136327314,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,85 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "GetDrawComponent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PrimitiveComponent",
+      "signature": "PrimitiveComponent GetDrawComponent()"
+    },
+    "FillByCylinder": {
+      "documentation": null,
+      "signature_members": {
+        "BottomRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "TopRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "Height": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "HeightOffset": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "FillByCylinder(float BottomRadius, float TopRadius, float Height, float HeightOffset)"
+    },
+    "FillByCapsule": {
+      "documentation": null,
+      "signature_members": {
+        "Height": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "Radius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "FillByCapsule(float Height, float Radius)"
+    },
+    "FillByBox": {
+      "documentation": null,
+      "signature_members": {
+        "Dimension": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "FillByBox(Vector Dimension)"
+    },
+    "FillBySphere": {
+      "documentation": null,
+      "signature_members": {
+        "Radius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "FillBySphere(float Radius)"
+    }
+  },
+  "states": {},
+  "classflags": 134221971,
+  "configname": "None",
+  "documentation": null
+}

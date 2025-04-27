@@ -1,0 +1,18 @@
+{
+  "members": {
+    "m_oSoundCue": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_ePawnSound": {
+      "type": "EBioPawnSound",
+      "documentation": null,
+      "flags": 131075
+    }
+  },
+  "classdef": "BioPawnType",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

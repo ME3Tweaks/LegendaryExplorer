@@ -1,0 +1,23 @@
+{
+  "members": {
+    "nmState": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "nmToState": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "fBlendTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioAnimNodeBlendByAnimationStateTracking",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "sRoleName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "aProperties": {
+      "type": "ArtPlaceableProperty",
+      "documentation": null,
+      "flags": 71303169
+    }
+  },
+  "classdef": "BioArtPlaceableRoles",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

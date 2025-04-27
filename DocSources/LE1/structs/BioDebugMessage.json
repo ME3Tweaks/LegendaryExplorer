@@ -1,0 +1,23 @@
+{
+  "members": {
+    "sMessage": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "fStartTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fDisplayTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioCheatManager",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

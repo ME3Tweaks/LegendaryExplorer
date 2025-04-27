@@ -1,0 +1,360 @@
+{
+  "parent": "GameInfo",
+  "package": "SFXGame",
+  "variables": {
+    "DefaultHenchPawnClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oPlayerInput": {
+      "type": "BioPlayerInput",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oTextureMovie": {
+      "type": "TextureMovie",
+      "documentation": null,
+      "flags": 0
+    },
+    "EnableCombatLogging": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "EnableDamage": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "srGameOverString": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SpawnGameOverGUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SpawnGameOverGUI()"
+    },
+    "AdjustHeightOfPawnSpawnedAtNavigationPoint": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "SpawnPoint": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustHeightOfPawnSpawnedAtNavigationPoint(Pawn Pawn, NavigationPoint SpawnPoint)"
+    },
+    "SpawnPawn": {
+      "documentation": null,
+      "signature_members": {
+        "TheActorType": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "SpawnLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "SpawnRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIsPlayer": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioPawn",
+      "signature": "BioPawn SpawnPawn(string TheActorType, Vector SpawnLocation, Rotator SpawnRotation, bool bIsPlayer)"
+    },
+    "SpawnHenchman": {
+      "documentation": null,
+      "signature_members": {
+        "pawnTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Player": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "backOffset": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "sideOffset": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "spawnLeft": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioPawn",
+      "signature": "BioPawn SpawnHenchman(Name pawnTag, Actor Player, float backOffset, float sideOffset, bool spawnLeft)"
+    },
+    "SpawnPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerController": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "playerSpawnPoint": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioPawn",
+      "signature": "BioPawn SpawnPlayer(BioPlayerController PlayerController, NavigationPoint playerSpawnPoint)"
+    },
+    "SpawnPlayerSquadMembers": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerController": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "SpawnPoint": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Pawn",
+      "signature": "Pawn SpawnPlayerSquadMembers(BioPlayerController PlayerController, NavigationPoint SpawnPoint)"
+    },
+    "LoadPackage": {
+      "documentation": null,
+      "signature_members": {
+        "PackageName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadPackage(string PackageName)"
+    },
+    "SpawnDefaultPawnFor": {
+      "documentation": null,
+      "signature_members": {
+        "NewPlayer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "SpawnPoint": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Pawn",
+      "signature": "Pawn SpawnDefaultPawnFor(Controller NewPlayer, NavigationPoint SpawnPoint)"
+    },
+    "SetPlayerDefaults": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerDefaults(Pawn PlayerPawn)"
+    },
+    "PreventDeath": {
+      "documentation": null,
+      "signature_members": {
+        "Killed_": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Killer_": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PreventDeath(Pawn Killed_, Controller Killer_, Class<DamageType> DamageType, Vector HitLocation)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "FindPlayerStart": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "InTeam": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
+        },
+        "IncomingName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "NavigationPoint",
+      "signature": "NavigationPoint FindPlayerStart(Controller Player, optional byte InTeam, optional string IncomingName)"
+    },
+    "FindStartingNavPoint": {
+      "documentation": null,
+      "signature_members": {
+        "nmStartPoint": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "NavigationPoint",
+      "signature": "NavigationPoint FindStartingNavPoint(Name nmStartPoint)"
+    },
+    "PreloadPackage": {
+      "documentation": null,
+      "signature_members": {
+        "TheActorType": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "PreloadPackage(string TheActorType)"
+    },
+    "GetSimpleString": {
+      "documentation": null,
+      "signature_members": {
+        "StrRef": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        },
+        "bParse": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetSimpleString(stringref StrRef, optional bool bParse)"
+    },
+    "CalculateHenchmanSpawn": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "backOffset": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "sideOffset": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "spawnLeft": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "SpawnPoint": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "SpawnRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "CalculateHenchmanSpawn(Actor Player, float backOffset, float sideOffset, bool spawnLeft, out Vector SpawnPoint, out Rotator SpawnRotation)"
+    },
+    "SetupPartyMemberAttributes": {
+      "documentation": null,
+      "signature_members": {
+        "Behavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "attributesClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetupPartyMemberAttributes(BioPawnBehavior Behavior, Class<Object> attributesClass)"
+    },
+    "ChallengeScalePersistentLevelPawns": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ChallengeScalePersistentLevelPawns()"
+    }
+  },
+  "states": {
+    "PendingMatch": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "classflags": 144703670,
+  "configname": "Game",
+  "documentation": null
+}

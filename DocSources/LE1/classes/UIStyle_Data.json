@@ -1,0 +1,49 @@
+{
+  "parent": "UIRoot",
+  "package": "Engine",
+  "variables": {
+    "__MatchesStyleData__Delegate": {
+      "type": "MatchesStyleData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "StyleColor": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 0
+    },
+    "StylePadding": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bDirty": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "MatchesStyleData": {
+      "documentation": null,
+      "signature_members": {
+        "OtherStyle": {
+          "type": "UIStyle_Data",
+          "documentation": null,
+          "flags": 130
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MatchesStyleData(const UIStyle_Data OtherStyle)"
+    }
+  },
+  "states": {},
+  "classflags": 134217875,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "HeadIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "TailIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioWorldInfo",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

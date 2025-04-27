@@ -1,0 +1,18 @@
+{
+  "members": {
+    "nmTechnique": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 3
+    },
+    "nCapMode": {
+      "type": "EBioCapMode",
+      "documentation": null,
+      "flags": 3
+    }
+  },
+  "classdef": "BioBaseSquad",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

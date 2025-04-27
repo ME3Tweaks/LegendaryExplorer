@@ -1,0 +1,56 @@
+{
+  "parent": "SVehicleSimCar",
+  "package": "Engine",
+  "variables": {
+    "TorqueCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ShiftCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "GearRatios": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RedlineRPM": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "TransRatio": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "LSDFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "IdleRPM": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "TotalSpinVel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "EngineRPM": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

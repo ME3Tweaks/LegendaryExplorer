@@ -1,0 +1,13 @@
+{
+  "members": {
+    "InputAliasLookupTable": {
+      "type": "MultiMap_Mirror",
+      "documentation": null,
+      "flags": 12290
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 3
+}

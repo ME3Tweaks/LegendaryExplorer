@@ -1,0 +1,53 @@
+{
+  "parent": "BioSequenceLatentStateAction",
+  "package": "SFXGame",
+  "variables": {
+    "vTarget": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "oPawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 1
+    },
+    "oTarget": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 1
+    },
+    "nGrenadeType": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nReason": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nCompletionReason": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDone": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

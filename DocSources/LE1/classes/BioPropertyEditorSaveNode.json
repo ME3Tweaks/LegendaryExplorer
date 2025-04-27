@@ -1,0 +1,35 @@
+{
+  "parent": "BioPropertyEditorBaseNode",
+  "package": "SFXGame",
+  "variables": {
+    "Filename": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "DecrementCurrentSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DecrementCurrentSelection()"
+    },
+    "IncrementCurrentSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IncrementCurrentSelection()"
+    },
+    "SelectionAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SelectionAction()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

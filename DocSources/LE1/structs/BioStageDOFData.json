@@ -1,0 +1,23 @@
+{
+  "members": {
+    "fFocusInnerRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fFocusDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioEngineEnums",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

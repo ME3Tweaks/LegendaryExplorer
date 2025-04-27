@@ -1,0 +1,26 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "m_oBaseAnimSets": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_oConversationAnimSets": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_aoActivities": {
+      "type": "BioBaseActivity",
+      "documentation": null,
+      "flags": 71303177
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 10485778,
+  "configname": "None",
+  "documentation": null
+}

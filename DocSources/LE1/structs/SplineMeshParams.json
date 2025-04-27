@@ -1,0 +1,58 @@
+{
+  "members": {
+    "StartPos": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "StartTangent": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "EndPos": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "EndTangent": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "StartScale": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 0
+    },
+    "StartOffset": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 0
+    },
+    "EndScale": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 0
+    },
+    "EndOffset": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 0
+    },
+    "StartRoll": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "EndRoll": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SplineMeshComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

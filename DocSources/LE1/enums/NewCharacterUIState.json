@@ -1,0 +1,65 @@
+{
+  "EnumValues": {
+    "NCMS_Database": {
+      "value": 0,
+      "documentation": null
+    },
+    "NCMS_Iconic": {
+      "value": 1,
+      "documentation": null
+    },
+    "NCMS_Sex": {
+      "value": 2,
+      "documentation": null
+    },
+    "NCMS_Name": {
+      "value": 3,
+      "documentation": null
+    },
+    "NCMS_Database_Corrupt": {
+      "value": 4,
+      "documentation": null
+    },
+    "NCMS_Origin": {
+      "value": 5,
+      "documentation": null
+    },
+    "NCMS_Notoriety": {
+      "value": 6,
+      "documentation": null
+    },
+    "NCMS_Class": {
+      "value": 7,
+      "documentation": null
+    },
+    "NCMS_Deprecated": {
+      "value": 8,
+      "documentation": null
+    },
+    "NCMS_Deprecated2": {
+      "value": 9,
+      "documentation": null
+    },
+    "NCMS_Talent": {
+      "value": 10,
+      "documentation": null
+    },
+    "NCMS_FaceCustom": {
+      "value": 11,
+      "documentation": null
+    },
+    "NCMS_FaceTitle": {
+      "value": 12,
+      "documentation": null
+    },
+    "NCMS_FaceDetail": {
+      "value": 13,
+      "documentation": null
+    },
+    "NCMS_Summary": {
+      "value": 14,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

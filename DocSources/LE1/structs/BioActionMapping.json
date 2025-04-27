@@ -1,0 +1,23 @@
+{
+  "members": {
+    "nmPower": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "oPawn": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "eType": {
+      "type": "EBioActionType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioPlayerController",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

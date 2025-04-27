@@ -1,0 +1,18 @@
+{
+  "members": {
+    "nHigh": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nLow": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXOnlineDefine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

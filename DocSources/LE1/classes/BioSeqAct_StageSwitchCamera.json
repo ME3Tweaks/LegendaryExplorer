@@ -1,0 +1,58 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "explicitCamera": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "Stage": {
+      "type": "BioStage",
+      "documentation": null,
+      "flags": 1
+    },
+    "Intimacy": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "useForNextCamera": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "forceCrossingLineOfAction": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "saveOldCameraData": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "standardCamera": {
+      "type": "EBioCommonStageCameras",
+      "documentation": null,
+      "flags": 1
+    },
+    "Camera": {
+      "type": "EBioAutoSet",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "BioGetCameraNumber": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int BioGetCameraNumber()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

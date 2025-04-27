@@ -1,0 +1,28 @@
+{
+  "members": {
+    "GameSettingsClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "Provider": {
+      "type": "UIDataProvider_Settings",
+      "documentation": null,
+      "flags": 0
+    },
+    "GameSettings": {
+      "type": "OnlineGameSettings",
+      "documentation": null,
+      "flags": 0
+    },
+    "SettingsName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "UIDataStore_OnlineGameSettings",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

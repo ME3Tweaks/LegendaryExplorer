@@ -1,0 +1,13 @@
+{
+  "members": {
+    "StaticLighting": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "FoliageComponent",
+  "extends": "FoliageInstanceBase",
+  "documentation": null,
+  "modifiers": 1
+}

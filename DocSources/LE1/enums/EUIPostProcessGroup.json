@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "UIPostProcess_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "UIPostProcess_Background": {
+      "value": 1,
+      "documentation": null
+    },
+    "UIPostProcess_Foreground": {
+      "value": 2,
+      "documentation": null
+    },
+    "UIPostProcess_BackgroundAndForeground": {
+      "value": 3,
+      "documentation": null
+    },
+    "UIPostProcess_Dynamic": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

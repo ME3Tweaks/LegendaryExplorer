@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Surfaces": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "SourceModel": {
+      "type": "Model",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

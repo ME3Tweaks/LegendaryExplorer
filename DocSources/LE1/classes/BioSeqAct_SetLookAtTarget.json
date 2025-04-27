@@ -1,0 +1,46 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_oPawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_oTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fTurnSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bEyes": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bHead": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bTorso": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bBody": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

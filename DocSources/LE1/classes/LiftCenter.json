@@ -1,0 +1,84 @@
+{
+  "parent": "NavigationPoint",
+  "package": "Engine",
+  "variables": {
+    "LiftOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "MyLift": {
+      "type": "InterpActor",
+      "documentation": null,
+      "flags": 0
+    },
+    "LiftTrigger": {
+      "type": "Trigger",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxDist2D": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CollisionHeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bJumpLift": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "ProceedWithMove": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProceedWithMove(Pawn Other)"
+    },
+    "SuggestMovePreparation": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SuggestMovePreparation(Pawn Other)"
+    },
+    "SpecialHandling": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor SpecialHandling(Pawn Other)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "GetBeaconText": {
+      "documentation": null,
+      "signature_members": {
+        "I": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetBeaconText(int I)"
+    },
+    "GetBeaconAddress": {
+      "documentation": null,
+      "signature_members": {
+        "I": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetBeaconAddress(int I)"
+    }
+  },
+  "states": {},
+  "classflags": 144703642,
+  "configname": "None",
+  "documentation": null
+}

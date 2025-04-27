@@ -1,0 +1,58 @@
+{
+  "members": {
+    "Dummy1": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Dummy2": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Dummy3": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Dummy4": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Dummy5": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Dummy6": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Dummy7": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Dummy8": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Dummy9": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Dummy10": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "classdef": "BioSFPanel",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

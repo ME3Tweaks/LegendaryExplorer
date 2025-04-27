@@ -1,0 +1,208 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_aItemPropertyStatus": {
+      "type": "BioItemPropertyStatus",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_oAppearance": {
+      "type": "BioAppearanceItem",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_p2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pCategory2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pItemProperty2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oAttributes": {
+      "type": "BioAttributesItem",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "m_nID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_plotConditionalID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ItemSalvage": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16385
+    },
+    "m_bNewInInventory": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bJunkItem": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetSaveObjectClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<BioBaseSaveObject> GetSaveObjectClass()"
+    },
+    "ComputeCategoryDisplayInfo": {
+      "documentation": null,
+      "signature_members": {
+        "categoryNameRef": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
+        },
+        "categoryDescRef": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
+        },
+        "categoryGuiIcon": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ComputeCategoryDisplayInfo(out stringref categoryNameRef, out stringref categoryDescRef, out int categoryGuiIcon)"
+    },
+    "GenerateName": {
+      "documentation": null,
+      "signature_members": {
+        "sName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GenerateName(out string sName)"
+    },
+    "GetItemPropertyInfo": {
+      "documentation": null,
+      "signature_members": {
+        "nItemPropertyIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "stPropInfo": {
+          "type": "BioItemPropertyInfo",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetItemPropertyInfo(int nItemPropertyIndex, out BioItemPropertyInfo stPropInfo)"
+    },
+    "GetNumItemProperties": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumItemProperties()"
+    },
+    "GetMaxItemPropertyCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxItemPropertyCount()"
+    },
+    "GetItemGuiClassIcon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetItemGuiClassIcon()"
+    },
+    "RemoveItemProperty": {
+      "documentation": null,
+      "signature_members": {
+        "nItemPropertyID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveItemProperty(int nItemPropertyID)"
+    },
+    "AddItemProperty": {
+      "documentation": null,
+      "signature_members": {
+        "nItemPropertyID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddItemProperty(int nItemPropertyID)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "GetItemTypeName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetItemTypeName()"
+    },
+    "CalculateSalvageValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float CalculateSalvageValue()"
+    },
+    "CalculatePrice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float CalculatePrice()"
+    },
+    "CalculateBasePrice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float CalculateBasePrice()"
+    },
+    "ValidateItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ValidateItem()"
+    },
+    "DescribeItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeItem()"
+    }
+  },
+  "states": {},
+  "classflags": 144703639,
+  "configname": "Game",
+  "documentation": null
+}

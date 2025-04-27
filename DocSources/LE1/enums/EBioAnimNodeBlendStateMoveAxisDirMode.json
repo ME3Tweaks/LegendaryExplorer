@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "BSMoveAxisDirMode_WorldRotation": {
+      "value": 0,
+      "documentation": null
+    },
+    "BSMoveAxisDirMode_WorldVelDir": {
+      "value": 1,
+      "documentation": null
+    },
+    "BSMoveAxisDirMode_WorldAccelDir": {
+      "value": 2,
+      "documentation": null
+    },
+    "BSMoveAxisDirMode_LocalVelDir": {
+      "value": 3,
+      "documentation": null
+    },
+    "BSMoveAxisDirMode_LocalAccelDir": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

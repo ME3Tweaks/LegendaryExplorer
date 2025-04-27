@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "FFB_CARTESIAN": {
+      "value": 0,
+      "documentation": null
+    },
+    "FFB_SPHERICAL": {
+      "value": 1,
+      "documentation": null
+    },
+    "FFB_CYLINDRICAL": {
+      "value": 2,
+      "documentation": null
+    },
+    "FFB_TOROIDAL": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

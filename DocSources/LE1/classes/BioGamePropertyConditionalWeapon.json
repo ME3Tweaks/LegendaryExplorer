@@ -1,0 +1,63 @@
+{
+  "parent": "BioGamePropertyConditional",
+  "package": "SFXGame",
+  "variables": {
+    "m_eWeaponType": {
+      "type": "EBioItemWeaponType",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eWeaponMeleeType": {
+      "type": "EBioItemWeaponMeleeType",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eWeaponRangedType": {
+      "type": "EBioItemWeaponRangedType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "TestRangedWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponItem": {
+          "type": "BioItemWeapon",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TestRangedWeapon(BioItemWeapon pWeaponItem)"
+    },
+    "TestMeleeWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponItem": {
+          "type": "BioItemWeapon",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TestMeleeWeapon(BioItemWeapon pWeaponItem)"
+    },
+    "TestWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "pWeaponItem": {
+          "type": "BioItemWeapon",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TestWeapon(BioItemWeapon pWeaponItem)"
+    }
+  },
+  "states": {},
+  "classflags": 134217875,
+  "configname": "None",
+  "documentation": null
+}

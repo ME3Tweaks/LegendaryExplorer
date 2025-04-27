@@ -1,0 +1,39 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_EffectCache": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4096
+    }
+  },
+  "functions": {
+    "CreateGameEffect": {
+      "documentation": null,
+      "signature_members": {
+        "_outer": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "gameEffectTable": {
+          "type": "Bio2DA",
+          "documentation": null,
+          "flags": 128
+        },
+        "nGameEffectID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioGameEffect",
+      "signature": "BioGameEffect CreateGameEffect(Object _outer, Bio2DA gameEffectTable, int nGameEffectID)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

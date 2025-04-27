@@ -1,0 +1,114 @@
+{
+  "parent": "UIDataStore_GameResource",
+  "package": "Engine",
+  "variables": {
+    "OptionProviders": {
+      "type": "MultiMap_Mirror",
+      "documentation": null,
+      "flags": 12290
+    },
+    "DynamicProviders": {
+      "type": "UIDataProvider_MenuItem",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "CurrentGameSettingsTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {
+    "Unregistered": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Unregistered(LocalPlayer PlayerOwner)"
+    },
+    "Registered": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Registered(LocalPlayer PlayerOwner)"
+    },
+    "OnGameSettingsChanged": {
+      "documentation": null,
+      "signature_members": {
+        "SourceProvider": {
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
+        },
+        "PropTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGameSettingsChanged(UIDataProvider SourceProvider, optional Name PropTag)"
+    },
+    "GetSet": {
+      "documentation": null,
+      "signature_members": {
+        "SetName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutProviders": {
+          "type": "UIDataProvider_MenuItem",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSet(Name SetName, out array<UIDataProvider_MenuItem> OutProviders)"
+    },
+    "AppendToSet": {
+      "documentation": null,
+      "signature_members": {
+        "SetName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "NumOptions": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AppendToSet(Name SetName, int NumOptions)"
+    },
+    "ClearSet": {
+      "documentation": null,
+      "signature_members": {
+        "SetName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearSet(Name SetName)"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
+  "documentation": null
+}

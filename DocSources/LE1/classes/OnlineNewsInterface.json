@@ -1,0 +1,92 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {
+    "__OnReadNewsCompleted__Delegate": {
+      "type": "OnReadNewsCompleted",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "GetNews": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewsType": {
+          "type": "EOnlineNewsType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetNews(byte LocalUserNum, EOnlineNewsType NewsType)"
+    },
+    "ClearReadNewsCompletedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ReadNewsDelegate": {
+          "type": "OnReadNewsCompleted",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadNewsCompletedDelegate(delegate<OnReadNewsCompleted> ReadNewsDelegate)"
+    },
+    "AddReadNewsCompletedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ReadNewsDelegate": {
+          "type": "OnReadNewsCompleted",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadNewsCompletedDelegate(delegate<OnReadNewsCompleted> ReadNewsDelegate)"
+    },
+    "OnReadNewsCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewsType": {
+          "type": "EOnlineNewsType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadNewsCompleted(bool bWasSuccessful, EOnlineNewsType NewsType)"
+    },
+    "ReadNews": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewsType": {
+          "type": "EOnlineNewsType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadNews(byte LocalUserNum, EOnlineNewsType NewsType)"
+    }
+  },
+  "states": {},
+  "classflags": 16403,
+  "configname": "None",
+  "documentation": null
+}

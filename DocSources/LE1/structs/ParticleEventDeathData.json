@@ -1,0 +1,13 @@
+{
+  "members": {
+    "ParticleTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "ParticleSystemComponent",
+  "extends": "ParticleEventData",
+  "documentation": null,
+  "modifiers": 1
+}

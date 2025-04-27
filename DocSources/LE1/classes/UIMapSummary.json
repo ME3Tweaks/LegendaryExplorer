@@ -1,0 +1,31 @@
+{
+  "parent": "UIResourceDataProvider",
+  "package": "Engine",
+  "variables": {
+    "MapName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "ScreenshotPathName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "DisplayName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "Description": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136316094,
+  "configname": "Game",
+  "documentation": null
+}

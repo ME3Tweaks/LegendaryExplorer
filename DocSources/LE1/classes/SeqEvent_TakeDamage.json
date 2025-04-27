@@ -1,0 +1,119 @@
+{
+  "parent": "SequenceEvent",
+  "package": "Engine",
+  "variables": {
+    "DamageTypes": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "IgnoreDamageTypes": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "vHitLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "oDamagedActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinDamageAmount": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DamageThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "CurrentDamage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bResetDamageOnToggle": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Toggled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Toggled()"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "HandleDamage": {
+      "documentation": null,
+      "signature_members": {
+        "InOriginator": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "InInstigator": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "inDamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "inAmount": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "inHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
+        },
+        "DamageCauser": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleDamage(Actor InOriginator, Actor InInstigator, Class<DamageType> inDamageType, float inAmount, optional Vector inHitLocation, optional Actor DamageCauser)"
+    },
+    "IsValidDamageType": {
+      "documentation": null,
+      "signature_members": {
+        "inDamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidDamageType(Class<DamageType> inDamageType)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,58 @@
+{
+  "members": {
+    "EmissiveBoost": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DiffuseBoost": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SpecularBoost": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ExportResolutionScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DistanceFieldPenumbraScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bOverrideEmissiveBoost": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverrideDiffuseBoost": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverrideSpecularBoost": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverrideExportResolutionScale": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverrideDistanceFieldPenumbraScale": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "MaterialInterface",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

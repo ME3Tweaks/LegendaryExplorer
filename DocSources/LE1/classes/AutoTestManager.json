@@ -1,0 +1,435 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "AutomatedMapTestingList": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4472832
+    },
+    "AutomatedTestingExecCommandToRunAtStartMatch": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "AutomatedMapTestingTransitionMap": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "SentinelTaskDescription": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "SentinelTaskParameter": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "SentinelTagDesc": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "SentinelTravelArray": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "CommandsToRunAtEachTravelTheWorldNode": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "CommandStringToExec": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "SentinelPC": {
+      "type": "PlayerController",
+      "documentation": null,
+      "flags": 8192
+    },
+    "AutomatedPerfRemainingTime": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "AutomatedTestingMapIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "NumAutomatedMapTestingCycles": {
+      "type": "int",
+      "documentation": null,
+      "flags": 278528
+    },
+    "NumberOfMatchesPlayed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "NumMapListCyclesDone": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "SentinelNavigationIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "SentinelIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "NumRotationsIncrement": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "TravelPointsIncrement": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "NumMinutesPerMap": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bAutomatedPerfTesting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bAutoContinueToNextRound": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUsingAutomatedTestingMapList": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bAutomatedTestingWithOpen": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bCheckingForFragmentation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bCheckingForMemLeaks": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bDoingASentinelRun": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSentinelStreamingLevelStillLoading": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "CheckForSentinelRun": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckForSentinelRun()"
+    },
+    "StartMatch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartMatch()"
+    },
+    "GetNextAutomatedTestingMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetNextAutomatedTestingMap()"
+    },
+    "IncrementNumberOfMatchesPlayed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IncrementNumberOfMatchesPlayed()"
+    },
+    "IncrementAutomatedTestingMapIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IncrementAutomatedTestingMapIndex()"
+    },
+    "CloseAutomatedMapTestTimer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseAutomatedMapTestTimer()"
+    },
+    "StartAutomatedMapTestTimerWorker": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartAutomatedMapTestTimerWorker()"
+    },
+    "StartAutomatedMapTestTimer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartAutomatedMapTestTimer()"
+    },
+    "DoTimeBasedSentinelStatGathering": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoTimeBasedSentinelStatGathering()"
+    },
+    "DoSentinel_ViewDependentMemoryAtSpecificLocation": {
+      "documentation": null,
+      "signature_members": {
+        "InLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
+        },
+        "InRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "DoSentinel_ViewDependentMemoryAtSpecificLocation(const out Vector InLocation, const out Rotator InRotation)"
+    },
+    "DoSentinel_PerfAtSpecificLocation": {
+      "documentation": null,
+      "signature_members": {
+        "InLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
+        },
+        "InRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "DoSentinel_PerfAtSpecificLocation(const out Vector InLocation, const out Rotator InRotation)"
+    },
+    "DoSentinel_MemoryAtSpecificLocation": {
+      "documentation": null,
+      "signature_members": {
+        "InLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 130
+        },
+        "InRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 130
+        }
+      },
+      "returntype": "None",
+      "signature": "DoSentinel_MemoryAtSpecificLocation(const Vector InLocation, const Rotator InRotation)"
+    },
+    "GetTravelLocations": {
+      "documentation": null,
+      "signature_members": {
+        "LevelName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "PC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "TravelPoints": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetTravelLocations(Name LevelName, PlayerController PC, out array<Vector> TravelPoints)"
+    },
+    "HandlePerLoadedMapAudioStats": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HandlePerLoadedMapAudioStats()"
+    },
+    "DoSentinelActionPerLoadedMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoSentinelActionPerLoadedMap()"
+    },
+    "DoTravelTheWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoTravelTheWorld()"
+    },
+    "EndSentinelRun": {
+      "documentation": null,
+      "signature_members": {
+        "RunResult": {
+          "type": "EAutomatedRunResult",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "EndSentinelRun(EAutomatedRunResult RunResult)"
+    },
+    "AddSentinelPerTimePeriodStats": {
+      "documentation": null,
+      "signature_members": {
+        "InLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 130
+        },
+        "InRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 130
+        }
+      },
+      "returntype": "None",
+      "signature": "AddSentinelPerTimePeriodStats(const Vector InLocation, const Rotator InRotation)"
+    },
+    "BeginSentinelRun": {
+      "documentation": null,
+      "signature_members": {
+        "TaskDescription": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
+        },
+        "TaskParameter": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
+        },
+        "TagDesc": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
+        }
+      },
+      "returntype": "None",
+      "signature": "BeginSentinelRun(const string TaskDescription, const string TaskParameter, const string TagDesc)"
+    },
+    "InitializeOptions": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeOptions(string Options)"
+    },
+    "Timer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Timer()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {
+    "SentinelHandleCauseEventCommand": {
+      "functions": {},
+      "documentation": null
+    },
+    "TravelTheWorld": {
+      "functions": {
+        "SetIncrementsForLoops": {
+          "documentation": null,
+          "signature_members": {
+            "NumTravelLocations": {
+              "type": "float",
+              "documentation": null,
+              "flags": 130
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "PrintOutTravelWorldTimes": {
+          "documentation": null,
+          "signature_members": {
+            "TotalTimeInSeconds": {
+              "type": "int",
+              "documentation": null,
+              "flags": 130
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "CalcTravelTheWorldTime": {
+          "documentation": null,
+          "signature_members": {
+            "NumTravelLocations": {
+              "type": "int",
+              "documentation": null,
+              "flags": 130
+            },
+            "NumRotations": {
+              "type": "int",
+              "documentation": null,
+              "flags": 130
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

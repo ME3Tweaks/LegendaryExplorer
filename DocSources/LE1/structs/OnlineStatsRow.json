@@ -1,0 +1,28 @@
+{
+  "members": {
+    "PlayerID": {
+      "type": "UniqueNetId",
+      "documentation": null,
+      "flags": 2
+    },
+    "Rank": {
+      "type": "SettingsData",
+      "documentation": null,
+      "flags": 2
+    },
+    "NickName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "Columns": {
+      "type": "OnlineStatsColumn",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "classdef": "OnlineStatsRead",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

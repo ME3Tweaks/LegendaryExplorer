@@ -1,0 +1,34 @@
+{
+  "parent": "Object",
+  "package": "Core",
+  "variables": {
+    "Tokens": {
+      "type": "BioDlgToken",
+      "documentation": null,
+      "flags": 4194306
+    }
+  },
+  "functions": {
+    "GetStringToken": {
+      "documentation": null,
+      "signature_members": {
+        "nActionCode": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "sToken": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringToken(int nActionCode, out string sToken)"
+    }
+  },
+  "states": {},
+  "classflags": 136315027,
+  "configname": "None",
+  "documentation": null
+}

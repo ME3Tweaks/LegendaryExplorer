@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Level": {
+      "type": "LevelStreaming",
+      "documentation": null,
+      "flags": 1
+    },
+    "bShouldBeLoaded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bShouldBeVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bShouldBlockOnLoad": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "TriggerStreamingLevel",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

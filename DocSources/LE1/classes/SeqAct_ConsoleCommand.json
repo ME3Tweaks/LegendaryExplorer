@@ -1,0 +1,45 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "Command": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Commands": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "VersionUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "OldVersion": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewVersion": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "VersionUpdated(int OldVersion, int NewVersion)"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

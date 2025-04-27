@@ -1,0 +1,28 @@
+{
+  "members": {
+    "ColumnHeaderText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "CellDataField": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "CellSize": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null,
+      "flags": 1
+    },
+    "CellPosition": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "UIComp_ListPresenter",
+  "extends": "UIListElementCell",
+  "documentation": null,
+  "modifiers": 5
+}

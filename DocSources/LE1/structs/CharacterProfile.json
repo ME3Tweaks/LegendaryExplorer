@@ -1,0 +1,108 @@
+{
+  "members": {
+    "sCharacterID": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "sFullName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "stCharacterAppearance": {
+      "type": "CharacterAppearanceData",
+      "documentation": null,
+      "flags": 0
+    },
+    "stCharacterStatistics": {
+      "type": "CharacterStatisticsData",
+      "documentation": null,
+      "flags": 0
+    },
+    "nLastPlayedSlot": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_CharacterLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_CreationYear": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_CreationMonth": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_CreationDayOfWeek": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_CreationDay": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_CreationHour": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_CreationMin": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_CreationSec": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_CreationMSec": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_PlayedHours": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_PlayedMin": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_PlayedSec": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ClassBase": {
+      "type": "EBioPartyMemberClassBase",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_origin": {
+      "type": "EBioPlayerCharacterBackgroundOrigin",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Reputation": {
+      "type": "EBioPlayerCharacterBackgroundNotoriety",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioGamerProfile",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

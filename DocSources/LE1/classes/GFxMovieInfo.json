@@ -1,0 +1,36 @@
+{
+  "parent": "Object",
+  "package": "GFxUI",
+  "variables": {
+    "RawData": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 281474980904962
+    },
+    "References": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "UserReferences": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "CompressedTextureReferences": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "bUsesFontlib": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 131073
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

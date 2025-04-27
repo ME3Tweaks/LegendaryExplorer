@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "BIO_COVERSTATE_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_COVERSTATE_INCOVER": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_COVERSTATE_LEAN_LEFT": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_COVERSTATE_LEAN_RIGHT": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_COVERSTATE_POPUP": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

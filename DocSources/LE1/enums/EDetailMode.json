@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "DM_Low": {
+      "value": 0,
+      "documentation": null
+    },
+    "DM_Medium": {
+      "value": 1,
+      "documentation": null
+    },
+    "DM_High": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

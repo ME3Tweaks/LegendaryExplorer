@@ -1,0 +1,28 @@
+{
+  "parent": "NxGenericForceField",
+  "package": "Engine",
+  "variables": {
+    "BoxExtent": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "RenderComponent": {
+      "type": "DrawBoxComponent",
+      "documentation": null,
+      "flags": 67633160
+    }
+  },
+  "functions": {
+    "DoInitRBPhys": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoInitRBPhys()"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

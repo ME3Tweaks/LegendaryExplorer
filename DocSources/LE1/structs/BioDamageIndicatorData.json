@@ -1,0 +1,13 @@
+{
+  "members": {
+    "fCoolDownTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioPlayerController",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

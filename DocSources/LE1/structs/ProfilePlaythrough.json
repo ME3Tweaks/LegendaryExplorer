@@ -1,0 +1,18 @@
+{
+  "members": {
+    "nPlaythroughID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nDifficultySetting": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioGamerProfile",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

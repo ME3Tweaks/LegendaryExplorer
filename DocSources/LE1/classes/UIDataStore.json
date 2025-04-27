@@ -1,0 +1,152 @@
+{
+  "parent": "UIDataProvider",
+  "package": "Engine",
+  "variables": {
+    "RefreshSubscriberNotifies": {
+      "type": "OnDataStoreValueUpdated",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnDataStoreValueUpdated__Delegate": {
+      "type": "OnDataStoreValueUpdated",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Tag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetDataStoreClient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "DataStoreClient",
+      "signature": "DataStoreClient GetDataStoreClient()"
+    },
+    "OnCommit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCommit()"
+    },
+    "RefreshSubscribers": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        },
+        "bInvalidateValues": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "SourceProvider": {
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 144
+        },
+        "ArrayIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "RefreshSubscribers(optional Name PropertyTag, optional bool bInvalidateValues, optional UIDataProvider SourceProvider, optional int ArrayIndex)"
+    },
+    "NotifyGameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NotifyGameSessionEnded()"
+    },
+    "SubscriberDetached": {
+      "documentation": null,
+      "signature_members": {
+        "Subscriber": {
+          "type": "UIDataStoreSubscriber",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SubscriberDetached(UIDataStoreSubscriber Subscriber)"
+    },
+    "SubscriberAttached": {
+      "documentation": null,
+      "signature_members": {
+        "Subscriber": {
+          "type": "UIDataStoreSubscriber",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SubscriberAttached(UIDataStoreSubscriber Subscriber)"
+    },
+    "Unregistered": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Unregistered(LocalPlayer PlayerOwner)"
+    },
+    "Registered": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Registered(LocalPlayer PlayerOwner)"
+    },
+    "OnDataStoreValueUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "SourceDataStore": {
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 128
+        },
+        "bValuesInvalidated": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "PropertyTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "SourceProvider": {
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
+        },
+        "ArrayIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDataStoreValueUpdated(UIDataStore SourceDataStore, bool bValuesInvalidated, Name PropertyTag, UIDataProvider SourceProvider, int ArrayIndex)"
+    }
+  },
+  "states": {},
+  "classflags": 136315035,
+  "configname": "None",
+  "documentation": null
+}

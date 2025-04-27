@@ -1,0 +1,111 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_sSubtitle": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_FontColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_FontSize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fTimeRemaining": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bAlert": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_DefaultRenderMode": {
+      "type": "ESubtitlesRenderMode",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_CurrentRenderMode": {
+      "type": "ESubtitlesRenderMode",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "UpdateSubtitles": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateSubtitles(float fDeltaT)"
+    },
+    "ClearHistory": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearHistory()"
+    },
+    "SetRenderMode": {
+      "documentation": null,
+      "signature_members": {
+        "RenderMode": {
+          "type": "ESubtitlesRenderMode",
+          "documentation": null,
+          "flags": 128
+        },
+        "bForceDisplay": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "ESubtitlesRenderMode",
+      "signature": "ESubtitlesRenderMode SetRenderMode(ESubtitlesRenderMode RenderMode, optional bool bForceDisplay)"
+    },
+    "GetRenderMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ESubtitlesRenderMode",
+      "signature": "ESubtitlesRenderMode GetRenderMode()"
+    },
+    "HasSubtitle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasSubtitle()"
+    },
+    "DisplaySubtitle": {
+      "documentation": null,
+      "signature_members": {
+        "sSubtitle": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplaySubtitle(string sSubtitle, float fDuration)"
+    }
+  },
+  "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,48 @@
+{
+  "members": {
+    "m_Label": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_FirstName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_FaceCode": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_oMorph": {
+      "type": "BioMorphFace",
+      "documentation": null,
+      "flags": 0
+    },
+    "nBonusTalentID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Gender": {
+      "type": "EBioAttributePawnGender",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_origin": {
+      "type": "EBioPlayerCharacterBackgroundOrigin",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_notoriety": {
+      "type": "EBioPlayerCharacterBackgroundNotoriety",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioCharacterImporter",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

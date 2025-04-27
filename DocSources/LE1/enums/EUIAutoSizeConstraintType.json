@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "UIAUTOSIZEREGION_Minimum": {
+      "value": 0,
+      "documentation": null
+    },
+    "UIAUTOSIZEREGION_Maximum": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

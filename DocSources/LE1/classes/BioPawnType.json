@@ -1,0 +1,216 @@
+{
+  "parent": "BioInteractiveActorType",
+  "package": "SFXGame",
+  "variables": {
+    "m_aParticleSystemSpec": {
+      "type": "ParticleSystemSpec",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_aSoundSpec": {
+      "type": "SoundSpec",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oAppearance": {
+      "type": "Bio_Appr_Character",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_oAppearanceSettings": {
+      "type": "Bio_Appr_Character_Settings",
+      "documentation": null,
+      "flags": 67764233
+    },
+    "m_oMorphFace": {
+      "type": "BioMorphFace",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmSightType": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 67108867
+    },
+    "m_nmHearingType": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 67108867
+    },
+    "m_pSndSetVOPkg": {
+      "type": "BioCreatureSoundSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_pSndSetFaceFXPkg": {
+      "type": "FaceFXAnimSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oRollingIdle": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oRollingStartMoving": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmGrenadeSocket": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_vfxDepartuerEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_vfxArivalEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oMaterialOverrides": {
+      "type": "BioMaterialOverride",
+      "documentation": null,
+      "flags": 71434249
+    },
+    "m_fPowerUsePercent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nMinAutoLODLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "FlyingPitchMin": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FlyingPitchMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "PitchTiltDegrees": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RollTiltDegrees": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "TiltInterpSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fPhysicsRecoverSpeedThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fPhysicsSettleDownTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fPhysicsDeathSpeedThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fDeathAnimationMagnitudeThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fPhysicsThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fPhysicsThresholdRegenerationRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fAINoiseMag": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIsArmorOverridden": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bPawnHideWithCameraCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bVelocityTilt": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAllowHeadshots": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bCanBeBumped": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bTerminateRagdollOnDeath": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bShouldGrantExperienceOnKill": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bCanBePhysicsImpacted": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_eReportMethod": {
+      "type": "EBioBaseAppearanceReportMethod",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_eDefaultClassification": {
+      "type": "EBioPawnClassification",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_eUseRollingInPhysicsMode": {
+      "type": "EPhysics",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_StartingPhysicsMode": {
+      "type": "EPhysics",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

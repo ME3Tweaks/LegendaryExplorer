@@ -1,0 +1,416 @@
+{
+  "parent": "GameplayEvents",
+  "package": "Engine",
+  "variables": {
+    "Game": {
+      "type": "GameInfo",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {
+    "LogSystemPollEvents": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogSystemPollEvents()"
+    },
+    "LogProjectileIntEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Player": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "Proj": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogProjectileIntEvent(int EventID, Controller Player, Class<Projectile> Proj, int Value)"
+    },
+    "LogDamageEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Player": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "dmgType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "Target": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "Amount": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogDamageEvent(int EventID, Controller Player, Class<DamageType> dmgType, Controller Target, int Amount)"
+    },
+    "LogWeaponIntEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Player": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "WeaponClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogWeaponIntEvent(int EventID, Controller Player, Class<Weapon> WeaponClass, int Value)"
+    },
+    "LogPlayerPlayerEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Player": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "Target": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogPlayerPlayerEvent(int EventID, Controller Player, Controller Target)"
+    },
+    "LogPlayerKillDeath": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "KillType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Killer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "dmgType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "Dead": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogPlayerKillDeath(int EventID, int KillType, Controller Killer, Class<DamageType> dmgType, Controller Dead)"
+    },
+    "LogAllPlayerPositionsEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogAllPlayerPositionsEvent(int EventID)"
+    },
+    "LogPlayerLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Player": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "PlayerID": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
+        },
+        "bSplitScreen": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogPlayerLoginChange(int EventID, Controller Player, string PlayerName, UniqueNetId PlayerID, bool bSplitScreen)"
+    },
+    "LogPlayerSpawnEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Player": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "PawnClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "TeamID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogPlayerSpawnEvent(int EventID, Controller Player, Class<Pawn> PawnClass, int TeamID)"
+    },
+    "LogPlayerStringEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Player": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "EventString": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "LogPlayerStringEvent(int EventID, Controller Player, string EventString)"
+    },
+    "LogPlayerFloatEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Player": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogPlayerFloatEvent(int EventID, Controller Player, float Value)"
+    },
+    "LogPlayerIntEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Player": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogPlayerIntEvent(int EventID, Controller Player, int Value)"
+    },
+    "LogTeamIntEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Team": {
+          "type": "TeamInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogTeamIntEvent(int EventID, TeamInfo Team, int Value)"
+    },
+    "LogGameStringEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "LogGameStringEvent(int EventID, string Value)"
+    },
+    "LogGameIntEvent": {
+      "documentation": null,
+      "signature_members": {
+        "EventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogGameIntEvent(int EventID, int Value)"
+    },
+    "Poll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Poll()"
+    },
+    "SerializeFooter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SerializeFooter()"
+    },
+    "SerializeHeader": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SerializeHeader()"
+    },
+    "CloseStatsFile": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseStatsFile()"
+    },
+    "OpenStatsFile": {
+      "documentation": null,
+      "signature_members": {
+        "Filename": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OpenStatsFile(string Filename)"
+    },
+    "IsSessionInProgress": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSessionInProgress()"
+    },
+    "EndLogging": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndLogging()"
+    },
+    "StartLogging": {
+      "documentation": null,
+      "signature_members": {
+        "HeartbeatDelta": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "StartLogging(optional float HeartbeatDelta)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "Game",
+  "documentation": null
+}

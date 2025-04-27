@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "WF_Constant": {
+      "value": 0,
+      "documentation": null
+    },
+    "WF_LinearIncreasing": {
+      "value": 1,
+      "documentation": null
+    },
+    "WF_LinearDecreasing": {
+      "value": 2,
+      "documentation": null
+    },
+    "WF_Sin0to90": {
+      "value": 3,
+      "documentation": null
+    },
+    "WF_Sin90to180": {
+      "value": 4,
+      "documentation": null
+    },
+    "WF_Sin0to180": {
+      "value": 5,
+      "documentation": null
+    },
+    "WF_Noise": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

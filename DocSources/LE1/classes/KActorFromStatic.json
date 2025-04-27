@@ -1,0 +1,169 @@
+{
+  "parent": "KActor",
+  "package": "Engine",
+  "variables": {
+    "MyStaticMeshActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxImpulseSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "TakeRadiusDamage": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "BaseDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "HurtOrigin": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "bFullDamage": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageCauser": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "pDamage": {
+          "type": "DamageType",
+          "documentation": null,
+          "flags": 144
+        },
+        "DamageFalloffExponent": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeRadiusDamage(Controller InstigatedBy, float BaseDamage, float DamageRadius, Class<DamageType> DamageType, float Momentum, Vector HurtOrigin, bool bFullDamage, Actor DamageCauser, optional DamageType pDamage, optional float DamageFalloffExponent)"
+    },
+    "Bump": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "OtherComp": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Bump(Actor Other, PrimitiveComponent OtherComp, Vector HitNormal)"
+    },
+    "ApplyImpulse": {
+      "documentation": null,
+      "signature_members": {
+        "ImpulseDir": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "ImpulseMag": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitInfo": {
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyImpulse(Vector ImpulseDir, float ImpulseMag, Vector HitLocation, optional TraceHitInfo HitInfo, optional Class<DamageType> DamageType)"
+    },
+    "MakeDynamic": {
+      "documentation": null,
+      "signature_members": {
+        "MovableMesh": {
+          "type": "StaticMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "KActorFromStatic",
+      "signature": "KActorFromStatic MakeDynamic(StaticMeshComponent MovableMesh)"
+    },
+    "MakeStatic": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeStatic()"
+    },
+    "BecomeStatic": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BecomeStatic()"
+    },
+    "OnWakeRBPhysics": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnWakeRBPhysics()"
+    },
+    "OnSleepRBPhysics": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnSleepRBPhysics()"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

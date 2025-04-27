@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Value": {
+      "type": "float",
+      "documentation": null,
+      "flags": 131073
+    },
+    "ScaleType": {
+      "type": "EPositionEvalType",
+      "documentation": null,
+      "flags": 131073
+    },
+    "bInvalidated": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 8192
+    },
+    "AspectRatioMode": {
+      "type": "EUIAspectRatioConstraint",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

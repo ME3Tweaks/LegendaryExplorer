@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceCondition",
+  "package": "Engine",
+  "variables": {
+    "ValueA": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ValueB": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

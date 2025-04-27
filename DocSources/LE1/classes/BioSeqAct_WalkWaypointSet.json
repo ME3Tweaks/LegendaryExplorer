@@ -1,0 +1,69 @@
+{
+  "parent": "BioSequenceLatentStateAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_oWaypointSet": {
+      "type": "BioWaypointSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fMoveTolerance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nNextWaypoint": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "nCompletionReason": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bStartAtNearestPoint": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bWalking": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bCountingUp": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bDone": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_eWalkType": {
+      "type": "eWalkWaypointsTypes",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

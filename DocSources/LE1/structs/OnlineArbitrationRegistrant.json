@@ -1,0 +1,18 @@
+{
+  "members": {
+    "MachineId": {
+      "type": "QWord",
+      "documentation": null,
+      "flags": 2
+    },
+    "Trustworthiness": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "classdef": "OnlineSubsystem",
+  "extends": "OnlineRegistrant",
+  "documentation": null,
+  "modifiers": 1
+}

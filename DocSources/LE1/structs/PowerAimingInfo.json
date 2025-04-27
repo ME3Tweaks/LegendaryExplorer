@@ -1,0 +1,28 @@
+{
+  "members": {
+    "m_vStartLocation1": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vEndLocation1": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vStartLocation2": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vEndLocation2": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioCheatManager",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

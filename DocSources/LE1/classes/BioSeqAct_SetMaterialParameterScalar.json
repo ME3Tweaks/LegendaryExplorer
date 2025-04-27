@@ -1,0 +1,34 @@
+{
+  "parent": "BioSeqAct_SetMaterialParameter",
+  "package": "SFXGame",
+  "variables": {
+    "m_fScalar": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    }
+  },
+  "functions": {
+    "Set": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmMaterialParameter": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 130
+        }
+      },
+      "returntype": "None",
+      "signature": "Set(BioPawn pPawn, const Name nmMaterialParameter)"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

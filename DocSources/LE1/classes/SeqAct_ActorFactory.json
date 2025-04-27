@@ -1,0 +1,93 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "Engine",
+  "variables": {
+    "SpawnPoints": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "SpawnLocations": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "SpawnOrientations": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_vSpawnOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "LastUsedSpawn": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "Factory": {
+      "type": "ActorFactory",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "SpawnCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "SpawnDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "LastSpawnIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "SpawnedCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "RemainingDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIsSpawning": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bCheckSpawnCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "PointSelection": {
+      "type": "EPointSelection",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

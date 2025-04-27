@@ -1,0 +1,43 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "HandleParticleModuleEventSendToGame": {
+      "documentation": null,
+      "signature_members": {
+        "InEvent": {
+          "type": "ParticleModuleEventSendToGame",
+          "documentation": null,
+          "flags": 128
+        },
+        "InCollideDirection": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
+        },
+        "inHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
+        },
+        "InHitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
+        },
+        "InBoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleParticleModuleEventSendToGame(ParticleModuleEventSendToGame InEvent, const out Vector InCollideDirection, const out Vector inHitLocation, const out Vector InHitNormal, const out Name InBoneName)"
+    }
+  },
+  "states": {},
+  "classflags": 144703635,
+  "configname": "Game",
+  "documentation": null
+}

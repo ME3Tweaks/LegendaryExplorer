@@ -1,0 +1,126 @@
+{
+  "parent": "BioBaseSaveObject",
+  "package": "SFXGame",
+  "variables": {
+    "m_WorldStreamingStates": {
+      "type": "WorldStreamingState",
+      "documentation": null,
+      "flags": 2305843009217888257
+    },
+    "m_lstCinematicsSeen": {
+      "type": "string",
+      "documentation": null,
+      "flags": 2305843009217888257
+    },
+    "m_sDestinationAreaMap": {
+      "type": "string",
+      "documentation": null,
+      "flags": 2305843009217888257
+    },
+    "m_pScannedClusters": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009217888257
+    },
+    "m_pScannedSystems": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009217888257
+    },
+    "m_pScannedPlanets": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009217888257
+    },
+    "m_vDestination": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 2305843009213693953
+    },
+    "m_oPendingLoot": {
+      "type": "BioBaseSaveObject",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nJournalLastSelectedMission": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009213693953
+    },
+    "m_nJournalLastSelectedAssignment": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009213693953
+    },
+    "m_nCodexLastSelectedPrimary": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009213693953
+    },
+    "m_nCodexLastSelectedSecondary": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009213693953
+    },
+    "m_nCurrentTipID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_OverrideTip": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_bJournalShowingMissions": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2305843009213693953
+    },
+    "m_bCodexShowingPrimary": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2305843009213693953
+    },
+    "m_lstBrowserAlerts": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 2305843009213693953
+    },
+    "m_nJournalSortMethod": {
+      "type": "JournalSortMethods",
+      "documentation": null,
+      "flags": 2305843009213693953
+    }
+  },
+  "functions": {
+    "LoadObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadObject(Object O)"
+    },
+    "SaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveObject(Object O)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

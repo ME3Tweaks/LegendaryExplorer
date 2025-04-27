@@ -1,0 +1,43 @@
+{
+  "members": {
+    "Name": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "sData": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "nData": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "fData": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bData": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bRawJSON": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "Type": {
+      "type": "ETelemetryAttributeType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "ISFXOnlineComponentTelemetry",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

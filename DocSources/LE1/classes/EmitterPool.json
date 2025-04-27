@@ -1,0 +1,248 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "PoolComponents": {
+      "type": "ParticleSystemComponent",
+      "documentation": null,
+      "flags": 71827466
+    },
+    "ActiveComponents": {
+      "type": "ParticleSystemComponent",
+      "documentation": null,
+      "flags": 71827464
+    },
+    "RelativePSCs": {
+      "type": "EmitterBaseInfo",
+      "documentation": null,
+      "flags": 4718592
+    },
+    "FreeSMComponents": {
+      "type": "StaticMeshComponent",
+      "documentation": null,
+      "flags": 71827466
+    },
+    "FreeMatInstConsts": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "PSCTemplate": {
+      "type": "ParticleSystemComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "MaxActiveEffects": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "SMC_MIC_ReductionTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "SMC_MIC_CurrentReductionTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "IdealStaticMeshComponents": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "IdealMaterialInstanceConstants": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bLogPoolOverflow": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 278528
+    },
+    "bLogPoolOverflowList": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 278528
+    }
+  },
+  "functions": {
+    "SpawnEmitterCustomLifetime": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterTemplate": {
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "ParticleSystemComponent",
+      "signature": "ParticleSystemComponent SpawnEmitterCustomLifetime(ParticleSystem EmitterTemplate)"
+    },
+    "SpawnEmitterMeshAttachment": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterTemplate": {
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
+        },
+        "Mesh": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "AttachPointName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bAttachToSocket": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "RelativeLoc": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
+        },
+        "RelativeRot": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "ParticleSystemComponent",
+      "signature": "ParticleSystemComponent SpawnEmitterMeshAttachment(ParticleSystem EmitterTemplate, SkeletalMeshComponent Mesh, Name AttachPointName, optional bool bAttachToSocket, optional Vector RelativeLoc, optional Rotator RelativeRot)"
+    },
+    "SpawnEmitter": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterTemplate": {
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
+        },
+        "SpawnLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "SpawnRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 144
+        },
+        "AttachToActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "bInheritScaleFromBase": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "ParticleSystemComponent",
+      "signature": "ParticleSystemComponent SpawnEmitter(ParticleSystem EmitterTemplate, Vector SpawnLocation, optional Rotator SpawnRotation, optional Actor AttachToActor, optional bool bInheritScaleFromBase)"
+    },
+    "GetPooledComponent": {
+      "documentation": null,
+      "signature_members": {
+        "EmitterTemplate": {
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "ParticleSystemComponent",
+      "signature": "ParticleSystemComponent GetPooledComponent(ParticleSystem EmitterTemplate)"
+    },
+    "GetFreeMatInstConsts": {
+      "documentation": null,
+      "signature_members": {
+        "bCreateNewObject": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "MaterialInstanceConstant",
+      "signature": "MaterialInstanceConstant GetFreeMatInstConsts(optional bool bCreateNewObject)"
+    },
+    "FreeMaterialInstanceConstants": {
+      "documentation": null,
+      "signature_members": {
+        "SMC": {
+          "type": "StaticMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "FreeMaterialInstanceConstants(StaticMeshComponent SMC)"
+    },
+    "GetFreeStaticMeshComponent": {
+      "documentation": null,
+      "signature_members": {
+        "bCreateNewObject": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "StaticMeshComponent",
+      "signature": "StaticMeshComponent GetFreeStaticMeshComponent(optional bool bCreateNewObject)"
+    },
+    "FreeStaticMeshComponents": {
+      "documentation": null,
+      "signature_members": {
+        "PSC": {
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "FreeStaticMeshComponents(ParticleSystemComponent PSC)"
+    },
+    "ReturnToPool": {
+      "documentation": null,
+      "signature_members": {
+        "PSC": {
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "ReturnToPool(ParticleSystemComponent PSC)"
+    },
+    "ClearPoolComponents": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearPoolComponents()"
+    },
+    "OnParticleSystemFinished": {
+      "documentation": null,
+      "signature_members": {
+        "PSC": {
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "OnParticleSystemFinished(ParticleSystemComponent PSC)"
+    }
+  },
+  "states": {},
+  "classflags": 144703646,
+  "configname": "Game",
+  "documentation": null
+}

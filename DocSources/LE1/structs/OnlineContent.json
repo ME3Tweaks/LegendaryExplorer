@@ -1,0 +1,33 @@
+{
+  "members": {
+    "FriendlyName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ContentPath": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ContentPackages": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ContentFiles": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "UserIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "OnlineSubsystem",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

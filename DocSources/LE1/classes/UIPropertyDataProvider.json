@@ -1,0 +1,51 @@
+{
+  "parent": "UIDataProvider",
+  "package": "Engine",
+  "variables": {
+    "ComplexPropertyTypes": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "__CanSupportComplexPropertyType__Delegate": {
+      "type": "CanSupportComplexPropertyType",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "GetCustomPropertyValue": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyValue": {
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "ArrayIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCustomPropertyValue(out UIProviderScriptFieldValue PropertyValue, optional int ArrayIndex)"
+    },
+    "CanSupportComplexPropertyType": {
+      "documentation": null,
+      "signature_members": {
+        "UnsupportedProperty": {
+          "type": "Property",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanSupportComplexPropertyType(Property UnsupportedProperty)"
+    }
+  },
+  "states": {},
+  "classflags": 136315035,
+  "configname": "None",
+  "documentation": null
+}

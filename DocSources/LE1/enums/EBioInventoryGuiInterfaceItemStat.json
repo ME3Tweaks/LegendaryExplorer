@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_INVENTORY_GUI_INTERFACE_ITEM_STAT_PRIMARY": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_INVENTORY_GUI_INTERFACE_ITEM_STAT_SECONDARY": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_INVENTORY_GUI_INTERFACE_ITEM_STAT_TERTIARY": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

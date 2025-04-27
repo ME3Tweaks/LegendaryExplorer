@@ -1,0 +1,13 @@
+{
+  "members": {
+    "PlayerData": {
+      "type": "PerPlayerSplitscreenData",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "classdef": "GameViewportClient",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

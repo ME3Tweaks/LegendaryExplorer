@@ -1,0 +1,38 @@
+{
+  "members": {
+    "Start": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "End": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Normal": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Extent": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Color": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 0
+    },
+    "NormalColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXModule_Cover",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

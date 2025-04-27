@@ -1,0 +1,207 @@
+{
+  "parent": "Surface",
+  "package": "Engine",
+  "variables": {
+    "LightmassSettings": {
+      "type": "LightmassMaterialInterfaceSettings",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_Guid": {
+      "type": "Guid",
+      "documentation": null,
+      "flags": 2
+    },
+    "LightingGuid": {
+      "type": "Guid",
+      "documentation": null,
+      "flags": 2
+    },
+    "FlattenedTexture": {
+      "type": "Texture",
+      "documentation": null,
+      "flags": 1
+    },
+    "ParentRefFence": {
+      "type": "RenderCommandFence_Mirror",
+      "documentation": null,
+      "flags": 12290
+    }
+  },
+  "functions": {
+    "GetEffectsMaterialFractionValue": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetEffectsMaterialFractionValue(out float Value)"
+    },
+    "GetEffectsMaterialNameValue": {
+      "documentation": null,
+      "signature_members": {
+        "EffectName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetEffectsMaterialNameValue(out Name EffectName)"
+    },
+    "SetForceMipLevelsToBeResident": {
+      "documentation": null,
+      "signature_members": {
+        "OverrideForceMiplevelsToBeResident": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bForceMiplevelsToBeResidentValue": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "ForceDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "CinematicTextureGroups": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetForceMipLevelsToBeResident(bool OverrideForceMiplevelsToBeResident, bool bForceMiplevelsToBeResidentValue, float ForceDuration, optional int CinematicTextureGroups)"
+    },
+    "GetVectorCurveParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutValue": {
+          "type": "InterpCurveVector",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetVectorCurveParameterValue(Name ParameterName, out InterpCurveVector OutValue)"
+    },
+    "GetVectorParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutValue": {
+          "type": "LinearColor",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetVectorParameterValue(Name ParameterName, out LinearColor OutValue)"
+    },
+    "GetTextureParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutValue": {
+          "type": "Texture",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTextureParameterValue(Name ParameterName, out Texture OutValue)"
+    },
+    "GetScalarCurveParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutValue": {
+          "type": "InterpCurveFloat",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetScalarCurveParameterValue(Name ParameterName, out InterpCurveFloat OutValue)"
+    },
+    "GetScalarParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetScalarParameterValue(Name ParameterName, out float OutValue)"
+    },
+    "GetFontParameterValue": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutFontValue": {
+          "type": "Font",
+          "documentation": null,
+          "flags": 384
+        },
+        "OutFontPage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFontParameterValue(Name ParameterName, out Font OutFontValue, out int OutFontPage)"
+    },
+    "GetPhysicalMaterial": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PhysicalMaterial",
+      "signature": "PhysicalMaterial GetPhysicalMaterial()"
+    },
+    "GetMaterial": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Material",
+      "signature": "Material GetMaterial()"
+    }
+  },
+  "states": {},
+  "classflags": 134217875,
+  "configname": "None",
+  "documentation": null
+}

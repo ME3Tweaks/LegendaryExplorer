@@ -1,0 +1,52 @@
+{
+  "parent": "BioInterpTrack",
+  "package": "SFXGame",
+  "variables": {
+    "m_aShotData": {
+      "type": "BioFuncShotData",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_nmOldShotType": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "GetNewTrackSubMenuName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetNewTrackSubMenuName()"
+    },
+    "KeyDataDisplayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataDisplayName()"
+    },
+    "KeyDataArrayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataArrayName()"
+    },
+    "NewKeyDefaultName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string NewKeyDefaultName()"
+    },
+    "AllowKeyNaming": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowKeyNaming()"
+    }
+  },
+  "states": {},
+  "classflags": 136323218,
+  "configname": "None",
+  "documentation": null
+}

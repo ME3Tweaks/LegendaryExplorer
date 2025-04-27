@@ -1,0 +1,170 @@
+{
+  "parent": "UIButton",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIDataStorePublisher": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "CaptionDataSource": {
+      "type": "UIDataStoreBinding",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "StringRenderComponent": {
+      "type": "UIComp_DrawString",
+      "documentation": null,
+      "flags": 101187595
+    }
+  },
+  "functions": {
+    "SaveSubscriberValue": {
+      "documentation": null,
+      "signature_members": {
+        "out_BoundDataStores": {
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "BindingIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SaveSubscriberValue(out array<UIDataStore> out_BoundDataStores, optional int BindingIndex)"
+    },
+    "ClearBoundDataStores": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearBoundDataStores()"
+    },
+    "GetBoundDataStores": {
+      "documentation": null,
+      "signature_members": {
+        "out_BoundDataStores": {
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetBoundDataStores(out array<UIDataStore> out_BoundDataStores)"
+    },
+    "NotifyDataStoreValueUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "SourceDataStore": {
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 128
+        },
+        "bValuesInvalidated": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "PropertyTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "SourceProvider": {
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
+        },
+        "ArrayIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyDataStoreValueUpdated(UIDataStore SourceDataStore, bool bValuesInvalidated, Name PropertyTag, UIDataProvider SourceProvider, int ArrayIndex)"
+    },
+    "RefreshSubscriberValue": {
+      "documentation": null,
+      "signature_members": {
+        "BindingIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RefreshSubscriberValue(optional int BindingIndex)"
+    },
+    "GetDataStoreBinding": {
+      "documentation": null,
+      "signature_members": {
+        "BindingIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetDataStoreBinding(optional int BindingIndex)"
+    },
+    "SetDataStoreBinding": {
+      "documentation": null,
+      "signature_members": {
+        "MarkupText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "BindingIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDataStoreBinding(string MarkupText, optional int BindingIndex)"
+    },
+    "SetTextAlignment": {
+      "documentation": null,
+      "signature_members": {
+        "Horizontal": {
+          "type": "EUIAlignment",
+          "documentation": null,
+          "flags": 128
+        },
+        "Vertical": {
+          "type": "EUIAlignment",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTextAlignment(EUIAlignment Horizontal, EUIAlignment Vertical)"
+    },
+    "GetCaption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetCaption()"
+    },
+    "SetCaption": {
+      "documentation": null,
+      "signature_members": {
+        "NewText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCaption(string NewText)"
+    }
+  },
+  "states": {},
+  "classflags": 144704150,
+  "configname": "UI",
+  "documentation": null
+}

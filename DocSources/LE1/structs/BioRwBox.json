@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Min": {
+      "type": "RwVector3",
+      "documentation": null,
+      "flags": 1
+    },
+    "Max": {
+      "type": "RwVector3",
+      "documentation": null,
+      "flags": 1
+    },
+    "IsValid": {
+      "type": "biomask4",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 48
+}

@@ -1,0 +1,23 @@
+{
+  "members": {
+    "nmAnimToOverride": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmOverrideSet": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmOverrideSeq": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioGestureLangOverride",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

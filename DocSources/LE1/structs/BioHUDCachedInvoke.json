@@ -1,0 +1,23 @@
+{
+  "members": {
+    "lstParams": {
+      "type": "ASParams",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "nFramesTheSame": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "eLabel": {
+      "type": "EHUDInvokeLabel",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFHandler_HUD",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

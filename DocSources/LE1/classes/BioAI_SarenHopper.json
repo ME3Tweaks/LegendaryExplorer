@@ -1,0 +1,28 @@
+{
+  "parent": "BioAI_Hopper",
+  "package": "SFXStrategicAI",
+  "variables": {},
+  "functions": {
+    "OnDamaged": {
+      "documentation": null,
+      "signature_members": {
+        "oInstigator": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDamaged(Controller oInstigator, float fDamage)"
+    }
+  },
+  "states": {},
+  "classflags": 10486294,
+  "configname": "Game",
+  "documentation": null
+}

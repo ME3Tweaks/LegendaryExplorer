@@ -1,0 +1,33 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_aoPawns": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_nmSubType": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bEnable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

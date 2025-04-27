@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Location": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "Rotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 1
+    },
+    "FOV": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "SlotIndex": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    },
+    "ManualCoverType": {
+      "type": "ECoverType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "CoverReplicator",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

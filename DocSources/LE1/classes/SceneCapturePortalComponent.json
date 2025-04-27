@@ -1,0 +1,49 @@
+{
+  "parent": "SceneCaptureComponent",
+  "package": "Engine",
+  "variables": {
+    "TextureTarget": {
+      "type": "TextureRenderTarget2D",
+      "documentation": null,
+      "flags": 3
+    },
+    "ViewDestination": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 3
+    },
+    "ScaleFOV": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    }
+  },
+  "functions": {
+    "SetCaptureParameters": {
+      "documentation": null,
+      "signature_members": {
+        "NewTextureTarget": {
+          "type": "TextureRenderTarget2D",
+          "documentation": null,
+          "flags": 144
+        },
+        "NewScaleFOV": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "NewViewDest": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCaptureParameters(optional TextureRenderTarget2D NewTextureTarget, optional float NewScaleFOV, optional Actor NewViewDest)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

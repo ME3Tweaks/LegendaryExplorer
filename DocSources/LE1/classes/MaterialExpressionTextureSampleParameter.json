@@ -1,0 +1,21 @@
+{
+  "parent": "MaterialExpressionTextureSample",
+  "package": "Engine",
+  "variables": {
+    "ExpressionGUID": {
+      "type": "Guid",
+      "documentation": null,
+      "flags": 2
+    },
+    "ParameterName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134226067,
+  "configname": "None",
+  "documentation": null
+}

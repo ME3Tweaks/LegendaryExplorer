@@ -1,0 +1,206 @@
+{
+  "parent": "BioBaseAppearance",
+  "package": "SFXGame",
+  "variables": {
+    "m_VehicleStart": {
+      "type": "BioVehicleSoundEntityStateInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_VehicleStop": {
+      "type": "BioVehicleSoundEntityStateInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_VehicleThrusterStart": {
+      "type": "BioVehicleSoundEntityStateInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_VehicleThrusterStop": {
+      "type": "BioVehicleSoundEntityStateInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_VehicleInAcceleration": {
+      "type": "BioVehicleSoundEntityStateInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_VehicleInDeceleration": {
+      "type": "BioVehicleSoundEntityStateInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_VehicleSpringsSoftActivated": {
+      "type": "BioVehicleSoundEntityStateInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_VehicleSpringsSoftDeactivated": {
+      "type": "BioVehicleSoundEntityStateInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_VehicleSpringsMedActivated": {
+      "type": "BioVehicleSoundEntityStateInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_VehicleSpringsMedDeactivated": {
+      "type": "BioVehicleSoundEntityStateInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_VehicleSpringsHardActivated": {
+      "type": "BioVehicleSoundEntityStateInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_VehicleSpringsHardDeactivated": {
+      "type": "BioVehicleSoundEntityStateInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_aAttachment": {
+      "type": "BioVehicleAttachmentInfo",
+      "documentation": null,
+      "flags": 71827465
+    },
+    "m_aTurrets": {
+      "type": "BioVehicleTurretInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_aThrusters": {
+      "type": "BioVehicleThrusterInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_aThrusterVFX": {
+      "type": "BioVFXAppearanceVehicleThruster",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_aWeaponItemLabel": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_aMaterials": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_oSettings": {
+      "type": "BioAppearanceVehicleSettings",
+      "documentation": null,
+      "flags": 67772425
+    },
+    "m_oVehicleAnimSet": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oVehicleAnimTree": {
+      "type": "AnimTree",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oPhysicsAsset": {
+      "type": "PhysicsAsset",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmPhysicsBone": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oVehicleSoundCue": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oDamageMorphSet": {
+      "type": "MorphTargetSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oDamageNodeWeight": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oDamageVFXTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmCameraHook": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "TrackSet": {
+      "type": "BioVehicleTrackSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oVehicleModelMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nThrusterVFXIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fSuspensionSoundContactForceThresholdSoft": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fSuspensionSoundContactForceThresholdMedium": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fSuspensionSoundContactForceThresholdHard": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fDamageVFXStartThresholdPercent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fCameraFollowDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fCameraFollowHeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fVehicleScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fUnitWheelRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

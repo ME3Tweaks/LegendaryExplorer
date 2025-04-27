@@ -1,0 +1,210 @@
+{
+  "parent": "Brush",
+  "package": "Engine",
+  "variables": {
+    "LocationName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227075
+    },
+    "AssociatedActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "LocationPriority": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bForcePawnWalk": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bProcessAllActors": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "ProcessActorSetVolume": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessActorSetVolume(Actor Other)"
+    },
+    "CollisionChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CollisionChanged()"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    },
+    "DisplayDebug": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": "HUD",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_YL": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "out_YPos": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayDebug(HUD HUD, out float out_YL, out float out_YPos)"
+    },
+    "GetLocationStringFor": {
+      "documentation": null,
+      "signature_members": {
+        "PRI": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetLocationStringFor(PlayerReplicationInfo PRI)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "LineCheck": {
+      "documentation": null,
+      "signature_members": {
+        "End": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
+        },
+        "Start": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
+        },
+        "Extent": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LineCheck(const out Vector End, const out Vector Start, const out Vector Extent)"
+    },
+    "EncompassesPoint": {
+      "documentation": null,
+      "signature_members": {
+        "Loc": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EncompassesPoint(Vector Loc)"
+    },
+    "Encompasses": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Encompasses(Actor Other)"
+    }
+  },
+  "states": {
+    "AssociatedTouch": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "UnTouch": {
+          "documentation": null,
+          "signature_members": {
+            "Other": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "Touch": {
+          "documentation": null,
+          "signature_members": {
+            "Other": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
+            },
+            "OtherComp": {
+              "type": "PrimitiveComponent",
+              "documentation": null,
+              "flags": 67108992
+            },
+            "HitLocation": {
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
+            },
+            "HitNormal": {
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "classflags": 144705714,
+  "configname": "None",
+  "documentation": null
+}

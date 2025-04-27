@@ -1,0 +1,39 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "lstAffectedActors": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "bBlockCamera": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bInclusionaryList": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    }
+  },
+  "states": {},
+  "classflags": 144704178,
+  "configname": "None",
+  "documentation": null
+}

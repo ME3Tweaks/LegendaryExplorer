@@ -1,0 +1,49 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "NextEvaluator": {
+      "type": "PathGoalEvaluator",
+      "documentation": null,
+      "flags": 0
+    },
+    "GeneratedGoal": {
+      "type": "NavigationPoint",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxPathVisits": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "CacheIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "AllowStartNodeToBeGoal": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetDumpString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDumpString()"
+    },
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

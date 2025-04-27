@@ -1,0 +1,81 @@
+{
+  "EnumValues": {
+    "RBCC_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "RBCC_Nothing": {
+      "value": 1,
+      "documentation": null
+    },
+    "RBCC_Pawn": {
+      "value": 2,
+      "documentation": null
+    },
+    "RBCC_Vehicle": {
+      "value": 3,
+      "documentation": null
+    },
+    "RBCC_Water": {
+      "value": 4,
+      "documentation": null
+    },
+    "RBCC_GameplayPhysics": {
+      "value": 5,
+      "documentation": null
+    },
+    "RBCC_EffectPhysics": {
+      "value": 6,
+      "documentation": null
+    },
+    "RBCC_Untitled1": {
+      "value": 7,
+      "documentation": null
+    },
+    "RBCC_Untitled2": {
+      "value": 8,
+      "documentation": null
+    },
+    "RBCC_Untitled3": {
+      "value": 9,
+      "documentation": null
+    },
+    "RBCC_Untitled4": {
+      "value": 10,
+      "documentation": null
+    },
+    "RBCC_Cloth": {
+      "value": 11,
+      "documentation": null
+    },
+    "RBCC_FluidDrain": {
+      "value": 12,
+      "documentation": null
+    },
+    "RBCC_SoftBody": {
+      "value": 13,
+      "documentation": null
+    },
+    "RBCC_FracturedMeshPart": {
+      "value": 14,
+      "documentation": null
+    },
+    "RBCC_BlockingVolume": {
+      "value": 15,
+      "documentation": null
+    },
+    "RBCC_DeadPawn": {
+      "value": 16,
+      "documentation": null
+    },
+    "RBCC_Clothing": {
+      "value": 17,
+      "documentation": null
+    },
+    "RBCC_ClothingCollision": {
+      "value": 18,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

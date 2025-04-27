@@ -1,0 +1,146 @@
+{
+  "parent": "ParticleModuleUberBase",
+  "package": "Engine",
+  "variables": {
+    "StartSizeMin": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "StartSizeMax": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "StartVelocityMin": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "StartVelocityMax": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "ColorOverLife": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "PC_StartLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "StartLocationMin": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "StartLocationMax": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "LifetimeMin": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "LifetimeMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "StartVelocityRadialMin": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "StartVelocityRadialMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "AlphaOverLife": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "PC_VelocityScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "PC_StartRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "PC_StartHeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIsUsingCylinder": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bPositive_X": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bPositive_Y": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bPositive_Z": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNegative_X": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNegative_Y": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNegative_Z": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSurfaceOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bVelocity": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRadialVelocity": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "PC_HeightAxis": {
+      "type": "CylinderHeightAxis",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134230162,
+  "configname": "None",
+  "documentation": null
+}

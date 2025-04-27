@@ -1,0 +1,195 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "BuildingMeshCompInfos": {
+      "type": "PBMeshCompInfo",
+      "documentation": null,
+      "flags": 4849667
+    },
+    "LODMeshComps": {
+      "type": "StaticMeshComponent",
+      "documentation": null,
+      "flags": 71827466
+    },
+    "OverlappingBuildings": {
+      "type": "ProcBuilding",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "BuildingMaterialParams": {
+      "type": "PBMaterialParam",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "SimpleMeshComp": {
+      "type": "StaticMeshComponent",
+      "documentation": null,
+      "flags": 67764235
+    },
+    "LowLODPersistentActor": {
+      "type": "StaticMeshActor",
+      "documentation": null,
+      "flags": 17592186175491
+    },
+    "CurrentSimpleMeshComp": {
+      "type": "StaticMeshComponent",
+      "documentation": null,
+      "flags": 67641352
+    },
+    "CurrentSimpleMeshActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "NumMeshedTopLevelScopes": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxFacadeZ": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "MinFacadeZ": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "SimpleMeshMassiveLODDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RenderToTexturePullBackAmount": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RoofLightmapRes": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "NonRectWallLightmapRes": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "BuildingInstanceVersion": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "bGenerateRoofMesh": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bGenerateFloorMesh": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bApplyRulesToRoof": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bApplyRulesToFloor": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSplitWallsAtRoofLevels": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSplitWallsAtWallEdges": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bQuickEdited": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bBuildingBrushCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDebugDrawEdgeInfo": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDebugDrawScopes": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "FindEdgeForTopLevelScope": {
+      "documentation": null,
+      "signature_members": {
+        "TopLevelScopeIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Edge": {
+          "type": "EScopeEdge",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindEdgeForTopLevelScope(int TopLevelScopeIndex, EScopeEdge Edge)"
+    },
+    "GetAllGroupedProcBuildings": {
+      "documentation": null,
+      "signature_members": {
+        "OutSet": {
+          "type": "ProcBuilding",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAllGroupedProcBuildings(out array<ProcBuilding> OutSet)"
+    },
+    "GetBaseMostBuilding": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ProcBuilding",
+      "signature": "ProcBuilding GetBaseMostBuilding()"
+    },
+    "FindComponentsForTopLevelScope": {
+      "documentation": null,
+      "signature_members": {
+        "TopLevelScopeIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "StaticMeshComponent",
+      "signature": "array<StaticMeshComponent> FindComponentsForTopLevelScope(int TopLevelScopeIndex)"
+    },
+    "ClearBuildingMeshes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearBuildingMeshes()"
+    }
+  },
+  "states": {},
+  "classflags": 2292187826,
+  "configname": "None",
+  "documentation": null
+}

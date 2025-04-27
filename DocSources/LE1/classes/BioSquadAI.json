@@ -1,0 +1,120 @@
+{
+  "parent": "BioBaseSquad",
+  "package": "SFXGame",
+  "variables": {
+    "m_ProbeCombat": {
+      "type": "BioProbeCombat",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nPerceptionIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fPerceptionTimer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fPerceptionFrequency": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "EnableSquadAILogging": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "OnSquadSeen": {
+      "documentation": null,
+      "signature_members": {
+        "oSquad": {
+          "type": "BioBaseSquad",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSquadSeen(BioBaseSquad oSquad)"
+    },
+    "OnDeath": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oKiller": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDeath(Pawn oMember, Controller oKiller)"
+    },
+    "OnThrowGrenade": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnThrowGrenade(BioPawn pPawn)"
+    },
+    "HasGrenades": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasGrenades(BioPawn pPawn)"
+    },
+    "MemberRemoved": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MemberRemoved(Pawn oPawn)"
+    },
+    "ProbeCombatStop": {
+      "documentation": null,
+      "signature_members": {
+        "CombatResult": {
+          "type": "EBioProbeCombatResult",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProbeCombatStop(EBioProbeCombatResult CombatResult)"
+    },
+    "ProbeCombatStart": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProbeCombatStart()"
+    }
+  },
+  "states": {},
+  "classflags": 144703639,
+  "configname": "Game",
+  "documentation": null
+}

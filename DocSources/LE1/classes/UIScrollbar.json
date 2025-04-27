@@ -1,0 +1,371 @@
+{
+  "parent": "UIObject",
+  "package": "Engine",
+  "variables": {
+    "IncrementStyle": {
+      "type": "UIStyleReference",
+      "documentation": null,
+      "flags": 0
+    },
+    "DecrementStyle": {
+      "type": "UIStyleReference",
+      "documentation": null,
+      "flags": 0
+    },
+    "MarkerStyle": {
+      "type": "UIStyleReference",
+      "documentation": null,
+      "flags": 0
+    },
+    "__OnScrollActivity__Delegate": {
+      "type": "OnScrollActivity",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnClickedScrollZone__Delegate": {
+      "type": "OnClickedScrollZone",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "MousePosition": {
+      "type": "UIScreenValue_Position",
+      "documentation": null,
+      "flags": 8192
+    },
+    "BackgroundImageComponent": {
+      "type": "UIComp_DrawImage",
+      "documentation": null,
+      "flags": 101187595
+    },
+    "IncrementButton": {
+      "type": "UIScrollbarButton",
+      "documentation": null,
+      "flags": 2
+    },
+    "DecrementButton": {
+      "type": "UIScrollbarButton",
+      "documentation": null,
+      "flags": 2
+    },
+    "MarkerButton": {
+      "type": "UIScrollbarMarkerButton",
+      "documentation": null,
+      "flags": 2
+    },
+    "BarWidth": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinimumMarkerSize": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null,
+      "flags": 1
+    },
+    "ButtonsExtent": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null,
+      "flags": 1
+    },
+    "NudgeValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "NudgeMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "NudgePercent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "MarkerPosPercent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "MarkerSizePercent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "MousePositionDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bAddCornerPadding": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bInitializeMarker": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "ScrollbarOrientation": {
+      "type": "EUIOrientation",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetMarkerSizePercent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMarkerSizePercent()"
+    },
+    "GetMarkerPosPercent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMarkerPosPercent()"
+    },
+    "GetNudgePercent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetNudgePercent()"
+    },
+    "GetNudgeValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetNudgeValue()"
+    },
+    "PostInitialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostInitialize()"
+    },
+    "Initialized": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialized()"
+    },
+    "DragScroll": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIScrollbarMarkerButton",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DragScroll(UIScrollbarMarkerButton Sender, int PlayerIndex)"
+    },
+    "DragScrollEnd": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DragScrollEnd(UIScreenObject Sender, int PlayerIndex)"
+    },
+    "DragScrollBegin": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DragScrollBegin(UIScreenObject Sender, int PlayerIndex)"
+    },
+    "ScrollDecrement": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ScrollDecrement(UIScreenObject Sender, int PlayerIndex)"
+    },
+    "ScrollIncrement": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ScrollIncrement(UIScreenObject Sender, int PlayerIndex)"
+    },
+    "EnableCornerPadding": {
+      "documentation": null,
+      "signature_members": {
+        "FlagValue": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableCornerPadding(bool FlagValue)"
+    },
+    "SetNudgeSizePixels": {
+      "documentation": null,
+      "signature_members": {
+        "NudgePixels": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNudgeSizePixels(float NudgePixels)"
+    },
+    "SetNudgeSizePercent": {
+      "documentation": null,
+      "signature_members": {
+        "NudgePercentage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNudgeSizePercent(float NudgePercentage)"
+    },
+    "SetMarkerPosition": {
+      "documentation": null,
+      "signature_members": {
+        "PositionPercentage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMarkerPosition(float PositionPercentage)"
+    },
+    "SetMarkerSize": {
+      "documentation": null,
+      "signature_members": {
+        "SizePercentage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMarkerSize(float SizePercentage)"
+    },
+    "GetScrollZoneWidth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetScrollZoneWidth()"
+    },
+    "GetScrollZoneExtent": {
+      "documentation": null,
+      "signature_members": {
+        "ScrollZoneStart": {
+          "type": "float",
+          "documentation": null,
+          "flags": 400
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetScrollZoneExtent(optional out float ScrollZoneStart)"
+    },
+    "GetMarkerButtonPosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMarkerButtonPosition()"
+    },
+    "OnClickedScrollZone": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIScrollbar",
+          "documentation": null,
+          "flags": 128
+        },
+        "PositionPerc": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnClickedScrollZone(UIScrollbar Sender, float PositionPerc, int PlayerIndex)"
+    },
+    "OnScrollActivity": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIScrollbar",
+          "documentation": null,
+          "flags": 128
+        },
+        "PositionChange": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bPositionMaxed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnScrollActivity(UIScrollbar Sender, float PositionChange, optional bool bPositionMaxed)"
+    }
+  },
+  "states": {},
+  "classflags": 144704150,
+  "configname": "UI",
+  "documentation": null
+}

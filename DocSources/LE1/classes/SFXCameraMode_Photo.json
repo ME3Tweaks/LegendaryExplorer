@@ -1,0 +1,130 @@
+{
+  "parent": "SFXCameraMode",
+  "package": "SFXGame",
+  "variables": {
+    "ExternalModifyPPSettings": {
+      "type": "ModifyPostProcess",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__ModifyPostProcess__Delegate": {
+      "type": "ModifyPostProcess",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "RotationInterpSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FOVInterpSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurrentRoll": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "TargetRoll": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "CurrentFOV": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "TargetFOV": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "UpdateRollAndFOV": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateRollAndFOV(float DeltaTime)"
+    },
+    "UpdateOffset": {
+      "documentation": null,
+      "signature_members": {
+        "Location": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateOffset(Vector Location)"
+    },
+    "ModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": "PostProcessSettings",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    },
+    "ResetRoll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetRoll()"
+    },
+    "InitFromMode": {
+      "documentation": null,
+      "signature_members": {
+        "NewFOV": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InitFromMode(float NewFOV)"
+    },
+    "ModifyPostProcess": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": "PostProcessSettings",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPostProcess(out PostProcessSettings PPSettings)"
+    }
+  },
+  "states": {},
+  "classflags": 10485779,
+  "configname": "None",
+  "documentation": null
+}

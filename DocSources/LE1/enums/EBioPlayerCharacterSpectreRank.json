@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BIO_PLAYER_CHARACTER_SPECTRE_RANK_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_PLAYER_CHARACTER_SPECTRE_RANK_OPERATIVE": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,245 @@
+{
+  "parent": "UIDataStore",
+  "package": "Engine",
+  "variables": {
+    "Styles": {
+      "type": "UIStyle",
+      "documentation": null,
+      "flags": 71303178
+    },
+    "StyleGroups": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "SoundCues": {
+      "type": "UISoundCue",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "StyleGroupMap": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "StyleLookupTable": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 12290
+    },
+    "StyleNameMap": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 12290
+    },
+    "CursorMap": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 2101250
+    },
+    "SoundCueMap": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 12290
+    }
+  },
+  "functions": {
+    "SubscriberDetached": {
+      "documentation": null,
+      "signature_members": {
+        "Subscriber": {
+          "type": "UIDataStoreSubscriber",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SubscriberDetached(UIDataStoreSubscriber Subscriber)"
+    },
+    "SubscriberAttached": {
+      "documentation": null,
+      "signature_members": {
+        "Subscriber": {
+          "type": "UIDataStoreSubscriber",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SubscriberAttached(UIDataStoreSubscriber Subscriber)"
+    },
+    "GetStyleGroups": {
+      "documentation": null,
+      "signature_members": {
+        "StyleGroupArray": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "bIncludeInheritedGroups": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "GetStyleGroups(out array<string> StyleGroupArray, optional bool bIncludeInheritedGroups)"
+    },
+    "FindStyleGroupIndex": {
+      "documentation": null,
+      "signature_members": {
+        "StyleGroupName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindStyleGroupIndex(string StyleGroupName)"
+    },
+    "RenameStyleGroup": {
+      "documentation": null,
+      "signature_members": {
+        "OldStyleGroupName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "NewStyleGroupName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RenameStyleGroup(string OldStyleGroupName, string NewStyleGroupName)"
+    },
+    "RemoveStyleGroupName": {
+      "documentation": null,
+      "signature_members": {
+        "StyleGroupName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveStyleGroupName(string StyleGroupName)"
+    },
+    "AddStyleGroupName": {
+      "documentation": null,
+      "signature_members": {
+        "StyleGroupName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddStyleGroupName(string StyleGroupName)"
+    },
+    "IsInheritedGroupName": {
+      "documentation": null,
+      "signature_members": {
+        "StyleGroupName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsInheritedGroupName(string StyleGroupName)"
+    },
+    "GetSkinSoundCues": {
+      "documentation": null,
+      "signature_members": {
+        "out_SoundCues": {
+          "type": "UISoundCue",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSkinSoundCues(out array<UISoundCue> out_SoundCues)"
+    },
+    "GetUISoundCue": {
+      "documentation": null,
+      "signature_members": {
+        "SoundCueName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_UISoundCue": {
+          "type": "SoundCue",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetUISoundCue(Name SoundCueName, out SoundCue out_UISoundCue)"
+    },
+    "RemoveUISoundCue": {
+      "documentation": null,
+      "signature_members": {
+        "SoundCueName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveUISoundCue(Name SoundCueName)"
+    },
+    "AddUISoundCue": {
+      "documentation": null,
+      "signature_members": {
+        "SoundCueName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "SoundToPlay": {
+          "type": "SoundCue",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddUISoundCue(Name SoundCueName, SoundCue SoundToPlay)"
+    },
+    "GetCursorResource": {
+      "documentation": null,
+      "signature_members": {
+        "CursorName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "UITexture",
+      "signature": "UITexture GetCursorResource(Name CursorName)"
+    },
+    "GetAvailableStyles": {
+      "documentation": null,
+      "signature_members": {
+        "out_Styles": {
+          "type": "UIStyle",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "bIncludeInheritedStyles": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAvailableStyles(out array<UIStyle> out_Styles, optional bool bIncludeInheritedStyles)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

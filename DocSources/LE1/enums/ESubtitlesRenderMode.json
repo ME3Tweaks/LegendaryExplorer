@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "SUBTITLE_RENDER_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "SUBTITLE_RENDER_DEFAULT": {
+      "value": 1,
+      "documentation": null
+    },
+    "SUBTITLE_RENDER_TOP": {
+      "value": 2,
+      "documentation": null
+    },
+    "SUBTITLE_RENDER_BOTTOM": {
+      "value": 3,
+      "documentation": null
+    },
+    "SUBTITLE_RENDER_AMBIENT": {
+      "value": 4,
+      "documentation": null
+    },
+    "SUBTITLE_RENDER_LOADSCREEN": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

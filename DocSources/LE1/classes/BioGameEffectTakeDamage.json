@@ -1,0 +1,86 @@
+{
+  "parent": "BioGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "m_vHitLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vMomentum": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oInstigatorController": {
+      "type": "Controller",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pDamage": {
+      "type": "BioDamageType",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fDamage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Apply": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object Apply(Object oTarget)"
+    },
+    "Create": {
+      "documentation": null,
+      "signature_members": {
+        "oProperty": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "oInstigatorController": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vMomentum": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "pDamage": {
+          "type": "BioDamageType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Create(BioGameProperty oProperty, float fDamage, Controller oInstigatorController, Vector vHitLocation, Vector vMomentum, BioDamageType pDamage)"
+    }
+  },
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "PostProcessAA_Off": {
+      "value": 0,
+      "documentation": null
+    },
+    "PostProcessAA_FXAA": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

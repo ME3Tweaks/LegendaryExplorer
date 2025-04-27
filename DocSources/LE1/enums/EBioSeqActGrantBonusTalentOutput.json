@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "EBioSeqActGrantBonusTalentOutput_Success": {
+      "value": 0,
+      "documentation": null
+    },
+    "EBioSeqActGrantBonusTalentOutput_Failure": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

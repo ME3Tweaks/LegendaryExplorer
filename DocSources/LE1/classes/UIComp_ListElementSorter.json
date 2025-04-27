@@ -1,0 +1,125 @@
+{
+  "parent": "UIComp_ListComponentBase",
+  "package": "Engine",
+  "variables": {
+    "__OverrideListSort__Delegate": {
+      "type": "OverrideListSort",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "InitialSortColumn": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "InitialSecondarySortColumn": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "PrimarySortColumn": {
+      "type": "int",
+      "documentation": null,
+      "flags": 139267
+    },
+    "SecondarySortColumn": {
+      "type": "int",
+      "documentation": null,
+      "flags": 139267
+    },
+    "bAllowCompoundSorting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bReversePrimarySorting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bReverseSecondarySorting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "ResortItems": {
+      "documentation": null,
+      "signature_members": {
+        "bCaseSensitive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ResortItems(optional bool bCaseSensitive)"
+    },
+    "SortItems": {
+      "documentation": null,
+      "signature_members": {
+        "ColumnIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bSecondarySort": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bCaseSensitive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SortItems(int ColumnIndex, optional bool bSecondarySort, optional bool bCaseSensitive)"
+    },
+    "ResetSortColumns": {
+      "documentation": null,
+      "signature_members": {
+        "bResort": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetSortColumns(optional bool bResort)"
+    },
+    "OverrideListSort": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIList",
+          "documentation": null,
+          "flags": 128
+        },
+        "CollectionFieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "SortParameters": {
+          "type": "UIListSortingParameters",
+          "documentation": null,
+          "flags": 386
+        },
+        "OrderedIndices": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OverrideListSort(UIList Sender, Name CollectionFieldName, const out UIListSortingParameters SortParameters, out array<int> OrderedIndices)"
+    }
+  },
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

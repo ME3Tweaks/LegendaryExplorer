@@ -1,0 +1,40 @@
+{
+  "parent": "PathConstraint",
+  "package": "Engine",
+  "variables": {
+    "GoalActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "TowardGoal": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Goal": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TowardGoal(Pawn P, Actor Goal)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

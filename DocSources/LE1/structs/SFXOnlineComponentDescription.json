@@ -1,0 +1,23 @@
+{
+  "members": {
+    "ClassName": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlatformName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "ComponentType": {
+      "type": "SFXOnlineComponentType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXOnlineSubsystem",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

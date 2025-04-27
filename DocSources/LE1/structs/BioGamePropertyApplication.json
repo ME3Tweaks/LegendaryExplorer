@@ -1,0 +1,18 @@
+{
+  "members": {
+    "m_pActualTarget": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pGE": {
+      "type": "BioGameEffect",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioGameProperty",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

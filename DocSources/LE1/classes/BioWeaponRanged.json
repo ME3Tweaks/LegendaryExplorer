@@ -1,0 +1,666 @@
+{
+  "parent": "BioWeapon",
+  "package": "SFXGame",
+  "variables": {
+    "StatsClassBindings": {
+      "type": "StatsClassBinding",
+      "documentation": null,
+      "flags": 4194307
+    },
+    "HeadshotTalentBindings": {
+      "type": "HeadshotTalentBinding",
+      "documentation": null,
+      "flags": 4194307
+    },
+    "m_aImpactDelayQueue": {
+      "type": "ImpactDelayInfo",
+      "documentation": null,
+      "flags": 4718592
+    },
+    "__OnTargetHit__Delegate": {
+      "type": "OnTargetHit",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_visualEffects": {
+      "type": "BioVisualEffect",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_MuzzleSocketName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_MuzzleCamSocketName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ImpactParameterName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_SourceParameterName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "oAudioComponent": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "m_pCachedVFXAppearance": {
+      "type": "BioWeaponVFXAppearance",
+      "documentation": null,
+      "flags": 8192
+    },
+    "Stats": {
+      "type": "SFXWeaponStatsBase",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "fWeaponMeshEffectValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "fWeaponMeshEffectTargetValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nFireSound": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "StartFireTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "StopFireTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "ShotCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "CurrentAimMode": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8193
+    },
+    "m_coolDownDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_CooldownTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "RemainingBurstFireCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "FireDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ReFireDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "HeadshotDamageMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "MinPelletsForPhysics": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fCurrentHeat": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fProjectilesSpreadModifier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "PortArmsPistolDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "PortArmsShotgunDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "PortArmsAssaultDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "PortArmsSniperDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fVehicleFireDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fWeaponFireDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fSniperFireDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nTraceFireTestType": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fOverlapRecurseBreakoutDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nTotalNumberStrips": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nTotalNumberCloseStrips": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nCloseStripLength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fMaxVFXIntensity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fMinVFXIntensity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fMaxVFXDecalIntensity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fMinVFXDecalIntensity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bTriggerPulled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bNeedsRetrigger": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bIsZoomed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_isFiring": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bOverheated": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bShootingWhileOverheatedSoundPlayed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bIsMuzzleFlashVFXEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "CanStartFiring": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanStartFiring()"
+    },
+    "GetPlayerAimError": {
+      "documentation": null,
+      "signature_members": {
+        "Accuracy": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetPlayerAimError(float Accuracy)"
+    },
+    "GetRecoil": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRecoil()"
+    },
+    "GetRateOfFire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRateOfFire()"
+    },
+    "GetRangedWeaponType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EBioItemWeaponRangedType",
+      "signature": "EBioItemWeaponRangedType GetRangedWeaponType()"
+    },
+    "GetMuzzleLoc": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetMuzzleLoc()"
+    },
+    "PlayWeaponSound": {
+      "documentation": null,
+      "signature_members": {
+        "nmSound": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayWeaponSound(Name nmSound)"
+    },
+    "PlayShootingWhileOverheatedSound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayShootingWhileOverheatedSound()"
+    },
+    "PlayOverheatSound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayOverheatSound()"
+    },
+    "OnHide": {
+      "documentation": null,
+      "signature_members": {
+        "bHide": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnHide(bool bHide)"
+    },
+    "TickHeat": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TickHeat(float fDeltaTime)"
+    },
+    "GetVisualExplosionSet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioVISGrenade",
+      "signature": "BioVISGrenade GetVisualExplosionSet()"
+    },
+    "GetVisualImpactSet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioVISWeapon",
+      "signature": "BioVISWeapon GetVisualImpactSet()"
+    },
+    "ReleaseVisualEffect": {
+      "documentation": null,
+      "signature_members": {
+        "Effect": {
+          "type": "EBioWeaponVisualEffect",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReleaseVisualEffect(EBioWeaponVisualEffect Effect)"
+    },
+    "GetVisualEffect": {
+      "documentation": null,
+      "signature_members": {
+        "Effect": {
+          "type": "EBioWeaponVisualEffect",
+          "documentation": null,
+          "flags": 128
+        },
+        "bCacheEffect": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "BioVisualEffect",
+      "signature": "BioVisualEffect GetVisualEffect(EBioWeaponVisualEffect Effect, optional bool bCacheEffect)"
+    },
+    "TickFire": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TickFire(float TimeDelta)"
+    },
+    "WeaponRanges": {
+      "documentation": null,
+      "signature_members": {
+        "MinRange": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "BestRange": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "MaxRange": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "WeaponRanges(out float MinRange, out float BestRange, out float MaxRange)"
+    },
+    "GetAttributes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioAttributesItemWeaponRanged",
+      "signature": "BioAttributesItemWeaponRanged GetAttributes()"
+    },
+    "IsPenetratedByInstantFire": {
+      "documentation": null,
+      "signature_members": {
+        "oHitActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPenetratedByInstantFire(Actor oHitActor)"
+    },
+    "DoCoolDownEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoCoolDownEffect()"
+    },
+    "DoBulletTraceEffect": {
+      "documentation": null,
+      "signature_members": {
+        "vHitPoint": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "DoBulletTraceEffect(const out Vector vHitPoint)"
+    },
+    "GetZoomFOV": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetZoomFOV()"
+    },
+    "IsScoped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsScoped()"
+    },
+    "GetAdhesionMultiplier": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetAdhesionMultiplier()"
+    },
+    "GetFrictionMultiplier": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetFrictionMultiplier()"
+    },
+    "GetCameraSensitivityMultiplier": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCameraSensitivityMultiplier()"
+    },
+    "ResetFiringState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetFiringState()"
+    },
+    "HasLoopingFire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasLoopingFire()"
+    },
+    "FireOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FireOff()"
+    },
+    "FireOn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FireOn()"
+    },
+    "InitializeWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeWeapon()"
+    },
+    "GetWeaponDesc": {
+      "documentation": null,
+      "signature_members": {
+        "ManufacturerID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Slot": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        },
+        "Description": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetWeaponDesc(int ManufacturerID, GuiEquipSlots Slot, out stringref Description)"
+    },
+    "GetStatsBinding": {
+      "documentation": null,
+      "signature_members": {
+        "ManufacturerID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "weaponType": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutBinding": {
+          "type": "StatsClassBinding",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStatsBinding(int ManufacturerID, EBioItemWeaponRangedType weaponType, out StatsClassBinding OutBinding)"
+    },
+    "GetAdjustedAim": {
+      "documentation": null,
+      "signature_members": {
+        "StartFireLoc": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator GetAdjustedAim(Vector StartFireLoc)"
+    },
+    "CycleMagnification": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CycleMagnification()"
+    },
+    "SetZoomed": {
+      "documentation": null,
+      "signature_members": {
+        "bState": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetZoomed(bool bState)"
+    },
+    "SetMuzzleFlashState": {
+      "documentation": null,
+      "signature_members": {
+        "bState": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMuzzleFlashState(bool bState)"
+    },
+    "DeactivateWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPawn",
+      "signature": "BioPawn DeactivateWeapon()"
+    },
+    "AttachToMesh": {
+      "documentation": null,
+      "signature_members": {
+        "MeshComponent": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "SocketName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        },
+        "bCinematicsMode": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AttachToMesh(SkeletalMeshComponent MeshComponent, optional Name SocketName, optional bool bCinematicsMode)"
+    },
+    "SetItem": {
+      "documentation": null,
+      "signature_members": {
+        "oItem": {
+          "type": "BioItemWeapon",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "BioItemWeapon",
+      "signature": "BioItemWeapon SetItem(BioItemWeapon oItem)"
+    },
+    "OnTargetHit": {
+      "documentation": null,
+      "signature_members": {
+        "bIsHeadShot": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTargetHit(bool bIsHeadShot)"
+    }
+  },
+  "states": {},
+  "classflags": 144703670,
+  "configname": "Weapon",
+  "documentation": null
+}

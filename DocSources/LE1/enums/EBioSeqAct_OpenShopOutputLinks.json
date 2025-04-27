@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BIOSEQACT_OPENSHOPOUTPUTLINK_SUCCESS": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIOSEQACT_OPENSHOPOUTPUTLINK_FAILURE": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

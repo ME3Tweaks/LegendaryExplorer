@@ -1,0 +1,13 @@
+{
+  "members": {
+    "InputAliasName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1056770
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": "InputEventParameters",
+  "documentation": null,
+  "modifiers": 9
+}

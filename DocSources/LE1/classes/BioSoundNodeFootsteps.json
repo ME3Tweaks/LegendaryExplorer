@@ -1,0 +1,21 @@
+{
+  "parent": "BioSoundNode_Base",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmFootData": {
+      "type": "FootstepData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_nFeet": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136327314,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "m_type": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oXMod": {
+      "type": "BioItemXMod",
+      "documentation": null,
+      "flags": 67108864
+    }
+  },
+  "classdef": "BioItemXModdable",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 4
+}

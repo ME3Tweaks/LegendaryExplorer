@@ -1,0 +1,28 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_nMaxWalkDistance": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fDelayAfterWalk": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

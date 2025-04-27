@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Value2": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "Value1": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "Type": {
+      "type": "ESettingsDataType",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "classdef": "Settings",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

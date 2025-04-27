@@ -1,0 +1,50 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "bOpenedFromMainMenu": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOpenedFromPauseMenu": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bJournalOpenedFromMap": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "BackToMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BackToMainMenu()"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    }
+  },
+  "states": {},
+  "classflags": 136315034,
+  "configname": "None",
+  "documentation": null
+}

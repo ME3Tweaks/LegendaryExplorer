@@ -1,0 +1,23 @@
+{
+  "members": {
+    "FieldProviders": {
+      "type": "UIDataProvider",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "FieldTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "FieldType": {
+      "type": "EUIDataProviderFieldType",
+      "documentation": null,
+      "flags": 1048576
+    }
+  },
+  "classdef": "UIDataProvider",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 9
+}

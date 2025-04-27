@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "EWFT_InstantHit": {
+      "value": 0,
+      "documentation": null
+    },
+    "EWFT_Projectile": {
+      "value": 1,
+      "documentation": null
+    },
+    "EWFT_Custom": {
+      "value": 2,
+      "documentation": null
+    },
+    "EWFT_None": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,96 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_aItem2DANames": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_aItem2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nmDefaultItem2DAPackage": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "LoadGameItemByLabel": {
+      "documentation": null,
+      "signature_members": {
+        "sLabel": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sophistication": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmPackage": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "InOuter": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "manuID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "BioItem",
+      "signature": "BioItem LoadGameItemByLabel(string sLabel, byte sophistication, Name nmPackage, Object InOuter, optional int manuID)"
+    },
+    "LoadGameItem": {
+      "documentation": null,
+      "signature_members": {
+        "nID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "sophistication": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmPackage": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "InOuter": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "manuID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        },
+        "InExistingObject": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "BioItem",
+      "signature": "BioItem LoadGameItem(int nID, byte sophistication, Name nmPackage, Object InOuter, optional int manuID, optional Object InExistingObject)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "Game",
+  "documentation": null
+}

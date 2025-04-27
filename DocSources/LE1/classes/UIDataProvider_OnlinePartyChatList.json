@@ -1,0 +1,98 @@
+{
+  "parent": "UIDataProvider_OnlinePlayerDataBase",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "PartyMembersList": {
+      "type": "OnlinePartyMember",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "NatTypes": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "NickNameCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "NatTypeCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "IsLocalCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "IsInPartyVoiceCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "IsTalkingCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "IsInGameSessionCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "IsPlayingThisGameCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    }
+  },
+  "functions": {
+    "RefreshMembersList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshMembersList()"
+    },
+    "OnLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginChange(byte LocalUserNum)"
+    },
+    "OnUnregister": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUnregister()"
+    },
+    "OnRegister": {
+      "documentation": null,
+      "signature_members": {
+        "InPlayer": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegister(LocalPlayer InPlayer)"
+    }
+  },
+  "states": {},
+  "classflags": 136315066,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "members": {
+    "m_Name": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Description": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_lotSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_unitPrice": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_iconIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioShop",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

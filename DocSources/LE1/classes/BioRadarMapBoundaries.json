@@ -1,0 +1,16 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "m_vBoundarySize": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

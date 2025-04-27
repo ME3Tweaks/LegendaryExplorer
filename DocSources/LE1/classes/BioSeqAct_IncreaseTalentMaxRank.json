@@ -1,0 +1,39 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_TalentID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_maxRankIncrement": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_rankIncrement": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

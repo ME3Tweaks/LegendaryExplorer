@@ -1,0 +1,23 @@
+{
+  "members": {
+    "pObject": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 0
+    },
+    "nKeyIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "fTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "InterpData",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

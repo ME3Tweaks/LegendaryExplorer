@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Start": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Size": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "R": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    },
+    "G": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    },
+    "B": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioDEBUGMarkerComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

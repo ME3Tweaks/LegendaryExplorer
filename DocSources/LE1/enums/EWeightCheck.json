@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "EWC_AnimNodeSlotNotPlaying": {
+      "value": 0,
+      "documentation": null
+    },
+    "EWC_ChildIndexFullWeight": {
+      "value": 1,
+      "documentation": null
+    },
+    "EWC_ChildIndexNotFullWeight": {
+      "value": 2,
+      "documentation": null
+    },
+    "EWC_ChildIndexRelevant": {
+      "value": 3,
+      "documentation": null
+    },
+    "EWC_ChildIndexNotRelevant": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

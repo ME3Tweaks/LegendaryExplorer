@@ -1,0 +1,61 @@
+{
+  "parent": "BioAnimNodeBlendAdditive",
+  "package": "SFXGame",
+  "variables": {
+    "m_cameraShake": {
+      "type": "BioCameraShake",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_intensity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_time": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fadeInTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fadeOutTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_IsPlaying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_isLoopingForever": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_isFadingIn": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_hasFadeOut": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_isFadingOut": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

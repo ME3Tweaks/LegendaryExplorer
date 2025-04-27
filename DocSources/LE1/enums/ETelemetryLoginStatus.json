@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "LoginStatus_Success": {
+      "value": 0,
+      "documentation": null
+    },
+    "LoginStatus_Error": {
+      "value": 1,
+      "documentation": null
+    },
+    "LoginStatus_Cancel": {
+      "value": 2,
+      "documentation": null
+    },
+    "LoginStatus_Unknown": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

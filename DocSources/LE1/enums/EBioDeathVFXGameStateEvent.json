@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BIO_DEATH_VFX_GAME_STATE_EVENT_DEATH": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_DEATH_VFX_GAME_STATE_EVENT_DEATH_ANIMATION_COMPLETED": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

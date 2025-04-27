@@ -1,0 +1,550 @@
+{
+  "parent": "Interaction",
+  "package": "Engine",
+  "variables": {
+    "History": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "AutoCompleteTree": {
+      "type": "AutoCompleteNode",
+      "documentation": null,
+      "flags": 12288
+    },
+    "Scrollback": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "TypedStr": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ManualAutoCompleteList": {
+      "type": "AutoCompleteCommand",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "AutoCompleteList": {
+      "type": "AutoCompleteCommand",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "AutoCompleteIndices": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "ConsoleTargetPlayer": {
+      "type": "LocalPlayer",
+      "documentation": null,
+      "flags": 0
+    },
+    "DefaultTexture_Black": {
+      "type": "Texture2D",
+      "documentation": null,
+      "flags": 0
+    },
+    "DefaultTexture_White": {
+      "type": "Texture2D",
+      "documentation": null,
+      "flags": 0
+    },
+    "ConsoleKey": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 278528
+    },
+    "TypeKey": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 278528
+    },
+    "MaxScrollbackSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 278528
+    },
+    "SBHead": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "SBPos": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "HistoryTop": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "HistoryBot": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "HistoryCur": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "TypedStrPos": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "AutoCompleteIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bNavigatingHistory": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bCaptureKeyInput": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bCtrl": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEnableUI": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bAutoCompleteLocked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bRequireCtrlToNavigateAutoComplete": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bIsRuntimeAutoCompleteUpToDate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "UpdateCompleteIndices": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCompleteIndices()"
+    },
+    "BuildRuntimeAutoCompleteList": {
+      "documentation": null,
+      "signature_members": {
+        "bForce": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "BuildRuntimeAutoCompleteList(optional bool bForce)"
+    },
+    "AppendInputText": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AppendInputText(string Text)"
+    },
+    "ProcessControlKey": {
+      "documentation": null,
+      "signature_members": {
+        "Key": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Event": {
+          "type": "EInputEvent",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProcessControlKey(Name Key, EInputEvent Event)"
+    },
+    "FlushPlayerInput": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FlushPlayerInput()"
+    },
+    "IsUIMiniConsoleOpen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsUIMiniConsoleOpen()"
+    },
+    "IsUIConsoleOpen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsUIConsoleOpen()"
+    },
+    "InputChar": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Unicode": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InputChar(int ControllerId, string Unicode)"
+    },
+    "InputKey": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Key": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Event": {
+          "type": "EInputEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "AmountDepressed": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "bGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InputKey(int ControllerId, Name Key, EInputEvent Event, optional float AmountDepressed, optional bool bGamepad)"
+    },
+    "PostRender_Console": {
+      "documentation": null,
+      "signature_members": {
+        "Canvas": {
+          "type": "Canvas",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PostRender_Console(Canvas Canvas)"
+    },
+    "StartTyping": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
+        }
+      },
+      "returntype": "None",
+      "signature": "StartTyping(coerce string Text)"
+    },
+    "OutputText": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
+        }
+      },
+      "returntype": "None",
+      "signature": "OutputText(coerce string Text)"
+    },
+    "OutputTextLine": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
+        }
+      },
+      "returntype": "None",
+      "signature": "OutputTextLine(coerce string Text)"
+    },
+    "ClearOutput": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearOutput()"
+    },
+    "ConsoleCommand": {
+      "documentation": null,
+      "signature_members": {
+        "Command": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ConsoleCommand(string Command)"
+    },
+    "PurgeCommandFromHistory": {
+      "documentation": null,
+      "signature_members": {
+        "Command": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "PurgeCommandFromHistory(string Command)"
+    },
+    "SetCursorPos": {
+      "documentation": null,
+      "signature_members": {
+        "Position": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCursorPos(int Position)"
+    },
+    "SetInputText": {
+      "documentation": null,
+      "signature_members": {
+        "Text": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInputText(string Text)"
+    },
+    "Initialized": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialized()"
+    }
+  },
+  "states": {
+    "Open": {
+      "functions": {
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "PostRender_Console": {
+          "documentation": null,
+          "signature_members": {
+            "Canvas": {
+              "type": "Canvas",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "InputKey": {
+          "documentation": null,
+          "signature_members": {
+            "ControllerId": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "Key": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            },
+            "Event": {
+              "type": "EInputEvent",
+              "documentation": null,
+              "flags": 128
+            },
+            "AmountDepressed": {
+              "type": "float",
+              "documentation": null,
+              "flags": 144
+            },
+            "bGamepad": {
+              "type": "bool",
+              "documentation": null,
+              "flags": 144
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "InputChar": {
+          "documentation": null,
+          "signature_members": {
+            "ControllerId": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "Unicode": {
+              "type": "string",
+              "documentation": null,
+              "flags": 4194432
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Typing": {
+      "functions": {
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "PostRender_Console": {
+          "documentation": null,
+          "signature_members": {
+            "Canvas": {
+              "type": "Canvas",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "InputKey": {
+          "documentation": null,
+          "signature_members": {
+            "ControllerId": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "Key": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            },
+            "Event": {
+              "type": "EInputEvent",
+              "documentation": null,
+              "flags": 128
+            },
+            "AmountDepressed": {
+              "type": "float",
+              "documentation": null,
+              "flags": 144
+            },
+            "bGamepad": {
+              "type": "bool",
+              "documentation": null,
+              "flags": 144
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "InputChar": {
+          "documentation": null,
+          "signature_members": {
+            "ControllerId": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "Unicode": {
+              "type": "string",
+              "documentation": null,
+              "flags": 4194432
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "classflags": 136315038,
+  "configname": "Input",
+  "documentation": null
+}

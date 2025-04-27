@@ -1,0 +1,34 @@
+{
+  "parent": "NavigationPoint",
+  "package": "Engine",
+  "variables": {
+    "MyLadder": {
+      "type": "LadderVolume",
+      "documentation": null,
+      "flags": 0
+    },
+    "LadderList": {
+      "type": "Ladder",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SuggestMovePreparation": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SuggestMovePreparation(Pawn Other)"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

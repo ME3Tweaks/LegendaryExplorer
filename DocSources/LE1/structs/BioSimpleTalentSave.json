@@ -1,0 +1,18 @@
+{
+  "members": {
+    "m_TalentID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Ranks": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioTalentContainer",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

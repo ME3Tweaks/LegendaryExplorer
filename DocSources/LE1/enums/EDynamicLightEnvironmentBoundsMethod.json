@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "DLEB_OwnerComponents": {
+      "value": 0,
+      "documentation": null
+    },
+    "DLEB_ManualOverride": {
+      "value": 1,
+      "documentation": null
+    },
+    "DLEB_ActiveComponents": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

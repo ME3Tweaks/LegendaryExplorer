@@ -1,0 +1,48 @@
+{
+  "members": {
+    "m_PrereqTalentIDArray": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_PrereqTalentRankArray": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_TalentID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Ranks": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_MaxRank": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_LevelOffset": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_LevelsPerRank": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_VisualOrder": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioTalentContainer",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

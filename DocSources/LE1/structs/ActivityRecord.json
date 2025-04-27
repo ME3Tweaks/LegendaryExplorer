@@ -1,0 +1,33 @@
+{
+  "members": {
+    "m_oMaleAnimations": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_oFemaleAnimations": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_faActivityTwitchWeighting": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_nmActivityName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oActivitySoundCue": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioWorldInteractionType",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

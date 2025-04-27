@@ -1,0 +1,38 @@
+{
+  "members": {
+    "vCamPos": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "rCamRot": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmStageCam": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "fFov": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fNearPlane": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fAspectRatio": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SeqAct_Interp",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

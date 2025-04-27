@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Tag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "oHandler": {
+      "type": "BioSFHandler",
+      "documentation": null,
+      "flags": 0
+    },
+    "srLabel": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFHandler_BrowserWheel",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,93 @@
+{
+  "EnumValues": {
+    "NOTICE_ICON_UNASSIGNED_0": {
+      "value": 0,
+      "documentation": null
+    },
+    "NOTICE_ICON_QUEST_UPDATE": {
+      "value": 1,
+      "documentation": null
+    },
+    "NOTICE_ICON_LEVELUP": {
+      "value": 2,
+      "documentation": null
+    },
+    "NOTICE_ICON_DEFICIENCY": {
+      "value": 3,
+      "documentation": null
+    },
+    "NOTICE_ICON_XP": {
+      "value": 4,
+      "documentation": null
+    },
+    "NOTICE_ICON_PARAGON": {
+      "value": 5,
+      "documentation": null
+    },
+    "NOTICE_ICON_RENEGADE": {
+      "value": 6,
+      "documentation": null
+    },
+    "NOTICE_ICON_OMNITOOL": {
+      "value": 7,
+      "documentation": null
+    },
+    "NOTICE_ICON_BIOAMP": {
+      "value": 8,
+      "documentation": null
+    },
+    "NOTICE_ICON_XMOD": {
+      "value": 9,
+      "documentation": null
+    },
+    "NOTICE_ICON_CODEX_ADDED": {
+      "value": 10,
+      "documentation": null
+    },
+    "NOTICE_ICON_COIN": {
+      "value": 11,
+      "documentation": null
+    },
+    "NOTICE_ICON_MEDIGEL": {
+      "value": 12,
+      "documentation": null
+    },
+    "NOTICE_ICON_SALVAGE": {
+      "value": 13,
+      "documentation": null
+    },
+    "NOTICE_ICON_PISTOL": {
+      "value": 14,
+      "documentation": null
+    },
+    "NOTICE_ICON_SHOTGUN": {
+      "value": 15,
+      "documentation": null
+    },
+    "NOTICE_ICON_ASSAULT_RIFLE": {
+      "value": 16,
+      "documentation": null
+    },
+    "NOTICE_ICON_NEWABILITY": {
+      "value": 17,
+      "documentation": null
+    },
+    "NOTICE_ICON_INVENTORY": {
+      "value": 18,
+      "documentation": null
+    },
+    "NOTICE_ICON_GRENADE": {
+      "value": 19,
+      "documentation": null
+    },
+    "NOTICE_ICON_QUEST_ADDED": {
+      "value": 20,
+      "documentation": null
+    },
+    "NOTICE_ICON_AREAMAPNODE": {
+      "value": 21,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "TARGET_ASSIST_HIGH": {
+      "value": 0,
+      "documentation": null
+    },
+    "TARGET_ASSIST_NORMAL": {
+      "value": 1,
+      "documentation": null
+    },
+    "TARGET_ASSIST_LOW": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

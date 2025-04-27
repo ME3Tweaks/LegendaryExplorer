@@ -1,0 +1,1031 @@
+{
+  "parent": "BioBaseSquad",
+  "package": "SFXGame",
+  "variables": {
+    "CombatRestFormations": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_aSquadTargets": {
+      "type": "SquadTargetData",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_aSimpleSquadTargets": {
+      "type": "SquadTargetData",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pController": {
+      "type": "Controller",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_playerPawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oSquadLeader": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oXPTable": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oCreditsTable": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Inventory": {
+      "type": "BioInventory",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_nSelectedSquadMember": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "SquadReformRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "GlobalXPScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fPerceptionTolerance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nSquadExperience": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nMaxLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nMinLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nSquadLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fInCombatTimer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fCombatCooldownTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fInCombatMaxRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fRevivalRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fVehicleInCombatMaxRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nGrenadePowerIconReference": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nGrenadeDetonatePowerIconReference": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nPistolPowerIconReference": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nShotgunPowerIconReference": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nAssaultPowerIconReference": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nSniperPowerIconReference": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nMaxInventoryItems": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nMaxInventoryWarningThreshold": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fPercentHealthOnResurrection": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16386
+    },
+    "CombatArea": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bSquadHasVehicle": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDebugPartyCombatAI": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_bCombatStateLogging": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bCombatEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "CombatRestOrientation": {
+      "type": "EOrientationType",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_eGameOverCondition": {
+      "type": "EBioGameOverCondition",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {
+    "GetPercentHealthOnResurrection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPercentHealthOnResurrection()"
+    },
+    "GetCombatCooldownTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCombatCooldownTime()"
+    },
+    "OnSetAttackTarget": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "pTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSetAttackTarget(Pawn pPawn, Actor pTarget)"
+    },
+    "OnSetSquadFollowFormation": {
+      "documentation": null,
+      "signature_members": {
+        "eFormation": {
+          "type": "EFollowFormation",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSetSquadFollowFormation(EFollowFormation eFormation)"
+    },
+    "UpdateCombatTimer": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCombatTimer(float fDeltaTime)"
+    },
+    "ResetCombatTimer": {
+      "documentation": null,
+      "signature_members": {
+        "bTriggerEvents": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetCombatTimer(optional bool bTriggerEvents)"
+    },
+    "ClearMemberMovementCommand": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearMemberMovementCommand(BioPawn pPawn)"
+    },
+    "GetSquadLeader": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Pawn",
+      "signature": "Pawn GetSquadLeader()"
+    },
+    "SetSquadLeader": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetSquadLeader(Pawn pPawn)"
+    },
+    "GetInventory": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioInventory",
+      "signature": "BioInventory GetInventory()"
+    },
+    "SquadExitCombatMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SquadExitCombatMode()"
+    },
+    "SquadEnterCombatMode": {
+      "documentation": null,
+      "signature_members": {
+        "bEngageEnemy": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SquadEnterCombatMode(optional bool bEngageEnemy)"
+    },
+    "NotifyMemberCoverDisabled": {
+      "documentation": null,
+      "signature_members": {
+        "oWho": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Link": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyMemberCoverDisabled(Pawn oWho, Actor Link, int SlotIdx)"
+    },
+    "GetSaveObjectClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<BioBaseSaveObject> GetSaveObjectClass()"
+    },
+    "OnThrowGrenade": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnThrowGrenade(BioPawn pPawn)"
+    },
+    "HasGrenades": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasGrenades(BioPawn pPawn)"
+    },
+    "GetReadyActivationPower": {
+      "documentation": null,
+      "signature_members": {
+        "oMemberPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioCapability",
+      "signature": "BioCapability GetReadyActivationPower(BioPawn oMemberPawn)"
+    },
+    "GetSquadScanAbility": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSquadScanAbility()"
+    },
+    "ProxyGetContextSensitiveOffset": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "rRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector ProxyGetContextSensitiveOffset(int nIndex, Rotator rRotation)"
+    },
+    "ProbeCombatStop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProbeCombatStop()"
+    },
+    "ProbeOnCombatEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProbeOnCombatEnd()"
+    },
+    "ProbeOnCombatBegin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProbeOnCombatBegin()"
+    },
+    "OnCombatEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCombatEnd()"
+    },
+    "OnCombatBegin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCombatBegin()"
+    },
+    "IsInCombat": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInCombat()"
+    },
+    "OnDeath": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "pKiller": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDeath(Pawn pPawn, Controller pKiller)"
+    },
+    "AddMemberInternal": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddMemberInternal(Pawn Pawn)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "DrawSquadHUD": {
+      "documentation": null,
+      "signature_members": {
+        "oHUD": {
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
+        },
+        "fGuiAlpha": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawSquadHUD(BioHUD oHUD, float fGuiAlpha)"
+    },
+    "MemberRemoved": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MemberRemoved(Pawn oPawn)"
+    },
+    "MemberAdded": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MemberAdded(int nIndex)"
+    },
+    "GetInventoryResourceFloat": {
+      "documentation": null,
+      "signature_members": {
+        "eInvResType": {
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetInventoryResourceFloat(EInventoryResourceTypes eInvResType)"
+    },
+    "GetInventoryResourceInt": {
+      "documentation": null,
+      "signature_members": {
+        "eInvResType": {
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetInventoryResourceInt(EInventoryResourceTypes eInvResType)"
+    },
+    "XPTrack": {
+      "documentation": null,
+      "signature_members": {
+        "nXPGrant": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "sXPSourceType": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nSquadLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "XPTrack(int nXPGrant, string sXPSourceType, int nSquadLevel)"
+    },
+    "MinionKillsNeededForLevelUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int MinionKillsNeededForLevelUp()"
+    },
+    "GrantExperience": {
+      "documentation": null,
+      "signature_members": {
+        "nXPGrant": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "eXPSourceType": {
+          "type": "EExperienceSourceType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GrantExperience(int nXPGrant, EExperienceSourceType eXPSourceType)"
+    },
+    "LookupCredits": {
+      "documentation": null,
+      "signature_members": {
+        "nPlayerSquadLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmCREDClass": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nCredits": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LookupCredits(int nPlayerSquadLevel, Name nmCREDClass, out int nCredits)"
+    },
+    "LookupXP": {
+      "documentation": null,
+      "signature_members": {
+        "nPlayerSquadLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmXPClass": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nXP": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LookupXP(int nPlayerSquadLevel, Name nmXPClass, out int nXP)"
+    },
+    "GetPlayerSquadExperience": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetPlayerSquadExperience()"
+    },
+    "GetPlayerSquadLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetPlayerSquadLevel()"
+    },
+    "GetMinSquadLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMinSquadLevel()"
+    },
+    "GetMaxSquadLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxSquadLevel()"
+    },
+    "OnMemberCasting": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmPower": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnMemberCasting(Pawn oMember, Pawn oTarget, Name nmPower)"
+    },
+    "OnMemberAttacking": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmWeapon": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnMemberAttacking(Pawn oMember, Pawn oTarget, Name nmWeapon)"
+    },
+    "OnDamageDone": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "pDamageCausingActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDamageDone(Pawn oTarget, Actor pDamageCausingActor)"
+    },
+    "OnDamaged": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oInstigator": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDamaged(Pawn oMember, Controller oInstigator, float fDamage)"
+    },
+    "OnCastAt": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oAttacker": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmPower": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCastAt(Pawn oMember, Pawn oAttacker, Name nmPower)"
+    },
+    "OnAttacked": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oAttacker": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmWeapon": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAttacked(Pawn oMember, Pawn oAttacker, Name nmWeapon)"
+    },
+    "onPlayerEnterCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "onPlayerEnterCover()"
+    },
+    "OnPlayerSwitchStance": {
+      "documentation": null,
+      "signature_members": {
+        "FromState": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "ToState": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnPlayerSwitchStance(byte FromState, byte ToState)"
+    },
+    "GetActionString": {
+      "documentation": null,
+      "signature_members": {
+        "eAction": {
+          "type": "EBioTacticalAction",
+          "documentation": null,
+          "flags": 128
+        },
+        "oPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetActionString(EBioTacticalAction eAction, BioPawn oPawn)"
+    },
+    "DrawDebugHUD": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
+        },
+        "fGuiAlpha": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawDebugHUD(BioHUD HUD, float fGuiAlpha)"
+    },
+    "DrawHUD": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
+        },
+        "fGuiAlpha": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawHUD(BioHUD HUD, float fGuiAlpha)"
+    },
+    "SwapSpareController": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SwapSpareController(Pawn oPawn)"
+    },
+    "SetSpareController": {
+      "documentation": null,
+      "signature_members": {
+        "newCtrl": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSpareController(Controller newCtrl)"
+    },
+    "GetSpareController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Controller",
+      "signature": "Controller GetSpareController()"
+    },
+    "Leader_Changed": {
+      "documentation": null,
+      "signature_members": {
+        "OldLeader": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewLeader": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Leader_Changed(Pawn OldLeader, Pawn NewLeader)"
+    },
+    "GetOrientationType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EOrientationType",
+      "signature": "EOrientationType GetOrientationType()"
+    },
+    "GetRestFormation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<BioFormations> GetRestFormation()"
+    },
+    "InitPlayerSquadLevel": {
+      "documentation": null,
+      "signature_members": {
+        "nInitLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InitPlayerSquadLevel(int nInitLevel)"
+    },
+    "InitPlayerSquadExperience": {
+      "documentation": null,
+      "signature_members": {
+        "nInitXP": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InitPlayerSquadExperience(int nInitXP)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "IsInventoryThresholdReached": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInventoryThresholdReached()"
+    },
+    "IsInventoryFull": {
+      "documentation": null,
+      "signature_members": {
+        "o_nOverBy": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "i_nItemsToAdd": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsInventoryFull(out int o_nOverBy, optional int i_nItemsToAdd)"
+    },
+    "GetRankOfSlot": {
+      "documentation": null,
+      "signature_members": {
+        "oCover": {
+          "type": "BioCoverInterface",
+          "documentation": null,
+          "flags": 128
+        },
+        "oRec": {
+          "type": "CoverRecord",
+          "documentation": null,
+          "flags": 384
+        },
+        "aoCoverFrom": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "aoCoverFromRanks": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "fPawnHeight": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "oCtrl": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "GetRankOfSlot(BioCoverInterface oCover, out CoverRecord oRec, array<Actor> aoCoverFrom, array<int> aoCoverFromRanks, float fPawnHeight, optional Controller oCtrl)"
+    },
+    "ApplyTacticalOrders": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyTacticalOrders(Actor oMember)"
+    },
+    "BioVINCE_MapName_PartyDeath": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BioVINCE_MapName_PartyDeath()"
+    }
+  },
+  "states": {},
+  "classflags": 144704151,
+  "configname": "Party",
+  "documentation": null
+}

@@ -1,0 +1,45 @@
+{
+  "EnumValues": {
+    "RETICULE_MODE_OFF": {
+      "value": 0,
+      "documentation": null
+    },
+    "RETICULE_MODE_STANDARD": {
+      "value": 1,
+      "documentation": null
+    },
+    "RETICULE_MODE_SNIPER": {
+      "value": 2,
+      "documentation": null
+    },
+    "RETICULE_MODE_MARKSMAN": {
+      "value": 3,
+      "documentation": null
+    },
+    "RETICULE_MODE_SUPPRESSION": {
+      "value": 4,
+      "documentation": null
+    },
+    "RETICULE_MODE_ASSASSINATION": {
+      "value": 5,
+      "documentation": null
+    },
+    "RETICULE_MODE_VEHICLE": {
+      "value": 6,
+      "documentation": null
+    },
+    "RETICULE_MODE_VEHICLE_ZOOM": {
+      "value": 7,
+      "documentation": null
+    },
+    "RETICULE_MODE_CARNAGE": {
+      "value": 8,
+      "documentation": null
+    },
+    "RETICULE_MODE_TIGHTAIM": {
+      "value": 9,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

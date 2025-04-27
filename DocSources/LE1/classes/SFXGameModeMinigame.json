@@ -1,0 +1,29 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "MinigameButton": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MinigameButton(int Index)"
+    },
+    "ExitMinigame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitMinigame()"
+    }
+  },
+  "states": {},
+  "classflags": 2097174,
+  "configname": "Input",
+  "documentation": null
+}

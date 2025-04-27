@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "ERD_Forward": {
+      "value": 0,
+      "documentation": null
+    },
+    "ERD_Reverse": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

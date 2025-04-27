@@ -1,0 +1,23 @@
+{
+  "members": {
+    "X": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Y": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Weight": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Terrain",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

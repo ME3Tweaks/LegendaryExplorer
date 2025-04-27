@@ -1,0 +1,36 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "A": {
+      "type": "ExpressionInput",
+      "documentation": null,
+      "flags": 0
+    },
+    "B": {
+      "type": "ExpressionInput",
+      "documentation": null,
+      "flags": 0
+    },
+    "AGreaterThanB": {
+      "type": "ExpressionInput",
+      "documentation": null,
+      "flags": 0
+    },
+    "AEqualsB": {
+      "type": "ExpressionInput",
+      "documentation": null,
+      "flags": 0
+    },
+    "ALessThanB": {
+      "type": "ExpressionInput",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134226066,
+  "configname": "None",
+  "documentation": null
+}

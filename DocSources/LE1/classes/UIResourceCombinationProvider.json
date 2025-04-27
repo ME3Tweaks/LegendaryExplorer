@@ -1,0 +1,271 @@
+{
+  "parent": "UIDataProvider",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "StaticDataProvider": {
+      "type": "UIResourceDataProvider",
+      "documentation": null,
+      "flags": 8192
+    },
+    "ProfileProvider": {
+      "type": "UIDataProvider_OnlineProfileSettings",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "ReplaceProviderCollection": {
+      "documentation": null,
+      "signature_members": {
+        "out_Fields": {
+          "type": "UIDataProviderField",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "TargetFieldTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ReplacementProviders": {
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReplaceProviderCollection(out array<UIDataProviderField> out_Fields, Name TargetFieldTag, const out array<UIDataProvider> ReplacementProviders)"
+    },
+    "ReplaceProviderValue": {
+      "documentation": null,
+      "signature_members": {
+        "out_Fields": {
+          "type": "UIDataProviderField",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "TargetFieldTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ReplacementProvider": {
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReplaceProviderValue(out array<UIDataProviderField> out_Fields, Name TargetFieldTag, UIDataProvider ReplacementProvider)"
+    },
+    "ClearProviderReferences": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearProviderReferences()"
+    },
+    "GetCellFieldValue": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "CellTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ListIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_FieldValue": {
+          "type": "UIProviderFieldValue",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "ArrayIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCellFieldValue(Name FieldName, Name CellTag, int ListIndex, out UIProviderFieldValue out_FieldValue, optional int ArrayIndex)"
+    },
+    "GetCellFieldType": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "CellTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "FieldType": {
+          "type": "EUIDataProviderFieldType",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCellFieldType(Name FieldName, Name CellTag, out EUIDataProviderFieldType FieldType)"
+    },
+    "GetElementCellTags": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "CellFieldTags": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "ColumnHeaderDisplayText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194704
+        }
+      },
+      "returntype": "None",
+      "signature": "GetElementCellTags(Name FieldName, out array<Name> CellFieldTags, optional out array<string> ColumnHeaderDisplayText)"
+    },
+    "GetElementCellValueProvider": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ListIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_ValueProvider": {
+          "type": "UIListElementCellProvider",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetElementCellValueProvider(Name FieldName, int ListIndex, out UIListElementCellProvider out_ValueProvider)"
+    },
+    "GetElementCellSchemaProvider": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_SchemaProvider": {
+          "type": "UIListElementCellProvider",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetElementCellSchemaProvider(Name FieldName, out UIListElementCellProvider out_SchemaProvider)"
+    },
+    "IsElementEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "CollectionIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsElementEnabled(Name FieldName, int CollectionIndex)"
+    },
+    "GetListElements": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_Elements": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetListElements(Name FieldName, out array<int> out_Elements)"
+    },
+    "GetElementCount": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetElementCount(Name FieldName)"
+    },
+    "GetElementProviderTags": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "array<Name> GetElementProviderTags()"
+    },
+    "InitializeProvider": {
+      "documentation": null,
+      "signature_members": {
+        "bIsEditor": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "InStaticResourceProvider": {
+          "type": "UIResourceDataProvider",
+          "documentation": null,
+          "flags": 128
+        },
+        "InProfileProvider": {
+          "type": "UIDataProvider_OnlineProfileSettings",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeProvider(bool bIsEditor, UIResourceDataProvider InStaticResourceProvider, UIDataProvider_OnlineProfileSettings InProfileProvider)"
+    }
+  },
+  "states": {},
+  "classflags": 136316059,
+  "configname": "Game",
+  "documentation": null
+}

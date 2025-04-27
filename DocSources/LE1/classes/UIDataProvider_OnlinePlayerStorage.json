@@ -1,0 +1,198 @@
+{
+  "parent": "UIDataProvider_OnlinePlayerDataBase",
+  "package": "Engine",
+  "variables": {
+    "PlayerStorageArrayProviders": {
+      "type": "PlayerStorageArrayProvider",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Profile": {
+      "type": "OnlinePlayerStorage",
+      "documentation": null,
+      "flags": 0
+    },
+    "ProviderName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 2
+    },
+    "bWasErrorLastRead": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "OnSettingValueUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "SettingName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSettingValueUpdated(Name SettingName)"
+    },
+    "ArrayProviderPropertyChanged": {
+      "documentation": null,
+      "signature_members": {
+        "SourceProvider": {
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
+        },
+        "PropTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ArrayProviderPropertyChanged(UIDataProvider SourceProvider, optional Name PropTag)"
+    },
+    "SaveStorageData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SaveStorageData()"
+    },
+    "RefreshStorageData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshStorageData()"
+    },
+    "OnLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginChange(byte LocalUserNum)"
+    },
+    "OnReadStorageComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadStorageComplete(byte LocalUserNum, bool bWasSuccessful)"
+    },
+    "OnUnregister": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUnregister()"
+    },
+    "OnRegister": {
+      "documentation": null,
+      "signature_members": {
+        "InPlayer": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegister(LocalPlayer InPlayer)"
+    },
+    "ClearReadCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerInterface": {
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 128
+        },
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadCompleteDelegate(OnlinePlayerInterface PlayerInterface, byte LocalUserNum)"
+    },
+    "AddReadCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerInterface": {
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 128
+        },
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadCompleteDelegate(OnlinePlayerInterface PlayerInterface, byte LocalUserNum)"
+    },
+    "WriteData": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerInterface": {
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 128
+        },
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerStorage": {
+          "type": "OnlinePlayerStorage",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WriteData(OnlinePlayerInterface PlayerInterface, byte LocalUserNum, OnlinePlayerStorage PlayerStorage)"
+    },
+    "ReadData": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerInterface": {
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 128
+        },
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerStorage": {
+          "type": "OnlinePlayerStorage",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadData(OnlinePlayerInterface PlayerInterface, byte LocalUserNum, OnlinePlayerStorage PlayerStorage)"
+    }
+  },
+  "states": {},
+  "classflags": 136315034,
+  "configname": "Game",
+  "documentation": null
+}

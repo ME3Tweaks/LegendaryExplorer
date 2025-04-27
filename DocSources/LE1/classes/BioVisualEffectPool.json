@@ -1,0 +1,124 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_EffectPool": {
+      "type": "BioVisualEffect",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_VFXTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nMinEffectsInPool": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nMaxEffectsInPool": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fInstancePoolRechargePeriod": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nInstancePoolMax": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nInstancePoolCurrent": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fInstancePoolTimeAccumulator": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fTimeTillDecay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fDecayPeriod": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_bInstancePoolEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "PrimePoolEffects": {
+      "documentation": null,
+      "signature_members": {
+        "a_nNumEffects": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "PrimePoolEffects(optional int a_nNumEffects)"
+    },
+    "GetEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioVisualEffect",
+      "signature": "BioVisualEffect GetEffect()"
+    },
+    "SetPoolSize": {
+      "documentation": null,
+      "signature_members": {
+        "a_nMaxSize": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "a_nMinSize": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPoolSize(int a_nMaxSize, int a_nMinSize)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "a_oTemplate": {
+          "type": "BioVFXTemplate",
+          "documentation": null,
+          "flags": 128
+        },
+        "nMaxNumEffects": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nMinNumEffects": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(BioVFXTemplate a_oTemplate, int nMaxNumEffects, int nMinNumEffects)"
+    }
+  },
+  "states": {},
+  "classflags": 134217886,
+  "configname": "Game",
+  "documentation": null
+}

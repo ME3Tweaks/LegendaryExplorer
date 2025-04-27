@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "PAWN_SOUND_ENTER_BIOTIC_MODE": {
+      "value": 0,
+      "documentation": null
+    },
+    "PAWN_SOUND_USE_BIOTIC": {
+      "value": 1,
+      "documentation": null
+    },
+    "PAWN_SOUND_EXIT_BIOTIC_MODE": {
+      "value": 2,
+      "documentation": null
+    },
+    "PAWN_SOUND_COUNT": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

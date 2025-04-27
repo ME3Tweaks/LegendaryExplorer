@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "eBioAnimRBRecover_Sleep": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimRBRecover_Idle": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimRBRecover_Starting": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimRBRecover_BlendFromPhys": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioAnimRBRecover_RunningAnim": {
+      "value": 4,
+      "documentation": null
+    },
+    "eBioAnimRBRecover_Finished": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

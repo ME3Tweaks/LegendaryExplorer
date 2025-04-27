@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Desc": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Cost": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "NavigationPoint",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

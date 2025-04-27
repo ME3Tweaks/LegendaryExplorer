@@ -1,0 +1,151 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "EditorStreamingVolumes": {
+      "type": "LevelStreamingVolume",
+      "documentation": null,
+      "flags": 4325379
+    },
+    "Keywords": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Offset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 3
+    },
+    "OldOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 2
+    },
+    "PackageName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 131075
+    },
+    "LoadedLevel": {
+      "type": "Level",
+      "documentation": null,
+      "flags": 8194
+    },
+    "OwningWorldName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "VirtualChunkName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "Priority": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "Tier": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "DrawColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 3
+    },
+    "MinTimeBetweenVolumeUnloadRequests": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "LastVolumeUnloadRequestTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bIsVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bHasCookingErrors": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bInPurpleLevelTest": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bHasLoadRequestPending": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bHasUnloadRequestPending": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bShouldBeVisibleInEditor": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bBoundingBoxVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bLocked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bIsFullyStatic": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bShouldBeLoaded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bShouldBeVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bShouldBlockOnLoad": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bDrawOnLevelStatusMap": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIsRequestingUnloadAndRemoval": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bShouldTestForPurpleLevels": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136319127,
+  "configname": "Engine",
+  "documentation": null
+}

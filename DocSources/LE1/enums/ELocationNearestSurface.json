@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "eLocationNearestSurface_Stay": {
+      "value": 0,
+      "documentation": null
+    },
+    "eLocationNearestSurface_StayAtRadius": {
+      "value": 1,
+      "documentation": null
+    },
+    "eLocationNearestSurface_Kill": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

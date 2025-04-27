@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "eBioAnimCover_NoState": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimCover_Entering": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimCover_InCover": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimCover_Exiting": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

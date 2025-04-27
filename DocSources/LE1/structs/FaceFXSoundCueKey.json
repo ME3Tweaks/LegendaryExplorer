@@ -1,0 +1,13 @@
+{
+  "members": {
+    "FaceFXSoundCue": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "classdef": "InterpTrackFaceFX",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

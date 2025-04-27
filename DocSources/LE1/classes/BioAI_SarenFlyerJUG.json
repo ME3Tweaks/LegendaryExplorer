@@ -1,0 +1,17 @@
+{
+  "parent": "BioAI_SarenFlyerEND",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    }
+  },
+  "states": {},
+  "classflags": 10486294,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,48 @@
+{
+  "members": {
+    "m_vImpulseOriginOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmLabel": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_pExplosionVFXTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_pCrustVFXTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fImpulseRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fImpulseMagnitude": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIsTargetDeletedOnCrustEffectCompletion": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIsImpulseEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioDeathVFXCore",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Modifiers": {
+      "type": "TimeModifier",
+      "documentation": null,
+      "flags": 71303169
+    },
+    "SkelControlName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "AnimSequence",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

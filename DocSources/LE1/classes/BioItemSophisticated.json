@@ -1,0 +1,188 @@
+{
+  "parent": "BioItem",
+  "package": "SFXGame",
+  "variables": {
+    "m_srSophistication": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "m_pManufacturer2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pMaterialParameters": {
+      "type": "BioMaterialOverride",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "m_oGameProperties": {
+      "type": "BioGamePropertyContainer",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_oAppliedGameProperties": {
+      "type": "BioGamePropertyManager",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_manufacturer": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_MIN_ITEM_SOPHISTICATION": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_MAX_ITEM_SOPHISTICATION": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_eSophistication": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetMaterialParameters": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioMaterialOverride",
+      "signature": "BioMaterialOverride GetMaterialParameters()"
+    },
+    "GenerateName": {
+      "documentation": null,
+      "signature_members": {
+        "sName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GenerateName(out string sName)"
+    },
+    "GetManufacturerInfo": {
+      "documentation": null,
+      "signature_members": {
+        "stManufacturerDetails": {
+          "type": "BioManufacturerDetails",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetManufacturerInfo(out BioManufacturerDetails stManufacturerDetails)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "DescribeItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeItem()"
+    },
+    "TickItem": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TickItem(float fDeltaTime)"
+    },
+    "GetPhysicsAsset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PhysicsAsset",
+      "signature": "PhysicsAsset GetPhysicsAsset()"
+    },
+    "GetAnimationTree": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "AnimTree",
+      "signature": "AnimTree GetAnimationTree()"
+    },
+    "GetAnimationSet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "AnimSet",
+      "signature": "AnimSet GetAnimationSet()"
+    },
+    "ApplyMaterials": {
+      "documentation": null,
+      "signature_members": {
+        "oSkelMesh": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyMaterials(SkeletalMeshComponent oSkelMesh)"
+    },
+    "GetSkeletalMesh": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SkeletalMesh",
+      "signature": "SkeletalMesh GetSkeletalMesh()"
+    },
+    "ComputeSophistication": {
+      "documentation": null,
+      "signature_members": {
+        "oBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67109008
+        }
+      },
+      "returntype": "int",
+      "signature": "int ComputeSophistication(optional BioPawnBehavior oBehavior)"
+    },
+    "SetSophistication": {
+      "documentation": null,
+      "signature_members": {
+        "sophistication": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSophistication(byte sophistication)"
+    },
+    "ComputeNonWeaponSophistication": {
+      "documentation": null,
+      "signature_members": {
+        "oBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "eEquipmentSlot": {
+          "type": "EBioEquipmentSlot",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int ComputeNonWeaponSophistication(BioPawnBehavior oBehavior, EBioEquipmentSlot eEquipmentSlot)"
+    }
+  },
+  "states": {},
+  "classflags": 144703639,
+  "configname": "Game",
+  "documentation": null
+}

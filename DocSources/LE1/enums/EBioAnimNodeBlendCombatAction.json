@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "BIO_ANIM_NODE_BLEND_COMBAT_ACTION_FIRE_WEAPON": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_BLEND_COMBAT_ACTION_DEPRECATED_1": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_BLEND_COMBAT_ACTION_DEPRECATED_2": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_BLEND_COMBAT_ACTION_DEPRECATED_3": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_BLEND_COMBAT_ACTION_THROW_GRENADE": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

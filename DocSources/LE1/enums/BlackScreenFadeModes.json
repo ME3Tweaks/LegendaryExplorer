@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BlackScreenFadeMode_NoFade": {
+      "value": 0,
+      "documentation": null
+    },
+    "BlackScreenFadeMode_FadeToBlack": {
+      "value": 1,
+      "documentation": null
+    },
+    "BlackScreenFadeMode_FadeFromBlack": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

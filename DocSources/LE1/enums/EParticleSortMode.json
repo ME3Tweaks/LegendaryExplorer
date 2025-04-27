@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "PSORTMODE_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "PSORTMODE_ViewProjDepth": {
+      "value": 1,
+      "documentation": null
+    },
+    "PSORTMODE_DistanceToView": {
+      "value": 2,
+      "documentation": null
+    },
+    "PSORTMODE_Age_OldestFirst": {
+      "value": 3,
+      "documentation": null
+    },
+    "PSORTMODE_Age_NewestFirst": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

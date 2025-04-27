@@ -1,0 +1,109 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_aGameProperties": {
+      "type": "BioGameProperty",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_MAX_TALENT_RANK": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_nID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nRank": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "AddGameProperty": {
+      "documentation": null,
+      "signature_members": {
+        "GameProperty": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddGameProperty(BioGameProperty GameProperty)"
+    },
+    "ScaleToRank": {
+      "documentation": null,
+      "signature_members": {
+        "Rank": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ScaleToRank(int Rank)"
+    },
+    "Unapply": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Unapply(Object Target)"
+    },
+    "Apply": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Apply(Object Target)"
+    },
+    "GetRank": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetRank()"
+    },
+    "GetID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetID()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "StartingRank": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(int Id, int StartingRank)"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,737 @@
+{
+  "parent": "BioSFManager",
+  "package": "SFXGame",
+  "variables": {
+    "m_aMessageBoxQueue": {
+      "type": "BioMessageBoxData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "lstEquipSlotOrderLoot": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "lstEquipSlotOrderInventory": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "lstEquipSlotOrderXMods": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "m_oSFHudHandler": {
+      "type": "BioSFHandler_HUD",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oSFReticuleHandler": {
+      "type": "BioSFHandler_Reticule",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oDUIHandler": {
+      "type": "BioSFHandler_DesignerUI",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oBWHandler": {
+      "type": "BioSFHandler_BrowserWheel",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oPauseMenuHandler": {
+      "type": "BioSFHandler_BrowserWheel",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oCharacterRecordHandler": {
+      "type": "BioSFHandler_PCCharacterRecord",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oSharedHandler": {
+      "type": "BioSFHandler_SharedIGG",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oAreaMapHandler": {
+      "type": "BioSFHandler_AreaMap",
+      "documentation": null,
+      "flags": 0
+    },
+    "oBioWorldInfo": {
+      "type": "BioWorldInfo",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oConversationPanel": {
+      "type": "BioSFPanel",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nmCurrentTutorial": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "oLootHandler": {
+      "type": "BioSFHandler_Loot",
+      "documentation": null,
+      "flags": 0
+    },
+    "oShopHandler": {
+      "type": "BioSFHandler_Shop",
+      "documentation": null,
+      "flags": 0
+    },
+    "oSpecializationHandler": {
+      "type": "BioSFHandler_Specialization",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oBlackScreenHandler": {
+      "type": "BioSFHandler_BlackScreen",
+      "documentation": null,
+      "flags": 0
+    },
+    "oXModsHandler": {
+      "type": "BioSFHandler_XMods",
+      "documentation": null,
+      "flags": 0
+    },
+    "Player": {
+      "type": "PlayerController",
+      "documentation": null,
+      "flags": 8193
+    },
+    "m_bSFHudCached": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bSFHudDisplayed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bGameWasPaused": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bGUIRequestedMouseVisiblityState": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bWasBlackScreenShown": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "HidePhotoMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HidePhotoMode()"
+    },
+    "ShowPhotoMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSFHandler",
+      "signature": "BioSFHandler ShowPhotoMode()"
+    },
+    "HideSubMenuCharacterRecord": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideSubMenuCharacterRecord()"
+    },
+    "ShowSubMenuCharacterRecord": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSFPanel",
+      "signature": "BioSFPanel ShowSubMenuCharacterRecord()"
+    },
+    "ShowSubMenuInventory": {
+      "documentation": null,
+      "signature_members": {
+        "oChar": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "BioSFPanel",
+      "signature": "BioSFPanel ShowSubMenuInventory(optional BioPawn oChar)"
+    },
+    "ShowSubMenuGui": {
+      "documentation": null,
+      "signature_members": {
+        "GuiName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioSFPanel",
+      "signature": "BioSFPanel ShowSubMenuGui(Name GuiName)"
+    },
+    "RedisplayHudElements": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RedisplayHudElements()"
+    },
+    "HidePauseMenu": {
+      "documentation": null,
+      "signature_members": {
+        "oCurrentPanel": {
+          "type": "BioSFPanel",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HidePauseMenu(optional BioSFPanel oCurrentPanel)"
+    },
+    "ReturnToPauseMenu": {
+      "documentation": null,
+      "signature_members": {
+        "oCurrentPanel": {
+          "type": "BioSFPanel",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ReturnToPauseMenu(optional BioSFPanel oCurrentPanel)"
+    },
+    "UpdateMouseVisibilityState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateMouseVisibilityState()"
+    },
+    "SetMouseVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "pObject": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "bShow": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetMouseVisibility(Object pObject, bool bShow)"
+    },
+    "GameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GameSessionEnded()"
+    },
+    "CreateMessageBox": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSFHandler_MessageBox",
+      "signature": "BioSFHandler_MessageBox CreateMessageBox()"
+    },
+    "ConvertTutorialString": {
+      "documentation": null,
+      "signature_members": {
+        "incomingRef": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string ConvertTutorialString(stringref incomingRef)"
+    },
+    "CancelTutorial": {
+      "documentation": null,
+      "signature_members": {
+        "bFadeOut": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "nmTutorial": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "CancelTutorial(optional bool bFadeOut, optional Name nmTutorial)"
+    },
+    "ShowTutorial": {
+      "documentation": null,
+      "signature_members": {
+        "stParams": {
+          "type": "BioTutorialParams",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowTutorial(const out BioTutorialParams stParams)"
+    },
+    "GetPauseMenuHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSFHandler_BrowserWheel",
+      "signature": "BioSFHandler_BrowserWheel GetPauseMenuHandler()"
+    },
+    "GetBrowserHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSFHandler_BrowserWheel",
+      "signature": "BioSFHandler_BrowserWheel GetBrowserHandler()"
+    },
+    "GetDUIHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSFHandler_DesignerUI",
+      "signature": "BioSFHandler_DesignerUI GetDUIHandler()"
+    },
+    "SetWheelState": {
+      "documentation": null,
+      "signature_members": {
+        "nPage": {
+          "type": "MEBrowserWheelSubPages",
+          "documentation": null,
+          "flags": 128
+        },
+        "nState": {
+          "type": "BioBrowserStates",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWheelState(MEBrowserWheelSubPages nPage, BioBrowserStates nState)"
+    },
+    "RemoveBlackScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveBlackScreen()"
+    },
+    "OnPlayerDeath": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPlayerDeath()"
+    },
+    "HideDeviceSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideDeviceSelection()"
+    },
+    "ShowDeviceSelection": {
+      "documentation": null,
+      "signature_members": {
+        "i_nmCompletionDelegateFunction": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_nmCancelDelegateFunction": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_nSize": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_Target": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioSFHandler_DeviceSelection",
+      "signature": "BioSFHandler_DeviceSelection ShowDeviceSelection(Name i_nmCompletionDelegateFunction, Name i_nmCancelDelegateFunction, int i_nSize, Object i_Target)"
+    },
+    "HideSkillGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideSkillGame()"
+    },
+    "ShowSkillGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSkillGame_Handler",
+      "signature": "BioSkillGame_Handler ShowSkillGame()"
+    },
+    "GetBioPlayerController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPlayerController",
+      "signature": "BioPlayerController GetBioPlayerController()"
+    },
+    "GetPlayerController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PlayerController",
+      "signature": "PlayerController GetPlayerController()"
+    },
+    "BlackScreenFadeFinished": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool BlackScreenFadeFinished()"
+    },
+    "HideBlackScreen": {
+      "documentation": null,
+      "signature_members": {
+        "bWithFade": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HideBlackScreen(bool bWithFade)"
+    },
+    "ShowBlackScreen": {
+      "documentation": null,
+      "signature_members": {
+        "bWithFade": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowBlackScreen(bool bWithFade)"
+    },
+    "HideGameOverGui": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideGameOverGui()"
+    },
+    "ShowGameOverGui": {
+      "documentation": null,
+      "signature_members": {
+        "srGameOverString": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowGameOverGui(optional stringref srGameOverString)"
+    },
+    "PlayCredits": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayCredits()"
+    },
+    "HidePartySelect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HidePartySelect()"
+    },
+    "ShowPartySelect": {
+      "documentation": null,
+      "signature_members": {
+        "nmForcedHenchman": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowPartySelect(optional Name nmForcedHenchman)"
+    },
+    "NestedCategory": {
+      "documentation": null,
+      "signature_members": {
+        "eLeftCat": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        },
+        "eRightCat": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NestedCategory(GuiEquipSlots eLeftCat, GuiEquipSlots eRightCat)"
+    },
+    "FindCompatibleCategory": {
+      "documentation": null,
+      "signature_members": {
+        "lstSlotsOrdered": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "eCategory": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindCompatibleCategory(array<GuiEquipSlots> lstSlotsOrdered, GuiEquipSlots eCategory)"
+    },
+    "SetSlotOrder": {
+      "documentation": null,
+      "signature_members": {
+        "eHandlerID": {
+          "type": "EGuiHandlers",
+          "documentation": null,
+          "flags": 128
+        },
+        "oInvLayer": {
+          "type": "BioInventoryGuiInterface",
+          "documentation": null,
+          "flags": 128
+        },
+        "ePreferredDefault": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetSlotOrder(EGuiHandlers eHandlerID, BioInventoryGuiInterface oInvLayer, optional GuiEquipSlots ePreferredDefault)"
+    },
+    "HideSpecializationGui": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideSpecializationGui()"
+    },
+    "ShowSpecializationGui": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowSpecializationGui()"
+    },
+    "HideShopGui": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideShopGui()"
+    },
+    "ShowShopGui": {
+      "documentation": null,
+      "signature_members": {
+        "shop": {
+          "type": "BioShop",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowShopGui(BioShop shop)"
+    },
+    "HideGuiByTag": {
+      "documentation": null,
+      "signature_members": {
+        "sTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HideGuiByTag(Name sTag)"
+    },
+    "HideLootGui": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideLootGui()"
+    },
+    "ShowLootGui": {
+      "documentation": null,
+      "signature_members": {
+        "oLootInv": {
+          "type": "BioInventory",
+          "documentation": null,
+          "flags": 67109008
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowLootGui(optional BioInventory oLootInv)"
+    },
+    "ShowXModsGui": {
+      "documentation": null,
+      "signature_members": {
+        "oController": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowXModsGui(BioPlayerController oController)"
+    },
+    "HideBrowserWheel": {
+      "documentation": null,
+      "signature_members": {
+        "oCurrentPanel": {
+          "type": "BioSFPanel",
+          "documentation": null,
+          "flags": 144
+        },
+        "bUnpauseSound": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HideBrowserWheel(optional BioSFPanel oCurrentPanel, optional bool bUnpauseSound)"
+    },
+    "ReturnToBrowserWheel": {
+      "documentation": null,
+      "signature_members": {
+        "oCurrentPanel": {
+          "type": "BioSFPanel",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ReturnToBrowserWheel(optional BioSFPanel oCurrentPanel)"
+    },
+    "ShowBrowserWheel": {
+      "documentation": null,
+      "signature_members": {
+        "bPauseSound": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowBrowserWheel(optional bool bPauseSound)"
+    },
+    "CancelLeaderActive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelLeaderActive()"
+    },
+    "HideInventoryScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideInventoryScreen()"
+    },
+    "ShowInventoryScreen": {
+      "documentation": null,
+      "signature_members": {
+        "oChar": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowInventoryScreen(BioPawn oChar)"
+    },
+    "HideHUD": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideHUD()"
+    },
+    "ShowHUD": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowHUD()"
+    },
+    "ReleaseHudCache": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReleaseHudCache()"
+    },
+    "RecreateHudPanel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RecreateHudPanel()"
+    },
+    "IsInConversation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInConversation()"
+    },
+    "HideConversationGui": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideConversationGui()"
+    },
+    "ShowConversationGui": {
+      "documentation": null,
+      "signature_members": {
+        "IsAmbient": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowConversationGui(bool IsAmbient)"
+    },
+    "ShowMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSFHandler_MainMenu",
+      "signature": "BioSFHandler_MainMenu ShowMainMenu()"
+    },
+    "SetupBackground": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupBackground()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    }
+  },
+  "states": {},
+  "classflags": 144703646,
+  "configname": "UI",
+  "documentation": null
+}

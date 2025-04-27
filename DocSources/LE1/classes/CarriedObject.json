@@ -1,0 +1,34 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "LastAnchor": {
+      "type": "NavigationPoint",
+      "documentation": null,
+      "flags": 2
+    },
+    "LastValidAnchorTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "NotReachableBy": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotReachableBy(Pawn P)"
+    }
+  },
+  "states": {},
+  "classflags": 144703635,
+  "configname": "None",
+  "documentation": null
+}

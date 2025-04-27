@@ -1,0 +1,88 @@
+{
+  "members": {
+    "DrawFont": {
+      "type": "Font",
+      "documentation": null,
+      "flags": 1
+    },
+    "AutoScaling": {
+      "type": "TextAutoScaleValue",
+      "documentation": null,
+      "flags": 1
+    },
+    "DrawScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SpacingAdjust": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "TextAttributes": {
+      "type": "UITextAttributes",
+      "documentation": null,
+      "flags": 1
+    },
+    "bOverrideDrawFont": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverrideAttributes": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverrideAlignment": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverrideClipMode": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverrideClipAlignment": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverrideAutoScale": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverrideScale": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverrideSpacingAdjust": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "TextAlignment": {
+      "type": "EUIAlignment",
+      "documentation": null,
+      "flags": 1
+    },
+    "ClipMode": {
+      "type": "ETextClipMode",
+      "documentation": null,
+      "flags": 1
+    },
+    "ClipAlignment": {
+      "type": "EUIAlignment",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": "UIStyleOverride",
+  "documentation": null,
+  "modifiers": 1
+}

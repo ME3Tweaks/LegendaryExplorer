@@ -1,0 +1,29 @@
+{
+  "parent": "Font",
+  "package": "Engine",
+  "variables": {
+    "ResolutionTestTable": {
+      "type": "float",
+      "documentation": null,
+      "flags": 71303169
+    }
+  },
+  "functions": {
+    "GetResolutionTestTableIndex": {
+      "documentation": null,
+      "signature_members": {
+        "HeightTest": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetResolutionTestTableIndex(float HeightTest)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

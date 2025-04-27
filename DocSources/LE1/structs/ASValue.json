@@ -1,0 +1,28 @@
+{
+  "members": {
+    "S": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242881
+    },
+    "N": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "B": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Type": {
+      "type": "ASType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "GFxMovie",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

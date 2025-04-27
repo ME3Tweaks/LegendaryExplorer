@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "POWER_ANIM_NODE_IDLE": {
+      "value": 0,
+      "documentation": null
+    },
+    "POWER_ANIM_NODE_CASTING": {
+      "value": 1,
+      "documentation": null
+    },
+    "POWER_ANIM_NODE_RELEASE": {
+      "value": 2,
+      "documentation": null
+    },
+    "POWER_ANIM_NODE_USING": {
+      "value": 3,
+      "documentation": null
+    },
+    "POWER_ANIM_NODE_COUNT": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,34 @@
+{
+  "parent": "RigidBodyBase",
+  "package": "Engine",
+  "variables": {
+    "ThrustStrength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "bThrustEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

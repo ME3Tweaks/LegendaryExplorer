@@ -1,0 +1,18 @@
+{
+  "members": {
+    "POV": {
+      "type": "TPOV",
+      "documentation": null,
+      "flags": 0
+    },
+    "TimeStamp": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Camera",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

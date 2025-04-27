@@ -1,0 +1,357 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_stEquippedItemInfo": {
+      "type": "ItemInfo",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "lstXModSlotTypeTitles": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "m_oInvGuiHandler": {
+      "type": "BioSFHandler_Inventory",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oInvInterface": {
+      "type": "BioInventoryGuiInterface",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_nLastEquippedIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 67108872
+    },
+    "m_nCurrentXModSlot": {
+      "type": "int",
+      "documentation": null,
+      "flags": 67108872
+    },
+    "m_nShiftXModIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 67108872
+    },
+    "m_nBaseItemMaxSlots": {
+      "type": "int",
+      "documentation": null,
+      "flags": 67108872
+    },
+    "MaxSort": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "srEmpty": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srXModsTitle": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srInherent": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSalvageXModMsg": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSalvageXModConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSalvageXModCancel": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nEmptyAmmoSlotIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nEmptyFieldEmitterSlotIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nEmptyFeatureSlotIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nEmptyCompanyIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nEmptySlotIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_eCurrentItemSlot": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 67108872
+    }
+  },
+  "functions": {
+    "UnistallXModForCurrentSlot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnistallXModForCurrentSlot()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "SortModList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SortModList()"
+    },
+    "MarkModAsJunk": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "val": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MarkModAsJunk(int Index, bool val)"
+    },
+    "ChangeTargetCharacter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ChangeTargetCharacter()"
+    },
+    "UpdateResources": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateResources()"
+    },
+    "SalvageXModProcessDoubleCheck": {
+      "documentation": null,
+      "signature_members": {
+        "bConfirmedSalvageAttempt": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bYPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SalvageXModProcessDoubleCheck(bool bConfirmedSalvageAttempt, int nContext, bool bYPressed)"
+    },
+    "FuseItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FuseItem()"
+    },
+    "EquipSelectedItem": {
+      "documentation": null,
+      "signature_members": {
+        "nItemIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nSlotIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "EquipSelectedItem(int nItemIndex, int nSlotIndex)"
+    },
+    "PopulateItemListEntry": {
+      "documentation": null,
+      "signature_members": {
+        "nListIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateItemListEntry(int nListIndex)"
+    },
+    "PopulateInventoryXModItem": {
+      "documentation": null,
+      "signature_members": {
+        "lstParams": {
+          "type": "ASParams",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateInventoryXModItem(array<ASParams> lstParams)"
+    },
+    "PopulateEquippedSlotAsItemListEntry": {
+      "documentation": null,
+      "signature_members": {
+        "nXModIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nListIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateEquippedSlotAsItemListEntry(int nXModIndex, int nListIndex)"
+    },
+    "PopulateItemList": {
+      "documentation": null,
+      "signature_members": {
+        "needsRefresh": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateItemList(bool needsRefresh)"
+    },
+    "PopulateEquippedItemXModSlotEntry": {
+      "documentation": null,
+      "signature_members": {
+        "nSlotIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateEquippedItemXModSlotEntry(int nSlotIndex)"
+    },
+    "PopulateEquippedItemInherentEntry": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PopulateEquippedItemInherentEntry()"
+    },
+    "PopulateEquippedItemXModSlots": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PopulateEquippedItemXModSlots()"
+    },
+    "PopulateEquippedItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PopulateEquippedItem()"
+    },
+    "PopulateForCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "needsRefresh": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateForCharacter(bool needsRefresh)"
+    },
+    "ChangeSlotState": {
+      "documentation": null,
+      "signature_members": {
+        "eDisplaySlot": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ChangeSlotState(GuiEquipSlots eDisplaySlot)"
+    },
+    "SetGlobalVars": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetGlobalVars()"
+    },
+    "UninstallXModForCurrentSlot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UninstallXModForCurrentSlot()"
+    },
+    "SetXModFilterSlot": {
+      "documentation": null,
+      "signature_members": {
+        "nNewXmodSlot": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetXModFilterSlot(int nNewXmodSlot)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    }
+  },
+  "states": {},
+  "classflags": 10485790,
+  "configname": "UI",
+  "documentation": null
+}

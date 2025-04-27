@@ -1,0 +1,16 @@
+{
+  "parent": "BioSoundNode_Base",
+  "package": "SFXGame",
+  "variables": {
+    "m_oSoundInputs": {
+      "type": "TransitionData",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136327314,
+  "configname": "None",
+  "documentation": null
+}

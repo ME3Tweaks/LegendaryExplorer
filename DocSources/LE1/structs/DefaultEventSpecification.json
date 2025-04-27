@@ -1,0 +1,18 @@
+{
+  "members": {
+    "EventState": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "EventTemplate": {
+      "type": "UIEvent",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

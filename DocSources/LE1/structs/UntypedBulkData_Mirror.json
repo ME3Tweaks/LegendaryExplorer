@@ -1,0 +1,73 @@
+{
+  "members": {
+    "VfTable": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "BulkDataFlags": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "ElementCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "BulkDataOffsetInFile": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "BulkDataSizeOnDisk": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "SavedBulkDataFlags": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "SavedElementCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "SavedBulkDataOffsetInFile": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "SavedBulkDataSizeOnDisk": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "BulkData": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "LockStatus": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "AttachedAr": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "bShouldFreeOnEmpty": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

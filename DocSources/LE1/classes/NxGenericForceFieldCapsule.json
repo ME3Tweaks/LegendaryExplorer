@@ -1,0 +1,26 @@
+{
+  "parent": "NxGenericForceField",
+  "package": "Engine",
+  "variables": {
+    "RenderComponent": {
+      "type": "DrawCapsuleComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "CapsuleHeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "CapsuleRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "members": {
+    "nmThrusterSocket": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioAppearanceVehicle",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

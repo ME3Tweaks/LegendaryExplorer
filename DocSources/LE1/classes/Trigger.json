@@ -1,0 +1,108 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "CylinderComponent": {
+      "type": "CylinderComponent",
+      "documentation": null,
+      "flags": 67764235
+    },
+    "AITriggerDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRecentlyTriggered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "ApplyCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyCheckpointRecord(const out CheckpointRecord Record)"
+    },
+    "CreateCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateCheckpointRecord(out CheckpointRecord Record)"
+    },
+    "ShouldSaveForCheckpoint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldSaveForCheckpoint()"
+    },
+    "StopsProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Projectile",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StopsProjectile(Projectile P)"
+    },
+    "UnTrigger": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnTrigger()"
+    },
+    "NotifyTriggered": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyTriggered()"
+    },
+    "Touch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "OtherComp": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Touch(Actor Other, PrimitiveComponent OtherComp, Vector HitLocation, Vector HitNormal)"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

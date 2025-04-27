@@ -1,0 +1,50 @@
+{
+  "parent": "SequenceEvent",
+  "package": "Engine",
+  "variables": {
+    "ScreenCenterDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "TriggerDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCheckForObstructions": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "PreVersionUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "OldVersion": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewVersion": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PreVersionUpdated(int OldVersion, int NewVersion)"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

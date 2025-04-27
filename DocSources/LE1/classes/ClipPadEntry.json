@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Title": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Text": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

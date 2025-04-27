@@ -1,0 +1,228 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "Materials": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 4194307
+    },
+    "m_aEffectsMaterialMICs": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "CachedTextures": {
+      "type": "Texture",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "CachedTexturesTimer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "GetUnscaledBounds": {
+      "documentation": null,
+      "signature_members": {
+        "UnscaledBounds": {
+          "type": "BoxSphereBounds",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUnscaledBounds(out BoxSphereBounds UnscaledBounds)"
+    },
+    "ClearEffectsMaterial": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearEffectsMaterial()"
+    },
+    "GetFractionOfEffectEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetFractionOfEffectEnabled()"
+    },
+    "GetEffectsMaterial": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetEffectsMaterial()"
+    },
+    "SetFractionOfEffectEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "fFraction": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFractionOfEffectEnabled(float fFraction)"
+    },
+    "SetEffectsMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "nmEffect": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEffectsMaterial(Name nmEffect)"
+    },
+    "CreateAndSetMaterialInstanceTimeVarying": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "MaterialInstanceTimeVarying",
+      "signature": "MaterialInstanceTimeVarying CreateAndSetMaterialInstanceTimeVarying(int ElementIndex)"
+    },
+    "CreateAndSetMaterialInstanceConstant": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "MaterialInstanceConstant",
+      "signature": "MaterialInstanceConstant CreateAndSetMaterialInstanceConstant(int ElementIndex)"
+    },
+    "PrestreamTextures": {
+      "documentation": null,
+      "signature_members": {
+        "Seconds": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bPrioritizeCharacterTextures": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "CinematicTextureGroups": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "PrestreamTextures(float Seconds, bool bPrioritizeCharacterTextures, optional int CinematicTextureGroups)"
+    },
+    "AddForce": {
+      "documentation": null,
+      "signature_members": {
+        "Force": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Position": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
+        },
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "AddForce(Vector Force, optional Vector Position, optional Name BoneName)"
+    },
+    "AddImpulse": {
+      "documentation": null,
+      "signature_members": {
+        "Impulse": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Position": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
+        },
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        },
+        "bVelChange": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "AddImpulse(Vector Impulse, optional Vector Position, optional Name BoneName, optional bool bVelChange)"
+    },
+    "GetNumElements": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumElements()"
+    },
+    "SetMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Material": {
+          "type": "MaterialInterface",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaterial(int ElementIndex, MaterialInterface Material)"
+    },
+    "GetBaseMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "MaterialInterface",
+      "signature": "MaterialInterface GetBaseMaterial(int ElementIndex)"
+    },
+    "GetMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "ElementIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "MaterialInterface",
+      "signature": "MaterialInterface GetMaterial(int ElementIndex)"
+    }
+  },
+  "states": {},
+  "classflags": 2155872659,
+  "configname": "None",
+  "documentation": null
+}

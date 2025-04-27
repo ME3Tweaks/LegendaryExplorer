@@ -1,0 +1,89 @@
+{
+  "parent": "UIDataProvider_OnlinePlayerStorage",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "ClearReadCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerInterface": {
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 128
+        },
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadCompleteDelegate(OnlinePlayerInterface PlayerInterface, byte LocalUserNum)"
+    },
+    "AddReadCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerInterface": {
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 128
+        },
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadCompleteDelegate(OnlinePlayerInterface PlayerInterface, byte LocalUserNum)"
+    },
+    "WriteData": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerInterface": {
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 128
+        },
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerStorage": {
+          "type": "OnlinePlayerStorage",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WriteData(OnlinePlayerInterface PlayerInterface, byte LocalUserNum, OnlinePlayerStorage PlayerStorage)"
+    },
+    "ReadData": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerInterface": {
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 128
+        },
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerStorage": {
+          "type": "OnlinePlayerStorage",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadData(OnlinePlayerInterface PlayerInterface, byte LocalUserNum, OnlinePlayerStorage PlayerStorage)"
+    }
+  },
+  "states": {},
+  "classflags": 136315034,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Alias": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "GameMode": {
+      "type": "EGameModes",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFHandler_PCOptions",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

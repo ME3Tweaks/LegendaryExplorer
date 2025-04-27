@@ -1,0 +1,33 @@
+{
+  "members": {
+    "nReqID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "fSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fLifeTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "nPriority": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIndefinite": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioWorldInfo",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

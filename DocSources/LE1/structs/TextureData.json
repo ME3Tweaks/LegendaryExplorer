@@ -1,0 +1,18 @@
+{
+  "members": {
+    "m_nParamName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oTexture": {
+      "type": "Texture",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioMorphUtility",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

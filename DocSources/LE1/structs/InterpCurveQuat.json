@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Points": {
+      "type": "InterpCurvePointQuat",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "InterpMethod": {
+      "type": "EInterpMethodType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

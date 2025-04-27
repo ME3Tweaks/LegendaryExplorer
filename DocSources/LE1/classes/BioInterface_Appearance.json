@@ -1,0 +1,56 @@
+{
+  "parent": "BioBaseInterface",
+  "package": "SFXGame",
+  "variables": {
+    "pActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oMorphFace": {
+      "type": "BioMorphFace",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bEnableMorphFaces": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_bForceRunTimeUpdates": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    }
+  },
+  "functions": {
+    "GetSaveObjectClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<BioBaseSaveObject> GetSaveObjectClass()"
+    },
+    "ResetToDefaults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetToDefaults()"
+    },
+    "UpdateAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "bForceUpdate": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateAppearance(optional bool bForceUpdate)"
+    }
+  },
+  "states": {},
+  "classflags": 142610583,
+  "configname": "Game",
+  "documentation": null
+}

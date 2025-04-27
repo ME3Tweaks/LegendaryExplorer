@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "CET_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "CET_Combat": {
+      "value": 1,
+      "documentation": null
+    },
+    "CET_Movement": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "CHARACTER_IMPORTER_CLASSES_2DA_BASE_CLASS": {
+      "value": 0,
+      "documentation": null
+    },
+    "CHARACTER_IMPORTER_CLASSES_2DA_CLASS_TALENTS": {
+      "value": 1,
+      "documentation": null
+    },
+    "CHARACTER_IMPORTER_CLASSES_2DA_CLASS_SPECIALIZATIONS": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,16 @@
+{
+  "parent": "BioPathPoint",
+  "package": "SFXGame",
+  "variables": {
+    "oCoveringobject": {
+      "type": "BioArtPlaceable",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 10486290,
+  "configname": "None",
+  "documentation": null
+}

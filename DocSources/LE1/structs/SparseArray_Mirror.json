@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Elements": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "AllocationFlags": {
+      "type": "BitArray_Mirror",
+      "documentation": null,
+      "flags": 4098
+    },
+    "FirstFreeIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "NumFreeIndices": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

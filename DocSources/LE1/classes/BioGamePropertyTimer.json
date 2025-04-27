@@ -1,0 +1,241 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aTimedGPs": {
+      "type": "BioGPTimingData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aFrameTickGPs": {
+      "type": "BioGameProperty",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnRemoveGameProperty__Delegate": {
+      "type": "OnRemoveGameProperty",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_bMutex": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "ToString": {
+      "documentation": null,
+      "signature_members": {
+        "sIndent": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "string",
+      "signature": "string ToString(optional string sIndent)"
+    },
+    "InvokeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "pDelegate": {
+          "type": "OnRemoveGameProperty",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "pGP": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "eTimingType": {
+          "type": "EBioGPTimingType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDeltaTimeRemaining": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InvokeDelegate(delegate<OnRemoveGameProperty> pDelegate, BioGameProperty pGP, EBioGPTimingType eTimingType, float fDeltaTimeRemaining)"
+    },
+    "RemoveAllNonStatic": {
+      "documentation": null,
+      "signature_members": {
+        "pDelegate": {
+          "type": "OnRemoveGameProperty",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveAllNonStatic(delegate<OnRemoveGameProperty> pDelegate)"
+    },
+    "GetTimeForGamePropertyByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmGamePropertyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "eTimingType": {
+          "type": "EBioGPTimingType",
+          "documentation": null,
+          "flags": 128
+        },
+        "oGameProperty": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetTimeForGamePropertyByName(Name nmGamePropertyName, EBioGPTimingType eTimingType, out BioGameProperty oGameProperty)"
+    },
+    "GetTimeForGameProperty": {
+      "documentation": null,
+      "signature_members": {
+        "oGameProp": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "eTimingType": {
+          "type": "EBioGPTimingType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetTimeForGameProperty(BioGameProperty oGameProp, EBioGPTimingType eTimingType)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "oOnRemoveGameProperty": {
+          "type": "OnRemoveGameProperty",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fDeltaTime, delegate<OnRemoveGameProperty> oOnRemoveGameProperty)"
+    },
+    "AppendStaticGameProperty": {
+      "documentation": null,
+      "signature_members": {
+        "oGP": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AppendStaticGameProperty(BioGameProperty oGP)"
+    },
+    "FindGamePropertyIndex": {
+      "documentation": null,
+      "signature_members": {
+        "oGP": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "eTimingType": {
+          "type": "EBioGPTimingType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindGamePropertyIndex(BioGameProperty oGP, EBioGPTimingType eTimingType)"
+    },
+    "RemoveGamePropertyAtIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveGamePropertyAtIndex(int nIndex)"
+    },
+    "RemoveGameProperty": {
+      "documentation": null,
+      "signature_members": {
+        "oGP": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveGameProperty(BioGameProperty oGP)"
+    },
+    "InsertGameProperty": {
+      "documentation": null,
+      "signature_members": {
+        "oGP": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "fTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "eTimingType": {
+          "type": "EBioGPTimingType",
+          "documentation": null,
+          "flags": 128
+        },
+        "bFrameTicked": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "InsertGameProperty(BioGameProperty oGP, float fTime, EBioGPTimingType eTimingType, optional bool bFrameTicked)"
+    },
+    "OnRemoveGameProperty": {
+      "documentation": null,
+      "signature_members": {
+        "pGP": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "eTimingType": {
+          "type": "EBioGPTimingType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDeltaTimeRemaining": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRemoveGameProperty(BioGameProperty pGP, EBioGPTimingType eTimingType, float fDeltaTimeRemaining)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

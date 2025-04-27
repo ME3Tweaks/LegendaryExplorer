@@ -1,0 +1,18 @@
+{
+  "members": {
+    "From": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "To": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXGUIInteraction",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "InterpTrackInstProperty",
+  "package": "Engine",
+  "variables": {
+    "VectorProp": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 0
+    },
+    "ResetVector": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

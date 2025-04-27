@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Position": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Quaternion": {
+      "type": "Quat",
+      "documentation": null,
+      "flags": 0
+    },
+    "LinVel": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "AngVel": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "bNewData": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Actor",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

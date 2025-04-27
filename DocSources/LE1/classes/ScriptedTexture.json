@@ -1,0 +1,39 @@
+{
+  "parent": "TextureRenderTarget2D",
+  "package": "Engine",
+  "variables": {
+    "__Render__Delegate": {
+      "type": "Render",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "bNeedsUpdate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bSkipNextClear": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "Render": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": "Canvas",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Render(Canvas C)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

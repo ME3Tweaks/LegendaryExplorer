@@ -1,0 +1,54 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "InputTypeValue": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "InputAlphaValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "AlphaValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NeedToSetType": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "NeedToSetAlpha": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "TypeValue": {
+      "type": "EEffectsMaterialType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "SetUpInputs": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetUpInputs()"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

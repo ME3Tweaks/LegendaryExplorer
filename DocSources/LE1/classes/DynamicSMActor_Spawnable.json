@@ -1,0 +1,10 @@
+{
+  "parent": "DynamicSMActor",
+  "package": "Engine",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 10485778,
+  "configname": "None",
+  "documentation": null
+}

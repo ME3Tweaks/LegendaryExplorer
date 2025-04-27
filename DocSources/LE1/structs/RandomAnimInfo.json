@@ -1,0 +1,43 @@
+{
+  "members": {
+    "PlayRateRange": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "Chance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "BlendInTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bStillFrame": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "LoopCountMin": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 1
+    },
+    "LoopCountMax": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 1
+    },
+    "LoopCount": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "classdef": "AnimNodeRandom",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

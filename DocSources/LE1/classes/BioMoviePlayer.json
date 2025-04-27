@@ -1,0 +1,87 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "__OnMovieFinished__Delegate": {
+      "type": "OnMovieFinished",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_material": {
+      "type": "Material",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_textureMovie": {
+      "type": "TextureMovie",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "ShutdownMovie": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutdownMovie()"
+    },
+    "Draw": {
+      "documentation": null,
+      "signature_members": {
+        "Canvas": {
+          "type": "Canvas",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Draw(Canvas Canvas)"
+    },
+    "SetMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "Material": {
+          "type": "Material",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaterial(Material Material)"
+    },
+    "SetTextureMovie": {
+      "documentation": null,
+      "signature_members": {
+        "TextureMovie": {
+          "type": "TextureMovie",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTextureMovie(TextureMovie TextureMovie)"
+    },
+    "InitializeMovie": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeMovie()"
+    },
+    "OnMovieFinished": {
+      "documentation": null,
+      "signature_members": {
+        "TextureMovie": {
+          "type": "TextureMovie",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnMovieFinished(TextureMovie TextureMovie)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,44 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "SquadRelations": {
+      "type": "EBioFactionRelationship",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "SquadIcon": {
+      "type": "Texture2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIsImmuneToPhysics": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "SquadFaction": {
+      "type": "EBioFactionTypes",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetRelationTo": {
+      "documentation": null,
+      "signature_members": {
+        "nType": {
+          "type": "EBioFactionTypes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "EBioFactionRelationship",
+      "signature": "EBioFactionRelationship GetRelationTo(EBioFactionTypes nType)"
+    }
+  },
+  "states": {},
+  "classflags": 134221971,
+  "configname": "None",
+  "documentation": null
+}

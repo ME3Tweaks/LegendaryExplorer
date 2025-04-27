@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "OPTION_BOOLEAN_FALSE": {
+      "value": 0,
+      "documentation": null
+    },
+    "OPTION_BOOLEAN_TRUE": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

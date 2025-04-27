@@ -1,0 +1,61 @@
+{
+  "parent": "BioBaseSaveObject",
+  "package": "SFXGame",
+  "variables": {
+    "m_aActionMap": {
+      "type": "BioActionMapping",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_lstHotKeyPawns": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_lstHotKeyEvents": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nmLastPower": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nLastWeapon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "LoadObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadObject(Object O)"
+    },
+    "SaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveObject(Object O)"
+    }
+  },
+  "states": {},
+  "classflags": 18,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Effect": {
+      "type": "BioVisualEffect",
+      "documentation": null,
+      "flags": 0
+    },
+    "NextNode": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "PrevNode": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ValidNode": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioWorldInfo",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

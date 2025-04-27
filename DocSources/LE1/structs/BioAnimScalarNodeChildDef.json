@@ -1,0 +1,18 @@
+{
+  "members": {
+    "BlendParams": {
+      "type": "BioScalarBlendParams",
+      "documentation": null,
+      "flags": 0
+    },
+    "Name": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioAnimNodeBlendScalarBehavior",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

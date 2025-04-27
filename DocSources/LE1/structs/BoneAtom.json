@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Rotation": {
+      "type": "Quat",
+      "documentation": null,
+      "flags": 0
+    },
+    "Translation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Scale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

@@ -1,0 +1,63 @@
+{
+  "parent": "BioAFComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_bBeingShutdown": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bUpdateOnShutdown": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_InitalizationEventType": {
+      "type": "EInitalizeEventType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "ValidSuperMode": {
+      "documentation": null,
+      "signature_members": {
+        "eMode": {
+          "type": "EBioSuperModes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ValidSuperMode(EBioSuperModes eMode)"
+    },
+    "GetEventTypeName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetEventTypeName()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOwner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(Actor oOwner)"
+    },
+    "InitializeInternal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeInternal()"
+    }
+  },
+  "states": {},
+  "classflags": 134217875,
+  "configname": "None",
+  "documentation": null
+}

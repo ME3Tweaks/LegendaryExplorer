@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PETTM_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "PETTM_Full": {
+      "value": 1,
+      "documentation": null
+    },
+    "PETTM_Partial": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

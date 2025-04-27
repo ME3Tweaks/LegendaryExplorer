@@ -1,0 +1,489 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "AccBonusMapping": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4210689
+    },
+    "ConeMaxAccBonusMapping": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4210689
+    },
+    "ConeAccBonusMapping": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4210689
+    },
+    "RecoilMaxAccBonusMapping": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4210689
+    },
+    "RecoilAccBonusMapping": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4210689
+    },
+    "ZoomSnapList": {
+      "type": "ZoomSnapInfo",
+      "documentation": null,
+      "flags": 4210689
+    },
+    "HeadshotPowerDamageBonus": {
+      "type": "HeadshotDamageBonus",
+      "documentation": null,
+      "flags": 4210689
+    },
+    "PelletSpread": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ManufacturerModifiers": {
+      "type": "ManufacturerModifier",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "AimModes": {
+      "type": "WeaponAimMode",
+      "documentation": null,
+      "flags": 4210689
+    },
+    "MaleWeaponAnimSets": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "FemaleWeaponAnimSets": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "FrictionTargetOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 16385
+    },
+    "AimError": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 16385
+    },
+    "ZoomAimError": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 16385
+    },
+    "FrictionMultiplierRange": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 16385
+    },
+    "AdhesionStrengthRange": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 16385
+    },
+    "DamageRange": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 16385
+    },
+    "HeatPerShotRange": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 16385
+    },
+    "HeatLossRateRange": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 16385
+    },
+    "OverheatedHeatLossRateRange": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 16385
+    },
+    "CameraSetup": {
+      "type": "SFXCameraSetup",
+      "documentation": null,
+      "flags": 1
+    },
+    "DrawAnimset": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "WeaponFireRumble": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "WeaponOverheatedRumble": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "FiringShake": {
+      "type": "SFXCameraShakeBase",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "TightAimFiringShake": {
+      "type": "SFXCameraShakeBase",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "CrosshairErrorFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "AccFirePenalty": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "AccFireInterpSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "ZoomConeAccBonus": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "ZoomAccFirePenalty": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "ZoomAccFireInterpSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "Recoil": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "ZoomRecoil": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "RecoilInterpSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "RecoilFadeSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "RecoilZoomFadeSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "RecoilCap": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "ZoomRecoilCap": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "RecoilYawScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "RecoilYawFrequency": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "MinFrictionDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "MaxFrictionDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "PeakFrictionDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "PeakFrictionRadiusScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "PeakFrictionHeightScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "MinAdhesionDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "MaxAdhesionDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "MinAdhesionVelocity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "CamInputAdhesionDamping": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "MaxLateralAdhesionDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "AimCorrectionAmount": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "MagneticCorrectionThresholdAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "MaxMagneticCorrectionAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "MinZoomSnapDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "MaxZoomSnapDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "RateOfFire": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "MinRefireTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "RoundsPerBurst": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16385
+    },
+    "Damage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8193
+    },
+    "HeatPerShot": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8193
+    },
+    "HeatLossRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8193
+    },
+    "OverheatedHeatLossRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8193
+    },
+    "RampFirePct": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "RampFireTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "Description": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16385
+    },
+    "UIDPSFudgeFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "bEnableAccuracy": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16385
+    },
+    "bRemapAccToRecoil": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16385
+    },
+    "bFrictionEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16385
+    },
+    "bFrictionDistanceScalingEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16385
+    },
+    "bAdhesionEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16385
+    },
+    "bAdhesionDuringCam": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16385
+    },
+    "bZoomSnapEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16385
+    },
+    "bScaleFireAnimByFireRate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16385
+    },
+    "bDisableTracers": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16385
+    },
+    "bOverrideAnimsets": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "weaponType": {
+      "type": "EBioItemWeaponRangedType",
+      "documentation": null,
+      "flags": 1
+    },
+    "FireMode": {
+      "type": "FireModes",
+      "documentation": null,
+      "flags": 16385
+    }
+  },
+  "functions": {
+    "GetDamageFromItem": {
+      "documentation": null,
+      "signature_members": {
+        "Item": {
+          "type": "BioItemWeaponRanged",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetDamageFromItem(BioItemWeaponRanged Item)"
+    },
+    "GetHeatPerShotFromItem": {
+      "documentation": null,
+      "signature_members": {
+        "Item": {
+          "type": "BioItemWeaponRanged",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetHeatPerShotFromItem(BioItemWeaponRanged Item)"
+    },
+    "GetRateOfFireFromItem": {
+      "documentation": null,
+      "signature_members": {
+        "Item": {
+          "type": "BioItemWeaponRanged",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetRateOfFireFromItem(BioItemWeaponRanged Item)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "sophistication": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "ManufacturerID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(int sophistication, int ManufacturerID)"
+    },
+    "GetDamagePerSecondValue": {
+      "documentation": null,
+      "signature_members": {
+        "Item": {
+          "type": "BioItemWeaponRanged",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetDamagePerSecondValue(BioItemWeaponRanged Item)"
+    },
+    "GetHeatsinkEfficiencyValue": {
+      "documentation": null,
+      "signature_members": {
+        "Item": {
+          "type": "BioItemWeaponRanged",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetHeatsinkEfficiencyValue(BioItemWeaponRanged Item)"
+    }
+  },
+  "states": {},
+  "classflags": 142606486,
+  "configname": "Weapon",
+  "documentation": null
+}

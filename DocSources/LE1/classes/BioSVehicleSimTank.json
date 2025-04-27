@@ -1,0 +1,61 @@
+{
+  "parent": "SVehicleSimTank",
+  "package": "SFXGame",
+  "variables": {
+    "m_fLatFrictionScaleSteerCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_fLongFrictionScaleSteerCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_TorqueSplitRight": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_TorqueSplitLeft": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_TorqueCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "StiffnessByFramerate": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_fPrevInputYaw": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fCurrentInputYaw": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fYawDeltaRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "MinTrackVelocity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
+  "documentation": null
+}

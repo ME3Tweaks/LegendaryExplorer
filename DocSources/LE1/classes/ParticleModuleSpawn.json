@@ -1,0 +1,31 @@
+{
+  "parent": "ParticleModuleSpawnBase",
+  "package": "Engine",
+  "variables": {
+    "Rate": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "RateScale": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "BurstList": {
+      "type": "ParticleBurst",
+      "documentation": null,
+      "flags": 37748745
+    },
+    "ParticleBurstMethod": {
+      "type": "EParticleBurstMethod",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

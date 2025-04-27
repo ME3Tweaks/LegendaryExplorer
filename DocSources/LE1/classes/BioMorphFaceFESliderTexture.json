@@ -1,0 +1,21 @@
+{
+  "parent": "BioMorphFaceFESliderBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_sParameterName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_atTexture": {
+      "type": "Texture",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

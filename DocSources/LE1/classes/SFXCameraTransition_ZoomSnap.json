@@ -1,0 +1,72 @@
+{
+  "parent": "SFXCameraMode_Interpolate",
+  "package": "SFXGame",
+  "variables": {
+    "ZoomSnapTargetLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "StartRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "StartLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    },
+    "MakeInactive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeInactive()"
+    },
+    "InitializeTransition": {
+      "documentation": null,
+      "signature_members": {
+        "FromMode": {
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
+        },
+        "ToMode": {
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
+        },
+        "Time": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "PreserveTarget": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeTransition(SFXCameraMode FromMode, SFXCameraMode ToMode, float Time, bool PreserveTarget)"
+    }
+  },
+  "states": {},
+  "classflags": 10485778,
+  "configname": "None",
+  "documentation": null
+}

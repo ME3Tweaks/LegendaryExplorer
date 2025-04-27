@@ -1,0 +1,431 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "CollectedBindMapping": {
+      "type": "MultiMap_Mirror",
+      "documentation": null,
+      "flags": 12288
+    },
+    "Bindings": {
+      "type": "KeyBind",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "LocalizedBindings": {
+      "type": "KeyBind",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "bBindingsCollected": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bShowHUD": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bShowSelection": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bShowDamageIndicators": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bShowRadar": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAllowPlayerRotation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAllowMovement": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAllowAIMovement": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAllowHenchmenMovement": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAllowCamera": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAllowCameraMods": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAllowSave": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAllowLookAt": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAllowPauseMenu": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bHasMouseAuthority": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bMouseVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bShowReticles": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bPlayVocalizations": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Priority": {
+      "type": "EGameModePriority",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GuiKey": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GuiKey(BioGuiEvents Event)"
+    },
+    "SquadCommand_Move2": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SquadCommand_Move2()"
+    },
+    "SquadCommand_Move1": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SquadCommand_Move1()"
+    },
+    "SquadCommand_Follow": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SquadCommand_Follow()"
+    },
+    "SquadCommand_Attack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SquadCommand_Attack()"
+    },
+    "ToggleKeyMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleKeyMap()"
+    },
+    "ShowEquipmentGui": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowEquipmentGui(bool bShow)"
+    },
+    "ShowSquadGui": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowSquadGui(bool bShow)"
+    },
+    "ShowCodexGui": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowCodexGui(bool bShow)"
+    },
+    "ShowJournalGui": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowJournalGui(bool bShow)"
+    },
+    "ShowMapGui": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowMapGui(bool bShow)"
+    },
+    "TurnOffStormForPause": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnOffStormForPause()"
+    },
+    "ShowMenuGui": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShowMenuGui()"
+    },
+    "CanPause": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanPause()"
+    },
+    "StopFiringWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopFiringWeapon()"
+    },
+    "FireWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FireWeapon()"
+    },
+    "SetSystemFilmgrainEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bValue": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSystemFilmgrainEnabled(bool bValue)"
+    },
+    "IsSystemFilmgrainEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSystemFilmgrainEnabled()"
+    },
+    "CollectBindings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CollectBindings()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "DeactivateSpecifier": {
+      "documentation": null,
+      "signature_members": {
+        "ModeSpecifier": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DeactivateSpecifier(Name ModeSpecifier)"
+    },
+    "ActivateSpecifier": {
+      "documentation": null,
+      "signature_members": {
+        "ModeSpecifier": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateSpecifier(Name ModeSpecifier)"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "ClearTimer": {
+      "documentation": null,
+      "signature_members": {
+        "inTimerFunc": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        },
+        "inObj": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearTimer(optional Name inTimerFunc, optional Object inObj)"
+    },
+    "IsTimerActive": {
+      "documentation": null,
+      "signature_members": {
+        "inTimerFunc": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        },
+        "inObj": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsTimerActive(optional Name inTimerFunc, optional Object inObj)"
+    },
+    "SetTimer": {
+      "documentation": null,
+      "signature_members": {
+        "InRate": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "inbLoop": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "inTimerFunc": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        },
+        "inObj": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTimer(float InRate, optional bool inbLoop, optional Name inTimerFunc, optional Object inObj)"
+    },
+    "HACK_GetCameraMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode HACK_GetCameraMode()"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
+        },
+        "PreserveTarget": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "TransitionTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "Transition": {
+          "type": "SFXCameraMode_Interpolate",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "DebugSave": {
+      "documentation": null,
+      "signature_members": {
+        "DebugName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugSave(string DebugName)"
+    }
+  },
+  "states": {},
+  "classflags": 136315031,
+  "configname": "Input",
+  "documentation": null
+}

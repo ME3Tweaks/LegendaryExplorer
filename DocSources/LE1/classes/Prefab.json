@@ -1,0 +1,31 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "PrefabArchetypes": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "RemovedArchetypes": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "PrefabSequence": {
+      "type": "PrefabSequence",
+      "documentation": null,
+      "flags": 2
+    },
+    "PrefabVersion": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

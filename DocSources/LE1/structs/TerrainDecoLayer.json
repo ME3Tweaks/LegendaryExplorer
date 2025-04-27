@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Name": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Decorations": {
+      "type": "TerrainDecoration",
+      "documentation": null,
+      "flags": 71827457
+    },
+    "AlphaMapIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Terrain",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 4
+}

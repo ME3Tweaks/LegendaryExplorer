@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Name": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 32770
+    },
+    "Id": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "bIsWildcard": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "classdef": "Settings",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

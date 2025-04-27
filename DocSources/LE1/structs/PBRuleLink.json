@@ -1,0 +1,18 @@
+{
+  "members": {
+    "LinkName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "NextRule": {
+      "type": "PBRuleNodeBase",
+      "documentation": null,
+      "flags": 71303177
+    }
+  },
+  "classdef": "PBRuleNodeBase",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

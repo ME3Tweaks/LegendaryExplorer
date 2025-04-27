@@ -1,0 +1,357 @@
+{
+  "EnumValues": {
+    "REVERB_CASTLE_SMALLROOM": {
+      "value": 0,
+      "documentation": null
+    },
+    "REVERB_CASTLE_SHORTPASSAGE": {
+      "value": 1,
+      "documentation": null
+    },
+    "REVERB_CASTLE_MEDIUMROOM": {
+      "value": 2,
+      "documentation": null
+    },
+    "REVERB_CASTLE_LONGPASSAGE": {
+      "value": 3,
+      "documentation": null
+    },
+    "REVERB_CASTLE_LARGEROOM": {
+      "value": 4,
+      "documentation": null
+    },
+    "REVERB_CASTLE_HALL": {
+      "value": 5,
+      "documentation": null
+    },
+    "REVERB_CASTLE_CUPBOARD": {
+      "value": 6,
+      "documentation": null
+    },
+    "REVERB_CASTLE_COURTYARD": {
+      "value": 7,
+      "documentation": null
+    },
+    "REVERB_CASTLE_ALCOVE": {
+      "value": 8,
+      "documentation": null
+    },
+    "REVERB_FACTORY_ALCOVE": {
+      "value": 9,
+      "documentation": null
+    },
+    "REVERB_FACTORY_SHORTPASSAGE": {
+      "value": 10,
+      "documentation": null
+    },
+    "REVERB_FACTORY_MEDIUMROOM": {
+      "value": 11,
+      "documentation": null
+    },
+    "REVERB_FACTORY_LONGPASSAGE": {
+      "value": 12,
+      "documentation": null
+    },
+    "REVERB_FACTORY_LARGEROOM": {
+      "value": 13,
+      "documentation": null
+    },
+    "REVERB_FACTORY_HALL": {
+      "value": 14,
+      "documentation": null
+    },
+    "REVERB_FACTORY_CUPBOARD": {
+      "value": 15,
+      "documentation": null
+    },
+    "REVERB_FACTORY_COURTYARD": {
+      "value": 16,
+      "documentation": null
+    },
+    "REVERB_FACTORY_SMALLROOM": {
+      "value": 17,
+      "documentation": null
+    },
+    "REVERB_ICEPALACE_ALCOVE": {
+      "value": 18,
+      "documentation": null
+    },
+    "REVERB_ICEPALACE_SHORTPASSAGE": {
+      "value": 19,
+      "documentation": null
+    },
+    "REVERB_ICEPALACE_MEDIUMROOM": {
+      "value": 20,
+      "documentation": null
+    },
+    "REVERB_ICEPALACE_LONGPASSAGE": {
+      "value": 21,
+      "documentation": null
+    },
+    "REVERB_ICEPALACE_LARGEROOM": {
+      "value": 22,
+      "documentation": null
+    },
+    "REVERB_ICEPALACE_HALL": {
+      "value": 23,
+      "documentation": null
+    },
+    "REVERB_ICEPALACE_CUPBOARD": {
+      "value": 24,
+      "documentation": null
+    },
+    "REVERB_ICEPALACE_COURTYARD": {
+      "value": 25,
+      "documentation": null
+    },
+    "REVERB_ICEPALACE_SMALLROOM": {
+      "value": 26,
+      "documentation": null
+    },
+    "REVERB_SPACESTATION_ALCOVE": {
+      "value": 27,
+      "documentation": null
+    },
+    "REVERB_SPACESTATION_MEDIUMROOM": {
+      "value": 28,
+      "documentation": null
+    },
+    "REVERB_SPACESTATION_SHORTPASSAGE": {
+      "value": 29,
+      "documentation": null
+    },
+    "REVERB_SPACESTATION_LONGPASSAGE": {
+      "value": 30,
+      "documentation": null
+    },
+    "REVERB_SPACESTATION_LARGEROOM": {
+      "value": 31,
+      "documentation": null
+    },
+    "REVERB_SPACESTATION_HALL": {
+      "value": 32,
+      "documentation": null
+    },
+    "REVERB_SPACESTATION_CUPBOARD": {
+      "value": 33,
+      "documentation": null
+    },
+    "REVERB_SPACESTATION_SMALLROOM": {
+      "value": 34,
+      "documentation": null
+    },
+    "REVERB_WOODEN_ALCOVE": {
+      "value": 35,
+      "documentation": null
+    },
+    "REVERB_WOODEN_SHORTPASSAGE": {
+      "value": 36,
+      "documentation": null
+    },
+    "REVERB_WOODEN_MEDIUMROOM": {
+      "value": 37,
+      "documentation": null
+    },
+    "REVERB_WOODEN_LONGPASSAGE": {
+      "value": 38,
+      "documentation": null
+    },
+    "REVERB_WOODEN_LARGEROOM": {
+      "value": 39,
+      "documentation": null
+    },
+    "REVERB_WOODEN_HALL": {
+      "value": 40,
+      "documentation": null
+    },
+    "REVERB_WOODEN_CUPBOARD": {
+      "value": 41,
+      "documentation": null
+    },
+    "REVERB_WOODEN_SMALLROOM": {
+      "value": 42,
+      "documentation": null
+    },
+    "REVERB_WOODEN_COURTYARD": {
+      "value": 43,
+      "documentation": null
+    },
+    "REVERB_SPORT_EMPTYSTADIUM": {
+      "value": 44,
+      "documentation": null
+    },
+    "REVERB_SPORT_SQUASHCOURT": {
+      "value": 45,
+      "documentation": null
+    },
+    "REVERB_SPORT_SMALLSWIMMINGPOOL": {
+      "value": 46,
+      "documentation": null
+    },
+    "REVERB_SPORT_LARGESWIMMINGPOOL": {
+      "value": 47,
+      "documentation": null
+    },
+    "REVERB_SPORT_GYMNASIUM": {
+      "value": 48,
+      "documentation": null
+    },
+    "REVERB_SPORT_FULLSTADIUM": {
+      "value": 49,
+      "documentation": null
+    },
+    "REVERB_SPORT_STADIUMTANNOY": {
+      "value": 50,
+      "documentation": null
+    },
+    "REVERB_PREFAB_WORKSHOP": {
+      "value": 51,
+      "documentation": null
+    },
+    "REVERB_PREFAB_SCHOOLROOM": {
+      "value": 52,
+      "documentation": null
+    },
+    "REVERB_PREFAB_PRACTISEROOM": {
+      "value": 53,
+      "documentation": null
+    },
+    "REVERB_PREFAB_OUTHOUSE": {
+      "value": 54,
+      "documentation": null
+    },
+    "REVERB_PREFAB_CARAVAN": {
+      "value": 55,
+      "documentation": null
+    },
+    "REVERB_DOME_TOMB": {
+      "value": 56,
+      "documentation": null
+    },
+    "REVERB_PIPE_SMALL": {
+      "value": 57,
+      "documentation": null
+    },
+    "REVERB_DOME_SAINTPAULS": {
+      "value": 58,
+      "documentation": null
+    },
+    "REVERB_PIPE_LONGTHIN": {
+      "value": 59,
+      "documentation": null
+    },
+    "REVERB_PIPE_LARGE": {
+      "value": 60,
+      "documentation": null
+    },
+    "REVERB_PIPE_RESONANT": {
+      "value": 61,
+      "documentation": null
+    },
+    "REVERB_OUTDOORS_BACKYARD": {
+      "value": 62,
+      "documentation": null
+    },
+    "REVERB_OUTDOORS_ROLLINGPLAINS": {
+      "value": 63,
+      "documentation": null
+    },
+    "REVERB_OUTDOORS_DEEPCANYON": {
+      "value": 64,
+      "documentation": null
+    },
+    "REVERB_OUTDOORS_CREEK": {
+      "value": 65,
+      "documentation": null
+    },
+    "REVERB_OUTDOORS_VALLEY": {
+      "value": 66,
+      "documentation": null
+    },
+    "REVERB_MOOD_HEAVEN": {
+      "value": 67,
+      "documentation": null
+    },
+    "REVERB_MOOD_HELL": {
+      "value": 68,
+      "documentation": null
+    },
+    "REVERB_MOOD_MEMORY": {
+      "value": 69,
+      "documentation": null
+    },
+    "REVERB_DRIVING_COMMENTATOR": {
+      "value": 70,
+      "documentation": null
+    },
+    "REVERB_DRIVING_PITGARAGE": {
+      "value": 71,
+      "documentation": null
+    },
+    "REVERB_DRIVING_INCAR_RACER": {
+      "value": 72,
+      "documentation": null
+    },
+    "REVERB_DRIVING_INCAR_SPORTS": {
+      "value": 73,
+      "documentation": null
+    },
+    "REVERB_DRIVING_INCAR_LUXURY": {
+      "value": 74,
+      "documentation": null
+    },
+    "REVERB_DRIVING_FULLGRANDSTAND": {
+      "value": 75,
+      "documentation": null
+    },
+    "REVERB_DRIVING_EMPTYGRANDSTAND": {
+      "value": 76,
+      "documentation": null
+    },
+    "REVERB_DRIVING_TUNNEL": {
+      "value": 77,
+      "documentation": null
+    },
+    "REVERB_CITY_STREETS": {
+      "value": 78,
+      "documentation": null
+    },
+    "REVERB_CITY_SUBWAY": {
+      "value": 79,
+      "documentation": null
+    },
+    "REVERB_CITY_MUSEUM": {
+      "value": 80,
+      "documentation": null
+    },
+    "REVERB_CITY_LIBRARY": {
+      "value": 81,
+      "documentation": null
+    },
+    "REVERB_CITY_UNDERPASS": {
+      "value": 82,
+      "documentation": null
+    },
+    "REVERB_CITY_ABANDONED": {
+      "value": 83,
+      "documentation": null
+    },
+    "REVERB_DUSTYROOM": {
+      "value": 84,
+      "documentation": null
+    },
+    "REVERB_CHAPEL": {
+      "value": 85,
+      "documentation": null
+    },
+    "REVERB_SMALLWATERROOM": {
+      "value": 86,
+      "documentation": null
+    },
+    "REVERB_Default": {
+      "value": 87,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

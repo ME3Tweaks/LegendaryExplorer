@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "AUTO_LEVEL_UP_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "AUTO_LEVEL_UP_SQUAD_MEMBERS": {
+      "value": 1,
+      "documentation": null
+    },
+    "AUTO_LEVEL_UP_ALL": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

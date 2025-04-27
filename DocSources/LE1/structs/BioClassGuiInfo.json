@@ -1,0 +1,33 @@
+{
+  "members": {
+    "sLabel": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "srClassName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "srDescription": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "srPrimaryAbilityDescription": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "srSecondaryAbilityDescription": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioCharacterImporter",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

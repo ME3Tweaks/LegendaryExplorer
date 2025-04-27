@@ -1,0 +1,26 @@
+{
+  "parent": "SequenceCondition",
+  "package": "Engine",
+  "variables": {
+    "IncrementAmount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "ValueA": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "ValueB": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

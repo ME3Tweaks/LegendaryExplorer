@@ -1,0 +1,57 @@
+{
+  "EnumValues": {
+    "SaveGame_DoNothing": {
+      "value": 0,
+      "documentation": null
+    },
+    "SaveGame_Load": {
+      "value": 1,
+      "documentation": null
+    },
+    "SaveGame_Save": {
+      "value": 2,
+      "documentation": null
+    },
+    "SaveGame_Delete": {
+      "value": 3,
+      "documentation": null
+    },
+    "SaveGame_CreateCareer": {
+      "value": 4,
+      "documentation": null
+    },
+    "SaveGame_DeleteCareer": {
+      "value": 5,
+      "documentation": null
+    },
+    "SaveGame_EnumerateCareers": {
+      "value": 6,
+      "documentation": null
+    },
+    "SaveGame_EnumerateSaves": {
+      "value": 7,
+      "documentation": null
+    },
+    "SaveGame_QueryFreeSpace": {
+      "value": 8,
+      "documentation": null
+    },
+    "SaveGame_PrepareSave": {
+      "value": 9,
+      "documentation": null
+    },
+    "SaveGame_DeletePreparedSave": {
+      "value": 10,
+      "documentation": null
+    },
+    "SaveGame_SaveGamerProfile": {
+      "value": 11,
+      "documentation": null
+    },
+    "SaveGame_LoadGamerProfile": {
+      "value": 12,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

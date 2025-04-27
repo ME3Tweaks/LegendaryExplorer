@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "STW_Pistol": {
+      "value": 0,
+      "documentation": null
+    },
+    "STW_ShotGun": {
+      "value": 1,
+      "documentation": null
+    },
+    "STW_AssaultRifle": {
+      "value": 2,
+      "documentation": null
+    },
+    "STW_SniperRifle": {
+      "value": 3,
+      "documentation": null
+    },
+    "STW_None": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

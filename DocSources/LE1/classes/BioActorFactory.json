@@ -1,0 +1,16 @@
+{
+  "parent": "ActorFactory",
+  "package": "SFXGame",
+  "variables": {
+    "m_oActorType": {
+      "type": "BioActorType",
+      "documentation": null,
+      "flags": 67108865
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142618774,
+  "configname": "Editor",
+  "documentation": null
+}

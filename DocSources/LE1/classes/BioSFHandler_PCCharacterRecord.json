@@ -1,0 +1,152 @@
+{
+  "parent": "BioSFHandler_CharacterRecord",
+  "package": "SFXGame",
+  "variables": {
+    "m_IGGHandler": {
+      "type": "BioSFHandler",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "ClosePanel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClosePanel()"
+    },
+    "ApplyOrNotThenExit": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyOrNotThenExit(bool bAPressed, int nContext)"
+    },
+    "ConfirmCommit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ConfirmCommit()"
+    },
+    "NeedsToConfirm": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NeedsToConfirm()"
+    },
+    "RemoveTalentPoint": {
+      "documentation": null,
+      "signature_members": {
+        "RankIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveTalentPoint(int RankIndex)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "InitializeCharacterRecord": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InitializeCharacterRecord()"
+    },
+    "SetCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCharacter(int Index)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "Parameters": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> Parameters)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "SetIGGHandler": {
+      "documentation": null,
+      "signature_members": {
+        "pHandler": {
+          "type": "BioSFHandler",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetIGGHandler(BioSFHandler pHandler)"
+    }
+  },
+  "states": {},
+  "classflags": 10485790,
+  "configname": "UI",
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "parent": "PhysicsVolume",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    }
+  },
+  "states": {},
+  "classflags": 144704186,
+  "configname": "None",
+  "documentation": null
+}

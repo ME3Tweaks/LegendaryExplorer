@@ -1,0 +1,85 @@
+{
+  "parent": "NavigationPoint",
+  "package": "Engine",
+  "variables": {
+    "OwningSlot": {
+      "type": "CoverInfo",
+      "documentation": null,
+      "flags": 131073
+    },
+    "bLastChoice": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIgnoreSizeLimits": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "GetDebugString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDebugString()"
+    },
+    "GetDebugAbbrev": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDebugAbbrev()"
+    },
+    "IsValidClaim": {
+      "documentation": null,
+      "signature_members": {
+        "ChkClaim": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "bSkipTeamCheck": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bSkipOverlapCheck": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidClaim(Pawn ChkClaim, optional bool bSkipTeamCheck, optional bool bSkipOverlapCheck)"
+    },
+    "SetSlotEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSlotEnabled(bool bEnable)"
+    },
+    "GetSlotRotation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Rotator",
+      "signature": "Rotator GetSlotRotation()"
+    },
+    "GetSlotLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetSlotLocation()"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,99 @@
+{
+  "parent": "BioBaseSaveObject",
+  "package": "SFXGame",
+  "variables": {
+    "m_LevelObjects": {
+      "type": "BioBaseSaveObject",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_LootBags": {
+      "type": "SavedLootBag",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_lstDestroyedObjects": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "SaveDestroyedObjects": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveDestroyedObjects(Object O)"
+    },
+    "LoadLootBagArray": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadLootBagArray(Object O)"
+    },
+    "SaveLootBagArray": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveLootBagArray(Object O)"
+    },
+    "DestroyObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DestroyObject(Object O)"
+    },
+    "LoadObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadObject(Object O)"
+    },
+    "SaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveObject(Object O)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

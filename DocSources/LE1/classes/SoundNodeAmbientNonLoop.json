@@ -1,0 +1,21 @@
+{
+  "parent": "SoundNodeAmbient",
+  "package": "Engine",
+  "variables": {
+    "DelayTime": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "SoundSlots": {
+      "type": "AmbientSoundSlot",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144715922,
+  "configname": "None",
+  "documentation": null
+}

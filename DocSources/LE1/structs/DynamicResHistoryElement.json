@@ -1,0 +1,28 @@
+{
+  "members": {
+    "ResolutionFraction": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "GPUBusyTimeMs": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "GameThreadBusyTimeMs": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "RenderThreadBusyTimeMs": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "LocalPlayer",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

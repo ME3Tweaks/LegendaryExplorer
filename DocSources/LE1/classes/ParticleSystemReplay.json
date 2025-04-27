@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Frames": {
+      "type": "ParticleSystemReplayFrame",
+      "documentation": null,
+      "flags": 4098
+    },
+    "ClipIDNumber": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4097
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

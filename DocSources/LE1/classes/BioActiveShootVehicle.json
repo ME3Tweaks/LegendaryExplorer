@@ -1,0 +1,23 @@
+{
+  "parent": "BioActiveShootBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_nWeaponIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "InitializeInternal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeInternal()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

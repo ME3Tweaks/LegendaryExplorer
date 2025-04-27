@@ -1,0 +1,481 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "GroupNames": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "NextMutator": {
+      "type": "Mutator",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUserAdded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "NetDamage": {
+      "documentation": null,
+      "signature_members": {
+        "OriginalDamage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Damage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "injured": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageCauser": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NetDamage(int OriginalDamage, out int Damage, Pawn injured, Controller InstigatedBy, Vector HitLocation, out Vector Momentum, Class<DamageType> DamageType, Actor DamageCauser)"
+    },
+    "ScoreKill": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "Killed": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ScoreKill(Controller Killer, Controller Killed)"
+    },
+    "ScoreObjective": {
+      "documentation": null,
+      "signature_members": {
+        "Scorer": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "Score": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ScoreObjective(PlayerReplicationInfo Scorer, int Score)"
+    },
+    "PreventDeath": {
+      "documentation": null,
+      "signature_members": {
+        "Killed": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Killer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PreventDeath(Pawn Killed, Controller Killer, Class<DamageType> DamageType, Vector HitLocation)"
+    },
+    "OverridePickupQuery": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "ItemClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "Pickup": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "bAllowPickup": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OverridePickupQuery(Pawn Other, Class<Inventory> ItemClass, Actor Pickup, out byte bAllowPickup)"
+    },
+    "CheckEndGame": {
+      "documentation": null,
+      "signature_members": {
+        "Winner": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "Reason": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckEndGame(PlayerReplicationInfo Winner, string Reason)"
+    },
+    "HandleRestartGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HandleRestartGame()"
+    },
+    "FindPlayerStart": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "InTeam": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
+        },
+        "IncomingName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "NavigationPoint",
+      "signature": "NavigationPoint FindPlayerStart(Controller Player, optional byte InTeam, optional string IncomingName)"
+    },
+    "GetSeamlessTravelActorList": {
+      "documentation": null,
+      "signature_members": {
+        "bToEntry": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "ActorList": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSeamlessTravelActorList(bool bToEntry, out array<Actor> ActorList)"
+    },
+    "InitMutator": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "ErrorMessage": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "InitMutator(string Options, out string ErrorMessage)"
+    },
+    "DriverLeftVehicle": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": "Vehicle",
+          "documentation": null,
+          "flags": 128
+        },
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DriverLeftVehicle(Vehicle V, Pawn P)"
+    },
+    "CanLeaveVehicle": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": "Vehicle",
+          "documentation": null,
+          "flags": 128
+        },
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanLeaveVehicle(Vehicle V, Pawn P)"
+    },
+    "DriverEnteredVehicle": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": "Vehicle",
+          "documentation": null,
+          "flags": 128
+        },
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DriverEnteredVehicle(Vehicle V, Pawn P)"
+    },
+    "NotifyLogin": {
+      "documentation": null,
+      "signature_members": {
+        "NewPlayer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyLogin(Controller NewPlayer)"
+    },
+    "NotifyLogout": {
+      "documentation": null,
+      "signature_members": {
+        "Exiting": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyLogout(Controller Exiting)"
+    },
+    "ParseChatPercVar": {
+      "documentation": null,
+      "signature_members": {
+        "Who": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "Cmd": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "string",
+      "signature": "string ParseChatPercVar(Controller Who, string Cmd)"
+    },
+    "GetServerPlayers": {
+      "documentation": null,
+      "signature_members": {
+        "ServerState": {
+          "type": "ServerResponseLine",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetServerPlayers(out ServerResponseLine ServerState)"
+    },
+    "GetServerDetails": {
+      "documentation": null,
+      "signature_members": {
+        "ServerState": {
+          "type": "ServerResponseLine",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetServerDetails(out ServerResponseLine ServerState)"
+    },
+    "CheckReplacement": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckReplacement(Actor Other)"
+    },
+    "CheckRelevance": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckRelevance(Actor Other)"
+    },
+    "IsRelevant": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsRelevant(Actor Other)"
+    },
+    "AlwaysKeep": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AlwaysKeep(Actor Other)"
+    },
+    "AddMutator": {
+      "documentation": null,
+      "signature_members": {
+        "M": {
+          "type": "Mutator",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddMutator(Mutator M)"
+    },
+    "ModifyPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPlayer(Pawn Other)"
+    },
+    "ModifyLogin": {
+      "documentation": null,
+      "signature_members": {
+        "Portal": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Options": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyLogin(out string Portal, out string Options)"
+    },
+    "Mutate": {
+      "documentation": null,
+      "signature_members": {
+        "MutateString": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Sender": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Mutate(string MutateString, PlayerController Sender)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "MutatorIsAllowed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool MutatorIsAllowed()"
+    },
+    "PreBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 144703635,
+  "configname": "None",
+  "documentation": null
+}

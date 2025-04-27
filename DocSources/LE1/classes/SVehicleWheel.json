@@ -1,0 +1,226 @@
+{
+  "parent": "Component",
+  "package": "Engine",
+  "variables": {
+    "WheelShape": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8194
+    },
+    "WheelPSCClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "BoneOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "ContactNormal": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "LongDirection": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "LatDirection": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "SkelControlName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelControl": {
+      "type": "SkelControlWheel",
+      "documentation": null,
+      "flags": 0
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelParticleSystem": {
+      "type": "ParticleSystem",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelParticleComp": {
+      "type": "ParticleSystemComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "SlipParticleParamName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "Steer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MotorTorque": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "BrakeTorque": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ChassisTorque": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SteerFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SuspensionTravel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SuspensionSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "LongSlipFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "LatSlipFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "HandbrakeLongSlipFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "HandbrakeLatSlipFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ParkedSlipFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SpinVel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "LongSlipRatio": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "LatSlipAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ContactForce": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "LongImpulse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "LatImpulse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "DesiredSuspensionPosition": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "SuspensionPosition": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurrentRotation": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "WheelMaterialIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bPoweredWheel": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bHoverWheel": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCollidesVehicles": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCollidesPawns": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIsSquealing": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bWheelOnGround": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "Side": {
+      "type": "EWheelSide",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,1595 @@
+{
+  "parent": "BioBaseSquadDesignCombat",
+  "package": "SFXStrategicAI",
+  "variables": {
+    "m_vSearchLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oDefendAvoid": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "SearchMaxRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SearchPercentToSend": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SearchTimeout": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fSearchStartRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fSearchStopRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ChargeMinDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ChargeMaxDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ChargeSquadMaxDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SkirmishMinDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SkirmishMaxDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SkirmishSquadMaxDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DefendMinDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DefendMaxDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DefendSquadMaxDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bSearchEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "CalculateLikelihoodDefend": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float CalculateLikelihoodDefend()"
+    },
+    "CalculateLikelihoodSkirmish": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float CalculateLikelihoodSkirmish()"
+    },
+    "CalculateLikelihoodCharge": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float CalculateLikelihoodCharge()"
+    },
+    "CalculateLikelihoodSearch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float CalculateLikelihoodSearch()"
+    },
+    "CalculateLikelihoodIdle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float CalculateLikelihoodIdle()"
+    },
+    "CalculateLikelihood": {
+      "documentation": null,
+      "signature_members": {
+        "sStrategyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float CalculateLikelihood(Name sStrategyName)"
+    }
+  },
+  "states": {
+    "Defend": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "NoLongerSeePlayer": {
+          "documentation": null,
+          "signature_members": {
+            "Who": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "Seen": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "SeePlayer": {
+          "documentation": null,
+          "signature_members": {
+            "Who": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "Seen": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnProximityAlarm": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oTarget": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
+            },
+            "nRelationship": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberSeePlayer": {
+          "documentation": null,
+          "signature_members": {
+            "Who": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "Seen": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnActionComplete_Movement": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmAction": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            },
+            "nReason": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "oTarget": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
+            },
+            "vLocation": {
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnActionComplete_Combat": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmAction": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmTechnique": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            },
+            "nReason": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "oLastTarget": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnCastAt": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oAttacker": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmPower": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnDamaged": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oInstigator": {
+              "type": "Controller",
+              "documentation": null,
+              "flags": 128
+            },
+            "fDamage": {
+              "type": "float",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnAttacked": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oAttacker": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmWeapon": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnAbilityEnabled": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nEnableType": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmSubType": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnNoCombatAction": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberAdded": {
+          "documentation": null,
+          "signature_members": {
+            "nIndex": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberRemoved": {
+          "documentation": null,
+          "signature_members": {
+            "oPawn": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "DefendAgainst": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "BioAiController",
+              "documentation": null,
+              "flags": 128
+            },
+            "oAvoid": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 144
+            },
+            "oNewTarget": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 144
+            },
+            "bUseDefensivePower": {
+              "type": "bool",
+              "documentation": null,
+              "flags": 144
+            },
+            "fMovementDelay": {
+              "type": "float",
+              "documentation": null,
+              "flags": 144
+            },
+            "oFailedMoveTarget": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 144
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ReEvaluateStrategy": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Skirmish": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "SkirmishTarget": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "BioAiController",
+              "documentation": null,
+              "flags": 128
+            },
+            "oTarget": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oAvoid": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 144
+            },
+            "bUseDefensivePower": {
+              "type": "bool",
+              "documentation": null,
+              "flags": 144
+            },
+            "fMovementDelay": {
+              "type": "float",
+              "documentation": null,
+              "flags": 144
+            },
+            "oFailedMoveTarget": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 144
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "NoLongerSeePlayer": {
+          "documentation": null,
+          "signature_members": {
+            "Who": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "Seen": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "SeePlayer": {
+          "documentation": null,
+          "signature_members": {
+            "Who": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "Seen": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnProximityAlarm": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oTarget": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
+            },
+            "nRelationship": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberSeePlayer": {
+          "documentation": null,
+          "signature_members": {
+            "Who": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "Seen": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnActionComplete_Movement": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmAction": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            },
+            "nReason": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "oTarget": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
+            },
+            "vLocation": {
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnActionComplete_Combat": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmAction": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmTechnique": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            },
+            "nReason": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "oLastTarget": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnCastAt": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oAttacker": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmPower": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnDamaged": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oInstigator": {
+              "type": "Controller",
+              "documentation": null,
+              "flags": 128
+            },
+            "fDamage": {
+              "type": "float",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnAttacked": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oAttacker": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmWeapon": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnAbilityEnabled": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nEnableType": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmSubType": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnNoCombatAction": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberAdded": {
+          "documentation": null,
+          "signature_members": {
+            "nIndex": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberRemoved": {
+          "documentation": null,
+          "signature_members": {
+            "oPawn": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ReEvaluateStrategy": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Charge": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ChargeTarget": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "BioAiController",
+              "documentation": null,
+              "flags": 128
+            },
+            "oTarget": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "fMovementDelay": {
+              "type": "float",
+              "documentation": null,
+              "flags": 144
+            },
+            "oFailedMoveTarget": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 144
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "NoLongerSeePlayer": {
+          "documentation": null,
+          "signature_members": {
+            "Who": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "Seen": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "SeePlayer": {
+          "documentation": null,
+          "signature_members": {
+            "Who": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "Seen": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnProximityAlarm": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oTarget": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
+            },
+            "nRelationship": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberSeePlayer": {
+          "documentation": null,
+          "signature_members": {
+            "Who": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "Seen": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnActionComplete_Movement": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmAction": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            },
+            "nReason": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "oTarget": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
+            },
+            "vLocation": {
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnActionComplete_Combat": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmAction": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmTechnique": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            },
+            "nReason": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "oLastTarget": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnCastAt": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oAttacker": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmPower": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnDamaged": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oInstigator": {
+              "type": "Controller",
+              "documentation": null,
+              "flags": 128
+            },
+            "fDamage": {
+              "type": "float",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnAttacked": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oAttacker": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmWeapon": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnAbilityEnabled": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nEnableType": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmSubType": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnNoCombatAction": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberAdded": {
+          "documentation": null,
+          "signature_members": {
+            "nIndex": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberRemoved": {
+          "documentation": null,
+          "signature_members": {
+            "oPawn": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ReEvaluateStrategy": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Search": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginSearch": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "AbortSearchTimer": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "OnActionComplete_Movement": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmAction": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            },
+            "nReason": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "oTarget": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
+            },
+            "vLocation": {
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberAdded": {
+          "documentation": null,
+          "signature_members": {
+            "nIndex": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberRemoved": {
+          "documentation": null,
+          "signature_members": {
+            "oPawn": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnCastAt": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oAttacker": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmPower": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnDamaged": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oInstigator": {
+              "type": "Controller",
+              "documentation": null,
+              "flags": 128
+            },
+            "fDamage": {
+              "type": "float",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnAttacked": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oAttacker": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmWeapon": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnAbilityEnabled": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nEnableType": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmSubType": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "HearNoise": {
+          "documentation": null,
+          "signature_members": {
+            "Who": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "Loudness": {
+              "type": "float",
+              "documentation": null,
+              "flags": 128
+            },
+            "NoiseMaker": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
+            },
+            "vNoiseLocation": {
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
+            },
+            "NoiseType": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 144
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "SeePlayer": {
+          "documentation": null,
+          "signature_members": {
+            "Who": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "Seen": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ReEvaluateStrategy": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Idle": {
+      "functions": {
+        "StartDefaultBehavior": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "OnSpawnOrLevelLoad": {
+          "documentation": null,
+          "signature_members": {
+            "bCalledFromSpawn": {
+              "type": "bool",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberAdded": {
+          "documentation": null,
+          "signature_members": {
+            "nIndex": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberRemoved": {
+          "documentation": null,
+          "signature_members": {
+            "oPawn": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnCastAt": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oAttacker": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmPower": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnDamaged": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oInstigator": {
+              "type": "Controller",
+              "documentation": null,
+              "flags": 128
+            },
+            "fDamage": {
+              "type": "float",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnAbilityEnabled": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nEnableType": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmSubType": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnAttacked": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "oAttacker": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmWeapon": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "HearNoise": {
+          "documentation": null,
+          "signature_members": {
+            "Who": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "Loudness": {
+              "type": "float",
+              "documentation": null,
+              "flags": 128
+            },
+            "NoiseMaker": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
+            },
+            "vNoiseLocation": {
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
+            },
+            "NoiseType": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 144
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "SeePlayer": {
+          "documentation": null,
+          "signature_members": {
+            "Who": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "Seen": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnNoCombatAction": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ReEvaluateStrategy": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "classflags": 10486294,
+  "configname": "Game",
+  "documentation": null
+}

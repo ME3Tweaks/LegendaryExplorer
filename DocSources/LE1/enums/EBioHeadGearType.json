@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_HEAD_GEAR_TYPE_HELMET": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_HEAD_GEAR_TYPE_VISOR": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_HEAD_GEAR_TYPE_COUNT": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

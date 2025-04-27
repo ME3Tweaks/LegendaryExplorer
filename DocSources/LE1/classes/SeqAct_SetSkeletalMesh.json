@@ -1,0 +1,16 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "NewSkeletalMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

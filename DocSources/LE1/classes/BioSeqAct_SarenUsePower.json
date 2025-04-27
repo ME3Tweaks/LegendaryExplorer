@@ -1,0 +1,38 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "vTarget": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "oAttacker": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 1
+    },
+    "oTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "nmPower": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

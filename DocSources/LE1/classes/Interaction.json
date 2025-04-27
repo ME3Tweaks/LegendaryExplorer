@@ -1,0 +1,195 @@
+{
+  "parent": "UIRoot",
+  "package": "Engine",
+  "variables": {
+    "__OnReceivedNativeInputKey__Delegate": {
+      "type": "OnReceivedNativeInputKey",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnReceivedNativeInputAxis__Delegate": {
+      "type": "OnReceivedNativeInputAxis",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnReceivedNativeInputChar__Delegate": {
+      "type": "OnReceivedNativeInputChar",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnInitialize__Delegate": {
+      "type": "OnInitialize",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "NotifyPlayerRemoved": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "RemovedPlayer": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPlayerRemoved(int PlayerIndex, LocalPlayer RemovedPlayer)"
+    },
+    "NotifyPlayerAdded": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "AddedPlayer": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPlayerAdded(int PlayerIndex, LocalPlayer AddedPlayer)"
+    },
+    "NotifyGameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyGameSessionEnded()"
+    },
+    "Initialized": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialized()"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnInitialize()"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Init()"
+    },
+    "PostRender": {
+      "documentation": null,
+      "signature_members": {
+        "Canvas": {
+          "type": "Canvas",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PostRender(Canvas Canvas)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "OnReceivedNativeInputChar": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Unicode": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnReceivedNativeInputChar(int ControllerId, string Unicode)"
+    },
+    "OnReceivedNativeInputAxis": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Key": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Delta": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnReceivedNativeInputAxis(int ControllerId, Name Key, float Delta, float DeltaTime, optional bool bGamepad)"
+    },
+    "OnReceivedNativeInputKey": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Key": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "EventType": {
+          "type": "EInputEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "AmountDepressed": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "bGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnReceivedNativeInputKey(int ControllerId, Name Key, EInputEvent EventType, optional float AmountDepressed, optional bool bGamepad)"
+    }
+  },
+  "states": {},
+  "classflags": 134217882,
+  "configname": "None",
+  "documentation": null
+}

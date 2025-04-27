@@ -1,0 +1,73 @@
+{
+  "members": {
+    "Descriptor": {
+      "type": "SFXSaveDescriptor",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "sMapName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "sParentMapName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "sDisplayName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "Filename": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "FirstName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "TimeStamp": {
+      "type": "SaveTimeStamp",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "CreatedDate": {
+      "type": "SaveTimeStamp",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "SecondsPlayed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "Level": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "ClassBase": {
+      "type": "EBioPartyMemberClassBase",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "Origin": {
+      "type": "EBioPlayerCharacterBackgroundOrigin",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "Reputation": {
+      "type": "EBioPlayerCharacterBackgroundNotoriety",
+      "documentation": null,
+      "flags": 1048576
+    }
+  },
+  "classdef": "SFXEngine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 131073
+}

@@ -1,0 +1,101 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "CurrentSessionInfo": {
+      "type": "GameSessionInformation",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "StatsFileName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "PlayerList": {
+      "type": "PlayerInformationNew",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "TeamList": {
+      "type": "TeamInformation",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "SupportedEvents": {
+      "type": "GameplayEventMetaData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "WeaponClassArray": {
+      "type": "WeaponClassEventData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "DamageClassArray": {
+      "type": "DamageClassEventData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ProjectileClassArray": {
+      "type": "ProjectileClassEventData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "PawnClassArray": {
+      "type": "PawnClassEventData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ActorArray": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "SoundCueArray": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Archive": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Header": {
+      "type": "GameplayEventsHeader",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetFilename": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetFilename()"
+    },
+    "CloseStatsFile": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseStatsFile()"
+    },
+    "OpenStatsFile": {
+      "documentation": null,
+      "signature_members": {
+        "Filename": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OpenStatsFile(string Filename)"
+    }
+  },
+  "states": {},
+  "classflags": 136315027,
+  "configname": "Game",
+  "documentation": null
+}

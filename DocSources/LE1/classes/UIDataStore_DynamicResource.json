@@ -1,0 +1,197 @@
+{
+  "parent": "UIDataStore",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "ResourceProviders": {
+      "type": "MultiMap_Mirror",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ResourceProviderDefinitions": {
+      "type": "DynamicResourceProviderDefinition",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "ProfileProvider": {
+      "type": "UIDataProvider_OnlineProfileSettings",
+      "documentation": null,
+      "flags": 8192
+    },
+    "GameResourceDataStore": {
+      "type": "UIDataStore_GameResource",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "Unregistered": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Unregistered(LocalPlayer PlayerOwner)"
+    },
+    "Registered": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Registered(LocalPlayer PlayerOwner)"
+    },
+    "OnLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginChange(byte LocalUserNum)"
+    },
+    "FindProviderIndexByFieldValue": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "SearchField": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ValueToSearchFor": {
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindProviderIndexByFieldValue(Name ProviderTag, Name SearchField, const out UIProviderScriptFieldValue ValueToSearchFor)"
+    },
+    "GetProviderFieldValue": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "SearchField": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ProviderIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_FieldValue": {
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProviderFieldValue(Name ProviderTag, Name SearchField, int ProviderIndex, out UIProviderScriptFieldValue out_FieldValue)"
+    },
+    "GetResourceProviderFields": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ProviderFieldTags": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetResourceProviderFields(Name ProviderTag, out array<Name> ProviderFieldTags)"
+    },
+    "GetResourceProviders": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_Providers": {
+          "type": "UIResourceCombinationProvider",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetResourceProviders(Name ProviderTag, out array<UIResourceCombinationProvider> out_Providers)"
+    },
+    "GetProviderCount": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetProviderCount(Name ProviderTag)"
+    },
+    "GenerateProviderAccessTag": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "InstanceIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GenerateProviderAccessTag(int ProviderIndex, int InstanceIndex)"
+    },
+    "FindProviderTypeIndex": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindProviderTypeIndex(Name ProviderTag)"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "GameReplicationInfo",
+  "package": "SFXGame",
+  "variables": {
+    "DifficultyHandlerClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 2
+    },
+    "DifficultyHandler": {
+      "type": "SFXDifficultyHandler",
+      "documentation": null,
+      "flags": 1
+    },
+    "Temp": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 32
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

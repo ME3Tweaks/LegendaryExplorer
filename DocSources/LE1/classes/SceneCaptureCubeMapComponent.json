@@ -1,0 +1,31 @@
+{
+  "parent": "SceneCaptureComponent",
+  "package": "Engine",
+  "variables": {
+    "WorldLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 12290
+    },
+    "TextureTarget": {
+      "type": "TextureRenderTargetCube",
+      "documentation": null,
+      "flags": 1
+    },
+    "NearPlane": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FarPlane": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

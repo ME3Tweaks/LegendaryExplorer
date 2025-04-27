@@ -1,0 +1,23 @@
+{
+  "members": {
+    "pActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "pLookAtTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "fLookAtDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "classdef": "BioConversation",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

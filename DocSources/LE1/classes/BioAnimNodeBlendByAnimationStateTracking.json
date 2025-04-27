@@ -1,0 +1,36 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "m_aStateList": {
+      "type": "BioAnimationNode",
+      "documentation": null,
+      "flags": 71434241
+    },
+    "m_nmStateToTrack": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmLastState": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nCurrentChild": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bAutoTransitionOnEndAnim": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

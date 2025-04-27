@@ -1,0 +1,59 @@
+{
+  "parent": "AnimNodeBlendBase",
+  "package": "Engine",
+  "variables": {
+    "TargetWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "BlendTimeToGo": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ActiveChildIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bPlayActiveChild": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bForceChildFullWeightWhenBecomingRelevant": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSkipBlendWhenNotRendered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "SetActiveChild": {
+      "documentation": null,
+      "signature_members": {
+        "ChildIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "BlendTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActiveChild(int ChildIndex, float BlendTime)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

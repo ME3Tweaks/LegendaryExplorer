@@ -1,0 +1,68 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "LocationActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "Shake": {
+      "type": "CameraShake",
+      "documentation": null,
+      "flags": 549827117065
+    },
+    "ShakeScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 549755813889
+    },
+    "RadialShake_InnerRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 549755813889
+    },
+    "RadialShake_OuterRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 549755813889
+    },
+    "RadialShake_Falloff": {
+      "type": "float",
+      "documentation": null,
+      "flags": 549755813889
+    },
+    "bDoControllerVibration": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 549755813889
+    },
+    "bRadialShake": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 549755813889
+    },
+    "bOrientTowardRadialEpicenter": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 549755813889
+    },
+    "PlaySpace": {
+      "type": "ECameraAnimPlaySpace",
+      "documentation": null,
+      "flags": 549755813889
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,28 @@
+{
+  "members": {
+    "sText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "sSoundRef": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "sLipsyncRef": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "fSoundLength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

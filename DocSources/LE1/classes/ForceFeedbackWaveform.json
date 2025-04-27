@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Samples": {
+      "type": "WaveformSample",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "bIsLooping": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,23 @@
+{
+  "members": {
+    "PMIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nAchievementID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "UnlockedAt": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioGamerProfile",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

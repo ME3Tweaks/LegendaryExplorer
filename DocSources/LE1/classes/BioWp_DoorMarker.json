@@ -1,0 +1,100 @@
+{
+  "parent": "BioPathPoint",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmClosedStates": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_nmOpenedStates": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "oMyDoor": {
+      "type": "BioDoor",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmGotoStateToOpen": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "bWaitUntilCompletelyOpened": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bBlockedWhenClosed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAICanOpenDoor": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bTempDisabledCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    }
+  },
+  "functions": {
+    "SuggestMovePreparation": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SuggestMovePreparation(Pawn Other)"
+    },
+    "ProceedWithMove": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProceedWithMove(Pawn Other)"
+    },
+    "SpecialHandling": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor SpecialHandling(Pawn Other)"
+    },
+    "IsDoorClosed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDoorClosed()"
+    },
+    "IsDoorOpen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDoorOpen()"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

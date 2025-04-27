@@ -1,0 +1,41 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "m_fDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fConeDeg": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fMinDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fCODelayRemaining": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fConeCos": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bCOSeen": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

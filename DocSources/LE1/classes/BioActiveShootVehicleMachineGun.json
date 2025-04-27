@@ -1,0 +1,17 @@
+{
+  "parent": "BioActiveShootVehicle",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "InitializeInternal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeInternal()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

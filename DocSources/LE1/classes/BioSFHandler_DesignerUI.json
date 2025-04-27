@@ -1,0 +1,457 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "lstPulsingElements": {
+      "type": "BioDUIPulseDetails",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "lstElementStatus": {
+      "type": "BioDUIElementStatus",
+      "documentation": null,
+      "flags": 0
+    },
+    "stModalTimer": {
+      "type": "BioDUITimerDetails",
+      "documentation": null,
+      "flags": 0
+    },
+    "stPassiveTimer": {
+      "type": "BioDUITimerDetails",
+      "documentation": null,
+      "flags": 0
+    },
+    "nElementVisibleCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nLayout": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bCanInvoke": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "EnableCameraMovement": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableCameraMovement()"
+    },
+    "DisableCameraMovement": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCameraMovement()"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "PressedButtonAS": {
+      "documentation": null,
+      "signature_members": {
+        "btnIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PressedButtonAS(int btnIndex)"
+    },
+    "MiniGameInput": {
+      "documentation": null,
+      "signature_members": {
+        "nOutputLink": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MiniGameInput(int nOutputLink)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "GetTimerValue": {
+      "documentation": null,
+      "signature_members": {
+        "bModalTimer": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetTimerValue(bool bModalTimer)"
+    },
+    "SetTimerDetails": {
+      "documentation": null,
+      "signature_members": {
+        "bModalTimer": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "fStartTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fEndTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fInterval": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTimerDetails(bool bModalTimer, float fStartTime, float fEndTime, float fInterval)"
+    },
+    "CheckLayout": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "CheckLayout(bool bShow)"
+    },
+    "IsToxinCureLayout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsToxinCureLayout()"
+    },
+    "SetToxinCureLayout": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetToxinCureLayout(bool bShow)"
+    },
+    "IsMiraHanoiLayout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsMiraHanoiLayout()"
+    },
+    "SetMiraHanoiLayout": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMiraHanoiLayout(bool bShow)"
+    },
+    "IsLaserLayout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsLaserLayout()"
+    },
+    "SetLaserCircle": {
+      "documentation": null,
+      "signature_members": {
+        "CircleState": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLaserCircle(optional int CircleState)"
+    },
+    "SetLaserLayout": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLaserLayout(bool bShow)"
+    },
+    "IsQuasarLayout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsQuasarLayout()"
+    },
+    "SetQuasarLayout": {
+      "documentation": null,
+      "signature_members": {
+        "bShow": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetQuasarLayout(bool bShow)"
+    },
+    "SetBarFillDirection": {
+      "documentation": null,
+      "signature_members": {
+        "bModalBar": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bLeftToRight": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBarFillDirection(bool bModalBar, bool bLeftToRight)"
+    },
+    "SetBarFillPercent": {
+      "documentation": null,
+      "signature_members": {
+        "bModalBar": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nPercent": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBarFillPercent(bool bModalBar, int nPercent)"
+    },
+    "SetBarMarkerPoints": {
+      "documentation": null,
+      "signature_members": {
+        "bModalBar": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nMarker1": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nMarker2": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBarMarkerPoints(bool bModalBar, int nMarker1, int nMarker2)"
+    },
+    "SetCounterValue": {
+      "documentation": null,
+      "signature_members": {
+        "bModalCounter": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCounterValue(bool bModalCounter, int nValue)"
+    },
+    "SetElementText": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
+        },
+        "sText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementText(BioDUIElements nElement, const out string sText)"
+    },
+    "SetTextStringRef": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
+        },
+        "srText": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTextStringRef(BioDUIElements nElement, stringref srText)"
+    },
+    "ClearElementPulse": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearElementPulse(BioDUIElements nElement)"
+    },
+    "SetupElementPulse": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
+        },
+        "fMinAlpha": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fCycleTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int SetupElementPulse(BioDUIElements nElement, float fMinAlpha, float fCycleTime)"
+    },
+    "SetElementAlpha": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
+        },
+        "fAlpha": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementAlpha(BioDUIElements nElement, float fAlpha)"
+    },
+    "SetElementColor": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
+        },
+        "stColor": {
+          "type": "Color",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementColor(BioDUIElements nElement, const out Color stColor)"
+    },
+    "SetElementVisible": {
+      "documentation": null,
+      "signature_members": {
+        "nElement": {
+          "type": "BioDUIElements",
+          "documentation": null,
+          "flags": 128
+        },
+        "bVisible": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "fFadeTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetElementVisible(BioDUIElements nElement, bool bVisible, optional float fFadeTime)"
+    },
+    "IsActive": {
+      "documentation": null,
+      "signature_members": {
+        "bModal": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsActive(bool bModal)"
+    },
+    "ClearAll": {
+      "documentation": null,
+      "signature_members": {
+        "bModal": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearAll(bool bModal)"
+    }
+  },
+  "states": {},
+  "classflags": 136315034,
+  "configname": "None",
+  "documentation": null
+}

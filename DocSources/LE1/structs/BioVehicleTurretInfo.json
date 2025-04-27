@@ -1,0 +1,33 @@
+{
+  "members": {
+    "nmAttachSocket": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "nmTurretYawBone": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "nmTurretPitchBone": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "nmYawController": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "nmPitchController": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioAppearanceVehicle",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

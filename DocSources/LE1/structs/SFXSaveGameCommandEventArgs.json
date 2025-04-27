@@ -1,0 +1,73 @@
+{
+  "members": {
+    "Descriptor": {
+      "type": "SFXSaveDescriptor",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "Careers": {
+      "type": "SFXCareerDescriptor",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "CorruptedCareers": {
+      "type": "SFXSaveDescriptor",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "AdditionalFreeBytesNeeded": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "TotalFreeBytes": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "PreparedSaveSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "bSuccess": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "bRetry": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "bPause": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "bNeedsFreeSpace": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "bTotalFreeBytesSet": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "bPreparedSaveSizeSet": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "Action": {
+      "type": "ESFXSaveGameAction",
+      "documentation": null,
+      "flags": 1048576
+    }
+  },
+  "classdef": "SFXEngine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 131073
+}

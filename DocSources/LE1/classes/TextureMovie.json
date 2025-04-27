@@ -1,0 +1,105 @@
+{
+  "parent": "Texture",
+  "package": "Engine",
+  "variables": {
+    "Data": {
+      "type": "UntypedBulkData_Mirror",
+      "documentation": null,
+      "flags": 4098
+    },
+    "DecoderClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 2
+    },
+    "ReleaseCodecFence": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "Decoder": {
+      "type": "CodecMovie",
+      "documentation": null,
+      "flags": 8194
+    },
+    "SizeX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "SizeY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "Paused": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "Stopped": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "Looping": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "AutoPlay": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIsDroppingFrames": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Format": {
+      "type": "EPixelFormat",
+      "documentation": null,
+      "flags": 2
+    },
+    "AddressX": {
+      "type": "TextureAddress",
+      "documentation": null,
+      "flags": 1
+    },
+    "AddressY": {
+      "type": "TextureAddress",
+      "documentation": null,
+      "flags": 1
+    },
+    "MovieStreamSource": {
+      "type": "EMovieStreamSource",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Stop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Stop()"
+    },
+    "Pause": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pause()"
+    },
+    "Play": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Play()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

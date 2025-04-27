@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ACCESS_ReadOnly": {
+      "value": 0,
+      "documentation": null
+    },
+    "ACCESS_PerField": {
+      "value": 1,
+      "documentation": null
+    },
+    "ACCESS_WriteAll": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

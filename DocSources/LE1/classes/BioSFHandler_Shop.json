@@ -1,0 +1,668 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "shopSlotOrderForShopInventory": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "shopSlotOrderForPlayerInventory": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "m_nmImageResource": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pShopImages2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_shop": {
+      "type": "BioShop",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_WorldInfo": {
+      "type": "BioWorldInfo",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_playerSquad": {
+      "type": "BioPlayerSquad",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oItemBeingSold": {
+      "type": "BioItem",
+      "documentation": null,
+      "flags": 67117056
+    },
+    "m_combinedShopInventory": {
+      "type": "BioInventory",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_inventoryInterface": {
+      "type": "BioInventoryGuiInterface",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "DEFAULT_SELL_PRICE_FACTOR": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16386
+    },
+    "MINIMUM_SELL_PRICE_FACTOR": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16386
+    },
+    "MAXIMUM_SELL_PRICE_FACTOR": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16386
+    },
+    "DEFAULT_BUY_PRICE_FACTOR": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16386
+    },
+    "MINIMUM_BUY_PRICE_FACTOR": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16386
+    },
+    "MAXIMUM_BUY_PRICE_FACTOR": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16386
+    },
+    "NUMBER_OF_VISIBLE_AND_SCROLLABLE_ITEMS": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16386
+    },
+    "srXModUninstallMsg": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srXModUninstallConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSellXModItemMsg": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSellXModItemConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSellXModItemCancel": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srInventoryFullMessage": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srInventoryFullConfirmation": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSellAllConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 2
+    },
+    "srYes": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 2
+    },
+    "srNo": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 2
+    },
+    "srItemLevel": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 2
+    },
+    "srTypeSort": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 2
+    },
+    "srPriceSort": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 2
+    },
+    "srNameSort": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 2
+    },
+    "MaxSort": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "m_currentGUIIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_currentMasterIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_currentPlotItemIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_plotItemIndexOffset": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_scrollValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fRemainingDisplayErrorTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_preInitializationSucceeded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_isPlayerBuying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDisplayingPurchaseError": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_currentSlot": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_currentSlotTypeAtIndex": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "UpdatePurchaseErrorMsg": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "oMsgBox": {
+          "type": "BioSFHandler_MessageBox",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePurchaseErrorMsg(float fDeltaT, BioSFHandler_MessageBox oMsgBox)"
+    },
+    "DisplayPurchaseErrorMsg": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayPurchaseErrorMsg()"
+    },
+    "ConfirmSellAllJunk": {
+      "documentation": null,
+      "signature_members": {
+        "bConfirmedJunk": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bYPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ConfirmSellAllJunk(bool bConfirmedJunk, int nContext, bool bYPressed)"
+    },
+    "SellAllJunk": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SellAllJunk()"
+    },
+    "MarkItemAsJunk": {
+      "documentation": null,
+      "signature_members": {
+        "val": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MarkItemAsJunk(bool val)"
+    },
+    "GetProperSortString": {
+      "documentation": null,
+      "signature_members": {
+        "SortType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetProperSortString(int SortType)"
+    },
+    "NextSort": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NextSort()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "ReclaimOrCheckItemXMods": {
+      "documentation": null,
+      "signature_members": {
+        "bCheckOnly": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "oItem": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReclaimOrCheckItemXMods(bool bCheckOnly, BioItem oItem)"
+    },
+    "GetCurrentItemCategory": {
+      "documentation": null,
+      "signature_members": {
+        "intIsXMod": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "intIsWeapon": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "intIsPlotItem": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "EquipmentSlot": {
+          "type": "EBioEquipmentSlot",
+          "documentation": null,
+          "flags": 384
+        },
+        "weaponType": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCurrentItemCategory(out int intIsXMod, out int intIsWeapon, out int intIsPlotItem, out EBioEquipmentSlot EquipmentSlot, out EBioItemWeaponRangedType weaponType)"
+    },
+    "CalculatePurchasePriceFromBasePrice": {
+      "documentation": null,
+      "signature_members": {
+        "basePrice": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int CalculatePurchasePriceFromBasePrice(float basePrice)"
+    },
+    "CalculateSellPriceFromBasePrice": {
+      "documentation": null,
+      "signature_members": {
+        "basePrice": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int CalculateSellPriceFromBasePrice(float basePrice)"
+    },
+    "UpdateCompareItemAtIndex": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "squadMemberName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Item": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "nIsXMod": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCompareItemAtIndex(int Index, string squadMemberName, BioItem Item, int nIsXMod)"
+    },
+    "UpdateCompareItems": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCompareItems()"
+    },
+    "UpdatePlotItem": {
+      "documentation": null,
+      "signature_members": {
+        "plotItemIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "indexToSendToGUI": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePlotItem(int plotItemIndex, int indexToSendToGUI)"
+    },
+    "UpdateListItem": {
+      "documentation": null,
+      "signature_members": {
+        "ListIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "indexToSendToGUI": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateListItem(int ListIndex, int indexToSendToGUI)"
+    },
+    "UpdateEntireShopList": {
+      "documentation": null,
+      "signature_members": {
+        "nSetGUIIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "fullRefresh": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateEntireShopList(int nSetGUIIndex, bool fullRefresh)"
+    },
+    "UpdateCurrentIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nRequestedGUIIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCurrentIndex(int nRequestedGUIIndex)"
+    },
+    "UpdatePartyCash": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdatePartyCash()"
+    },
+    "BuyCurrentItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int BuyCurrentItem()"
+    },
+    "SellItemDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "bConfirmedSell": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bYPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SellItemDelegate(bool bConfirmedSell, int nContext, bool bYPressed)"
+    },
+    "SellCurrentItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SellCurrentItem()"
+    },
+    "RebuildAndUpdateShopInventory": {
+      "documentation": null,
+      "signature_members": {
+        "nSetGUIIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "needsFullRefresh": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RebuildAndUpdateShopInventory(int nSetGUIIndex, bool needsFullRefresh)"
+    },
+    "SetSlotState": {
+      "documentation": null,
+      "signature_members": {
+        "newSlot": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSlotState(GuiEquipSlots newSlot)"
+    },
+    "SetTradeState": {
+      "documentation": null,
+      "signature_members": {
+        "isPlayerBuying": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTradeState(bool isPlayerBuying)"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "unused": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float unused)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "Parameters": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> Parameters)"
+    },
+    "PreInitialization": {
+      "documentation": null,
+      "signature_members": {
+        "shop": {
+          "type": "BioShop",
+          "documentation": null,
+          "flags": 128
+        },
+        "WorldInfo": {
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PreInitialization(BioShop shop, BioWorldInfo WorldInfo)"
+    },
+    "GetInventoryFullMessage": {
+      "documentation": null,
+      "signature_members": {
+        "i_nOverItems": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_nMaxItems": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetInventoryFullMessage(int i_nOverItems, int i_nMaxItems)"
+    }
+  },
+  "states": {},
+  "classflags": 144703646,
+  "configname": "UI",
+  "documentation": null
+}

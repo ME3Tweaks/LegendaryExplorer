@@ -1,0 +1,16 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "Text": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

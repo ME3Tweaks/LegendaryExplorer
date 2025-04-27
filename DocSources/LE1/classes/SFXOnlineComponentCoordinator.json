@@ -1,0 +1,362 @@
+{
+  "parent": "Object",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_IISFXOnlineComponent": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "OnlineEventNotifyTable": {
+      "type": "SFXOnlineEventNotify",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnEvent__Delegate": {
+      "type": "OnEvent",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "EventList": {
+      "type": "SFXOnlineEventList",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    },
+    "StopWaitingForAllWork": {
+      "documentation": null,
+      "signature_members": {
+        "oCallbackTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "StopWaitingForAllWork(Object oCallbackTarget)"
+    },
+    "WaitingForWorkSetObject": {
+      "documentation": null,
+      "signature_members": {
+        "aEventObjects": {
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "fnWorkComplete": {
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "WaitingForWorkSetObject(array<SFXOnlineEvent> aEventObjects, delegate<OnEvent> fnWorkComplete)"
+    },
+    "WaitingForWorkSetType": {
+      "documentation": null,
+      "signature_members": {
+        "aEventTypes": {
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "fnWorkComplete": {
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "aWorkEventIds": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "None",
+      "signature": "WaitingForWorkSetType(array<SFXOnlineEventType> aEventTypes, delegate<OnEvent> fnWorkComplete, optional array<int> aWorkEventIds)"
+    },
+    "WaitingForWorkObject": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "fnWorkComplete": {
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "WaitingForWorkObject(SFXOnlineEvent oEvent, delegate<OnEvent> fnWorkComplete)"
+    },
+    "WaitingForWorkType": {
+      "documentation": null,
+      "signature_members": {
+        "eEventType": {
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fnWorkComplete": {
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nEventId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "WaitingForWorkType(SFXOnlineEventType eEventType, delegate<OnEvent> fnWorkComplete, optional int nEventId)"
+    },
+    "IsEventPending": {
+      "documentation": null,
+      "signature_members": {
+        "eEventType": {
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nEventId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsEventPending(SFXOnlineEventType eEventType, optional int nEventId)"
+    },
+    "GetEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEventType": {
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nEventId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "SFXOnlineEvent",
+      "signature": "SFXOnlineEvent GetEvent(SFXOnlineEventType eEventType, optional int nEventId)"
+    },
+    "UnsubscribeFromAllEvents": {
+      "documentation": null,
+      "signature_members": {
+        "oCallbackTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UnsubscribeFromAllEvents(Object oCallbackTarget)"
+    },
+    "UnsubscribeFromEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEventType": {
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fnEventCallback": {
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "UnsubscribeFromEvent(SFXOnlineEventType eEventType, delegate<OnEvent> fnEventCallback)"
+    },
+    "SubscribeToEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEventType": {
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fnEventCallback": {
+          "type": "OnEvent",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SubscribeToEvent(SFXOnlineEventType eEventType, delegate<OnEvent> fnEventCallback)"
+    },
+    "NotifyWorkFinishedObject": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "eStatusFinished": {
+          "type": "SFXOnlineEventStatusFinished",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyWorkFinishedObject(SFXOnlineEvent oEvent, SFXOnlineEventStatusFinished eStatusFinished)"
+    },
+    "NotifyWorkFinishedType": {
+      "documentation": null,
+      "signature_members": {
+        "eEventType": {
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
+        },
+        "eStatusFinished": {
+          "type": "SFXOnlineEventStatusFinished",
+          "documentation": null,
+          "flags": 128
+        },
+        "nEventId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyWorkFinishedType(SFXOnlineEventType eEventType, SFXOnlineEventStatusFinished eStatusFinished, int nEventId)"
+    },
+    "NotifyWorkStartedObject": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "eEventType": {
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyWorkStartedObject(SFXOnlineEvent oEvent, SFXOnlineEventType eEventType)"
+    },
+    "NotifyWorkStartedType": {
+      "documentation": null,
+      "signature_members": {
+        "eEventType": {
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nEventId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        },
+        "fTimeOut": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyWorkStartedType(SFXOnlineEventType eEventType, optional int nEventId, optional float fTimeOut)"
+    },
+    "NotifyEventObject": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyEventObject(SFXOnlineEvent oEvent)"
+    },
+    "NotifyEventType": {
+      "documentation": null,
+      "signature_members": {
+        "eEventType": {
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
+        },
+        "eStatus": {
+          "type": "SFXOnlineEventStatus",
+          "documentation": null,
+          "flags": 144
+        },
+        "eOutcome": {
+          "type": "SFXOnlineEventStatusFinished",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyEventType(SFXOnlineEventType eEventType, optional SFXOnlineEventStatus eStatus, optional SFXOnlineEventStatusFinished eOutcome)"
+    },
+    "OnTick": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTick(SFXOnlineEvent oEvent)"
+    },
+    "OnEvent": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnEvent(SFXOnlineEvent oEvent)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

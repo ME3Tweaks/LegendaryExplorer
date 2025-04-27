@@ -1,0 +1,16 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "ForceFieldChannel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704178,
+  "configname": "None",
+  "documentation": null
+}

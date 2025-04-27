@@ -1,0 +1,998 @@
+{
+  "parent": "BioActorBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "m_sConnectedObjectA": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_sConnectedObjectB": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_sVarName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aBackupAnimSets": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_aAttachedGrenades": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_vLastImpactVector": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nCurrentMaterialVar": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "StartingState": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_State0": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_State1": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "bioWorld": {
+      "type": "BioWorldInfo",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nmCurrentActivity": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oDoorMarker": {
+      "type": "BioWp_DoorMarker",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nmLastState": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fSkillProgress": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fHealth": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fCurrentHealth": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nTreasureID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nPrevRegionIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nPrevPlotIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bStartingStateOverride": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bUseCaseOverride": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bPlayerOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Enabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDebugHasKey": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bInPhysics": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bPhysicsAffectableOverride": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bPhysicsAffectable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bUseCustomCollisionSettings": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bDontInvalidatePaths": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bHealthOverride": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bCanForceOpen": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bCanForceOpenOverride": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bTreasureOverride": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bMonitorDoor": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bNoStateSave": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bInMatinee": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bSkillGameFailed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bSkillGameXpAwarded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaterialVariation": {
+      "type": "eMateralVariation",
+      "documentation": null,
+      "flags": 8193
+    },
+    "m_eUseCase": {
+      "type": "eBioAPLUseCase",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_SkillDifficulty": {
+      "type": "EBioSkillGameDifficulty",
+      "documentation": null,
+      "flags": 1
+    },
+    "Region": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "Plot": {
+      "type": "EBioPlotAutoSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "Conditional": {
+      "type": "EBioAutoSet",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "DetonateAttachedGrenades": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DetonateAttachedGrenades()"
+    },
+    "GrenadeDetached": {
+      "documentation": null,
+      "signature_members": {
+        "oGrenade": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GrenadeDetached(Actor oGrenade)"
+    },
+    "GrenadeAttached": {
+      "documentation": null,
+      "signature_members": {
+        "oGrenade": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GrenadeAttached(Actor oGrenade)"
+    },
+    "WriteSaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "InOuter": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "Save": {
+          "type": "BioBaseSaveObject",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "BioBaseSaveObject",
+      "signature": "BioBaseSaveObject WriteSaveObject(Object InOuter, optional BioBaseSaveObject Save)"
+    },
+    "ReadSaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "Save": {
+          "type": "BioBaseSaveObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReadSaveObject(BioBaseSaveObject Save)"
+    },
+    "GetSaveObjectClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<BioBaseSaveObject> GetSaveObjectClass()"
+    },
+    "ProceedWithMove": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProceedWithMove(Pawn oPawn)"
+    },
+    "SetWaitingForMove": {
+      "documentation": null,
+      "signature_members": {
+        "bVal": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWaitingForMove(bool bVal)"
+    },
+    "GetMaxHealth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMaxHealth()"
+    },
+    "TermRagdoll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TermRagdoll()"
+    },
+    "InitRagdoll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InitRagdoll()"
+    },
+    "CanBeShot": {
+      "documentation": null,
+      "signature_members": {
+        "pOther": {
+          "type": "BioActorBehavior",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanBeShot(BioActorBehavior pOther)"
+    },
+    "RanOverByVehicle": {
+      "documentation": null,
+      "signature_members": {
+        "oVehicle": {
+          "type": "BioVehicleBase",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RanOverByVehicle(BioVehicleBase oVehicle)"
+    },
+    "IsPhysicsAffectable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPhysicsAffectable()"
+    },
+    "GetUseCase": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetUseCase()"
+    },
+    "GetStateFailure": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetStateFailure()"
+    },
+    "GetStateSuccess": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetStateSuccess()"
+    },
+    "IsTransitioning": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsTransitioning()"
+    },
+    "OnTransitionCPP": {
+      "documentation": null,
+      "signature_members": {
+        "FromState": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ToState": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTransitionCPP(Name FromState, Name ToState)"
+    },
+    "ChangeStateMesh": {
+      "documentation": null,
+      "signature_members": {
+        "nmState": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "ChangeStateMesh(out Name nmState)"
+    },
+    "SetActive": {
+      "documentation": null,
+      "signature_members": {
+        "bSetActive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActive(bool bSetActive)"
+    },
+    "SetCollision": {
+      "documentation": null,
+      "signature_members": {
+        "bCollide": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCollision(bool bCollide)"
+    },
+    "GetCurrentState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetCurrentState()"
+    },
+    "ReactToDeath": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDeathDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "clsDamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitInfo": {
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamage": {
+          "type": "BioDamageType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ReactToDeath(float Damage, float fDeathDamage, Controller InstigatedBy, Vector HitLocation, Vector Momentum, Class<DamageType> clsDamageType, optional TraceHitInfo HitInfo, optional BioDamageType pDamage)"
+    },
+    "ReactToImpulse": {
+      "documentation": null,
+      "signature_members": {
+        "vMomentum": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReactToImpulse(Vector vMomentum, Vector vHitLocation)"
+    },
+    "ProxyTakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "OriginalDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "CurrentDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitInfo": {
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamageCausingActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamage": {
+          "type": "BioDamageType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ProxyTakeDamage(float OriginalDamage, out float CurrentDamage, Controller InstigatedBy, Vector HitLocation, out Vector Momentum, Class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor pDamageCausingActor, optional BioDamageType pDamage)"
+    },
+    "TakeDamageCPP": {
+      "documentation": null,
+      "signature_members": {
+        "OriginalDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitInfo": {
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamageCausingActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamage": {
+          "type": "BioDamageType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeDamageCPP(float OriginalDamage, Controller InstigatedBy, Vector HitLocation, out Vector Momentum, Class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor pDamageCausingActor, optional BioDamageType pDamage)"
+    },
+    "UsedKey": {
+      "documentation": null,
+      "signature_members": {
+        "KeyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UsedKey(Name KeyName)"
+    },
+    "HasKey": {
+      "documentation": null,
+      "signature_members": {
+        "KeyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasKey(Name KeyName)"
+    },
+    "OnAppearanceSet": {
+      "documentation": null,
+      "signature_members": {
+        "oAppearance": {
+          "type": "BioBaseAppearancePlaceable",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAppearanceSet(BioBaseAppearancePlaceable oAppearance)"
+    },
+    "OnTransition": {
+      "documentation": null,
+      "signature_members": {
+        "FromState": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ToState": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bCallCPP": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTransition(Name FromState, Name ToState, optional bool bCallCPP)"
+    },
+    "OnArtPlaceablePlotFail": {
+      "documentation": null,
+      "signature_members": {
+        "oUsingActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmToState": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnArtPlaceablePlotFail(Actor oUsingActor, Name nmToState)"
+    },
+    "OnArtPlaceableUsed": {
+      "documentation": null,
+      "signature_members": {
+        "User": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "ToState": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnArtPlaceableUsed(Actor User, Name ToState)"
+    },
+    "IsInteractive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInteractive()"
+    },
+    "GetState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetState()"
+    },
+    "GetHealth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetHealth()"
+    },
+    "BioRelateActors": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BioRelateActors()"
+    },
+    "InitializeRunTimeOnlyTransients": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeRunTimeOnlyTransients()"
+    },
+    "BeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginPlay()"
+    },
+    "GetStartingState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetStartingState()"
+    },
+    "CanForceOpen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanForceOpen()"
+    },
+    "GetTreasureID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetTreasureID()"
+    },
+    "ContainsTreasure": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ContainsTreasure()"
+    },
+    "DoDoorFinished": {
+      "documentation": null,
+      "signature_members": {
+        "ToState": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DoDoorFinished(Name ToState)"
+    },
+    "HasTransition": {
+      "documentation": null,
+      "signature_members": {
+        "ToState": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Transition": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasTransition(Name ToState, Name Transition)"
+    },
+    "SetState": {
+      "documentation": null,
+      "signature_members": {
+        "ToState": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "NamedTransition": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        },
+        "IgnoreTransition": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bRightNow": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bApplyVFX": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetState(Name ToState, optional Name NamedTransition, optional bool IgnoreTransition, optional bool bRightNow, optional bool bApplyVFX)"
+    },
+    "VerifyNotEditor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "VerifyNotEditor()"
+    },
+    "ApplyVFXForState": {
+      "documentation": null,
+      "signature_members": {
+        "NewState": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bForce": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyVFXForState(Name NewState, optional bool bForce)"
+    },
+    "PreloadVFX": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreloadVFX()"
+    },
+    "CanBeMounted": {
+      "documentation": null,
+      "signature_members": {
+        "oMounter": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanBeMounted(Pawn oMounter)"
+    },
+    "PlaySoundForState": {
+      "documentation": null,
+      "signature_members": {
+        "oState": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "PlaySoundForState(out Name oState)"
+    },
+    "IsMeshPhysicsCapable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsMeshPhysicsCapable()"
+    },
+    "UpdatePlaceableDamage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdatePlaceableDamage()"
+    },
+    "HandleDamageablePlaceable": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleDamageablePlaceable(Controller InstigatedBy, Vector HitLocation)"
+    },
+    "InitializeActionFramework": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeActionFramework()"
+    },
+    "OnPhysicsImpulse": {
+      "documentation": null,
+      "signature_members": {
+        "Impulse": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "Position": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
+        },
+        "oMesh": {
+          "type": "MeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "bIsForce": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPhysicsImpulse(out Vector Impulse, out Vector Position, out Name BoneName, MeshComponent oMesh, bool bIsForce)"
+    },
+    "GetTargetZoneLocationN": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTargetZoneLocationN(int nIndex, out Vector vLocation)"
+    },
+    "GetTargetZoneLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetTargetZoneLocation()"
+    },
+    "GetPlayerSelectable": {
+      "documentation": null,
+      "signature_members": {
+        "pPlayerController": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "ePlayerState": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPlayerSelectable(BioPlayerController pPlayerController, optional byte ePlayerState)"
+    }
+  },
+  "states": {},
+  "classflags": 144740502,
+  "configname": "Game",
+  "documentation": null
+}

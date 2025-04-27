@@ -1,0 +1,35 @@
+{
+  "parent": "SFXOnlineEvent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "StringData": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "SetStringData": {
+      "documentation": null,
+      "signature_members": {
+        "sStringData": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStringData(string sStringData)"
+    },
+    "GetStringData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetStringData()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_PATH_ALIGN_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_PATH_ALIGN_CENTER": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_PATH_ALIGN_JUSTIFY": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

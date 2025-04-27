@@ -1,0 +1,18 @@
+{
+  "members": {
+    "m_pMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmEffect": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "RvrEffectsMaterialGroup",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,434 @@
+{
+  "parent": "BioAI_SarenBase",
+  "package": "SFXGame",
+  "variables": {
+    "LastSelectedTimes": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "BeamPowers": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__ExcludeFilter__Delegate": {
+      "type": "ExcludeFilter",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "BarragePointName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "IdealDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinMoveDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SelectedNavDecayDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayerFacingHalfAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "PawnAccelRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "PawnHealthPct": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "HopOnDamageChance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "WaitTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "HoldDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LastHopTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "BeamInterval": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LastBeamTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LastCarnageTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "CarnageInterval": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "SimpleCarnageHealthThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "LastCarnageBarrageTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "BarrageInterval": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "CarnageShotsFired": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "ShotsPerBarrage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bExcludeFloorNodes": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "UpdateBarrageLOS": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateBarrageLOS()"
+    },
+    "PeriodicMoveCheck": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PeriodicMoveCheck()"
+    },
+    "OnActionComplete_Movement": {
+      "documentation": null,
+      "signature_members": {
+        "nmAction": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nReason": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnActionComplete_Movement(Name nmAction, int nReason, Actor oTarget, Vector vLocation)"
+    },
+    "OnDamaged": {
+      "documentation": null,
+      "signature_members": {
+        "DamageInstigator": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "Damage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDamaged(Controller DamageInstigator, float Damage)"
+    },
+    "EvaluateCombatActions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EvaluateCombatActions()"
+    },
+    "RefreshDebugWeights": {
+      "documentation": null,
+      "signature_members": {
+        "bEvalRocketPoints": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RefreshDebugWeights(bool bEvalRocketPoints)"
+    },
+    "SelectMoveTarget": {
+      "documentation": null,
+      "signature_members": {
+        "Nodes": {
+          "type": "BioWP_Hopper",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "ExcludeFunc": {
+          "type": "ExcludeFilter",
+          "documentation": null,
+          "flags": 4194448
+        },
+        "bEvalRocketPoints": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "BioWP_Hopper",
+      "signature": "BioWP_Hopper SelectMoveTarget(const out array<BioWP_Hopper> Nodes, optional delegate<ExcludeFilter> ExcludeFunc, optional bool bEvalRocketPoints)"
+    },
+    "ExcludeNonFloorNodes": {
+      "documentation": null,
+      "signature_members": {
+        "NavPoint": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ExcludeNonFloorNodes(NavigationPoint NavPoint)"
+    },
+    "ExcludeFloorNodes": {
+      "documentation": null,
+      "signature_members": {
+        "NavPoint": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ExcludeFloorNodes(NavigationPoint NavPoint)"
+    },
+    "WeightByTime": {
+      "documentation": null,
+      "signature_members": {
+        "N": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float WeightByTime(NavigationPoint N)"
+    },
+    "WeightByPlayerFacing": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "N": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float WeightByPlayerFacing(Actor Player, NavigationPoint N)"
+    },
+    "WeightByProximity": {
+      "documentation": null,
+      "signature_members": {
+        "Distance": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float WeightByProximity(float Distance)"
+    },
+    "WeightByDistance": {
+      "documentation": null,
+      "signature_members": {
+        "Distance": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float WeightByDistance(float Distance)"
+    },
+    "CollectNodes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CollectNodes()"
+    },
+    "PawnDied": {
+      "documentation": null,
+      "signature_members": {
+        "inPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PawnDied(Pawn inPawn)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "ExcludeFilter": {
+      "documentation": null,
+      "signature_members": {
+        "NavPoint": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ExcludeFilter(NavigationPoint NavPoint)"
+    }
+  },
+  "states": {
+    "SarenHopperCombat": {
+      "functions": {
+        "ShouldDoCarnageBarrage": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "TryAttack": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "SarenWaiting": {
+      "functions": {
+        "OnDamaged": {
+          "documentation": null,
+          "signature_members": {
+            "DamageInstigator": {
+              "type": "Controller",
+              "documentation": null,
+              "flags": 128
+            },
+            "Damage": {
+              "type": "float",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "SarenHopperCarnageBarrage": {
+      "functions": {
+        "FireCarnage": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ShouldFireShot": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "BarrageTimeout": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "EvaluateCombatActions": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PushedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "classflags": 144704150,
+  "configname": "Game",
+  "documentation": null
+}

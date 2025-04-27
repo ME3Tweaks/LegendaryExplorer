@@ -1,0 +1,1125 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "VfTable_FCallbackEventDevice": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "NoString": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "m_sRunMessage": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sCurrentTest": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sCurrentTestCasePath": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_UserName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_remoteScreenshotPath": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sCampaignName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_serverIP": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_FormattedMapName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_LevelName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_TriggerDesignName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_TriggerDesignStateName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_TriggerArtInChunkName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_PlayerWeapon": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sLogString": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sRemoteSaveLoc": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sSaveExtension": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_PlayerLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_PlayerLocationLastInfo": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_sessionID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_sessionStatus": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_runID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_runStatus": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nCurrentTestPlanID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Interface": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_enabled": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_KeepAlive": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_port": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_GameMode": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_online": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_LastPacketTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_testFlags": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_LogLineCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bSendTPMPackets": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_PlayerInCover": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_PlayerIsFiring": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_PlayerIsGhosting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bCopySaveGame": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "TPMCheckinTestPlan": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TPMCheckinTestPlan()"
+    },
+    "TPMCheckoutTestPlan": {
+      "documentation": null,
+      "signature_members": {
+        "nTestPlanID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TPMCheckoutTestPlan(int nTestPlanID)"
+    },
+    "TRun": {
+      "documentation": null,
+      "signature_members": {
+        "nResult": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TRun(int nResult)"
+    },
+    "TAdd": {
+      "documentation": null,
+      "signature_members": {
+        "sTestName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sTestCaseString": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "TAdd(string sTestName, string sTestCaseString)"
+    },
+    "SendTPMMessage": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SendTPMMessage(string sMessage)"
+    },
+    "SendVocalizationEvent": {
+      "documentation": null,
+      "signature_members": {
+        "SpeakerTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Sound": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendVocalizationEvent(Name SpeakerTag, Name Sound)"
+    },
+    "ShortName": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string ShortName(Object O)"
+    },
+    "GetGameMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetGameMode()"
+    },
+    "SetTPMLoggingEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "Enable": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTPMLoggingEnabled(bool Enable)"
+    },
+    "GetTPMLoggingEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetTPMLoggingEnabled()"
+    },
+    "GetSessionBuild": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSessionBuild()"
+    },
+    "GetRunID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetRunID()"
+    },
+    "GetSessionID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSessionID()"
+    },
+    "GetSessionStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSessionStatus()"
+    },
+    "SetFlag": {
+      "documentation": null,
+      "signature_members": {
+        "nFlag": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bVal": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFlag(int nFlag, bool bVal)"
+    },
+    "ToggleFlag": {
+      "documentation": null,
+      "signature_members": {
+        "nFlag": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ToggleFlag(int nFlag)"
+    },
+    "GetFlag": {
+      "documentation": null,
+      "signature_members": {
+        "nFlag": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFlag(int nFlag)"
+    },
+    "SkynetScreenshot": {
+      "documentation": null,
+      "signature_members": {
+        "sScreenshotName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SkynetScreenshot(string sScreenshotName)"
+    },
+    "SendStatistic": {
+      "documentation": null,
+      "signature_members": {
+        "sStatisticName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sOperationType": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "fData": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendStatistic(string sStatisticName, string sOperationType, float fData)"
+    },
+    "SendBugReport": {
+      "documentation": null,
+      "signature_members": {
+        "fX": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fY": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fZ": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fOrientation": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nWeaponType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nWeaponMod": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nArmourType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nArmourMod": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "sPartyMember1": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sPartyMember2": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bIsPercievingEnemy": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "sBugDescription": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sEmailAddress": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SendBugReport(float fX, float fY, float fZ, float fOrientation, int nWeaponType, int nWeaponMod, int nArmourType, int nArmourMod, string sPartyMember1, string sPartyMember2, bool bIsPercievingEnemy, string sBugDescription, string sEmailAddress)"
+    },
+    "SendDebugEmail": {
+      "documentation": null,
+      "signature_members": {
+        "sEmailDestination": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sEmailSubject": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nExceptionType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "sEmailBody": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "None",
+      "signature": "SendDebugEmail(string sEmailDestination, string sEmailSubject, int nExceptionType, optional string sEmailBody)"
+    },
+    "SendCustomEventFloat": {
+      "documentation": null,
+      "signature_members": {
+        "sPacketHandler": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nLogEventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "fX": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fY": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fZ": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "sAreaName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sNameObject": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sNameTarget": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "fData0": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fData1": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "sString1": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sString2": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nObjectType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIsPartyMember": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendCustomEventFloat(string sPacketHandler, int nLogEventID, float fX, float fY, float fZ, string sAreaName, string sNameObject, string sNameTarget, float fData0, float fData1, string sString1, string sString2, int nObjectType, bool bIsPartyMember)"
+    },
+    "SendCustomEvent": {
+      "documentation": null,
+      "signature_members": {
+        "sPacketHandler": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nLogEventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "fX": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fY": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fZ": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "sAreaName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sNameObject": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sNameTarget": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nIntVal1": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIntVal2": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "sString1": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sString2": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nObjectType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIsPartyMember": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendCustomEvent(string sPacketHandler, int nLogEventID, float fX, float fY, float fZ, string sAreaName, string sNameObject, string sNameTarget, int nIntVal1, int nIntVal2, string sString1, string sString2, int nObjectType, bool bIsPartyMember)"
+    },
+    "SendEventFloat": {
+      "documentation": null,
+      "signature_members": {
+        "nLogEventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "fX": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fY": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fZ": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "sAreaName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sNameObject": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sNameTarget": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "fData0": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fData1": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "sString1": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sString2": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nObjectType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIsPartyMember": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendEventFloat(int nLogEventID, float fX, float fY, float fZ, string sAreaName, string sNameObject, string sNameTarget, float fData0, float fData1, string sString1, string sString2, int nObjectType, int bIsPartyMember)"
+    },
+    "SendEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nLogEventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "fX": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fY": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fZ": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "sAreaName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sNameObject": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sNameTarget": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nIntVal1": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIntVal2": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "sString1": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sString2": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nObjectType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIsPartyMember": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendEvent(int nLogEventID, float fX, float fY, float fZ, string sAreaName, string sNameObject, string sNameTarget, int nIntVal1, int nIntVal2, string sString1, string sString2, int nObjectType, int bIsPartyMember)"
+    },
+    "SendPlayerEventFloat": {
+      "documentation": null,
+      "signature_members": {
+        "nLogEventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "sString1": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sString2": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sString3": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sString4": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "fData0": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fData1": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nInt3": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nInt4": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendPlayerEventFloat(int nLogEventID, string sString1, string sString2, string sString3, string sString4, float fData0, float fData1, int nInt3, int nInt4)"
+    },
+    "SendPlayerEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nLogEventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "sString1": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sString2": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sString3": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sString4": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nInt1": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nInt2": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nInt3": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nInt4": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendPlayerEvent(int nLogEventID, string sString1, string sString2, string sString3, string sString4, int nInt1, int nInt2, int nInt3, int nInt4)"
+    },
+    "SendMapEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nLogEventID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "pos": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "sString1": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sString2": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sString3": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sString4": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nInt1": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nInt2": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nInt3": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nInt4": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendMapEvent(int nLogEventID, Vector pos, string sString1, string sString2, string sString3, string sString4, int nInt1, int nInt2, int nInt3, int nInt4)"
+    },
+    "SendHardwareInfoMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendHardwareInfoMessage()"
+    },
+    "SendFPSTest": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendFPSTest()"
+    },
+    "SendTPMEvent": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SendTPMEvent(string sMessage)"
+    },
+    "SendAssertEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nLineNumber": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "sAssertFileName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sAssertMessage": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SendAssertEvent(int nLineNumber, string sAssertFileName, string sAssertMessage)"
+    },
+    "SendQAEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nMessageEventId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "sType": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sLogMsg": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sCurrentMessage": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SendQAEvent(int nMessageEventId, string sType, string sLogMsg, string sCurrentMessage)"
+    },
+    "SendInvalidPlaythrough": {
+      "documentation": null,
+      "signature_members": {
+        "sCheat": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SendInvalidPlaythrough(string sCheat)"
+    },
+    "SendLevelLoaded": {
+      "documentation": null,
+      "signature_members": {
+        "LevelName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "fTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendLevelLoaded(string LevelName, float fTime)"
+    },
+    "SendStrRefNotFound": {
+      "documentation": null,
+      "signature_members": {
+        "nStrRef": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendStrRefNotFound(int nStrRef)"
+    },
+    "SendTextureMemorySacrificed": {
+      "documentation": null,
+      "signature_members": {
+        "nOldTextureMemoryLimit": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendTextureMemorySacrificed(int nOldTextureMemoryLimit)"
+    },
+    "SendPurpleLevel": {
+      "documentation": null,
+      "signature_members": {
+        "sObjRefName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sObjLeakedName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SendPurpleLevel(string sObjRefName, string sObjLeakedName)"
+    },
+    "GetLogger": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioRemoteLogger",
+      "signature": "BioRemoteLogger GetLogger()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

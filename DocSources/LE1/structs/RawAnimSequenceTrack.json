@@ -1,0 +1,18 @@
+{
+  "members": {
+    "PosKeys": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "RotKeys": {
+      "type": "Quat",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "classdef": "AnimSequence",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

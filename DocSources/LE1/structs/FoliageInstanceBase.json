@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Location": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "XAxis": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "YAxis": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "ZAxis": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "DistanceFactorSquared": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "FoliageComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

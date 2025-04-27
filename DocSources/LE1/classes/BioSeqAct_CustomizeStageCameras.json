@@ -1,0 +1,53 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_fCameraHeightDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fCameraPitchDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fCameraYawDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fCameraFOVDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fCameraNearPlaneDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fCameraFocusInnerRadiusDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fCameraFocusDistanceDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

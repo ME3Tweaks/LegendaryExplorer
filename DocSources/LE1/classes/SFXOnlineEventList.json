@@ -1,0 +1,100 @@
+{
+  "parent": "Object",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "EventList": {
+      "type": "SFXOnlineEvent",
+      "documentation": null,
+      "flags": 5242880
+    }
+  },
+  "functions": {
+    "GetNextTimedOutEvent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineEvent",
+      "signature": "SFXOnlineEvent GetNextTimedOutEvent()"
+    },
+    "RemoveEvent": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveEvent(SFXOnlineEvent oEvent)"
+    },
+    "FindEventByType": {
+      "documentation": null,
+      "signature_members": {
+        "eEventType": {
+          "type": "SFXOnlineEventType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nEventId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindEventByType(SFXOnlineEventType eEventType, int nEventId)"
+    },
+    "FindEvent": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindEvent(SFXOnlineEvent oEvent)"
+    },
+    "GetEventAtIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nEventIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "SFXOnlineEvent",
+      "signature": "SFXOnlineEvent GetEventAtIndex(int nEventIndex)"
+    },
+    "GetEvent": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "SFXOnlineEvent",
+      "signature": "SFXOnlineEvent GetEvent(SFXOnlineEvent oEvent)"
+    },
+    "AddEvent": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddEvent(SFXOnlineEvent oEvent)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

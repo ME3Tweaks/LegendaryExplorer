@@ -1,0 +1,48 @@
+{
+  "members": {
+    "Inputs": {
+      "type": "InputEntry",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "MatchDelegate": {
+      "type": "InputMatchDelegate",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "MatchActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "MatchFuncName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "FailedFuncName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "RequestName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "MatchIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LastMatchTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "classdef": "PlayerController",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

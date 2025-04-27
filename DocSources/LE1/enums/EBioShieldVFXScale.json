@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BIO_SHIELD_VFX_SCALE_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_SHIELD_VFX_SCALE_TO_OWNER": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,1132 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "PlayerRecord": {
+      "type": "PlayerSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ProfileRecord": {
+      "type": "GamerProfileSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "PlotRecord": {
+      "type": "PlotTableSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "VehicleRecord": {
+      "type": "VehicleSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "DependentDLC": {
+      "type": "DependentDLCRecord",
+      "documentation": null,
+      "flags": 5242881
+    },
+    "Filename": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4202497
+    },
+    "DebugName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4202497
+    },
+    "sDisplayName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "characterID": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_sMapName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_sParentMapName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "LevelRecords": {
+      "type": "LevelSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "StreamingRecords": {
+      "type": "StreamingStateSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "KismetRecords": {
+      "type": "KismetBoolSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "DoorRecords": {
+      "type": "DoorSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "PawnRecords": {
+      "type": "Guid",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "KeyBindings": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "HenchmanRecords": {
+      "type": "HenchmanSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "GalaxyMapRecord": {
+      "type": "GalaxyMapSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "TimeStamp": {
+      "type": "SaveTimeStamp",
+      "documentation": null,
+      "flags": 1
+    },
+    "CreatedDate": {
+      "type": "SaveTimeStamp",
+      "documentation": null,
+      "flags": 1
+    },
+    "SaveLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "SaveRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 1
+    },
+    "BaseLevelName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "SerializedSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8193
+    },
+    "FileVersion": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8193
+    },
+    "SecondsPlayed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "Disc": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "Difficulty": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "EndGameState": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "CurrentLoadingTip": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIsValid": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8193
+    },
+    "bIsGamerProfile": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "ResetToDefaults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetToDefaults()"
+    },
+    "EstablishGlobalPlotVariablesForReplayCharacter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EstablishGlobalPlotVariablesForReplayCharacter()"
+    },
+    "LoadItem": {
+      "documentation": null,
+      "signature_members": {
+        "Item": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67109248
+        },
+        "SavedItem": {
+          "type": "ItemSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "InOuter": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadItem(out BioItem Item, out ItemSaveRecord SavedItem, Object InOuter)"
+    },
+    "LoadItems": {
+      "documentation": null,
+      "signature_members": {
+        "Items": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 71303552
+        },
+        "SavedItems": {
+          "type": "ItemSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "InOuter": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadItems(out array<BioItem> Items, out array<ItemSaveRecord> SavedItems, Object InOuter)"
+    },
+    "LoadEquipment": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67109248
+        },
+        "SavedEquipment": {
+          "type": "ItemSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "SavedWeapons": {
+          "type": "ItemSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadEquipment(out BioPawnBehavior Player, out array<ItemSaveRecord> SavedEquipment, out array<ItemSaveRecord> SavedWeapons)"
+    },
+    "LoadBuybackItems": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 384
+        },
+        "SavedItems": {
+          "type": "ItemSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadBuybackItems(out BioWorldInfo WorldInfo, out array<ItemSaveRecord> SavedItems)"
+    },
+    "LoadInventory": {
+      "documentation": null,
+      "signature_members": {
+        "Inventory": {
+          "type": "BioInventory",
+          "documentation": null,
+          "flags": 67109248
+        },
+        "SavedItems": {
+          "type": "ItemSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadInventory(out BioInventory Inventory, out array<ItemSaveRecord> SavedItems)"
+    },
+    "LoadTalents": {
+      "documentation": null,
+      "signature_members": {
+        "playerBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "simpleRecords": {
+          "type": "SimpleTalentSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "complexRecords": {
+          "type": "ComplexTalentSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadTalents(BioPawnBehavior playerBehavior, out array<SimpleTalentSaveRecord> simpleRecords, out array<ComplexTalentSaveRecord> complexRecords)"
+    },
+    "LoadMorphHead": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioMorphFace",
+      "signature": "BioMorphFace LoadMorphHead()"
+    },
+    "LoadAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "Record": {
+          "type": "AppearanceSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadAppearance(BioPawnBehavior Player, out AppearanceSaveRecord Record)"
+    },
+    "LoadHenchman": {
+      "documentation": null,
+      "signature_members": {
+        "Tag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "henchBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67109248
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadHenchman(Name Tag, out BioPawnBehavior henchBehavior)"
+    },
+    "PostLoad": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerController": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PostLoad(BioPlayerController PlayerController)"
+    },
+    "MoveToFreeSpot": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "Location": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveToFreeSpot(Actor oActor, Vector Location)"
+    },
+    "LoadVehicle": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerController": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadVehicle(BioPlayerController PlayerController)"
+    },
+    "SaveVehicle": {
+      "documentation": null,
+      "signature_members": {
+        "Vehicle": {
+          "type": "BioVehicleBehaviorBase",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "isDriving": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveVehicle(BioVehicleBehaviorBase Vehicle, bool isDriving)"
+    },
+    "LoadPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerController": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadPlayer(BioPlayerController PlayerController)"
+    },
+    "SaveTalents": {
+      "documentation": null,
+      "signature_members": {
+        "playerBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "simpleRecords": {
+          "type": "SimpleTalentSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "complexRecords": {
+          "type": "ComplexTalentSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveTalents(BioPawnBehavior playerBehavior, out array<SimpleTalentSaveRecord> simpleRecords, out array<ComplexTalentSaveRecord> complexRecords)"
+    },
+    "SaveMorphHead": {
+      "documentation": null,
+      "signature_members": {
+        "Morph": {
+          "type": "BioMorphFace",
+          "documentation": null,
+          "flags": 128
+        },
+        "Record": {
+          "type": "MorphHeadSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SaveMorphHead(BioMorphFace Morph, out MorphHeadSaveRecord Record)"
+    },
+    "SaveAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "Record": {
+          "type": "AppearanceSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveAppearance(BioPawnBehavior Player, out AppearanceSaveRecord Record)"
+    },
+    "LoadHotKeys": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "Records": {
+          "type": "HotKeySaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadHotKeys(BioPlayerController PC, out array<HotKeySaveRecord> Records)"
+    },
+    "SaveHotKeys": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "Records": {
+          "type": "HotKeySaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveHotKeys(BioPlayerController PC, out array<HotKeySaveRecord> Records)"
+    },
+    "SaveHenchman": {
+      "documentation": null,
+      "signature_members": {
+        "pawnTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "henchBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67109248
+        },
+        "Record": {
+          "type": "HenchmanSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveHenchman(Name pawnTag, out BioPawnBehavior henchBehavior, out HenchmanSaveRecord Record)"
+    },
+    "SaveItem": {
+      "documentation": null,
+      "signature_members": {
+        "Item": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67109248
+        },
+        "OutItem": {
+          "type": "ItemSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveItem(out BioItem Item, out ItemSaveRecord OutItem)"
+    },
+    "SaveItems": {
+      "documentation": null,
+      "signature_members": {
+        "Items": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 71303552
+        },
+        "OutItems": {
+          "type": "ItemSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveItems(out array<BioItem> Items, out array<ItemSaveRecord> OutItems)"
+    },
+    "SaveEquipment": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67109248
+        },
+        "Equipment": {
+          "type": "ItemSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Weapons": {
+          "type": "ItemSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveEquipment(out BioPawnBehavior Player, out array<ItemSaveRecord> Equipment, out array<ItemSaveRecord> Weapons)"
+    },
+    "SaveBuybackItems": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 384
+        },
+        "OutItems": {
+          "type": "ItemSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveBuybackItems(out BioWorldInfo WorldInfo, out array<ItemSaveRecord> OutItems)"
+    },
+    "SaveInventory": {
+      "documentation": null,
+      "signature_members": {
+        "Inventory": {
+          "type": "BioInventory",
+          "documentation": null,
+          "flags": 67109248
+        },
+        "OutItems": {
+          "type": "ItemSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveInventory(out BioInventory Inventory, out array<ItemSaveRecord> OutItems)"
+    },
+    "SavePlotData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SavePlotData()"
+    },
+    "SaveEquipmentToInventory": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SaveEquipmentToInventory()"
+    },
+    "SaveSingleHenchman": {
+      "documentation": null,
+      "signature_members": {
+        "Tag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "henchPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveSingleHenchman(Name Tag, BioPawn henchPawn)"
+    },
+    "SavePlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerController": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SavePlayer(BioPlayerController PlayerController)"
+    },
+    "LoadGameOptions": {
+      "documentation": null,
+      "signature_members": {
+        "Profile": {
+          "type": "BioGamerProfile",
+          "documentation": null,
+          "flags": 384
+        },
+        "Record": {
+          "type": "GameOptionsSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadGameOptions(out BioGamerProfile Profile, out GameOptionsSaveRecord Record)"
+    },
+    "LoadSaveGameOptions": {
+      "documentation": null,
+      "signature_members": {
+        "Profile": {
+          "type": "BioGamerProfile",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadSaveGameOptions(out BioGamerProfile Profile)"
+    },
+    "LoadCharacterProfiles": {
+      "documentation": null,
+      "signature_members": {
+        "Profiles": {
+          "type": "CharacterProfile",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "CharacterProfileSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadCharacterProfiles(out array<CharacterProfile> Profiles, out array<CharacterProfileSaveRecord> Records)"
+    },
+    "LoadFloatStats": {
+      "documentation": null,
+      "signature_members": {
+        "Variables": {
+          "type": "float",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "float",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadFloatStats(out array<float> Variables, out array<float> Records)"
+    },
+    "LoadIntStats": {
+      "documentation": null,
+      "signature_members": {
+        "Variables": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadIntStats(out array<int> Variables, out array<int> Records)"
+    },
+    "LoadBonusTalents": {
+      "documentation": null,
+      "signature_members": {
+        "talents": {
+          "type": "BonusTalent",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "BonusTalentSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadBonusTalents(out array<BonusTalent> talents, out array<BonusTalentSaveRecord> Records)"
+    },
+    "LoadAchievementStates": {
+      "documentation": null,
+      "signature_members": {
+        "Achievements": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadAchievementStates(out array<int> Achievements, out array<int> Records)"
+    },
+    "LoadRewards": {
+      "documentation": null,
+      "signature_members": {
+        "Rewards": {
+          "type": "ProfileRewardStat",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "ProfileRewardSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadRewards(out array<ProfileRewardStat> Rewards, out array<ProfileRewardSaveRecord> Records)"
+    },
+    "LoadPlaythroughs": {
+      "documentation": null,
+      "signature_members": {
+        "Playthroughs": {
+          "type": "ProfilePlaythrough",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "ProfilePlaythroughSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadPlaythroughs(out array<ProfilePlaythrough> Playthroughs, out array<ProfilePlaythroughSaveRecord> Records)"
+    },
+    "LoadAchievements": {
+      "documentation": null,
+      "signature_members": {
+        "Variables": {
+          "type": "PlotManagerAchievement",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "PlotManagerAchievementSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadAchievements(out array<PlotManagerAchievement> Variables, out array<PlotManagerAchievementSaveRecord> Records)"
+    },
+    "LoadFloatVariables": {
+      "documentation": null,
+      "signature_members": {
+        "Variables": {
+          "type": "ProfileFLOAT",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "ProfileFLOATSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadFloatVariables(out array<ProfileFLOAT> Variables, out array<ProfileFLOATSaveRecord> Records)"
+    },
+    "LoadIntVariables": {
+      "documentation": null,
+      "signature_members": {
+        "Variables": {
+          "type": "ProfileINT",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "ProfileINTSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadIntVariables(out array<ProfileINT> Variables, out array<ProfileINTSaveRecord> Records)"
+    },
+    "LoadBoolVariables": {
+      "documentation": null,
+      "signature_members": {
+        "Variables": {
+          "type": "ProfileBOOL",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "ProfileBOOLSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadBoolVariables(out array<ProfileBOOL> Variables, out array<ProfileBOOLSaveRecord> Records)"
+    },
+    "LoadGamerProfile": {
+      "documentation": null,
+      "signature_members": {
+        "Profile": {
+          "type": "BioGamerProfile",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadGamerProfile(BioGamerProfile Profile)"
+    },
+    "SaveGameOptions": {
+      "documentation": null,
+      "signature_members": {
+        "Profile": {
+          "type": "BioGamerProfile",
+          "documentation": null,
+          "flags": 384
+        },
+        "Record": {
+          "type": "GameOptionsSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveGameOptions(out BioGamerProfile Profile, out GameOptionsSaveRecord Record)"
+    },
+    "SaveCharacterProfiles": {
+      "documentation": null,
+      "signature_members": {
+        "Profiles": {
+          "type": "CharacterProfile",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "CharacterProfileSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveCharacterProfiles(out array<CharacterProfile> Profiles, out array<CharacterProfileSaveRecord> Records)"
+    },
+    "SaveFloatStats": {
+      "documentation": null,
+      "signature_members": {
+        "Variables": {
+          "type": "float",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "float",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveFloatStats(out array<float> Variables, out array<float> Records)"
+    },
+    "SaveIntStats": {
+      "documentation": null,
+      "signature_members": {
+        "Variables": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveIntStats(out array<int> Variables, out array<int> Records)"
+    },
+    "SaveBonusTalents": {
+      "documentation": null,
+      "signature_members": {
+        "talents": {
+          "type": "BonusTalent",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "BonusTalentSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveBonusTalents(out array<BonusTalent> talents, out array<BonusTalentSaveRecord> Records)"
+    },
+    "SaveAchievementStates": {
+      "documentation": null,
+      "signature_members": {
+        "Achievements": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveAchievementStates(out array<int> Achievements, out array<int> Records)"
+    },
+    "SaveRewards": {
+      "documentation": null,
+      "signature_members": {
+        "Rewards": {
+          "type": "ProfileRewardStat",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "ProfileRewardSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveRewards(out array<ProfileRewardStat> Rewards, out array<ProfileRewardSaveRecord> Records)"
+    },
+    "SavePlaythroughs": {
+      "documentation": null,
+      "signature_members": {
+        "Playthroughs": {
+          "type": "ProfilePlaythrough",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "ProfilePlaythroughSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SavePlaythroughs(out array<ProfilePlaythrough> Playthroughs, out array<ProfilePlaythroughSaveRecord> Records)"
+    },
+    "SaveAchievements": {
+      "documentation": null,
+      "signature_members": {
+        "Variables": {
+          "type": "PlotManagerAchievement",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "PlotManagerAchievementSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveAchievements(out array<PlotManagerAchievement> Variables, out array<PlotManagerAchievementSaveRecord> Records)"
+    },
+    "SaveFloatVariables": {
+      "documentation": null,
+      "signature_members": {
+        "Variables": {
+          "type": "ProfileFLOAT",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "ProfileFLOATSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveFloatVariables(out array<ProfileFLOAT> Variables, out array<ProfileFLOATSaveRecord> Records)"
+    },
+    "SaveIntVariables": {
+      "documentation": null,
+      "signature_members": {
+        "Variables": {
+          "type": "ProfileINT",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "ProfileINTSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveIntVariables(out array<ProfileINT> Variables, out array<ProfileINTSaveRecord> Records)"
+    },
+    "SaveBoolVariables": {
+      "documentation": null,
+      "signature_members": {
+        "Variables": {
+          "type": "ProfileBOOL",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Records": {
+          "type": "ProfileBOOLSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveBoolVariables(out array<ProfileBOOL> Variables, out array<ProfileBOOLSaveRecord> Records)"
+    },
+    "SaveGamerProfile": {
+      "documentation": null,
+      "signature_members": {
+        "Profile": {
+          "type": "BioGamerProfile",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveGamerProfile(BioGamerProfile Profile)"
+    },
+    "GetPlayerRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": "PlayerSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPlayerRecord(out PlayerSaveRecord Record)"
+    },
+    "FindClosestDrivableVehicle": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioVehicleBase",
+      "signature": "BioVehicleBase FindClosestDrivableVehicle(BioPawn Pawn)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

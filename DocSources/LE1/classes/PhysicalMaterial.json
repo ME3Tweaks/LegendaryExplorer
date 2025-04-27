@@ -1,0 +1,210 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "AnisoFrictionDir": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "ImpactEffect": {
+      "type": "ParticleSystem",
+      "documentation": null,
+      "flags": 1
+    },
+    "ImpactSound": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 1
+    },
+    "SlideEffect": {
+      "type": "ParticleSystem",
+      "documentation": null,
+      "flags": 1
+    },
+    "SlideSound": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 1
+    },
+    "FractureSoundExplosion": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 1
+    },
+    "FractureSoundSingle": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmPhysicsCollisionSound": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "Parent": {
+      "type": "PhysicalMaterial",
+      "documentation": null,
+      "flags": 1
+    },
+    "PhysicalMaterialProperty": {
+      "type": "PhysicalMaterialPropertyBase",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "MaterialIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "Friction": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Restitution": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FrictionV": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Density": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "AngularDamping": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "LinearDamping": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MagneticResponse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WindResponse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ImpactThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ImpactReFireDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "AINoiseMag": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SlideThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SlideReFireDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "AudioObstruction": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "AudioOcclusion": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bForceConeFriction": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableAnisotropicFriction": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIgnoreSelfCollisions": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "AllPhysicalMaterials": {
+      "documentation": null,
+      "signature_members": {
+        "OutPhysMat": {
+          "type": "PhysicalMaterial",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "AllPhysicalMaterials(out PhysicalMaterial OutPhysMat)"
+    },
+    "GetPhysicalMaterialProperty": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "PhysicalMaterialPropertyBase",
+      "signature": "PhysicalMaterialPropertyBase GetPhysicalMaterialProperty(Class<PhysicalMaterialPropertyBase> DesiredClass)"
+    },
+    "FindFractureSounds": {
+      "documentation": null,
+      "signature_members": {
+        "OutSoundExplosion": {
+          "type": "SoundCue",
+          "documentation": null,
+          "flags": 384
+        },
+        "OutSoundSingle": {
+          "type": "SoundCue",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "FindFractureSounds(out SoundCue OutSoundExplosion, out SoundCue OutSoundSingle)"
+    },
+    "FindPhysEffectInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": "EPhysEffectType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "PhysEffectInfo",
+      "signature": "PhysEffectInfo FindPhysEffectInfo(EPhysEffectType Type)"
+    }
+  },
+  "states": {},
+  "classflags": 144711826,
+  "configname": "None",
+  "documentation": null
+}

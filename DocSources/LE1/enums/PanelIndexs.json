@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "SETTINGS_PANEL_MAIN": {
+      "value": 0,
+      "documentation": null
+    },
+    "SETTINGS_PANEL_GRAPHICS": {
+      "value": 1,
+      "documentation": null
+    },
+    "SETTINGS_PANEL_CALIBRATION": {
+      "value": 2,
+      "documentation": null
+    },
+    "SETTINGS_PANEL_SOUND": {
+      "value": 3,
+      "documentation": null
+    },
+    "SETTINGS_PANEL_INPUT": {
+      "value": 4,
+      "documentation": null
+    },
+    "SETTINGS_PANEL_CONTROLS": {
+      "value": 5,
+      "documentation": null
+    },
+    "SETTINGS_PANEL_GAMEPLAY": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

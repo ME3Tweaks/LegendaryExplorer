@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Event": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Name": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "AutoFillParameterBits": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Channel": {
+      "type": "ETelemetryChannel",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXTelemetry",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,429 @@
+{
+  "parent": "UIDataStore",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "OwnerScene": {
+      "type": "UIScene",
+      "documentation": null,
+      "flags": 8194
+    },
+    "SceneDataProvider": {
+      "type": "UIDynamicFieldProvider",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Registered": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Registered(LocalPlayer PlayerOwner)"
+    },
+    "SceneDataFieldChanged": {
+      "documentation": null,
+      "signature_members": {
+        "SourceProvider": {
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
+        },
+        "PropTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SceneDataFieldChanged(UIDataProvider SourceProvider, optional Name PropTag)"
+    },
+    "FindCollectionValueIndex": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ValueToFind": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "bPersistent": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "CellTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindCollectionValueIndex(Name FieldName, const out string ValueToFind, optional bool bPersistent, optional Name CellTag)"
+    },
+    "GetCollectionValue": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ValueIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_Value": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "bPersistent": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "CellTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCollectionValue(Name FieldName, int ValueIndex, out string out_Value, optional bool bPersistent, optional Name CellTag)"
+    },
+    "ClearCollectionValueArray": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bPersistent": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "CellTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ClearCollectionValueArray(Name FieldName, optional bool bPersistent, optional Name CellTag)"
+    },
+    "ReplaceCollectionValueByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ValueIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewValue": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "bPersistent": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "CellTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReplaceCollectionValueByIndex(Name FieldName, int ValueIndex, const out string NewValue, optional bool bPersistent, optional Name CellTag)"
+    },
+    "ReplaceCollectionValue": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "CurrentValue": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "NewValue": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "bPersistent": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "CellTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReplaceCollectionValue(Name FieldName, const out string CurrentValue, const out string NewValue, optional bool bPersistent, optional Name CellTag)"
+    },
+    "RemoveCollectionValueByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ValueIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bPersistent": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "CellTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveCollectionValueByIndex(Name FieldName, int ValueIndex, optional bool bPersistent, optional Name CellTag)"
+    },
+    "RemoveCollectionValue": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ValueToRemove": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "bPersistent": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "CellTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveCollectionValue(Name FieldName, const out string ValueToRemove, optional bool bPersistent, optional Name CellTag)"
+    },
+    "InsertCollectionValue": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewValue": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "InsertIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        },
+        "bPersistent": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bAllowDuplicateValues": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "CellTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InsertCollectionValue(Name FieldName, const out string NewValue, optional int InsertIndex, optional bool bPersistent, optional bool bAllowDuplicateValues, optional Name CellTag)"
+    },
+    "SetCollectionValueArray": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "CollectionValues": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "bClearExisting": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "InsertIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        },
+        "bPersistent": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "CellTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetCollectionValueArray(Name FieldName, const out array<string> CollectionValues, optional bool bClearExisting, optional int InsertIndex, optional bool bPersistent, optional Name CellTag)"
+    },
+    "GetCollectionValueArray": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_DataValueArray": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "bPersistent": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "CellTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCollectionValueArray(Name FieldName, out array<string> out_DataValueArray, optional bool bPersistent, optional Name CellTag)"
+    },
+    "ClearFields": {
+      "documentation": null,
+      "signature_members": {
+        "bReinitializeRuntimeFields": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ClearFields(optional bool bReinitializeRuntimeFields)"
+    },
+    "FindFieldIndex": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bSearchPersistentFields": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindFieldIndex(Name FieldName, optional bool bSearchPersistentFields)"
+    },
+    "RemoveField": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveField(Name FieldName)"
+    },
+    "AddField": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "FieldType": {
+          "type": "EUIDataProviderFieldType",
+          "documentation": null,
+          "flags": 144
+        },
+        "bPersistent": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "out_InsertPosition": {
+          "type": "int",
+          "documentation": null,
+          "flags": 400
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddField(Name FieldName, optional EUIDataProviderFieldType FieldType, optional bool bPersistent, optional out int out_InsertPosition)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

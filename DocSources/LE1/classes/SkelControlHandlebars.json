@@ -1,0 +1,36 @@
+{
+  "parent": "SkelControlSingleBone",
+  "package": "Engine",
+  "variables": {
+    "WheelBoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "SteerWheelBoneIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bInvertRotation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelRollAxis": {
+      "type": "EAxis",
+      "documentation": null,
+      "flags": 1
+    },
+    "HandlebarRotateAxis": {
+      "type": "EAxis",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

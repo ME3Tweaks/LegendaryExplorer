@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "HUD_BUTTON_UNASSIGNED_0": {
+      "value": 0,
+      "documentation": null
+    },
+    "HUD_BUTTON_LEFT_SHOULDER": {
+      "value": 1,
+      "documentation": null
+    },
+    "HUD_BUTTON_LEFT_TRIGGER": {
+      "value": 2,
+      "documentation": null
+    },
+    "HUD_BUTTON_RIGHT_SHOULDER": {
+      "value": 3,
+      "documentation": null
+    },
+    "HUD_BUTTON_RIGHT_TRIGGER": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

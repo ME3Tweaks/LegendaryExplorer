@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ELEMENT_Normal": {
+      "value": 0,
+      "documentation": null
+    },
+    "ELEMENT_Active": {
+      "value": 1,
+      "documentation": null
+    },
+    "ELEMENT_Selected": {
+      "value": 2,
+      "documentation": null
+    },
+    "ELEMENT_UnderCursor": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "BIO_OP_NULL": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_OP_ADD": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_OP_MULTIPLY": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_OP_MULTIPLY_COMPLEMENT": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_OP_ASSIGN": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_OP_COUNT": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

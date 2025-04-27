@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "FET_CONSTANT_FLOW": {
+      "value": 0,
+      "documentation": null
+    },
+    "FET_CONSTANT_PRESSURE": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

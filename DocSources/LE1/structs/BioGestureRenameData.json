@@ -1,0 +1,23 @@
+{
+  "members": {
+    "nmOldAnim": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmNewSet": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmNewAnim": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioEvtSysTrackGesture",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

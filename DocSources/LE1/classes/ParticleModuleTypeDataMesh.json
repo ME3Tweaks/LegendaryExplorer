@@ -1,0 +1,71 @@
+{
+  "parent": "ParticleModuleTypeDataBase",
+  "package": "Engine",
+  "variables": {
+    "Mesh": {
+      "type": "StaticMesh",
+      "documentation": null,
+      "flags": 1
+    },
+    "Pitch": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Roll": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Yaw": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "CastShadows": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "DoCollisions": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bAllowMotionBlur": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bOverrideMaterial": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCameraFacing": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "MeshAlignment": {
+      "type": "EMeshScreenAlignment",
+      "documentation": null,
+      "flags": 1
+    },
+    "AxisLockOption": {
+      "type": "EParticleAxisLock",
+      "documentation": null,
+      "flags": 1
+    },
+    "CameraFacingOption": {
+      "type": "EMeshCameraFacingOptions",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

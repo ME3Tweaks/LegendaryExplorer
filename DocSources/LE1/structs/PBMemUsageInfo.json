@@ -1,0 +1,53 @@
+{
+  "members": {
+    "Building": {
+      "type": "ProcBuilding",
+      "documentation": null,
+      "flags": 0
+    },
+    "Ruleset": {
+      "type": "ProcBuildingRuleset",
+      "documentation": null,
+      "flags": 0
+    },
+    "NumStaticMeshComponent": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "NumInstancedStaticMeshComponents": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "NumInstancedTris": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "LightmapMemBytes": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ShadowmapMemBytes": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "LODDiffuseMemBytes": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "LODLightingMemBytes": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "ProcBuilding",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

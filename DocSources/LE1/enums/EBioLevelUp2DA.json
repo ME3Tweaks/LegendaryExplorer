@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "LEVEL_UP_2DA_LEVEL_UP": {
+      "value": 0,
+      "documentation": null
+    },
+    "LEVEL_UP_2DA_RANK": {
+      "value": 1,
+      "documentation": null
+    },
+    "LEVEL_UP_2DA_CHALLENGE_SCALING": {
+      "value": 2,
+      "documentation": null
+    },
+    "LEVEL_UP_2DA_EXPERIENCE": {
+      "value": 3,
+      "documentation": null
+    },
+    "LEVEL_UP_2DA_TEMPLATE": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

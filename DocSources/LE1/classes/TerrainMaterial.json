@@ -1,0 +1,61 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "LocalToMapping": {
+      "type": "Matrix",
+      "documentation": null,
+      "flags": 0
+    },
+    "FoliageMeshes": {
+      "type": "TerrainFoliageMesh",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Material": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 1
+    },
+    "DisplacementMap": {
+      "type": "Texture2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "MappingScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MappingRotation": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MappingPanU": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MappingPanV": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DisplacementScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MappingType": {
+      "type": "ETerrainMappingType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

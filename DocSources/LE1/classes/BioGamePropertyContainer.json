@@ -1,0 +1,131 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aGameProperties": {
+      "type": "BioGameProperty",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_oGamePropertyCooldownTimer": {
+      "type": "BioGamePropertyTimer",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_oEventDispatcher": {
+      "type": "BioGamePropertyEventDispatcher",
+      "documentation": null,
+      "flags": 71303176
+    }
+  },
+  "functions": {
+    "ToString": {
+      "documentation": null,
+      "signature_members": {
+        "sIndent": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "string",
+      "signature": "string ToString(optional string sIndent)"
+    },
+    "OnGPEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEvent": {
+          "type": "EBioGamePropertyEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "pTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGPEvent(EBioGamePropertyEvent eEvent, Object pTarget)"
+    },
+    "ScaleToLevel": {
+      "documentation": null,
+      "signature_members": {
+        "nLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ScaleToLevel(int nLevel)"
+    },
+    "ProcessCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessCooldown(float fDeltaTime)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fDeltaTime)"
+    },
+    "OnGamePropCooldownEnd": {
+      "documentation": null,
+      "signature_members": {
+        "pGameProperty": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "eTimingType": {
+          "type": "EBioGPTimingType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDeltaTimeRemaining": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGamePropCooldownEnd(BioGameProperty pGameProperty, EBioGPTimingType eTimingType, float fDeltaTimeRemaining)"
+    },
+    "AddGamePropertyToCountdown": {
+      "documentation": null,
+      "signature_members": {
+        "oGameProp": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "fCountdown": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddGamePropertyToCountdown(BioGameProperty oGameProp, float fCountdown)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

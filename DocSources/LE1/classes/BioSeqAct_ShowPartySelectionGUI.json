@@ -1,0 +1,40 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_sPartySelectResource": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "m_oPartySelectGuiReferenced": {
+      "type": "GFxMovieInfo",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "UpdateOp": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateOp(float fDeltaT)"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 136315030,
+  "configname": "UI",
+  "documentation": null
+}

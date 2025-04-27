@@ -1,0 +1,145 @@
+{
+  "EnumValues": {
+    "BIO_POWERICON_INVALID": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_POWERICON_EMPTYSLOT": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_POWERICON_SHOTGUN": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_POWERICON_ASSAULTRIFLE": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_POWERICON_PISTOL": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_POWERICON_SNIPERRIFLE": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIO_POWERICON_AIHACKING": {
+      "value": 6,
+      "documentation": null
+    },
+    "BIO_POWERICON_DAMPINGFIELD": {
+      "value": 7,
+      "documentation": null
+    },
+    "BIO_POWERICON_EMPBURST": {
+      "value": 8,
+      "documentation": null
+    },
+    "BIO_POWERICON_HEAL": {
+      "value": 9,
+      "documentation": null
+    },
+    "BIO_POWERICON_NEURALSHOCK": {
+      "value": 10,
+      "documentation": null
+    },
+    "BIO_POWERICON_SABOTAGE": {
+      "value": 11,
+      "documentation": null
+    },
+    "BIO_POWERICON_SHIELDBOOST": {
+      "value": 12,
+      "documentation": null
+    },
+    "BIO_POWERICON_TAUNT": {
+      "value": 13,
+      "documentation": null
+    },
+    "BIO_POWERICON_ADRENALINEBURST": {
+      "value": 14,
+      "documentation": null
+    },
+    "BIO_POWERICON_GRENADE": {
+      "value": 15,
+      "documentation": null
+    },
+    "BIO_POWERICON_CARNAGE": {
+      "value": 16,
+      "documentation": null
+    },
+    "BIO_POWERICON_CRITICAL": {
+      "value": 17,
+      "documentation": null
+    },
+    "BIO_POWERICON_IMMUNITY": {
+      "value": 18,
+      "documentation": null
+    },
+    "BIO_POWERICON_MARKSMAN": {
+      "value": 19,
+      "documentation": null
+    },
+    "BIO_POWERICON_SUPPRESSION": {
+      "value": 20,
+      "documentation": null
+    },
+    "BIO_POWERICON_INSPIRATION": {
+      "value": 21,
+      "documentation": null
+    },
+    "BIO_POWERICON_BARRIER": {
+      "value": 22,
+      "documentation": null
+    },
+    "BIO_POWERICON_LIFT": {
+      "value": 23,
+      "documentation": null
+    },
+    "BIO_POWERICON_STASIS": {
+      "value": 24,
+      "documentation": null
+    },
+    "BIO_POWERICON_THROW": {
+      "value": 25,
+      "documentation": null
+    },
+    "BIO_POWERICON_WARP": {
+      "value": 26,
+      "documentation": null
+    },
+    "BIO_POWERICON_SINGULARITY": {
+      "value": 27,
+      "documentation": null
+    },
+    "BIO_POWERICON_LOCKED": {
+      "value": 28,
+      "documentation": null
+    },
+    "BIO_POWERICON_UNLOCKED": {
+      "value": 29,
+      "documentation": null
+    },
+    "BIO_POWERICON_MINIGUN": {
+      "value": 30,
+      "documentation": null
+    },
+    "BIO_POWERICON_CANNON": {
+      "value": 31,
+      "documentation": null
+    },
+    "BIO_POWERICON_THRUSTERS": {
+      "value": 32,
+      "documentation": null
+    },
+    "BIO_POWERICON_UNASSIGNED33": {
+      "value": 33,
+      "documentation": null
+    },
+    "BIO_POWERICON_GRENADEDETONATOR": {
+      "value": 34,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

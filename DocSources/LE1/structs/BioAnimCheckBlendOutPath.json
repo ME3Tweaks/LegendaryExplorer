@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Nodes": {
+      "type": "BioAnimCheckBlendOutNode",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "Next": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4096
+    }
+  },
+  "classdef": "BioAnimCheckBlendOut",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

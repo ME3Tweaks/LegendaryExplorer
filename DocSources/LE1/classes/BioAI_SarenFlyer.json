@@ -1,0 +1,35 @@
+{
+  "parent": "BioAI_Drone",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "OnLeftPlaypen": {
+      "documentation": null,
+      "signature_members": {
+        "oNavPoint": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLeftPlaypen(NavigationPoint oNavPoint)"
+    },
+    "GetSteeringVector": {
+      "documentation": null,
+      "signature_members": {
+        "vSteering": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSteeringVector(out Vector vSteering)"
+    }
+  },
+  "states": {},
+  "classflags": 144704150,
+  "configname": "Game",
+  "documentation": null
+}

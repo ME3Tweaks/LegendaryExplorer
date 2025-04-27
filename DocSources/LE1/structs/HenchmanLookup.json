@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Tag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "Save": {
+      "type": "BioBaseSaveObject",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmMappedPower": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSaveGame",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

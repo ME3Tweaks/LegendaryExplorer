@@ -1,0 +1,228 @@
+{
+  "parent": "BioGrenadeProjectile",
+  "package": "SFXGame",
+  "variables": {
+    "m_vHitNormal": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vIntendedTargetLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_vStartLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oHeatSeekTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oIntendedTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fExplosionNoise": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fStickNoise": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_bIsStuck": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "DoTouch": {
+      "documentation": null,
+      "signature_members": {
+        "oHitActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DoTouch(Actor oHitActor, Vector vHitLocation, Vector vHitNormal)"
+    },
+    "Unstick": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Unstick(Vector HitLocation, Vector HitNormal)"
+    },
+    "Stick": {
+      "documentation": null,
+      "signature_members": {
+        "HitActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Stick(Actor HitActor, Vector HitLocation, Vector HitNormal)"
+    },
+    "HitWall": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Wall": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "WallComp": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "HitWall(Vector HitNormal, Actor Wall, PrimitiveComponent WallComp)"
+    },
+    "ProcessTouch": {
+      "documentation": null,
+      "signature_members": {
+        "HitActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessTouch(Actor HitActor, Vector vHitLocation, Vector vHitNormal)"
+    },
+    "SetVelocity": {
+      "documentation": null,
+      "signature_members": {
+        "vVelocity": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVelocity(Vector vVelocity)"
+    },
+    "SetTargetPoint": {
+      "documentation": null,
+      "signature_members": {
+        "vTarget": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetPoint(Vector vTarget)"
+    },
+    "SetTargetActor": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetActor(Actor oTarget)"
+    },
+    "Detonate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Detonate()"
+    },
+    "Explode": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Explode(Vector HitLocation, Vector HitNormal)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

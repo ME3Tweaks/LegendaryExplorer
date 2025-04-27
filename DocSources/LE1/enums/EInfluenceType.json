@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "Fluid_Flow": {
+      "value": 0,
+      "documentation": null
+    },
+    "Fluid_Raindrops": {
+      "value": 1,
+      "documentation": null
+    },
+    "Fluid_Wave": {
+      "value": 2,
+      "documentation": null
+    },
+    "Fluid_Sphere": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

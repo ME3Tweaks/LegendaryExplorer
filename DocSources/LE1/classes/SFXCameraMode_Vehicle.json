@@ -1,0 +1,57 @@
+{
+  "parent": "SFXCameraMode",
+  "package": "SFXGame",
+  "variables": {
+    "Blur": {
+      "type": "MotionBlurEffect",
+      "documentation": null,
+      "flags": 8192
+    },
+    "Sharpness": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "bFirstUpdate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "MakeInactive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeInactive()"
+    },
+    "MakeActive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeActive()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    }
+  },
+  "states": {},
+  "classflags": 10485778,
+  "configname": "Game",
+  "documentation": null
+}

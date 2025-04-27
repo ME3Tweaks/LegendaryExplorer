@@ -1,0 +1,677 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "VfTable_FTickableObject": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "ConfigHooks": {
+      "type": "TelemetryHookConfig",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "MilestonePlotPoints": {
+      "type": "TelemetryPlotPoint_Milestone",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "GameDataPlotsInt": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "GameDataPlotsFloat": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "GameDataPlotsBool": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "BlacklistPlotsInt": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "BlacklistPlotsFloat": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "BlacklistPlotsBool": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "pProtoHttp": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4096
+    },
+    "Hooks": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4096
+    },
+    "GameSession": {
+      "type": "SFXTelemetryGameSession",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEnableTelemetry": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bAreDelegatesRegistered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bBootStarted": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bLoggedIn": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOptOut": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SendGameData": {
+      "documentation": null,
+      "signature_members": {
+        "GameDataType": {
+          "type": "ETelemetryGameDataType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendGameData(ETelemetryGameDataType GameDataType)"
+    },
+    "IncSessionTeamDeaths": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "IncSessionTeamDeaths(int Amount)"
+    },
+    "IncSessionTeamKills": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "IncSessionTeamKills(int Amount)"
+    },
+    "IncSessionPlayerDeaths": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "IncSessionPlayerDeaths(int Amount)"
+    },
+    "IncSessionPlayerKills": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "IncSessionPlayerKills(int Amount)"
+    },
+    "IncSessionCombatScore": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "IncSessionCombatScore(int Amount)"
+    },
+    "IncSessionPlayerScore": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "IncSessionPlayerScore(int Amount)"
+    },
+    "IncSessionXP": {
+      "documentation": null,
+      "signature_members": {
+        "Amount": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "IncSessionXP(int Amount)"
+    },
+    "SetContextCustomHeader": {
+      "documentation": null,
+      "signature_members": {
+        "ChunkName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetContextCustomHeader(Name ChunkName)"
+    },
+    "SetContextPlayerLevelFromCurrentRecord": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetContextPlayerLevelFromCurrentRecord()"
+    },
+    "SetContextPlayerLevel": {
+      "documentation": null,
+      "signature_members": {
+        "Level": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetContextPlayerLevel(int Level)"
+    },
+    "SetContextMap": {
+      "documentation": null,
+      "signature_members": {
+        "MapName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetContextMap(Name MapName)"
+    },
+    "SendTelemetryOnProfileReadComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendTelemetryOnProfileReadComplete(byte LocalUserNum, bool bWasSuccessful)"
+    },
+    "SendProfileDependentTelemetry": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendProfileDependentTelemetry(byte LocalUserNum)"
+    },
+    "InitConnectionDelegates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitConnectionDelegates()"
+    },
+    "OnLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginChange(byte LocalUserNum)"
+    },
+    "OnAuthenticate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAuthenticate()"
+    },
+    "GetLoginAndPlayerInterface": {
+      "documentation": null,
+      "signature_members": {
+        "Login": {
+          "type": "ISFXOnlineComponentLogin",
+          "documentation": null,
+          "flags": 384
+        },
+        "PlayerInterface": {
+          "type": "OnlinePlayerInterface",
+          "documentation": null,
+          "flags": 400
+        }
+      },
+      "returntype": "None",
+      "signature": "GetLoginAndPlayerInterface(out ISFXOnlineComponentLogin Login, optional out OnlinePlayerInterface PlayerInterface)"
+    },
+    "SendProfileDependentTelemetryNative": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendProfileDependentTelemetryNative()"
+    },
+    "OnDisconnect": {
+      "documentation": null,
+      "signature_members": {
+        "Error": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "SessionId": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDisconnect(int Error, const string SessionId)"
+    },
+    "IsCollectionEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCollectionEnabled()"
+    },
+    "AddClassNameToAttributeArray": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "AttrName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "cnData": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddClassNameToAttributeArray(out array<TelemetryAttribute> Attributes, string AttrName, Name cnData)"
+    },
+    "AddBoolToAttributeArray": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "AttrName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bData": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddBoolToAttributeArray(out array<TelemetryAttribute> Attributes, string AttrName, bool bData)"
+    },
+    "AddFloatToAttributeArray": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "AttrName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "fData": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddFloatToAttributeArray(out array<TelemetryAttribute> Attributes, string AttrName, float fData)"
+    },
+    "AddIntToAttributeArray": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "AttrName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nData": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddIntToAttributeArray(out array<TelemetryAttribute> Attributes, string AttrName, int nData)"
+    },
+    "AddStringToAttributeArray": {
+      "documentation": null,
+      "signature_members": {
+        "Attributes": {
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "AttrName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sData": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "AddStringToAttributeArray(out array<TelemetryAttribute> Attributes, string AttrName, const out string sData)"
+    },
+    "GenerateUniqueClassId": {
+      "documentation": null,
+      "signature_members": {
+        "Object": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GenerateUniqueClassId(Object Object)"
+    },
+    "GenerateUniqueClassIdFromName": {
+      "documentation": null,
+      "signature_members": {
+        "FullFriendlyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GenerateUniqueClassIdFromName(Name FullFriendlyName)"
+    },
+    "GenerateUniqueClassIdFromString": {
+      "documentation": null,
+      "signature_members": {
+        "FullFriendlyName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "string",
+      "signature": "string GenerateUniqueClassIdFromString(const out string FullFriendlyName)"
+    },
+    "VectorToTelemetryString": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string VectorToTelemetryString(Vector V)"
+    },
+    "SendArray": {
+      "documentation": null,
+      "signature_members": {
+        "HookName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Attributes": {
+          "type": "TelemetryAttribute",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "bNeedFlush": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SendArray(Name HookName, const out array<TelemetryAttribute> Attributes, optional bool bNeedFlush)"
+    },
+    "SendBool": {
+      "documentation": null,
+      "signature_members": {
+        "HookName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "AttrName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bValue": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 130
+        },
+        "bNeedFlush": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SendBool(Name HookName, string AttrName, const bool bValue, optional bool bNeedFlush)"
+    },
+    "SendFloat": {
+      "documentation": null,
+      "signature_members": {
+        "HookName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "AttrName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 130
+        },
+        "bNeedFlush": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SendFloat(Name HookName, string AttrName, const float fValue, optional bool bNeedFlush)"
+    },
+    "SendInt": {
+      "documentation": null,
+      "signature_members": {
+        "HookName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "AttrName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 130
+        },
+        "bNeedFlush": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SendInt(Name HookName, string AttrName, const int nValue, optional bool bNeedFlush)"
+    },
+    "SendString": {
+      "documentation": null,
+      "signature_members": {
+        "HookName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "AttrName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sValue": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "bNeedFlush": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SendString(Name HookName, string AttrName, const out string sValue, optional bool bNeedFlush)"
+    },
+    "SendName": {
+      "documentation": null,
+      "signature_members": {
+        "HookName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "AttrName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nmValue": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bNeedFlush": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SendName(Name HookName, string AttrName, Name nmValue, optional bool bNeedFlush)"
+    },
+    "SendVoid": {
+      "documentation": null,
+      "signature_members": {
+        "HookName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bNeedFlush": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SendVoid(Name HookName, optional bool bNeedFlush)"
+    },
+    "GetInstanceGameSession": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXTelemetryGameSession",
+      "signature": "SFXTelemetryGameSession GetInstanceGameSession()"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "Game",
+  "documentation": null
+}

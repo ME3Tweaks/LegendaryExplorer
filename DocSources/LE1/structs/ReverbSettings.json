@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Volume": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FadeTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ReverbType": {
+      "type": "ReverbPreset",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "ReverbVolume",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

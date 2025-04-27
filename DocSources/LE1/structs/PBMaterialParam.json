@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Color": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 1
+    },
+    "ParamName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "ProcBuilding",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

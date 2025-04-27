@@ -1,0 +1,44 @@
+{
+  "parent": "UIPropertyDataProvider",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "bDataBindingPropertiesOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSkipDuringEnumeration": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {
+    "InitializeProvider": {
+      "documentation": null,
+      "signature_members": {
+        "bIsEditor": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeProvider(bool bIsEditor)"
+    }
+  },
+  "states": {},
+  "classflags": 136316063,
+  "configname": "Game",
+  "documentation": null
+}

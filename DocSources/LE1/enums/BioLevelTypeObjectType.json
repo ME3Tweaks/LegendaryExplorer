@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BIO_LTYPE_HUB": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_LTYPE_COMBAT": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

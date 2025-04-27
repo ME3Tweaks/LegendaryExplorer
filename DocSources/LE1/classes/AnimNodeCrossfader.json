@@ -1,0 +1,93 @@
+{
+  "parent": "AnimNodeBlend",
+  "package": "Engine",
+  "variables": {
+    "DefaultAnimSeqName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "PendingBlendOutTimeOneShot": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "bDontBlendOutOneShot": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {
+    "GetActiveChild": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "AnimNodeSequence",
+      "signature": "AnimNodeSequence GetActiveChild()"
+    },
+    "GetAnimName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAnimName()"
+    },
+    "BlendToLoopingAnim": {
+      "documentation": null,
+      "signature_members": {
+        "AnimSeqName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "BlendInTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "Rate": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "BlendToLoopingAnim(Name AnimSeqName, optional float BlendInTime, optional float Rate)"
+    },
+    "PlayOneShotAnim": {
+      "documentation": null,
+      "signature_members": {
+        "AnimSeqName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "BlendInTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "BlendOutTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "bDontBlendOut": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "Rate": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayOneShotAnim(Name AnimSeqName, optional float BlendInTime, optional float BlendOutTime, optional bool bDontBlendOut, optional float Rate)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

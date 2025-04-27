@@ -1,0 +1,18 @@
+{
+  "members": {
+    "vPoint": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "nNode": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSquadAPI",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

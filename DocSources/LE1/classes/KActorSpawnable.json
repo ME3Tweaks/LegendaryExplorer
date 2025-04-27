@@ -1,0 +1,46 @@
+{
+  "parent": "KActor",
+  "package": "Engine",
+  "variables": {
+    "bRecycleScaleToZero": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bScalingToZero": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "ResetComponents": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetComponents()"
+    },
+    "RecycleInternal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RecycleInternal()"
+    },
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

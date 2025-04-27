@@ -1,0 +1,175 @@
+{
+  "parent": "OnlineStats",
+  "package": "Engine",
+  "variables": {
+    "ColumnIds": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "Rows": {
+      "type": "OnlineStatsRow",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ColumnMappings": {
+      "type": "ColumnMetaData",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "ViewName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "ViewId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "SortColumnId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "TotalRowsInView": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "TitleId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {
+    "GetRankForPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetRankForPlayer(UniqueNetId PlayerID)"
+    },
+    "AddPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "PlayerID": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPlayer(string PlayerName, UniqueNetId PlayerID)"
+    },
+    "SetFloatStatValueForPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
+        },
+        "StatColumnNo": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "StatValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetFloatStatValueForPlayer(UniqueNetId PlayerID, int StatColumnNo, float StatValue)"
+    },
+    "GetFloatStatValueForPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
+        },
+        "StatColumnNo": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "StatValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFloatStatValueForPlayer(UniqueNetId PlayerID, int StatColumnNo, out float StatValue)"
+    },
+    "SetIntStatValueForPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
+        },
+        "StatColumnNo": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "StatValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetIntStatValueForPlayer(UniqueNetId PlayerID, int StatColumnNo, int StatValue)"
+    },
+    "GetIntStatValueForPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
+        },
+        "StatColumnNo": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "StatValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetIntStatValueForPlayer(UniqueNetId PlayerID, int StatColumnNo, out int StatValue)"
+    },
+    "OnReadComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnReadComplete()"
+    }
+  },
+  "states": {},
+  "classflags": 136315059,
+  "configname": "None",
+  "documentation": null
+}

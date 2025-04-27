@@ -1,0 +1,291 @@
+{
+  "parent": "LightEnvironmentComponent",
+  "package": "Engine",
+  "variables": {
+    "Lights": {
+      "type": "LightComponent",
+      "documentation": null,
+      "flags": 71835658
+    },
+    "OverriddenLightComponents": {
+      "type": "LightComponent",
+      "documentation": null,
+      "flags": 71827466
+    },
+    "State": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "OverriddenBounds": {
+      "type": "BoxSphereBounds",
+      "documentation": null,
+      "flags": 0
+    },
+    "AmbientShadowColor": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 1
+    },
+    "AmbientGlow": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxModulatedShadowColor": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 1
+    },
+    "AmbientShadowSourceDirection": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "vBoundsOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "LightVisibilityRefreshTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "InvisibleUpdateTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "EnvironmentTransitionTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinTimeBetweenFullUpdates": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ShadowInterpolationSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NumVolumeVisibilitySamples": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "LightDesaturation": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "LightDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ShadowDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ModShadowFadeoutTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ModShadowFadeoutExponent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DominantShadowTransitionStartDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "DominantShadowTransitionEndDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "MinShadowResolution": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxShadowResolution": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "ShadowFadeResolution": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "BouncedLightingFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinShadowAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "OverriddenLightingChannels": {
+      "type": "LightingChannelContainer",
+      "documentation": null,
+      "flags": 0
+    },
+    "nNumMultiLights": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "fMultiLightBorder": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fCinematicRimAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fCinematicRimIntensity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fCinematicRimSaturation": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fCinematicKeySkyLight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fCinematicFillSkyLight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fCinematicFillCap": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fCinematicAmbientScalar": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fAmbientScalar": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fModShadowIntensity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCastShadows": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCompositeShadowsFromDynamicLights": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bForceCompositeAllLights": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bDynamic": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSynthesizeDirectionalLight": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSynthesizeSHLight": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bForceAllowLightEnvSphericalHarmonicLights": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRequiresNonLatentUpdates": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bTraceFromClosestBoundsPoint": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsCharacterLightEnvironment": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverrideOwnerLightingChannels": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsKismetForcedQuality": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "ShadowFilterQuality": {
+      "type": "EShadowFilterQuality",
+      "documentation": null,
+      "flags": 1
+    },
+    "LightShadowMode": {
+      "type": "ELightShadowMode",
+      "documentation": null,
+      "flags": 1
+    },
+    "BoundsMethod": {
+      "type": "EDynamicLightEnvironmentBoundsMethod",
+      "documentation": null,
+      "flags": 0
+    },
+    "eKismetOverrideQuality": {
+      "type": "ELightEnvironmentQuality",
+      "documentation": null,
+      "flags": 8192
+    },
+    "eQuality": {
+      "type": "ELightEnvironmentQuality",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

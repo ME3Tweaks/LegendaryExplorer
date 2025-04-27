@@ -1,0 +1,227 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {
+    "__OnReadContentComplete__Delegate": {
+      "type": "OnReadContentComplete",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnQueryAvailableDownloadsComplete__Delegate": {
+      "type": "OnQueryAvailableDownloadsComplete",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnContentChange__Delegate": {
+      "type": "OnContentChange",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "GetAvailableDownloadCounts": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewDownloads": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "TotalDownloads": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAvailableDownloadCounts(byte LocalUserNum, out int NewDownloads, out int TotalDownloads)"
+    },
+    "ClearQueryAvailableDownloadsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "QueryDownloadsDelegate": {
+          "type": "OnQueryAvailableDownloadsComplete",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearQueryAvailableDownloadsComplete(byte LocalUserNum, delegate<OnQueryAvailableDownloadsComplete> QueryDownloadsDelegate)"
+    },
+    "AddQueryAvailableDownloadsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "QueryDownloadsDelegate": {
+          "type": "OnQueryAvailableDownloadsComplete",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AddQueryAvailableDownloadsComplete(byte LocalUserNum, delegate<OnQueryAvailableDownloadsComplete> QueryDownloadsDelegate)"
+    },
+    "OnQueryAvailableDownloadsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnQueryAvailableDownloadsComplete(bool bWasSuccessful)"
+    },
+    "QueryAvailableDownloads": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "CategoryMask": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool QueryAvailableDownloads(byte LocalUserNum, optional int CategoryMask)"
+    },
+    "GetContentList": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "ContentList": {
+          "type": "OnlineContent",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "EOnlineEnumerationReadState",
+      "signature": "EOnlineEnumerationReadState GetContentList(byte LocalUserNum, out array<OnlineContent> ContentList)"
+    },
+    "ReadContentList": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadContentList(byte LocalUserNum)"
+    },
+    "ClearReadContentComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "ReadContentCompleteDelegate": {
+          "type": "OnReadContentComplete",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadContentComplete(byte LocalUserNum, delegate<OnReadContentComplete> ReadContentCompleteDelegate)"
+    },
+    "AddReadContentComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "ReadContentCompleteDelegate": {
+          "type": "OnReadContentComplete",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadContentComplete(byte LocalUserNum, delegate<OnReadContentComplete> ReadContentCompleteDelegate)"
+    },
+    "OnReadContentComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadContentComplete(bool bWasSuccessful)"
+    },
+    "ClearContentChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ContentDelegate": {
+          "type": "OnContentChange",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearContentChangeDelegate(delegate<OnContentChange> ContentDelegate, optional byte LocalUserNum)"
+    },
+    "AddContentChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ContentDelegate": {
+          "type": "OnContentChange",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "AddContentChangeDelegate(delegate<OnContentChange> ContentDelegate, optional byte LocalUserNum)"
+    },
+    "OnContentChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnContentChange()"
+    }
+  },
+  "states": {},
+  "classflags": 16403,
+  "configname": "None",
+  "documentation": null
+}

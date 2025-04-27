@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "CIM_Linear": {
+      "value": 0,
+      "documentation": null
+    },
+    "CIM_CurveAuto": {
+      "value": 1,
+      "documentation": null
+    },
+    "CIM_Constant": {
+      "value": 2,
+      "documentation": null
+    },
+    "CIM_CurveUser": {
+      "value": 3,
+      "documentation": null
+    },
+    "CIM_CurveBreak": {
+      "value": 4,
+      "documentation": null
+    },
+    "CIM_CurveAutoClamped": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

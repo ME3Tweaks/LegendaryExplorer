@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "CameraFacing_NoneUP": {
+      "value": 0,
+      "documentation": null
+    },
+    "CameraFacing_ZUp": {
+      "value": 1,
+      "documentation": null
+    },
+    "CameraFacing_NegativeZUp": {
+      "value": 2,
+      "documentation": null
+    },
+    "CameraFacing_YUp": {
+      "value": 3,
+      "documentation": null
+    },
+    "CameraFacing_NegativeYUp": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

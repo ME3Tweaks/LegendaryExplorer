@@ -1,0 +1,52 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "Component": {
+      "type": "HeightFogComponent",
+      "documentation": null,
+      "flags": 67764235
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4294967328
+    }
+  },
+  "functions": {
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 10486290,
+  "configname": "None",
+  "documentation": null
+}

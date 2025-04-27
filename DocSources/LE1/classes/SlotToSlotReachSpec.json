@@ -1,0 +1,16 @@
+{
+  "parent": "ForcedReachSpec",
+  "package": "Engine",
+  "variables": {
+    "SpecDirection": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 131073
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

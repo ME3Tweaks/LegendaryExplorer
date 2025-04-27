@@ -1,0 +1,100 @@
+{
+  "parent": "PhysicsVolume",
+  "package": "Engine",
+  "variables": {
+    "EntryActor": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 1
+    },
+    "ExitActor": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 1
+    },
+    "PawnEntryActor": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 1
+    },
+    "EntrySound": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 1
+    },
+    "ExitSound": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "PlayExitSplash": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayExitSplash(Actor Other)"
+    },
+    "UnTouch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UnTouch(Actor Other)"
+    },
+    "PlayEntrySplash": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayEntrySplash(Actor Other)"
+    },
+    "Touch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "OtherComp": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Touch(Actor Other, PrimitiveComponent OtherComp, Vector HitLocation, Vector HitNormal)"
+    }
+  },
+  "states": {},
+  "classflags": 10486322,
+  "configname": "None",
+  "documentation": null
+}

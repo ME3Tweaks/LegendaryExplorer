@@ -1,0 +1,247 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_apPendingUnapply": {
+      "type": "BioGameProperty",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aTimedOutTicked": {
+      "type": "BioGamePropertyManagerTimedOutTicked",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_mapActiveGamePropertyGroups": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_oOwner": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oRegisteredGPs": {
+      "type": "BioGamePropertyTimer",
+      "documentation": null,
+      "flags": 71303176
+    }
+  },
+  "functions": {
+    "ToString": {
+      "documentation": null,
+      "signature_members": {
+        "sIndent": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "string",
+      "signature": "string ToString(optional string sIndent)"
+    },
+    "IsGameEffectApplied": {
+      "documentation": null,
+      "signature_members": {
+        "GameEffectClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsGameEffectApplied(Class<Object> GameEffectClass)"
+    },
+    "FindGamePropertyByEffectType": {
+      "documentation": null,
+      "signature_members": {
+        "GameEffectClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "nGamePropertyGroup": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "aProperties": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindGamePropertyByEffectType(Class<Object> GameEffectClass, int nGamePropertyGroup, out array<BioGameProperty> aProperties)"
+    },
+    "FindGamePropertyByGroup": {
+      "documentation": null,
+      "signature_members": {
+        "nGamePropertyGroup": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "aProperties": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindGamePropertyByGroup(int nGamePropertyGroup, out array<BioGameProperty> aProperties)"
+    },
+    "FindGamePropertyByOwner": {
+      "documentation": null,
+      "signature_members": {
+        "oOwner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "nGamePropertyGroup": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "aProperties": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindGamePropertyByOwner(Actor oOwner, int nGamePropertyGroup, out array<BioGameProperty> aProperties)"
+    },
+    "FindGamePropertyByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nGamePropertyGroup": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "aProperties": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindGamePropertyByName(Name nmName, int nGamePropertyGroup, out array<BioGameProperty> aProperties)"
+    },
+    "GetOwnerObject": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Object",
+      "signature": "Object GetOwnerObject()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fDelta": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fDelta)"
+    },
+    "TickInternal": {
+      "documentation": null,
+      "signature_members": {
+        "fDelta": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TickInternal(float fDelta)"
+    },
+    "OnGPTimeOut": {
+      "documentation": null,
+      "signature_members": {
+        "pGameProperty": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "eTimingType": {
+          "type": "EBioGPTimingType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDeltaTimeRemaining": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGPTimeOut(BioGameProperty pGameProperty, EBioGPTimingType eTimingType, float fDeltaTimeRemaining)"
+    },
+    "UnapplyGameProperty": {
+      "documentation": null,
+      "signature_members": {
+        "pGP": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "pTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UnapplyGameProperty(BioGameProperty pGP, Object pTarget)"
+    },
+    "ApplyGameProperty": {
+      "documentation": null,
+      "signature_members": {
+        "pGP": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "pTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyGameProperty(BioGameProperty pGP, Object pTarget)"
+    },
+    "EvaluateGameProperty": {
+      "documentation": null,
+      "signature_members": {
+        "pGP": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "pTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "EvaluateGameProperty(BioGameProperty pGP, Object pTarget)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

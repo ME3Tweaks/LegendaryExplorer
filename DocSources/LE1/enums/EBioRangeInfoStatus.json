@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_RANGE_INFO_STATUS_INVALID": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_RANGE_INFO_STATUS_INTERPOLATE": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_RANGE_INFO_STATUS_VALID": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

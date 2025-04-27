@@ -1,0 +1,245 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "lstEquipSlotOrderInventory": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "lstEquipSlotOrderXMods": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "lstPages": {
+      "type": "BWPageStruct",
+      "documentation": null,
+      "flags": 16384
+    },
+    "vInput": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_TipText2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nmTipStringRef": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "oXModsHandler": {
+      "type": "BioSFHandler_XMods",
+      "documentation": null,
+      "flags": 0
+    },
+    "fLastRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fTipTextTimeout": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fTipTextTimeRemaining": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "nLastSubPage": {
+      "type": "MEBrowserWheelSubPages",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eCachedEquipSlot": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "ExitToMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitToMainMenu()"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "UpdateGUILayout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateGUILayout()"
+    },
+    "InitializeBrowser": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeBrowser()"
+    },
+    "DetermineJournalCodexUpdateStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DetermineJournalCodexUpdateStatus()"
+    },
+    "DetermineSquadUpdateStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DetermineSquadUpdateStatus()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "ExitConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bYPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ExitConfirm(bool bAPressed, int nContext, bool bYPressed)"
+    },
+    "MainMenuConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bYPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MainMenuConfirm(bool bAPressed, int nContext, bool bYPressed)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "UpdateCachedItemCategory": {
+      "documentation": null,
+      "signature_members": {
+        "oLastPanel": {
+          "type": "BioSFPanel",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCachedItemCategory(BioSFPanel oLastPanel)"
+    },
+    "ShowSelectedPanel": {
+      "documentation": null,
+      "signature_members": {
+        "nPanel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "oManager": {
+          "type": "BioSFManager",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowSelectedPanel(int nPanel, optional BioSFManager oManager)"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
+  "documentation": null
+}

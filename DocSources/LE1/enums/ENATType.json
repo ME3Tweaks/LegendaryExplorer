@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "NAT_Unknown": {
+      "value": 0,
+      "documentation": null
+    },
+    "NAT_Open": {
+      "value": 1,
+      "documentation": null
+    },
+    "NAT_Moderate": {
+      "value": 2,
+      "documentation": null
+    },
+    "NAT_Strict": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,76 @@
+{
+  "parent": "BioAttributesPawnParty",
+  "package": "SFXGame",
+  "variables": {
+    "m_SkillCharm": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_SkillIntimidate": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_SkillHaggle": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_SkillSalesman": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_FaceCode": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_SpecializationBonusID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "MINIMUM_SKILL_HAGGLE": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16386
+    },
+    "MAXIMUM_SKILL_HAGGLE": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16386
+    },
+    "MINIMUM_SKILL_SALESMAN": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16386
+    },
+    "MAXIMUM_SKILL_SALESMAN": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_SpectreRank": {
+      "type": "EBioPlayerCharacterSpectreRank",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_BackgroundOrigin": {
+      "type": "EBioPlayerCharacterBackgroundOrigin",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_BackgroundNotoriety": {
+      "type": "EBioPlayerCharacterBackgroundNotoriety",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606486,
+  "configname": "Game",
+  "documentation": null
+}

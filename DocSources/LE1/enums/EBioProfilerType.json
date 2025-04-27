@@ -1,0 +1,141 @@
+{
+  "EnumValues": {
+    "BioProfiler_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "BioProfiler_Combat": {
+      "value": 1,
+      "documentation": null
+    },
+    "BioProfiler_Talents": {
+      "value": 2,
+      "documentation": null
+    },
+    "BioProfiler_PawnAttributes": {
+      "value": 3,
+      "documentation": null
+    },
+    "BioProfiler_WeaponAttributes": {
+      "value": 4,
+      "documentation": null
+    },
+    "BioProfiler_PowerAttributes": {
+      "value": 5,
+      "documentation": null
+    },
+    "BioProfiler_Inventory": {
+      "value": 6,
+      "documentation": null
+    },
+    "BioProfiler_Hopper": {
+      "value": 7,
+      "documentation": null
+    },
+    "BioProfiler_AI": {
+      "value": 8,
+      "documentation": null
+    },
+    "BioProfiler_Cover": {
+      "value": 9,
+      "documentation": null
+    },
+    "BioProfiler_Movement": {
+      "value": 10,
+      "documentation": null
+    },
+    "BioProfiler_Squad": {
+      "value": 11,
+      "documentation": null
+    },
+    "BioProfiler_Avoid": {
+      "value": 12,
+      "documentation": null
+    },
+    "BioProfiler_Path": {
+      "value": 13,
+      "documentation": null
+    },
+    "BioProfiler_Noise": {
+      "value": 14,
+      "documentation": null
+    },
+    "BioProfiler_Conversation": {
+      "value": 15,
+      "documentation": null
+    },
+    "BioProfiler_Ragdoll": {
+      "value": 16,
+      "documentation": null
+    },
+    "BioProfiler_Grenade": {
+      "value": 17,
+      "documentation": null
+    },
+    "BioProfiler_Lookat": {
+      "value": 18,
+      "documentation": null
+    },
+    "BioProfiler_VehicleAttributes": {
+      "value": 19,
+      "documentation": null
+    },
+    "BioProfiler_Camera": {
+      "value": 20,
+      "documentation": null
+    },
+    "BioProfiler_QA_AI": {
+      "value": 21,
+      "documentation": null
+    },
+    "BioProfiler_Squad_Follow": {
+      "value": 22,
+      "documentation": null
+    },
+    "BioProfiler_Anim": {
+      "value": 23,
+      "documentation": null
+    },
+    "BioProfiler_Save": {
+      "value": 24,
+      "documentation": null
+    },
+    "BioProfiler_Gestures": {
+      "value": 25,
+      "documentation": null
+    },
+    "BioProfiler_Caps": {
+      "value": 26,
+      "documentation": null
+    },
+    "BioProfiler_SquadCaps": {
+      "value": 27,
+      "documentation": null
+    },
+    "BioProfiler_Perception": {
+      "value": 28,
+      "documentation": null
+    },
+    "BioProfiler_ConversationBug": {
+      "value": 29,
+      "documentation": null
+    },
+    "BioProfiler_Stasis": {
+      "value": 30,
+      "documentation": null
+    },
+    "BioProfiler_Components": {
+      "value": 31,
+      "documentation": null
+    },
+    "BioProfiler_VehicleWeaponAttributes": {
+      "value": 32,
+      "documentation": null
+    },
+    "BioProfiler_Trilogy": {
+      "value": 33,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

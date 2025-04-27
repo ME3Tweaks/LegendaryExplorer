@@ -1,0 +1,48 @@
+{
+  "members": {
+    "Text": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Range": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "Label": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "DefaultValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "StepSize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Decimals": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bHidden": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Id": {
+      "type": "PhotoModeOptionType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "SFXSFHandler_PhotoMode",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

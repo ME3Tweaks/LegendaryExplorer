@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "WSA_Off": {
+      "value": 0,
+      "documentation": null
+    },
+    "WSA_WeaponFire": {
+      "value": 1,
+      "documentation": null
+    },
+    "WSA_ThrowGrenade": {
+      "value": 2,
+      "documentation": null
+    },
+    "WSA_SelectWeapon": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

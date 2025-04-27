@@ -1,0 +1,23 @@
+{
+  "members": {
+    "ContactInfos": {
+      "type": "RigidBodyContactInfo",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "TotalNormalForceVector": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "TotalFrictionForceVector": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Actor",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

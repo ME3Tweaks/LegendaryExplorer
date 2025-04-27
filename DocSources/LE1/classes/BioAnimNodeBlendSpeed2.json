@@ -1,0 +1,46 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "WalkSyncGroupName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "RunSyncGroupName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "BlendTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WalkSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RunSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WalkRateScaled": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RunRateScaled": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

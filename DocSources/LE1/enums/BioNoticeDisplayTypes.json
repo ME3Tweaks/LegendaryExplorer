@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "NOTICE_TYPE_DELTA": {
+      "value": 0,
+      "documentation": null
+    },
+    "NOTICE_TYPE_TEXT": {
+      "value": 1,
+      "documentation": null
+    },
+    "NOTICE_TYPE_QUANTITY": {
+      "value": 2,
+      "documentation": null
+    },
+    "NOTICE_TYPE_QUANTITY_TEXT": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

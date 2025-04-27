@@ -1,0 +1,186 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "KismetActionCallbackThis": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4096
+    },
+    "KismetActionCallback": {
+      "type": "FuncPointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "StateName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "ResourcesNeeded": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nCompletionReason": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eCompletionType": {
+      "type": "eCompletionEventType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "OnDisabled": {
+      "documentation": null,
+      "signature_members": {
+        "oController": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        },
+        "bStarted": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDisabled(BioAiController oController, bool bStarted)"
+    },
+    "CanDisable": {
+      "documentation": null,
+      "signature_members": {
+        "oController": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        },
+        "eEnableType": {
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmSubType": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanDisable(BioAiController oController, EDisableType eEnableType, Name nmSubType)"
+    },
+    "GetDebugDescription": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDebugDescription()"
+    },
+    "CancelOnLOS": {
+      "documentation": null,
+      "signature_members": {
+        "oController": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        },
+        "oLOSTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CancelOnLOS(BioAiController oController, Pawn oLOSTarget)"
+    },
+    "OnCancel": {
+      "documentation": null,
+      "signature_members": {
+        "oController": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        },
+        "bStarted": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCancel(BioAiController oController, bool bStarted)"
+    },
+    "OnStart": {
+      "documentation": null,
+      "signature_members": {
+        "oController": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnStart(BioAiController oController)"
+    },
+    "CanCancel": {
+      "documentation": null,
+      "signature_members": {
+        "oController": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanCancel(BioAiController oController)"
+    },
+    "OnTick": {
+      "documentation": null,
+      "signature_members": {
+        "oController": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnTick(BioAiController oController, float fDeltaT)"
+    },
+    "GetPawnBehavior": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioEpicPawnBehavior",
+      "signature": "BioEpicPawnBehavior GetPawnBehavior(Actor oActor)"
+    },
+    "DoCallBack": {
+      "documentation": null,
+      "signature_members": {
+        "nReason": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DoCallBack(int nReason)"
+    }
+  },
+  "states": {},
+  "classflags": 134217875,
+  "configname": "None",
+  "documentation": null
+}

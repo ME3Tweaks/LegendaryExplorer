@@ -1,0 +1,26 @@
+{
+  "parent": "SequenceEvent",
+  "package": "SFXGame",
+  "variables": {
+    "sScriptName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "Conv": {
+      "type": "BioConversation",
+      "documentation": null,
+      "flags": 1
+    },
+    "eScriptType": {
+      "type": "EConversationScriptType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

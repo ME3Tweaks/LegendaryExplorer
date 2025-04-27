@@ -1,0 +1,108 @@
+{
+  "parent": "BioItemWeapon",
+  "package": "SFXGame",
+  "variables": {
+    "m_fMinRangeConst": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fBestRangeConst": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fMaxRangeConst": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_eWeaponRangedType": {
+      "type": "EBioItemWeaponRangedType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetRoundsPerSecond": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRoundsPerSecond()"
+    },
+    "GetKickback": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetKickback()"
+    },
+    "GetDriftAngleMax": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDriftAngleMax()"
+    },
+    "GetDriftAngleMin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetDriftAngleMin()"
+    },
+    "DescribeItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeItem()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "WeaponRanges": {
+      "documentation": null,
+      "signature_members": {
+        "MinRange": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "BestRange": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "MaxRange": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "WeaponRanges(out float MinRange, out float BestRange, out float MaxRange)"
+    },
+    "ComputeSophistication": {
+      "documentation": null,
+      "signature_members": {
+        "oBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67109008
+        }
+      },
+      "returntype": "int",
+      "signature": "int ComputeSophistication(optional BioPawnBehavior oBehavior)"
+    },
+    "GetItemTypeName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetItemTypeName()"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

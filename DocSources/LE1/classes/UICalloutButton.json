@@ -1,0 +1,206 @@
+{
+  "parent": "UILabelButton",
+  "package": "Engine",
+  "variables": {
+    "DefaultMarkupStringTemplate": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210690
+    },
+    "CalloutDataStoreTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 16386
+    },
+    "InputAliasTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 131075
+    },
+    "bSupportsButtonRepeat": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bPlayErrorSoundWhenDisabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16386
+    },
+    "IconAlignment": {
+      "type": "EUIAlignment",
+      "documentation": null,
+      "flags": 3
+    }
+  },
+  "functions": {
+    "GetCalloutInputProxy": {
+      "documentation": null,
+      "signature_members": {
+        "bCreateIfNecessary": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "UIEvent_CalloutButtonInputProxy",
+      "signature": "UIEvent_CalloutButtonInputProxy GetCalloutInputProxy(optional bool bCreateIfNecessary)"
+    },
+    "VerifyDefaultMarkupString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool VerifyDefaultMarkupString()"
+    },
+    "GetPanelOwner": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UICalloutButtonPanel",
+      "signature": "UICalloutButtonPanel GetPanelOwner()"
+    },
+    "RemovedFromParent": {
+      "documentation": null,
+      "signature_members": {
+        "WidgetOwner": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemovedFromParent(UIScreenObject WidgetOwner)"
+    },
+    "PostInitialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostInitialize()"
+    },
+    "GenerateCompleteCaptionMarkup": {
+      "documentation": null,
+      "signature_members": {
+        "InputAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "string",
+      "signature": "string GenerateCompleteCaptionMarkup(optional Name InputAlias)"
+    },
+    "GetCalloutMarkupString": {
+      "documentation": null,
+      "signature_members": {
+        "AlternateInputAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetCalloutMarkupString(optional Name AlternateInputAlias)"
+    },
+    "GetCalloutDataStoreName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetCalloutDataStoreName()"
+    },
+    "SetInputAlias": {
+      "documentation": null,
+      "signature_members": {
+        "NewInputAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetInputAlias(Name NewInputAlias)"
+    },
+    "OnReceivedInputKey": {
+      "documentation": null,
+      "signature_members": {
+        "EventParms": {
+          "type": "InputEventParameters",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnReceivedInputKey(const out InputEventParameters EventParms)"
+    },
+    "UnsubscribeFromInputProxy": {
+      "documentation": null,
+      "signature_members": {
+        "InputProxy": {
+          "type": "UIEvent_CalloutButtonInputProxy",
+          "documentation": null,
+          "flags": 128
+        },
+        "bUpdateProxyOutputLinks": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnsubscribeFromInputProxy(UIEvent_CalloutButtonInputProxy InputProxy, optional bool bUpdateProxyOutputLinks, optional int PlayerIndex)"
+    },
+    "SubscribeToInputProxy": {
+      "documentation": null,
+      "signature_members": {
+        "InputProxy": {
+          "type": "UIEvent_CalloutButtonInputProxy",
+          "documentation": null,
+          "flags": 128
+        },
+        "bUpdateProxyOutputLinks": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SubscribeToInputProxy(UIEvent_CalloutButtonInputProxy InputProxy, optional bool bUpdateProxyOutputLinks, optional int PlayerIndex)"
+    },
+    "SetInputTag": {
+      "documentation": null,
+      "signature_members": {
+        "NewInputAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInputTag(Name NewInputAlias)"
+    },
+    "GetCalloutDataStore": {
+      "documentation": null,
+      "signature_members": {
+        "AlternatePlayer": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "UIDataStore_InputAlias",
+      "signature": "UIDataStore_InputAlias GetCalloutDataStore(optional LocalPlayer AlternatePlayer)"
+    }
+  },
+  "states": {},
+  "classflags": 144704150,
+  "configname": "UI",
+  "documentation": null
+}

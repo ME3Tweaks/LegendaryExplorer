@@ -1,0 +1,116 @@
+{
+  "parent": "BioAttributesItemXModdable",
+  "package": "SFXGame",
+  "variables": {
+    "m_Damage": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_Impulse": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_radius": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_DamageMultiplierWhenBlocked": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ImpulseMultiplierWhenBlocked": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sVisualImpactSet": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sMesh": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sPhysicsAsset": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sDeathVFX": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_oGrenadeItem": {
+      "type": "BioItemGrenade",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_fInitialDamage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fInitialImpulse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fInitialRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "ClearStringAttribute": {
+      "documentation": null,
+      "signature_members": {
+        "nmAttribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearStringAttribute(Name nmAttribute, optional int nIndexOfAttributeInArray)"
+    },
+    "SetStringAttribute": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "sValue": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStringAttribute(Name attribute, string sValue, optional int nIndexOfAttributeInArray)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

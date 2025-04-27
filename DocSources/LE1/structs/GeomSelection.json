@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Type": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Index": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "SelectionIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Brush",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 3
+}

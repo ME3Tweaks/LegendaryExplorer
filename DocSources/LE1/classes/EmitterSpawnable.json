@@ -1,0 +1,46 @@
+{
+  "parent": "Emitter",
+  "package": "Engine",
+  "variables": {
+    "ParticleTemplate": {
+      "type": "ParticleSystem",
+      "documentation": null,
+      "flags": 4294967328
+    }
+  },
+  "functions": {
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "SetTemplate": {
+      "documentation": null,
+      "signature_members": {
+        "NewTemplate": {
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
+        },
+        "bDestroyOnFinish": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTemplate(ParticleSystem NewTemplate, optional bool bDestroyOnFinish)"
+    }
+  },
+  "states": {},
+  "classflags": 10486290,
+  "configname": "None",
+  "documentation": null
+}

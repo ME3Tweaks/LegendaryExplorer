@@ -1,0 +1,13 @@
+{
+  "members": {
+    "Reference": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "classdef": "SpeedTreeComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

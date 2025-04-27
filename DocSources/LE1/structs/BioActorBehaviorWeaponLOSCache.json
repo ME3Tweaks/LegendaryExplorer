@@ -1,0 +1,53 @@
+{
+  "members": {
+    "m_vHitTarget_Location": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vHitLocation_Location": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oHitTarget_Actor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oHitLocation_Actor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_flags": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fHitTarget_Time": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fHitLocation_Time": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bHitTarget_Result": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bHitLocation_Result": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioActorBehavior",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

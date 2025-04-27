@@ -1,0 +1,28 @@
+{
+  "members": {
+    "sName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "pEntry": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 0
+    },
+    "nSectionID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUpdated": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFHandler_DataCodex",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

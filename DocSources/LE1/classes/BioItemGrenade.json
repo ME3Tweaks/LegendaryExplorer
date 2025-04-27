@@ -1,0 +1,178 @@
+{
+  "parent": "BioItemXModdable",
+  "package": "SFXGame",
+  "variables": {
+    "m_pVisualImpactSet": {
+      "type": "BioVISGrenade",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pVisualImpactSetDefault": {
+      "type": "BioVISGrenade",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pMeshDefault": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pPhysicsAsset": {
+      "type": "PhysicsAsset",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pPhysicsAssetDefault": {
+      "type": "PhysicsAsset",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pDeathVFX": {
+      "type": "BioDeathVFX",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pDamageAttributes": {
+      "type": "BioAttributesDamage",
+      "documentation": null,
+      "flags": 71303176
+    }
+  },
+  "functions": {
+    "GenerateName": {
+      "documentation": null,
+      "signature_members": {
+        "sName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GenerateName(out string sName)"
+    },
+    "SetDeathVFX": {
+      "documentation": null,
+      "signature_members": {
+        "oDeathVFX": {
+          "type": "BioDeathVFX",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDeathVFX(BioDeathVFX oDeathVFX)"
+    },
+    "GetDeathVFX": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioDeathVFX",
+      "signature": "BioDeathVFX GetDeathVFX()"
+    },
+    "SetPhysicsAsset": {
+      "documentation": null,
+      "signature_members": {
+        "oPhysicsAsset": {
+          "type": "PhysicsAsset",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPhysicsAsset(PhysicsAsset oPhysicsAsset)"
+    },
+    "GetPhysicsAsset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PhysicsAsset",
+      "signature": "PhysicsAsset GetPhysicsAsset()"
+    },
+    "SetMesh": {
+      "documentation": null,
+      "signature_members": {
+        "oMesh": {
+          "type": "SkeletalMesh",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMesh(SkeletalMesh oMesh)"
+    },
+    "GetMesh": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SkeletalMesh",
+      "signature": "SkeletalMesh GetMesh()"
+    },
+    "SetVisualImpactSet": {
+      "documentation": null,
+      "signature_members": {
+        "oVisualImpactSet": {
+          "type": "BioVISGrenade",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVisualImpactSet(BioVISGrenade oVisualImpactSet)"
+    },
+    "GetVisualImpactSet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioVISGrenade",
+      "signature": "BioVISGrenade GetVisualImpactSet()"
+    },
+    "CalculatePrice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float CalculatePrice()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "OnUnequipInternal": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUnequipInternal(BioPawn oPawn)"
+    },
+    "OnEquipInternal": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnEquipInternal(BioPawn oPawn)"
+    },
+    "GetItemTypeName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetItemTypeName()"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

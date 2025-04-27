@@ -1,0 +1,36 @@
+{
+  "parent": "MaterialExpression",
+  "package": "SFXGame",
+  "variables": {
+    "Coord": {
+      "type": "ExpressionInput",
+      "documentation": null,
+      "flags": 0
+    },
+    "Time": {
+      "type": "ExpressionInput",
+      "documentation": null,
+      "flags": 0
+    },
+    "FlipTex": {
+      "type": "Texture2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "FlipTexRows": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "FlipTexCols": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

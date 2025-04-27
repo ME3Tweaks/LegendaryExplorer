@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_bEnableSoundSets": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bApplyToAllHenchmen": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

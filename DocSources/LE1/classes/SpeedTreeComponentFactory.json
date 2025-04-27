@@ -1,0 +1,16 @@
+{
+  "parent": "PrimitiveComponentFactory",
+  "package": "Engine",
+  "variables": {
+    "SpeedTreeComponent": {
+      "type": "SpeedTreeComponent",
+      "documentation": null,
+      "flags": 67633161
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142618770,
+  "configname": "None",
+  "documentation": null
+}

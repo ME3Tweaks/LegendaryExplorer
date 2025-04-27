@@ -1,0 +1,121 @@
+{
+  "parent": "BioGUIBox",
+  "package": "SFXGame",
+  "variables": {
+    "m_aRawText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aWrappedText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_nScrollPosition": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nLineCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nMaxScrollPosition": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "PageUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PageUp()"
+    },
+    "PageDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PageDown()"
+    },
+    "ScrollUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScrollUp()"
+    },
+    "ScrollDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScrollDown()"
+    },
+    "RenderContent": {
+      "documentation": null,
+      "signature_members": {
+        "oCanvas": {
+          "type": "Canvas",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RenderContent(Canvas oCanvas)"
+    },
+    "HasText": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasText()"
+    },
+    "SetTextArray": {
+      "documentation": null,
+      "signature_members": {
+        "aText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTextArray(const out array<string> aText)"
+    },
+    "SetText": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
+        }
+      },
+      "returntype": "None",
+      "signature": "SetText(coerce string S)"
+    },
+    "ShouldRender": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldRender()"
+    },
+    "ComputeDrawParameters": {
+      "documentation": null,
+      "signature_members": {
+        "oCanvas": {
+          "type": "Canvas",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ComputeDrawParameters(Canvas oCanvas)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "BIO_ATTRIBUTES_ITEM_RACE_TYPE_ANY": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTES_ITEM_RACE_TYPE_HUMAN": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTES_ITEM_RACE_TYPE_TURIAN": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTES_ITEM_RACE_TYPE_QUARIAN": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTES_ITEM_RACE_TYPE_KROGAN": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTES_ITEM_RACE_TYPE_VEHICLE": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

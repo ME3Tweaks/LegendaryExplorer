@@ -1,0 +1,41 @@
+{
+  "parent": "DistributionFloatConstant",
+  "package": "Engine",
+  "variables": {
+    "ParameterName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinInput": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxInput": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinOutput": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxOutput": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ParamMode": {
+      "type": "DistributionParamMode",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134230163,
+  "configname": "None",
+  "documentation": null
+}

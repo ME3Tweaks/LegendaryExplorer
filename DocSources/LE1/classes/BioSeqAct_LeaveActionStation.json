@@ -1,0 +1,28 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_oPawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_ExitMethod": {
+      "type": "EBioActionStationExitCondition",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

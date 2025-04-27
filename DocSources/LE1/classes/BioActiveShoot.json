@@ -1,0 +1,86 @@
+{
+  "parent": "BioActiveShootBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_oOwnerPawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fAnimRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fLeanDelayTimer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fLeanDelayTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fLeanDelayVarianceTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bStartedInCover": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_isLoopingFireAnimationRateVariable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_isFiring": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bIsBlocked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bIgnoreEndingConditions": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "GetEventTypeName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetEventTypeName()"
+    },
+    "ValidSuperMode": {
+      "documentation": null,
+      "signature_members": {
+        "eMode": {
+          "type": "EBioSuperModes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ValidSuperMode(EBioSuperModes eMode)"
+    },
+    "InitializeInternal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeInternal()"
+    }
+  },
+  "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
+  "documentation": null
+}

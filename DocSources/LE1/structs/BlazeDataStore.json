@@ -1,0 +1,53 @@
+{
+  "members": {
+    "LoginInfo": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "PersonaID": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "DaysSinceRegistration": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNucleusRefused": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNucleusSuccessful": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCerberusRefused": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAutoLogin": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDirty": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bPS3_RedeemedProductCode": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "SFXEngine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "ARMOR_TYPE_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "ARMOR_TYPE_CLOTHING": {
+      "value": 1,
+      "documentation": null
+    },
+    "ARMOR_TYPE_LIGHT": {
+      "value": 2,
+      "documentation": null
+    },
+    "ARMOR_TYPE_MEDIUM": {
+      "value": 3,
+      "documentation": null
+    },
+    "ARMOR_TYPE_HEAVY": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

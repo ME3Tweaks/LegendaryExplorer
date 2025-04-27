@@ -1,0 +1,23 @@
+{
+  "members": {
+    "WordId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "WordText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Confidence": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "OnlineSubsystem",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

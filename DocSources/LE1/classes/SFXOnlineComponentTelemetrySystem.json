@@ -1,0 +1,196 @@
+{
+  "parent": "SFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_IISFXOnlineComponentTelemetry": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "InitTestServerAddressOverride": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "InitProdServerAddressOverride": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "InitDomain": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "InitTitleMode": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "InitDisabledCountryList": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "__CanCollect__Delegate": {
+      "type": "CanCollect",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnAuthenticate__Delegate": {
+      "type": "OnAuthenticate",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnDisconnect__Delegate": {
+      "type": "OnDisconnect",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "bConnectedToChannel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "InitServerPortOverride": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "InitTitleProjectId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "InitSendPercent": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "InitSendTimeout": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bForceAnonymousChannel": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bEnableSpam": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bInitWithEngineConfig": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {
+    "OnTick": {
+      "documentation": null,
+      "signature_members": {
+        "oEvent": {
+          "type": "SFXOnlineEvent",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTick(SFXOnlineEvent oEvent)"
+    },
+    "Flush": {
+      "documentation": null,
+      "signature_members": {
+        "Channel": {
+          "type": "ETelemetryChannel",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Flush(ETelemetryChannel Channel)"
+    },
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    },
+    "RegisterConnectionDelegates": {
+      "documentation": null,
+      "signature_members": {
+        "CollectDelegate": {
+          "type": "CanCollect",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "AuthenticateDelegate": {
+          "type": "OnAuthenticate",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "DisconnectDelegate": {
+          "type": "OnDisconnect",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "RegisterConnectionDelegates(delegate<CanCollect> CollectDelegate, delegate<OnAuthenticate> AuthenticateDelegate, delegate<OnDisconnect> DisconnectDelegate)"
+    },
+    "OnDisconnect": {
+      "documentation": null,
+      "signature_members": {
+        "Error": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "SessionId": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194434
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDisconnect(int Error, const string SessionId)"
+    },
+    "OnAuthenticate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAuthenticate()"
+    },
+    "CanCollect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanCollect()"
+    }
+  },
+  "states": {},
+  "classflags": 134217878,
+  "configname": "Engine",
+  "documentation": null
+}

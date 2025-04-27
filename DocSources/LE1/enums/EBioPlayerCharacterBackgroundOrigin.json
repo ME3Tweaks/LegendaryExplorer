@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BIO_PLAYER_CHARACTER_BACKGROUND_ORIGIN_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_PLAYER_CHARACTER_BACKGROUND_ORIGIN_SPACER": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_PLAYER_CHARACTER_BACKGROUND_ORIGIN_COLONY": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_PLAYER_CHARACTER_BACKGROUND_ORIGIN_EARTHBORN": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

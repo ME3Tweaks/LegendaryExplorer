@@ -1,0 +1,18 @@
+{
+  "members": {
+    "In": {
+      "type": "float",
+      "documentation": null,
+      "flags": 278528
+    },
+    "Out": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 278528
+    }
+  },
+  "classdef": "Engine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

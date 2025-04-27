@@ -1,0 +1,56 @@
+{
+  "parent": "BioActorSaveObject",
+  "package": "SFXGame",
+  "variables": {
+    "m_fGrimeGrimeLevel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_fGrimeDirtLevel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_nTalkedToCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_bHeadGearVisiblePreference": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "LoadObject": {
+      "documentation": null,
+      "signature_members": {
+        "pObject": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadObject(Object pObject)"
+    },
+    "SaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "pObject": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveObject(Object pObject)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,28 @@
+{
+  "members": {
+    "ActivatorOp": {
+      "type": "SequenceOp",
+      "documentation": null,
+      "flags": 0
+    },
+    "Op": {
+      "type": "SequenceOp",
+      "documentation": null,
+      "flags": 0
+    },
+    "InputIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "RemainingDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Sequence",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

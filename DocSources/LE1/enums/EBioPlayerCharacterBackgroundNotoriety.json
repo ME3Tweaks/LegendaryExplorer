@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BIO_PLAYER_CHARACTER_BACKGROUND_NOTORIETY_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_PLAYER_CHARACTER_BACKGROUND_NOTORIETY_SURVIVOR": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_PLAYER_CHARACTER_BACKGROUND_NOTORIETY_WARHERO": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_PLAYER_CHARACTER_BACKGROUND_NOTORIETY_RUTHLESS": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

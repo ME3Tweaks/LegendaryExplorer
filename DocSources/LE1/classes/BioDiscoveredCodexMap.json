@@ -1,0 +1,23 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "DiscoveredCodex": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "functions": {
+    "Clear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Clear()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

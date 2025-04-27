@@ -1,0 +1,28 @@
+{
+  "members": {
+    "GameSettingsClassName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "URL": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "GameSettings": {
+      "type": "OnlineGameSettings",
+      "documentation": null,
+      "flags": 8192
+    },
+    "GameSettingId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "OnlinePlaylistManager",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

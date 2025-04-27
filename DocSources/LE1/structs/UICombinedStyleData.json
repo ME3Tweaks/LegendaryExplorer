@@ -1,0 +1,88 @@
+{
+  "members": {
+    "AdjustmentType": {
+      "type": "UIImageAdjustmentData",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "TextColor": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "ImageColor": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "AtlasCoords": {
+      "type": "TextureCoordinates",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "TextPadding": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "ImagePadding": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "DrawFont": {
+      "type": "Font",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "FallbackImage": {
+      "type": "Surface",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "TextAutoScaling": {
+      "type": "TextAutoScaleValue",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "TextScale": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "TextSpacingAdjust": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "TextAttributes": {
+      "type": "UITextAttributes",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1048578
+    },
+    "TextAlignment": {
+      "type": "EUIAlignment",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "TextClipMode": {
+      "type": "ETextClipMode",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "TextClipAlignment": {
+      "type": "EUIAlignment",
+      "documentation": null,
+      "flags": 1048576
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 9
+}

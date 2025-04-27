@@ -1,0 +1,64 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "FogVolumeActors": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "SimpleLightColor": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "ApproxFogLightColor": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "FogMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 1
+    },
+    "DefaultFogVolumeMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 0
+    },
+    "StartDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAffectsTranslucency": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bSetEnabled": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bSetEnabled)"
+    }
+  },
+  "states": {},
+  "classflags": 134221971,
+  "configname": "None",
+  "documentation": null
+}

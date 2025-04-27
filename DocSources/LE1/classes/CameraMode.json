@@ -1,0 +1,38 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "ProcessViewRotation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "ViewTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_ViewRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        },
+        "out_DeltaRot": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessViewRotation(float DeltaTime, Actor ViewTarget, out Rotator out_ViewRotation, out Rotator out_DeltaRot)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

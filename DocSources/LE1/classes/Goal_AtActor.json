@@ -1,0 +1,60 @@
+{
+  "parent": "PathGoalEvaluator",
+  "package": "Engine",
+  "variables": {
+    "GoalActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "GoalDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bKeepPartial": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "AtActor": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Goal": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "Dist": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "bReturnPartial": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AtActor(Pawn P, Actor Goal, optional float Dist, optional bool bReturnPartial)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

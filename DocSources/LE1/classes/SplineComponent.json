@@ -1,0 +1,89 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "SplineInfo": {
+      "type": "InterpCurveVector",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "SplineReparamTable": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "SplineCurviness": {
+      "type": "float",
+      "documentation": null,
+      "flags": 131073
+    },
+    "SplineColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 1
+    },
+    "SplineDrawRes": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SplineArrowSize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSplineDisabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetTangentAtDistanceAlongSpline": {
+      "documentation": null,
+      "signature_members": {
+        "Distance": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetTangentAtDistanceAlongSpline(float Distance)"
+    },
+    "GetLocationAtDistanceAlongSpline": {
+      "documentation": null,
+      "signature_members": {
+        "Distance": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetLocationAtDistanceAlongSpline(float Distance)"
+    },
+    "GetSplineLength": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetSplineLength()"
+    },
+    "UpdateSplineReparamTable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateSplineReparamTable()"
+    },
+    "UpdateSplineCurviness": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateSplineCurviness()"
+    }
+  },
+  "states": {},
+  "classflags": 2290090130,
+  "configname": "None",
+  "documentation": null
+}

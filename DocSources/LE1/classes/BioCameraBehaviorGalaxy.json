@@ -1,0 +1,299 @@
+{
+  "parent": "BioCameraBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "m_sSelectableObject": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_sCenterObject": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_sCrossHairObject": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_sCameraObject": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_sPlanetEvent": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_pScaleformObjects": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_pDynamicClusterPath": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_pDynamicObjects": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_vZoomLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_vZoomDelta": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_rZoomRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_vLastCameraLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pCenterObject": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pCrossHairObject": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pCameraObject": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pSelectedObject": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pSelectedCluster": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pSelectedSystem": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pSelectedPlanet": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pTemplatePlanet": {
+      "type": "DynamicSMActor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pClusterTable": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pSystemTable": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pPlanetTable": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pMapTable": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pPlotPlanetTable": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pRelayTable": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fMovementScalar": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fRotationScalar": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nCurrentState": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fMaxOrbitDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fPlanarPitch": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fZoomTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nPlanetDescription": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nPlanetImageIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nPlanetMap": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nButtonLabel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nExitMap": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nActiveWorld": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nScanRange": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nHighlightWorld": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fPlanetRotation": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nPlanetEventConditional": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nPlanetEventFunction": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nPlanetEventParameter": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nPlanetEventTransition": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nPlanetEventTransParameter": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_srPlanetEventMessage": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bTransitionDown": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bFirstStage": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bPlanetUsable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bPaused": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bRefreshPlanetUsable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bRebuildPlanetRingCache": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bSelectedPlanetLastFrame": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bUseInternalPlanetEvent": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

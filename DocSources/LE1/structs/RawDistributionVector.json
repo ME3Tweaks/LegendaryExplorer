@@ -1,0 +1,13 @@
+{
+  "members": {
+    "Distribution": {
+      "type": "DistributionVector",
+      "documentation": null,
+      "flags": 101187593
+    }
+  },
+  "classdef": "DistributionVector",
+  "extends": "RawDistribution",
+  "documentation": null,
+  "modifiers": 5
+}

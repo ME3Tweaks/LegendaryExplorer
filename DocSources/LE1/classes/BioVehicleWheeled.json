@@ -1,0 +1,263 @@
+{
+  "parent": "BioVehicleBase",
+  "package": "SFXGame",
+  "variables": {
+    "BoostTorqueCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "BoostFeedback": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null,
+      "flags": 0
+    },
+    "JumpFeedback": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null,
+      "flags": 0
+    },
+    "JumpShake": {
+      "type": "SFXCameraShakeBase",
+      "documentation": null,
+      "flags": 0
+    },
+    "BoostShake": {
+      "type": "SFXCameraShakeBase",
+      "documentation": null,
+      "flags": 0
+    },
+    "AC_JumpStart": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "AC_BoostStart": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "AC_BoostLoop": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "AC_BoostEnd": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "CurrentJumpFuel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "MaxJumpFuel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "JumpFuelRegenRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "CurrentBoostFuel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "MaxBoostFuel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "BoostFuelRegenRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "MaxFuel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "FuelRegenRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "ThrusterForce": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "ThrusterBurnRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "BoosterBurnRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bInitializedThrusters": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bJumping": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bBoosting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bRanOutOfJumpFuel": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bRanOutOfBoostFuel": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "ModifyWheelControllers": {
+      "documentation": null,
+      "signature_members": {
+        "bNewIgnoreWhenNotRendered": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyWheelControllers(bool bNewIgnoreWhenNotRendered)"
+    },
+    "AddForce": {
+      "documentation": null,
+      "signature_members": {
+        "Force": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddForce(Vector Force)"
+    },
+    "DebugDraw_Vehicle": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_Vehicle(BioHUD H)"
+    },
+    "CanBoost": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanBoost()"
+    },
+    "CanJump": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanJump()"
+    },
+    "UpdateFuel": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateFuel(float DeltaTime)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "GetWeaponStartTraceLocation": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentWeapon": {
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetWeaponStartTraceLocation(optional Weapon CurrentWeapon)"
+    },
+    "StopAllBoostEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopAllBoostEffects()"
+    },
+    "StopAllJumpEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopAllJumpEffects()"
+    },
+    "DriverLeave": {
+      "documentation": null,
+      "signature_members": {
+        "bForceLeave": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DriverLeave(bool bForceLeave)"
+    },
+    "DriverEnter": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DriverEnter(Pawn P)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 144704182,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,23 @@
+{
+  "parent": "PhysicsVolume",
+  "package": "Engine",
+  "variables": {
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 10486322,
+  "configname": "None",
+  "documentation": null
+}

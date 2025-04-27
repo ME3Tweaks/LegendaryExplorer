@@ -1,0 +1,13 @@
+{
+  "members": {
+    "Dummy": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "classdef": "NavigationHandle",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

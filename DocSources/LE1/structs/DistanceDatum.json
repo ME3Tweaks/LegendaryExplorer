@@ -1,0 +1,23 @@
+{
+  "members": {
+    "FadeInDistance": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 71827457
+    },
+    "FadeOutDistance": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 71827457
+    },
+    "Volume": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "SoundNodeDistanceCrossFade",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

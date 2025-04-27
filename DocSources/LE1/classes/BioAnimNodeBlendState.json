@@ -1,0 +1,26 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_aChildBlendParams": {
+      "type": "BioAnimBlendParams",
+      "documentation": null,
+      "flags": 71434241
+    },
+    "m_oBehavior": {
+      "type": "BioAnimNodeBlendStateBehavior",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "m_nActiveChild": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

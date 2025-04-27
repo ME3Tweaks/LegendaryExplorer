@@ -1,0 +1,44 @@
+{
+  "parent": "AnimNodeBlendBase",
+  "package": "Engine",
+  "variables": {
+    "BlendTargetList": {
+      "type": "ChildBoneBlendInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "SourceRequiredBones": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4202496
+    }
+  },
+  "functions": {
+    "SetTargetStartBone": {
+      "documentation": null,
+      "signature_members": {
+        "TargetIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "StartBoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "PerBoneIncrease": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetStartBone(int TargetIdx, Name StartBoneName, optional float PerBoneIncrease)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

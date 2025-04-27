@@ -1,0 +1,48 @@
+{
+  "members": {
+    "RootMotion": {
+      "type": "BoneAtom",
+      "documentation": null,
+      "flags": 8194
+    },
+    "Name": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "Anim": {
+      "type": "AnimNode",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "Weight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "BlendWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bHasRootMotion": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bMirrorSkeleton": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsAdditive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "AnimNodeBlendBase",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

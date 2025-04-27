@@ -1,0 +1,13 @@
+{
+  "members": {
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1048576
+    }
+  },
+  "classdef": "UIInteraction",
+  "extends": "UIKeyRepeatData",
+  "documentation": null,
+  "modifiers": 9
+}

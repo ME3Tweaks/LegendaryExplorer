@@ -1,0 +1,144 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_aAutoLevelUpTemplate2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aLevelUp2DANames": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_aLevelUp2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nmLevelUpPackageName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nmAutoLevelUpTemplatePrefix": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDefault2DAsLoaded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "AutoLevelUp": {
+      "documentation": null,
+      "signature_members": {
+        "talents": {
+          "type": "BioTalentContainer",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "templateID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AutoLevelUp(BioTalentContainer talents, int templateID)"
+    },
+    "ImmediateAutoLevelUp": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ImmediateAutoLevelUp(BioPawnBehavior Target)"
+    },
+    "LoadAutoLevelUpInformation": {
+      "documentation": null,
+      "signature_members": {
+        "templateID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "classID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "DisplayName": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
+        },
+        "DisplayDescription": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadAutoLevelUpInformation(int templateID, out int classID, out stringref DisplayName, out stringref DisplayDescription)"
+    },
+    "ExperienceNeededForLevel": {
+      "documentation": null,
+      "signature_members": {
+        "Level": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "experience": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ExperienceNeededForLevel(int Level, out int experience)"
+    },
+    "LevelUpPawn": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "newLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LevelUpPawn(BioPawn Pawn, int newLevel)"
+    },
+    "AttemptLevelUp": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerSquad": {
+          "type": "BioPlayerSquad",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AttemptLevelUp(BioPlayerSquad PlayerSquad)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

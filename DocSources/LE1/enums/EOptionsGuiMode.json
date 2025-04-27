@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "OPTION_GUI_BROWSER_WHEEL": {
+      "value": 0,
+      "documentation": null
+    },
+    "OPTION_GUI_MAINMENU": {
+      "value": 1,
+      "documentation": null
+    },
+    "OPTION_GUI_CHARACTER_CREATION": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

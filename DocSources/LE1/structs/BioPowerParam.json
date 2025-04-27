@@ -1,0 +1,18 @@
+{
+  "members": {
+    "m_value": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "nmParamName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioPower",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

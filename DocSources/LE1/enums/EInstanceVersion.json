@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ParticleModSound_OriginalVer": {
+      "value": 0,
+      "documentation": null
+    },
+    "ParticleModSound_PerParticleVer": {
+      "value": 1,
+      "documentation": null
+    },
+    "ParticleModSound_MaxVer": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

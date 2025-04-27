@@ -1,0 +1,41 @@
+{
+  "parent": "BioAttributesItemEquippable",
+  "package": "SFXGame",
+  "variables": {
+    "m_Telekinetics": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_SpatialDistortion": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_Kinetics": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_fInitialTelekinetics": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fInitialSpatialDistortion": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fInitialKinetics": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

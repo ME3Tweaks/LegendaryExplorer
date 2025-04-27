@@ -1,0 +1,66 @@
+{
+  "parent": "UIComponent",
+  "package": "Engine",
+  "variables": {
+    "DefaultEvents": {
+      "type": "DefaultEventSpecification",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "DisabledEventAliases": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "EventContainer": {
+      "type": "UISequence",
+      "documentation": null,
+      "flags": 0
+    },
+    "InputProcessor": {
+      "type": "UIEvent_ProcessInput",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "UnregisterInputEvents": {
+      "documentation": null,
+      "signature_members": {
+        "InputEventOwner": {
+          "type": "UIState",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UnregisterInputEvents(UIState InputEventOwner, int PlayerIndex)"
+    },
+    "RegisterInputEvents": {
+      "documentation": null,
+      "signature_members": {
+        "InputEventOwner": {
+          "type": "UIState",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RegisterInputEvents(UIState InputEventOwner, int PlayerIndex)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

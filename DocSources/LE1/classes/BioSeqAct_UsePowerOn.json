@@ -1,0 +1,68 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "oPawn": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 1
+    },
+    "nmPower": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "oTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oPower2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "fReqStab": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fTimeOut": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "nCompletionReason": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nReason": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDone": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "ePower": {
+      "type": "EBioAutoSet",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

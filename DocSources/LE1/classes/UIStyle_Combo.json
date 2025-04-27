@@ -1,0 +1,34 @@
+{
+  "parent": "UIStyle_Data",
+  "package": "Engine",
+  "variables": {
+    "ImageStyle": {
+      "type": "StyleDataReference",
+      "documentation": null,
+      "flags": 0
+    },
+    "TextStyle": {
+      "type": "StyleDataReference",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetComboImageStyle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIStyle_Image",
+      "signature": "UIStyle_Image GetComboImageStyle()"
+    },
+    "GetComboTextStyle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIStyle_Text",
+      "signature": "UIStyle_Text GetComboTextStyle()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

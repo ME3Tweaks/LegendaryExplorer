@@ -1,0 +1,34 @@
+{
+  "parent": "SeqAct_Toggle",
+  "package": "Engine",
+  "variables": {
+    "IgnoreBasedClasses": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "bToggleBasedActors": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

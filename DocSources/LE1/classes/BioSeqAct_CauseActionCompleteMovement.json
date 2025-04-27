@@ -1,0 +1,31 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_oPawn": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Action": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oDestination": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nCompletionReason": {
+      "type": "EActionComplete_Movement",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,39 @@
+{
+  "parent": "BioPathPoint",
+  "package": "SFXGame",
+  "variables": {
+    "m_aoArtPlaceables": {
+      "type": "BioArtPlaceable",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_anmAllowedPawns": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_oMoveDestination": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "SpecialHandling": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor SpecialHandling(Pawn Other)"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

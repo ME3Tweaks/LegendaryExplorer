@@ -1,0 +1,36 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Input": {
+      "type": "ExpressionInput",
+      "documentation": null,
+      "flags": 0
+    },
+    "R": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "G": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "B": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "A": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134226066,
+  "configname": "None",
+  "documentation": null
+}

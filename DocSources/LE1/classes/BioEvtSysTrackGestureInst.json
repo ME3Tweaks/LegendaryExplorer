@@ -1,0 +1,44 @@
+{
+  "parent": "BioInterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapCachedAnimsets": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 12288
+    },
+    "m_pPawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bActiveTrack": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "FindActorByTagForScript": {
+      "documentation": null,
+      "signature_members": {
+        "nmTagToFind": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "pTrackInst": {
+          "type": "InterpTrackInst",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor FindActorByTagForScript(Name nmTagToFind, InterpTrackInst pTrackInst)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,61 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "TrackBankName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "CurrTrackType": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurrPlayingTrack": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "AdjustVolumeDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "AdjustVolumeLevel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "StopAllMusicManagerSounds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopAllMusicManagerSounds()"
+    },
+    "CrossFadeTrack": {
+      "documentation": null,
+      "signature_members": {
+        "TrackToPlay": {
+          "type": "MusicTrackStruct",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "CrossFadeTrack(const out MusicTrackStruct TrackToPlay)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

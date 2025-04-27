@@ -1,0 +1,68 @@
+{
+  "members": {
+    "UniqueId": {
+      "type": "UniqueNetId",
+      "documentation": null,
+      "flags": 2
+    },
+    "SessionId": {
+      "type": "QWord",
+      "documentation": null,
+      "flags": 2
+    },
+    "NickName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "PresenceInfo": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "bIsOnline": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bIsPlaying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bIsPlayingThisGame": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bIsJoinable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bHasVoiceSupport": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bHaveInvited": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bHasInvitedYou": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "FriendState": {
+      "type": "EOnlineFriendState",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "classdef": "OnlineSubsystem",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,10 @@
+{
+  "parent": "SeqAct_ActorFactory",
+  "package": "Engine",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "BIO_SOPHISTICATION_2DA_COLUMN_NAME_TBASE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_SOPHISTICATION_2DA_COLUMN_NAME_CBASE": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_SOPHISTICATION_2DA_COLUMN_NAME_TMAX": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_SOPHISTICATION_2DA_COLUMN_NAME_CMAX": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_SOPHISTICATION_2DA_COLUMN_NAME_TAR": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_SOPHISTICATION_2DA_COLUMN_NAME_CAR": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIO_SOPHISTICATION_2DA_COLUMN_NAME_MOVEMENT_AR": {
+      "value": 6,
+      "documentation": null
+    },
+    "BIO_SOPHISTICATION_2DA_COLUMN_NAME_COUNT": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Goal": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "ExtraCost": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "NavMeshGoal_ClosestActorInList",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,163 @@
+{
+  "parent": "UIDataStore_StringBase",
+  "package": "Engine",
+  "variables": {
+    "InputAliases": {
+      "type": "UIDataStoreInputAlias",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "InputAliasLookupMap": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 12290
+    }
+  },
+  "functions": {
+    "HasAliasMappingForPlatform": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "DesiredPlatform": {
+          "type": "EInputPlatformType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasAliasMappingForPlatform(Name DesiredAlias, EInputPlatformType DesiredPlatform)"
+    },
+    "FindInputAliasIndex": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindInputAliasIndex(Name DesiredAlias)"
+    },
+    "GetAliasInputKeyDataByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "out_InputKeyData": {
+          "type": "RawInputKeyEventData",
+          "documentation": null,
+          "flags": 384
+        },
+        "AliasIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "OverridePlatform": {
+          "type": "EInputPlatformType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetAliasInputKeyDataByIndex(out RawInputKeyEventData out_InputKeyData, int AliasIndex, optional EInputPlatformType OverridePlatform)"
+    },
+    "GetAliasInputKeyData": {
+      "documentation": null,
+      "signature_members": {
+        "out_InputKeyData": {
+          "type": "RawInputKeyEventData",
+          "documentation": null,
+          "flags": 384
+        },
+        "DesiredAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "OverridePlatform": {
+          "type": "EInputPlatformType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetAliasInputKeyData(out RawInputKeyEventData out_InputKeyData, Name DesiredAlias, optional EInputPlatformType OverridePlatform)"
+    },
+    "GetAliasInputKeyNameByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "AliasIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "OverridePlatform": {
+          "type": "EInputPlatformType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetAliasInputKeyNameByIndex(int AliasIndex, optional EInputPlatformType OverridePlatform)"
+    },
+    "GetAliasInputKeyName": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "OverridePlatform": {
+          "type": "EInputPlatformType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetAliasInputKeyName(Name DesiredAlias, optional EInputPlatformType OverridePlatform)"
+    },
+    "GetAliasFontMarkupByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "AliasIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "OverridePlatform": {
+          "type": "EInputPlatformType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetAliasFontMarkupByIndex(int AliasIndex, optional EInputPlatformType OverridePlatform)"
+    },
+    "GetAliasFontMarkup": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "OverridePlatform": {
+          "type": "EInputPlatformType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetAliasFontMarkup(Name DesiredAlias, optional EInputPlatformType OverridePlatform)"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "Input",
+  "documentation": null
+}

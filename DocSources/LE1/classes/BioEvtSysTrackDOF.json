@@ -1,0 +1,82 @@
+{
+  "parent": "BioInterpTrack",
+  "package": "SFXGame",
+  "variables": {
+    "m_aDOFData": {
+      "type": "BioDOFTrackData",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_fDOFDefaultBlurKernel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fDOFDefaultExponent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fDOFDefaultFStop": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fDOFDefaultMaxNearBlur": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fDOFDefaultMaxFarBlur": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fBloomScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fBlurBloomKernelSize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    }
+  },
+  "functions": {
+    "GetNewTrackSubMenuName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetNewTrackSubMenuName()"
+    },
+    "KeyDataDisplayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataDisplayName()"
+    },
+    "KeyDataArrayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataArrayName()"
+    },
+    "NewKeyDefaultName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string NewKeyDefaultName()"
+    },
+    "AllowKeyNaming": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowKeyNaming()"
+    }
+  },
+  "states": {},
+  "classflags": 134226070,
+  "configname": "Game",
+  "documentation": null
+}

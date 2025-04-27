@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "CHARACTER_IMPORTER_CHARACTER_2DA_CHARACTER": {
+      "value": 0,
+      "documentation": null
+    },
+    "CHARACTER_IMPORTER_CHARACTER_2DA_STARTING_EQUIPMENT": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

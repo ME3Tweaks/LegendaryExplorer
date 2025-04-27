@@ -1,0 +1,90 @@
+{
+  "parent": "PathConstraint",
+  "package": "Engine",
+  "variables": {
+    "EnvelopeTestPoint": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SoftStartPenalty": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSoft": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bOnlyThrowOutNodesThatLeaveEnvelope": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "StayWithinEnvelopeToLoc": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "InEnvelopeTestPoint": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "InMaxDistance": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InMinDistance": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bInSoft": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "InSoftStartPenalty": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "bOnlyTossOutSpecsThatLeave": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StayWithinEnvelopeToLoc(Pawn P, Vector InEnvelopeTestPoint, float InMaxDistance, float InMinDistance, optional bool bInSoft, optional float InSoftStartPenalty, optional bool bOnlyTossOutSpecsThatLeave)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

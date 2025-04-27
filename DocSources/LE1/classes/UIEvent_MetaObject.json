@@ -1,0 +1,35 @@
+{
+  "parent": "UIEvent",
+  "package": "Engine",
+  "variables": {
+    "VfTable_FCallbackEventDevice": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    }
+  },
+  "functions": {
+    "IsPastingIntoUISequenceAllowed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPastingIntoUISequenceAllowed()"
+    },
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    }
+  },
+  "states": {},
+  "classflags": 136315578,
+  "configname": "None",
+  "documentation": null
+}

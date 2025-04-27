@@ -1,0 +1,21 @@
+{
+  "parent": "BioSeqData_StateBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_oOwner": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oConversation": {
+      "type": "BioConversation",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134230162,
+  "configname": "None",
+  "documentation": null
+}

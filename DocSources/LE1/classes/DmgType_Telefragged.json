@@ -1,0 +1,10 @@
+{
+  "parent": "DamageType",
+  "package": "Engine",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 50,
+  "configname": "None",
+  "documentation": null
+}

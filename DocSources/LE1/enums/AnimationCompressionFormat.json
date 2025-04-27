@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "ACF_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "ACF_Float96NoW": {
+      "value": 1,
+      "documentation": null
+    },
+    "ACF_Fixed48NoW": {
+      "value": 2,
+      "documentation": null
+    },
+    "ACF_IntervalFixed32NoW": {
+      "value": 3,
+      "documentation": null
+    },
+    "ACF_Fixed32NoW": {
+      "value": 4,
+      "documentation": null
+    },
+    "ACF_Float32NoW": {
+      "value": 5,
+      "documentation": null
+    },
+    "ACF_BioFixed48": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

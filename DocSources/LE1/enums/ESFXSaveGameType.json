@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "SaveGameType_Manual": {
+      "value": 0,
+      "documentation": null
+    },
+    "SaveGameType_Quick": {
+      "value": 1,
+      "documentation": null
+    },
+    "SaveGameType_Auto": {
+      "value": 2,
+      "documentation": null
+    },
+    "SaveGameType_Chapter": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

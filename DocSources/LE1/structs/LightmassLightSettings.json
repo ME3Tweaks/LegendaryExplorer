@@ -1,0 +1,23 @@
+{
+  "members": {
+    "IndirectLightingScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "IndirectLightingSaturation": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ShadowExponent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "EngineTypes",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

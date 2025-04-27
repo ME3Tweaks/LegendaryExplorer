@@ -1,0 +1,18 @@
+{
+  "members": {
+    "nBonusTalentID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "nAchievementID": {
+      "type": "EAchievementID",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "classdef": "BioGamerProfile",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

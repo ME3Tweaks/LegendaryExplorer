@@ -1,0 +1,91 @@
+{
+  "parent": "Texture",
+  "package": "Engine",
+  "variables": {
+    "SizeX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 12288
+    },
+    "SizeY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 12288
+    },
+    "NumMips": {
+      "type": "int",
+      "documentation": null,
+      "flags": 12288
+    },
+    "bIsResolveTarget": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 12288
+    },
+    "Format": {
+      "type": "EPixelFormat",
+      "documentation": null,
+      "flags": 12288
+    }
+  },
+  "functions": {
+    "Create": {
+      "documentation": null,
+      "signature_members": {
+        "InSizeX": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "InSizeY": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "InFormat": {
+          "type": "EPixelFormat",
+          "documentation": null,
+          "flags": 144
+        },
+        "InIsResolveTarget": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Texture2DDynamic",
+      "signature": "Texture2DDynamic Create(int InSizeX, int InSizeY, optional EPixelFormat InFormat, optional bool InIsResolveTarget)"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {
+        "InSizeX": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "InSizeY": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "InFormat": {
+          "type": "EPixelFormat",
+          "documentation": null,
+          "flags": 144
+        },
+        "InIsResolveTarget": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "Init(int InSizeX, int InSizeY, optional EPixelFormat InFormat, optional bool InIsResolveTarget)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

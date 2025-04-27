@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Obj": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 0
+    },
+    "PropertyName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSpecialProperty": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "GameViewportClient",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

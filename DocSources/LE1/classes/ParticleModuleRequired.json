@@ -1,0 +1,171 @@
+{
+  "parent": "ParticleModule",
+  "package": "Engine",
+  "variables": {
+    "SpawnRate": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 4718592
+    },
+    "BurstList": {
+      "type": "ParticleBurst",
+      "documentation": null,
+      "flags": 37748744
+    },
+    "NormalsSphereCenter": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "NormalsCylinderDirection": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "Material": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmitterDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmitterDurationLow": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmitterLoops": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmitterDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmitterDelayLow": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SubImages_Horizontal": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "SubImages_Vertical": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "RandomImageTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "RandomImageChanges": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxDrawCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "DownsampleThresholdScreenFraction": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseLocalSpace": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bKillOnDeactivate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bKillOnCompleted": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseLegacyEmitterTime": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEmitterDurationUseRange": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDurationRecalcEachLoop": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEmitterDelayUseRange": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDelayFirstLoopOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bScaleUV": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDirectUV": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUseMaxDrawCount": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "ScreenAlignment": {
+      "type": "EParticleScreenAlignment",
+      "documentation": null,
+      "flags": 1
+    },
+    "SortMode": {
+      "type": "EParticleSortMode",
+      "documentation": null,
+      "flags": 1
+    },
+    "ParticleBurstMethod": {
+      "type": "EParticleBurstMethod",
+      "documentation": null,
+      "flags": 0
+    },
+    "InterpolationMethod": {
+      "type": "EParticleSubUVInterpMethod",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmitterNormalsMode": {
+      "type": "EEmitterNormalsMode",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

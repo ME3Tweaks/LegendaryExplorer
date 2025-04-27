@@ -1,0 +1,49 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_oAttachTo": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_vOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmSocket": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oParticles": {
+      "type": "ParticleSystem",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bActivateOnAttach": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 131073
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

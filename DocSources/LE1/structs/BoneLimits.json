@@ -1,0 +1,43 @@
+{
+  "members": {
+    "BoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "vMin": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "rMin": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "vMax": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "rMax": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "sMin": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "sMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Actor",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

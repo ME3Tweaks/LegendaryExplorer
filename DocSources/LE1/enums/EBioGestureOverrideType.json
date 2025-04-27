@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "DEFAULT_TRACK": {
+      "value": 0,
+      "documentation": null
+    },
+    "FEMALE_PLAYER_TRACK": {
+      "value": 1,
+      "documentation": null
+    },
+    "FRENCH_TRACK": {
+      "value": 2,
+      "documentation": null
+    },
+    "ITALIAN_TRACK": {
+      "value": 3,
+      "documentation": null
+    },
+    "GERMAN_TRACK": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

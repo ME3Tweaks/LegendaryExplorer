@@ -1,0 +1,23 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "MovieTexture": {
+      "type": "TextureMovie",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

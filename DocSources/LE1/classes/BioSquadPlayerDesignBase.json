@@ -1,0 +1,64 @@
+{
+  "parent": "BioPlayerSquad",
+  "package": "SFXStrategicAI",
+  "variables": {
+    "m_fPerceivedRecentlyClearTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bPerceivedEnemyRecently": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "OnSquadSeen": {
+      "documentation": null,
+      "signature_members": {
+        "oSquad": {
+          "type": "BioBaseSquad",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSquadSeen(BioBaseSquad oSquad)"
+    },
+    "AreHostilesNearby": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AreHostilesNearby()"
+    },
+    "ClearMemberAttackCommand": {
+      "documentation": null,
+      "signature_members": {
+        "oMemberPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearMemberAttackCommand(BioPawn oMemberPawn)"
+    },
+    "ClearPerceptionFlag": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearPerceptionFlag()"
+    },
+    "SetPerceptionFlag": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetPerceptionFlag()"
+    }
+  },
+  "states": {},
+  "classflags": 10486295,
+  "configname": "Party",
+  "documentation": null
+}

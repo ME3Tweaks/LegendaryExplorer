@@ -1,0 +1,7 @@
+{
+  "members": {},
+  "classdef": "UIRoot",
+  "extends": "UIScreenValue_AutoSizeRegion",
+  "documentation": null,
+  "modifiers": 1
+}

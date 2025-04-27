@@ -1,0 +1,146 @@
+{
+  "parent": "PostProcessEffect",
+  "package": "Engine",
+  "variables": {
+    "OcclusionColor": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "HBAOBias": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "HBAORadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "HBAOBlurSharpnessX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "HBAOBlurSharpnessY": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "HBAOMeters2ViewSpace": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "HBAOIntensity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "OcclusionPower": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "OcclusionScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "OcclusionBias": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinOcclusion": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "OcclusionRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "OcclusionAttenuation": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "OcclusionFadeoutMinDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "OcclusionFadeoutMaxDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "HaloDistanceThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "HaloDistanceScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "HaloOcclusion": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "EdgeDistanceThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "EdgeDistanceScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FilterDistanceScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FilterSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "HistoryConvergenceTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "HistoryWeightConvergenceTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "HBAO": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "SSAO2": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "OcclusionQuality": {
+      "type": "EAmbientOcclusionQuality",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

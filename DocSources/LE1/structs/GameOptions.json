@@ -1,0 +1,258 @@
+{
+  "members": {
+    "m_GammaPostProcessTemplate": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nCombatDifficulty": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nDialogMode": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nAutoLevelUp": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nLegacyLevelUpMode": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nAutoEquip": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nTutorialFlag": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nSubTitles": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nAutoPauseEnemySighted": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nAutoPauseSquadMemberDown": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nMusicVolume": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nFXVolume": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nDialogVolume": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nSouthpawFlag": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nTargetingAssistMode": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nTargetingAssistModifier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nHorizontalCombatSensitivity": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nVerticalCombatSensitivity": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nHorizontalExplorationSensitivity": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nVerticalExplorationSensitivity": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nRumbleFlag": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nAutoPauseBleedOut": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nMotionBlur": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nFilmGrain": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nSquadPowerUse": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nAutoSave": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nAntiAliasing": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nStickConfiguration": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nTriggerConfiguration": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nMouseSensitivity": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nAnalogSensePerc": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nUncappedFramerate": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bWindowModeState": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nEffectsState": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nTextureDetailLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nShaderDetailLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nFilterLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nDynamicResolution": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nBrightness": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nHDRBrightness": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nHDRContrast": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nAmbientOcclusion": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nMonitorIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bYAxisInverted": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bHardwareMouseState": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bVSync": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nShadowDetailLevel": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nHardwareSound": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bCameraRelativeSteering": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bHDREnable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioGamerProfile",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

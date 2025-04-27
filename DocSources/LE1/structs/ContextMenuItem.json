@@ -1,0 +1,33 @@
+{
+  "members": {
+    "ItemText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "ParentItem": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 1060866
+    },
+    "OwnerMenu": {
+      "type": "UIContextMenu",
+      "documentation": null,
+      "flags": 1056770
+    },
+    "ItemId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "ItemType": {
+      "type": "EContextMenuItemType",
+      "documentation": null,
+      "flags": 1048576
+    }
+  },
+  "classdef": "UIContextMenu",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 9
+}

@@ -1,0 +1,10 @@
+{
+  "parent": "BioSeqAct_ModifyPropertyBaseSquad",
+  "package": "SFXStrategicAI",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 10485778,
+  "configname": "None",
+  "documentation": null
+}

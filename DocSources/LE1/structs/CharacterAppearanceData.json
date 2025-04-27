@@ -1,0 +1,23 @@
+{
+  "members": {
+    "lstWeapons": {
+      "type": "ItemAppearanceData",
+      "documentation": null,
+      "flags": 0
+    },
+    "stArmor": {
+      "type": "ItemAppearanceData",
+      "documentation": null,
+      "flags": 0
+    },
+    "bHelmetVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioGamerProfile",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

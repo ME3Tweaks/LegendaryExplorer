@@ -1,0 +1,77 @@
+{
+  "EnumValues": {
+    "MP_EmissiveColor": {
+      "value": 0,
+      "documentation": null
+    },
+    "MP_Opacity": {
+      "value": 1,
+      "documentation": null
+    },
+    "MP_OpacityMask": {
+      "value": 2,
+      "documentation": null
+    },
+    "MP_Distortion": {
+      "value": 3,
+      "documentation": null
+    },
+    "MP_TwoSidedLightingMask": {
+      "value": 4,
+      "documentation": null
+    },
+    "MP_DiffuseColor": {
+      "value": 5,
+      "documentation": null
+    },
+    "MP_DiffusePower": {
+      "value": 6,
+      "documentation": null
+    },
+    "MP_SpecularColor": {
+      "value": 7,
+      "documentation": null
+    },
+    "MP_SpecularPower": {
+      "value": 8,
+      "documentation": null
+    },
+    "MP_Normal": {
+      "value": 9,
+      "documentation": null
+    },
+    "MP_CustomLighting": {
+      "value": 10,
+      "documentation": null
+    },
+    "MP_CustomLightingDiffuse": {
+      "value": 11,
+      "documentation": null
+    },
+    "MP_AnisotropicDirection": {
+      "value": 12,
+      "documentation": null
+    },
+    "MP_WorldPositionOffset": {
+      "value": 13,
+      "documentation": null
+    },
+    "MP_TMissionMask": {
+      "value": 14,
+      "documentation": null
+    },
+    "MP_TMissionColor": {
+      "value": 15,
+      "documentation": null
+    },
+    "MP_CustomSkylightDiffuse": {
+      "value": 16,
+      "documentation": null
+    },
+    "MP_WrapLightingCoefficients": {
+      "value": 17,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

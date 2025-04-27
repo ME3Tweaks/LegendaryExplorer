@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "WEAPON_POWER_MODE_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "WEAPON_POWER_MODE_MARKSMAN": {
+      "value": 1,
+      "documentation": null
+    },
+    "WEAPON_POWER_MODE_SUPPRESSION": {
+      "value": 2,
+      "documentation": null
+    },
+    "WEAPON_POWER_MODE_ASSASSINATION": {
+      "value": 3,
+      "documentation": null
+    },
+    "WEAPON_POWER_MODE_CARNAGE": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

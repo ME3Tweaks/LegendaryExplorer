@@ -1,0 +1,50 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "DisplaySquadDebug": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplaySquadDebug()"
+    },
+    "ProcessPoint": {
+      "documentation": null,
+      "signature_members": {
+        "HowPointWasReached": {
+          "type": "EPathNodeAction",
+          "documentation": null,
+          "flags": 128
+        },
+        "Location_": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Orientation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "ActionOn": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessPoint(EPathNodeAction HowPointWasReached, Vector Location_, Rotator Orientation, optional Name ActionOn)"
+    },
+    "Initalize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initalize()"
+    }
+  },
+  "states": {},
+  "classflags": 144703635,
+  "configname": "None",
+  "documentation": null
+}

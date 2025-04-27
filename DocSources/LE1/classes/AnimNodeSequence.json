@@ -1,0 +1,294 @@
+{
+  "parent": "AnimNode",
+  "package": "Engine",
+  "variables": {
+    "AnimSeqName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 3
+    },
+    "AnimSeq": {
+      "type": "AnimSequence",
+      "documentation": null,
+      "flags": 8194
+    },
+    "SynchGroupName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 3
+    },
+    "CameraAnim": {
+      "type": "CameraAnim",
+      "documentation": null,
+      "flags": 1
+    },
+    "ActiveCameraAnimInstance": {
+      "type": "CameraAnimInst",
+      "documentation": null,
+      "flags": 8192
+    },
+    "Rate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "CurrentTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "PreviousTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8194
+    },
+    "AnimLinkupIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8194
+    },
+    "NotifyWeightThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SynchPosOffset": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "CameraAnimScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "CameraAnimPlayRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bPlaying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLooping": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCauseActorAnimEnd": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCauseActorAnimPlay": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bZeroRootRotation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bZeroRootTranslation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDisableWarningWhenAnimNotFound": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bHasWeightIgnoreNotifies": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bNoNotifies": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bForceRefposeWhenNotPlaying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIsIssuingNotifies": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bForceAlwaysSlave": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSynchronize": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bReverseSync": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bShowTimeLineSlider": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLoopCameraAnim": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRandomizeCameraAnimLoopStartTime": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEditorOnlyAddRefPoseToAdditiveAnimation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "RootBoneOption": {
+      "type": "ERootBoneAxis",
+      "documentation": null,
+      "flags": 1
+    },
+    "RootRotationOption": {
+      "type": "ERootRotationOption",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetTimeLeft": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetTimeLeft()"
+    },
+    "GetAnimPlaybackLength": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetAnimPlaybackLength()"
+    },
+    "GetGlobalPlayRate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetGlobalPlayRate()"
+    },
+    "GetGroupRelativePosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetGroupRelativePosition()"
+    },
+    "FindGroupPosition": {
+      "documentation": null,
+      "signature_members": {
+        "GroupRelativePosition": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float FindGroupPosition(float GroupRelativePosition)"
+    },
+    "FindGroupRelativePosition": {
+      "documentation": null,
+      "signature_members": {
+        "GroupRelativePosition": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float FindGroupRelativePosition(float GroupRelativePosition)"
+    },
+    "GetNormalizedPosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetNormalizedPosition()"
+    },
+    "SetPosition": {
+      "documentation": null,
+      "signature_members": {
+        "NewTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bFireNotifies": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPosition(float NewTime, bool bFireNotifies)"
+    },
+    "ReplayAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReplayAnim()"
+    },
+    "StopAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopAnim()"
+    },
+    "PlayAnim": {
+      "documentation": null,
+      "signature_members": {
+        "bLoop": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "InRate": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "StartTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayAnim(optional bool bLoop, optional float InRate, optional float StartTime)"
+    },
+    "SetAnim": {
+      "documentation": null,
+      "signature_members": {
+        "Sequence": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAnim(Name Sequence)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "BIOWEAPON_HIT_INVALID": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIOWEAPON_HIT_NONE": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIOWEAPON_HIT_PAWN": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIOWEAPON_HIT_SHIELD": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIOWEAPON_HIT_SCENERY": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIOWEAPON_HIT_COUNT": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

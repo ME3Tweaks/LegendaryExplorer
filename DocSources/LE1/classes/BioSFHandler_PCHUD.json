@@ -1,0 +1,58 @@
+{
+  "parent": "BioSFHandler_HUD",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "InitializeEverything": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeEverything()"
+    },
+    "SetMouseShown": {
+      "documentation": null,
+      "signature_members": {
+        "showIt": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMouseShown(optional bool showIt)"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
+  "documentation": null
+}

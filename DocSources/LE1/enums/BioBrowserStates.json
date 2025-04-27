@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BBS_NORMAL": {
+      "value": 0,
+      "documentation": null
+    },
+    "BBS_ALERT": {
+      "value": 1,
+      "documentation": null
+    },
+    "BBS_DISABLED": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

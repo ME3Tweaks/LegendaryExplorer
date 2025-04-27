@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "EPBAxis_X": {
+      "value": 0,
+      "documentation": null
+    },
+    "EPBAxis_Z": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

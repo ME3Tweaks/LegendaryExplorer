@@ -1,0 +1,41 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Desc": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "CoordSystem": {
+      "type": "EdCoordSystem",
+      "documentation": null,
+      "flags": 0
+    },
+    "DrawColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 1
+    },
+    "bVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLocked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseColor": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

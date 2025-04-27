@@ -1,0 +1,34 @@
+{
+  "parent": "UIObject",
+  "package": "Engine",
+  "variables": {
+    "BackgroundImageComponent": {
+      "type": "UIComp_DrawImage",
+      "documentation": null,
+      "flags": 101187595
+    },
+    "ClickedCue": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "SetImage": {
+      "documentation": null,
+      "signature_members": {
+        "NewImage": {
+          "type": "Surface",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetImage(Surface NewImage)"
+    }
+  },
+  "states": {},
+  "classflags": 144704150,
+  "configname": "UI",
+  "documentation": null
+}

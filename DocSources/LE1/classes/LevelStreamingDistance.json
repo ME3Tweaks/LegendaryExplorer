@@ -1,0 +1,21 @@
+{
+  "parent": "LevelStreaming",
+  "package": "Engine",
+  "variables": {
+    "Origin": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136319126,
+  "configname": "Engine",
+  "documentation": null
+}

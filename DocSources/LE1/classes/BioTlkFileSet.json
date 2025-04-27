@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapTlkFiles": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_pCurrentTlkFile": {
+      "type": "BioTlkFile",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,51 @@
+{
+  "parent": "ActorFactory",
+  "package": "Engine",
+  "variables": {
+    "DrawScale3D": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "StaticMesh": {
+      "type": "StaticMesh",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNoEncroachCheck": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNotifyRigidBodyCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bBlockRigidBody": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseCompartment": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCastDynamicShadow": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "CollisionType": {
+      "type": "ECollisionType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134230167,
+  "configname": "Editor",
+  "documentation": null
+}

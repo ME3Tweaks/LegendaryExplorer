@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "BIO_MAPSLOT_RIGHT": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_MAPSLOT_UP": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_MAPSLOT_LEFT": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_MAPSLOT_DOWN": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_MAPSLOT_HENCH1": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_MAPSLOT_HENCH2": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

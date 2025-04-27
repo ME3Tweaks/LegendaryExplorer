@@ -1,0 +1,10 @@
+{
+  "parent": "BioInterface_Appearance",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 8392726,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,28 @@
+{
+  "members": {
+    "XPlane": {
+      "type": "RwPlane",
+      "documentation": null,
+      "flags": 1
+    },
+    "YPlane": {
+      "type": "RwPlane",
+      "documentation": null,
+      "flags": 1
+    },
+    "ZPlane": {
+      "type": "RwPlane",
+      "documentation": null,
+      "flags": 1
+    },
+    "WPlane": {
+      "type": "RwPlane",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 48
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "LightComponent",
+  "package": "Engine",
+  "variables": {
+    "WorldSpaceIncidentLighting": {
+      "type": "SHVectorRGB",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRenderBeforeModShadows": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144707730,
+  "configname": "None",
+  "documentation": null
+}

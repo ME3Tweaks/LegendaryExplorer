@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "Random": {
+      "value": 0,
+      "documentation": null
+    },
+    "FX_Grenade1": {
+      "value": 1,
+      "documentation": null
+    },
+    "FX_Grenade2": {
+      "value": 2,
+      "documentation": null
+    },
+    "FX_Grenade3": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

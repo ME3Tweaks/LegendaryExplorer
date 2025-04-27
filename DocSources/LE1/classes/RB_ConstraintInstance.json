@@ -1,0 +1,438 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Owner": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8194
+    },
+    "AngularPositionTarget": {
+      "type": "Quat",
+      "documentation": null,
+      "flags": 3
+    },
+    "ConstraintData": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "LinearPositionTarget": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 3
+    },
+    "LinearVelocityTarget": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 3
+    },
+    "AngularVelocityTarget": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 3
+    },
+    "OwnerComponent": {
+      "type": "PrimitiveComponent",
+      "documentation": null,
+      "flags": 576460752371064842
+    },
+    "ConstraintIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "SceneIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "LinearDriveSpring": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "LinearDriveDamping": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "LinearDriveForceLimit": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "AngularDriveSpring": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "AngularDriveDamping": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "AngularDriveForceLimit": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "bInHardware": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4098
+    },
+    "bLinearXPositionDrive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bLinearXVelocityDrive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bLinearYPositionDrive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bLinearYVelocityDrive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bLinearZPositionDrive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bLinearZVelocityDrive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bSwingPositionDrive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bSwingVelocityDrive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bTwistPositionDrive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bTwistVelocityDrive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAngularSlerpDrive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bTerminated": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "DummyKinActor": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 576460752303427586
+    }
+  },
+  "functions": {
+    "MoveKinActorTransform": {
+      "documentation": null,
+      "signature_members": {
+        "NewTM": {
+          "type": "Matrix",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveKinActorTransform(out Matrix NewTM)"
+    },
+    "SetLinearLimitSize": {
+      "documentation": null,
+      "signature_members": {
+        "NewLimitSize": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLinearLimitSize(float NewLimitSize)"
+    },
+    "SetAngularDOFLimitScale": {
+      "documentation": null,
+      "signature_members": {
+        "InSwing1LimitScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InSwing2LimitScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InTwistLimitScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InSetup": {
+          "type": "RB_ConstraintSetup",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAngularDOFLimitScale(float InSwing1LimitScale, float InSwing2LimitScale, float InTwistLimitScale, RB_ConstraintSetup InSetup)"
+    },
+    "SetAngularDriveParams": {
+      "documentation": null,
+      "signature_members": {
+        "InSpring": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InDamping": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InForceLimit": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAngularDriveParams(float InSpring, float InDamping, float InForceLimit)"
+    },
+    "SetAngularVelocityTarget": {
+      "documentation": null,
+      "signature_members": {
+        "InVelTarget": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAngularVelocityTarget(Vector InVelTarget)"
+    },
+    "SetAngularPositionTarget": {
+      "documentation": null,
+      "signature_members": {
+        "InPosTarget": {
+          "type": "Quat",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAngularPositionTarget(const out Quat InPosTarget)"
+    },
+    "SetLinearDriveParams": {
+      "documentation": null,
+      "signature_members": {
+        "InSpring": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InDamping": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InForceLimit": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLinearDriveParams(float InSpring, float InDamping, float InForceLimit)"
+    },
+    "SetLinearVelocityTarget": {
+      "documentation": null,
+      "signature_members": {
+        "InVelTarget": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLinearVelocityTarget(Vector InVelTarget)"
+    },
+    "SetLinearPositionTarget": {
+      "documentation": null,
+      "signature_members": {
+        "InPosTarget": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLinearPositionTarget(Vector InPosTarget)"
+    },
+    "SetAngularVelocityDrive": {
+      "documentation": null,
+      "signature_members": {
+        "bEnableSwingDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bEnableTwistDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAngularVelocityDrive(bool bEnableSwingDrive, bool bEnableTwistDrive)"
+    },
+    "SetAngularPositionDrive": {
+      "documentation": null,
+      "signature_members": {
+        "bEnableSwingDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bEnableTwistDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAngularPositionDrive(bool bEnableSwingDrive, bool bEnableTwistDrive)"
+    },
+    "SetLinearVelocityDrive": {
+      "documentation": null,
+      "signature_members": {
+        "bEnableXDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bEnableYDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bEnableZDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLinearVelocityDrive(bool bEnableXDrive, bool bEnableYDrive, bool bEnableZDrive)"
+    },
+    "SetLinearPositionDrive": {
+      "documentation": null,
+      "signature_members": {
+        "bEnableXDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bEnableYDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bEnableZDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLinearPositionDrive(bool bEnableXDrive, bool bEnableYDrive, bool bEnableZDrive)"
+    },
+    "GetConstraintLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetConstraintLocation()"
+    },
+    "GetPhysicsAssetInstance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PhysicsAssetInstance",
+      "signature": "PhysicsAssetInstance GetPhysicsAssetInstance()"
+    },
+    "TermConstraint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TermConstraint()"
+    },
+    "InitConstraint": {
+      "documentation": null,
+      "signature_members": {
+        "PrimComp1": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "PrimComp2": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "Setup": {
+          "type": "RB_ConstraintSetup",
+          "documentation": null,
+          "flags": 128
+        },
+        "Scale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InOwner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "InPrimComp": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "bMakeKinForBody1": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InitConstraint(PrimitiveComponent PrimComp1, PrimitiveComponent PrimComp2, RB_ConstraintSetup Setup, float Scale, Actor InOwner, PrimitiveComponent InPrimComp, bool bMakeKinForBody1)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

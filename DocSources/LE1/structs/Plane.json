@@ -1,0 +1,13 @@
+{
+  "members": {
+    "W": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "Object",
+  "extends": "Vector",
+  "documentation": null,
+  "modifiers": 48
+}

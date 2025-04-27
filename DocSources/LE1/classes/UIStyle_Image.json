@@ -1,0 +1,26 @@
+{
+  "parent": "UIStyle_Data",
+  "package": "Engine",
+  "variables": {
+    "AdjustmentType": {
+      "type": "UIImageAdjustmentData",
+      "documentation": null,
+      "flags": 1
+    },
+    "Coordinates": {
+      "type": "TextureCoordinates",
+      "documentation": null,
+      "flags": 1
+    },
+    "DefaultImage": {
+      "type": "Surface",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

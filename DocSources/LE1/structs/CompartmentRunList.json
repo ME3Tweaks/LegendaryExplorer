@@ -1,0 +1,28 @@
+{
+  "members": {
+    "RigidBody": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Fluid": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Cloth": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "SoftBody": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "WorldInfo",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

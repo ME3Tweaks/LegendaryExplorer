@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Position": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "CachedBaseLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "CachedBaseRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "CachedTransPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Base": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "Actor",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

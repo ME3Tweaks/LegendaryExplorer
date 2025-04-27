@@ -1,0 +1,50 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "m_oAnimNodeSequence": {
+      "type": "AnimNodeSequence",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fUsingDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fOriginalRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_eCurrentAnimNode": {
+      "type": "EBioPowerAnimNode",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "GetActivePower": {
+      "documentation": null,
+      "signature_members": {
+        "oActivePower": {
+          "type": "BioActivePower",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetActivePower(out BioActivePower oActivePower)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

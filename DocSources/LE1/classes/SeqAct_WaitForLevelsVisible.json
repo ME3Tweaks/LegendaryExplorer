@@ -1,0 +1,21 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "Engine",
+  "variables": {
+    "LevelNames": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "bShouldBlockOnLoad": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

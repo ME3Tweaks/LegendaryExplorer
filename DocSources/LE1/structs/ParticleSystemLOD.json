@@ -1,0 +1,13 @@
+{
+  "members": {
+    "bLit": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "ParticleSystem",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

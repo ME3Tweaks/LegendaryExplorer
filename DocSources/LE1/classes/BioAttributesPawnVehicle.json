@@ -1,0 +1,91 @@
+{
+  "parent": "BioAttributesEpicPawn",
+  "package": "SFXGame",
+  "variables": {
+    "m_RunOverVelocityThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_RunOverImpulseBase": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_RunOverDamageBase": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fAINoiseThrusters": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fAINoiseEngineMin": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fAINoiseEngineMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fAINoiseCollisionMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_initialHealth": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialRunOverVelocityThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialRunOverImpulseBase": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialRunOverDamageBase": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialAINoiseThrusters": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialAINoiseEngineMin": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialAINoiseEngineMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialAINoiseCollisionMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_ConfigVehicleName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606486,
+  "configname": "Game",
+  "documentation": null
+}

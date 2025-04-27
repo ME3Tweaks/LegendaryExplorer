@@ -1,0 +1,94 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "ImportOptions": {
+      "type": "FontImportOptionsData",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Characters": {
+      "type": "FontCharacter",
+      "documentation": null,
+      "flags": 71303169
+    },
+    "Textures": {
+      "type": "Texture2D",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "MaxCharHeight": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "CharRemap": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4098
+    },
+    "IsRemapped": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Kerning": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "NumCharacters": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "GetMaxCharHeight": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMaxCharHeight()"
+    },
+    "GetAuthoredViewportHeight": {
+      "documentation": null,
+      "signature_members": {
+        "ViewportHeight": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetAuthoredViewportHeight(float ViewportHeight)"
+    },
+    "GetScalingFactor": {
+      "documentation": null,
+      "signature_members": {
+        "HeightTest": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetScalingFactor(float HeightTest)"
+    },
+    "GetResolutionPageIndex": {
+      "documentation": null,
+      "signature_members": {
+        "HeightTest": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetResolutionPageIndex(float HeightTest)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

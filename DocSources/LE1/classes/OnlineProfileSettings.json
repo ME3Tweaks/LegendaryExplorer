@@ -1,0 +1,119 @@
+{
+  "parent": "OnlinePlayerStorage",
+  "package": "Engine",
+  "variables": {
+    "ProfileSettingIds": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "DefaultSettings": {
+      "type": "OnlineProfileSetting",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "OwnerMappings": {
+      "type": "IdToStringMapping",
+      "documentation": null,
+      "flags": 4194306
+    }
+  },
+  "functions": {
+    "ModifyAvailableProfileSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ModifyAvailableProfileSettings()"
+    },
+    "SetDefaultVersionNumber": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetDefaultVersionNumber()"
+    },
+    "GetVersionNumber": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetVersionNumber()"
+    },
+    "AppendVersionToSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AppendVersionToSettings()"
+    },
+    "AppendVersionToReadIds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AppendVersionToReadIds()"
+    },
+    "SetToDefaults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetToDefaults()"
+    },
+    "GetProfileSettingDefaultFloat": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "DefaultFloat": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProfileSettingDefaultFloat(int ProfileSettingId, out float DefaultFloat)"
+    },
+    "GetProfileSettingDefaultInt": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "DefaultInt": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProfileSettingDefaultInt(int ProfileSettingId, out int DefaultInt)"
+    },
+    "GetProfileSettingDefaultId": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileSettingId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "DefaultId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "ListIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProfileSettingDefaultId(int ProfileSettingId, out int DefaultId, out int ListIndex)"
+    }
+  },
+  "states": {},
+  "classflags": 136315058,
+  "configname": "None",
+  "documentation": null
+}

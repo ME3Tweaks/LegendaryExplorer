@@ -1,0 +1,53 @@
+{
+  "members": {
+    "m_vPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nScale": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fTimeSinceSelectionChanged": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fTimeOnPreviousSelection": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bActivatable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bHostile": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bResetTargeting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eObjectType": {
+      "type": "EHUDObjectType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFHandler_Reticule",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

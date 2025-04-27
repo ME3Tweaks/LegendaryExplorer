@@ -1,0 +1,270 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_oLootInventory": {
+      "type": "BioInventory",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_oInvInterface": {
+      "type": "BioInventoryGuiInterface",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_oInventoryGuiHandler": {
+      "type": "BioSFHandler_Inventory",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_nSelectedItemIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nShiftItemIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "srEmpty": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srXModToInventorySalvageMsg": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srXModToInventoryConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSalvageItemMsg": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSalvageItemConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSalvageItemLootThresholdConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSalvageItemCancel": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srInventoryFullWarning": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srInventoryFullMessage": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "fWarnMessageDispTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_bCreatedFromInventory": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bVerifyingSalvage": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "DisplayLootMaxed": {
+      "documentation": null,
+      "signature_members": {
+        "i_nNumberToSlavage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_nMaxItems": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayLootMaxed(int i_nNumberToSlavage, int i_nMaxItems)"
+    },
+    "DisplayLootLimitWarning": {
+      "documentation": null,
+      "signature_members": {
+        "i_nCurrentInventoryNum": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_nMaxItems": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayLootLimitWarning(int i_nCurrentInventoryNum, int i_nMaxItems)"
+    },
+    "DetermineLootConstraints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DetermineLootConstraints()"
+    },
+    "GameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GameSessionEnded()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "LootSalvageItemProcessDoubleCheck": {
+      "documentation": null,
+      "signature_members": {
+        "bConfirmedSalvageAttempt": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bYPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LootSalvageItemProcessDoubleCheck(bool bConfirmedSalvageAttempt, int nContext, bool bYPressed)"
+    },
+    "PopulateLootItemListEntry": {
+      "documentation": null,
+      "signature_members": {
+        "nDisplayIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateLootItemListEntry(int nDisplayIndex)"
+    },
+    "PopulateLootItemList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PopulateLootItemList()"
+    },
+    "PopulateResourceList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PopulateResourceList()"
+    },
+    "SetGlobalVars": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetGlobalVars()"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "GetInventoryThresholdWarning": {
+      "documentation": null,
+      "signature_members": {
+        "i_nCurrentInvNum": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_nMaxItems": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetInventoryThresholdWarning(int i_nCurrentInvNum, int i_nMaxItems)"
+    },
+    "GetInventoryMaxedMessage": {
+      "documentation": null,
+      "signature_members": {
+        "i_nNumberOver": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_nMaxItems": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetInventoryMaxedMessage(int i_nNumberOver, int i_nMaxItems)"
+    }
+  },
+  "states": {},
+  "classflags": 144703646,
+  "configname": "UI",
+  "documentation": null
+}

@@ -1,0 +1,23 @@
+{
+  "members": {
+    "AnimSeqName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 2
+    },
+    "AnimSeq": {
+      "type": "AnimSequence",
+      "documentation": null,
+      "flags": 8194
+    },
+    "AnimLinkupIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8194
+    }
+  },
+  "classdef": "AnimNodeSequenceBlendBase",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

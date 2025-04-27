@@ -1,0 +1,1313 @@
+{
+  "parent": "UIScreenObject",
+  "package": "Engine",
+  "variables": {
+    "InputSubscriptions": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 12290
+    },
+    "CurrentBackgroundSettings": {
+      "type": "PostProcessSettings",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "CurrentForegroundSettings": {
+      "type": "PostProcessSettings",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "DockingStack": {
+      "type": "UIDockingNode",
+      "documentation": null,
+      "flags": 12290
+    },
+    "RenderStack": {
+      "type": "UIObject",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "TickableObjects": {
+      "type": "UITickableObject",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "AnimatingObjects": {
+      "type": "UIScreenObject",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "__GetSceneInputModeOverride__Delegate": {
+      "type": "GetSceneInputModeOverride",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnInterceptRawInputKey__Delegate": {
+      "type": "OnInterceptRawInputKey",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnSceneActivated__Delegate": {
+      "type": "OnSceneActivated",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnSceneDeactivated__Delegate": {
+      "type": "OnSceneDeactivated",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnQueryCloseSceneAllowed__Delegate": {
+      "type": "OnQueryCloseSceneAllowed",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnTopSceneChanged__Delegate": {
+      "type": "OnTopSceneChanged",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__ShouldModulateBackgroundAlpha__Delegate": {
+      "type": "ShouldModulateBackgroundAlpha",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnQueryBeginAnimation_DisableInput__Delegate": {
+      "type": "OnQueryBeginAnimation_DisableInput",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnQueryEndAnimation_EnableInput__Delegate": {
+      "type": "OnQueryEndAnimation_EnableInput",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "DefaultContextMenuClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 3
+    },
+    "SceneTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 131073
+    },
+    "SceneClient": {
+      "type": "UISceneClient",
+      "documentation": null,
+      "flags": 8194
+    },
+    "PlayerOwner": {
+      "type": "LocalPlayer",
+      "documentation": null,
+      "flags": 8194
+    },
+    "ActiveContextMenu": {
+      "type": "UIContextMenu",
+      "documentation": null,
+      "flags": 8194
+    },
+    "StandardContextMenu": {
+      "type": "UIContextMenu",
+      "documentation": null,
+      "flags": 8194
+    },
+    "SceneSkin": {
+      "type": "UISkin",
+      "documentation": null,
+      "flags": 335544323
+    },
+    "PrimarySafeRegionPanel": {
+      "type": "UISafeRegionPanel",
+      "documentation": null,
+      "flags": 8194
+    },
+    "UIPostProcessForeground": {
+      "type": "PostProcessChain",
+      "documentation": null,
+      "flags": 1
+    },
+    "UIPostProcessBackground": {
+      "type": "PostProcessChain",
+      "documentation": null,
+      "flags": 1
+    },
+    "CurrentViewportSize": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 0
+    },
+    "SceneAnimation_Open": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "SceneAnimation_Close": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "SceneAnimation_LoseFocus": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "SceneAnimation_RegainingFocus": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "SceneAnimation_RegainedFocus": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "SceneOpenedCue": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "SceneClosedCue": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "SceneData": {
+      "type": "SceneDataStore",
+      "documentation": null,
+      "flags": 71303178
+    },
+    "LastPlayerIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "UpdateSceneFeedbackLoopCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "SceneStackPriority": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUpdateDockingStack": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bUpdateScenePositions": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bUpdateNavigationLinks": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bUpdatePrimitiveUsage": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bRefreshWidgetStyles": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bRefreshStringFormatting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bRecalculateInputMask": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bPerformedInitialUpdate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bResolvingScenePositions": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bUsesPrimitives": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bSupportsNavigation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bReevaluateRotationSupport": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bSupportsRotation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bDisplayCursor": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRenderParentScenes": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAlwaysRenderScene": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bPauseGameWhileActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bExemptFromAutoClose": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCloseOnLevelChange": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSaveSceneValuesOnClose": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableScenePostProcessing": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableSceneDepthTesting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRequiresNetwork": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRequiresOnlineService": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bMenuLevelRestoresScene": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bFlushPlayerInput": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCaptureMatchedInput": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDisableWorldRendering": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAnimationBlockingInput": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "PlayerInputMask": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 8192
+    },
+    "SceneInputMode": {
+      "type": "EScreenInputMode",
+      "documentation": null,
+      "flags": 1
+    },
+    "SceneRenderMode": {
+      "type": "ESplitscreenRenderMode",
+      "documentation": null,
+      "flags": 1
+    },
+    "ScenePostProcessGroup": {
+      "type": "EUIPostProcessGroup",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "DebugShowAnimators": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugShowAnimators()"
+    },
+    "LogCurrentState": {
+      "documentation": null,
+      "signature_members": {
+        "Indent": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogCurrentState(int Indent)"
+    },
+    "LogRenderBounds": {
+      "documentation": null,
+      "signature_members": {
+        "Indent": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogRenderBounds(int Indent)"
+    },
+    "OnRegainedFocusAnimationComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "AnimName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "TrackTypeMask": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegainedFocusAnimationComplete(UIScreenObject Sender, Name AnimName, int TrackTypeMask)"
+    },
+    "OnRegainingFocusAnimationComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "AnimName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "TrackTypeMask": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegainingFocusAnimationComplete(UIScreenObject Sender, Name AnimName, int TrackTypeMask)"
+    },
+    "OnLostFocusAnimationComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "AnimName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "TrackTypeMask": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLostFocusAnimationComplete(UIScreenObject Sender, Name AnimName, int TrackTypeMask)"
+    },
+    "OnCloseAnimationComplete_IgnoreChildScenes": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "AnimName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "TrackTypeMask": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCloseAnimationComplete_IgnoreChildScenes(UIScreenObject Sender, Name AnimName, int TrackTypeMask)"
+    },
+    "OnCloseAnimationComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "AnimName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "TrackTypeMask": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCloseAnimationComplete(UIScreenObject Sender, Name AnimName, int TrackTypeMask)"
+    },
+    "OnOpenAnimationComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "AnimName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "TrackTypeMask": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnOpenAnimationComplete(UIScreenObject Sender, Name AnimName, int TrackTypeMask)"
+    },
+    "BeginSceneRegainedFocusAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginSceneRegainedFocusAnimation()"
+    },
+    "BeginSceneRegainingFocusAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginSceneRegainingFocusAnimation()"
+    },
+    "BeginSceneLostFocusAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginSceneLostFocusAnimation()"
+    },
+    "BeginSceneCloseAnimation": {
+      "documentation": null,
+      "signature_members": {
+        "bCloseChildScenes": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool BeginSceneCloseAnimation(bool bCloseChildScenes)"
+    },
+    "BeginSceneOpenAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginSceneOpenAnimation()"
+    },
+    "StopSceneAnimation": {
+      "documentation": null,
+      "signature_members": {
+        "AnimationSequenceName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bFinalize": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StopSceneAnimation(Name AnimationSequenceName, optional bool bFinalize)"
+    },
+    "BeginSceneAnimation": {
+      "documentation": null,
+      "signature_members": {
+        "AnimationSequenceName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "TrackCompletedDelegate": {
+          "type": "OnUIAnim_TrackCompleted",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool BeginSceneAnimation(Name AnimationSequenceName, optional delegate<OnUIAnim_TrackCompleted> TrackCompletedDelegate)"
+    },
+    "FindAnimatorIndex": {
+      "documentation": null,
+      "signature_members": {
+        "SearchObj": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindAnimatorIndex(UIScreenObject SearchObj)"
+    },
+    "CloseScene": {
+      "documentation": null,
+      "signature_members": {
+        "SceneToClose": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 144
+        },
+        "bCloseChildScenes": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bForceCloseImmediately": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CloseScene(optional UIScene SceneToClose, optional bool bCloseChildScenes, optional bool bForceCloseImmediately)"
+    },
+    "OpenScene": {
+      "documentation": null,
+      "signature_members": {
+        "SceneToOpen": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
+        },
+        "ScenePlayerOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
+        },
+        "ForcedPriority": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
+        },
+        "bSkipAnimation": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "SceneDelegate": {
+          "type": "OnSceneActivated",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "UIScene",
+      "signature": "UIScene OpenScene(UIScene SceneToOpen, optional LocalPlayer ScenePlayerOwner, optional byte ForcedPriority, optional bool bSkipAnimation, optional delegate<OnSceneActivated> SceneDelegate)"
+    },
+    "NotifyPlayerRemoved": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "RemovedPlayer": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPlayerRemoved(int PlayerIndex, LocalPlayer RemovedPlayer)"
+    },
+    "NotifyPlayerAdded": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "AddedPlayer": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPlayerAdded(int PlayerIndex, LocalPlayer AddedPlayer)"
+    },
+    "NotifyStorageDeviceChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyStorageDeviceChanged()"
+    },
+    "NotifyLinkStatusChanged": {
+      "documentation": null,
+      "signature_members": {
+        "bConnected": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyLinkStatusChanged(bool bConnected)"
+    },
+    "NotifyOnlineServiceStatusChanged": {
+      "documentation": null,
+      "signature_members": {
+        "NewConnectionStatus": {
+          "type": "EOnlineServerConnectionStatus",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyOnlineServiceStatusChanged(EOnlineServerConnectionStatus NewConnectionStatus)"
+    },
+    "NotifyControllerStatusChanged": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bConnected": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyControllerStatusChanged(int ControllerId, bool bConnected)"
+    },
+    "NotifyLoginStatusChanged": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewStatus": {
+          "type": "ELoginStatus",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyLoginStatusChanged(int ControllerId, ELoginStatus NewStatus)"
+    },
+    "NotifyGameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyGameSessionEnded()"
+    },
+    "NotifyPreClientTravel": {
+      "documentation": null,
+      "signature_members": {
+        "TravelURL": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "TravelType": {
+          "type": "ETravelType",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIsSeamless": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPreClientTravel(string TravelURL, ETravelType TravelType, bool bIsSeamless)"
+    },
+    "SceneCreated": {
+      "documentation": null,
+      "signature_members": {
+        "CreatedScene": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SceneCreated(UIScene CreatedScene)"
+    },
+    "UIAnimationEnded": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "AnimName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "TrackTypeMask": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UIAnimationEnded(UIScreenObject Sender, Name AnimName, int TrackTypeMask)"
+    },
+    "UIAnimationStarted": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "AnimName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "TrackTypeMask": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bSetAnimatingFlag": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "UIAnimationStarted(UIScreenObject Sender, Name AnimName, int TrackTypeMask, optional bool bSetAnimatingFlag)"
+    },
+    "SetVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "bIsVisible": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVisibility(bool bIsVisible)"
+    },
+    "RemovedChild": {
+      "documentation": null,
+      "signature_members": {
+        "WidgetOwner": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "OldChild": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "ExclusionSet": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "None",
+      "signature": "RemovedChild(UIScreenObject WidgetOwner, UIObject OldChild, optional array<UIObject> ExclusionSet)"
+    },
+    "AddedChild": {
+      "documentation": null,
+      "signature_members": {
+        "WidgetOwner": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewChild": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddedChild(UIScreenObject WidgetOwner, UIObject NewChild)"
+    },
+    "CalculateInputMask": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CalculateInputMask()"
+    },
+    "SceneDeactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SceneDeactivated()"
+    },
+    "SceneActivated": {
+      "documentation": null,
+      "signature_members": {
+        "bInitialActivation": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SceneActivated(bool bInitialActivation)"
+    },
+    "GetFocusHint": {
+      "documentation": null,
+      "signature_members": {
+        "bQueryOnly": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "UIObject",
+      "signature": "UIObject GetFocusHint(optional bool bQueryOnly)"
+    },
+    "LogDockingStack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LogDockingStack()"
+    },
+    "SetActiveContextMenu": {
+      "documentation": null,
+      "signature_members": {
+        "NewContextMenu": {
+          "type": "UIContextMenu",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetActiveContextMenu(UIContextMenu NewContextMenu, int PlayerIndex)"
+    },
+    "GetActiveContextMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIContextMenu",
+      "signature": "UIContextMenu GetActiveContextMenu()"
+    },
+    "GetDefaultContextMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIContextMenu",
+      "signature": "UIContextMenu GetDefaultContextMenu()"
+    },
+    "IsSceneActive": {
+      "documentation": null,
+      "signature_members": {
+        "bTopmostScene": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsSceneActive(optional bool bTopmostScene)"
+    },
+    "GetWorldInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "WorldInfo",
+      "signature": "WorldInfo GetWorldInfo()"
+    },
+    "SetSceneRenderMode": {
+      "documentation": null,
+      "signature_members": {
+        "NewRenderMode": {
+          "type": "ESplitscreenRenderMode",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSceneRenderMode(ESplitscreenRenderMode NewRenderMode)"
+    },
+    "GetSceneRenderMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ESplitscreenRenderMode",
+      "signature": "ESplitscreenRenderMode GetSceneRenderMode()"
+    },
+    "GetSceneInputMode": {
+      "documentation": null,
+      "signature_members": {
+        "bMemberValueOnly": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "EScreenInputMode",
+      "signature": "EScreenInputMode GetSceneInputMode(optional bool bMemberValueOnly)"
+    },
+    "SetSceneInputMode": {
+      "documentation": null,
+      "signature_members": {
+        "NewInputMode": {
+          "type": "EScreenInputMode",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSceneInputMode(EScreenInputMode NewInputMode)"
+    },
+    "GetScenePostProcessGroup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EUIPostProcessGroup",
+      "signature": "EUIPostProcessGroup GetScenePostProcessGroup()"
+    },
+    "ShouldRenderParentScenes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldRenderParentScenes()"
+    },
+    "GetPreviousScene": {
+      "documentation": null,
+      "signature_members": {
+        "bRequireMatchingPlayerOwner": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bIgnoreUnfocusedScenes": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "UIScene",
+      "signature": "UIScene GetPreviousScene(optional bool bRequireMatchingPlayerOwner, optional bool bIgnoreUnfocusedScenes)"
+    },
+    "GetNextScene": {
+      "documentation": null,
+      "signature_members": {
+        "bRequireMatchingPlayerOwner": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bIgnoreUnfocusedScenes": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "UIScene",
+      "signature": "UIScene GetNextScene(optional bool bRequireMatchingPlayerOwner, optional bool bIgnoreUnfocusedScenes)"
+    },
+    "ResolveDataStore": {
+      "documentation": null,
+      "signature_members": {
+        "DataStoreTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "InPlayerOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "UIDataStore",
+      "signature": "UIDataStore ResolveDataStore(Name DataStoreTag, optional LocalPlayer InPlayerOwner)"
+    },
+    "UnbindSubscribers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnbindSubscribers()"
+    },
+    "SaveSceneDataValues": {
+      "documentation": null,
+      "signature_members": {
+        "bUnbindSubscribers": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveSceneDataValues(optional bool bUnbindSubscribers)"
+    },
+    "LoadSceneDataValues": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadSceneDataValues()"
+    },
+    "GetSceneDataStore": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SceneDataStore",
+      "signature": "SceneDataStore GetSceneDataStore()"
+    },
+    "FindTickableObjectIndex": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectToFind": {
+          "type": "UITickableObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindTickableObjectIndex(UITickableObject ObjectToFind)"
+    },
+    "UnregisterTickableObject": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectToRemove": {
+          "type": "UITickableObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnregisterTickableObject(UITickableObject ObjectToRemove)"
+    },
+    "RegisterTickableObject": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectToRegister": {
+          "type": "UITickableObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "InsertIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RegisterTickableObject(UITickableObject ObjectToRegister, optional int InsertIndex)"
+    },
+    "ResolveScenePositions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResolveScenePositions()"
+    },
+    "RebuildDockingStack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RebuildDockingStack()"
+    },
+    "ForceImmediateSceneUpdate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ForceImmediateSceneUpdate()"
+    },
+    "OnQueryEndAnimation_EnableInput": {
+      "documentation": null,
+      "signature_members": {
+        "AnimationSequenceName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "TrackTypeMask": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnQueryEndAnimation_EnableInput(Name AnimationSequenceName, int TrackTypeMask)"
+    },
+    "OnQueryBeginAnimation_DisableInput": {
+      "documentation": null,
+      "signature_members": {
+        "AnimationSequenceName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "TrackTypeMask": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnQueryBeginAnimation_DisableInput(Name AnimationSequenceName, int TrackTypeMask)"
+    },
+    "ShouldModulateBackgroundAlpha": {
+      "documentation": null,
+      "signature_members": {
+        "AlphaModulationPercent": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldModulateBackgroundAlpha(out float AlphaModulationPercent)"
+    },
+    "OnTopSceneChanged": {
+      "documentation": null,
+      "signature_members": {
+        "NewTopScene": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTopSceneChanged(UIScene NewTopScene)"
+    },
+    "OnQueryCloseSceneAllowed": {
+      "documentation": null,
+      "signature_members": {
+        "SceneToDeactivate": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
+        },
+        "bCloseChildScenes": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bForcedClose": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnQueryCloseSceneAllowed(UIScene SceneToDeactivate, bool bCloseChildScenes, bool bForcedClose)"
+    },
+    "OnSceneDeactivated": {
+      "documentation": null,
+      "signature_members": {
+        "DeactivatedScene": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSceneDeactivated(UIScene DeactivatedScene)"
+    },
+    "OnSceneActivated": {
+      "documentation": null,
+      "signature_members": {
+        "ActivatedScene": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
+        },
+        "bInitialActivation": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSceneActivated(UIScene ActivatedScene, bool bInitialActivation)"
+    },
+    "OnInterceptRawInputKey": {
+      "documentation": null,
+      "signature_members": {
+        "EventParms": {
+          "type": "InputEventParameters",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnInterceptRawInputKey(const out InputEventParameters EventParms)"
+    },
+    "GetSceneInputModeOverride": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EScreenInputMode",
+      "signature": "EScreenInputMode GetSceneInputModeOverride()"
+    }
+  },
+  "states": {},
+  "classflags": 144704150,
+  "configname": "UI",
+  "documentation": null
+}

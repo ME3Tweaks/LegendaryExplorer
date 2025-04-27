@@ -1,0 +1,31 @@
+{
+  "parent": "AnimNodeBlend",
+  "package": "Engine",
+  "variables": {
+    "BranchStartBoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Child2PerBoneWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "LocalToCompReqBones": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "bForceLocalSpaceBlend": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

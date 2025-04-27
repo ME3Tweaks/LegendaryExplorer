@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Component": {
+      "type": "ActorComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "RelativeLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "RelativeRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 1
+    },
+    "RelativeScale": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "SkeletalMeshComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 4
+}

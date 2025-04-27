@@ -1,0 +1,494 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "__OnSuccessCallback__Delegate": {
+      "type": "OnSuccessCallback",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnFailureCallback__Delegate": {
+      "type": "OnFailureCallback",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnCancelCallback__Delegate": {
+      "type": "OnCancelCallback",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_oDependent": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oUsingPawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nButtonInSequence": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nDisplayedButton": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nButtonsSuccessfullyPressed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nTotalButtonsToDisplay": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nDiscountSalvagePerPress": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nMaxSalvage": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nButtonTimoutSequence": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fButtonTimeout": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fButtonDelayTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_GameMessageSuccess": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_GameMessageFailure": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_GameMessageDuringGame": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_preGameButtonAText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_preGameButtonBText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_preGameButtonXText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bButtonIconVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bSuccessfulEndGame": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDoNotUseSalvage": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bSkillGameFailed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bGameActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_SwapXandO": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nSkillGameType": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_GameDifficulty": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SetSwapXandO": {
+      "documentation": null,
+      "signature_members": {
+        "shouldSwap": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSwapXandO(bool shouldSwap)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "ResetMousePos": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetMousePos()"
+    },
+    "SetupGame": {
+      "documentation": null,
+      "signature_members": {
+        "i_initialSalvage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetupGame(int i_initialSalvage)"
+    },
+    "UpdateSalvage": {
+      "documentation": null,
+      "signature_members": {
+        "i_salvage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateSalvage(int i_salvage)"
+    },
+    "SetButtonVisible": {
+      "documentation": null,
+      "signature_members": {
+        "i_ButtonType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetButtonVisible(int i_ButtonType)"
+    },
+    "ClearAllButtons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearAllButtons()"
+    },
+    "HandleSkillGameDisplayButton": {
+      "documentation": null,
+      "signature_members": {
+        "Params": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleSkillGameDisplayButton(Object Params)"
+    },
+    "SkillGameTriggerNextButton": {
+      "documentation": null,
+      "signature_members": {
+        "fButtonDelayTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SkillGameTriggerNextButton(float fButtonDelayTime)"
+    },
+    "HandleSkillGameButtonTimeout": {
+      "documentation": null,
+      "signature_members": {
+        "Params": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleSkillGameButtonTimeout(Object Params)"
+    },
+    "HandleSkillGameButtonPress": {
+      "documentation": null,
+      "signature_members": {
+        "InputEvent": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleSkillGameButtonPress(BioGuiEvents InputEvent)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "EndSkillGame": {
+      "documentation": null,
+      "signature_members": {
+        "bCompleted": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bNoSalvage": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bGameCanceled": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "EndSkillGame(bool bCompleted, optional bool bNoSalvage, optional bool bGameCanceled)"
+    },
+    "EndSkillGameEx": {
+      "documentation": null,
+      "signature_members": {
+        "bCompleted": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "EndSkillGameEx(bool bCompleted)"
+    },
+    "StartSkillGameEx": {
+      "documentation": null,
+      "signature_members": {
+        "oUsingPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oPlaceable": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "nSkillGameType": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "nMinSalvage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nMaxSalvage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nTotalButtonsToDisplay": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "fButtonTimeout": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fButtonDelayTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "eGameDifficulty": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "StartSkillGameEx(BioPawn oUsingPawn, Object oPlaceable, byte nSkillGameType, int nMinSalvage, int nMaxSalvage, int nTotalButtonsToDisplay, float fButtonTimeout, float fButtonDelayTime, byte eGameDifficulty)"
+    },
+    "InitializeStringReferences": {
+      "documentation": null,
+      "signature_members": {
+        "i_GameMessageSuccess": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_GameMessageFailure": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_GameMessageDuringGame": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_preGameButtonAText": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_preGameButtonBText": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_preGameButtonXText": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeStringReferences(stringref i_GameMessageSuccess, stringref i_GameMessageFailure, stringref i_GameMessageDuringGame, stringref i_preGameButtonAText, stringref i_preGameButtonBText, stringref i_preGameButtonXText)"
+    },
+    "InitializeSkillGameData": {
+      "documentation": null,
+      "signature_members": {
+        "oUsingPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oDependent": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "nSkillGameType": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "nMinSalvage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nMaxSalvage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nTotalButtonsToDisplay": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "fButtonTimeout": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fButtonDelayTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "eGameDifficulty": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeSkillGameData(BioPawn oUsingPawn, Object oDependent, byte nSkillGameType, int nMinSalvage, int nMaxSalvage, int nTotalButtonsToDisplay, float fButtonTimeout, float fButtonDelayTime, byte eGameDifficulty)"
+    },
+    "OnCancelCallback": {
+      "documentation": null,
+      "signature_members": {
+        "n_SalvageUsed": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCancelCallback(int n_SalvageUsed)"
+    },
+    "OnFailureCallback": {
+      "documentation": null,
+      "signature_members": {
+        "n_SalvageUsed": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFailureCallback(int n_SalvageUsed)"
+    },
+    "OnSuccessCallback": {
+      "documentation": null,
+      "signature_members": {
+        "n_SalvageUsed": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSuccessCallback(int n_SalvageUsed)"
+    }
+  },
+  "states": {},
+  "classflags": 136315034,
+  "configname": "UI",
+  "documentation": null
+}

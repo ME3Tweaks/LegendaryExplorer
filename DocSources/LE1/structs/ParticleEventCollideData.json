@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Normal": {
+      "type": "RwVector3",
+      "documentation": null,
+      "flags": 0
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "ParticleTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Time": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Item": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "ParticleSystemComponent",
+  "extends": "ParticleEventData",
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,38 @@
+{
+  "members": {
+    "TM": {
+      "type": "Matrix",
+      "documentation": null,
+      "flags": 131073
+    },
+    "X": {
+      "type": "float",
+      "documentation": null,
+      "flags": 131073
+    },
+    "Y": {
+      "type": "float",
+      "documentation": null,
+      "flags": 131073
+    },
+    "Z": {
+      "type": "float",
+      "documentation": null,
+      "flags": 131073
+    },
+    "bNoRBCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bPerPolyShape": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "KMeshProps",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

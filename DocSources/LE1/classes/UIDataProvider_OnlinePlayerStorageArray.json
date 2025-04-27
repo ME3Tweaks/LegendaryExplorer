@@ -1,0 +1,46 @@
+{
+  "parent": "UIDataProvider",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "ColumnHeaderText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "Values": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "PlayerStorage": {
+      "type": "OnlinePlayerStorage",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayerStorageName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayerStorageId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315034,
+  "configname": "None",
+  "documentation": null
+}

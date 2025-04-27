@@ -1,0 +1,33 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "oPawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 1
+    },
+    "nWeapon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "eWeapon": {
+      "type": "ESwitchToWeapon",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

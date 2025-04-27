@@ -1,0 +1,559 @@
+{
+  "parent": "ReplicationInfo",
+  "package": "Engine",
+  "variables": {
+    "UniqueId": {
+      "type": "UniqueNetId",
+      "documentation": null,
+      "flags": 5368709152
+    },
+    "PlayerName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5372903456
+    },
+    "OldName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "StringSpectating": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "StringUnknown": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "SavedNetworkAddress": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "GameMessageClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayerLocationHint": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 32
+    },
+    "Team": {
+      "type": "TeamInfo",
+      "documentation": null,
+      "flags": 4294967328
+    },
+    "SessionName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 2
+    },
+    "AutomatedTestingData": {
+      "type": "AutomatedTestingDatum",
+      "documentation": null,
+      "flags": 0
+    },
+    "Avatar": {
+      "type": "Texture2D",
+      "documentation": null,
+      "flags": 8192
+    },
+    "Score": {
+      "type": "float",
+      "documentation": null,
+      "flags": 5368709152
+    },
+    "Deaths": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1073741856
+    },
+    "NumLives": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayerID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 32
+    },
+    "SplitscreenIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 32
+    },
+    "StartTime": {
+      "type": "int",
+      "documentation": null,
+      "flags": 32
+    },
+    "Kills": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1073741824
+    },
+    "ExactPing": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "StatConnectionCounts": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "StatPingTotals": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "StatPingMin": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "StatPingMax": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "StatPKLTotal": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "StatPKLMin": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "StatPKLMax": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "StatMaxInBPS": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "StatAvgInBPS": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "StatMaxOutBPS": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "StatAvgOutBPS": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bAdmin": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 32
+    },
+    "bIsFemale": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 32
+    },
+    "bIsSpectator": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 32
+    },
+    "bOnlySpectator": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 32
+    },
+    "bWaitingPlayer": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 32
+    },
+    "bReadyToPlay": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 32
+    },
+    "bOutOfLives": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 32
+    },
+    "bBot": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 32
+    },
+    "bHasFlag": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 32
+    },
+    "bHasBeenWelcomed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsInactive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4294967328
+    },
+    "bFromPreviousLevel": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "Ping": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 32
+    },
+    "TTSSpeaker": {
+      "type": "ETTSSpeaker",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "UnregisterPlayerFromSession": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnregisterPlayerFromSession()"
+    },
+    "RegisterPlayerWithSession": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegisterPlayerWithSession()"
+    },
+    "IsInvalidName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInvalidName()"
+    },
+    "GetTeamNum": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "byte",
+      "signature": "byte GetTeamNum()"
+    },
+    "SetUniqueId": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerUniqueId": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUniqueId(UniqueNetId PlayerUniqueId)"
+    },
+    "ServerSetSplitscreenIndex": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerSetSplitscreenIndex(byte PlayerIndex)"
+    },
+    "SetSplitscreenIndex": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSplitscreenIndex(byte PlayerIndex)"
+    },
+    "IsLocalPlayerPRI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsLocalPlayerPRI()"
+    },
+    "BindPlayerOwnerDataProvider": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BindPlayerOwnerDataProvider()"
+    },
+    "NotifyLocalPlayerTeamReceived": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyLocalPlayerTeamReceived()"
+    },
+    "UpdateTeamDataProvider": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateTeamDataProvider()"
+    },
+    "UpdatePlayerDataProvider": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePlayerDataProvider(optional Name PropertyName)"
+    },
+    "GetCurrentGameDS": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "CurrentGameDataStore",
+      "signature": "CurrentGameDataStore GetCurrentGameDS()"
+    },
+    "SeamlessTravelTo": {
+      "documentation": null,
+      "signature_members": {
+        "NewPRI": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SeamlessTravelTo(PlayerReplicationInfo NewPRI)"
+    },
+    "IncrementDeaths": {
+      "documentation": null,
+      "signature_members": {
+        "Amt": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "IncrementDeaths(optional int Amt)"
+    },
+    "CopyProperties": {
+      "documentation": null,
+      "signature_members": {
+        "PRI": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "CopyProperties(PlayerReplicationInfo PRI)"
+    },
+    "OverrideWith": {
+      "documentation": null,
+      "signature_members": {
+        "PRI": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OverrideWith(PlayerReplicationInfo PRI)"
+    },
+    "Duplicate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PlayerReplicationInfo",
+      "signature": "PlayerReplicationInfo Duplicate()"
+    },
+    "SetWaitingPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "B": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWaitingPlayer(bool B)"
+    },
+    "SetPlayerName": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerName(string S)"
+    },
+    "Timer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Timer()"
+    },
+    "DisplayDebug": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": "HUD",
+          "documentation": null,
+          "flags": 128
+        },
+        "YL": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "YPos": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayDebug(HUD HUD, out float YL, out float YPos)"
+    },
+    "UpdatePlayerLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdatePlayerLocation()"
+    },
+    "GetLocationName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetLocationName()"
+    },
+    "GetHumanReadableName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetHumanReadableName()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "ShouldBroadCastWelcomeMessage": {
+      "documentation": null,
+      "signature_members": {
+        "bExiting": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldBroadCastWelcomeMessage(optional bool bExiting)"
+    },
+    "UpdatePing": {
+      "documentation": null,
+      "signature_members": {
+        "TimeStamp": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePing(float TimeStamp)"
+    },
+    "ReplicatedDataBinding": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedDataBinding(Name VarName)"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "SetPlayerTeam": {
+      "documentation": null,
+      "signature_members": {
+        "NewTeam": {
+          "type": "TeamInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerTeam(TeamInfo NewTeam)"
+    },
+    "ClientInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientInitialize(Controller C)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "GetPlayerAlias": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetPlayerAlias()"
+    }
+  },
+  "states": {},
+  "classflags": 144705714,
+  "configname": "None",
+  "documentation": null
+}

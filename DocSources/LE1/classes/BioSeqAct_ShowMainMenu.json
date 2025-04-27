@@ -1,0 +1,33 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_lstMainMenuResources": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "m_lstMainMenuReferenced": {
+      "type": "GFxMovieInfo",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aReferencedObjects": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 136315030,
+  "configname": "UI",
+  "documentation": null
+}

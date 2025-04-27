@@ -1,0 +1,23 @@
+{
+  "members": {
+    "srName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "srDescription": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "nIconIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioItem",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

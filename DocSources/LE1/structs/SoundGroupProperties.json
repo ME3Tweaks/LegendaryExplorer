@@ -1,0 +1,73 @@
+{
+  "members": {
+    "Volume": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Priority": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Pitch": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "VoiceCenterChannelVolume": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "VoiceRadioVolume": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SoundModeVoice": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "nLimiterCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "eSpeakerChannel": {
+      "type": "ESpeakerChannels",
+      "documentation": null,
+      "flags": 1
+    },
+    "vListenerRelative": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIsMusic": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNoReverb": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bPitchAdjusted": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bConversationDuck": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "AudioDevice",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

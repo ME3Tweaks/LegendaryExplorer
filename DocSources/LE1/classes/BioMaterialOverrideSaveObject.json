@@ -1,0 +1,51 @@
+{
+  "parent": "BioBaseSaveObject",
+  "package": "SFXGame",
+  "variables": {
+    "m_aTextureOverrides": {
+      "type": "TextureParameter",
+      "documentation": null,
+      "flags": 2305843009217888257
+    },
+    "m_aColorOverrides": {
+      "type": "ColorParameter",
+      "documentation": null,
+      "flags": 2305843009217888257
+    },
+    "m_aScalarOverrides": {
+      "type": "ScalarParameter",
+      "documentation": null,
+      "flags": 2305843009217888257
+    }
+  },
+  "functions": {
+    "LoadObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadObject(Object O)"
+    },
+    "SaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveObject(Object O)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "members": {
+    "ParameterValue": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 1
+    },
+    "PhongParameterValue": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 1
+    },
+    "ParameterName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "PhongParameterName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "ColorName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioDefine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

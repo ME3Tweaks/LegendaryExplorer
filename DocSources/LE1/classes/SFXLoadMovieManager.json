@@ -1,0 +1,126 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "LoadingMovieName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "DefaultLoadingMovie": {
+      "type": "BioLoadingMovie",
+      "documentation": null,
+      "flags": 0
+    },
+    "nLoopBackFrame": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bPlayToCompletion": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bRequireExplicitStop": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bResetToDefaultOnPlayLoadMovie": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bStreamFromDisc": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsInLoad": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlaybackState": {
+      "type": "LoadingMovieState",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "IsLoadingMoviePlaying": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsLoadingMoviePlaying()"
+    },
+    "StopLoadingMovie": {
+      "documentation": null,
+      "signature_members": {
+        "bDelayStopUntilGameHasRendered": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StopLoadingMovie(optional bool bDelayStopUntilGameHasRendered)"
+    },
+    "PlayLoadingMovie": {
+      "documentation": null,
+      "signature_members": {
+        "LevelName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayLoadingMovie(string LevelName)"
+    },
+    "InitLoadScreenTip": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitLoadScreenTip()"
+    },
+    "SetupLoadingMovie": {
+      "documentation": null,
+      "signature_members": {
+        "Movie": {
+          "type": "BioLoadingMovie",
+          "documentation": null,
+          "flags": 128
+        },
+        "RequiresExplicitStop": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayToCompletion": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "StreamFromDisc": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetupLoadingMovie(BioLoadingMovie Movie, bool RequiresExplicitStop, bool PlayToCompletion, bool StreamFromDisc)"
+    },
+    "ResetToDefaultLoadMovie": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetToDefaultLoadMovie()"
+    }
+  },
+  "states": {},
+  "classflags": 134217882,
+  "configname": "Game",
+  "documentation": null
+}

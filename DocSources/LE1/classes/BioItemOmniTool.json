@@ -1,0 +1,10 @@
+{
+  "parent": "BioItemXModdable",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 10485782,
+  "configname": "Game",
+  "documentation": null
+}

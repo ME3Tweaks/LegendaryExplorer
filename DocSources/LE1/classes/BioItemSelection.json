@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_item": {
+      "type": "BioItem",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_isVolatile": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606483,
+  "configname": "None",
+  "documentation": null
+}

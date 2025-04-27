@@ -1,0 +1,49 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "PreviewSphere": {
+      "type": "DrawSphereComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "ImpulseStrength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ImpulseRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bVelChange": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "ImpulseFalloff": {
+      "type": "ERadialImpulseFalloff",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "FireImpulse": {
+      "documentation": null,
+      "signature_members": {
+        "Origin": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "FireImpulse(Vector Origin)"
+    }
+  },
+  "states": {},
+  "classflags": 2290090130,
+  "configname": "None",
+  "documentation": null
+}

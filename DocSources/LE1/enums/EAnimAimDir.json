@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "ANIMAIM_LEFTUP": {
+      "value": 0,
+      "documentation": null
+    },
+    "ANIMAIM_CENTERUP": {
+      "value": 1,
+      "documentation": null
+    },
+    "ANIMAIM_RIGHTUP": {
+      "value": 2,
+      "documentation": null
+    },
+    "ANIMAIM_LEFTCENTER": {
+      "value": 3,
+      "documentation": null
+    },
+    "ANIMAIM_CENTERCENTER": {
+      "value": 4,
+      "documentation": null
+    },
+    "ANIMAIM_RIGHTCENTER": {
+      "value": 5,
+      "documentation": null
+    },
+    "ANIMAIM_LEFTDOWN": {
+      "value": 6,
+      "documentation": null
+    },
+    "ANIMAIM_CENTERDOWN": {
+      "value": 7,
+      "documentation": null
+    },
+    "ANIMAIM_RIGHTDOWN": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

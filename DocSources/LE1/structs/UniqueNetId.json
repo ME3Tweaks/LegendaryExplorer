@@ -1,0 +1,13 @@
+{
+  "members": {
+    "Uid": {
+      "type": "QWord",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "OnlineSubsystem",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "EBioSeqActSetOverrideTipTextOutput_Success": {
+      "value": 0,
+      "documentation": null
+    },
+    "EBioSeqActSetOverrideTipTextOutput_Failure": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

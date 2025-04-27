@@ -1,0 +1,21 @@
+{
+  "parent": "BioSpawnPoint",
+  "package": "SFXGame",
+  "variables": {
+    "m_pGarage2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nSpawnIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

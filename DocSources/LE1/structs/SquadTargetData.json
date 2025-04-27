@@ -1,0 +1,43 @@
+{
+  "members": {
+    "vLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "oTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "nActionIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nSquadIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "fTimeOut": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bHidden": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioPlayerSquad",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

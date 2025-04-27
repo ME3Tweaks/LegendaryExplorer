@@ -1,0 +1,93 @@
+{
+  "members": {
+    "LightmassSettings": {
+      "type": "LightmassPrimitiveSettings",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinScale": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxScale": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "InstanceStaticMesh": {
+      "type": "StaticMesh",
+      "documentation": null,
+      "flags": 1
+    },
+    "Material": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 1
+    },
+    "Component": {
+      "type": "FoliageComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "MaxDrawRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinTransitionRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinThinningRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinUniformScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxUniformScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SwayScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Seed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "SurfaceAreaPerInstance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCreateInstancesOnBSP": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCreateInstancesOnStaticMeshes": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCreateInstancesOnTerrain": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "FoliageFactory",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

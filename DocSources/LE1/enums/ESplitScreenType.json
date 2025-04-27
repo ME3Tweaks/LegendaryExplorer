@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "eSST_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "eSST_2P_HORIZONTAL": {
+      "value": 1,
+      "documentation": null
+    },
+    "eSST_2P_VERTICAL": {
+      "value": 2,
+      "documentation": null
+    },
+    "eSST_3P_FAVOR_TOP": {
+      "value": 3,
+      "documentation": null
+    },
+    "eSST_3P_FAVOR_BOTTOM": {
+      "value": 4,
+      "documentation": null
+    },
+    "eSST_4P": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

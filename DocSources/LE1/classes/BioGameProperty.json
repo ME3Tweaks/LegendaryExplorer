@@ -1,0 +1,315 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapApplicationArray": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_aPropConditionals": {
+      "type": "BioGamePropertyConditional",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aGameEffects": {
+      "type": "BioGameEffect",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_oOwner": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nmGamePropertyName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oGamePropertyEvents": {
+      "type": "BioGamePropertyEventSet",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_fDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fCooldownTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fTickInterval": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nGamePropertyGroup": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fPower": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_level": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bInCooldown": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bTicked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bFireAndForget": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bApplyOnCreation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ePropertyType": {
+      "type": "EBioGamePropertyType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "HasEffect": {
+      "documentation": null,
+      "signature_members": {
+        "GameEffectClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasEffect(Class<Object> GameEffectClass)"
+    },
+    "Unapply": {
+      "documentation": null,
+      "signature_members": {
+        "pTargetObject": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Unapply(Object pTargetObject)"
+    },
+    "Apply": {
+      "documentation": null,
+      "signature_members": {
+        "pTargetObject": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Apply(Object pTargetObject)"
+    },
+    "ToLine": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string ToLine()"
+    },
+    "ToString": {
+      "documentation": null,
+      "signature_members": {
+        "sIndent": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "string",
+      "signature": "string ToString(optional string sIndent)"
+    },
+    "CreateInstant": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioGameProperty",
+      "signature": "BioGameProperty CreateInstant()"
+    },
+    "CreateGameProperty": {
+      "documentation": null,
+      "signature_members": {
+        "oGPContainer": {
+          "type": "BioGamePropertyContainer",
+          "documentation": null,
+          "flags": 128
+        },
+        "oOwner": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "ePropertyType": {
+          "type": "EBioGamePropertyType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fTimedDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fCoolDownTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bTicked": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "fTickInterval": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nGamePropertyGroup": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "fPower": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bFireAndForget": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioGameProperty",
+      "signature": "BioGameProperty CreateGameProperty(BioGamePropertyContainer oGPContainer, Object oOwner, EBioGamePropertyType ePropertyType, float fTimedDuration, float fCoolDownTime, bool bTicked, float fTickInterval, int nGamePropertyGroup, float fPower, bool bFireAndForget)"
+    },
+    "RunTests": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RunTests(BioPawn oPawn)"
+    },
+    "ScaleToLevel": {
+      "documentation": null,
+      "signature_members": {
+        "nPowerLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ScaleToLevel(int nPowerLevel)"
+    },
+    "RemoveEffects": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveEffects(Object oTarget)"
+    },
+    "ApplyEffects": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIsInstant": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyEffects(Object oTarget, optional bool bIsInstant)"
+    },
+    "TickEffects": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TickEffects(float fDeltaTime)"
+    },
+    "TestConditionals": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TestConditionals(Object oTarget)"
+    },
+    "AddConditionalToProperty": {
+      "documentation": null,
+      "signature_members": {
+        "oConditional": {
+          "type": "BioGamePropertyConditional",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddConditionalToProperty(BioGamePropertyConditional oConditional)"
+    },
+    "AddGameEffectToProperty": {
+      "documentation": null,
+      "signature_members": {
+        "oEffect": {
+          "type": "BioGameEffect",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddGameEffectToProperty(BioGameEffect oEffect)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "Game",
+  "documentation": null
+}

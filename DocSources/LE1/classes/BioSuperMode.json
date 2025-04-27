@@ -1,0 +1,93 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aSophistication2DAColumnName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "Owner": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_fMovingThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_fRotMovingThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_fRotInterpThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_nRangeRow": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fElevationThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_fSuppressionTimeThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_bUpdateReticule": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bIsActivated": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bTargetRequired": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bIgnoreReticuleResetOnce": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eSuperModeType": {
+      "type": "EBioSuperModes",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eReticuleStatsIndex": {
+      "type": "EBioReticule",
+      "documentation": null,
+      "flags": 2
+    },
+    "m_eRangeInfoStatus": {
+      "type": "EBioRangeInfoStatus",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "ResetReticule": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetReticule()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

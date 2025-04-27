@@ -1,0 +1,10 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "PlayerDataProvider",
+  "package": "Engine",
+  "variables": {
+    "PlayerData": {
+      "type": "PlayerDataProvider",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "CleanupDataProvider": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CleanupDataProvider()"
+    },
+    "SetPlayerDataProvider": {
+      "documentation": null,
+      "signature_members": {
+        "NewPlayerData": {
+          "type": "PlayerDataProvider",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerDataProvider(PlayerDataProvider NewPlayerData)"
+    }
+  },
+  "states": {},
+  "classflags": 136315034,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "members": {
+    "Planets": {
+      "type": "PlanetSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "classdef": "SFXSaveGame",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

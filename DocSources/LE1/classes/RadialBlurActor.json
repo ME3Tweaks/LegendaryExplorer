@@ -1,0 +1,16 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "RadialBlur": {
+      "type": "RadialBlurComponent",
+      "documentation": null,
+      "flags": 67633161
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 10486290,
+  "configname": "None",
+  "documentation": null
+}

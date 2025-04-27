@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Mapping": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4096
+    },
+    "LightMap": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4096
+    },
+    "LightmapTexture": {
+      "type": "Texture2D",
+      "documentation": null,
+      "flags": 0
+    },
+    "ShadowmapTexture": {
+      "type": "ShadowMap2D",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "InstancedStaticMeshComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

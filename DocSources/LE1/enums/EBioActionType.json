@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BIO_ACTMAP_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_ACTMAP_POWER": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_ACTMAP_GRENADE": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_ACTMAP_RANGED": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

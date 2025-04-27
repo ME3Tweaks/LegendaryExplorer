@@ -1,0 +1,868 @@
+{
+  "parent": "BioAttributes",
+  "package": "SFXGame",
+  "variables": {
+    "m_CastingTime": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_TravelSpeed": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_Kickback": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_CooldownTime": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_CylinderRadius": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_MinimumRange": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_MaximumRange": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ImpactRadius": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_UseDuration": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_EffectDuration": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_VFXIntensity": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ImpactVolumeLength": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ImpactVolumeHalfAngle": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_BuildUpTimeout": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_RequiredResource": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aAdditionalParams": {
+      "type": "BioPowerParam",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aRangedWeaponTypes": {
+      "type": "EBioItemWeaponRangedType",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aMeleeWeaponTypes": {
+      "type": "EBioItemWeaponMeleeType",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aImpactedActors": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_nmPower": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_VFXAppearance": {
+      "type": "BioPowerVFXAppearance",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nmLinkedPower": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nmPlayerLinkedPower": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oPowerList": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fCapabilityRank": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fBestRangeConst": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fAreaAttackThresholdConst": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fTotalCooldownTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fCooldownRemaining": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nEnabled": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nSuppressedCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bNeedsRangedWeapon": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bNeedsMeleeWeapon": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bStopOnFirstHit": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bGroundBasedPower": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bBlockedByObjects": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bCancelling": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_eDualType": {
+      "type": "EBioPowerDualType",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_eAimType": {
+      "type": "EBioPowerAimType",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eDiscipline": {
+      "type": "EBioCapMode",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eRequiredResourceType": {
+      "type": "EInventoryResourceTypes",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eHUDType": {
+      "type": "EBioPowerHUDType",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "AddParameter": {
+      "documentation": null,
+      "signature_members": {
+        "nmParameter": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddParameter(Name nmParameter)"
+    },
+    "LoadPlayerLinkedPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool LoadPlayerLinkedPower()"
+    },
+    "LoadHUDType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool LoadHUDType()"
+    },
+    "LoadDiscipline": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool LoadDiscipline()"
+    },
+    "LoadRequiredResourceType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool LoadRequiredResourceType()"
+    },
+    "CancelDualPowerInternal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelDualPowerInternal()"
+    },
+    "LoadAimType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool LoadAimType()"
+    },
+    "LoadDualPowerInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool LoadDualPowerInfo()"
+    },
+    "LoadRequiredWeaponType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool LoadRequiredWeaponType()"
+    },
+    "RemoveParameter": {
+      "documentation": null,
+      "signature_members": {
+        "nmParameter": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveParameter(Name nmParameter)"
+    },
+    "LoadAdditionalParams": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool LoadAdditionalParams()"
+    },
+    "AutoMapPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AutoMapPower()"
+    },
+    "IsRequiredResourceAvailable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsRequiredResourceAvailable()"
+    },
+    "IsRequiredWeaponEquipped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsRequiredWeaponEquipped()"
+    },
+    "GetDescription": {
+      "documentation": null,
+      "signature_members": {
+        "sDescription": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetDescription(out string sDescription)"
+    },
+    "GetImpactText": {
+      "documentation": null,
+      "signature_members": {
+        "srImpactText": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetImpactText(out stringref srImpactText)"
+    },
+    "GetDisplayName": {
+      "documentation": null,
+      "signature_members": {
+        "sDisplayName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetDisplayName(out string sDisplayName)"
+    },
+    "GetPowerIcon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetPowerIcon()"
+    },
+    "GetImpactNoise": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetImpactNoise()"
+    },
+    "GetReleaseNoise": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetReleaseNoise()"
+    },
+    "CancelDualPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelDualPower()"
+    },
+    "GetLinkedPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPower",
+      "signature": "BioPower GetLinkedPower()"
+    },
+    "IsDualPowerActive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDualPowerActive()"
+    },
+    "CancelPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CancelPower()"
+    },
+    "IsActive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsActive()"
+    },
+    "CanCasterMoveDuringPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanCasterMoveDuringPower()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fDeltaTime)"
+    },
+    "SetTotalCooldownTime": {
+      "documentation": null,
+      "signature_members": {
+        "fTotalCooldown": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTotalCooldownTime(float fTotalCooldown)"
+    },
+    "GetTotalCooldownTime": {
+      "documentation": null,
+      "signature_members": {
+        "bCheckLinkedPower": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetTotalCooldownTime(optional bool bCheckLinkedPower)"
+    },
+    "SetCooldownRemaining": {
+      "documentation": null,
+      "signature_members": {
+        "fCooldownRemaining": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bFireCompletionEventIfZero": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCooldownRemaining(float fCooldownRemaining, optional bool bFireCompletionEventIfZero)"
+    },
+    "GetCooldownRemaining": {
+      "documentation": null,
+      "signature_members": {
+        "bCheckLinkedPower": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetCooldownRemaining(optional bool bCheckLinkedPower)"
+    },
+    "StopPowerBuildUp": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oGameProperty": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StopPowerBuildUp(Actor oCaster, Actor oTarget, BioGameProperty oGameProperty)"
+    },
+    "GetPowerBuildUp": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fPowerBuildUp": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "oGameProperty": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPowerBuildUp(Actor oCaster, Actor oTarget, out float fPowerBuildUp, out BioGameProperty oGameProperty)"
+    },
+    "StartPowerBuildUp": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartPowerBuildUp(Actor oCaster, Actor oTarget)"
+    },
+    "IsSuppressed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSuppressed()"
+    },
+    "SuppressPower": {
+      "documentation": null,
+      "signature_members": {
+        "bSuppress": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int SuppressPower(bool bSuppress)"
+    },
+    "IsEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsEnabled()"
+    },
+    "EnablePower": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EnablePower(bool bEnable)"
+    },
+    "GetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "eLocation": {
+          "type": "EBioPowerLocation",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetLocation(out EBioPowerLocation eLocation)"
+    },
+    "GetImpactShape": {
+      "documentation": null,
+      "signature_members": {
+        "eShape": {
+          "type": "EBioPowerImpactShape",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetImpactShape(out EBioPowerImpactShape eShape)"
+    },
+    "GetProjectileAttachPoint": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "vAttachPoint": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProjectileAttachPoint(Pawn pPawn, out Vector vAttachPoint)"
+    },
+    "GetAnim": {
+      "documentation": null,
+      "signature_members": {
+        "bUseCoverAnimations": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "sAnim": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "nmAnimSet": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetAnim(bool bUseCoverAnimations, out string sAnim, out Name nmAnimSet)"
+    },
+    "GetParameter": {
+      "documentation": null,
+      "signature_members": {
+        "nmParameter": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetParameter(Name nmParameter)"
+    },
+    "DoImpactVFX": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "vHitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "pPowerInstance": {
+          "type": "BioActivePower",
+          "documentation": null,
+          "flags": 128
+        },
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "DoImpactVFX(Actor oActor, out Vector vLocation, out Vector vHitNormal, BioActivePower pPowerInstance, optional Name BoneName)"
+    },
+    "GetVFXLifetime": {
+      "documentation": null,
+      "signature_members": {
+        "eResource": {
+          "type": "EBioPowerResource",
+          "documentation": null,
+          "flags": 128
+        },
+        "oPowerInstance": {
+          "type": "BioActivePower",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetVFXLifetime(EBioPowerResource eResource, BioActivePower oPowerInstance)"
+    },
+    "GetVFXTemplate": {
+      "documentation": null,
+      "signature_members": {
+        "eResource": {
+          "type": "EBioPowerResource",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioVFXTemplate",
+      "signature": "BioVFXTemplate GetVFXTemplate(EBioPowerResource eResource)"
+    },
+    "EndVisualEffect": {
+      "documentation": null,
+      "signature_members": {
+        "eResource": {
+          "type": "EBioPowerResource",
+          "documentation": null,
+          "flags": 128
+        },
+        "bAllowVFXToFinish": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "EndVisualEffect(EBioPowerResource eResource, optional bool bAllowVFXToFinish)"
+    },
+    "GetVisualEffect": {
+      "documentation": null,
+      "signature_members": {
+        "eResource": {
+          "type": "EBioPowerResource",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioVisualEffect",
+      "signature": "BioVisualEffect GetVisualEffect(EBioPowerResource eResource)"
+    },
+    "LoadVFXAppearance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool LoadVFXAppearance()"
+    },
+    "GetPowerScript": {
+      "documentation": null,
+      "signature_members": {
+        "nmPowerScript": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPowerScript(out Name nmPowerScript)"
+    },
+    "CreatePowerIndexMap": {
+      "documentation": null,
+      "signature_members": {
+        "oPowers2DA": {
+          "type": "Bio2DA",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "CreatePowerIndexMap(Bio2DA oPowers2DA)"
+    },
+    "InitializePower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPower": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializePower(Name nmPower)"
+    },
+    "RemoveFloatAttributeModifier": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "modType": {
+          "type": "EBioAttrModType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveFloatAttributeModifier(Name attribute, EBioAttrModType modType, float fValue, optional int nIndexOfAttributeInArray)"
+    },
+    "AddFloatAttributeModifier": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "modType": {
+          "type": "EBioAttrModType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "AddFloatAttributeModifier(Name attribute, EBioAttrModType modType, float fValue, optional int nIndexOfAttributeInArray)"
+    },
+    "SetFloatAttribute": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatAttribute(Name attribute, float fValue, optional int nIndexOfAttributeInArray)"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

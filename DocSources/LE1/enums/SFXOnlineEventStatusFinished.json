@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "SFXONLINE_EVENT_STATUS_FINISHED_SUCCESS": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_STATUS_FINISHED_FAILED": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_STATUS_FINISHED_CANCELED": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_EVENT_STATUS_FINISHED_TIMEOUT": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

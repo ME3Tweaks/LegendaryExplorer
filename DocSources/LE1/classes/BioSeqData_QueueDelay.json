@@ -1,0 +1,21 @@
+{
+  "parent": "BioSeqData_ActionBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_fDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fTimeCount": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

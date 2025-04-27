@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Resource": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Texture": {
+      "type": "Texture",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "GFxMovie",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

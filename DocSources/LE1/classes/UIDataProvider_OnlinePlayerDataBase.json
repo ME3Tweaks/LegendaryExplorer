@@ -1,0 +1,35 @@
+{
+  "parent": "UIDataProvider",
+  "package": "Engine",
+  "variables": {
+    "Player": {
+      "type": "LocalPlayer",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "OnUnregister": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUnregister()"
+    },
+    "OnRegister": {
+      "documentation": null,
+      "signature_members": {
+        "InPlayer": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegister(LocalPlayer InPlayer)"
+    }
+  },
+  "states": {},
+  "classflags": 136315035,
+  "configname": "None",
+  "documentation": null
+}

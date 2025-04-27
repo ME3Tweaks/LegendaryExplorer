@@ -1,0 +1,41 @@
+{
+  "parent": "DistributionVector",
+  "package": "Engine",
+  "variables": {
+    "Max": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "Min": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLockAxes": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUseExtremes": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "MirrorFlags": {
+      "type": "EDistributionVectorMirrorFlags",
+      "documentation": null,
+      "flags": 1
+    },
+    "LockedAxes": {
+      "type": "EDistributionVectorLockFlags",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134230162,
+  "configname": "None",
+  "documentation": null
+}

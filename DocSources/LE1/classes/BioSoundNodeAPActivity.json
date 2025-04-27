@@ -1,0 +1,21 @@
+{
+  "parent": "BioSoundNode_Base",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmSoundInputName": {
+      "type": "APActivityEntry",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_fFadeTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136327314,
+  "configname": "None",
+  "documentation": null
+}

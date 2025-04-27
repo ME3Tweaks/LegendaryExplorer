@@ -1,0 +1,428 @@
+{
+  "parent": "PlayerInput",
+  "package": "SFXGame",
+  "variables": {
+    "InputTimers": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 12288
+    },
+    "LookStickResponseCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "MouseDampeningCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "StaticConsoleBinds": {
+      "type": "StaticKeyBind",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "StaticPCBinds": {
+      "type": "StaticKeyBind",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "FlyCamConsoleBinds": {
+      "type": "StaticKeyBind",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "AxisBuffer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "LastAxisBuffer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "LookStick": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "MoveStick": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "AccumulatedAimVector": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "MouseSensitivityRange": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 16384
+    },
+    "GuiZeroTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "GuiSmoothedMouse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "MappedPower": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "aGuiStrafe": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aGuiBaseY": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aGuiTurn": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aGuiLookUp": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aGuiMouseX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "aGuiMouseY": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4
+    },
+    "MoveStickMag": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LookStickMag": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "RawJoyUpDown": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "GuiDeadzone": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "AccumulatedRotationSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "AccumulatedRotationDecayRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "GlobalStickFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "GuiMouseSamples": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "GuiMouseSamplingTotal": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CoverRemapThresholdPC": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "CoverRemapThreshold": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUseMouseDampening": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bWantsToZoom": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4
+    }
+  },
+  "functions": {
+    "SetFlyCam": {
+      "documentation": null,
+      "signature_members": {
+        "bOn": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFlyCam(bool bOn)"
+    },
+    "ToggleFlyCam": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleFlyCam()"
+    },
+    "IsCrossCircleSwapped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCrossCircleSwapped()"
+    },
+    "GetBind": {
+      "documentation": null,
+      "signature_members": {
+        "Key": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 386
+        },
+        "Control": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "Shift": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "Alt": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetBind(const out Name Key, bool Control, bool Shift, bool Alt)"
+    },
+    "FlushPressedKeys": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FlushPressedKeys()"
+    },
+    "IsCombatEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCombatEnabled()"
+    },
+    "ActivateEquip": {
+      "documentation": null,
+      "signature_members": {
+        "eWeapon": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ActivateEquip(EBioItemWeaponRangedType eWeapon)"
+    },
+    "ActivatePower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPower": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "vTargetLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ActivatePower(Name nmPower, optional Actor oTarget, optional Vector vTargetLocation)"
+    },
+    "ActivateGrenade": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ActivateGrenade()"
+    },
+    "RemapControlsByRotation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaRot": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewRight": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "NewUp": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "RemapControlsByRotation(Rotator DeltaRot, out float NewRight, out float NewUp)"
+    },
+    "UpdateViewRotation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateViewRotation(float DeltaTime)"
+    },
+    "PlayerInput": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayerInput(float DeltaTime)"
+    },
+    "SmoothGuiMouse": {
+      "documentation": null,
+      "signature_members": {
+        "aMouse": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "SampleCount": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float SmoothGuiMouse(float aMouse, float DeltaTime, out byte SampleCount, int Index)"
+    },
+    "PostProcessInput": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PostProcessInput(float DeltaTime)"
+    },
+    "AdjustMouseSensitivity": {
+      "documentation": null,
+      "signature_members": {
+        "FOVScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustMouseSensitivity(float FOVScale)"
+    },
+    "PreProcessInput": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PreProcessInput(float DeltaTime)"
+    },
+    "ComputeStickResponse": {
+      "documentation": null,
+      "signature_members": {
+        "RawStickValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "Input": {
+          "type": "SFXCameraInput",
+          "documentation": null,
+          "flags": 128
+        },
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float ComputeStickResponse(float RawStickValue, SFXCameraInput Input, float DeltaTime)"
+    },
+    "UpdateMouseSensitivityFromSettings": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateMouseSensitivityFromSettings(int Value)"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "Input",
+  "documentation": null
+}

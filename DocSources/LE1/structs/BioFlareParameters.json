@@ -1,0 +1,33 @@
+{
+  "members": {
+    "FlareBase": {
+      "type": "BioFlareColour",
+      "documentation": null,
+      "flags": 1
+    },
+    "FlareHot": {
+      "type": "BioFlareColour",
+      "documentation": null,
+      "flags": 1
+    },
+    "FlareTintMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "LineLength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FalloffParameter": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioLineBloomEffect",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

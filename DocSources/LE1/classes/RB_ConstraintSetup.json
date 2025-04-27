@@ -1,0 +1,191 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Pos1": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "PriAxis1": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "SecAxis1": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Pos2": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "PriAxis2": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "SecAxis2": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "PulleyPivot1": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "PulleyPivot2": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "JointName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 3
+    },
+    "ConstraintBone1": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "ConstraintBone2": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "LinearXSetup": {
+      "type": "LinearDOFSetup",
+      "documentation": null,
+      "flags": 1
+    },
+    "LinearYSetup": {
+      "type": "LinearDOFSetup",
+      "documentation": null,
+      "flags": 1
+    },
+    "LinearZSetup": {
+      "type": "LinearDOFSetup",
+      "documentation": null,
+      "flags": 1
+    },
+    "LinearLimitStiffness": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "LinearLimitDamping": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "LinearBreakThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Swing1LimitAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Swing2LimitAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "TwistLimitAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SwingLimitStiffness": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SwingLimitDamping": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "TwistLimitStiffness": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "TwistLimitDamping": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "AngularBreakThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "PulleyRatio": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableProjection": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLinearLimitSoft": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLinearBreakable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSwingLimited": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bTwistLimited": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSwingLimitSoft": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bTwistLimitSoft": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAngularBreakable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIsPulley": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bMaintainMinDistance": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

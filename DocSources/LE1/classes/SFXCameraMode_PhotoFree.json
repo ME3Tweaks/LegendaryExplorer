@@ -1,0 +1,29 @@
+{
+  "parent": "SFXCameraMode_Photo",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    }
+  },
+  "states": {},
+  "classflags": 10485778,
+  "configname": "None",
+  "documentation": null
+}

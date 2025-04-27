@@ -1,0 +1,161 @@
+{
+  "parent": "Weapon",
+  "package": "SFXGame",
+  "variables": {
+    "m_clsProjectile": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Mesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "m_AttachedMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "m_AttachedBone": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pItem": {
+      "type": "BioItemGrenade",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_pDamage": {
+      "type": "BioDamageType",
+      "documentation": null,
+      "flags": 71303176
+    }
+  },
+  "functions": {
+    "GetLaunchPoint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetLaunchPoint()"
+    },
+    "GetItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioItemGrenade",
+      "signature": "BioItemGrenade GetItem()"
+    },
+    "ClearItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearItem()"
+    },
+    "SetItem": {
+      "documentation": null,
+      "signature_members": {
+        "pItem": {
+          "type": "BioItemGrenade",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "SetItem(BioItemGrenade pItem)"
+    },
+    "LaunchGrenade": {
+      "documentation": null,
+      "signature_members": {
+        "vVelocity": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioGrenadeProjectile",
+      "signature": "BioGrenadeProjectile LaunchGrenade(Vector vVelocity)"
+    },
+    "LaunchGrenadeAtPoint": {
+      "documentation": null,
+      "signature_members": {
+        "vTarget": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioGrenadeProjectile",
+      "signature": "BioGrenadeProjectile LaunchGrenadeAtPoint(Vector vTarget)"
+    },
+    "LaunchGrenadeAtActor": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioGrenadeProjectile",
+      "signature": "BioGrenadeProjectile LaunchGrenadeAtActor(Actor oTarget)"
+    },
+    "MakeProjectile": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioGrenadeProjectile",
+      "signature": "BioGrenadeProjectile MakeProjectile()"
+    },
+    "GetProjectileClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<Projectile> GetProjectileClass()"
+    },
+    "GetPhysicalFireStartLoc": {
+      "documentation": null,
+      "signature_members": {
+        "AimDir": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetPhysicalFireStartLoc(optional Vector AimDir)"
+    },
+    "DetachWeaponFromMesh": {
+      "documentation": null,
+      "signature_members": {
+        "MeshCpnt": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "DetachWeaponFromMesh(SkeletalMeshComponent MeshCpnt)"
+    },
+    "AttachWeaponTo": {
+      "documentation": null,
+      "signature_members": {
+        "MeshCpnt": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachWeaponTo(SkeletalMeshComponent MeshCpnt, optional Name BoneName)"
+    }
+  },
+  "states": {},
+  "classflags": 144703670,
+  "configname": "Game",
+  "documentation": null
+}

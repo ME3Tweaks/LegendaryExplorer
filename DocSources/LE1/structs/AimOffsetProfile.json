@@ -1,0 +1,73 @@
+{
+  "members": {
+    "AimComponents": {
+      "type": "AimComponent",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ProfileName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 131075
+    },
+    "HorizontalRange": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "VerticalRange": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimName_LU": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimName_LC": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimName_LD": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimName_CU": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimName_CC": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimName_CD": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimName_RU": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimName_RC": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimName_RD": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "AnimNodeAimOffset",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 385
+}

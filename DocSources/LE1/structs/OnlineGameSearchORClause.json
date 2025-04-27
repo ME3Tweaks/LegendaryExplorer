@@ -1,0 +1,13 @@
+{
+  "members": {
+    "OrParams": {
+      "type": "OnlineGameSearchParameter",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "classdef": "OnlineGameSearch",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

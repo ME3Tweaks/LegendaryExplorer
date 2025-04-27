@@ -1,0 +1,36 @@
+{
+  "parent": "SequenceOpSaveObject",
+  "package": "Engine",
+  "variables": {
+    "SequenceSaveObjects": {
+      "type": "SequenceObjectSaveObject",
+      "documentation": null,
+      "flags": 4194312
+    },
+    "ActiveSequenceOpsSaveObjectIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194312
+    },
+    "NestedSequencesSaveObjectIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194312
+    },
+    "UnregisteredEventsSaveObjectIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194312
+    },
+    "DelayedActivatedOpsSaveObjects": {
+      "type": "ActivateOpSaveObject",
+      "documentation": null,
+      "flags": 4194312
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 18,
+  "configname": "None",
+  "documentation": null
+}

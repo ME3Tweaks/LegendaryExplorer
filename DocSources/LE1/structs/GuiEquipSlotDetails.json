@@ -1,0 +1,23 @@
+{
+  "members": {
+    "lstStatLabels": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "srSlotName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "nEmptyIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioInventoryGuiInterface",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

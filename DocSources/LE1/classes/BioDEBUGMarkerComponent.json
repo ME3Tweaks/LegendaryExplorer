@@ -1,0 +1,233 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "SFXGame",
+  "variables": {
+    "Lines": {
+      "type": "LineData",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Arrows": {
+      "type": "LineData",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Markers": {
+      "type": "MarkerData",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Diamonds": {
+      "type": "MarkerData",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Circles": {
+      "type": "MarkerData",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "functions": {
+    "ClearMarkers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearMarkers()"
+    },
+    "ClearCircles": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearCircles()"
+    },
+    "ClearDiamonds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearDiamonds()"
+    },
+    "ClearArrows": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearArrows()"
+    },
+    "ClearLines": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearLines()"
+    },
+    "Clear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Clear()"
+    },
+    "AddCircles": {
+      "documentation": null,
+      "signature_members": {
+        "_Start": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "_size": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "_R": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "_G": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "_B": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCircles(Vector _Start, int _size, byte _R, byte _G, byte _B)"
+    },
+    "AddDiamond": {
+      "documentation": null,
+      "signature_members": {
+        "_Start": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "_size": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "_R": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "_G": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "_B": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddDiamond(Vector _Start, int _size, byte _R, byte _G, byte _B)"
+    },
+    "AddMarker": {
+      "documentation": null,
+      "signature_members": {
+        "_Start": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "_size": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "_R": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "_G": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "_B": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddMarker(Vector _Start, int _size, byte _R, byte _G, byte _B)"
+    },
+    "AddArrows": {
+      "documentation": null,
+      "signature_members": {
+        "_Start": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "_End": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "_R": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "_G": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "_B": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddArrows(Vector _Start, Vector _End, byte _R, byte _G, byte _B)"
+    },
+    "AddLine": {
+      "documentation": null,
+      "signature_members": {
+        "_Start": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "_End": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "_R": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "_G": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "_B": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddLine(Vector _Start, Vector _End, byte _R, byte _G, byte _B)"
+    }
+  },
+  "states": {},
+  "classflags": 2290102418,
+  "configname": "None",
+  "documentation": null
+}

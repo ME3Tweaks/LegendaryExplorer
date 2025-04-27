@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "BioMV_Variation1": {
+      "value": 0,
+      "documentation": null
+    },
+    "BioMV_Variation2": {
+      "value": 1,
+      "documentation": null
+    },
+    "BioMV_Variation3": {
+      "value": 2,
+      "documentation": null
+    },
+    "BioMV_Variation4": {
+      "value": 3,
+      "documentation": null
+    },
+    "BioMV_Variation5": {
+      "value": 4,
+      "documentation": null
+    },
+    "BioMV_Variation6": {
+      "value": 5,
+      "documentation": null
+    },
+    "BioMV_Variation7": {
+      "value": 6,
+      "documentation": null
+    },
+    "BioMV_Variation8": {
+      "value": 7,
+      "documentation": null
+    },
+    "BioMV_Variation9": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

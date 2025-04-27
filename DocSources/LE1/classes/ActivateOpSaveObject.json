@@ -1,0 +1,26 @@
+{
+  "parent": "BioBaseSaveObject",
+  "package": "Engine",
+  "variables": {
+    "m_SequenceOpIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "InputIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "RemainingDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 18,
+  "configname": "None",
+  "documentation": null
+}

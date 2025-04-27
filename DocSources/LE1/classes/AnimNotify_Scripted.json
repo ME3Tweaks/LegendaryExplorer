@@ -1,0 +1,28 @@
+{
+  "parent": "AnimNotify",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "Notify": {
+      "documentation": null,
+      "signature_members": {
+        "Owner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "AnimSeqInstigator": {
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Notify(Actor Owner, AnimNodeSequence AnimSeqInstigator)"
+    }
+  },
+  "states": {},
+  "classflags": 134230163,
+  "configname": "None",
+  "documentation": null
+}

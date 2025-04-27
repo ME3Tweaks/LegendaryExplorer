@@ -1,0 +1,23 @@
+{
+  "members": {
+    "StateClassName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "StateInputAliases": {
+      "type": "UIInputActionAlias",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "State": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 3
+}

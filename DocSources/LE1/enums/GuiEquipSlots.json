@@ -1,0 +1,69 @@
+{
+  "EnumValues": {
+    "EQUIP_SLOT_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "EQUIP_SLOT_Pistol": {
+      "value": 1,
+      "documentation": null
+    },
+    "EQUIP_SLOT_Shotgun": {
+      "value": 2,
+      "documentation": null
+    },
+    "EQUIP_SLOT_Assault": {
+      "value": 3,
+      "documentation": null
+    },
+    "EQUIP_SLOT_Sniper": {
+      "value": 4,
+      "documentation": null
+    },
+    "EQUIP_SLOT_BioAmp": {
+      "value": 5,
+      "documentation": null
+    },
+    "EQUIP_SLOT_Armor": {
+      "value": 6,
+      "documentation": null
+    },
+    "EQUIP_SLOT_OmniTool": {
+      "value": 7,
+      "documentation": null
+    },
+    "EQUIP_SLOT_Buyback": {
+      "value": 8,
+      "documentation": null
+    },
+    "EQUIP_SLOT_Premium": {
+      "value": 9,
+      "documentation": null
+    },
+    "EQUIP_SLOT_XMods": {
+      "value": 10,
+      "documentation": null
+    },
+    "EQUIP_SLOT_COMBO_All": {
+      "value": 11,
+      "documentation": null
+    },
+    "EQUIP_SLOT_COMBO_BioAmp_OmniTool": {
+      "value": 12,
+      "documentation": null
+    },
+    "EQUIP_SLOT_COMBO_Weapons": {
+      "value": 13,
+      "documentation": null
+    },
+    "EQUIP_SLOT_Resources": {
+      "value": 14,
+      "documentation": null
+    },
+    "EQUIP_SLOT_Grenades": {
+      "value": 15,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

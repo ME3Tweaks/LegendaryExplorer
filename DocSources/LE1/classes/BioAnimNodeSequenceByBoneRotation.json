@@ -1,0 +1,26 @@
+{
+  "parent": "AnimNodeSequence",
+  "package": "SFXGame",
+  "variables": {
+    "AnimList": {
+      "type": "AnimByRotation",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "BoneAxis": {
+      "type": "EAxis",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

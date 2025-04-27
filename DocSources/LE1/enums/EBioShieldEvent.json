@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "BIO_SHIELD_EVENT_FULLY_CHARGED": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_SHIELD_EVENT_PENETRATED": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_SHIELD_EVENT_IMPACT": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_SHIELD_EVENT_EMP": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_SHIELD_EVENT_SHUT_DOWN": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_SHIELD_EVENT_RESET": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIO_SHIELD_EVENT_COUNT": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

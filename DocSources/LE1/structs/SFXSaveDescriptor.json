@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Career": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "SaveName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "Index": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "IsOwned": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "Type": {
+      "type": "ESFXSaveGameType",
+      "documentation": null,
+      "flags": 1048576
+    }
+  },
+  "classdef": "SFXEngine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 131073
+}

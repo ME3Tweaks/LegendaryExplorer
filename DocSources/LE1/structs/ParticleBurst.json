@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Count": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "CountLow": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "Time": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "ParticleEmitter",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

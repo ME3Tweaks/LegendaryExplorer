@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Value": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ScaleType": {
+      "type": "EUIExtentEvalType",
+      "documentation": null,
+      "flags": 1
+    },
+    "Orientation": {
+      "type": "EUIOrientation",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

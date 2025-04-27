@@ -1,0 +1,38 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "DoEvent": {
+      "documentation": null,
+      "signature_members": {
+        "InCollideDirection": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
+        },
+        "inHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
+        },
+        "InHitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
+        },
+        "InBoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "DoEvent(const out Vector InCollideDirection, const out Vector inHitLocation, const out Vector InHitNormal, const out Name InBoneName)"
+    }
+  },
+  "states": {},
+  "classflags": 134221971,
+  "configname": "None",
+  "documentation": null
+}

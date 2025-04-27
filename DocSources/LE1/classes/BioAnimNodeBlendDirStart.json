@@ -1,0 +1,31 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_fStartHeading": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "LeftStartTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RightStartTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIsStarting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

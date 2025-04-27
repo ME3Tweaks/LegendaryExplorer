@@ -1,0 +1,150 @@
+{
+  "parent": "Volume",
+  "package": "SFXGame",
+  "variables": {
+    "MusicID": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "SoundCue": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 0
+    },
+    "AudioComponent": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "m_oTrackPawn": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oTrackTimer": {
+      "type": "Info",
+      "documentation": null,
+      "flags": 0
+    },
+    "Music2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "MusicPriority": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nCurrentMusicState": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "InitiallyEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bContainsPawn": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bMyMusicIsPlaying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SetContainsPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "bContainsPlayer": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetContainsPlayer(bool bContainsPlayer)"
+    },
+    "GetIsMusicOverriddenByXBox": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetIsMusicOverriddenByXBox()"
+    },
+    "CheckCurrentMusicState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckCurrentMusicState()"
+    },
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bEnabled)"
+    },
+    "Initialise2DA": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialise2DA()"
+    },
+    "StopMusic": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopMusic()"
+    },
+    "StartMusic": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartMusic()"
+    },
+    "CheckPriority": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckPriority()"
+    },
+    "TimerPop": {
+      "documentation": null,
+      "signature_members": {
+        "T": {
+          "type": "BioMusicVolumeTimer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TimerPop(BioMusicVolumeTimer T)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 144704178,
+  "configname": "None",
+  "documentation": null
+}

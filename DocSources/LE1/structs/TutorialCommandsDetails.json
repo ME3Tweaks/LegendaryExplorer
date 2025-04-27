@@ -1,0 +1,23 @@
+{
+  "members": {
+    "srParseString": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Action": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Mode": {
+      "type": "EGameModes",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXGameModeManager",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

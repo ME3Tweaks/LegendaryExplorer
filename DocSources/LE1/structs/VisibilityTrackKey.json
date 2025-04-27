@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Time": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Action": {
+      "type": "EVisibilityTrackAction",
+      "documentation": null,
+      "flags": 1
+    },
+    "ActiveCondition": {
+      "type": "EVisibilityTrackCondition",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "InterpTrackVisibility",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

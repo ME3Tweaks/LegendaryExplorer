@@ -1,0 +1,38 @@
+{
+  "members": {
+    "Label": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Name": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Panel": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ParameterName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Params": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Type": {
+      "type": "EBioMorphUtilityComponentType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioMorphUtility",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

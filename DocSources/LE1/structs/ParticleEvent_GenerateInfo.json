@@ -1,0 +1,53 @@
+{
+  "members": {
+    "ParticleModuleEventsToSendToGame": {
+      "type": "ParticleModuleEventSendToGame",
+      "documentation": null,
+      "flags": 71303169
+    },
+    "CustomName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "Frequency": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "LowFreq": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "ParticleFrequency": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "FirstTimeOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "LastTimeOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "UseReflectedImpactVector": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Type": {
+      "type": "EParticleEventType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "ParticleModuleEventGenerator",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

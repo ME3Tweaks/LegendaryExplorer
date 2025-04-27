@@ -1,0 +1,26 @@
+{
+  "parent": "ActorFactory",
+  "package": "Engine",
+  "variables": {
+    "SkeletalMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimSet": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimSequenceName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134230166,
+  "configname": "Editor",
+  "documentation": null
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "CurveWeights": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "CurveName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "AnimSequence",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

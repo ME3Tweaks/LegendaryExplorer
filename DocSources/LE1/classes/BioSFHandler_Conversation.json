@@ -1,0 +1,348 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_szLastSubtitleText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aReplyLocations": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_aInvestigateLocations": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "vMouseInput": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "vInput": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oLastSubtitle": {
+      "type": "BioSubtitles",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_srTextInvestigate": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_srTextReturn": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nReplyLocationMiddleLeft": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nReplyLocationTopLeft": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nReplyLocationBottomLeft": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nReplyLocationTopRight": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nReplyLocationBottomRight": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nReplyLocationMiddleRight": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nInvestigateLocationMiddleLeft": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nInvestigateLocationTopLeft": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nInvestigateLocationBottomLeft": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nInvestigateLocationTopRight": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nInvestigateLocationBottomRight": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nInvestigateLocationMiddleRight": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "fLastRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "AccumulationDivisor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_bDisplayInvestigateSubMenu": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDisplayingWheel": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bSlotsUsed": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "ChangeConversationMenu": {
+      "documentation": null,
+      "signature_members": {
+        "oConversation": {
+          "type": "BioConversation",
+          "documentation": null,
+          "flags": 128
+        },
+        "nReplyIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ChangeConversationMenu(BioConversation oConversation, int nReplyIndex)"
+    },
+    "GetInvestigateReplyCount": {
+      "documentation": null,
+      "signature_members": {
+        "oConversation": {
+          "type": "BioConversation",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetInvestigateReplyCount(BioConversation oConversation)"
+    },
+    "GetReplyLocation": {
+      "documentation": null,
+      "signature_members": {
+        "nReplyCategory": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioConvWheelPositions",
+      "signature": "BioConvWheelPositions GetReplyLocation(int nReplyCategory)"
+    },
+    "GetInvestigateReplyLocation": {
+      "documentation": null,
+      "signature_members": {
+        "nInvestigateSlot": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioConvWheelPositions",
+      "signature": "BioConvWheelPositions GetInvestigateReplyLocation(int nInvestigateSlot)"
+    },
+    "GetInvestigateReplyFromWheelLocation": {
+      "documentation": null,
+      "signature_members": {
+        "oConversation": {
+          "type": "BioConversation",
+          "documentation": null,
+          "flags": 128
+        },
+        "nWheelLocation": {
+          "type": "BioConvWheelPositions",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetInvestigateReplyFromWheelLocation(BioConversation oConversation, BioConvWheelPositions nWheelLocation)"
+    },
+    "SelectConversationEntry": {
+      "documentation": null,
+      "signature_members": {
+        "nWheelLocation": {
+          "type": "BioConvWheelPositions",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SelectConversationEntry(BioConvWheelPositions nWheelLocation)"
+    },
+    "MapGuiStyleToOptionMode": {
+      "documentation": null,
+      "signature_members": {
+        "eGUIStyle": {
+          "type": "EConvGUIStyles",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int MapGuiStyleToOptionMode(EConvGUIStyles eGUIStyle)"
+    },
+    "UpdateConversationOptions": {
+      "documentation": null,
+      "signature_members": {
+        "oConversation": {
+          "type": "BioConversation",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateConversationOptions(BioConversation oConversation)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "CalculateArrowPosition": {
+      "documentation": null,
+      "signature_members": {
+        "stParam": {
+          "type": "ASParams",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "lstParams": {
+          "type": "ASParams",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "CalculateArrowPosition(out ASParams stParam, out array<ASParams> lstParams)"
+    },
+    "OnRemovePanel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRemovePanel()"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "SkipConversation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SkipConversation()"
+    },
+    "SelectConversationSegment": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectConversationSegment()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "GetNumReplies": {
+      "documentation": null,
+      "signature_members": {
+        "oConversation": {
+          "type": "BioConversation",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetNumReplies(BioConversation oConversation)"
+    }
+  },
+  "states": {},
+  "classflags": 2097182,
+  "configname": "UI",
+  "documentation": null
+}

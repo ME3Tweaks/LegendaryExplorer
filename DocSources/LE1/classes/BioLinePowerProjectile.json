@@ -1,0 +1,362 @@
+{
+  "parent": "BioProjectile",
+  "package": "SFXGame",
+  "variables": {
+    "m_aImpactedActors": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_vWorldImpactPoint": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_vWorldImpactNormal": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_vLastLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_vStartLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_vTargetLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oProjectileVFX": {
+      "type": "BioVisualEffect",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oCaster": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oCasterBehavior": {
+      "type": "BioEpicPawnBehavior",
+      "documentation": null,
+      "flags": 67117056
+    },
+    "m_oPowerScript": {
+      "type": "BioPowerScript",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oPower": {
+      "type": "BioPower",
+      "documentation": null,
+      "flags": 67117056
+    },
+    "m_oTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nImpactedCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fVisualEffectRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fImpactStability": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bCasterIsPlayer": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bFirstTargetHit": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bShowPowerAiming": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bShowPowerImpactText": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "HitWall": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Wall": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "WallComp": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "HitWall(Vector HitNormal, Actor Wall, PrimitiveComponent WallComp)"
+    },
+    "ProcessTouch": {
+      "documentation": null,
+      "signature_members": {
+        "oOther": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessTouch(Actor oOther, Vector vHitLocation, Vector vHitNormal)"
+    },
+    "RecordDebugAimingInfo": {
+      "documentation": null,
+      "signature_members": {
+        "vStartLocation1": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vEndLocation1": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vStartLocation2": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
+        },
+        "vEndLocation2": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "RecordDebugAimingInfo(Vector vStartLocation1, Vector vEndLocation1, optional Vector vStartLocation2, optional Vector vEndLocation2)"
+    },
+    "GetProjectileImpactLocation": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "vNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetProjectileImpactLocation(Actor oActor, out Vector vLocation, out Vector vNormal)"
+    },
+    "GetImpactLocation": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "vNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "nmBoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetImpactLocation(Actor oActor, out Vector vLocation, out Vector vNormal, out Name nmBoneName)"
+    },
+    "DoImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmBoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DoImpact(Actor oActor, Vector vHitLocation, Vector vHitNormal, Name nmBoneName)"
+    },
+    "ImpactActors": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "fRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ImpactActors(Vector vLocation, Vector vNormal, float fRadius)"
+    },
+    "TickAuthoritative": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaSeconds": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TickAuthoritative(float DeltaSeconds)"
+    },
+    "DoTouch": {
+      "documentation": null,
+      "signature_members": {
+        "pOther": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DoTouch(Actor pOther, Vector vHitLocation, Vector vHitNormal)"
+    },
+    "InitializeData": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fStability": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fTravelSpeed": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fRange": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "vTargetLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "oPowerScript": {
+          "type": "BioPowerScript",
+          "documentation": null,
+          "flags": 128
+        },
+        "oPower": {
+          "type": "BioPower",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "vCasterVelocity": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InitializeData(Actor oCaster, float fStability, float fTravelSpeed, float fRadius, float fRange, Vector vTargetLocation, BioPowerScript oPowerScript, BioPower oPower, Vector vCasterVelocity)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

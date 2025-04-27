@@ -1,0 +1,16 @@
+{
+  "parent": "UIObject",
+  "package": "Engine",
+  "variables": {
+    "AutoAlignment": {
+      "type": "UIComp_AutoAlignment",
+      "documentation": null,
+      "flags": 67633161
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 211813014,
+  "configname": "UI",
+  "documentation": null
+}

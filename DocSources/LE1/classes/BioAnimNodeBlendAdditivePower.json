@@ -1,0 +1,39 @@
+{
+  "parent": "BioAnimNodeBlendAdditive",
+  "package": "SFXGame",
+  "variables": {
+    "BlendInDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "BlendOutDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_eCurrentAnimNode": {
+      "type": "EBioPowerAdditiveAnimNode",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "GetActivePower": {
+      "documentation": null,
+      "signature_members": {
+        "oActivePower": {
+          "type": "BioActivePower",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetActivePower(out BioActivePower oActivePower)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,31 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "InVector": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "X": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Y": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Z": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,53 @@
+{
+  "members": {
+    "CurveName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "CurveObject": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurveColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 0
+    },
+    "bHideCurve": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bColorCurve": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bFloatingPointColorCurve": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bClamp": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ClampLow": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ClampHigh": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "InterpCurveEdSetup",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

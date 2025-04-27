@@ -1,0 +1,61 @@
+{
+  "parent": "InterpTrack",
+  "package": "Engine",
+  "variables": {
+    "OverrideAnimSet": {
+      "type": "Override_AnimSet",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "FaceFXAnimSets": {
+      "type": "FaceFXAnimSet",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_aBioMaleAnimSets": {
+      "type": "FaceFXAnimSet",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aBioFemaleAnimSets": {
+      "type": "FaceFXAnimSet",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "FaceFXSeqs": {
+      "type": "FaceFXTrackKey",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "FaceFXSoundCueKeys": {
+      "type": "FaceFXSoundCueKey",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "SpeakerTag": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "OverrideAsset": {
+      "type": "Override_Asset",
+      "documentation": null,
+      "flags": 1
+    },
+    "CachedActorFXAsset": {
+      "type": "FaceFXAsset",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bOverrideDirty": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136323218,
+  "configname": "None",
+  "documentation": null
+}

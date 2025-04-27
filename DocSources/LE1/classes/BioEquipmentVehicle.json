@@ -1,0 +1,28 @@
+{
+  "parent": "BioEquipmentBase",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOwner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oDelegateObj": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Initialize(Actor oOwner, Object oDelegateObj)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

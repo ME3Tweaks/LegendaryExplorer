@@ -1,0 +1,222 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "m_oCoverLink": {
+      "type": "CoverLink",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetSlot": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Slot": {
+          "type": "CoverSlot",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSlot(int SlotIdx, out CoverSlot Slot)"
+    },
+    "DecBlocked": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int DecBlocked(int SlotIdx)"
+    },
+    "IncBlocked": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int IncBlocked(int SlotIdx)"
+    },
+    "GetSlotClaimedBy": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Controller",
+      "signature": "Controller GetSlotClaimedBy(int SlotIdx)"
+    },
+    "GetSlotClaimed": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "oCtrl": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSlotClaimed(int SlotIdx, optional Controller oCtrl)"
+    },
+    "GetSlotEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSlotEnabled(int SlotIdx)"
+    },
+    "GetSlotType": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "ECoverType",
+      "signature": "ECoverType GetSlotType(int SlotIdx)"
+    },
+    "GetStepFlags": {
+      "documentation": null,
+      "signature_members": {
+        "SlotIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetStepFlags(int SlotIdx)"
+    },
+    "UnClaim": {
+      "documentation": null,
+      "signature_members": {
+        "OldClaim": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bUnclaimAll": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UnClaim(Controller OldClaim, int SlotIdx, bool bUnclaimAll)"
+    },
+    "Claim": {
+      "documentation": null,
+      "signature_members": {
+        "NewClaim": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Claim(Controller NewClaim, int SlotIdx)"
+    },
+    "GetSlotCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSlotCount()"
+    },
+    "GetSlotRotation": {
+      "documentation": null,
+      "signature_members": {
+        "nSlotID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator GetSlotRotation(int nSlotID)"
+    },
+    "GetSlotLocation": {
+      "documentation": null,
+      "signature_members": {
+        "nSlotID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetSlotLocation(int nSlotID)"
+    },
+    "GetCoverObject": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Actor",
+      "signature": "Actor GetCoverObject()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "InitFromActor": {
+      "documentation": null,
+      "signature_members": {
+        "oAct": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InitFromActor(Actor oAct)"
+    },
+    "IsValid": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsValid()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,28 @@
+{
+  "members": {
+    "TalkerId": {
+      "type": "UniqueNetId",
+      "documentation": null,
+      "flags": 0
+    },
+    "bWasTalking": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsTalking": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsRegistered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "OnlineSubsystem",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

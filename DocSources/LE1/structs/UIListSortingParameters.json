@@ -1,0 +1,53 @@
+{
+  "members": {
+    "PrimaryIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "SecondaryIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "bReversePrimarySorting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "bReverseSecondarySorting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "bCaseSensitive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "bIntSortPrimary": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "bIntSortSecondary": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "bFloatSortPrimary": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "bFloatSortSecondary": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1048576
+    }
+  },
+  "classdef": "UIComp_ListElementSorter",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 9
+}

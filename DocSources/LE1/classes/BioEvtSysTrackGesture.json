@@ -1,0 +1,127 @@
+{
+  "parent": "BioInterpTrack",
+  "package": "SFXGame",
+  "variables": {
+    "m_aGestures": {
+      "type": "BioGestureData",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "sActorTag": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_sOldActorTag": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "nmStartingPoseSet": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmStartingPoseAnim": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "pRulesData": {
+      "type": "BioGestureRulesData",
+      "documentation": null,
+      "flags": 8192
+    },
+    "pRuntimeData": {
+      "type": "BioGestureRuntimeData",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pRightArrow": {
+      "type": "Material",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fStartPoseOffset": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bActorChanged": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bReloadPreviewAnimsets": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bARPUGenerated": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bAllowMovingChainKeys": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bUseDynamicAnimsets": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "eStartingPose": {
+      "type": "EBioGestureAllPoses",
+      "documentation": null,
+      "flags": 1
+    },
+    "eOverrideType": {
+      "type": "EBioGestureOverrideType",
+      "documentation": null,
+      "flags": 1
+    },
+    "eFindActorMode": {
+      "type": "EBioGestureFindActorMode",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetNewTrackSubMenuName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetNewTrackSubMenuName()"
+    },
+    "KeyDataDisplayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataDisplayName()"
+    },
+    "KeyDataArrayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataArrayName()"
+    },
+    "NewKeyDefaultName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string NewKeyDefaultName()"
+    },
+    "AllowKeyNaming": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowKeyNaming()"
+    }
+  },
+  "states": {},
+  "classflags": 136323218,
+  "configname": "None",
+  "documentation": null
+}

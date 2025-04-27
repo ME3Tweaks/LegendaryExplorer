@@ -1,0 +1,982 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_SavedMaps": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_sMapName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_Henchmen": {
+      "type": "HenchmanLookup",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sDrivenVehicle": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_GameSpecificOptions": {
+      "type": "eOption",
+      "documentation": null,
+      "flags": 4218880
+    },
+    "m_sCharacterID": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_DependentPackages": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_savedBuybackItems": {
+      "type": "BioItemSaveObject",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_SGC_Filename": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_GameOptions": {
+      "type": "GameOptions",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_DesiredPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_Player": {
+      "type": "BioBaseSaveObject",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_PlayerController": {
+      "type": "BioBaseSaveObject",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Vehicle": {
+      "type": "BioBaseSaveObject",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_PlayerVehicle": {
+      "type": "BioBaseSaveObject",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_PlayerAppearance": {
+      "type": "BioBaseSaveObject",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_PlayerPackage": {
+      "type": "Package",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_DesiredStartPoint": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_WorldSave": {
+      "type": "BioWorldSaveObject",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pSaveGameAreaInfo": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_CurrentSaveMessageBox": {
+      "type": "BioSFHandler_MessageBox",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_SGC_sCallbackFunction": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_SGC_sCallbackFunctionCanceled": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nNumSavedLevels": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fAutoSaveTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fAutoSaveAttemptDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nNumSaveSlots": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nSaveGameSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nMaxSaveGames": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_srQuickSaveComplete": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_srQuickSaveFail": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nPlaythroughID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nPlayerKills": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nPlayerDeaths": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fUpdateStartTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fPlaythroughTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fShieldDamageTaken": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fLastSaveTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fAutoSaveCooldownTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fAutoSaveGUITimer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nLowestCombatDifficultyUsed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_AdditionalFreeBytesNeeded": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_IsDriving": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bWasSaving": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bInvalidSaveFileCreator": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_UseDesiredStartPoint": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bUseNewSaveSystem": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bIgnoreDLCRequirements": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bFilterCharacterSaves": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bDissableAutoSave": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bEnableLimitedSaves": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bSavingGame": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bSecondPlaythrough": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bLastSaveSuccess": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bAutoSaveFailOnError": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_SGC_bForceSave": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_SGC_bCharacterOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_SGC_bDeviceSelectionCanceled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bWasExternalUIActivePriorToTransition": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "LoadBuybackItems": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadBuybackItems(BioWorldInfo WorldInfo)"
+    },
+    "SaveBuybackItems": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveBuybackItems(BioWorldInfo WorldInfo)"
+    },
+    "LoadAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "playerAppearance": {
+          "type": "BioInterface_Appearance",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadAppearance(BioInterface_Appearance playerAppearance)"
+    },
+    "SaveAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "Appearance": {
+          "type": "BioInterface_Appearance",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveAppearance(BioInterface_Appearance Appearance)"
+    },
+    "SavePlayerParty": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerController": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "savePackage": {
+          "type": "Package",
+          "documentation": null,
+          "flags": 144
+        },
+        "bPlayerOnly": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SavePlayerParty(BioPlayerController PlayerController, optional Package savePackage, optional bool bPlayerOnly)"
+    },
+    "SaveEquipmentIntoInventory": {
+      "documentation": null,
+      "signature_members": {
+        "oHenchie": {
+          "type": "BioPawnBehaviorSaveObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "oInventorySave": {
+          "type": "BioInventorySaveObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveEquipmentIntoInventory(BioPawnBehaviorSaveObject oHenchie, BioInventorySaveObject oInventorySave)"
+    },
+    "PostLoad": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerController": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PostLoad(BioPlayerController PlayerController)"
+    },
+    "LoadVehicle": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerController": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadVehicle(BioPlayerController PlayerController)"
+    },
+    "SaveVehicle": {
+      "documentation": null,
+      "signature_members": {
+        "Vehicle": {
+          "type": "BioVehicleBehaviorBase",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "isDriving": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveVehicle(BioVehicleBehaviorBase Vehicle, bool isDriving)"
+    },
+    "SaveHenchman": {
+      "documentation": null,
+      "signature_members": {
+        "pawnTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "henchBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "savePackage": {
+          "type": "Package",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveHenchman(Name pawnTag, BioPawnBehavior henchBehavior, optional Package savePackage)"
+    },
+    "LoadHenchman": {
+      "documentation": null,
+      "signature_members": {
+        "pawnTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "henchBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadHenchman(Name pawnTag, BioPawnBehavior henchBehavior)"
+    },
+    "EstablishGlobalPlotVariablesForReplayCharacter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EstablishGlobalPlotVariablesForReplayCharacter()"
+    },
+    "LoadPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "playerBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadPlayer(BioPawnBehavior playerBehavior)"
+    },
+    "GetPlayerSpawn": {
+      "documentation": null,
+      "signature_members": {
+        "SpawnLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "SpawnRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPlayerSpawn(out Vector SpawnLocation, out Rotator SpawnRotation)"
+    },
+    "SetPause": {
+      "documentation": null,
+      "signature_members": {
+        "Controller": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "bPause": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bPauseWorld": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPause(PlayerController Controller, bool bPause, optional bool bPauseWorld)"
+    },
+    "LoadObjectPosition": {
+      "documentation": null,
+      "signature_members": {
+        "Save": {
+          "type": "BioBaseSaveObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "Obj": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadObjectPosition(BioBaseSaveObject Save, Actor Obj)"
+    },
+    "GetME2SaveEngine": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXEngine",
+      "signature": "SFXEngine GetME2SaveEngine()"
+    },
+    "GetME2SaveGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXSaveGame",
+      "signature": "SFXSaveGame GetME2SaveGame()"
+    },
+    "GetPlayerSaveObject": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPawnBehaviorSaveObject",
+      "signature": "BioPawnBehaviorSaveObject GetPlayerSaveObject()"
+    },
+    "SetHenchmanMappedPower": {
+      "documentation": null,
+      "signature_members": {
+        "pawnTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmMappedPower": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHenchmanMappedPower(Name pawnTag, Name nmMappedPower)"
+    },
+    "GetHenchmanMappedPower": {
+      "documentation": null,
+      "signature_members": {
+        "pawnTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetHenchmanMappedPower(Name pawnTag)"
+    },
+    "SetHenchmanSaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "pawnTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Save": {
+          "type": "BioBaseSaveObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHenchmanSaveObject(Name pawnTag, BioBaseSaveObject Save)"
+    },
+    "GetHenchmanSaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "pawnTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioBaseSaveObject",
+      "signature": "BioBaseSaveObject GetHenchmanSaveObject(Name pawnTag)"
+    },
+    "ApplyGameOptions": {
+      "documentation": null,
+      "signature_members": {
+        "io_GameOptions": {
+          "type": "GameOptions",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyGameOptions(out GameOptions io_GameOptions)"
+    },
+    "SetGameOptions": {
+      "documentation": null,
+      "signature_members": {
+        "i_GameOptions": {
+          "type": "GameOptions",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGameOptions(out GameOptions i_GameOptions)"
+    },
+    "NativeReset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NativeReset()"
+    },
+    "ResetToDefaults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetToDefaults()"
+    },
+    "DisplayOutOfSpaceMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisplayOutOfSpaceMessage()"
+    },
+    "CheckFreeSpace": {
+      "documentation": null,
+      "signature_members": {
+        "Filename": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "CallbackFunction": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "CallbackObject": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "CheckFreeSpace(string Filename, Name CallbackFunction, Object CallbackObject)"
+    },
+    "CheckFreeSpaceComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "CheckFreeSpaceComplete(SFXSaveGameCommandEventArgs Args)"
+    },
+    "SaveComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveComplete(SFXSaveGameCommandEventArgs Args)"
+    },
+    "GetTimePlayed": {
+      "documentation": null,
+      "signature_members": {
+        "o_Sec": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "o_Min": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "o_Hours": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetTimePlayed(out int o_Sec, out int o_Min, out int o_Hours)"
+    },
+    "GetStorageDevice": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GetStorageDevice(bool bAPressed, int nContext)"
+    },
+    "SaveCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "i_nDeviceID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SaveCharacter(int i_nDeviceID)"
+    },
+    "ClearWorldSaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "sMapName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sChunkName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ClearWorldSaveObject(string sMapName, string sChunkName)"
+    },
+    "EmptySavedMaps": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EmptySavedMaps()"
+    },
+    "ShowSavingMessageBox": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowSavingMessageBox()"
+    },
+    "IsAutoSaveComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAutoSaveComplete()"
+    },
+    "AutoSaveDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "oMsgBox": {
+          "type": "BioSFHandler_MessageBox",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AutoSaveDelegate(float fDeltaT, BioSFHandler_MessageBox oMsgBox)"
+    },
+    "TryAutoSaving": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TryAutoSaving()"
+    },
+    "AutoSave": {
+      "documentation": null,
+      "signature_members": {
+        "bForceSave": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bShowSavingGui": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AutoSave(optional bool bForceSave, optional bool bShowSavingGui)"
+    },
+    "GetPlayerPackage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Package",
+      "signature": "Package GetPlayerPackage()"
+    },
+    "GetCharacterInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Records": {
+          "type": "SaveGameRecord",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "o_ClassId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "o_characterLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetCharacterInfo(out array<SaveGameRecord> Records, out int o_ClassId, out int o_characterLevel)"
+    },
+    "NewCharacterProfile": {
+      "documentation": null,
+      "signature_members": {
+        "sCharacterName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "string",
+      "signature": "string NewCharacterProfile(string sCharacterName)"
+    },
+    "LoadMostRecentSaveRecord": {
+      "documentation": null,
+      "signature_members": {
+        "sCharacterID": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "LoadGameResult",
+      "signature": "LoadGameResult LoadMostRecentSaveRecord(optional string sCharacterID)"
+    },
+    "GetSaveRecords": {
+      "documentation": null,
+      "signature_members": {
+        "Records": {
+          "type": "SaveGameRecord",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "sCharacterID": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        },
+        "i_bShowAllSaveGames": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "i_bHideAutoSave": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "i_nSortById": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSaveRecords(out array<SaveGameRecord> Records, optional string sCharacterID, optional bool i_bShowAllSaveGames, optional bool i_bHideAutoSave, optional int i_nSortById)"
+    },
+    "DevSelectCanceledConfirmationCallback": {
+      "documentation": null,
+      "signature_members": {
+        "i_nDeviceID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DevSelectCanceledConfirmationCallback(int i_nDeviceID)"
+    },
+    "LoadGameDevSelectCanceledCallback": {
+      "documentation": null,
+      "signature_members": {
+        "i_nDeviceID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadGameDevSelectCanceledCallback(int i_nDeviceID)"
+    },
+    "SaveGameDevSelectCanceledCallback": {
+      "documentation": null,
+      "signature_members": {
+        "i_nDeviceID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveGameDevSelectCanceledCallback(int i_nDeviceID)"
+    },
+    "LoadGameFromCallback": {
+      "documentation": null,
+      "signature_members": {
+        "i_nDeviceID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadGameFromCallback(int i_nDeviceID)"
+    },
+    "SaveGameFromCallback": {
+      "documentation": null,
+      "signature_members": {
+        "i_nDeviceID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveGameFromCallback(int i_nDeviceID)"
+    }
+  },
+  "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
+  "documentation": null
+}

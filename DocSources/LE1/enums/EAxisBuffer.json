@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "AxisBuffer_LX": {
+      "value": 0,
+      "documentation": null
+    },
+    "AxisBuffer_LY": {
+      "value": 1,
+      "documentation": null
+    },
+    "AxisBuffer_RX": {
+      "value": 2,
+      "documentation": null
+    },
+    "AxisBuffer_RY": {
+      "value": 3,
+      "documentation": null
+    },
+    "AxisBuffer_MouseX": {
+      "value": 4,
+      "documentation": null
+    },
+    "AxisBuffer_MouseY": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

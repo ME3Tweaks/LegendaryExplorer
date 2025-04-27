@@ -1,0 +1,61 @@
+{
+  "parent": "Volume",
+  "package": "SFXGame",
+  "variables": {
+    "fMaxNodeSeparation": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fMargin": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fNodeTargetRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fMaxSlope": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "nLevels": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "fLevelHeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDeleteNodesOnPopulate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDoNotGenerateGroundNodes": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "eAlignment": {
+      "type": "EBioPathNodeAlignment",
+      "documentation": null,
+      "flags": 1
+    },
+    "ePathNodeGenerator": {
+      "type": "EBioPathNodeGenerators",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704178,
+  "configname": "None",
+  "documentation": null
+}

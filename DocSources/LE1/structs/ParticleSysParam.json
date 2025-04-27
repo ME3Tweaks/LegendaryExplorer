@@ -1,0 +1,43 @@
+{
+  "members": {
+    "Vector": {
+      "type": "RwVector3",
+      "documentation": null,
+      "flags": 1
+    },
+    "Name": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "Actor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "Material": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 1
+    },
+    "Scalar": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Color": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 1
+    },
+    "ParamType": {
+      "type": "EParticleSysParamType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "ParticleSystemComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

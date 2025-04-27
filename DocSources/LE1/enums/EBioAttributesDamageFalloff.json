@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_ATTRIBUTES_DAMAGE_FALLOFF_LINEAR": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTES_DAMAGE_FALLOFF_NONE": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTES_DAMAGE_FALLOFF_EXPONENTIAL": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

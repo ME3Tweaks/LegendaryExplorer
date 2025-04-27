@@ -1,0 +1,283 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Owner": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bGeneratedTreasure": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 67108872
+    },
+    "m_bChallengeScaled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 67108872
+    },
+    "m_bIsPhysicsSleeping": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "ExitCombatStasis": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ExitCombatStasis()"
+    },
+    "EnterCombatStasis": {
+      "documentation": null,
+      "signature_members": {
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bAllowDamage": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "srStasisPowerText": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EnterCombatStasis(float fDuration, bool bAllowDamage, stringref srStasisPowerText)"
+    },
+    "ProceedWithMove": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProceedWithMove(Pawn oPawn)"
+    },
+    "SetWaitingForMove": {
+      "documentation": null,
+      "signature_members": {
+        "bVal": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWaitingForMove(bool bVal)"
+    },
+    "IsHostile": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsHostile(Controller InstigatedBy)"
+    },
+    "IsNeutral": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsNeutral(Controller InstigatedBy)"
+    },
+    "IsFriendly": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsFriendly(Controller InstigatedBy)"
+    },
+    "BioRelateActors": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BioRelateActors()"
+    },
+    "OnAnimPlay": {
+      "documentation": null,
+      "signature_members": {
+        "oAnimNodeSequence": {
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAnimPlay(AnimNodeSequence oAnimNodeSequence)"
+    },
+    "OnAnimEnd": {
+      "documentation": null,
+      "signature_members": {
+        "oAnimNodeSequence": {
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayedTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "ExcessTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAnimEnd(AnimNodeSequence oAnimNodeSequence, float PlayedTime, float ExcessTime)"
+    },
+    "TakeRadiusDamage": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "BaseDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "HurtOrigin": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "bFullDamage": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "pDamageCausingActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamage": {
+          "type": "DamageType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeRadiusDamage(Controller InstigatedBy, float BaseDamage, float DamageRadius, Class<DamageType> DamageType, float Momentum, Vector HurtOrigin, bool bFullDamage, optional Actor pDamageCausingActor, optional DamageType pDamage)"
+    },
+    "TakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "EventInstigator": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitInfo": {
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamageCausingActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamage": {
+          "type": "DamageType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeDamage(float Damage, Controller EventInstigator, Vector HitLocation, Vector Momentum, Class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor pDamageCausingActor, optional DamageType pDamage)"
+    },
+    "InitializeRunTimeOnlyTransients": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeRunTimeOnlyTransients()"
+    },
+    "BeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BeginPlay()"
+    },
+    "CanBeMounted": {
+      "documentation": null,
+      "signature_members": {
+        "oMounter": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanBeMounted(Pawn oMounter)"
+    }
+  },
+  "states": {},
+  "classflags": 142606483,
+  "configname": "None",
+  "documentation": null
+}

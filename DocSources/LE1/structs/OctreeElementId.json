@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Node": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "ElementIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

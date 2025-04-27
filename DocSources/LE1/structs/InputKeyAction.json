@@ -1,0 +1,23 @@
+{
+  "members": {
+    "TriggeredOps": {
+      "type": "SeqOpOutputInputLink",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "InputKeyName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "InputKeyState": {
+      "type": "EInputEvent",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

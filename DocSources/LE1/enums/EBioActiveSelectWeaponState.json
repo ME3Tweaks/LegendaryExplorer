@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "BIO_ACTIVE_SELECT_WEAPON_STATE_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_ACTIVE_SELECT_WEAPON_STATE_WAIT": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_ACTIVE_SELECT_WEAPON_STATE_DRAW": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_ACTIVE_SELECT_WEAPON_STATE_HOLSTER": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_ACTIVE_SELECT_WEAPON_STATE_SWITCH": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_ACTIVE_SELECT_WEAPON_STATE_FADE_OUT": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIO_ACTIVE_SELECT_WEAPON_STATE_FINISHING": {
+      "value": 6,
+      "documentation": null
+    },
+    "BIO_ACTIVE_SELECT_WEAPON_STATE_FINISHED": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

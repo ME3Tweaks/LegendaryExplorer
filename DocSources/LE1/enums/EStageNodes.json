@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "STAGENODE_NODE1": {
+      "value": 0,
+      "documentation": null
+    },
+    "STAGENODE_NODE2": {
+      "value": 1,
+      "documentation": null
+    },
+    "STAGENODE_PUP1_1": {
+      "value": 2,
+      "documentation": null
+    },
+    "STAGENODE_PUP1_2": {
+      "value": 3,
+      "documentation": null
+    },
+    "STAGENODE_PUP2_1": {
+      "value": 4,
+      "documentation": null
+    },
+    "STAGENODE_PUP2_2": {
+      "value": 5,
+      "documentation": null
+    },
+    "STAGENODE_NODE3": {
+      "value": 6,
+      "documentation": null
+    },
+    "STAGENODE_NODE4": {
+      "value": 7,
+      "documentation": null
+    },
+    "STAGENODE_UNSET": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "sCommand": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "lstParameters": {
+      "type": "ASParams",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "classdef": "BioSFHandler",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

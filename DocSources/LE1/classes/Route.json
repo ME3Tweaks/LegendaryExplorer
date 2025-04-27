@@ -1,0 +1,81 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IEditorLinkSelectionInterface": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "RouteList": {
+      "type": "ActorReference",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "FudgeFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RouteType": {
+      "type": "ERouteType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "MoveOntoRoutePath": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "RouteDirection": {
+          "type": "ERouteDirection",
+          "documentation": null,
+          "flags": 144
+        },
+        "DistFudgeFactor": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "int",
+      "signature": "int MoveOntoRoutePath(Pawn P, optional ERouteDirection RouteDirection, optional float DistFudgeFactor)"
+    },
+    "ResolveRouteIndex": {
+      "documentation": null,
+      "signature_members": {
+        "Idx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "RouteDirection": {
+          "type": "ERouteDirection",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_bComplete": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
+        },
+        "out_bReverse": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "int",
+      "signature": "int ResolveRouteIndex(int Idx, ERouteDirection RouteDirection, out byte out_bComplete, out byte out_bReverse)"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

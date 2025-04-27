@@ -1,0 +1,48 @@
+{
+  "members": {
+    "ACCUMULATE_DAMAGE": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "ASSET_DEFINED_SUPPORT": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "WORLD_SUPPORT": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "DEBRIS_TIMEOUT": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "DEBRIS_MAX_SEPARATION": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "CRUMBLE_SMALLEST_CHUNKS": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "ACCURATE_RAYCASTS": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "USE_VALID_BOUNDS": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "ApexDestructibleAsset",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,199 @@
+{
+  "parent": "Weapon",
+  "package": "SFXGame",
+  "variables": {
+    "m_vActivatedMatParamColor_Active": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_vActivatedMatParamColor_Inactive": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 16384
+    },
+    "SkelMeshComp": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "m_oItem": {
+      "type": "BioItemWeapon",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "AttachedMesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "AttachedBone": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "AttachPawn": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nActivatedMatParamName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_pDamage": {
+      "type": "BioDamageType",
+      "documentation": null,
+      "flags": 71303176
+    }
+  },
+  "functions": {
+    "InitializeWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeWeapon()"
+    },
+    "DeactivateWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPawn",
+      "signature": "BioPawn DeactivateWeapon()"
+    },
+    "ActivateWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioPawn",
+      "signature": "BioPawn ActivateWeapon()"
+    },
+    "GetFractionOfEffectsMaterialEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetFractionOfEffectsMaterialEnabled()"
+    },
+    "SetFractionOfEffectsMaterialEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "FractionEnabled": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFractionOfEffectsMaterialEnabled(float FractionEnabled)"
+    },
+    "GetEffectsMaterialType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EEffectsMaterialType",
+      "signature": "EEffectsMaterialType GetEffectsMaterialType()"
+    },
+    "SetEffectsMaterialType": {
+      "documentation": null,
+      "signature_members": {
+        "EffectsMaterialType": {
+          "type": "EEffectsMaterialType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEffectsMaterialType(EEffectsMaterialType EffectsMaterialType)"
+    },
+    "UpdateAppearance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateAppearance()"
+    },
+    "DetachFromPawn": {
+      "documentation": null,
+      "signature_members": {
+        "bCinematicsMode": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Pawn",
+      "signature": "Pawn DetachFromPawn(optional bool bCinematicsMode)"
+    },
+    "ClearItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioItemWeapon",
+      "signature": "BioItemWeapon ClearItem()"
+    },
+    "SetItem": {
+      "documentation": null,
+      "signature_members": {
+        "oItem": {
+          "type": "BioItemWeapon",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "BioItemWeapon",
+      "signature": "BioItemWeapon SetItem(BioItemWeapon oItem)"
+    },
+    "GetTraceOwner": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Actor",
+      "signature": "Actor GetTraceOwner()"
+    },
+    "OnEffectsMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "BioSeqAct_EffectsMaterial",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnEffectsMaterial(BioSeqAct_EffectsMaterial Action)"
+    },
+    "ProxyPlaySound": {
+      "documentation": null,
+      "signature_members": {
+        "SoundCue": {
+          "type": "SoundCue",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProxyPlaySound(SoundCue SoundCue)"
+    },
+    "AttachToMesh": {
+      "documentation": null,
+      "signature_members": {
+        "MeshComponent": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "SocketName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        },
+        "bCinematicsMode": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AttachToMesh(SkeletalMeshComponent MeshComponent, optional Name SocketName, optional bool bCinematicsMode)"
+    }
+  },
+  "states": {},
+  "classflags": 144703670,
+  "configname": "Weapon",
+  "documentation": null
+}

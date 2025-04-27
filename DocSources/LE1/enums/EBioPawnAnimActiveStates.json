@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "PAActiveS_Active": {
+      "value": 0,
+      "documentation": null
+    },
+    "PAActiveS_ActiveToInactive": {
+      "value": 1,
+      "documentation": null
+    },
+    "PAActiveS_InactiveToActive": {
+      "value": 2,
+      "documentation": null
+    },
+    "PAActiveS_Inactive": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

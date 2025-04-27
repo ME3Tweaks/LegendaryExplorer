@@ -1,0 +1,33 @@
+{
+  "members": {
+    "m_sCatName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aoSliders": {
+      "type": "Slider",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_iCatIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_iStringRef": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_iDescriptionStringRef": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioMorphFaceFrontEnd",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

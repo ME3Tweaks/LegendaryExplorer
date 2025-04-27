@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_fNodeLength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bChangePCNodeIfBetweenNodes": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

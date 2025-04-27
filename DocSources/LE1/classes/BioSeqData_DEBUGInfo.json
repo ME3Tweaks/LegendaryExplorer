@@ -1,0 +1,76 @@
+{
+  "parent": "BioSeqData",
+  "package": "SFXGame",
+  "variables": {
+    "CurrentAvoid": {
+      "type": "AvoidanceLocationsArray",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aAvoidanceObsticals": {
+      "type": "AvoidanceLocationsArray",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ActionCompleteMovementList": {
+      "type": "LastCompletionRecords",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ActionCompleteCombatList": {
+      "type": "LastCompletionRecords",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aoLOsLines": {
+      "type": "LOSLinesRecord",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aoBoundLines": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_oProfileTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oSightToTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oPlayerBehaviour": {
+      "type": "BioActorBehavior",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_bProfileAIActions": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bProfilePerception": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bPlayerAutoTarget": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bAutoTarget": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "CMIT_Normal": {
+      "value": 0,
+      "documentation": null
+    },
+    "CMIT_Submenu": {
+      "value": 1,
+      "documentation": null
+    },
+    "CMIT_Separator": {
+      "value": 2,
+      "documentation": null
+    },
+    "CMIT_Check": {
+      "value": 3,
+      "documentation": null
+    },
+    "CMIT_Radio": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

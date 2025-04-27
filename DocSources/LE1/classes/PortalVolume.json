@@ -1,0 +1,16 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "Portals": {
+      "type": "PortalTeleporter",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704178,
+  "configname": "None",
+  "documentation": null
+}

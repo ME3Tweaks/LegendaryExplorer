@@ -1,0 +1,31 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "Engine",
+  "variables": {
+    "ForceMaterials": {
+      "type": "MaterialInstance",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ModifiedTextures": {
+      "type": "Texture2D",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ForceDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RemainingTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "members": {
+    "SaveDescriptor": {
+      "type": "SFXSaveDescriptor",
+      "documentation": null,
+      "flags": 5242881
+    },
+    "FriendlyName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ImagePath": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "SaveGame": {
+      "type": "SFXSaveGame",
+      "documentation": null,
+      "flags": 1
+    },
+    "AreaImage": {
+      "type": "Texture2D",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "SFXEngine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

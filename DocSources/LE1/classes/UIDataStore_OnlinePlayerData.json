@@ -1,0 +1,264 @@
+{
+  "parent": "UIDataStore_Remote",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "PlayerNick": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ProfileSettingsClassName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "PlayerStorageClassName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "FriendsProviderClassName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "PlayersProviderClassName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "ClanMatesProviderClassName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "FriendMessagesProviderClassName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "AchievementsProviderClassName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "PartyChatProviderClassName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "ProfileSettingsClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayerStorageClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "FriendsProviderClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayersProviderClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "ClanMatesProviderClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "FriendMessagesProviderClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "AchievementsProviderClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "PartyChatProviderClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "FriendsProvider": {
+      "type": "UIDataProvider_OnlineFriends",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayersProvider": {
+      "type": "UIDataProvider_OnlinePlayers",
+      "documentation": null,
+      "flags": 0
+    },
+    "ClanMatesProvider": {
+      "type": "UIDataProvider_OnlineClanMates",
+      "documentation": null,
+      "flags": 0
+    },
+    "Player": {
+      "type": "LocalPlayer",
+      "documentation": null,
+      "flags": 0
+    },
+    "ProfileProvider": {
+      "type": "UIDataProvider_OnlineProfileSettings",
+      "documentation": null,
+      "flags": 0
+    },
+    "StorageProvider": {
+      "type": "UIDataProvider_OnlinePlayerStorage",
+      "documentation": null,
+      "flags": 0
+    },
+    "FriendMessagesProvider": {
+      "type": "UIDataProvider_OnlineFriendMessages",
+      "documentation": null,
+      "flags": 0
+    },
+    "AchievementsProvider": {
+      "type": "UIDataProvider_PlayerAchievements",
+      "documentation": null,
+      "flags": 0
+    },
+    "PartyChatProvider": {
+      "type": "UIDataProvider_OnlinePartyChatList",
+      "documentation": null,
+      "flags": 0
+    },
+    "NumNewDownloads": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "NumTotalDownloads": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetCachedPlayerStorage": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "OnlinePlayerStorage",
+      "signature": "OnlinePlayerStorage GetCachedPlayerStorage(int ControllerId)"
+    },
+    "GetCachedPlayerProfile": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "OnlineProfileSettings",
+      "signature": "OnlineProfileSettings GetCachedPlayerProfile(int ControllerId)"
+    },
+    "SaveProfileData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SaveProfileData()"
+    },
+    "OnDownloadableContentQueryDone": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDownloadableContentQueryDone(bool bWasSuccessful)"
+    },
+    "ClearDelegates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearDelegates()"
+    },
+    "RegisterDelegates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegisterDelegates()"
+    },
+    "OnPlayerDataChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPlayerDataChange()"
+    },
+    "OnLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginChange(byte LocalUserNum)"
+    },
+    "OnUnregister": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUnregister()"
+    },
+    "OnRegister": {
+      "documentation": null,
+      "signature_members": {
+        "InPlayer": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegister(LocalPlayer InPlayer)"
+    },
+    "OnSettingProviderChanged": {
+      "documentation": null,
+      "signature_members": {
+        "SourceProvider": {
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
+        },
+        "SettingsName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSettingProviderChanged(UIDataProvider SourceProvider, optional Name SettingsName)"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "Engine",
+  "documentation": null
+}

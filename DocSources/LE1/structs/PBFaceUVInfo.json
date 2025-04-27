@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Offset": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 0
+    },
+    "Size": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "ProcBuilding",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

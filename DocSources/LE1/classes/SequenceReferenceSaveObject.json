@@ -1,0 +1,10 @@
+{
+  "parent": "SequenceSaveObject",
+  "package": "Engine",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 18,
+  "configname": "None",
+  "documentation": null
+}

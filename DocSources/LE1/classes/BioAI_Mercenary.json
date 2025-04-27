@@ -1,0 +1,40 @@
+{
+  "parent": "BioAI_Assault",
+  "package": "SFXGame",
+  "variables": {
+    "m_bAggressive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "EvaluateMovement": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "bLOS": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EvaluateMovement(Pawn oTarget, bool bLOS)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    }
+  },
+  "states": {},
+  "classflags": 10486294,
+  "configname": "Game",
+  "documentation": null
+}

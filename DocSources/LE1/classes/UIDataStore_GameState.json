@@ -1,0 +1,29 @@
+{
+  "parent": "UIDataStore",
+  "package": "Engine",
+  "variables": {
+    "__OnRefreshDataFieldValue__Delegate": {
+      "type": "OnRefreshDataFieldValue",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "NotifyGameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NotifyGameSessionEnded()"
+    },
+    "OnRefreshDataFieldValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRefreshDataFieldValue()"
+    }
+  },
+  "states": {},
+  "classflags": 136315035,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,36 @@
+{
+  "parent": "BioMorphFaceFESliderBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_sMorph_Positive": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sMorph_Negative": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_fRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fRandomRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bSingle": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

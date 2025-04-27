@@ -1,0 +1,18 @@
+{
+  "members": {
+    "sStateName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "sStateValue": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "classdef": "BioAppearanceVehicle",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

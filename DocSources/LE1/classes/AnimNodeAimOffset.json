@@ -1,0 +1,106 @@
+{
+  "parent": "AnimNodeBlendBase",
+  "package": "Engine",
+  "variables": {
+    "RequiredBones": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "AimCpntBoneIndex": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "AimCpntIndexLUT": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "Profiles": {
+      "type": "AimOffsetProfile",
+      "documentation": null,
+      "flags": 4194369
+    },
+    "Aim": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "AngleOffset": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "TemplateNode": {
+      "type": "AnimNodeAimOffset",
+      "documentation": null,
+      "flags": 8192
+    },
+    "PassThroughAtOrAboveLOD": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "CurrentProfileIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 131075
+    },
+    "bForceAimDir": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bBakeFromAnimations": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bPassThroughWhenNotRendered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSynchronizeNodesInEditor": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "ForcedAimDir": {
+      "type": "EAnimAimDir",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "SetActiveProfileByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActiveProfileByIndex(int ProfileIndex)"
+    },
+    "SetActiveProfileByName": {
+      "documentation": null,
+      "signature_members": {
+        "ProfileName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActiveProfileByName(Name ProfileName)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

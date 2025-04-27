@@ -1,0 +1,69 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_bFadeInProgress": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eFadeMode": {
+      "type": "BlackScreenFadeModes",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "Hide": {
+      "documentation": null,
+      "signature_members": {
+        "bWithFade": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Hide(bool bWithFade)"
+    },
+    "Show": {
+      "documentation": null,
+      "signature_members": {
+        "bWithFade": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Show(bool bWithFade)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    }
+  },
+  "states": {},
+  "classflags": 2097178,
+  "configname": "None",
+  "documentation": null
+}

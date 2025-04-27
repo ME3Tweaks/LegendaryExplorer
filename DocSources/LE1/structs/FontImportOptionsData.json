@@ -1,0 +1,148 @@
+{
+  "members": {
+    "FontName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Chars": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "UnicodeRange": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "CharsFilePath": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "CharsFileWildcard": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ForegroundColor": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 1
+    },
+    "Height": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "TexturePageWidth": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "TexturePageMaxHeight": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "XPadding": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "YPadding": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "ExtendBoxTop": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "ExtendBoxBottom": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "ExtendBoxRight": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "ExtendBoxLeft": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "Kerning": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "DistanceFieldScaleFactor": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableAntialiasing": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableBold": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableItalic": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableUnderline": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAlphaOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCreatePrintableOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIncludeASCIIRange": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableDropShadow": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableLegacyMode": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseDistanceFieldAlpha": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "CharacterSet": {
+      "type": "EFontImportCharacterSet",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "FontImportOptions",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "AchievementId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "BonusTalentID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXSaveGame",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "PAWN_PARTICLE_SYSTEM_BIOTIC_CHARGE": {
+      "value": 0,
+      "documentation": null
+    },
+    "PAWN_PARTICLE_SYSTEM_BIOTIC_RELEASE": {
+      "value": 1,
+      "documentation": null
+    },
+    "PAWN_PARTICLE_SYSTEM_TELEKINESIS_BLAST": {
+      "value": 2,
+      "documentation": null
+    },
+    "PAWN_PARTICLE_SYSTEM_TELEKINESIS_THROW": {
+      "value": 3,
+      "documentation": null
+    },
+    "PAWN_PARTICLE_SYSTEM_BIOTIC_TARGETING": {
+      "value": 4,
+      "documentation": null
+    },
+    "PAWN_PARTICLE_SYSTEM_COUNT": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

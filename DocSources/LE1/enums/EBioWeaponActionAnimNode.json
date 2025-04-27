@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "WEAPON_ACTION_ANIM_NODE_EXPANDED": {
+      "value": 0,
+      "documentation": null
+    },
+    "WEAPON_ACTION_ANIM_NODE_EXPANDING": {
+      "value": 1,
+      "documentation": null
+    },
+    "WEAPON_ACTION_ANIM_NODE_COLLAPSING": {
+      "value": 2,
+      "documentation": null
+    },
+    "WEAPON_ACTION_ANIM_NODE_COLLAPSED": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

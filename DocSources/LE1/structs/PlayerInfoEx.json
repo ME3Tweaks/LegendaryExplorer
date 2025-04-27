@@ -1,0 +1,43 @@
+{
+  "members": {
+    "FirstName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "FaceCode": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "MorphHead": {
+      "type": "BioMorphFace",
+      "documentation": null,
+      "flags": 0
+    },
+    "BonusTalentClass": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsFemale": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "Origin": {
+      "type": "EOriginType",
+      "documentation": null,
+      "flags": 0
+    },
+    "Notoriety": {
+      "type": "ENotorietyType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXSaveGame",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

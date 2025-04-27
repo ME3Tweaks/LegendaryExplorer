@@ -1,0 +1,38 @@
+{
+  "members": {
+    "ParticlesLodMin": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "ParticlesLodMax": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "PacketsPerPhysXParticleSystemMax": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "SpawnLodVsFifoBias": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDisableLod": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bApplyCylindricalPacketCulling": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "WorldInfo",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

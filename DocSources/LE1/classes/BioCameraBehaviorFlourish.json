@@ -1,0 +1,76 @@
+{
+  "parent": "BioCameraBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "CameraRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 8192
+    },
+    "CurrentTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "InterpTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "InterpSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "DistanceOffset": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "YawSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "DistanceSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bInterpToStart": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    },
+    "GetCameraLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetCameraLocation()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    }
+  },
+  "states": {},
+  "classflags": 10485778,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,57 @@
+{
+  "EnumValues": {
+    "BIO_PARTY_MEMBER_CLASS_BASE_SOLDIER": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_BASE_ENGINEER": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_BASE_ADEPT": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_BASE_INFILTRATOR": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_BASE_SAVANT": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_BASE_REAVER": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_BASE_ASARI_SCIENTIST": {
+      "value": 6,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_BASE_KROGAN_OLD_ONE": {
+      "value": 7,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_BASE_TURIAN_SPECTRE": {
+      "value": 8,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_BASE_QUARIAN_TINKER": {
+      "value": 9,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_BASE_SUPERSOLDIER": {
+      "value": 10,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_BASE_WOMAN_VETERAN": {
+      "value": 11,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_BASE_MAN_THINKER": {
+      "value": 12,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

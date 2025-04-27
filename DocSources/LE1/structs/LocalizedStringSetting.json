@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Id": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ValueIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "AdvertisementType": {
+      "type": "EOnlineDataAdvertisementType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Settings",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Stamina": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Focus": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Precision": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Coordination": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXSaveGame",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

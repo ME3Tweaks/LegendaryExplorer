@@ -1,0 +1,29 @@
+{
+  "parent": "NavigationPoint",
+  "package": "Engine",
+  "variables": {
+    "MyPortal": {
+      "type": "PortalTeleporter",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "CanTeleport": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanTeleport(Actor A)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

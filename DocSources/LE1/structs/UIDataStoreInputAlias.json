@@ -1,0 +1,18 @@
+{
+  "members": {
+    "PlatformInputKeys": {
+      "type": "UIInputKeyData",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "AliasName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "classdef": "UIDataStore_InputAlias",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

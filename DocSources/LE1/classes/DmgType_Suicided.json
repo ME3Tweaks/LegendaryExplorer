@@ -1,0 +1,10 @@
+{
+  "parent": "KillZDamageType",
+  "package": "Engine",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 51,
+  "configname": "None",
+  "documentation": null
+}

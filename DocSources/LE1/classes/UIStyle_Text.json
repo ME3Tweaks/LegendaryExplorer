@@ -1,0 +1,51 @@
+{
+  "parent": "UIStyle_Data",
+  "package": "Engine",
+  "variables": {
+    "StyleFont": {
+      "type": "Font",
+      "documentation": null,
+      "flags": 0
+    },
+    "AutoScaling": {
+      "type": "TextAutoScaleValue",
+      "documentation": null,
+      "flags": 0
+    },
+    "Scale": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 0
+    },
+    "SpacingAdjust": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 0
+    },
+    "Attributes": {
+      "type": "UITextAttributes",
+      "documentation": null,
+      "flags": 0
+    },
+    "Alignment": {
+      "type": "EUIAlignment",
+      "documentation": null,
+      "flags": 0
+    },
+    "ClipMode": {
+      "type": "ETextClipMode",
+      "documentation": null,
+      "flags": 0
+    },
+    "ClipAlignment": {
+      "type": "EUIAlignment",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

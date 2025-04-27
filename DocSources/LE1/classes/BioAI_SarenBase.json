@@ -1,0 +1,66 @@
+{
+  "parent": "BioAI_Core",
+  "package": "SFXGame",
+  "variables": {
+    "EvalNodes": {
+      "type": "NavigationPoint",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "NodesWithLOS": {
+      "type": "NavigationPoint",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "DebugScores": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "CurrentEvalIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "NodesPerFrame": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "AngleWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {
+    "DebugDraw_Saren": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_Saren(BioHUD HUD)"
+    },
+    "RefreshDebugWeights": {
+      "documentation": null,
+      "signature_members": {
+        "bEvalRocketPoints": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RefreshDebugWeights(bool bEvalRocketPoints)"
+    }
+  },
+  "states": {},
+  "classflags": 144704150,
+  "configname": "Game",
+  "documentation": null
+}

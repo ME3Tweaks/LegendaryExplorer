@@ -1,0 +1,89 @@
+{
+  "parent": "RigidBodyBase",
+  "package": "Engine",
+  "variables": {
+    "RenderComponent": {
+      "type": "DrawSphereComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "ForceStrength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "ForceRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "SwirlStrength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "SpinTorque": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "CollideWithChannels": {
+      "type": "RBCollisionChannelContainer",
+      "documentation": null,
+      "flags": 3
+    },
+    "bForceActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 33
+    },
+    "bForceApplyToCloth": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bForceApplyToFluid": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bForceApplyToRigidBodies": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bForceApplyToProjectiles": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "ForceFalloff": {
+      "type": "ERadialImpulseFalloff",
+      "documentation": null,
+      "flags": 524297
+    },
+    "RadialForceMode": {
+      "type": "ERadialForceType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "inAction": {
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle inAction)"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

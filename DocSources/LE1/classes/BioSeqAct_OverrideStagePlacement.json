@@ -1,0 +1,80 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_aNode1": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_aNode2": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_aNode3": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_aNode4": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_aPuppet1_1": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_aPuppet1_2": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_aPuppet2_1": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_aPuppet2_2": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_aStage": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "SetActor": {
+      "documentation": null,
+      "signature_members": {
+        "aInput": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "Node": {
+          "type": "EStageNodes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActor(Actor aInput, EStageNodes Node)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

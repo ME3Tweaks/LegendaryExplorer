@@ -1,0 +1,33 @@
+{
+  "parent": "BioPropertyEditorBaseNode",
+  "package": "SFXGame",
+  "variables": {
+    "m_oSkeletalMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_iLodIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_iBoneIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SelectionAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SelectionAction()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

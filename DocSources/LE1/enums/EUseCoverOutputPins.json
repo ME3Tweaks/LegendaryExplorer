@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "UCO_Success": {
+      "value": 0,
+      "documentation": null
+    },
+    "UCO_Failed": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

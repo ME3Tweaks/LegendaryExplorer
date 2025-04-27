@@ -1,0 +1,26 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "m_oActorType": {
+      "type": "BioActorType",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_nmSpawnedActorTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_pFactory": {
+      "type": "BioActorFactory",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "ITEM_WEAPTYPE_MELEE": {
+      "value": 0,
+      "documentation": null
+    },
+    "ITEM_WEAPTYPE_RANGED": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

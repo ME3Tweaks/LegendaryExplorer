@@ -1,0 +1,21 @@
+{
+  "parent": "InterpTrackInst",
+  "package": "Engine",
+  "variables": {
+    "ModifiedTextures": {
+      "type": "Texture2D",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "LastUpdatePosition": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,143 @@
+{
+  "parent": "Pawn",
+  "package": "Engine",
+  "variables": {
+    "PathSizes": {
+      "type": "PathSizeInfo",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "DefaultReachSpecClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "TestJumpZ": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "TestGroundSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "TestMaxFallSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "TestFallSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxLandingVelocity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "MinNumPlayerStarts": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "NavMeshGen_StepSize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NavMeshGen_EntityHalfHeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NavMeshGen_StartingHeightOffset": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NavMeshGen_MaxDropHeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NavMeshGen_MaxStepHeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NavMeshGen_VertZDeltaSnapThresh": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NavMeshGen_MinPolyArea": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NavMeshGen_BorderBackfill_CheckDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NavMeshGen_MinMergeDotAreaThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NavMeshGen_MinMergeDotSmallArea": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NavMeshGen_MinMergeDotLargeArea": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NavMeshGen_MaxPolyHeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NavMeshGen_HeightMergeThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NavMeshGen_EdgeMaxDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NavMeshGen_MaxGroundCheckSize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NavMeshGen_MinEdgeLength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bHightlightOneWayReachSpecs": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "PreBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 144704190,
+  "configname": "Game",
+  "documentation": null
+}

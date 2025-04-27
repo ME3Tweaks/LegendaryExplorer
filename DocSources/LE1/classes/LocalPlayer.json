@@ -1,0 +1,398 @@
+{
+  "parent": "Player",
+  "package": "Engine",
+  "variables": {
+    "CurrentPPInfo": {
+      "type": "CurrentPostProcessVolumeInfo",
+      "documentation": null,
+      "flags": 20979714
+    },
+    "LevelPPInfo": {
+      "type": "CurrentPostProcessVolumeInfo",
+      "documentation": null,
+      "flags": 20979714
+    },
+    "OverridePPDeltaSettings": {
+      "type": "PostProcessSettings",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "PostProcessSettingsOverride": {
+      "type": "PostProcessSettings",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ActorVisibilityHistory": {
+      "type": "SynchronizedActorVisibilityHistory",
+      "documentation": null,
+      "flags": 12290
+    },
+    "PlayerPostProcessChains": {
+      "type": "PostProcessChain",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "LastMap": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "RequestedPPEffects": {
+      "type": "RequestedPostProcessEffect",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "ViewState": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "UmbraCamera": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "DynamicResHistory": {
+      "type": "DynamicResHistoryElement",
+      "documentation": null,
+      "flags": 12288
+    },
+    "LastViewLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LastViewRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 8192
+    },
+    "ViewportClient": {
+      "type": "GameViewportClient",
+      "documentation": null,
+      "flags": 0
+    },
+    "Origin": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 0
+    },
+    "Size": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayerPostProcess": {
+      "type": "PostProcessChain",
+      "documentation": null,
+      "flags": 2
+    },
+    "ControllerId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "DynamicResStep": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "DynResHistorySize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "PreviousDynResFrameIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "DynamicResolutionFraction": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "NumFramesSinceDynResChange": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "OverridePPRecoveryTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "OverridePPStartTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "OverridePPEndTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "OverridePPOpacity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NearClipPlane": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "bOverridePostProcessSettings": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bRecoveryFromPostProcessOverride": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bWantToResetToMapDefaultPP": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSentSplitJoin": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 139266
+    }
+  },
+  "functions": {
+    "GetNickname": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetNickname()"
+    },
+    "GetUniqueNetId": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UniqueNetId",
+      "signature": "UniqueNetId GetUniqueNetId()"
+    },
+    "DeProject": {
+      "documentation": null,
+      "signature_members": {
+        "RelativeScreenPos": {
+          "type": "Vector2D",
+          "documentation": null,
+          "flags": 128
+        },
+        "WorldOrigin": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "WorldDirection": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "DeProject(Vector2D RelativeScreenPos, out Vector WorldOrigin, out Vector WorldDirection)"
+    },
+    "TouchPlayerPostProcessChain": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TouchPlayerPostProcessChain()"
+    },
+    "GetPostProcessChain": {
+      "documentation": null,
+      "signature_members": {
+        "InIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "PostProcessChain",
+      "signature": "PostProcessChain GetPostProcessChain(int InIndex)"
+    },
+    "RemoveAllPostProcessingChains": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RemoveAllPostProcessingChains()"
+    },
+    "RemovePostProcessingChain": {
+      "documentation": null,
+      "signature_members": {
+        "InIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemovePostProcessingChain(int InIndex)"
+    },
+    "InsertPostProcessingChain": {
+      "documentation": null,
+      "signature_members": {
+        "InChain": {
+          "type": "PostProcessChain",
+          "documentation": null,
+          "flags": 128
+        },
+        "InIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bInClone": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InsertPostProcessingChain(PostProcessChain InChain, int InIndex, bool bInClone)"
+    },
+    "SetControllerId": {
+      "documentation": null,
+      "signature_members": {
+        "NewControllerId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetControllerId(int NewControllerId)"
+    },
+    "ClearPostProcessSettingsOverride": {
+      "documentation": null,
+      "signature_members": {
+        "RecoveryTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearPostProcessSettingsOverride(optional float RecoveryTime)"
+    },
+    "UpdateOverridePostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "OverrideSettings": {
+          "type": "PostProcessSettings",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateOverridePostProcessSettings(PostProcessSettings OverrideSettings)"
+    },
+    "OverridePostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "OverrideSettings": {
+          "type": "PostProcessSettings",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "StartBlendTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OverridePostProcessSettings(PostProcessSettings OverrideSettings, float StartBlendTime)"
+    },
+    "ZeroOverridePPDeltaSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ZeroOverridePPDeltaSettings()"
+    },
+    "GetActorVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "TestActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetActorVisibility(Actor TestActor)"
+    },
+    "SendSplitJoin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendSplitJoin()"
+    },
+    "SpawnPlayActor": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "OutError": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SpawnPlayActor(string URL, out string OutError)"
+    },
+    "BioRecalculatePostProcessEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BioRecalculatePostProcessEffects()"
+    },
+    "BioRemovePostProcessEffect": {
+      "documentation": null,
+      "signature_members": {
+        "pEffect": {
+          "type": "PostProcessEffect",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "BioRemovePostProcessEffect(PostProcessEffect pEffect)"
+    },
+    "BioAddPostProcessEffect": {
+      "documentation": null,
+      "signature_members": {
+        "pEffect": {
+          "type": "PostProcessEffect",
+          "documentation": null,
+          "flags": 128
+        },
+        "pOwner": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "nCombineType": {
+          "type": "EAddPostProcessEffectCombineType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "BioAddPostProcessEffect(PostProcessEffect pEffect, Object pOwner, EAddPostProcessEffectCombineType nCombineType)"
+    }
+  },
+  "states": {},
+  "classflags": 134217886,
+  "configname": "Engine",
+  "documentation": null
+}

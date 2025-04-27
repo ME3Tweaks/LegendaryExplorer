@@ -1,0 +1,66 @@
+{
+  "parent": "BioBaseSaveObject",
+  "package": "SFXGame",
+  "variables": {
+    "m_aItem": {
+      "type": "BioItemSaveObject",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aPlotItem": {
+      "type": "BioPlotPseudoItem",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_nResourceCredits": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_nResourceGrenades": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_fResourceMedigel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_fResourceSalvage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2305843009213693952
+    }
+  },
+  "functions": {
+    "LoadObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadObject(Object O)"
+    },
+    "SaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveObject(Object O)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

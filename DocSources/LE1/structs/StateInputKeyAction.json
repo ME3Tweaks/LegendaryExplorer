@@ -1,0 +1,13 @@
+{
+  "members": {
+    "Scope": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": "InputKeyAction",
+  "documentation": null,
+  "modifiers": 1
+}

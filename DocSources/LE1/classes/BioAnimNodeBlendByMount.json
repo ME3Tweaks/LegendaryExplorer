@@ -1,0 +1,41 @@
+{
+  "parent": "AnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "MountEventName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "HeightHigh": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "HeightMid": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "HeightLow": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RateLow": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bEventTriggered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,97 @@
+{
+  "parent": "BioAiController",
+  "package": "SFXGame",
+  "variables": {
+    "m_vRepulsor": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fTickTimer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "DoesGameModeAllowMovement": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoesGameModeAllowMovement()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "HearNoise": {
+      "documentation": null,
+      "signature_members": {
+        "Loudness": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "NoiseMaker": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vNoiseLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "NoiseType": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HearNoise(float Loudness, Actor NoiseMaker, Vector vNoiseLocation, optional Name NoiseType)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "AdjustSteeringMoveSpeed": {
+      "documentation": null,
+      "signature_members": {
+        "vSteering": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AdjustSteeringMoveSpeed(Vector vSteering)"
+    },
+    "GetSteeringVector": {
+      "documentation": null,
+      "signature_members": {
+        "vSteering": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSteeringVector(out Vector vSteering)"
+    }
+  },
+  "states": {},
+  "classflags": 144704150,
+  "configname": "Game",
+  "documentation": null
+}

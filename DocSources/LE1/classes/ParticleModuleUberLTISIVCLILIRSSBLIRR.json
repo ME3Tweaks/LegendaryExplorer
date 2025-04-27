@@ -1,0 +1,76 @@
+{
+  "parent": "ParticleModuleUberBase",
+  "package": "Engine",
+  "variables": {
+    "Lifetime": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 38273033
+    },
+    "StartSize": {
+      "type": "RawDistributionVector",
+      "documentation": null,
+      "flags": 38273033
+    },
+    "StartVelocity": {
+      "type": "RawDistributionVector",
+      "documentation": null,
+      "flags": 38273033
+    },
+    "StartVelocityRadial": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 38273033
+    },
+    "ColorOverLife": {
+      "type": "RawDistributionVector",
+      "documentation": null,
+      "flags": 38273033
+    },
+    "AlphaOverLife": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 38273033
+    },
+    "StartLocation": {
+      "type": "RawDistributionVector",
+      "documentation": null,
+      "flags": 38273033
+    },
+    "StartRotation": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 38273033
+    },
+    "SizeLifeMultiplier": {
+      "type": "RawDistributionVector",
+      "documentation": null,
+      "flags": 38273033
+    },
+    "StartRotationRate": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 38273033
+    },
+    "SizeMultiplyX": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "SizeMultiplyY": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "SizeMultiplyZ": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142618770,
+  "configname": "None",
+  "documentation": null
+}

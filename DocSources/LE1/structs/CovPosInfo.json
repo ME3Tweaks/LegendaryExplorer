@@ -1,0 +1,43 @@
+{
+  "members": {
+    "Location": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Normal": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Tangent": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Link": {
+      "type": "CoverLink",
+      "documentation": null,
+      "flags": 0
+    },
+    "LtSlotIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "RtSlotIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "LtToRtPct": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "CoverLink",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 385
+}

@@ -1,0 +1,164 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "Pages": {
+      "type": "PhotoModeOptionPage",
+      "documentation": null,
+      "flags": 4210689
+    },
+    "SliderOptions": {
+      "type": "PhotoModeSliderOption",
+      "documentation": null,
+      "flags": 4210689
+    },
+    "RangeSliderOptions": {
+      "type": "PhotoModeRangeSliderOption",
+      "documentation": null,
+      "flags": 4210689
+    },
+    "TextSliderOptions": {
+      "type": "PhotoModeTextSliderOption",
+      "documentation": null,
+      "flags": 4210689
+    },
+    "PhotoMode": {
+      "type": "SFXGameModePhoto",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bOptionsHidden": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "ToggleOptions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleOptions()"
+    },
+    "HandleOptionChanged": {
+      "documentation": null,
+      "signature_members": {
+        "OptionId": {
+          "type": "PhotoModeOptionType",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleOptionChanged(PhotoModeOptionType OptionId, float Value)"
+    },
+    "SetOption": {
+      "documentation": null,
+      "signature_members": {
+        "OptionId": {
+          "type": "PhotoModeOptionType",
+          "documentation": null,
+          "flags": 128
+        },
+        "ValueIdx": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOption(PhotoModeOptionType OptionId, float ValueIdx)"
+    },
+    "GetDefaultFloatOption": {
+      "documentation": null,
+      "signature_members": {
+        "OptionId": {
+          "type": "PhotoModeOptionType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetDefaultFloatOption(PhotoModeOptionType OptionId)"
+    },
+    "GetDefaultBoolOption": {
+      "documentation": null,
+      "signature_members": {
+        "OptionId": {
+          "type": "PhotoModeOptionType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetDefaultBoolOption(PhotoModeOptionType OptionId)"
+    },
+    "InitializePhotoMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializePhotoMode()"
+    },
+    "MovieLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MovieLoaded()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "bUsingGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool bUsingGamepad)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
+  "documentation": null
+}

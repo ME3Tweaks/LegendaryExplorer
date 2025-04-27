@@ -1,0 +1,1026 @@
+{
+  "parent": "UIScreenObject",
+  "package": "Engine",
+  "variables": {
+    "Rotation": {
+      "type": "UIRotation",
+      "documentation": null,
+      "flags": 1
+    },
+    "ToolTip": {
+      "type": "UIDataStoreBinding",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ContextMenuData": {
+      "type": "UIDataStoreBinding",
+      "documentation": null,
+      "flags": 4325377
+    },
+    "PrimaryStyle": {
+      "type": "UIStyleReference",
+      "documentation": null,
+      "flags": 0
+    },
+    "StyleSubscribers": {
+      "type": "UIStyleResolver",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "__OnCreate__Delegate": {
+      "type": "OnCreate",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnPreSceneUpdate__Delegate": {
+      "type": "OnPreSceneUpdate",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnPostSceneUpdate__Delegate": {
+      "type": "OnPostSceneUpdate",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnValueChanged__Delegate": {
+      "type": "OnValueChanged",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnRefreshSubscriberValue__Delegate": {
+      "type": "OnRefreshSubscriberValue",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnPressed__Delegate": {
+      "type": "OnPressed",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnPressRepeat__Delegate": {
+      "type": "OnPressRepeat",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnPressRelease__Delegate": {
+      "type": "OnPressRelease",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnClicked__Delegate": {
+      "type": "OnClicked",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnDoubleClick__Delegate": {
+      "type": "OnDoubleClick",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnOpenContextMenu__Delegate": {
+      "type": "OnOpenContextMenu",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnCloseContextMenu__Delegate": {
+      "type": "OnCloseContextMenu",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnContextMenuItemSelected__Delegate": {
+      "type": "OnContextMenuItemSelected",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "DockTargets": {
+      "type": "UIDockingSet",
+      "documentation": null,
+      "flags": 131073
+    },
+    "NavigationTargets": {
+      "type": "UINavigationData",
+      "documentation": null,
+      "flags": 1
+    },
+    "RenderBoundsVertices": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 139267
+    },
+    "WidgetID": {
+      "type": "WIDGET_ID",
+      "documentation": null,
+      "flags": 16777216
+    },
+    "RenderBounds": {
+      "type": "float",
+      "documentation": null,
+      "flags": 139267
+    },
+    "RenderOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "WidgetTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 131073
+    },
+    "Owner": {
+      "type": "UIObject",
+      "documentation": null,
+      "flags": 2097154
+    },
+    "OwnerScene": {
+      "type": "UIScene",
+      "documentation": null,
+      "flags": 2097154
+    },
+    "AnimationParent": {
+      "type": "UIObject",
+      "documentation": null,
+      "flags": 0
+    },
+    "TabIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "PrivateFlags": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "DebugBoundsColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableActiveCursorUpdates": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSupportsPrimaryStyle": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bEnableSceneUpdateNotifications": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bDebugShowBounds": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "PlayerInputMask": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaskPostProcess": {
+      "type": "EUIPostProcessGroup",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "LogRenderBounds": {
+      "documentation": null,
+      "signature_members": {
+        "Indent": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogRenderBounds(int Indent)"
+    },
+    "ClearDockTargets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearDockTargets()"
+    },
+    "GetParent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIScreenObject",
+      "signature": "UIScreenObject GetParent()"
+    },
+    "GetOwner": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIObject",
+      "signature": "UIObject GetOwner()"
+    },
+    "GetScene": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIScene",
+      "signature": "UIScene GetScene()"
+    },
+    "SetWidgetStyleByName": {
+      "documentation": null,
+      "signature_members": {
+        "StyleResolverTagToSet": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "StyleFriendlyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetWidgetStyleByName(Name StyleResolverTagToSet, Name StyleFriendlyName)"
+    },
+    "FindStyleSubscriberIndexById": {
+      "documentation": null,
+      "signature_members": {
+        "StyleSubscriberId": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindStyleSubscriberIndexById(Name StyleSubscriberId)"
+    },
+    "FindStyleSubscriberIndex": {
+      "documentation": null,
+      "signature_members": {
+        "Subscriber": {
+          "type": "UIStyleResolver",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindStyleSubscriberIndex(const out UIStyleResolver Subscriber)"
+    },
+    "RemoveStyleSubscriber": {
+      "documentation": null,
+      "signature_members": {
+        "Subscriber": {
+          "type": "UIStyleResolver",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveStyleSubscriber(UIStyleResolver Subscriber)"
+    },
+    "AddStyleSubscriber": {
+      "documentation": null,
+      "signature_members": {
+        "Subscriber": {
+          "type": "UIStyleResolver",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddStyleSubscriber(UIStyleResolver Subscriber)"
+    },
+    "GetPositionExtent": {
+      "documentation": null,
+      "signature_members": {
+        "Face": {
+          "type": "EUIWidgetFace",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIncludeRotation": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bIncludeOrigin": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetPositionExtent(EUIWidgetFace Face, optional bool bIncludeRotation, optional bool bIncludeOrigin)"
+    },
+    "GetPositionExtents": {
+      "documentation": null,
+      "signature_members": {
+        "MinX": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "MaxX": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "MinY": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "MaxY": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "bIncludeRotation": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bIncludeOrigin": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPositionExtents(out float MinX, out float MaxX, out float MinY, out float MaxY, optional bool bIncludeRotation, optional bool bIncludeOrigin)"
+    },
+    "NeedsActiveCursorUpdates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NeedsActiveCursorUpdates()"
+    },
+    "SetActiveCursorUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "bShouldReceiveCursorUpdates": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActiveCursorUpdate(bool bShouldReceiveCursorUpdates)"
+    },
+    "SetPrivateBehavior": {
+      "documentation": null,
+      "signature_members": {
+        "Behavior": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bRecurse": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPrivateBehavior(int Behavior, bool Value, optional bool bRecurse)"
+    },
+    "IsPrivateBehaviorSet": {
+      "documentation": null,
+      "signature_members": {
+        "Behavior": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPrivateBehaviorSet(int Behavior)"
+    },
+    "CanAcceptFocus": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        },
+        "bIncludeParentVisibility": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanAcceptFocus(optional int PlayerIndex, optional bool bIncludeParentVisibility)"
+    },
+    "SetForcedNavigationTarget": {
+      "documentation": null,
+      "signature_members": {
+        "Face": {
+          "type": "EUIWidgetFace",
+          "documentation": null,
+          "flags": 128
+        },
+        "NavTarget": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIsNullOverride": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetForcedNavigationTarget(EUIWidgetFace Face, UIObject NavTarget, optional bool bIsNullOverride)"
+    },
+    "SetNavigationTarget": {
+      "documentation": null,
+      "signature_members": {
+        "Face": {
+          "type": "EUIWidgetFace",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewNavTarget": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetNavigationTarget(EUIWidgetFace Face, UIObject NewNavTarget)"
+    },
+    "IsDockedTo": {
+      "documentation": null,
+      "signature_members": {
+        "TargetWidget": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 130
+        },
+        "SourceFace": {
+          "type": "EUIWidgetFace",
+          "documentation": null,
+          "flags": 144
+        },
+        "TargetFace": {
+          "type": "EUIWidgetFace",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsDockedTo(const UIScreenObject TargetWidget, optional EUIWidgetFace SourceFace, optional EUIWidgetFace TargetFace)"
+    },
+    "GetDockParameters": {
+      "documentation": null,
+      "signature_members": {
+        "SourceFace": {
+          "type": "EUIWidgetFace",
+          "documentation": null,
+          "flags": 128
+        },
+        "TargetWidget": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 384
+        },
+        "TargetFace": {
+          "type": "EUIWidgetFace",
+          "documentation": null,
+          "flags": 384
+        },
+        "TargetPadding": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetDockParameters(EUIWidgetFace SourceFace, out UIScreenObject TargetWidget, out EUIWidgetFace TargetFace, out float TargetPadding)"
+    },
+    "SetDockParameters": {
+      "documentation": null,
+      "signature_members": {
+        "SourceFace": {
+          "type": "EUIWidgetFace",
+          "documentation": null,
+          "flags": 128
+        },
+        "Target": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "TargetFace": {
+          "type": "EUIWidgetFace",
+          "documentation": null,
+          "flags": 128
+        },
+        "PaddingValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "PaddingInputType": {
+          "type": "EUIDockPaddingEvalType",
+          "documentation": null,
+          "flags": 144
+        },
+        "bModifyPaddingScaleType": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetDockParameters(EUIWidgetFace SourceFace, UIScreenObject Target, EUIWidgetFace TargetFace, float PaddingValue, optional EUIDockPaddingEvalType PaddingInputType, optional bool bModifyPaddingScaleType)"
+    },
+    "SetDockPadding": {
+      "documentation": null,
+      "signature_members": {
+        "SourceFace": {
+          "type": "EUIWidgetFace",
+          "documentation": null,
+          "flags": 128
+        },
+        "PaddingValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "PaddingInputType": {
+          "type": "EUIDockPaddingEvalType",
+          "documentation": null,
+          "flags": 144
+        },
+        "bModifyPaddingScaleType": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetDockPadding(EUIWidgetFace SourceFace, float PaddingValue, optional EUIDockPaddingEvalType PaddingInputType, optional bool bModifyPaddingScaleType)"
+    },
+    "SetDockTarget": {
+      "documentation": null,
+      "signature_members": {
+        "SourceFace": {
+          "type": "EUIWidgetFace",
+          "documentation": null,
+          "flags": 128
+        },
+        "Target": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "TargetFace": {
+          "type": "EUIWidgetFace",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetDockTarget(EUIWidgetFace SourceFace, UIScreenObject Target, EUIWidgetFace TargetFace)"
+    },
+    "IsContainedBy": {
+      "documentation": null,
+      "signature_members": {
+        "TestWidget": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsContainedBy(UIObject TestWidget)"
+    },
+    "NotifyValueChanged": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        },
+        "NotifyFlags": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyValueChanged(optional int PlayerIndex, optional int NotifyFlags)"
+    },
+    "GetRotationMatrix": {
+      "documentation": null,
+      "signature_members": {
+        "bIncludeParentRotations": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Matrix",
+      "signature": "Matrix GetRotationMatrix(optional bool bIncludeParentRotations)"
+    },
+    "GenerateTransformMatrix": {
+      "documentation": null,
+      "signature_members": {
+        "bIncludeParentTransforms": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Matrix",
+      "signature": "Matrix GenerateTransformMatrix(optional bool bIncludeParentTransforms)"
+    },
+    "GetAnchorPosition": {
+      "documentation": null,
+      "signature_members": {
+        "bRelativeToWidget": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bPixelSpace": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetAnchorPosition(optional bool bRelativeToWidget, optional bool bPixelSpace)"
+    },
+    "UpdateRotationMatrix": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateRotationMatrix()"
+    },
+    "RotateWidget": {
+      "documentation": null,
+      "signature_members": {
+        "NewRotationAmount": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "bAccumulateRotation": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "RotateWidget(Rotator NewRotationAmount, optional bool bAccumulateRotation)"
+    },
+    "SetAnchorPosition": {
+      "documentation": null,
+      "signature_members": {
+        "NewAnchorPosition": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "InputType": {
+          "type": "EPositionEvalType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAnchorPosition(Vector NewAnchorPosition, optional EPositionEvalType InputType)"
+    },
+    "HasTransform": {
+      "documentation": null,
+      "signature_members": {
+        "bIncludeParentTransforms": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasTransform(optional bool bIncludeParentTransforms)"
+    },
+    "GetToolTipValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetToolTipValue()"
+    },
+    "GenerateSceneDataStoreMarkup": {
+      "documentation": null,
+      "signature_members": {
+        "Group": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "string",
+      "signature": "string GenerateSceneDataStoreMarkup(optional string Group)"
+    },
+    "ClearDefaultDataBinding": {
+      "documentation": null,
+      "signature_members": {
+        "BindingIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearDefaultDataBinding(int BindingIndex)"
+    },
+    "GetDefaultDataStores": {
+      "documentation": null,
+      "signature_members": {
+        "out_BoundDataStores": {
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetDefaultDataStores(out array<UIDataStore> out_BoundDataStores)"
+    },
+    "ResolveDefaultDataBinding": {
+      "documentation": null,
+      "signature_members": {
+        "BindingIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ResolveDefaultDataBinding(int BindingIndex)"
+    },
+    "GetDefaultDataBinding": {
+      "documentation": null,
+      "signature_members": {
+        "BindingIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetDefaultDataBinding(int BindingIndex)"
+    },
+    "SetDefaultDataBinding": {
+      "documentation": null,
+      "signature_members": {
+        "MarkupText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "BindingIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDefaultDataBinding(string MarkupText, int BindingIndex)"
+    },
+    "OnContextMenuItemSelected": {
+      "documentation": null,
+      "signature_members": {
+        "ContextMenu": {
+          "type": "UIContextMenu",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "ItemIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnContextMenuItemSelected(UIContextMenu ContextMenu, int PlayerIndex, int ItemIndex)"
+    },
+    "OnCloseContextMenu": {
+      "documentation": null,
+      "signature_members": {
+        "ContextMenu": {
+          "type": "UIContextMenu",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnCloseContextMenu(UIContextMenu ContextMenu, int PlayerIndex)"
+    },
+    "OnOpenContextMenu": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "CustomContextMenu": {
+          "type": "UIContextMenu",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnOpenContextMenu(UIObject Sender, int PlayerIndex, out UIContextMenu CustomContextMenu)"
+    },
+    "OnDoubleClick": {
+      "documentation": null,
+      "signature_members": {
+        "EventObject": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDoubleClick(UIScreenObject EventObject, int PlayerIndex)"
+    },
+    "OnClicked": {
+      "documentation": null,
+      "signature_members": {
+        "EventObject": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnClicked(UIScreenObject EventObject, int PlayerIndex)"
+    },
+    "OnPressRelease": {
+      "documentation": null,
+      "signature_members": {
+        "EventObject": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPressRelease(UIScreenObject EventObject, int PlayerIndex)"
+    },
+    "OnPressRepeat": {
+      "documentation": null,
+      "signature_members": {
+        "EventObject": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPressRepeat(UIScreenObject EventObject, int PlayerIndex)"
+    },
+    "OnPressed": {
+      "documentation": null,
+      "signature_members": {
+        "EventObject": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPressed(UIScreenObject EventObject, int PlayerIndex)"
+    },
+    "OnRefreshSubscriberValue": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "BindingIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnRefreshSubscriberValue(UIObject Sender, int BindingIndex)"
+    },
+    "OnValueChanged": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnValueChanged(UIObject Sender, int PlayerIndex)"
+    },
+    "OnPostSceneUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPostSceneUpdate(UIObject Sender)"
+    },
+    "OnPreSceneUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPreSceneUpdate(UIObject Sender)"
+    },
+    "OnCreate": {
+      "documentation": null,
+      "signature_members": {
+        "CreatedWidget": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "CreatorContainer": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCreate(UIObject CreatedWidget, UIScreenObject CreatorContainer)"
+    }
+  },
+  "states": {},
+  "classflags": 144704151,
+  "configname": "UI",
+  "documentation": null
+}

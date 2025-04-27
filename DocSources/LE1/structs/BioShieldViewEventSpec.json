@@ -1,0 +1,18 @@
+{
+  "members": {
+    "m_aVisualEffects": {
+      "type": "BioShieldViewParticleSystemSpec",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_eEvent": {
+      "type": "EBioShieldEvent",
+      "documentation": null,
+      "flags": 131073
+    }
+  },
+  "classdef": "BioShieldView",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

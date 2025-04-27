@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "BLEND_Opaque": {
+      "value": 0,
+      "documentation": null
+    },
+    "BLEND_Masked": {
+      "value": 1,
+      "documentation": null
+    },
+    "BLEND_Translucent": {
+      "value": 2,
+      "documentation": null
+    },
+    "BLEND_Additive": {
+      "value": 3,
+      "documentation": null
+    },
+    "BLEND_Modulate": {
+      "value": 4,
+      "documentation": null
+    },
+    "BLEND_SoftMasked": {
+      "value": 5,
+      "documentation": null
+    },
+    "BLEND_AlphaComposite": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

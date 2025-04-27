@@ -1,0 +1,111 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_aLOSIndicators": {
+      "type": "LOSIndicatorInfo",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_Reticule": {
+      "type": "ReticuleInfo",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_SelectionIndicator": {
+      "type": "SelectionIndicatorInfo",
+      "documentation": null,
+      "flags": 8192
+    },
+    "CrosshairBuffer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oPlayerController": {
+      "type": "BioPlayerController",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oPlayerInput": {
+      "type": "BioPlayerInput",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oPlayerBehavior": {
+      "type": "BioEpicPawnBehavior",
+      "documentation": null,
+      "flags": 67117056
+    },
+    "m_oPlayerPawnBehavior": {
+      "type": "BioPawnBehavior",
+      "documentation": null,
+      "flags": 67117056
+    },
+    "m_oPlayerSquad": {
+      "type": "BioPlayerSquad",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fTimeSinceLastUpdate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fMinScalingRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fMinScalingValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "CrossHairBufferIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "MinCrosshairSize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_eLastReticuleMode": {
+      "type": "EReticuleMode",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "ProcessImpacts": {
+      "documentation": null,
+      "signature_members": {
+        "bIsHeadShot": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessImpacts(bool bIsHeadShot)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    }
+  },
+  "states": {},
+  "classflags": 144703646,
+  "configname": "UI",
+  "documentation": null
+}

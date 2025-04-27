@@ -1,0 +1,81 @@
+{
+  "EnumValues": {
+    "ChangeCam_Unset": {
+      "value": 0,
+      "documentation": null
+    },
+    "cam1_2_1": {
+      "value": 1,
+      "documentation": null
+    },
+    "cam1_2_2": {
+      "value": 2,
+      "documentation": null
+    },
+    "cam1_2_3": {
+      "value": 3,
+      "documentation": null
+    },
+    "cam1_2_4": {
+      "value": 4,
+      "documentation": null
+    },
+    "cam1_2_5": {
+      "value": 5,
+      "documentation": null
+    },
+    "cam2_1_1": {
+      "value": 6,
+      "documentation": null
+    },
+    "cam2_1_2": {
+      "value": 7,
+      "documentation": null
+    },
+    "cam2_1_3": {
+      "value": 8,
+      "documentation": null
+    },
+    "cam2_1_4": {
+      "value": 9,
+      "documentation": null
+    },
+    "cam2_1_5": {
+      "value": 10,
+      "documentation": null
+    },
+    "cam3_1_1": {
+      "value": 11,
+      "documentation": null
+    },
+    "cam3_1_2": {
+      "value": 12,
+      "documentation": null
+    },
+    "cam3_2_1": {
+      "value": 13,
+      "documentation": null
+    },
+    "cam3_2_2": {
+      "value": 14,
+      "documentation": null
+    },
+    "cam4_1_1": {
+      "value": 15,
+      "documentation": null
+    },
+    "cam4_1_2": {
+      "value": 16,
+      "documentation": null
+    },
+    "cam4_2_1": {
+      "value": 17,
+      "documentation": null
+    },
+    "cam4_2_2": {
+      "value": 18,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

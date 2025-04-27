@@ -1,0 +1,33 @@
+{
+  "members": {
+    "aoObsticals": {
+      "type": "AvoidanceLocations",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "vPawnLoc": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "vStearing": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "vAdjustPoint": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "fSearchDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSeqData_DEBUGInfo",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

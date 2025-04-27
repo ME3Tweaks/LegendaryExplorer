@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "PSPT_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "PSPT_Scalar": {
+      "value": 1,
+      "documentation": null
+    },
+    "PSPT_Vector": {
+      "value": 2,
+      "documentation": null
+    },
+    "PSPT_Color": {
+      "value": 3,
+      "documentation": null
+    },
+    "PSPT_Actor": {
+      "value": 4,
+      "documentation": null
+    },
+    "PSPT_Material": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

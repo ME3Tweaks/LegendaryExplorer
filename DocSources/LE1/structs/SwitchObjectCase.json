@@ -1,0 +1,23 @@
+{
+  "members": {
+    "ObjectValue": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 1
+    },
+    "bFallThru": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDefaultValue": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "SeqCond_SwitchObject",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

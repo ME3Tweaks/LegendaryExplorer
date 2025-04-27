@@ -1,0 +1,18 @@
+{
+  "members": {
+    "PlayerEventAndTarget": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "EventNameAndDesc": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "OnlineGameplayEvents",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

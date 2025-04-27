@@ -1,0 +1,68 @@
+{
+  "parent": "BioStickyGrenadeInterface",
+  "package": "SFXGame",
+  "variables": {
+    "m_skeletalMeshComponent": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null,
+      "flags": 67633160
+    }
+  },
+  "functions": {
+    "ComputePosition": {
+      "documentation": null,
+      "signature_members": {
+        "Projectile": {
+          "type": "BioGrenadeProjectileFrisbee",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector ComputePosition(BioGrenadeProjectileFrisbee Projectile)"
+    },
+    "Detach": {
+      "documentation": null,
+      "signature_members": {
+        "oOwnerBehavior": {
+          "type": "BioActorBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "Projectile": {
+          "type": "BioGrenadeProjectileFrisbee",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Detach(BioActorBehavior oOwnerBehavior, BioGrenadeProjectileFrisbee Projectile)"
+    },
+    "Attach": {
+      "documentation": null,
+      "signature_members": {
+        "Projectile": {
+          "type": "BioGrenadeProjectileFrisbee",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Attach(BioGrenadeProjectileFrisbee Projectile, Vector HitLocation, Vector HitNormal)"
+    }
+  },
+  "states": {},
+  "classflags": 8388626,
+  "configname": "None",
+  "documentation": null
+}

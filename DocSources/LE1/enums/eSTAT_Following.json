@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "STAT_Following_Off": {
+      "value": 0,
+      "documentation": null
+    },
+    "STAT_Following_Collect": {
+      "value": 1,
+      "documentation": null
+    },
+    "STAT_Following_Report": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

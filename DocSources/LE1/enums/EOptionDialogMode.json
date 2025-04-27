@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "DIALOG_MODE_NORMAL": {
+      "value": 0,
+      "documentation": null
+    },
+    "DIALOG_MODE_MOVIE": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

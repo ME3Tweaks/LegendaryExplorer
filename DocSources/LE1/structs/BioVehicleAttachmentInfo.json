@@ -1,0 +1,23 @@
+{
+  "members": {
+    "aMeshMaterials": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "oComponentToAttach": {
+      "type": "ActorComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "nmAttachSocket": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioAppearanceVehicle",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

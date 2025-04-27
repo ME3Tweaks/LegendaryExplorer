@@ -1,0 +1,17 @@
+{
+  "parent": "BioAI_Drone",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "EvaluateTargets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool EvaluateTargets()"
+    }
+  },
+  "states": {},
+  "classflags": 10486294,
+  "configname": "Game",
+  "documentation": null
+}

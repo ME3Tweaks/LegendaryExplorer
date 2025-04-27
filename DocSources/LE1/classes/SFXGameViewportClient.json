@@ -1,0 +1,10 @@
+{
+  "parent": "GFxGameViewportClient",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 10485822,
+  "configname": "Game",
+  "documentation": null
+}

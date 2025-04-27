@@ -1,0 +1,43 @@
+{
+  "members": {
+    "Node": {
+      "type": "AnimNode",
+      "documentation": null,
+      "flags": 0
+    },
+    "TotalWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "TotalWeightAccumulator": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bRelevant": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bBioNeedTickingCompleteCall": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSkipTickWhenZeroWeight": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bTickDuringPausedAnims": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SkeletalMeshComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

@@ -1,0 +1,23 @@
+{
+  "members": {
+    "oCharacter": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "nIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "srName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioEventNotifier",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

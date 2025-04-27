@@ -1,0 +1,16 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_pBioActorBehavior": {
+      "type": "BioActorBehavior",
+      "documentation": null,
+      "flags": 67108864
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142610579,
+  "configname": "None",
+  "documentation": null
+}

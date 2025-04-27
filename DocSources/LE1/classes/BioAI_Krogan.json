@@ -1,0 +1,69 @@
+{
+  "parent": "BioAI_HumanoidMinion",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "OnLastManStanding": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnLastManStanding()"
+    },
+    "OnProximityAlarm": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "nRelationship": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnProximityAlarm(Actor oTarget, int nRelationship)"
+    },
+    "OnDamaged": {
+      "documentation": null,
+      "signature_members": {
+        "oInstigator": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDamaged(Controller oInstigator, float fDamage)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "Charge": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Charge(Pawn oTarget)"
+    }
+  },
+  "states": {},
+  "classflags": 10486294,
+  "configname": "Game",
+  "documentation": null
+}

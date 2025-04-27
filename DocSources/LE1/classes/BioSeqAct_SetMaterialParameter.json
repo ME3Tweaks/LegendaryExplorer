@@ -1,0 +1,40 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmMaterialParameter": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 3
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "Set": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmMaterialParameter": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 130
+        }
+      },
+      "returntype": "None",
+      "signature": "Set(BioPawn pPawn, const Name nmMaterialParameter)"
+    }
+  },
+  "states": {},
+  "classflags": 2097171,
+  "configname": "None",
+  "documentation": null
+}

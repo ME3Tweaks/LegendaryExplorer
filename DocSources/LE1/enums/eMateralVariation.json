@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "APMV_1": {
+      "value": 0,
+      "documentation": null
+    },
+    "APMV_2": {
+      "value": 1,
+      "documentation": null
+    },
+    "APMV_3": {
+      "value": 2,
+      "documentation": null
+    },
+    "APMV_4": {
+      "value": 3,
+      "documentation": null
+    },
+    "APMV_5": {
+      "value": 4,
+      "documentation": null
+    },
+    "APMV_6": {
+      "value": 5,
+      "documentation": null
+    },
+    "APMV_7": {
+      "value": 6,
+      "documentation": null
+    },
+    "APMV_8": {
+      "value": 7,
+      "documentation": null
+    },
+    "APMV_9": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

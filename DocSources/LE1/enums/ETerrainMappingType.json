@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "TMT_Auto": {
+      "value": 0,
+      "documentation": null
+    },
+    "TMT_XY": {
+      "value": 1,
+      "documentation": null
+    },
+    "TMT_XZ": {
+      "value": 2,
+      "documentation": null
+    },
+    "TMT_YZ": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

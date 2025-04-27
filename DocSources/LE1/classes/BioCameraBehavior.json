@@ -1,0 +1,23 @@
+{
+  "parent": "BioCameraUtility",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    }
+  },
+  "states": {},
+  "classflags": 144703635,
+  "configname": "None",
+  "documentation": null
+}

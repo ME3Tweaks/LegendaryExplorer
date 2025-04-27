@@ -1,0 +1,579 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_stockPlayerCharacter": {
+      "type": "PlayerInfo",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "m_overridePlayerCharacter": {
+      "type": "PlayerInfo",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_femaleActorType": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "m_maleActorType": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "m_aClasses2DAName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_aClasses2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_aCharacter2DAName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_aCharacter2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nmStockCharactersPackage": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nmStockClassesPackage": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_MAX_TALENT_PREREQS": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_isPlayerOverrideInitialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "FindCharacterInfoByName": {
+      "documentation": null,
+      "signature_members": {
+        "nmCharacter": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "actorTypeString": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "nIsHeadGearVisible": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "nmPackage": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindCharacterInfoByName(Name nmCharacter, out int Index, out string actorTypeString, out int nIsHeadGearVisible, optional Name nmPackage)"
+    },
+    "FindPlayerCharacterInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "actorTypeString": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "nIsHeadGearVisible": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindPlayerCharacterInfo(out int Index, out string actorTypeString, out int nIsHeadGearVisible)"
+    },
+    "GetSavedPlayerInformation": {
+      "documentation": null,
+      "signature_members": {
+        "actorTypeString": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSavedPlayerInformation(out string actorTypeString)"
+    },
+    "LoadCharacterDefinitionByIndexInternal": {
+      "documentation": null,
+      "signature_members": {
+        "oBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "nCharacterID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadCharacterDefinitionByIndexInternal(BioPawnBehavior oBehavior, int nCharacterID)"
+    },
+    "LoadCharacterDefinitionByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "oBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "nCharacterID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmPackage": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadCharacterDefinitionByIndex(BioPawnBehavior oBehavior, int nCharacterID, optional Name nmPackage)"
+    },
+    "GetAllValuesForKey": {
+      "documentation": null,
+      "signature_members": {
+        "o2DA": {
+          "type": "Bio2DA",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmKeyColumn": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nKey": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmValueColumn": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "oValueArray": {
+          "type": "BioIntArray",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAllValuesForKey(Bio2DA o2DA, Name nmKeyColumn, int nKey, Name nmValueColumn, out BioIntArray oValueArray)"
+    },
+    "GetAllRowsAndValuesForKey": {
+      "documentation": null,
+      "signature_members": {
+        "o2DA": {
+          "type": "Bio2DA",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmKeyColumn": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nKey": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmValueColumn": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "oRowIndexArray": {
+          "type": "BioIntArray",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "oValueArray": {
+          "type": "BioIntArray",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAllRowsAndValuesForKey(Bio2DA o2DA, Name nmKeyColumn, int nKey, Name nmValueColumn, out BioIntArray oRowIndexArray, out BioIntArray oValueArray)"
+    },
+    "GetAllRowsForKey": {
+      "documentation": null,
+      "signature_members": {
+        "o2DA": {
+          "type": "Bio2DA",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmKeyColumn": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nKey": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "oRowIndexArray": {
+          "type": "BioIntArray",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAllRowsForKey(Bio2DA o2DA, Name nmKeyColumn, int nKey, out BioIntArray oRowIndexArray)"
+    },
+    "LoadAndEquipItem": {
+      "documentation": null,
+      "signature_members": {
+        "oBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "table": {
+          "type": "EBioCharacterImporterCharacter2DA",
+          "documentation": null,
+          "flags": 128
+        },
+        "Row": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "itemIDColumnName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "sophisticationColumnName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        },
+        "nmManufacturerColumn": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadAndEquipItem(BioPawnBehavior oBehavior, EBioCharacterImporterCharacter2DA table, int Row, Name itemIDColumnName, optional Name sophisticationColumnName, optional Name nmManufacturerColumn)"
+    },
+    "LoadItem": {
+      "documentation": null,
+      "signature_members": {
+        "oBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "table": {
+          "type": "EBioCharacterImporterCharacter2DA",
+          "documentation": null,
+          "flags": 128
+        },
+        "Row": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "itemIDColumnName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "sophisticationColumnName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmManufacturerColumn": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "BioItem",
+      "signature": "BioItem LoadItem(BioPawnBehavior oBehavior, EBioCharacterImporterCharacter2DA table, int Row, Name itemIDColumnName, Name sophisticationColumnName, optional Name nmManufacturerColumn)"
+    },
+    "LoadAndEquipItemOfUnknownType": {
+      "documentation": null,
+      "signature_members": {
+        "oBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "table": {
+          "type": "EBioCharacterImporterCharacter2DA",
+          "documentation": null,
+          "flags": 128
+        },
+        "Row": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "itemIDColumnName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "sophisticationColumnName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        },
+        "nmManufacturerColumn": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadAndEquipItemOfUnknownType(BioPawnBehavior oBehavior, EBioCharacterImporterCharacter2DA table, int Row, Name itemIDColumnName, optional Name sophisticationColumnName, optional Name nmManufacturerColumn)"
+    },
+    "AddAchievementUnlockedTalentTrees": {
+      "documentation": null,
+      "signature_members": {
+        "Behavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "AddAchievementUnlockedTalentTrees(BioPawnBehavior Behavior)"
+    },
+    "LoadSpecializationData": {
+      "documentation": null,
+      "signature_members": {
+        "classID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "specData": {
+          "type": "BioSpecializationData",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadSpecializationData(int classID, out array<BioSpecializationData> specData)"
+    },
+    "LoadClassGUIInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Row": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "stGuiInfo": {
+          "type": "BioClassGuiInfo",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadClassGUIInfo(int Row, out BioClassGuiInfo stGuiInfo)"
+    },
+    "LoadPlayableClassRows": {
+      "documentation": null,
+      "signature_members": {
+        "classRows": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadPlayableClassRows(out array<int> classRows)"
+    },
+    "InitializePlayerOverrideInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Label": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "gender": {
+          "type": "EBioAttributePawnGender",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Origin": {
+          "type": "EBioPlayerCharacterBackgroundOrigin",
+          "documentation": null,
+          "flags": 128
+        },
+        "Notoriety": {
+          "type": "EBioPlayerCharacterBackgroundNotoriety",
+          "documentation": null,
+          "flags": 128
+        },
+        "Morph": {
+          "type": "BioMorphFace",
+          "documentation": null,
+          "flags": 128
+        },
+        "nBonusTalentID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "FaceCode": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializePlayerOverrideInfo(string Label, EBioAttributePawnGender gender, string PlayerName, EBioPlayerCharacterBackgroundOrigin Origin, EBioPlayerCharacterBackgroundNotoriety Notoriety, BioMorphFace Morph, int nBonusTalentID, string FaceCode)"
+    },
+    "LoadClassTalents": {
+      "documentation": null,
+      "signature_members": {
+        "Behavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "classID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadClassTalents(BioPawnBehavior Behavior, int classID)"
+    },
+    "GetEnumEntryIN": {
+      "documentation": null,
+      "signature_members": {
+        "nmEnum": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "o2DA": {
+          "type": "Bio2DA",
+          "documentation": null,
+          "flags": 128
+        },
+        "nRow": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmColumn": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "cValue": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetEnumEntryIN(Name nmEnum, Bio2DA o2DA, int nRow, Name nmColumn, out byte cValue)"
+    },
+    "GetRowIndex": {
+      "documentation": null,
+      "signature_members": {
+        "o2DA": {
+          "type": "Bio2DA",
+          "documentation": null,
+          "flags": 128
+        },
+        "nKeyValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetRowIndex(Bio2DA o2DA, int nKeyValue)"
+    },
+    "LoadClasses2DAs": {
+      "documentation": null,
+      "signature_members": {
+        "nmPackage": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadClasses2DAs(optional Name nmPackage)"
+    },
+    "LoadCharacter2DAs": {
+      "documentation": null,
+      "signature_members": {
+        "nmPackage": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadCharacter2DAs(optional Name nmPackage)"
+    }
+  },
+  "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
+  "documentation": null
+}

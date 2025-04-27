@@ -1,0 +1,936 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "LocalizedSettings": {
+      "type": "LocalizedStringSetting",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Properties": {
+      "type": "SettingsProperty",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "LocalizedSettingsMappings": {
+      "type": "LocalizedStringSettingMetaData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "PropertyMappings": {
+      "type": "SettingsPropertyPropertyMetaData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__NotifySettingValueUpdated__Delegate": {
+      "type": "NotifySettingValueUpdated",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__NotifyPropertyValueUpdated__Delegate": {
+      "type": "NotifyPropertyValueUpdated",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "UpdateFromURL": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "Game": {
+          "type": "GameInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateFromURL(const out string URL, GameInfo Game)"
+    },
+    "BuildURL": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "BuildURL(out string URL)"
+    },
+    "AppendContextsToURL": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "AppendContextsToURL(out string URL)"
+    },
+    "AppendPropertiesToURL": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "AppendPropertiesToURL(out string URL)"
+    },
+    "AppendDataBindingsToURL": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "AppendDataBindingsToURL(out string URL)"
+    },
+    "GetQoSAdvertisedStringSettings": {
+      "documentation": null,
+      "signature_members": {
+        "QoSSettings": {
+          "type": "LocalizedStringSetting",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetQoSAdvertisedStringSettings(out array<LocalizedStringSetting> QoSSettings)"
+    },
+    "GetQoSAdvertisedProperties": {
+      "documentation": null,
+      "signature_members": {
+        "QoSProps": {
+          "type": "SettingsProperty",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetQoSAdvertisedProperties(out array<SettingsProperty> QoSProps)"
+    },
+    "GetRangedPropertyValue": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetRangedPropertyValue(int PropertyId, out float OutValue)"
+    },
+    "SetRangedPropertyValue": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetRangedPropertyValue(int PropertyId, float NewValue)"
+    },
+    "GetPropertyRange": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutMinValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "OutMaxValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "RangeIncrement": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "bFormatAsInt": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPropertyRange(int PropertyId, out float OutMinValue, out float OutMaxValue, out float RangeIncrement, out byte bFormatAsInt)"
+    },
+    "GetPropertyMappingType": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutType": {
+          "type": "EPropertyValueMappingType",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPropertyMappingType(int PropertyId, out EPropertyValueMappingType OutType)"
+    },
+    "HasStringSetting": {
+      "documentation": null,
+      "signature_members": {
+        "SettingId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasStringSetting(int SettingId)"
+    },
+    "HasProperty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasProperty(int PropertyId)"
+    },
+    "UpdateProperties": {
+      "documentation": null,
+      "signature_members": {
+        "Props": {
+          "type": "SettingsProperty",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "bShouldAddIfMissing": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateProperties(const out array<SettingsProperty> Props, optional bool bShouldAddIfMissing)"
+    },
+    "UpdateStringSettings": {
+      "documentation": null,
+      "signature_members": {
+        "Settings": {
+          "type": "LocalizedStringSetting",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "bShouldAddIfMissing": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateStringSettings(const out array<LocalizedStringSetting> Settings, optional bool bShouldAddIfMissing)"
+    },
+    "GetPropertyType": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "ESettingsDataType",
+      "signature": "ESettingsDataType GetPropertyType(int PropertyId)"
+    },
+    "GetPropertyValueId": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "ValueId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPropertyValueId(int PropertyId, out int ValueId)"
+    },
+    "SetPropertyValueId": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "ValueId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPropertyValueId(int PropertyId, int ValueId)"
+    },
+    "GetStringProperty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringProperty(int PropertyId, out string Value)"
+    },
+    "SetStringProperty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStringProperty(int PropertyId, string Value)"
+    },
+    "GetIntProperty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetIntProperty(int PropertyId, out int Value)"
+    },
+    "SetIntProperty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetIntProperty(int PropertyId, int Value)"
+    },
+    "GetFloatProperty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFloatProperty(int PropertyId, out float Value)"
+    },
+    "SetFloatProperty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatProperty(int PropertyId, float Value)"
+    },
+    "SetPropertyFromStringByName": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewValue": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPropertyFromStringByName(Name PropertyName, const out string NewValue)"
+    },
+    "GetPropertyAsStringByName": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetPropertyAsStringByName(Name PropertyName)"
+    },
+    "GetPropertyAsString": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetPropertyAsString(int PropertyId)"
+    },
+    "GetPropertyColumnHeader": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetPropertyColumnHeader(int PropertyId)"
+    },
+    "GetPropertyName": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetPropertyName(int PropertyId)"
+    },
+    "GetPropertyId": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "PropertyId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPropertyId(Name PropertyName, out int PropertyId)"
+    },
+    "SetStringSettingValueFromStringByName": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewValue": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetStringSettingValueFromStringByName(Name StringSettingName, const out string NewValue)"
+    },
+    "GetStringSettingValueNameByName": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetStringSettingValueNameByName(Name StringSettingName)"
+    },
+    "GetStringSettingValueName": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "ValueIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetStringSettingValueName(int StringSettingId, int ValueIndex)"
+    },
+    "IsWildcardStringSetting": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsWildcardStringSetting(int StringSettingId)"
+    },
+    "GetStringSettingColumnHeader": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetStringSettingColumnHeader(int StringSettingId)"
+    },
+    "GetStringSettingName": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetStringSettingName(int StringSettingId)"
+    },
+    "GetStringSettingId": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "StringSettingId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringSettingId(Name StringSettingName, out int StringSettingId)"
+    },
+    "GetStringSettingValueByName": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ValueIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringSettingValueByName(Name StringSettingName, out int ValueIndex)"
+    },
+    "SetStringSettingValueByName": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ValueIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bShouldAutoAdd": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStringSettingValueByName(Name StringSettingName, int ValueIndex, bool bShouldAutoAdd)"
+    },
+    "GetStringSettingValueNames": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Values": {
+          "type": "IdToStringMapping",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringSettingValueNames(int StringSettingId, out array<IdToStringMapping> Values)"
+    },
+    "IncrementStringSettingValue": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Direction": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bShouldWrap": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IncrementStringSettingValue(int StringSettingId, int Direction, bool bShouldWrap)"
+    },
+    "GetStringSettingValue": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "ValueIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStringSettingValue(int StringSettingId, out int ValueIndex)"
+    },
+    "SetStringSettingValue": {
+      "documentation": null,
+      "signature_members": {
+        "StringSettingId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "ValueIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bShouldAutoAdd": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStringSettingValue(int StringSettingId, int ValueIndex, optional bool bShouldAutoAdd)"
+    },
+    "GetSettingsDataDateTime": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
+        },
+        "OutInt1": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "OutInt2": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSettingsDataDateTime(out SettingsData Data, out int OutInt1, out int OutInt2)"
+    },
+    "GetSettingsDataBlob": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
+        },
+        "OutBlob": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSettingsDataBlob(out SettingsData Data, out array<byte> OutBlob)"
+    },
+    "GetSettingsDataInt": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetSettingsDataInt(out SettingsData Data)"
+    },
+    "GetSettingsDataFloat": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetSettingsDataFloat(out SettingsData Data)"
+    },
+    "GetSettingsDataString": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetSettingsDataString(out SettingsData Data)"
+    },
+    "EmptySettingsData": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "EmptySettingsData(out SettingsData Data)"
+    },
+    "SetSettingsData": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
+        },
+        "Data2Copy": {
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSettingsData(out SettingsData Data, out SettingsData Data2Copy)"
+    },
+    "SetSettingsDataBlob": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
+        },
+        "InBlob": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSettingsDataBlob(out SettingsData Data, out array<byte> InBlob)"
+    },
+    "SetSettingsDataDateTime": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
+        },
+        "InInt1": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "InInt2": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSettingsDataDateTime(out SettingsData Data, int InInt1, int InInt2)"
+    },
+    "SetSettingsDataInt": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
+        },
+        "InInt": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSettingsDataInt(out SettingsData Data, int InInt)"
+    },
+    "SetSettingsDataFloat": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
+        },
+        "InFloat": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSettingsDataFloat(out SettingsData Data, float InFloat)"
+    },
+    "SetSettingsDataString": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": "SettingsData",
+          "documentation": null,
+          "flags": 384
+        },
+        "InString": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSettingsDataString(out SettingsData Data, string InString)"
+    },
+    "NotifyPropertyValueUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPropertyValueUpdated(Name PropertyName)"
+    },
+    "NotifySettingValueUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "SettingName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifySettingValueUpdated(Name SettingName)"
+    }
+  },
+  "states": {},
+  "classflags": 136315059,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,23 @@
+{
+  "members": {
+    "m_pTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioPlayerSelection",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,16 @@
+{
+  "parent": "Texture2D",
+  "package": "Engine",
+  "variables": {
+    "ShadowmapFlags": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 406,
+  "configname": "Engine",
+  "documentation": null
+}

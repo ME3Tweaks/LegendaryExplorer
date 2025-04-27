@@ -1,0 +1,367 @@
+{
+  "parent": "UIRoot",
+  "package": "Engine",
+  "variables": {
+    "VfTable_FExec": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "CanvasToScreen": {
+      "type": "Matrix",
+      "documentation": null,
+      "flags": 8194
+    },
+    "InvCanvasToScreen": {
+      "type": "Matrix",
+      "documentation": null,
+      "flags": 8194
+    },
+    "RenderViewport": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ActiveSkin": {
+      "type": "UISkin",
+      "documentation": null,
+      "flags": 8192
+    },
+    "MousePosition": {
+      "type": "IntPoint",
+      "documentation": null,
+      "flags": 8194
+    },
+    "ActiveControl": {
+      "type": "UIObject",
+      "documentation": null,
+      "flags": 8194
+    },
+    "DataStoreManager": {
+      "type": "DataStoreClient",
+      "documentation": null,
+      "flags": 8194
+    },
+    "OpacityParameter": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null,
+      "flags": 8192
+    },
+    "OpacityParameterName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8194
+    },
+    "UIScenePostProcess": {
+      "type": "PostProcessChain",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bEnablePostProcess": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "InitializeSceneClient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeSceneClient()"
+    },
+    "GetInverseCanvasToScreen": {
+      "documentation": null,
+      "signature_members": {
+        "Widget": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 146
+        }
+      },
+      "returntype": "Matrix",
+      "signature": "Matrix GetInverseCanvasToScreen(optional const UIObject Widget)"
+    },
+    "GetCanvasToScreen": {
+      "documentation": null,
+      "signature_members": {
+        "Widget": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 146
+        }
+      },
+      "returntype": "Matrix",
+      "signature": "Matrix GetCanvasToScreen(optional const UIObject Widget)"
+    },
+    "UpdateCanvasToScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCanvasToScreen()"
+    },
+    "ChangeMouseCursor": {
+      "documentation": null,
+      "signature_members": {
+        "CursorName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ChangeMouseCursor(Name CursorName)"
+    },
+    "SetMousePosition": {
+      "documentation": null,
+      "signature_members": {
+        "NewMouseX": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewMouseY": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMousePosition(int NewMouseX, int NewMouseY)"
+    },
+    "CloseSceneAtIndex": {
+      "documentation": null,
+      "signature_members": {
+        "SceneStackIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bCloseChildScenes": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bForceCloseImmediately": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CloseSceneAtIndex(int SceneStackIndex, optional bool bCloseChildScenes, optional bool bForceCloseImmediately)"
+    },
+    "CloseScene": {
+      "documentation": null,
+      "signature_members": {
+        "Scene": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
+        },
+        "bCloseChildScenes": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bForceCloseImmediately": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CloseScene(UIScene Scene, optional bool bCloseChildScenes, optional bool bForceCloseImmediately)"
+    },
+    "ReplaceSceneAtIndex": {
+      "documentation": null,
+      "signature_members": {
+        "IndexOfSceneToReplace": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "SceneToOpen": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
+        },
+        "SceneOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
+        },
+        "OpenedScene": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 400
+        },
+        "ForcedPriority": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReplaceSceneAtIndex(int IndexOfSceneToReplace, UIScene SceneToOpen, optional LocalPlayer SceneOwner, optional out UIScene OpenedScene, optional byte ForcedPriority)"
+    },
+    "ReplaceScene": {
+      "documentation": null,
+      "signature_members": {
+        "SceneInstanceToReplace": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
+        },
+        "SceneToOpen": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
+        },
+        "SceneOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
+        },
+        "OpenedScene": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 400
+        },
+        "ForcedPriority": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReplaceScene(UIScene SceneInstanceToReplace, UIScene SceneToOpen, optional LocalPlayer SceneOwner, optional out UIScene OpenedScene, optional byte ForcedPriority)"
+    },
+    "InsertScene": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredInsertIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Scene": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
+        },
+        "SceneOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
+        },
+        "OpenedScene": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 400
+        },
+        "ActualInsertIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 400
+        },
+        "ForcedPriority": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InsertScene(int DesiredInsertIndex, UIScene Scene, optional LocalPlayer SceneOwner, optional out UIScene OpenedScene, optional out int ActualInsertIndex, optional byte ForcedPriority)"
+    },
+    "OpenScene": {
+      "documentation": null,
+      "signature_members": {
+        "Scene": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
+        },
+        "SceneOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
+        },
+        "OpenedScene": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 400
+        },
+        "ForcedPriority": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OpenScene(UIScene Scene, optional LocalPlayer SceneOwner, optional out UIScene OpenedScene, optional byte ForcedPriority)"
+    },
+    "InitializeScene": {
+      "documentation": null,
+      "signature_members": {
+        "Scene": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
+        },
+        "SceneOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
+        },
+        "InitializedScene": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 400
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InitializeScene(UIScene Scene, optional LocalPlayer SceneOwner, optional out UIScene InitializedScene)"
+    },
+    "IsSceneInitialized": {
+      "documentation": null,
+      "signature_members": {
+        "Scene": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsSceneInitialized(UIScene Scene)"
+    },
+    "IsUIActive": {
+      "documentation": null,
+      "signature_members": {
+        "Flags": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsUIActive(optional int Flags)"
+    },
+    "ChangeActiveSkin": {
+      "documentation": null,
+      "signature_members": {
+        "NewActiveSkin": {
+          "type": "UISkin",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ChangeActiveSkin(UISkin NewActiveSkin)"
+    }
+  },
+  "states": {},
+  "classflags": 134217883,
+  "configname": "None",
+  "documentation": null
+}

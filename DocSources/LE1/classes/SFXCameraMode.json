@@ -1,0 +1,415 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "ViewTarget": {
+      "type": "TViewTarget",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pov": {
+      "type": "TPOV",
+      "documentation": null,
+      "flags": 8192
+    },
+    "Offset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "HookOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "LastHookPos": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "CameraTargetDir": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "HookName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "CameraName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "Input": {
+      "type": "SFXCameraInput",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LastCameraCollisionActor": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "DOFHandler": {
+      "type": "BioCameraZoom",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "FOV": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "AspectRatio": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "TimeToRecenter": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "RotationSpeedLimit": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "CollisionDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "RecenterStrength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsCameraShakeEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCollisionEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bInstantTransition": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bConstrainAspectRatio": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bRecenterCamera": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bFirstPerson": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCameraRubberBand": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAllowSpectate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bRecenterCameraNew": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAutoCancelCameraRecentering": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bRecenterCancelled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "ProcessViewRotation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutViewRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        },
+        "OutDeltaRot": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessViewRotation(float DeltaTime, out Rotator OutViewRotation, out Rotator OutDeltaRot)"
+    },
+    "GetActorCameraHook": {
+      "documentation": null,
+      "signature_members": {
+        "OutLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetActorCameraHook(out Vector OutLocation)"
+    },
+    "CheckLoop": {
+      "documentation": null,
+      "signature_members": {
+        "M": {
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
+        },
+        "RecurseLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckLoop(SFXCameraMode M, int RecurseLevel)"
+    },
+    "DrawHUD": {
+      "documentation": null,
+      "signature_members": {
+        "M": {
+          "type": "BioCheatManager",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawHUD(BioCheatManager M)"
+    },
+    "GetCurrentShake": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Rotator",
+      "signature": "Rotator GetCurrentShake()"
+    },
+    "IsCollisionEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCollisionEnabled()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "MakeInactive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeInactive()"
+    },
+    "MakeActive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeActive()"
+    },
+    "AimAtPoint": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AimAtPoint(Vector V)"
+    },
+    "GetCameraHook": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetCameraHook()"
+    },
+    "CalculateOffsetHook": {
+      "documentation": null,
+      "signature_members": {
+        "Distance": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector CalculateOffsetHook(optional float Distance)"
+    },
+    "DoSniperCameraCollision": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "R": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        },
+        "A": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DoSniperCameraCollision(out Vector V, out Rotator R, Actor A)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    },
+    "GetCameraLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetCameraLocation()"
+    },
+    "ComputeClipPlaneRect": {
+      "documentation": null,
+      "signature_members": {
+        "fFov": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fNearClipPlane": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fWidth": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "fHeight": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "ComputeClipPlaneRect(float fFov, float fNearClipPlane, out float fWidth, out float fHeight)"
+    },
+    "DoCameraCollisionNative": {
+      "documentation": null,
+      "signature_members": {
+        "CollisionHook": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "V": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "R": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        },
+        "A": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DoCameraCollisionNative(Vector CollisionHook, out Vector V, out Rotator R, Actor A)"
+    },
+    "GetViewTargetAsController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Controller",
+      "signature": "Controller GetViewTargetAsController()"
+    },
+    "GetViewTargetAsPawn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Pawn",
+      "signature": "Pawn GetViewTargetAsPawn()"
+    },
+    "DoCameraCollision": {
+      "documentation": null,
+      "signature_members": {
+        "CamPosition": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "CamRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        },
+        "Owner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DoCameraCollision(out Vector CamPosition, out Rotator CamRotation, Actor Owner)"
+    },
+    "ModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": "PostProcessSettings",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    }
+  },
+  "states": {},
+  "classflags": 144703635,
+  "configname": "None",
+  "documentation": null
+}

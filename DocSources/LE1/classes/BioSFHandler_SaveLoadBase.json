@@ -1,0 +1,161 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "lstRecords": {
+      "type": "SaveGameRecord",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ActiveCharId": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "srDeleteMessage": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srDeleteConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srDeleteCancel": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srDeleteCharacterMessage": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srTimePlayed": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srLastPlayedDate": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srLastPlayedTime": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_bShowAllSaveGames": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eGuiMode": {
+      "type": "ESaveLoadGuiMode",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "DeviceSelectionCancel": {
+      "documentation": null,
+      "signature_members": {
+        "i_dwDeviceSelectionId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DeviceSelectionCancel(int i_dwDeviceSelectionId)"
+    },
+    "DeviceSelectionCompletion": {
+      "documentation": null,
+      "signature_members": {
+        "i_dwDeviceSelectionId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DeviceSelectionCompletion(int i_dwDeviceSelectionId)"
+    },
+    "DeleteGameConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DeleteGameConfirm(bool bAPressed, int nContext)"
+    },
+    "GetDisplayName": {
+      "documentation": null,
+      "signature_members": {
+        "original": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "recordIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetDisplayName(string original, int recordIndex)"
+    }
+  },
+  "states": {},
+  "classflags": 136315039,
+  "configname": "UI",
+  "documentation": null
+}

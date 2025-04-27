@@ -1,0 +1,137 @@
+{
+  "EnumValues": {
+    "GUI_HANDLER_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "GUI_HANDLER_INVENTORY": {
+      "value": 1,
+      "documentation": null
+    },
+    "GUI_HANDLER_INGAMEGUI": {
+      "value": 2,
+      "documentation": null
+    },
+    "GUI_HANDLER_CHARACTER_RECORD": {
+      "value": 3,
+      "documentation": null
+    },
+    "GUI_HANDLER_LOOT": {
+      "value": 4,
+      "documentation": null
+    },
+    "GUI_HANDLER_CONVERSATION": {
+      "value": 5,
+      "documentation": null
+    },
+    "GUI_HANDLER_SHOP": {
+      "value": 6,
+      "documentation": null
+    },
+    "GUI_HANDLER_GALAXYMAP": {
+      "value": 7,
+      "documentation": null
+    },
+    "GUI_HANDLER_MAINMENU": {
+      "value": 8,
+      "documentation": null
+    },
+    "GUI_HANDLER_NEW_CHARACTER": {
+      "value": 9,
+      "documentation": null
+    },
+    "GUI_HANDLER_SELECT_CHARACTER": {
+      "value": 10,
+      "documentation": null
+    },
+    "GUI_HANDLER_JOURNAL": {
+      "value": 11,
+      "documentation": null
+    },
+    "GUI_HANDLER_HUD": {
+      "value": 12,
+      "documentation": null
+    },
+    "GUI_HANDLER_PARTYSELECT": {
+      "value": 13,
+      "documentation": null
+    },
+    "GUI_HANDLER_XMODS": {
+      "value": 14,
+      "documentation": null
+    },
+    "GUI_HANDLER_SQUADCOMMAND": {
+      "value": 15,
+      "documentation": null
+    },
+    "GUI_HANDLER_DATACODEX": {
+      "value": 16,
+      "documentation": null
+    },
+    "GUI_HANDLER_SAVELOAD": {
+      "value": 17,
+      "documentation": null
+    },
+    "GUI_HANDLER_ACHIEVEMENT": {
+      "value": 18,
+      "documentation": null
+    },
+    "GUI_HANDLER_AREAMAP": {
+      "value": 19,
+      "documentation": null
+    },
+    "GUI_HANDLER_SHAREDINGAMEGUI": {
+      "value": 20,
+      "documentation": null
+    },
+    "GUI_HANDLER_MENUBROWSER": {
+      "value": 21,
+      "documentation": null
+    },
+    "GUI_HANDLER_GAMEOVER": {
+      "value": 22,
+      "documentation": null
+    },
+    "GUI_HANDLER_SPECIALIZATION": {
+      "value": 23,
+      "documentation": null
+    },
+    "GUI_HANDLER_MESSAGEBOX": {
+      "value": 24,
+      "documentation": null
+    },
+    "GUI_HANDLER_INTROTEXT": {
+      "value": 25,
+      "documentation": null
+    },
+    "GUI_HANDLER_BLACKSCREEN": {
+      "value": 26,
+      "documentation": null
+    },
+    "GUI_HANDLER_CREDITS": {
+      "value": 27,
+      "documentation": null
+    },
+    "GUI_HANDLER_OPTIONS": {
+      "value": 28,
+      "documentation": null
+    },
+    "GUI_HANDLER_ADDITONALCONTENT": {
+      "value": 29,
+      "documentation": null
+    },
+    "GUI_HANDLER_SKILLGAME": {
+      "value": 30,
+      "documentation": null
+    },
+    "GUI_HANDLER_SPLASH_SCREEN": {
+      "value": 31,
+      "documentation": null
+    },
+    "GUI_HANDLER_REPLAYCHARACTERSELECT": {
+      "value": 32,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

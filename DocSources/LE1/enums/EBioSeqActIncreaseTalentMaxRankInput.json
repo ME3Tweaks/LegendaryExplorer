@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EBioSeqActIncreaseTalentMaxRankInput_TalentID": {
+      "value": 0,
+      "documentation": null
+    },
+    "EBioSeqActIncreaseTalentMaxRankInput_MaxRank": {
+      "value": 1,
+      "documentation": null
+    },
+    "EBioSeqActIncreaseTalentMaxRankInput_ExtraPoints": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

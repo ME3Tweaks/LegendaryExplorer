@@ -1,0 +1,23 @@
+{
+  "members": {
+    "bProcessDuringSpawn": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bProcessDuringUpdate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseEmitterTime": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "ParticleModuleOrbit",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

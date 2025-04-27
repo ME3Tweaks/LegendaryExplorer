@@ -1,0 +1,18 @@
+{
+  "members": {
+    "NodePosX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "NodePosY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "classdef": "SoundCue",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 3
+}

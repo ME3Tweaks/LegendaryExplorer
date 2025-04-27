@@ -1,0 +1,86 @@
+{
+  "parent": "SceneCaptureComponent",
+  "package": "Engine",
+  "variables": {
+    "TextureTarget": {
+      "type": "TextureRenderTarget2D",
+      "documentation": null,
+      "flags": 8194
+    },
+    "SkeletalMeshComp": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null,
+      "flags": 67641354
+    },
+    "RenderSection": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ForceLOD": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "FadingStartTimeAfterHit": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FadingPercentage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FadingDurationTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FadingIntervalTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SetCaptureParameters": {
+      "documentation": null,
+      "signature_members": {
+        "InMaskPosition": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 130
+        },
+        "InMaskRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 130
+        },
+        "InStartupPosition": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 130
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCaptureParameters(const Vector InMaskPosition, const float InMaskRadius, const Vector InStartupPosition)"
+    },
+    "SetCaptureTargetTexture": {
+      "documentation": null,
+      "signature_members": {
+        "InTextureTarget": {
+          "type": "TextureRenderTarget2D",
+          "documentation": null,
+          "flags": 130
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCaptureTargetTexture(const TextureRenderTarget2D InTextureTarget)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

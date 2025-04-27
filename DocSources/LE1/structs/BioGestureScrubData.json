@@ -1,0 +1,53 @@
+{
+  "members": {
+    "aGestPins": {
+      "type": "BioGesturePinScrubData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "nmNextPoseSet": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmNextPoseAnim": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "fCurPoseTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fNextPoseTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fTransitionTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fCurPoseWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fTransitionWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fNextPoseWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioEngineEnums",
+  "extends": "BioGestureData",
+  "documentation": null,
+  "modifiers": 1
+}

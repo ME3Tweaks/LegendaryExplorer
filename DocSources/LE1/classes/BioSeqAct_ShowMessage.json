@@ -1,0 +1,124 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "srText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "srAButton": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "srBButton": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "fDisplayTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "nIconIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fRemainingDisplayTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bNoFade": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bFinished": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bAPressed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bWasPaused": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "nIconSet": {
+      "type": "BioMessageBoxIconSets",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "MessageBoxUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "oMsgBox": {
+          "type": "BioSFHandler_MessageBox",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MessageBoxUpdate(float fDeltaT, BioSFHandler_MessageBox oMsgBox)"
+    },
+    "MessageInputPressed": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bYPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MessageInputPressed(bool bAPressed, int nContext, bool bYPressed)"
+    },
+    "UpdateOp": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateOp(float fDeltaT)"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,16 @@
+{
+  "parent": "BioSeqVar_StrRef",
+  "package": "Engine",
+  "variables": {
+    "m_srStringID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

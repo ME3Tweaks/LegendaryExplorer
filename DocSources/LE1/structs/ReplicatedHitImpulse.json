@@ -1,0 +1,33 @@
+{
+  "members": {
+    "AppliedImpulse": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "HitLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "bRadialImpulse": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "ImpulseCount": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Actor",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

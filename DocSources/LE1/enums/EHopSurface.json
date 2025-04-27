@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "HopSurface_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "HopSurface_Floor": {
+      "value": 1,
+      "documentation": null
+    },
+    "HopSurface_Ceiling": {
+      "value": 2,
+      "documentation": null
+    },
+    "HopSurface_Wall": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

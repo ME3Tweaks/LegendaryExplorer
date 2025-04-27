@@ -1,0 +1,17 @@
+{
+  "parent": "ISFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {},
+  "functions": {
+    "Idle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Idle()"
+    }
+  },
+  "states": {},
+  "classflags": 134234259,
+  "configname": "None",
+  "documentation": null
+}

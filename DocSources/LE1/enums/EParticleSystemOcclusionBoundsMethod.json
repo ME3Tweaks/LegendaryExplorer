@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EPSOBM_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "EPSOBM_ParticleBounds": {
+      "value": 1,
+      "documentation": null
+    },
+    "EPSOBM_CustomBounds": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

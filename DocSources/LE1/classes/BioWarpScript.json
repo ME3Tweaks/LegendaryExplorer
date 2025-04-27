@@ -1,0 +1,93 @@
+{
+  "parent": "BioPowerScriptDesign",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "m_oDamageType": {
+      "type": "BioDamageType",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fDamagePerSecond": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fDamageMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "OnImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fCasterStability": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "nPreviouslyImpacted": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnImpact(Actor oCaster, float fCasterStability, Actor oImpacted, int nPreviouslyImpacted)"
+    },
+    "StartPhase": {
+      "documentation": null,
+      "signature_members": {
+        "ePhase": {
+          "type": "EBioPowerState",
+          "documentation": null,
+          "flags": 128
+        },
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartPhase(EBioPowerState ePhase, Actor oCaster, float fDuration)"
+    },
+    "InitializePowerScript": {
+      "documentation": null,
+      "signature_members": {
+        "pPower": {
+          "type": "BioPower",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializePowerScript(BioPower pPower)"
+    }
+  },
+  "states": {},
+  "classflags": 8388626,
+  "configname": "None",
+  "documentation": null
+}

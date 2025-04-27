@@ -1,0 +1,29 @@
+{
+  "parent": "Trigger",
+  "package": "Engine",
+  "variables": {
+    "PCsWithLOS": {
+      "type": "PlayerController",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "classflags": 10486290,
+  "configname": "None",
+  "documentation": null
+}

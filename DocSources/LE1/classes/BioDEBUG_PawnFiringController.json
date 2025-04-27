@@ -1,0 +1,85 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "Shooters": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Target": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 1
+    },
+    "nmTypeOfShooting": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "I": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "ShootTarget": {
+      "documentation": null,
+      "signature_members": {
+        "SHTR": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShootTarget(BioPawn SHTR)"
+    },
+    "HowManyShooting": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int HowManyShooting()"
+    }
+  },
+  "states": {
+    "Stopped": {
+      "functions": {},
+      "documentation": null
+    },
+    "AllShootSeq": {
+      "functions": {},
+      "documentation": null
+    },
+    "AllShootAtOnce": {
+      "functions": {},
+      "documentation": null
+    },
+    "LocatePawns": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "classflags": 10486290,
+  "configname": "None",
+  "documentation": null
+}

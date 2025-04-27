@@ -1,0 +1,28 @@
+{
+  "members": {
+    "oPhysMat": {
+      "type": "PhysicalMaterial",
+      "documentation": null,
+      "flags": 1
+    },
+    "fDirtValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fGrimeValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fCombatValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioVISFootstep",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

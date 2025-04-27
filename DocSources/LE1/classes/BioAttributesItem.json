@@ -1,0 +1,58 @@
+{
+  "parent": "BioAttributes",
+  "package": "SFXGame",
+  "variables": {
+    "m_BaseItemPrice": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_Label": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_Name": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_Description": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_ShopGuiItemPictureID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_IsExpanded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_InstantChange": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_RaceType": {
+      "type": "EBioAttributesItemRaceType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "DescribeAttributes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeAttributes()"
+    }
+  },
+  "states": {},
+  "classflags": 142606483,
+  "configname": "None",
+  "documentation": null
+}

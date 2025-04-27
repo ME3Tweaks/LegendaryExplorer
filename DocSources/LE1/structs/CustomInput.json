@@ -1,0 +1,18 @@
+{
+  "members": {
+    "InputName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Input": {
+      "type": "ExpressionInput",
+      "documentation": null,
+      "flags": 2199023255552
+    }
+  },
+  "classdef": "MaterialExpressionCustom",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

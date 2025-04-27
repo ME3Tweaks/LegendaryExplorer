@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Bold": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Italic": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Underline": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Shadow": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Strikethrough": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

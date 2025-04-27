@@ -1,0 +1,54 @@
+{
+  "parent": "BioVisualImpactSet",
+  "package": "SFXGame",
+  "variables": {
+    "VisualEffectMappings": {
+      "type": "BioVISXData",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "functions": {
+    "ApplyVisualImpact": {
+      "documentation": null,
+      "signature_members": {
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "rHitRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "rDirectionOfImpact": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "oWeaponVIS": {
+          "type": "BioVISWeapon",
+          "documentation": null,
+          "flags": 128
+        },
+        "oHit": {
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "oBase": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyVisualImpact(Vector vHitLocation, Rotator rHitRotation, Rotator rDirectionOfImpact, BioVISWeapon oWeaponVIS, TraceHitInfo oHit, optional Actor oBase)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

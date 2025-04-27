@@ -1,0 +1,222 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "SkeletalMeshComponent": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null,
+      "flags": 67764235
+    },
+    "ReplicatedMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 4294975520
+    },
+    "ReplicatedPhysAsset": {
+      "type": "PhysicsAsset",
+      "documentation": null,
+      "flags": 4294975520
+    },
+    "bDamageAppliesImpulse": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bWakeOnLevelStart": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bBlockPawns": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "DoKismetAttachment": {
+      "documentation": null,
+      "signature_members": {
+        "Attachment": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "Action": {
+          "type": "SeqAct_AttachToActor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DoKismetAttachment(Actor Attachment, SeqAct_AttachToActor Action)"
+    },
+    "OnTeleport": {
+      "documentation": null,
+      "signature_members": {
+        "inAction": {
+          "type": "SeqAct_Teleport",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTeleport(SeqAct_Teleport inAction)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    },
+    "TakeRadiusDamage": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "BaseDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "HurtOrigin": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "bFullDamage": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageCauser": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "pDamage": {
+          "type": "DamageType",
+          "documentation": null,
+          "flags": 144
+        },
+        "DamageFalloffExponent": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeRadiusDamage(Controller InstigatedBy, float BaseDamage, float DamageRadius, Class<DamageType> DamageType, float Momentum, Vector HurtOrigin, bool bFullDamage, Actor DamageCauser, optional DamageType pDamage, optional float DamageFalloffExponent)"
+    },
+    "TakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "EventInstigator": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitInfo": {
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "DamageCauser": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamage": {
+          "type": "DamageType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeDamage(float Damage, Controller EventInstigator, Vector HitLocation, Vector Momentum, Class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser, optional DamageType pDamage)"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "SetMeshAndPhysAsset": {
+      "documentation": null,
+      "signature_members": {
+        "NewMesh": {
+          "type": "SkeletalMesh",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewPhysAsset": {
+          "type": "PhysicsAsset",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMeshAndPhysAsset(SkeletalMesh NewMesh, PhysicsAsset NewPhysAsset)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 144706194,
+  "configname": "None",
+  "documentation": null
+}

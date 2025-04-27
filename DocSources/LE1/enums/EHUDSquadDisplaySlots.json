@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "HUD_SQUAD_DISPLAY_SLOT_BOTTOM": {
+      "value": 0,
+      "documentation": null
+    },
+    "HUD_SQUAD_DISPLAY_SLOT_MIDDLE": {
+      "value": 1,
+      "documentation": null
+    },
+    "HUD_SQUAD_DISPLAY_SLOT_TOP": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

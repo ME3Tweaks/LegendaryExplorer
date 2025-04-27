@@ -1,0 +1,34 @@
+{
+  "parent": "SkeletalMeshActor",
+  "package": "Engine",
+  "variables": {
+    "ExtremeContent": {
+      "type": "SkelMaterialSetterDatum",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "NonExtremeContent": {
+      "type": "SkelMaterialSetterDatum",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "functions": {
+    "SetMaterialBasedOnExtremeContent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetMaterialBasedOnExtremeContent()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

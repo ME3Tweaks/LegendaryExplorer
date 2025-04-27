@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "TELEM_OPTION_TYPE_WINDOW_MODE": {
+      "value": 0,
+      "documentation": null
+    },
+    "TELEM_OPTION_TYPE_RESOLUTION": {
+      "value": 1,
+      "documentation": null
+    },
+    "TELEM_OPTION_TYPE_DYNAMIC_SHADOWS": {
+      "value": 2,
+      "documentation": null
+    },
+    "TELEM_OPTION_TYPE_TEXTURE_DETAIL": {
+      "value": 3,
+      "documentation": null
+    },
+    "TELEM_OPTION_TYPE_VSYNC": {
+      "value": 4,
+      "documentation": null
+    },
+    "TELEM_OPTION_TYPE_BRIGHTNESS": {
+      "value": 5,
+      "documentation": null
+    },
+    "TELEM_OPTION_TYPE_HDR_ENABLE": {
+      "value": 6,
+      "documentation": null
+    },
+    "TELEM_OPTION_TYPE_HDR_CONTRAST": {
+      "value": 7,
+      "documentation": null
+    },
+    "TELEM_OPTION_TYPE_HDR_BRIGHTNESS": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

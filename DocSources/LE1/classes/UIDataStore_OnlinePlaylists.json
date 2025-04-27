@@ -1,0 +1,176 @@
+{
+  "parent": "UIDataStore",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "ProviderClassName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "RankedDataProviders": {
+      "type": "UIResourceDataProvider",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "UnRankedDataProviders": {
+      "type": "UIResourceDataProvider",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "ProviderClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "GetOnlinePlaylistProvider": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlaylistId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "ProviderIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 400
+        }
+      },
+      "returntype": "OnlinePlaylistProvider",
+      "signature": "OnlinePlaylistProvider GetOnlinePlaylistProvider(Name ProviderTag, int PlaylistId, optional out int ProviderIndex)"
+    },
+    "GetPlaylistProvider": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ProviderIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_Provider": {
+          "type": "UIResourceDataProvider",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPlaylistProvider(Name ProviderTag, int ProviderIndex, out UIResourceDataProvider out_Provider)"
+    },
+    "FindProviderIndexByFieldValue": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "SearchField": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ValueToSearchFor": {
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindProviderIndexByFieldValue(Name ProviderTag, Name SearchField, const out UIProviderScriptFieldValue ValueToSearchFor)"
+    },
+    "GetProviderFieldValue": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "SearchField": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ProviderIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_FieldValue": {
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProviderFieldValue(Name ProviderTag, Name SearchField, int ProviderIndex, out UIProviderScriptFieldValue out_FieldValue)"
+    },
+    "GetResourceProviderFields": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ProviderFieldTags": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetResourceProviderFields(Name ProviderTag, out array<Name> ProviderFieldTags)"
+    },
+    "GetResourceProviders": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_Providers": {
+          "type": "UIResourceDataProvider",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetResourceProviders(Name ProviderTag, out array<UIResourceDataProvider> out_Providers)"
+    },
+    "GetProviderCount": {
+      "documentation": null,
+      "signature_members": {
+        "ProviderTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetProviderCount(Name ProviderTag)"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "Game",
+  "documentation": null
+}

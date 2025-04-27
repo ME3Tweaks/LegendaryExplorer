@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Achievements": {
+      "type": "AchievementDetails",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "TempImage": {
+      "type": "Surface",
+      "documentation": null,
+      "flags": 2
+    },
+    "PlayerNum": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "TitleId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ReadState": {
+      "type": "EOnlineEnumerationReadState",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXOnlineComponentUnrealPlayer",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

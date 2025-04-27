@@ -1,0 +1,18 @@
+{
+  "members": {
+    "CurveName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "Weight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "AnimNode",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

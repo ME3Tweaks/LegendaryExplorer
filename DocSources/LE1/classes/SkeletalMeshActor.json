@@ -1,0 +1,472 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "ControlTargets": {
+      "type": "SkelMeshActorControlTarget",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "InterpGroupList": {
+      "type": "InterpGroup",
+      "documentation": null,
+      "flags": 1152921504611049472
+    },
+    "SkeletalMeshComponent": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "LightEnvironment": {
+      "type": "LightEnvironmentComponent",
+      "documentation": null,
+      "flags": 67764235
+    },
+    "FacialAudioComp": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "ReplicatedMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 4294975520
+    },
+    "ReplicatedMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 4294967328
+    },
+    "bDamageAppliesImpulse": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCheckpointSaveRotation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bShouldDoAnimNotifies": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetPrimarySkelMeshComponent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SkeletalMeshComponent",
+      "signature": "SkeletalMeshComponent GetPrimarySkelMeshComponent()"
+    },
+    "SkelMeshActorOnParticleSystemFinished": {
+      "documentation": null,
+      "signature_members": {
+        "PSC": {
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "SkelMeshActorOnParticleSystemFinished(ParticleSystemComponent PSC)"
+    },
+    "PlayParticleEffect": {
+      "documentation": null,
+      "signature_members": {
+        "AnimNotifyData": {
+          "type": "AnimNotify_PlayParticleEffect",
+          "documentation": null,
+          "flags": 130
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayParticleEffect(const AnimNotify_PlayParticleEffect AnimNotifyData)"
+    },
+    "ApplyCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyCheckpointRecord(const out CheckpointRecord Record)"
+    },
+    "CreateCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateCheckpointRecord(out CheckpointRecord Record)"
+    },
+    "ShouldSaveForCheckpoint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldSaveForCheckpoint()"
+    },
+    "TakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "EventInstigator": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitInfo": {
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "DamageCauser": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamage": {
+          "type": "DamageType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeDamage(float Damage, Controller EventInstigator, Vector HitLocation, Vector Momentum, Class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser, optional DamageType pDamage)"
+    },
+    "OnEffectsMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "BioSeqAct_EffectsMaterial",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnEffectsMaterial(BioSeqAct_EffectsMaterial Action)"
+    },
+    "GetFractionOfEffectsMaterialEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetFractionOfEffectsMaterialEnabled()"
+    },
+    "SetFractionOfEffectsMaterialEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "FractionEnabled": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFractionOfEffectsMaterialEnabled(float FractionEnabled)"
+    },
+    "GetEffectsMaterialType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EEffectsMaterialType",
+      "signature": "EEffectsMaterialType GetEffectsMaterialType()"
+    },
+    "SetEffectsMaterialType": {
+      "documentation": null,
+      "signature_members": {
+        "EffectsMaterialType": {
+          "type": "EEffectsMaterialType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEffectsMaterialType(EEffectsMaterialType EffectsMaterialType)"
+    },
+    "DoKismetAttachment": {
+      "documentation": null,
+      "signature_members": {
+        "Attachment": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "Action": {
+          "type": "SeqAct_AttachToActor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DoKismetAttachment(Actor Attachment, SeqAct_AttachToActor Action)"
+    },
+    "OnSetSkelControlTarget": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_SetSkelControlTarget",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSetSkelControlTarget(SeqAct_SetSkelControlTarget Action)"
+    },
+    "OnUpdatePhysBonesFromAnim": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_UpdatePhysBonesFromAnim",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUpdatePhysBonesFromAnim(SeqAct_UpdatePhysBonesFromAnim Action)"
+    },
+    "OnSetMesh": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_SetMesh",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSetMesh(SeqAct_SetMesh Action)"
+    },
+    "IsActorPlayingFaceFXAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsActorPlayingFaceFXAnim()"
+    },
+    "GetActorFaceFXAsset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "FaceFXAsset",
+      "signature": "FaceFXAsset GetActorFaceFXAsset()"
+    },
+    "OnPlayFaceFXAnim": {
+      "documentation": null,
+      "signature_members": {
+        "inAction": {
+          "type": "SeqAct_PlayFaceFXAnim",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnPlayFaceFXAnim(SeqAct_PlayFaceFXAnim inAction)"
+    },
+    "GetFaceFXAudioComponent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "AudioComponent",
+      "signature": "AudioComponent GetFaceFXAudioComponent()"
+    },
+    "StopActorFaceFXAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopActorFaceFXAnim()"
+    },
+    "PlayActorFaceFXAnim": {
+      "documentation": null,
+      "signature_members": {
+        "AnimSet": {
+          "type": "FaceFXAnimSet",
+          "documentation": null,
+          "flags": 128
+        },
+        "GroupName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "SeqName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "SoundCueToPlay": {
+          "type": "SoundCue",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayActorFaceFXAnim(FaceFXAnimSet AnimSet, string GroupName, string SeqName, SoundCue SoundCueToPlay)"
+    },
+    "MAT_FinishAnimControl": {
+      "documentation": null,
+      "signature_members": {
+        "InInterpGroup": {
+          "type": "InterpGroup",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MAT_FinishAnimControl(InterpGroup InInterpGroup)"
+    },
+    "FinishAnimControl": {
+      "documentation": null,
+      "signature_members": {
+        "InInterpGroup": {
+          "type": "InterpGroup",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "FinishAnimControl(InterpGroup InInterpGroup)"
+    },
+    "SetAnimPosition": {
+      "documentation": null,
+      "signature_members": {
+        "SlotName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ChannelIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "InAnimSeqName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "InPosition": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bFireNotifies": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bLooping": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAnimPosition(Name SlotName, int ChannelIndex, Name InAnimSeqName, float InPosition, bool bFireNotifies, bool bLooping)"
+    },
+    "MAT_BeginAnimControl": {
+      "documentation": null,
+      "signature_members": {
+        "InInterpGroup": {
+          "type": "InterpGroup",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MAT_BeginAnimControl(InterpGroup InInterpGroup)"
+    },
+    "BeginAnimControl": {
+      "documentation": null,
+      "signature_members": {
+        "InInterpGroup": {
+          "type": "InterpGroup",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "BeginAnimControl(InterpGroup InInterpGroup)"
+    },
+    "OnSetMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_SetMaterial",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSetMaterial(SeqAct_SetMaterial Action)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "UpdateAnimSetList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateAnimSetList()"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

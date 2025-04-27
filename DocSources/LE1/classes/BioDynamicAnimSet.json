@@ -1,0 +1,26 @@
+{
+  "parent": "AnimSet",
+  "package": "Engine",
+  "variables": {
+    "m_mapRefCounts": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_pGlobalAnimSet": {
+      "type": "BioDynamicAnimSet",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nmOrigSetName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

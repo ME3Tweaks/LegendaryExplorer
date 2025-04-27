@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_SHOP_INVENTORY_PERMANENT": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_SHOP_INVENTORY_PREMIUM": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_SHOP_INVENTORY_LIMITED": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

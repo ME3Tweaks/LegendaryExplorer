@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "MeshType_StaticMesh": {
+      "value": 0,
+      "documentation": null
+    },
+    "MeshType_SkeletalMesh": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

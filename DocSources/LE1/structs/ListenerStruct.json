@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Location": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Up": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Right": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Front": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "AudioDevice",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

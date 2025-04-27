@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "PlayerAppearanceType_Parts": {
+      "value": 0,
+      "documentation": null
+    },
+    "PlayerAppearanceType_Full": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,10 @@
+{
+  "parent": "Scout",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 144704190,
+  "configname": "Game",
+  "documentation": null
+}

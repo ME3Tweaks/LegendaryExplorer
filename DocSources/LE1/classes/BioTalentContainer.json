@@ -1,0 +1,491 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_TalentSpecArray": {
+      "type": "BioTalentSpecification",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_SimpleTalentArray": {
+      "type": "BioTalent",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_Target": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_PASSIVE_RANK_ICON": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_LOCKED_RANK_ICON": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_UNLOCKED_RANK_ICON": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16386
+    },
+    "srPluralUnlockRequirement": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16386
+    },
+    "srSingularUnlockRequirement": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16386
+    },
+    "srRequiredUnlockRequirement": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_TalentPointsSpent": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_IsLevelUpInProgress": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetNumberOfTalentPointsSpent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumberOfTalentPointsSpent()"
+    },
+    "ReloadTalentContainer": {
+      "documentation": null,
+      "signature_members": {
+        "targetBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "simpleTalents": {
+          "type": "BioSimpleTalentSave",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "complexTalents": {
+          "type": "BioComplexTalentSave",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "ReloadTalentContainer(BioPawnBehavior targetBehavior, out array<BioSimpleTalentSave> simpleTalents, out array<BioComplexTalentSave> complexTalents)"
+    },
+    "GetTalentSaveData": {
+      "documentation": null,
+      "signature_members": {
+        "simpleTalents": {
+          "type": "BioSimpleTalentSave",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "complexTalents": {
+          "type": "BioComplexTalentSave",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetTalentSaveData(out array<BioSimpleTalentSave> simpleTalents, out array<BioComplexTalentSave> complexTalents)"
+    },
+    "GetTalentRank": {
+      "documentation": null,
+      "signature_members": {
+        "TalentID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "talentRank": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTalentRank(int TalentID, out int talentRank)"
+    },
+    "GetTalentDebugData": {
+      "documentation": null,
+      "signature_members": {
+        "dataArray": {
+          "type": "BioTalentDebugData",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "simpleTalentStartIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTalentDebugData(out array<BioTalentDebugData> dataArray, out int simpleTalentStartIndex)"
+    },
+    "CanDecrementLevelUpRank": {
+      "documentation": null,
+      "signature_members": {
+        "talentIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanDecrementLevelUpRank(int talentIndex)"
+    },
+    "CanIncrementLevelUpRank": {
+      "documentation": null,
+      "signature_members": {
+        "talentIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanIncrementLevelUpRank(int talentIndex)"
+    },
+    "DecrementLevelUpRank": {
+      "documentation": null,
+      "signature_members": {
+        "talentIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DecrementLevelUpRank(int talentIndex)"
+    },
+    "IncrementLevelUpRank": {
+      "documentation": null,
+      "signature_members": {
+        "talentIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IncrementLevelUpRank(int talentIndex)"
+    },
+    "GetTalentLevelUpRank": {
+      "documentation": null,
+      "signature_members": {
+        "talentIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "talentRank": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTalentLevelUpRank(int talentIndex, out int talentRank)"
+    },
+    "GetTalentLevelUpIndex": {
+      "documentation": null,
+      "signature_members": {
+        "TalentID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "talentIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTalentLevelUpIndex(int TalentID, out int talentIndex)"
+    },
+    "GetDynamicLevelUpTalentData": {
+      "documentation": null,
+      "signature_members": {
+        "talentIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Data": {
+          "type": "BioTalentDynamicData",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetDynamicLevelUpTalentData(int talentIndex, out BioTalentDynamicData Data)"
+    },
+    "GetStaticLevelUpTalentData": {
+      "documentation": null,
+      "signature_members": {
+        "dataArray": {
+          "type": "BioTalentStaticData",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStaticLevelUpTalentData(out array<BioTalentStaticData> dataArray)"
+    },
+    "GetNumLevelUpPoints": {
+      "documentation": null,
+      "signature_members": {
+        "numPoints": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "pointsSpent": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetNumLevelUpPoints(out int numPoints, out int pointsSpent)"
+    },
+    "GetNumLevelUpTalents": {
+      "documentation": null,
+      "signature_members": {
+        "numTalents": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetNumLevelUpTalents(out int numTalents)"
+    },
+    "ClearLevelUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ClearLevelUp()"
+    },
+    "ApplyLevelUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ApplyLevelUp()"
+    },
+    "InitializeLevelUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InitializeLevelUp()"
+    },
+    "AddPrerequisiteTalent": {
+      "documentation": null,
+      "signature_members": {
+        "TalentID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "prereqID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "prereqRank": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPrerequisiteTalent(int TalentID, int prereqID, int prereqRank)"
+    },
+    "ScaleTalentByIncrement": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "rankIncrement": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ScaleTalentByIncrement(int Id, int rankIncrement)"
+    },
+    "ScaleTalentToRank": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Rank": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ScaleTalentToRank(int Id, int Rank)"
+    },
+    "IncreaseTalentMaxRankByIncrement": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "MaxRankIncrement": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IncreaseTalentMaxRankByIncrement(int Id, int MaxRankIncrement)"
+    },
+    "IncreaseTalentMaxRank": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "MaxRank": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IncreaseTalentMaxRank(int Id, int MaxRank)"
+    },
+    "RemoveTalent": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioTalent",
+      "signature": "BioTalent RemoveTalent(int Id)"
+    },
+    "AddSimpleTalent": {
+      "documentation": null,
+      "signature_members": {
+        "Talent": {
+          "type": "BioTalent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "AddSimpleTalent(BioTalent Talent)"
+    },
+    "AddSpecialization": {
+      "documentation": null,
+      "signature_members": {
+        "bonusIdentification": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "ReplaceTalentID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddSpecialization(int bonusIdentification, int ReplaceTalentID)"
+    },
+    "AddBonusTalents": {
+      "documentation": null,
+      "signature_members": {
+        "bonusIdentifier": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddBonusTalents(int bonusIdentifier)"
+    },
+    "AddTalent": {
+      "documentation": null,
+      "signature_members": {
+        "Talent": {
+          "type": "BioTalent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "MaxRank": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "LevelOffset": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "LevelsPerRank": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "VisualOrder": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddTalent(BioTalent Talent, int MaxRank, int LevelOffset, int LevelsPerRank, int VisualOrder)"
+    },
+    "SetTarget": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTarget(BioPawn Target)"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

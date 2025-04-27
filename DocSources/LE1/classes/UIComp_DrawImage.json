@@ -1,0 +1,217 @@
+{
+  "parent": "UIComp_DrawComponents",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIStyleResolver": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "VfTable_ICustomPropertyItemHandler": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "ImageStyle": {
+      "type": "UIStyleReference",
+      "documentation": null,
+      "flags": 0
+    },
+    "StyleCustomization": {
+      "type": "UIImageStyleOverride",
+      "documentation": null,
+      "flags": 1
+    },
+    "StyleResolverTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "ImageRef": {
+      "type": "UITexture",
+      "documentation": null,
+      "flags": 339738633
+    }
+  },
+  "functions": {
+    "NotifyResolveStyle": {
+      "documentation": null,
+      "signature_members": {
+        "ActiveSkin": {
+          "type": "UISkin",
+          "documentation": null,
+          "flags": 128
+        },
+        "bClearExistingValue": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "CurrentMenuState": {
+          "type": "UIState",
+          "documentation": null,
+          "flags": 144
+        },
+        "StylePropertyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 146
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyResolveStyle(UISkin ActiveSkin, bool bClearExistingValue, optional UIState CurrentMenuState, optional const Name StylePropertyName)"
+    },
+    "SetStyleResolverTag": {
+      "documentation": null,
+      "signature_members": {
+        "NewResolverTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetStyleResolverTag(Name NewResolverTag)"
+    },
+    "GetStyleResolverTag": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetStyleResolverTag()"
+    },
+    "GetImage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Surface",
+      "signature": "Surface GetImage()"
+    },
+    "DisableCustomFormatting": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCustomFormatting()"
+    },
+    "DisableCustomPadding": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCustomPadding()"
+    },
+    "DisableCustomOpacity": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCustomOpacity()"
+    },
+    "DisableCustomColor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCustomColor()"
+    },
+    "DisableCustomCoordinates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCustomCoordinates()"
+    },
+    "SetFormatting": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewFormattingData": {
+          "type": "UIImageAdjustmentData",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFormatting(EUIOrientation Orientation, UIImageAdjustmentData NewFormattingData)"
+    },
+    "SetPadding": {
+      "documentation": null,
+      "signature_members": {
+        "HorizontalPadding": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "VerticalPadding": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPadding(float HorizontalPadding, float VerticalPadding)"
+    },
+    "SetOpacity": {
+      "documentation": null,
+      "signature_members": {
+        "NewOpacity": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOpacity(float NewOpacity)"
+    },
+    "SetColor": {
+      "documentation": null,
+      "signature_members": {
+        "NewColor": {
+          "type": "LinearColor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetColor(LinearColor NewColor)"
+    },
+    "SetCoordinates": {
+      "documentation": null,
+      "signature_members": {
+        "NewCoordinates": {
+          "type": "TextureCoordinates",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCoordinates(TextureCoordinates NewCoordinates)"
+    },
+    "SetImage": {
+      "documentation": null,
+      "signature_members": {
+        "NewImage": {
+          "type": "Surface",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetImage(Surface NewImage)"
+    },
+    "GetAppliedImageStyle": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredMenuState": {
+          "type": "UIState",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "UIStyle_Image",
+      "signature": "UIStyle_Image GetAppliedImageStyle(optional UIState DesiredMenuState)"
+    }
+  },
+  "states": {},
+  "classflags": 144707730,
+  "configname": "None",
+  "documentation": null
+}

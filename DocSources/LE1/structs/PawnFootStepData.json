@@ -1,0 +1,28 @@
+{
+  "members": {
+    "FootStepVIS": {
+      "type": "BioVISFootstep",
+      "documentation": null,
+      "flags": 0
+    },
+    "BoneIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "TimeOutRemaining": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FootStepRequested": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioPawn",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

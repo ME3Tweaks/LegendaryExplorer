@@ -1,0 +1,26 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_nCredits": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16385
+    },
+    "m_fMediGel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "m_fBlackSand": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217878,
+  "configname": "Party",
+  "documentation": null
+}

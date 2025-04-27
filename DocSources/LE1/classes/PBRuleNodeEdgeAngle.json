@@ -1,0 +1,21 @@
+{
+  "parent": "PBRuleNodeBase",
+  "package": "Engine",
+  "variables": {
+    "Angles": {
+      "type": "RBEdgeAngleInfo",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Edge": {
+      "type": "EProcBuildingEdge",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136327314,
+  "configname": "None",
+  "documentation": null
+}

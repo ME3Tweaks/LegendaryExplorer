@@ -1,0 +1,53 @@
+{
+  "members": {
+    "Command": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Name": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "Control": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "Shift": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "Alt": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bDebug": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIgnoreCtrl": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIgnoreShift": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIgnoreAlt": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioPlayerInput",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

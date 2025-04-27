@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "eBioGM_PlanetType_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioGM_PlanetType_Planet": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioGM_PlanetType_Anomaly": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioGM_PlanetType_PlanetAndAnomaly": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioGM_PlanetType_Citadel": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

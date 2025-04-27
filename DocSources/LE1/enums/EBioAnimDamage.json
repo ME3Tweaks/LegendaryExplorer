@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "eBioAnimDamage_Front": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimDamage_Rear": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimDamage_Left": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimDamage_Right": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

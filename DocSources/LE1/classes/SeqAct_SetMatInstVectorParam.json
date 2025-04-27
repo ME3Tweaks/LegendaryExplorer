@@ -1,0 +1,33 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "VectorValue": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 1
+    },
+    "MatInst": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null,
+      "flags": 1
+    },
+    "ParamName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 169869458,
+  "configname": "None",
+  "documentation": null
+}

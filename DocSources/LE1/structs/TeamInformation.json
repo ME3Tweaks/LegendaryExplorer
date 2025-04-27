@@ -1,0 +1,28 @@
+{
+  "members": {
+    "TeamName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "TeamIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "TeamColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "GameplayEvents",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

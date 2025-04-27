@@ -1,0 +1,35 @@
+{
+  "parent": "BioInterface_Appearance",
+  "package": "SFXGame",
+  "variables": {
+    "m_aTurretRuntimeInfo": {
+      "type": "BioVehicleTurretRunTimeInfo",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "ResetToDefaults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetToDefaults()"
+    },
+    "UpdateAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "bForceUpdate": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateAppearance(optional bool bForceUpdate)"
+    }
+  },
+  "states": {},
+  "classflags": 142610582,
+  "configname": "Game",
+  "documentation": null
+}

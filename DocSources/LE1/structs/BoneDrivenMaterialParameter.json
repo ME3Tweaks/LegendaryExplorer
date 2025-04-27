@@ -1,0 +1,33 @@
+{
+  "members": {
+    "MaterialSlot": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ParameterName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "LocalSpace": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "Axis": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SkeletalMeshComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

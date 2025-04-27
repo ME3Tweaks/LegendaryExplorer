@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "WIN_MODE_FULLSCREEN": {
+      "value": 0,
+      "documentation": null
+    },
+    "WIN_MODE_BORDERLESS": {
+      "value": 1,
+      "documentation": null
+    },
+    "WIN_MODE_WINDOWED": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

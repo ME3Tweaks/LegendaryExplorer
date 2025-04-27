@@ -1,0 +1,41 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "LifetimePolicies": {
+      "type": "DecalLifetime",
+      "documentation": null,
+      "flags": 4194306
+    }
+  },
+  "functions": {
+    "Disconnect": {
+      "documentation": null,
+      "signature_members": {
+        "InDecalComponent": {
+          "type": "DecalComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "Disconnect(DecalComponent InDecalComponent)"
+    },
+    "Connect": {
+      "documentation": null,
+      "signature_members": {
+        "InDecalComponent": {
+          "type": "DecalComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "Connect(DecalComponent InDecalComponent)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

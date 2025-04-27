@@ -1,0 +1,45 @@
+{
+  "EnumValues": {
+    "RA_Absolute": {
+      "value": 0,
+      "documentation": null
+    },
+    "RA_Center": {
+      "value": 1,
+      "documentation": null
+    },
+    "RA_PivotLeft": {
+      "value": 2,
+      "documentation": null
+    },
+    "RA_PivotRight": {
+      "value": 3,
+      "documentation": null
+    },
+    "RA_PivotTop": {
+      "value": 4,
+      "documentation": null
+    },
+    "RA_PivotBottom": {
+      "value": 5,
+      "documentation": null
+    },
+    "RA_UpperLeft": {
+      "value": 6,
+      "documentation": null
+    },
+    "RA_UpperRight": {
+      "value": 7,
+      "documentation": null
+    },
+    "RA_LowerLeft": {
+      "value": 8,
+      "documentation": null
+    },
+    "RA_LowerRight": {
+      "value": 9,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

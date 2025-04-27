@@ -1,0 +1,80 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_sPhysicsSoundEntity": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "m_aAudioTracks": {
+      "type": "BioPhysicsSoundsInfo",
+      "documentation": null,
+      "flags": 4726784
+    },
+    "m_fMaxMass": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fMaxSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fMinTimeBetweenSoundByActor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nMaxSimultaneousSounds": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_bPhysicsSoundDebug": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {
+    "RequestSound": {
+      "documentation": null,
+      "signature_members": {
+        "nPriority": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "oComp0": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "oComp1": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "ContactInfos": {
+          "type": "RigidBodyContactInfo",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RequestSound(int nPriority, PrimitiveComponent oComp0, PrimitiveComponent oComp1, const out array<RigidBodyContactInfo> ContactInfos)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    }
+  },
+  "states": {},
+  "classflags": 142606486,
+  "configname": "Game",
+  "documentation": null
+}

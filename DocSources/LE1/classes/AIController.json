@@ -1,0 +1,254 @@
+{
+  "parent": "Controller",
+  "package": "Engine",
+  "variables": {
+    "ScriptedMoveTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "ScriptedRoute": {
+      "type": "Route",
+      "documentation": null,
+      "flags": 0
+    },
+    "ScriptedFocus": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "BalancingTickGroup": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "Skill": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ScriptedRouteIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bAdjustFromWalls": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bReverseScriptedRoute": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetMyBalancingTickGroup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMyBalancingTickGroup()"
+    },
+    "CanFireWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "Wpn": {
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
+        },
+        "FireModeNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanFireWeapon(Weapon Wpn, byte FireModeNum)"
+    },
+    "ShouldRefire": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldRefire()"
+    },
+    "NotifyWeaponFinishedFiring": {
+      "documentation": null,
+      "signature_members": {
+        "W": {
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
+        },
+        "FireMode": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyWeaponFinishedFiring(Weapon W, byte FireMode)"
+    },
+    "NotifyWeaponFired": {
+      "documentation": null,
+      "signature_members": {
+        "W": {
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
+        },
+        "FireMode": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyWeaponFired(Weapon W, byte FireMode)"
+    },
+    "OnAIMoveToActor": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_AIMoveToActor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAIMoveToActor(SeqAct_AIMoveToActor Action)"
+    },
+    "GetPlayerViewPoint": {
+      "documentation": null,
+      "signature_members": {
+        "out_Location": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "out_Rotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPlayerViewPoint(out Vector out_Location, out Rotator out_Rotation)"
+    },
+    "SetTeam": {
+      "documentation": null,
+      "signature_members": {
+        "inTeamIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTeam(int inTeamIdx)"
+    },
+    "PriorityObjective": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PriorityObjective()"
+    },
+    "GetOrders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetOrders()"
+    },
+    "GetOrderObject": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Actor",
+      "signature": "Actor GetOrderObject()"
+    },
+    "SetOrders": {
+      "documentation": null,
+      "signature_members": {
+        "NewOrders": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "OrderGiver": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOrders(Name NewOrders, Controller OrderGiver)"
+    },
+    "DisplayDebug": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": "HUD",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_YL": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "out_YPos": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayDebug(HUD HUD, out float out_YL, out float out_YPos)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "PreBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreBeginPlay()"
+    }
+  },
+  "states": {
+    "ScriptedRouteMove": {
+      "functions": {
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "ScriptedMove": {
+      "functions": {
+        "PushedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "PoppedState": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,16 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "SpeedTreeComponent": {
+      "type": "SpeedTreeComponent",
+      "documentation": null,
+      "flags": 67764235
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

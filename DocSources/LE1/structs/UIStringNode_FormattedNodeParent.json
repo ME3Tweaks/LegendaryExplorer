@@ -1,0 +1,7 @@
+{
+  "members": {},
+  "classdef": "UIRoot",
+  "extends": "UIStringNode_Text",
+  "documentation": null,
+  "modifiers": 9
+}

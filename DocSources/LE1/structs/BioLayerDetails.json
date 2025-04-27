@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Suffix": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Description": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Color": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 0
+    },
+    "ForceBlockOnLoad": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Engine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

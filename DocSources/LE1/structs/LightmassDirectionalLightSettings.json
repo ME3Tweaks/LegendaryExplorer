@@ -1,0 +1,13 @@
+{
+  "members": {
+    "LightSourceAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "EngineTypes",
+  "extends": "LightmassLightSettings",
+  "documentation": null,
+  "modifiers": 1
+}

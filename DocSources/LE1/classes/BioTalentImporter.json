@@ -1,0 +1,189 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_aTalent2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDefault2DAsLoaded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "LoadTalent2DAs": {
+      "documentation": null,
+      "signature_members": {
+        "nmPackage": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadTalent2DAs(Name nmPackage)"
+    },
+    "GetTalentRankGuiData": {
+      "documentation": null,
+      "signature_members": {
+        "TalentID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "MaxRank": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "iconArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "nameArray": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "descArray": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "unlockBlurbArray": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTalentRankGuiData(int TalentID, int MaxRank, out array<int> iconArray, out array<stringref> nameArray, out array<stringref> descArray, out array<stringref> unlockBlurbArray)"
+    },
+    "GetTalentGuiData": {
+      "documentation": null,
+      "signature_members": {
+        "TalentID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "talentName": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
+        },
+        "Description": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
+        },
+        "UnlockName": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
+        },
+        "UnlockBlurb": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTalentGuiData(int TalentID, out stringref talentName, out stringref Description, out stringref UnlockName, out stringref UnlockBlurb)"
+    },
+    "LoadBonusTalentData": {
+      "documentation": null,
+      "signature_members": {
+        "Row": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "MaxRank": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "LevelOffset": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "LevelsPerRank": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "StartingRank": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "IsVisible": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "VisualOrder": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadBonusTalentData(int Row, out int MaxRank, out int LevelOffset, out int LevelsPerRank, out int StartingRank, out int IsVisible, out int VisualOrder)"
+    },
+    "LoadBonusTalentRowsAndIDs": {
+      "documentation": null,
+      "signature_members": {
+        "bonusIdentifier": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Rows": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "talentIDs": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadBonusTalentRowsAndIDs(int bonusIdentifier, out array<int> Rows, out array<int> talentIDs)"
+    },
+    "LoadTalent": {
+      "documentation": null,
+      "signature_members": {
+        "Behavior": {
+          "type": "BioActorBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "TalentID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Rank": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioTalent",
+      "signature": "BioTalent LoadTalent(BioActorBehavior Behavior, int TalentID, int Rank)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

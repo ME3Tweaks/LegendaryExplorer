@@ -1,0 +1,65 @@
+{
+  "EnumValues": {
+    "DD_VIDEO_WIN": {
+      "value": 0,
+      "documentation": null
+    },
+    "DD_VIDEO_EFFECTS": {
+      "value": 1,
+      "documentation": null
+    },
+    "DD_VIDEO_RESOLUTION": {
+      "value": 2,
+      "documentation": null
+    },
+    "DD_VIDEO_TEXTURE_DETAIL": {
+      "value": 3,
+      "documentation": null
+    },
+    "DD_VIDEO_FILTERING": {
+      "value": 4,
+      "documentation": null
+    },
+    "DD_GAMEPLAY_COMBAT_DIFF": {
+      "value": 5,
+      "documentation": null
+    },
+    "DD_GAMEPLAY_AUTO_LEVEL": {
+      "value": 6,
+      "documentation": null
+    },
+    "DD_GAMEPLAY_TARGET_ASSIST": {
+      "value": 7,
+      "documentation": null
+    },
+    "DD_GAMEPLAY_SQUAD_POWER": {
+      "value": 8,
+      "documentation": null
+    },
+    "DD_CONTROLLER_ANALOGSENSE": {
+      "value": 9,
+      "documentation": null
+    },
+    "DD_CONTROLLER_STICKCONFIG": {
+      "value": 10,
+      "documentation": null
+    },
+    "DD_CONTROLLER_SHOOTCONFIG": {
+      "value": 11,
+      "documentation": null
+    },
+    "DD_SELECTED_MONITOR": {
+      "value": 12,
+      "documentation": null
+    },
+    "DD_GAMEPLAY_LEGACY_LEVELUP": {
+      "value": 13,
+      "documentation": null
+    },
+    "DD_UNCAPPED_FRAMERATE": {
+      "value": 14,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

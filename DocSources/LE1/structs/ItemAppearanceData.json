@@ -1,0 +1,28 @@
+{
+  "members": {
+    "nItemID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nManufacturer": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEquipped": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "eSophistication": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioGamerProfile",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

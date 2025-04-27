@@ -1,0 +1,74 @@
+{
+  "parent": "UIComp_ListPresenterBase",
+  "package": "Engine",
+  "variables": {
+    "VfTable_ICustomPropertyItemHandler": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "ElementSchema": {
+      "type": "UIElementCellSchema",
+      "documentation": null,
+      "flags": 4194307
+    },
+    "ListItems": {
+      "type": "UIListItem",
+      "documentation": null,
+      "flags": 89268225
+    },
+    "ListItemOverlayCoordinates": {
+      "type": "TextureCoordinates",
+      "documentation": null,
+      "flags": 1
+    },
+    "ColumnHeaderBackgroundCoordinates": {
+      "type": "TextureCoordinates",
+      "documentation": null,
+      "flags": 1
+    },
+    "ListItemOverlay": {
+      "type": "UITexture",
+      "documentation": null,
+      "flags": 339738633
+    },
+    "ColumnHeaderBackground": {
+      "type": "UITexture",
+      "documentation": null,
+      "flags": 339738633
+    },
+    "SelectionHintPadding": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxElementsPerPage": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDisplayColumnHeaders": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "FindElementIndex": {
+      "documentation": null,
+      "signature_members": {
+        "DataSourceIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindElementIndex(int DataSourceIndex)"
+    }
+  },
+  "states": {},
+  "classflags": 144707730,
+  "configname": "None",
+  "documentation": null
+}

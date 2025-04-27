@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "PMCO_L_Thumbstick": {
+      "value": 0,
+      "documentation": null
+    },
+    "PMCO_R_Thumbstick": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

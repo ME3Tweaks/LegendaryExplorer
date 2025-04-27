@@ -1,0 +1,110 @@
+{
+  "parent": "BioPropertyEditorPropertyNode",
+  "package": "SFXGame",
+  "variables": {
+    "prop": {
+      "type": "Property",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_arrayProperty": {
+      "type": "Property",
+      "documentation": null,
+      "flags": 0
+    },
+    "integerVal": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "floatVal": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_iOffset": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_iIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "StepSize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "boolVal": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "alreadyEdited": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "byteVal": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "AcceptNewValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AcceptNewValue()"
+    },
+    "DoChange": {
+      "documentation": null,
+      "signature_members": {
+        "Delta": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DoChange(float Delta)"
+    },
+    "RightTriggerAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RightTriggerAction()"
+    },
+    "LeftTriggerAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeftTriggerAction()"
+    },
+    "DecrementCurrentSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DecrementCurrentSelection()"
+    },
+    "IncrementCurrentSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IncrementCurrentSelection()"
+    },
+    "SelectionAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SelectionAction()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

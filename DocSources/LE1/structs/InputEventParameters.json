@@ -1,0 +1,53 @@
+{
+  "members": {
+    "InputKeyName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1056770
+    },
+    "PlayerIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1056770
+    },
+    "ControllerId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1056770
+    },
+    "InputDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1056770
+    },
+    "DeltaTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1056770
+    },
+    "bAltPressed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1056770
+    },
+    "bCtrlPressed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1056770
+    },
+    "bShiftPressed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1056770
+    },
+    "EventType": {
+      "type": "EInputEvent",
+      "documentation": null,
+      "flags": 1056770
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 9
+}

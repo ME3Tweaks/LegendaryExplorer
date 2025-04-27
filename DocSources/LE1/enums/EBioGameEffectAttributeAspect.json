@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BIO_ATTRIBUTE_ASPECT_BASE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_ASPECT_MODIFIER": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

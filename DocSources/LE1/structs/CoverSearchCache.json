@@ -1,0 +1,23 @@
+{
+  "members": {
+    "HitNormal": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "HitLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Location": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXModule_Cover",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

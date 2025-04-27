@@ -1,0 +1,66 @@
+{
+  "parent": "BioInterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "m_vOldFocusPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fOldFalloffExponent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fOldFStop": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fOldBlurKernelSize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fOldMaxNearBlurAmount": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fOldMaxFarBlurAmount": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_cOldModulateBlurColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fOldFocusInnerRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fOldFocusDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fInterpolateElapsed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nCurEffect": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

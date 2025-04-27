@@ -1,0 +1,43 @@
+{
+  "members": {
+    "FuncName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "TimerObj": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 0
+    },
+    "Rate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Count": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "TimerTimeDilation": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bLoop": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bPaused": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Actor",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

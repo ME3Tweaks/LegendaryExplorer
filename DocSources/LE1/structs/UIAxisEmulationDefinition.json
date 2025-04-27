@@ -1,0 +1,28 @@
+{
+  "members": {
+    "InputKeyToEmulate": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "AxisInputKey": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "AdjacentAxisInputKey": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEmulateButtonPress": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

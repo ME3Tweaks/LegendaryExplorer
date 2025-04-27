@@ -1,0 +1,23 @@
+{
+  "members": {
+    "nLabel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "fPercentage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "ParticleEmitter",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

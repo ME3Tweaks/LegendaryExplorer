@@ -1,0 +1,46 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapPoseList": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_mapPoseRules": {
+      "type": "MultiMap_Mirror",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_mapGestureRules": {
+      "type": "MultiMap_Mirror",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_mapAnimsets": {
+      "type": "MultiMap_Mirror",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_mapARPUCurves": {
+      "type": "MultiMap_Mirror",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_aRuleItems": {
+      "type": "BioGestRuleItem",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aARPUItems": {
+      "type": "BioARPUBodyConfig",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

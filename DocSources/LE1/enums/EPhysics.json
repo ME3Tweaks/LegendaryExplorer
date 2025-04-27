@@ -1,0 +1,77 @@
+{
+  "EnumValues": {
+    "PHYS_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "PHYS_Walking": {
+      "value": 1,
+      "documentation": null
+    },
+    "PHYS_Falling": {
+      "value": 2,
+      "documentation": null
+    },
+    "PHYS_Swimming": {
+      "value": 3,
+      "documentation": null
+    },
+    "PHYS_Flying": {
+      "value": 4,
+      "documentation": null
+    },
+    "PHYS_Rotating": {
+      "value": 5,
+      "documentation": null
+    },
+    "PHYS_Projectile": {
+      "value": 6,
+      "documentation": null
+    },
+    "PHYS_Interpolating": {
+      "value": 7,
+      "documentation": null
+    },
+    "PHYS_Spider": {
+      "value": 8,
+      "documentation": null
+    },
+    "PHYS_Ladder": {
+      "value": 9,
+      "documentation": null
+    },
+    "PHYS_RigidBody": {
+      "value": 10,
+      "documentation": null
+    },
+    "PHYS_SoftBody": {
+      "value": 11,
+      "documentation": null
+    },
+    "PHYS_NavMeshWalking": {
+      "value": 12,
+      "documentation": null
+    },
+    "PHYS_PathApproximation": {
+      "value": 13,
+      "documentation": null
+    },
+    "PHYS_Unused": {
+      "value": 14,
+      "documentation": null
+    },
+    "PHYS_Mounting": {
+      "value": 15,
+      "documentation": null
+    },
+    "PHYS_Hopping": {
+      "value": 16,
+      "documentation": null
+    },
+    "PHYS_Custom": {
+      "value": 17,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

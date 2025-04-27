@@ -1,0 +1,16 @@
+{
+  "parent": "AnimMetaData_SkelControl",
+  "package": "Engine",
+  "variables": {
+    "KeyFrames": {
+      "type": "TimeModifier",
+      "documentation": null,
+      "flags": 71303169
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142618770,
+  "configname": "None",
+  "documentation": null
+}

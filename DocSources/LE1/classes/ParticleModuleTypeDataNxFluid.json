@@ -1,0 +1,161 @@
+{
+  "parent": "ParticleModuleTypeDataBase",
+  "package": "Engine",
+  "variables": {
+    "EmitterRandomPos": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxParticles": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "RestParticlesPerMeter": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RestDensity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "KernelRadiusMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MotionLimitMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "PacketSizeMultiplier": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "Stiffness": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Viscosity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Damping": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "StaticCollisionRestitution": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "StaticCollisionAdhesion": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DynamicCollisionRestitution": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DynamicCollisionAdhesion": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DensityDrawScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "CollisionResponseCoefficient": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmitterMaxParticles": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmitterDimX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmitterDimY": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmitterRandomAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmitterFluidVelocityMagnitude": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmitterRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmitterParticleLifetime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCollisionMethodStatic": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCollisionMethodDynamic": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDensityAffectsDrawScale": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCollisionTwoWay": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "SimulationMethod": {
+      "type": "FluidSimulationMethod",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmitterType": {
+      "type": "FluidParticleEmitterType",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmitterShape": {
+      "type": "FluidParticleEmitterShape",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134230162,
+  "configname": "None",
+  "documentation": null
+}

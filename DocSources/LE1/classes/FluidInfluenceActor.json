@@ -1,0 +1,61 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "FlowDirection": {
+      "type": "ArrowComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "Sprite": {
+      "type": "SpriteComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "InfluenceComponent": {
+      "type": "FluidInfluenceComponent",
+      "documentation": null,
+      "flags": 67764235
+    },
+    "bActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4294967328
+    },
+    "bToggled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4294967328
+    }
+  },
+  "functions": {
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "inAction": {
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle inAction)"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

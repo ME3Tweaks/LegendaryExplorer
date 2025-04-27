@@ -1,0 +1,51 @@
+{
+  "parent": "BioSeqData",
+  "package": "SFXGame",
+  "variables": {
+    "oTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "oAttackTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "oCapability": {
+      "type": "BioCapability",
+      "documentation": null,
+      "flags": 1
+    },
+    "fReqStabilityRatio": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fAbortStabilityRatio": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fTimeOut": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bWalk": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseMobMovement": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

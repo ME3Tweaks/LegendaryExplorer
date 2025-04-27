@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Location": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "Rotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

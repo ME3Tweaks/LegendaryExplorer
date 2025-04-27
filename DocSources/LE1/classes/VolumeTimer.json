@@ -1,0 +1,29 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "V": {
+      "type": "PhysicsVolume",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Timer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Timer()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 10485778,
+  "configname": "None",
+  "documentation": null
+}

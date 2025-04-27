@@ -1,0 +1,1027 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_oInitialPlayerID": {
+      "type": "UniqueNetId",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oProfilePlayerID": {
+      "type": "UniqueNetId",
+      "documentation": null,
+      "flags": 8192
+    },
+    "DefaultPlayer": {
+      "type": "PlayerInfoEx",
+      "documentation": null,
+      "flags": 4218880
+    },
+    "NewPlayer": {
+      "type": "PlayerInfoEx",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "BlazeCache": {
+      "type": "BlazeDataStore",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Saves": {
+      "type": "SFXSaveRecord",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "DeadPawnList": {
+      "type": "Guid",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "SavedKismetList": {
+      "type": "KismetBoolSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "HenchmanRecords": {
+      "type": "HenchmanSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "SavedDoorList": {
+      "type": "DoorSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "CorruptedCareers": {
+      "type": "SFXSaveDescriptor",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "CareerCache": {
+      "type": "SFXCareerCacheEntry",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ResumeGameCompleteDelegate": {
+      "type": "OnResumeGameComplete",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "DynamicLoadMapping": {
+      "type": "DynamicLoadInfo",
+      "documentation": null,
+      "flags": 4210690
+    },
+    "DynamicLoadPackageRemapping": {
+      "type": "PackageRemapInfo",
+      "documentation": null,
+      "flags": 4210690
+    },
+    "AsyncLoadingMapping": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_GamerProfileFilename": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__SFXSaveCommandCallback__Delegate": {
+      "type": "SFXSaveCommandCallback",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnResumeGameComplete__Delegate": {
+      "type": "OnResumeGameComplete",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "CurrentSaveGame": {
+      "type": "SFXSaveGame",
+      "documentation": null,
+      "flags": 1
+    },
+    "Telemetry": {
+      "type": "SFXTelemetry",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_DesiredStartPoint": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LastSaveTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "LastSecondsPlayed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "CurrentUserID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "CurrentDeviceID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "CurrentLoadingTip": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "AutoSaveInsufficientSpaceTextPS3": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "InsufficentSpaceAcknowledgedText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "CorruptCareerWarningText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 8193
+    },
+    "ConfirmDeleteCorruptText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 8193
+    },
+    "CancelDeleteCorruptText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 8193
+    },
+    "LastCantContinueTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "srCantContinueErrorMessage": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bCanWriteSaveToStorage": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bPendingSaveProfile": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bPendingDisableAutoSave": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bFlushInputRequested": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bPlayerNeedsLoad": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bPlayerLoadPosition": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bRenderingSuspended": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bInLoad": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bProfileInitialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_UseDesiredStartPoint": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bNewPlayer": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bStartedGame": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "DebugUseIconicShepard": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "PendingModeToRemove": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 8193
+    }
+  },
+  "functions": {
+    "IsInCinematicMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsInCinematicMode()"
+    },
+    "ClearInitialTelemetryHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearInitialTelemetryHandler()"
+    },
+    "AddInitialTelemetryHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AddInitialTelemetryHandler()"
+    },
+    "SendTelemetryOnProfileReadComplete": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendTelemetryOnProfileReadComplete(byte LocalUserNum, bool bWasSuccessful)"
+    },
+    "FlushIOHandles": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FlushIOHandles()"
+    },
+    "BioShowDebugMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "sMessage": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "BioShowDebugMessageBox(string sMessage)"
+    },
+    "FindCurrentSaveDevice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool FindCurrentSaveDevice()"
+    },
+    "IsCurrentDeviceValid": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCurrentDeviceValid()"
+    },
+    "ForceGUIUpdate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ForceGUIUpdate()"
+    },
+    "GetCurrentTime": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCurrentTime()"
+    },
+    "GetPlayTimeSeconds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPlayTimeSeconds()"
+    },
+    "LoadPlayer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadPlayer()"
+    },
+    "GetCurrentDevice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetCurrentDevice()"
+    },
+    "UpdateCurrentDevice": {
+      "documentation": null,
+      "signature_members": {
+        "DeviceID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCurrentDevice(int DeviceID)"
+    },
+    "SlowResumeGameCallback": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SlowResumeGameCallback(SFXSaveGameCommandEventArgs Args)"
+    },
+    "GetScaleFormManager": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "MassEffectGuiManager",
+      "signature": "MassEffectGuiManager GetScaleFormManager()"
+    },
+    "HandleNoFreeSpacePS3Callback": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "context": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleNoFreeSpacePS3Callback(bool bAPressed, int context)"
+    },
+    "HandleNoFreeSpacePS3": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": "ESFXSaveGameType",
+          "documentation": null,
+          "flags": 128
+        },
+        "AdditionalFreeBytesNeeded": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleNoFreeSpacePS3(ESFXSaveGameType Type, int AdditionalFreeBytesNeeded)"
+    },
+    "SetCurrentSaveGame": {
+      "documentation": null,
+      "signature_members": {
+        "Descriptor": {
+          "type": "SFXSaveDescriptor",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentSaveGame(SFXSaveDescriptor Descriptor)"
+    },
+    "SaveGameCallback": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveGameCallback(SFXSaveGameCommandEventArgs Args)"
+    },
+    "RemoveSaveRecordByFilename": {
+      "documentation": null,
+      "signature_members": {
+        "Filename": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveSaveRecordByFilename(string Filename)"
+    },
+    "GetSaveRecordByFilename": {
+      "documentation": null,
+      "signature_members": {
+        "Filename": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "SaveRecord": {
+          "type": "SFXSaveRecord",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSaveRecordByFilename(string Filename, out SFXSaveRecord SaveRecord)"
+    },
+    "SaveGameEx": {
+      "documentation": null,
+      "signature_members": {
+        "SaveDescriptor": {
+          "type": "SFXSaveDescriptor",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveGameEx(SFXSaveDescriptor SaveDescriptor)"
+    },
+    "CheckForCorruptCareers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckForCorruptCareers()"
+    },
+    "RemoveCachedCareer": {
+      "documentation": null,
+      "signature_members": {
+        "Career": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveCachedCareer(string Career)"
+    },
+    "CheckFreeSpaceComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "CheckFreeSpaceComplete(SFXSaveGameCommandEventArgs Args)"
+    },
+    "ResumeRendering": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResumeRendering()"
+    },
+    "SuspendRendering": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SuspendRendering()"
+    },
+    "Callback_ConfirmDeleteCorruptCareers": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "context": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bYPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_ConfirmDeleteCorruptCareers(bool bAPressed, int context, bool bYPressed)"
+    },
+    "ClearSaveCache": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearSaveCache()"
+    },
+    "ValidCharsFilter": {
+      "documentation": null,
+      "signature_members": {
+        "Sin": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bFilterAccentedChars": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string ValidCharsFilter(string Sin, bool bFilterAccentedChars)"
+    },
+    "LoadSaveGame": {
+      "documentation": null,
+      "signature_members": {
+        "SaveGame": {
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadSaveGame(SFXSaveGame SaveGame)"
+    },
+    "IsPerformingSaveAction": {
+      "documentation": null,
+      "signature_members": {
+        "eAction": {
+          "type": "ESFXSaveGameAction",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPerformingSaveAction(ESFXSaveGameAction eAction)"
+    },
+    "IsSaving": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSaving()"
+    },
+    "ScanSaveDataComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ScanSaveDataComplete(SFXSaveGameCommandEventArgs Args)"
+    },
+    "ScanSaveData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScanSaveData()"
+    },
+    "TryGetCachedCareer": {
+      "documentation": null,
+      "signature_members": {
+        "Career": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "OutEntry": {
+          "type": "SFXCareerCacheEntry",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TryGetCachedCareer(string Career, out SFXCareerCacheEntry OutEntry)"
+    },
+    "UpdateCareerCache": {
+      "documentation": null,
+      "signature_members": {
+        "SaveDescriptor": {
+          "type": "SFXSaveDescriptor",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "SaveGame": {
+          "type": "SFXSaveGame",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCareerCache(SFXSaveDescriptor SaveDescriptor, SFXSaveGame SaveGame)"
+    },
+    "ResumeSaveGameCommandExecution": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResumeSaveGameCommandExecution()"
+    },
+    "QueueSaveGameCommand": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "ESFXSaveGameAction",
+          "documentation": null,
+          "flags": 128
+        },
+        "SaveDescriptor": {
+          "type": "SFXSaveDescriptor",
+          "documentation": null,
+          "flags": 4194450
+        },
+        "Callback": {
+          "type": "SFXSaveCommandCallback",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "None",
+      "signature": "QueueSaveGameCommand(ESFXSaveGameAction Action, optional const SFXSaveDescriptor SaveDescriptor, optional delegate<SFXSaveCommandCallback> Callback)"
+    },
+    "ClearCurrentSaveDescriptor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearCurrentSaveDescriptor()"
+    },
+    "GetCurrentSaveDescriptor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXSaveDescriptor",
+      "signature": "SFXSaveDescriptor GetCurrentSaveDescriptor()"
+    },
+    "ParseCareer": {
+      "documentation": null,
+      "signature_members": {
+        "Career": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "FirstName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "ClassName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Origin": {
+          "type": "EOriginType",
+          "documentation": null,
+          "flags": 384
+        },
+        "Notoriety": {
+          "type": "ENotorietyType",
+          "documentation": null,
+          "flags": 384
+        },
+        "Year": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "Month": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "Day": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "MSSinceMidnight": {
+          "type": "int",
+          "documentation": null,
+          "flags": 400
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ParseCareer(string Career, out string FirstName, out string ClassName, out EOriginType Origin, out ENotorietyType Notoriety, out int Year, out int Month, out int Day, optional out int MSSinceMidnight)"
+    },
+    "GenerateCareer": {
+      "documentation": null,
+      "signature_members": {
+        "FirstName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "ClassName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Origin": {
+          "type": "EOriginType",
+          "documentation": null,
+          "flags": 128
+        },
+        "Notoriety": {
+          "type": "ENotorietyType",
+          "documentation": null,
+          "flags": 128
+        },
+        "Year": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Month": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Day": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "MSSinceMidnight": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutCareer": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "OutDisplayName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GenerateCareer(string FirstName, string ClassName, EOriginType Origin, ENotorietyType Notoriety, int Year, int Month, int Day, int MSSinceMidnight, out string OutCareer, out string OutDisplayName)"
+    },
+    "CreateCareerInternal": {
+      "documentation": null,
+      "signature_members": {
+        "FirstName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "ClassName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Origin": {
+          "type": "EOriginType",
+          "documentation": null,
+          "flags": 128
+        },
+        "Notoriety": {
+          "type": "ENotorietyType",
+          "documentation": null,
+          "flags": 128
+        },
+        "Year": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Month": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Day": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "MSSinceMidnight": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateCareerInternal(string FirstName, string ClassName, EOriginType Origin, ENotorietyType Notoriety, int Year, int Month, int Day, int MSSinceMidnight)"
+    },
+    "CreateCareer": {
+      "documentation": null,
+      "signature_members": {
+        "FirstName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "srClass": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        },
+        "Origin": {
+          "type": "EOriginType",
+          "documentation": null,
+          "flags": 128
+        },
+        "Notoriety": {
+          "type": "ENotorietyType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateCareer(string FirstName, stringref srClass, EOriginType Origin, ENotorietyType Notoriety)"
+    },
+    "OnResumeGameComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnResumeGameComplete(bool bWasSuccessful)"
+    },
+    "SFXSaveCommandCallback": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SFXSaveCommandCallback(SFXSaveGameCommandEventArgs Args)"
+    },
+    "CurrentSystemTimeSeconds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float CurrentSystemTimeSeconds()"
+    },
+    "SaveGamerProfileComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveGamerProfileComplete(SFXSaveGameCommandEventArgs Args)"
+    },
+    "ReleaseSeekFreeObject": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ReleaseSeekFreeObject(string ObjectName)"
+    },
+    "LoadSeekFreeObjectAsync": {
+      "documentation": null,
+      "signature_members": {
+        "Object": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "ObjectClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "Status": {
+          "type": "EAsyncLoadStatus",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object LoadSeekFreeObjectAsync(string Object, Class<Object> ObjectClass, out EAsyncLoadStatus Status)"
+    },
+    "LoadSeekFreeObject": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "ObjectClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object LoadSeekFreeObject(string ObjectName, Class<Object> ObjectClass)"
+    },
+    "IsSeekFreeObjectSupported": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsSeekFreeObjectSupported(string ObjectName)"
+    },
+    "LaunchUnreaperWithDiscCheck": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LaunchUnreaperWithDiscCheck()"
+    },
+    "LaunchUnreaper": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LaunchUnreaper()"
+    },
+    "DeleteProfileComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "DeleteProfileComplete(SFXSaveGameCommandEventArgs Args)"
+    },
+    "ReLaunchExecutable": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReLaunchExecutable()"
+    },
+    "SkipMovie": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SkipMovie()"
+    },
+    "ResetForcedInactiveParticleSystems": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetForcedInactiveParticleSystems()"
+    },
+    "GetEngine": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXEngine",
+      "signature": "SFXEngine GetEngine()"
+    },
+    "CurrentPlayerInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PlayerInfoEx",
+      "signature": "PlayerInfoEx CurrentPlayerInfo()"
+    }
+  },
+  "states": {},
+  "classflags": 136315030,
+  "configname": "Engine",
+  "documentation": null
+}

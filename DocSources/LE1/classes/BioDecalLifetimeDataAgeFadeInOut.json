@@ -1,0 +1,31 @@
+{
+  "parent": "DecalLifetimeDataAge",
+  "package": "SFXGame",
+  "variables": {
+    "ParticleColorModule": {
+      "type": "ParticleModuleColorOverLife",
+      "documentation": null,
+      "flags": 8192
+    },
+    "FadeInTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FadeOutTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bReused": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

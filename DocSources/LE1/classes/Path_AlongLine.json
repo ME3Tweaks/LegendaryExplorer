@@ -1,0 +1,40 @@
+{
+  "parent": "PathConstraint",
+  "package": "Engine",
+  "variables": {
+    "Direction": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "AlongLine": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Dir": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AlongLine(Pawn P, Vector Dir)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

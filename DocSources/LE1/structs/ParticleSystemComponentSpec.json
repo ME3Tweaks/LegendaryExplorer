@@ -1,0 +1,13 @@
+{
+  "members": {
+    "m_aParticleSystemComponent": {
+      "type": "ParticleSystemComponent",
+      "documentation": null,
+      "flags": 71827464
+    }
+  },
+  "classdef": "BioPawnBehavior",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

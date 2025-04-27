@@ -1,0 +1,148 @@
+{
+  "members": {
+    "simpleTalents": {
+      "type": "SimpleTalentSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "complexTalents": {
+      "type": "ComplexTalentSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Equipment": {
+      "type": "ItemSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Weapons": {
+      "type": "ItemSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Tag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "TalentPoints": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "TalentPoolPoints": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "AutoLevelUpTemplateID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "LastName": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "ClassName": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "HealthPerLevel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "StabilityCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ToxicCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Stamina": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Focus": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Precision": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Coordination": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "HealthCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ShieldCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "HealthMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "XPLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "HelmetShown": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "ClassBase": {
+      "type": "EBioPartyMemberClassBase",
+      "documentation": null,
+      "flags": 1
+    },
+    "gender": {
+      "type": "EBioAttributePawnGender",
+      "documentation": null,
+      "flags": 0
+    },
+    "Race": {
+      "type": "EBioAttributePawnRace",
+      "documentation": null,
+      "flags": 0
+    },
+    "AttributePrimary": {
+      "type": "EBioPartyMemberAbility",
+      "documentation": null,
+      "flags": 0
+    },
+    "AttributeSecondary": {
+      "type": "EBioPartyMemberAbility",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurrentQuickSlot": {
+      "type": "EBioItemWeaponRangedType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "SFXSaveGame",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_SHIELD_VFX_POSITION_IMPACT_POINT": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_SHIELD_VFX_POSITION_OWNER_LOCATION": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_SHIELD_VFX_POSITION_BOUNDING_BOX_BASE": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

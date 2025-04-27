@@ -1,0 +1,66 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "IntA": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "IntB": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "IntC": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "FloatA": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FloatB": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FloatC": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "AIsFloat": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "BIsFloat": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "CIsFloat": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "BInclusive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "CInclusive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "FES_RECTANGLE": {
+      "value": 0,
+      "documentation": null
+    },
+    "FES_ELLIPSE": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

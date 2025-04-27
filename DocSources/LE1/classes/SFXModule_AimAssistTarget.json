@@ -1,0 +1,28 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "AimNodes": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "AimAssistRegions": {
+      "type": "AimAssistBox",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

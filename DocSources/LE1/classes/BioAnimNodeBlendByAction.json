@@ -1,0 +1,81 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "m_aBlendTimeFromPostureNode": {
+      "type": "BlendTime",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_aBlendTimeFromMountNode": {
+      "type": "BlendTime",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_aBlendTimeFromHesitateNode": {
+      "type": "BlendTime",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_aBlendTimeFromFallNode": {
+      "type": "BlendTime",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_aBlendTimeFromBioticNode": {
+      "type": "BlendTime",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_aBlendTimeFromDeathNode": {
+      "type": "BlendTime",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_aBlendTimeFromDieNode": {
+      "type": "BlendTime",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_aBlendTimeFromTechNode": {
+      "type": "BlendTime",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_aBlendTimeFromMatineeNode": {
+      "type": "BlendTime",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_aBlendTimeFromGetUpNode": {
+      "type": "BlendTime",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_aBlendTimeFromGestures": {
+      "type": "BlendTime",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bHesitateAvailable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bFallingAvailable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_eCurrentAnimNode": {
+      "type": "EBioActionAnimNode",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "DirectionalLightComponent",
+  "package": "Engine",
+  "variables": {
+    "DominantLightShadowInfo": {
+      "type": "DominantShadowInfo",
+      "documentation": null,
+      "flags": 2
+    },
+    "DominantLightShadowMap": {
+      "type": "Array_Mirror",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144707730,
+  "configname": "None",
+  "documentation": null
+}

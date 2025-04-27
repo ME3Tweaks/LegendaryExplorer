@@ -1,0 +1,13 @@
+{
+  "members": {
+    "nDummy": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "classdef": "BioMorphFace",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

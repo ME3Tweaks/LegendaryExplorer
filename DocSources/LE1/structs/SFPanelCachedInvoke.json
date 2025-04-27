@@ -1,0 +1,33 @@
+{
+  "members": {
+    "lstParams": {
+      "type": "ASParams",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "lstQualifications": {
+      "type": "ESFPanelInvokeCategories",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "nFramesTheSame": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bAutoSkip": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "eLabel": {
+      "type": "ESFPanelInvokeLabel",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFPanel",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

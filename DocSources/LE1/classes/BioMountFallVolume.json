@@ -1,0 +1,66 @@
+{
+  "parent": "Volume",
+  "package": "SFXGame",
+  "variables": {
+    "Enabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "AllowMount": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "AllowFall": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "UnTouch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UnTouch(Actor Other)"
+    },
+    "Touch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "OtherComp": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Touch(Actor Other, PrimitiveComponent OtherComp, Vector HitLocation, Vector HitNormal)"
+    }
+  },
+  "states": {},
+  "classflags": 144704178,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,994 @@
+{
+  "parent": "BioSFSharedBase",
+  "package": "Engine",
+  "variables": {
+    "MovieResource": {
+      "type": "BioScaleformResource",
+      "documentation": null,
+      "flags": 0
+    },
+    "ScriptHandlers": {
+      "type": "BioSFHandler",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "bannedChars": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "m_UpdateTimes": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_RenderTimes": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_AdvanceTimes": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "nmTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_DefaultHandler": {
+      "type": "BioSFHandler",
+      "documentation": null,
+      "flags": 8192
+    },
+    "oParentManager": {
+      "type": "BioSFManager",
+      "documentation": null,
+      "flags": 0
+    },
+    "MovieRef": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 0
+    },
+    "fMovieAspectRatio": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "mPlatform": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fSavedAspectRatio": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nUpdateFrame": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fUpdateTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bAlwaysDrawFirst": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bAlwaysDrawLast": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "IsVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bFullScreen": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bToBeRemoved": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bHandleInputThisFrame": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bInputDisabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUseThumbstickAsDPad": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bApplyLeftThumbstickDeadzone": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bApplyRightThumbstickDeadzone": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUpdateUnderModal": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEventsDisabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bPipeDirectInputToGFx": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIgnoreGCOnPanelCleanup": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bCloseMovieOnRemove": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bMouseVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUsingGamepad": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetProfileTimes": {
+      "documentation": null,
+      "signature_members": {
+        "fUpdateTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "fRenderTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "fAdvanceTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetProfileTimes(out float fUpdateTime, out float fRenderTime, out float fAdvanceTime)"
+    },
+    "GetDefaultHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSFHandler",
+      "signature": "BioSFHandler GetDefaultHandler()"
+    },
+    "GetStageViewportOffset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector2D",
+      "signature": "Vector2D GetStageViewportOffset()"
+    },
+    "GameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GameSessionEnded()"
+    },
+    "GetMovieGamepadValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetMovieGamepadValue()"
+    },
+    "GetMovieAspectRatio": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMovieAspectRatio()"
+    },
+    "GetViewportAspectRatio": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetViewportAspectRatio()"
+    },
+    "OnInputFocusRecieved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnInputFocusRecieved()"
+    },
+    "OnInputFocusLost": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnInputFocusLost()"
+    },
+    "SetMouseVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMouseVisible(bool bVisible)"
+    },
+    "SetMovieVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "bVisible": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMovieVisibility(bool bVisible)"
+    },
+    "UpdateAspectRatio": {
+      "documentation": null,
+      "signature_members": {
+        "bForce": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bHorizontal": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "float",
+      "signature": "float UpdateAspectRatio(optional bool bForce, optional bool bHorizontal)"
+    },
+    "ExIntGetPlatform": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int ExIntGetPlatform()"
+    },
+    "SetExternalInterface": {
+      "documentation": null,
+      "signature_members": {
+        "oInterface": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetExternalInterface(Object oInterface)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "SetEventsDisabled": {
+      "documentation": null,
+      "signature_members": {
+        "bDisabled": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEventsDisabled(bool bDisabled)"
+    },
+    "SetInputDisabled": {
+      "documentation": null,
+      "signature_members": {
+        "bDisabled": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInputDisabled(bool bDisabled)"
+    },
+    "SetToBeRemoved": {
+      "documentation": null,
+      "signature_members": {
+        "bRemove": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetToBeRemoved(optional bool bRemove)"
+    },
+    "GetStrokeStyle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFMovieStrokeStyle",
+      "signature": "SFMovieStrokeStyle GetStrokeStyle()"
+    },
+    "SetStrokeStyle": {
+      "documentation": null,
+      "signature_members": {
+        "nStrokeStyle": {
+          "type": "SFMovieStrokeStyle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetStrokeStyle(SFMovieStrokeStyle nStrokeStyle)"
+    },
+    "GetCurvePixelError": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCurvePixelError()"
+    },
+    "SetCurvePixelError": {
+      "documentation": null,
+      "signature_members": {
+        "fCurvePixelError": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurvePixelError(float fCurvePixelError)"
+    },
+    "GetUseEdgeAA": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetUseEdgeAA()"
+    },
+    "SetUseEdgeAA": {
+      "documentation": null,
+      "signature_members": {
+        "bUseEdgeAA": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUseEdgeAA(bool bUseEdgeAA)"
+    },
+    "IsAvailable": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAvailable(string sPath)"
+    },
+    "GetVariableInt": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetVariableInt(string sPath)"
+    },
+    "GetVariableBool": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetVariableBool(string sPath)"
+    },
+    "GetVariableFloat": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetVariableFloat(string sPath)"
+    },
+    "GetVariableString": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetVariableString(string sPath)"
+    },
+    "SetVariableIntArray": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "arg": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetVariableIntArray(string Path, int Index, const out array<int> arg)"
+    },
+    "GetVariableIntArray": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "arg": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetVariableIntArray(string Path, int Index, out array<int> arg)"
+    },
+    "SetVariableStringArray": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "arg": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetVariableStringArray(string Path, int Index, const out array<string> arg)"
+    },
+    "GetVariableStringArray": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "arg": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetVariableStringArray(string Path, int Index, out array<string> arg)"
+    },
+    "SetVariableInt": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nVar": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVariableInt(string sPath, int nVar)"
+    },
+    "SetVariableBool": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bVar": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVariableBool(string sPath, bool bVar)"
+    },
+    "SetVariableFloat": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "fVar": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVariableFloat(string sPath, float fVar)"
+    },
+    "SetVariableString": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sVar": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVariableString(string sPath, coerce string sVar)"
+    },
+    "SetTextFieldText": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTextFieldText(string sPath, string sText)"
+    },
+    "SetClipLocation": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "fX": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fY": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClipLocation(string sPath, float fX, float fY)"
+    },
+    "SetClipHeight": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "fHeight": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClipHeight(string sPath, float fHeight)"
+    },
+    "SetClipWidth": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "fWidth": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClipWidth(string sPath, float fWidth)"
+    },
+    "SetClipVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bVisible": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClipVisibility(string sPath, bool bVisible)"
+    },
+    "GotoLabelAndPlay": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sLabel": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "GotoLabelAndPlay(string sPath, string sLabel)"
+    },
+    "GotoFrameAndPlay": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nFrame": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GotoFrameAndPlay(string sPath, int nFrame)"
+    },
+    "GotoLabelAndStop": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sLabel": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "GotoLabelAndStop(string sPath, string sLabel)"
+    },
+    "GotoFrameAndStop": {
+      "documentation": null,
+      "signature_members": {
+        "sPath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nFrame": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GotoFrameAndStop(string sPath, int nFrame)"
+    },
+    "SetInvokePrereq": {
+      "documentation": null,
+      "signature_members": {
+        "eCat": {
+          "type": "ESFPanelInvokeCategories",
+          "documentation": null,
+          "flags": 128
+        },
+        "eInvoke": {
+          "type": "ESFPanelInvokeLabel",
+          "documentation": null,
+          "flags": 128
+        },
+        "bAllowInvoke": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInvokePrereq(ESFPanelInvokeCategories eCat, ESFPanelInvokeLabel eInvoke, bool bAllowInvoke)"
+    },
+    "RequestInvoke": {
+      "documentation": null,
+      "signature_members": {
+        "eCat": {
+          "type": "ESFPanelInvokeCategories",
+          "documentation": null,
+          "flags": 128
+        },
+        "eInvoke": {
+          "type": "ESFPanelInvokeLabel",
+          "documentation": null,
+          "flags": 128
+        },
+        "sMethodName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "lstArguments": {
+          "type": "ASParams",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "bUseCacheConditional": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RequestInvoke(ESFPanelInvokeCategories eCat, ESFPanelInvokeLabel eInvoke, string sMethodName, const out array<ASParams> lstArguments, bool bUseCacheConditional)"
+    },
+    "InvokeMethodArgsReturn": {
+      "documentation": null,
+      "signature_members": {
+        "sMethodName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "lstArguments": {
+          "type": "ASParams",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "string",
+      "signature": "string InvokeMethodArgsReturn(string sMethodName, const out array<ASParams> lstArguments)"
+    },
+    "InvokeMethodReturn": {
+      "documentation": null,
+      "signature_members": {
+        "sMethodName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "string",
+      "signature": "string InvokeMethodReturn(string sMethodName)"
+    },
+    "InvokeMethodArgs": {
+      "documentation": null,
+      "signature_members": {
+        "sMethodName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "lstArguments": {
+          "type": "ASParams",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "InvokeMethodArgs(string sMethodName, const out array<ASParams> lstArguments)"
+    },
+    "InvokeMethod": {
+      "documentation": null,
+      "signature_members": {
+        "sMethodName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "InvokeMethod(string sMethodName)"
+    },
+    "Load": {
+      "documentation": null,
+      "signature_members": {
+        "sResourcePath": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Load(string sResourcePath)"
+    },
+    "ClearAllHandlers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearAllHandlers()"
+    },
+    "RemoveHandler": {
+      "documentation": null,
+      "signature_members": {
+        "oHandlerClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveHandler(Class<BioSFHandler> oHandlerClass)"
+    },
+    "AttachHandler": {
+      "documentation": null,
+      "signature_members": {
+        "oHandlerClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioSFHandler",
+      "signature": "BioSFHandler AttachHandler(Class<BioSFHandler> oHandlerClass)"
+    },
+    "AttachDefaultHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSFHandler",
+      "signature": "BioSFHandler AttachDefaultHandler()"
+    },
+    "CleanupGameMode": {
+      "documentation": null,
+      "signature_members": {
+        "oHandler": {
+          "type": "BioSFHandler",
+          "documentation": null,
+          "flags": 128
+        },
+        "bForce": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "CleanupGameMode(BioSFHandler oHandler, optional bool bForce)"
+    },
+    "RemoveScriptHandler": {
+      "documentation": null,
+      "signature_members": {
+        "oHandler": {
+          "type": "BioSFHandler",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveScriptHandler(BioSFHandler oHandler)"
+    },
+    "AddScriptHandler": {
+      "documentation": null,
+      "signature_members": {
+        "oHandler": {
+          "type": "BioSFHandler",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddScriptHandler(BioSFHandler oHandler)"
+    },
+    "GetMovieResource": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioScaleformResource",
+      "signature": "BioScaleformResource GetMovieResource()"
+    }
+  },
+  "states": {},
+  "classflags": 134217886,
+  "configname": "UI",
+  "documentation": null
+}

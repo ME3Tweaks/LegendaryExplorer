@@ -1,0 +1,161 @@
+{
+  "parent": "BioPowerScriptDesign",
+  "package": "SFXGameContent_Powers",
+  "variables": {
+    "m_fDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fHealAmountPerInterval": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fToxicAmountPerInterval": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fHealInterval": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fCooldownMulti": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fRezHealthPct": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "OnImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fCasterStability": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "nPreviouslyImpacted": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnImpact(Actor oCaster, float fCasterStability, Actor oImpacted, int nPreviouslyImpacted)"
+    },
+    "StartPhase": {
+      "documentation": null,
+      "signature_members": {
+        "ePhase": {
+          "type": "EBioPowerState",
+          "documentation": null,
+          "flags": 128
+        },
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartPhase(EBioPowerState ePhase, Actor oCaster, float fDuration)"
+    },
+    "CanStartPower": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanStartPower(Actor oCaster)"
+    },
+    "AdjustCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "fCoolDownTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AdjustCooldown(out float fCoolDownTime)"
+    },
+    "DoesSquadNeedHealing": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DoesSquadNeedHealing(Actor oActor)"
+    },
+    "GetCooldownMultiForSquad": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetCooldownMultiForSquad(Actor oCaster)"
+    },
+    "GetHealAmountForSquad": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fHealAmount": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "fToxicAmount": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetHealAmountForSquad(Actor oCaster, out float fHealAmount, out float fToxicAmount)"
+    }
+  },
+  "states": {},
+  "classflags": 8388626,
+  "configname": "None",
+  "documentation": null
+}

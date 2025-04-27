@@ -1,0 +1,33 @@
+{
+  "members": {
+    "oVehicleWeaponPtr": {
+      "type": "BioWeapon",
+      "documentation": null,
+      "flags": 0
+    },
+    "nTurretIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "fTurretYawHalfAngleInDeg": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fTurretPitchHalfAngleInDeg": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bClampToTurret": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioVehicleBehaviorBase",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

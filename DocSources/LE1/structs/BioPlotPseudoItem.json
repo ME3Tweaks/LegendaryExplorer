@@ -1,0 +1,38 @@
+{
+  "members": {
+    "m_LocalizedName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_LocalizedDesc": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_exportID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_basePrice": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_shopGUIImageID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_plotConditional": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioInventory",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

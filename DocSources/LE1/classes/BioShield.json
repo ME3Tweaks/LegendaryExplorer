@@ -1,0 +1,222 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_pAttributes": {
+      "type": "BioAttributesShield",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_oView": {
+      "type": "BioShieldView",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_MeshComponent": {
+      "type": "StaticMeshComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "m_fResetTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bIsInitialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eState": {
+      "type": "EBioShieldState",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ePendingState": {
+      "type": "EBioShieldState",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Regenerate": {
+      "documentation": null,
+      "signature_members": {
+        "fAmount": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "oShieldOwner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Regenerate(float fAmount, Actor oShieldOwner)"
+    },
+    "IsOnline": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsOnline()"
+    },
+    "SetState": {
+      "documentation": null,
+      "signature_members": {
+        "eState": {
+          "type": "EBioShieldState",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetState(EBioShieldState eState)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fTimeDelta": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "oShieldOwner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fTimeDelta, Actor oShieldOwner)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "OnDamage": {
+      "documentation": null,
+      "signature_members": {
+        "fDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "oShieldOwner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "clsDamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "pDamage": {
+          "type": "BioDamageType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnDamage(out float fDamage, Actor oShieldOwner, Vector vHitLocation, Class<DamageType> clsDamageType, BioDamageType pDamage)"
+    },
+    "OnAttributesModified": {
+      "documentation": null,
+      "signature_members": {
+        "oShieldOwner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAttributesModified(Actor oShieldOwner)"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "Deactivate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivate()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "pAttributes": {
+          "type": "BioAttributesShield",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "oShieldView": {
+          "type": "BioShieldView",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "oMesh": {
+          "type": "MeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(BioAttributesShield pAttributes, BioShieldView oShieldView, MeshComponent oMesh)"
+    },
+    "OnEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEvent": {
+          "type": "EBioShieldEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "oShieldOwner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "OnEvent(EBioShieldEvent eEvent, Actor oShieldOwner, optional Vector vHitLocation)"
+    },
+    "OnStateTransition": {
+      "documentation": null,
+      "signature_members": {
+        "eFromState": {
+          "type": "EBioShieldState",
+          "documentation": null,
+          "flags": 128
+        },
+        "eToState": {
+          "type": "EBioShieldState",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnStateTransition(EBioShieldState eFromState, EBioShieldState eToState)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

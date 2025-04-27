@@ -1,0 +1,41 @@
+{
+  "parent": "ApexAsset",
+  "package": "Engine",
+  "variables": {
+    "DestructibleParameters": {
+      "type": "NxDestructibleParameters",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Materials": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 4194371
+    },
+    "CrumbleEmitterName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "DustEmitterName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "MApexAsset": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4096
+    },
+    "bDynamic": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

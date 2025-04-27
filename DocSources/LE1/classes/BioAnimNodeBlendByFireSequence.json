@@ -1,0 +1,69 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "CachedAnimSeqStart": {
+      "type": "AnimNodeSequence",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "CachedAnimSeqLoop": {
+      "type": "AnimNodeSequence",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "CachedAnimSeqEnd": {
+      "type": "AnimNodeSequence",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "FlashLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_blendDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "QueuedTransition": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "FlashCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "CacheUpdated": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "GetPlayRate": {
+      "documentation": null,
+      "signature_members": {
+        "Seq": {
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
+        },
+        "ShotsPerCycle": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetPlayRate(AnimNodeSequence Seq, int ShotsPerCycle)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

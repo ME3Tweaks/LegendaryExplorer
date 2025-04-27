@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "HUD_POWER_PAD_MODE_EXPLORE": {
+      "value": 0,
+      "documentation": null
+    },
+    "HUD_POWER_PAD_MODE_COMBAT": {
+      "value": 1,
+      "documentation": null
+    },
+    "HUD_POWER_PAD_MODE_PAUSED_POWERS": {
+      "value": 2,
+      "documentation": null
+    },
+    "HUD_POWER_PAD_MODE_PAUSED_WEAPONS": {
+      "value": 3,
+      "documentation": null
+    },
+    "HUD_POWER_PAD_MODE_PAUSED_COMMANDS": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

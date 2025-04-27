@@ -1,0 +1,18 @@
+{
+  "members": {
+    "PackagesToExclude": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "MapName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "GameEngine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

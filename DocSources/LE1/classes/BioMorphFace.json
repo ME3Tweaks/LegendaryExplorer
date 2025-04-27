@@ -1,0 +1,143 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aVertexBuffers": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_oOtherMeshes": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_aMorphFeatures": {
+      "type": "MorphFeature",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_aFinalSkeleton": {
+      "type": "OffsetBonePos",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ReleaseResourcesFence": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "m_oBaseHead": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oHairMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oMorphTargetSet": {
+      "type": "MorphTargetSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oAnimTree": {
+      "type": "AnimTree",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oMaterialOverrides": {
+      "type": "BioMaterialOverride",
+      "documentation": null,
+      "flags": 71303177
+    }
+  },
+  "functions": {
+    "GetSaveObjectClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<BioBaseSaveObject> GetSaveObjectClass()"
+    },
+    "SetPosition": {
+      "documentation": null,
+      "signature_members": {
+        "Buffer": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "vert": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "V": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPosition(int Buffer, int vert, Vector V)"
+    },
+    "GetPosition": {
+      "documentation": null,
+      "signature_members": {
+        "Buffer": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "vert": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetPosition(int Buffer, int vert)"
+    },
+    "GetNumVerts": {
+      "documentation": null,
+      "signature_members": {
+        "Buffer": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetNumVerts(int Buffer)"
+    },
+    "GetNumVertexBuffers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumVertexBuffers()"
+    },
+    "ScriptUpdateMorph": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ScriptUpdateMorph()"
+    },
+    "RefreshBuffers": {
+      "documentation": null,
+      "signature_members": {
+        "BufferIndices": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "RefreshBuffers(array<int> BufferIndices)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

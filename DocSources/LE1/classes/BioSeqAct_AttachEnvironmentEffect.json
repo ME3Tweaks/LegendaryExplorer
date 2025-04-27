@@ -1,0 +1,53 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_vOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oAttachTo": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmSocketOrBone": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fBlendTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fInitialIntensity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bAttachToCamera": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

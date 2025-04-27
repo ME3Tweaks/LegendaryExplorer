@@ -1,0 +1,90 @@
+{
+  "parent": "BioGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "m_oPower": {
+      "type": "BioPower",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_fBuildUpTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fBuildUpTimeout": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(Object oTarget, float fDeltaTime)"
+    },
+    "Unapply": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Unapply(Object oTarget)"
+    },
+    "Apply": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object Apply(Object oTarget)"
+    },
+    "Create": {
+      "documentation": null,
+      "signature_members": {
+        "oProperty": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "oPower": {
+          "type": "BioPower",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "fTimeOut": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Create(BioGameProperty oProperty, BioPower oPower, float fTimeOut)"
+    }
+  },
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

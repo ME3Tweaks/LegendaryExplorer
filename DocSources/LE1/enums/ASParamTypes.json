@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "ASParam_Integer": {
+      "value": 0,
+      "documentation": null
+    },
+    "ASParam_Float": {
+      "value": 1,
+      "documentation": null
+    },
+    "ASParam_String": {
+      "value": 2,
+      "documentation": null
+    },
+    "ASParam_Boolean": {
+      "value": 3,
+      "documentation": null
+    },
+    "ASParam_Undefined": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

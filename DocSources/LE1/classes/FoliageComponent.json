@@ -1,0 +1,81 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "LitInstances": {
+      "type": "StoredFoliageInstance",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "StaticallyRelevantLights": {
+      "type": "Guid",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "StaticallyIrrelevantLights": {
+      "type": "Guid",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "LightmassSettings": {
+      "type": "LightmassPrimitiveSettings",
+      "documentation": null,
+      "flags": 0
+    },
+    "DirectionalStaticLightingScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "SimpleStaticLightingScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "MinScale": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxScale": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "InstanceStaticMesh": {
+      "type": "StaticMesh",
+      "documentation": null,
+      "flags": 2
+    },
+    "Material": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 2
+    },
+    "MaxDrawRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "MinTransitionRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "MinThinningRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "SwayScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 2290090130,
+  "configname": "None",
+  "documentation": null
+}

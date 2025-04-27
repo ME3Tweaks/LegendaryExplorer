@@ -1,0 +1,33 @@
+{
+  "members": {
+    "SoundClass": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 131073
+    },
+    "VolumeAdjuster": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "PitchAdjuster": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bApplyToChildren": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "SoundClassName": {
+      "type": "ESoundClassName",
+      "documentation": null,
+      "flags": 8193
+    }
+  },
+  "classdef": "SoundMode",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

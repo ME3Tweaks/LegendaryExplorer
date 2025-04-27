@@ -1,0 +1,53 @@
+{
+  "members": {
+    "sTutorial": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "nmTutorial": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmHilightElement": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "oCallbackObject": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmCallbackFunction": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "srTutorial": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "fTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bDoNotCacheInputMode": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "nPosition": {
+      "type": "BioTutorialPosition",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "MassEffectGuiManager",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

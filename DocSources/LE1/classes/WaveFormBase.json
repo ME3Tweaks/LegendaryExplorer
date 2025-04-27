@@ -1,0 +1,16 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "TheWaveForm": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217875,
+  "configname": "None",
+  "documentation": null
+}

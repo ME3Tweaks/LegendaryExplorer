@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Dest": {
+      "type": "BasedPosition",
+      "documentation": null,
+      "flags": 1
+    },
+    "Poly": {
+      "type": "PolyReference",
+      "documentation": null,
+      "flags": 1
+    },
+    "Direction": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "CoverLink",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 385
+}

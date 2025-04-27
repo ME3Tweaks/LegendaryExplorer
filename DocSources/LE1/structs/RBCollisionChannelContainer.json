@@ -1,0 +1,93 @@
+{
+  "members": {
+    "Default": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "Nothing": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "Pawn": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "Vehicle": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "Water": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "GameplayPhysics": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "EffectPhysics": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "Untitled1": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "Untitled2": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "Untitled3": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "Untitled4": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "Cloth": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "FluidDrain": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "SoftBody": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "FracturedMeshPart": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "BlockingVolume": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "DeadPawn": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    }
+  },
+  "classdef": "PrimitiveComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

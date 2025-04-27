@@ -1,0 +1,21 @@
+{
+  "parent": "NxRadialForceField",
+  "package": "Engine",
+  "variables": {
+    "Kernel": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "SelfRotationStrength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934593
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

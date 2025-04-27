@@ -1,0 +1,68 @@
+{
+  "members": {
+    "Name": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Description": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "entitlementGroup": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "entitlementName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "grantEntitlementGroup": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "grantEntitlementName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Image": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "offerKey": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "externalId": {
+      "type": "SFXOnline_OfferID",
+      "documentation": null,
+      "flags": 0
+    },
+    "internalId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Price": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "isEntitled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "ISFXOnlineComponentNotification",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

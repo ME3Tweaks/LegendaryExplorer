@@ -1,0 +1,10 @@
+{
+  "parent": "BioSeqAct_GetProperty",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 10485778,
+  "configname": "None",
+  "documentation": null
+}

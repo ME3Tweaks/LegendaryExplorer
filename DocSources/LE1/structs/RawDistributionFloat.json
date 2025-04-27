@@ -1,0 +1,13 @@
+{
+  "members": {
+    "Distribution": {
+      "type": "DistributionFloat",
+      "documentation": null,
+      "flags": 101187593
+    }
+  },
+  "classdef": "DistributionFloat",
+  "extends": "RawDistribution",
+  "documentation": null,
+  "modifiers": 5
+}

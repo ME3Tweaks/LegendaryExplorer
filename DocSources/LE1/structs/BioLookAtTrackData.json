@@ -1,0 +1,53 @@
+{
+  "members": {
+    "nmTargetTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "fDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fEyeWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fHeadWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fTorsoWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableEyes": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableHead": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableTorso": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioEvtSysTrackLookAt",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

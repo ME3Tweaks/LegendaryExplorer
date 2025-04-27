@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Desc": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "Radius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Height": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CrouchHeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "PathColor": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Scout",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

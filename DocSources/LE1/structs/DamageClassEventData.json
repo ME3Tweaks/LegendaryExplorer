@@ -1,0 +1,13 @@
+{
+  "members": {
+    "DamageClassName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "classdef": "GameplayEvents",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

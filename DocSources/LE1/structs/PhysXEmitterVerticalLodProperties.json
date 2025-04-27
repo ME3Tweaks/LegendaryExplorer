@@ -1,0 +1,28 @@
+{
+  "members": {
+    "WeightForFifo": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WeightForSpawnLod": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SpawnLodRateVsLifeBias": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RelativeFadeoutTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "ParticleModuleTypeDataPhysX",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

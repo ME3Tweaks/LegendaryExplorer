@@ -1,0 +1,26 @@
+{
+  "parent": "StaticMeshComponent",
+  "package": "Engine",
+  "variables": {
+    "SplineParams": {
+      "type": "SplineMeshParams",
+      "documentation": null,
+      "flags": 0
+    },
+    "SplineXDir": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSmoothInterpRollScale": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 2290094226,
+  "configname": "None",
+  "documentation": null
+}

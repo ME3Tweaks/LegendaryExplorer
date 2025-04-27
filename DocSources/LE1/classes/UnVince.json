@@ -1,0 +1,267 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "uniqueTagToJoinTime": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4096
+    }
+  },
+  "functions": {
+    "LeaderChanged": {
+      "documentation": null,
+      "signature_members": {
+        "OldLeader": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewLeader": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LeaderChanged(BioPawn OldLeader, BioPawn NewLeader)"
+    },
+    "PartyProfiling": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "bJoining": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PartyProfiling(BioPawn oPawn, bool bJoining)"
+    },
+    "XPGainedPawnKilledHelper": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "DeadPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "xpGained": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "XPGainedPawnKilledHelper(BioPawn Player, BioPawn DeadPawn, int xpGained)"
+    },
+    "CharacterCreationFinished": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "PlayerClass": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "background": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "priAttribute": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "secAttribute": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "Message": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "CharacterCreationFinished(string PlayerName, string PlayerClass, byte background, byte priAttribute, byte secAttribute, string Message)"
+    },
+    "CharacterCreationStarted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CharacterCreationStarted()"
+    },
+    "VinceLogTalentInfoPlayerAndSquad": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIsTalentChange": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "VinceLogTalentInfoPlayerAndSquad(BioPawn pPawn, bool bIsTalentChange)"
+    },
+    "RecordVehicleDeath": {
+      "documentation": null,
+      "signature_members": {
+        "pTarget": {
+          "type": "SVehicle",
+          "documentation": null,
+          "flags": 128
+        },
+        "pInstigator": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "clsDamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "pDamage": {
+          "type": "BioDamageType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RecordVehicleDeath(SVehicle pTarget, Controller pInstigator, Vector vHitLocation, Class<DamageType> clsDamageType, BioDamageType pDamage)"
+    },
+    "RecordDeath": {
+      "documentation": null,
+      "signature_members": {
+        "pTarget": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "pInstigator": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "clsDamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RecordDeath(BioPawn pTarget, Controller pInstigator, Vector vHitLocation, Class<DamageType> clsDamageType)"
+    },
+    "RecordWeaponFired": {
+      "documentation": null,
+      "signature_members": {
+        "Instigator": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RecordWeaponFired(BioPawn Instigator)"
+    },
+    "LogTestResult": {
+      "documentation": null,
+      "signature_members": {
+        "TestName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "TestDescription": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "TestResult": {
+          "type": "EBioTestSeverity",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogTestResult(string TestName, string TestDescription, EBioTestSeverity TestResult)"
+    },
+    "CreateSurvey": {
+      "documentation": null,
+      "signature_members": {
+        "Question": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "context": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateSurvey(string Question, string context)"
+    },
+    "Terminate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Terminate()"
+    },
+    "CycleLog": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CycleLog()"
+    },
+    "CloseLog": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseLog()"
+    },
+    "OpenLog": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OpenLog()"
+    }
+  },
+  "states": {},
+  "classflags": 134217882,
+  "configname": "None",
+  "documentation": null
+}

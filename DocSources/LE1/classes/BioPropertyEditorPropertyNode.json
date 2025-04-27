@@ -1,0 +1,93 @@
+{
+  "parent": "BioPropertyEditorBaseNode",
+  "package": "SFXGame",
+  "variables": {
+    "m_sValueString": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sDeliminator": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Base": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4096
+    }
+  },
+  "functions": {
+    "DecrementCurrentSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DecrementCurrentSelection()"
+    },
+    "IncrementCurrentSelection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "IncrementCurrentSelection()"
+    },
+    "RightTriggerAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RightTriggerAction()"
+    },
+    "LeftTriggerAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeftTriggerAction()"
+    },
+    "SelectionAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SelectionAction()"
+    },
+    "getDisplayText": {
+      "documentation": null,
+      "signature_members": {
+        "selectable": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string getDisplayText(bool selectable)"
+    },
+    "MakeNodes": {
+      "documentation": null,
+      "signature_members": {
+        "thisOneOnly": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool MakeNodes(string thisOneOnly)"
+    },
+    "SetObject": {
+      "documentation": null,
+      "signature_members": {
+        "Obj": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetObject(Object Obj)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

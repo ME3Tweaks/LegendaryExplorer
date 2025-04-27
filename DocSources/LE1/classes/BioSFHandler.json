@@ -1,0 +1,361 @@
+{
+  "parent": "BioSFSharedBase",
+  "package": "Engine",
+  "variables": {
+    "lstQueuedCommands": {
+      "type": "BioSFQueuedCommand",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "PressedKeys": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "oPanel": {
+      "type": "BioSFPanel",
+      "documentation": null,
+      "flags": 0
+    },
+    "oWorldInfo": {
+      "type": "WorldInfo",
+      "documentation": null,
+      "flags": 0
+    },
+    "nHandlerID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bWasDisplayingUIMouseCursor": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bSetGameMode": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "ScreenLayout": {
+      "type": "GUILayout",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "PlayGuiSoundString": {
+      "documentation": null,
+      "signature_members": {
+        "sSound": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayGuiSoundString(string sSound)"
+    },
+    "GetPlayerController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PlayerController",
+      "signature": "PlayerController GetPlayerController()"
+    },
+    "QueueCommand": {
+      "documentation": null,
+      "signature_members": {
+        "stQueuedCommand": {
+          "type": "BioSFQueuedCommand",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "QueueCommand(const out BioSFQueuedCommand stQueuedCommand)"
+    },
+    "PauseMenuAdditionalProcessing": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PauseMenuAdditionalProcessing()"
+    },
+    "SetExternalTextureOnPanel": {
+      "documentation": null,
+      "signature_members": {
+        "Resource": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Texture": {
+          "type": "Texture",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetExternalTextureOnPanel(string Resource, Texture Texture)"
+    },
+    "StopGuiVoice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopGuiVoice()"
+    },
+    "PlayGuiVoice": {
+      "documentation": null,
+      "signature_members": {
+        "nmSound": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayGuiVoice(Name nmSound)"
+    },
+    "StopGuiMusic": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopGuiMusic()"
+    },
+    "PlayGuiMusic": {
+      "documentation": null,
+      "signature_members": {
+        "nmMusic": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bForceRestart": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayGuiMusic(Name nmMusic, optional bool bForceRestart)"
+    },
+    "PlayGuiSound": {
+      "documentation": null,
+      "signature_members": {
+        "nmSound": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayGuiSound(Name nmSound)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "SetWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetWorld()"
+    },
+    "SendMouseToScaleForm": {
+      "documentation": null,
+      "signature_members": {
+        "nEvent": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SendMouseToScaleForm(byte nEvent)"
+    },
+    "SetMouseShown": {
+      "documentation": null,
+      "signature_members": {
+        "showIt": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMouseShown(optional bool showIt)"
+    },
+    "IsMouseShown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsMouseShown()"
+    },
+    "OnAspectRatioChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnAspectRatioChanged()"
+    },
+    "IsVisibleAndEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsVisibleAndEnabled()"
+    },
+    "OnInputFocusRecieved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnInputFocusRecieved()"
+    },
+    "OnInputFocusLost": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnInputFocusLost()"
+    },
+    "GameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GameSessionEnded()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "HandleInputConfigurations": {
+      "documentation": null,
+      "signature_members": {
+        "bMenuAdvanceSwapped": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bStickSouthpaw": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bTriggerSouthpaw": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bTriggersShouldersSwapped": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputConfigurations(bool bMenuAdvanceSwapped, bool bStickSouthpaw, bool bTriggerSouthpaw, bool bTriggersShouldersSwapped)"
+    },
+    "UpdateInputConfigurations": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateInputConfigurations()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "HandleExternalEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nHandler": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleExternalEvent(byte nHandler, byte nCommand, const out array<string> lstArguments)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "SetHighShadowBias": {
+      "documentation": null,
+      "signature_members": {
+        "bTurn": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHighShadowBias(bool bTurn)"
+    }
+  },
+  "states": {},
+  "classflags": 136315035,
+  "configname": "None",
+  "documentation": null
+}

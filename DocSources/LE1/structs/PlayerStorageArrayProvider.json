@@ -1,0 +1,23 @@
+{
+  "members": {
+    "PlayerStorageName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "Provider": {
+      "type": "UIDataProvider_OnlinePlayerStorageArray",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayerStorageId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "UIDataProvider_OnlinePlayerStorage",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

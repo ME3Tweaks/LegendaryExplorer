@@ -1,0 +1,36 @@
+{
+  "parent": "SoundNode",
+  "package": "Engine",
+  "variables": {
+    "MinRadius": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "MaxRadius": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "bSpatialize": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAttenuate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "DistanceModel": {
+      "type": "SoundDistanceModel",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144715922,
+  "configname": "None",
+  "documentation": null
+}

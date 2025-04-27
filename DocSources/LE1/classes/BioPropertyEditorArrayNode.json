@@ -1,0 +1,23 @@
+{
+  "parent": "BioPropertyEditorPropertyNode",
+  "package": "SFXGame",
+  "variables": {
+    "m_Property": {
+      "type": "Property",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SelectionAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SelectionAction()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

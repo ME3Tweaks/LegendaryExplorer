@@ -1,0 +1,749 @@
+{
+  "parent": "BioActive",
+  "package": "SFXGame",
+  "variables": {
+    "m_vCastingStartLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_vCasterVelocity": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_vLocationToAimAt": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oPower": {
+      "type": "BioPower",
+      "documentation": null,
+      "flags": 67117056
+    },
+    "m_oPowerScript": {
+      "type": "BioPowerScript",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oCaster": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oCasterAsBioPawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oCasterBehavior": {
+      "type": "BioEpicPawnBehavior",
+      "documentation": null,
+      "flags": 67117056
+    },
+    "m_oAnimSet": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oDisableAIProperty": {
+      "type": "BioGameProperty",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nmAnimSet": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oTargetToAimAt": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oCachedBeamEffect": {
+      "type": "BioVisualEffect",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fCastingTimeRemaining": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fUseTimeRemaining": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fCasterStability": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fMaxWaitTimeForAnimation": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fCurrentWaitTimeForAnimation": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fCastingStartTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fCastingBeamTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fMaxWaitTimeForCoverLean": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fCurrentWaitTimeForCoverLean": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fLeanDelayTimer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fLeanDelayTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fLeanDelayVarianceTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bCasterIsPlayer": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bCasterIsHenchman": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bPlayerOrderedPowerUse": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bResetAnimationNode": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bPlayCastingAnimation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bPlayReleaseAnimation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bPlayUsingAnimation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bCancelAnimations": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bBlendInPowerAnimations": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bBlendOutPowerAnimations": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bWaitingForAnimationToStart": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bWaitingOnLeanOut": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bSkipPowerCooldown": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bSetFocusWhenFinished": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bAnimationReadyForPowerRelease": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bCastingAnimationAvailable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bReleaseAnimationAvailable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bUsingAnimationAvailable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bShowPowerAiming": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bCancelling": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bEnablePowerCooldown": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bShowPowerImpactText": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bDisplayingCastingBeam": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bRequestedCoverLean": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_ePowerState": {
+      "type": "EBioPowerState",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_eInitialCoverAction": {
+      "type": "ECoverAction",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "RecordDebugAimingInfo": {
+      "documentation": null,
+      "signature_members": {
+        "vStartLocation1": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vEndLocation1": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vStartLocation2": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
+        },
+        "vEndLocation2": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "RecordDebugAimingInfo(Vector vStartLocation1, Vector vEndLocation1, optional Vector vStartLocation2, optional Vector vEndLocation2)"
+    },
+    "RecordDebugInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RecordDebugInfo()"
+    },
+    "GetImpactLocation": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "vNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "nmBoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetImpactLocation(Actor oActor, out Vector vLocation, out Vector vNormal, out Name nmBoneName)"
+    },
+    "GetConeLocationForAI": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "rRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetConeLocationForAI(out Vector vLocation, out Rotator rRotation)"
+    },
+    "GetConeLocationForPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "rRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetConeLocationForPlayer(out Vector vLocation, out Rotator rRotation)"
+    },
+    "GetConeLocation": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "rRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetConeLocation(out Vector vLocation, out Rotator rRotation)"
+    },
+    "GetReleaseLocationForAI": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "vNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "oActorAtReleaseLocation": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 384
+        },
+        "bUseBeamSpecialHandling": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "GetReleaseLocationForAI(out Vector vLocation, out Vector vNormal, out Actor oActorAtReleaseLocation, optional bool bUseBeamSpecialHandling)"
+    },
+    "GetReleaseLocationForPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "vNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "oActorAtReleaseLocation": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetReleaseLocationForPlayer(out Vector vLocation, out Vector vNormal, out Actor oActorAtReleaseLocation)"
+    },
+    "GetReleaseLocation": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "vNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "oActorAtReleaseLocation": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 384
+        },
+        "bUseBeamSpecialHandling": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "GetReleaseLocation(out Vector vLocation, out Vector vNormal, out Actor oActorAtReleaseLocation, optional bool bUseBeamSpecialHandling)"
+    },
+    "GetProjectileLocation": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "vTargetLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetProjectileLocation(out Vector vLocation, out Vector vTargetLocation)"
+    },
+    "CreatePowerScript": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CreatePowerScript()"
+    },
+    "UpdateBeamVFX": {
+      "documentation": null,
+      "signature_members": {
+        "eResource": {
+          "type": "EBioPowerResource",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateBeamVFX(EBioPowerResource eResource, float fDeltaTime)"
+    },
+    "DisplayBeamVFX": {
+      "documentation": null,
+      "signature_members": {
+        "eResource": {
+          "type": "EBioPowerResource",
+          "documentation": null,
+          "flags": 128
+        },
+        "vStartLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vDestination": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayBeamVFX(EBioPowerResource eResource, Vector vStartLocation, Vector vDestination)"
+    },
+    "StopPowerVFX": {
+      "documentation": null,
+      "signature_members": {
+        "eResource": {
+          "type": "EBioPowerResource",
+          "documentation": null,
+          "flags": 128
+        },
+        "bAllowVFXToFinish": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "StopPowerVFX(EBioPowerResource eResource, optional bool bAllowVFXToFinish)"
+    },
+    "DisplayPowerVFX": {
+      "documentation": null,
+      "signature_members": {
+        "eResource": {
+          "type": "EBioPowerResource",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayPowerVFX(EBioPowerResource eResource)"
+    },
+    "GetAnimationAvailability": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetAnimationAvailability()"
+    },
+    "UnloadAnimSet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnloadAnimSet()"
+    },
+    "LoadAnimSet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool LoadAnimSet()"
+    },
+    "DoImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "nImpactedCount": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DoImpact(Actor oActor, out int nImpactedCount)"
+    },
+    "ReleaseDualPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ReleaseDualPower()"
+    },
+    "ReleaseVerticalCylinderPower": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReleaseVerticalCylinderPower(Vector vLocation, Vector vNormal)"
+    },
+    "ReleaseConePower": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "rRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReleaseConePower(Vector vLocation, Rotator rRotation)"
+    },
+    "ReleaseImpactVolumePower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ReleaseImpactVolumePower()"
+    },
+    "ReleaseRadiusPower": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "oActorAtReleaseLocation": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIncludeCaster": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReleaseRadiusPower(Vector vLocation, Vector vNormal, Actor oActorAtReleaseLocation, bool bIncludeCaster)"
+    },
+    "ReleaseProjectilePower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ReleaseProjectilePower()"
+    },
+    "EndUsingPhase": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool EndUsingPhase()"
+    },
+    "StartUsingPhase": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool StartUsingPhase()"
+    },
+    "EndReleasePhase": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool EndReleasePhase()"
+    },
+    "StartReleasePhase": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool StartReleasePhase()"
+    },
+    "EndCastingPhase": {
+      "documentation": null,
+      "signature_members": {
+        "bAllowVFXToFinish": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EndCastingPhase(optional bool bAllowVFXToFinish)"
+    },
+    "StartCastingPhase": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool StartCastingPhase()"
+    },
+    "InitializeInternal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeInternal()"
+    },
+    "SetTargetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetLocation(Vector vLocation)"
+    },
+    "SetTargetActor": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetActor(Actor oTarget)"
+    },
+    "CancelPower": {
+      "documentation": null,
+      "signature_members": {
+        "bOnlyCancelIfCasting": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CancelPower(bool bOnlyCancelIfCasting)"
+    },
+    "AnimationReadyForPowerRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AnimationReadyForPowerRelease()"
+    }
+  },
+  "states": {},
+  "classflags": 142606486,
+  "configname": "Game",
+  "documentation": null
+}

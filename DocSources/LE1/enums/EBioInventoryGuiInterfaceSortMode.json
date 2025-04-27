@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "BIO_INVENTORY_GUI_INTERFACE_SORT_BY_SOPH_DESC": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_INVENTORY_GUI_INTERFACE_SORT_BY_SOPH_ASC": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_INVENTORY_GUI_INTERFACE_SORT_BY_NAME": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_INVENTORY_GUI_INTERFACE_SORT_BY_SOPH_DESC_STORE": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_INVENTORY_GUI_INTERFACE_SORT_BY_SOPH_ASC_STORE": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_INVENTORY_GUI_INTERFACE_SORT_BY_TYPE": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIO_INVENTORY_GUI_INTERFACE_SORT_BY_PRICE": {
+      "value": 6,
+      "documentation": null
+    },
+    "BIO_INVENTORY_GUI_INTERFACE_SORT_BY_NAME_STORE": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Wave": {
+      "type": "SoundNodeWave",
+      "documentation": null,
+      "flags": 1
+    },
+    "PitchScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "VolumeScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Weight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "SoundNodeAmbientNonLoop",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

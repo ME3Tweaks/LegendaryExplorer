@@ -1,0 +1,23 @@
+{
+  "members": {
+    "GameEffectID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Modifier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "modType": {
+      "type": "EBioAttrModType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXWeaponStatsBase",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

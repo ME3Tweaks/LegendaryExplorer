@@ -1,0 +1,31 @@
+{
+  "parent": "BioBaseSquadSaveObject",
+  "package": "SFXGame",
+  "variables": {
+    "m_nSquadExperience": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_nMaxLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_nMinLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_nSquadLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009213693952
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

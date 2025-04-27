@@ -1,0 +1,18 @@
+{
+  "members": {
+    "m_sSliderName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_fValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioMorphFaceFrontEnd",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

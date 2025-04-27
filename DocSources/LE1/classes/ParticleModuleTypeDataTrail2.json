@@ -1,0 +1,71 @@
+{
+  "parent": "ParticleModuleTypeDataBase",
+  "package": "Engine",
+  "variables": {
+    "TessellationFactor": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "TessellationFactorDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "TessellationStrength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "TextureTile": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "Sheets": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxTrailCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxParticleInTrailCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bClipSourceSegement": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "RenderGeometry": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "RenderDirectLine": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "RenderLines": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "RenderTessellation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

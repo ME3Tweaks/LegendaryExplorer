@@ -1,0 +1,36 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "fStartTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fEndTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fIntervalTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bModalTimer": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

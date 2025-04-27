@@ -1,0 +1,43 @@
+{
+  "members": {
+    "sActor1": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "sActor2": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "sStage": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "nmShotName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nActor1PosNode": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseCamera": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "eShotType": {
+      "type": "EBioFuncShotType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioEvtSysTrackFuncShot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

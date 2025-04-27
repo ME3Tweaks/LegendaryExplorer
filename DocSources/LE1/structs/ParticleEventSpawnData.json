@@ -1,0 +1,7 @@
+{
+  "members": {},
+  "classdef": "ParticleSystemComponent",
+  "extends": "ParticleEventData",
+  "documentation": null,
+  "modifiers": 1
+}

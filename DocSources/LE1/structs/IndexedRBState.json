@@ -1,0 +1,28 @@
+{
+  "members": {
+    "CenterOfMass": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "LinearVelocity": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "AngularVelocity": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Index": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "PhysXEmitterSpawnable",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

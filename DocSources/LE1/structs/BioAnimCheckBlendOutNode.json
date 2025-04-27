@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Node": {
+      "type": "AnimNodeBlendList",
+      "documentation": null,
+      "flags": 0
+    },
+    "Index": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioAnimCheckBlendOut",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

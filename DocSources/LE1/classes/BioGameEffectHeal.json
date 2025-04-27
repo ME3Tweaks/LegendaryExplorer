@@ -1,0 +1,66 @@
+{
+  "parent": "BioGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "m_fHealthAmount": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fToxicAmount": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fResourcesRequired": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Apply": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object Apply(Object oTarget)"
+    },
+    "Create": {
+      "documentation": null,
+      "signature_members": {
+        "oProperty": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "fHealthAmount": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fToxicAmount": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fResourcesRequired": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Create(BioGameProperty oProperty, float fHealthAmount, float fToxicAmount, float fResourcesRequired)"
+    }
+  },
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

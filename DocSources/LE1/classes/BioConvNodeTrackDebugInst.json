@@ -1,0 +1,16 @@
+{
+  "parent": "BioInterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "m_pMsgObj": {
+      "type": "BioSeqAct_DebugMessage",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

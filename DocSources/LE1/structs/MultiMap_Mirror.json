@@ -1,0 +1,13 @@
+{
+  "members": {
+    "Pairs": {
+      "type": "Set_Mirror",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

@@ -1,0 +1,115 @@
+{
+  "parent": "SequenceEvent",
+  "package": "Engine",
+  "variables": {
+    "ClassProximityTypes": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "IgnoredClassProximityTypes": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "TouchedList": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "bForceOverlapping": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseInstigator": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIgnoreVehicleTransitions": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAllowDeadPawns": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "NotifyTouchingPawnDied": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyTouchingPawnDied(Pawn P)"
+    },
+    "Toggled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Toggled()"
+    },
+    "CheckUnTouchActivate": {
+      "documentation": null,
+      "signature_members": {
+        "InOriginator": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "InInstigator": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "bTest": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckUnTouchActivate(Actor InOriginator, Actor InInstigator, optional bool bTest)"
+    },
+    "CheckTouchActivate": {
+      "documentation": null,
+      "signature_members": {
+        "InOriginator": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "InInstigator": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "bTest": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckTouchActivate(Actor InOriginator, Actor InInstigator, optional bool bTest)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

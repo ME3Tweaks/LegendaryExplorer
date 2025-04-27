@@ -1,0 +1,17 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "NotifyPathChanged": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyPathChanged()"
+    }
+  },
+  "states": {},
+  "classflags": 134234259,
+  "configname": "None",
+  "documentation": null
+}

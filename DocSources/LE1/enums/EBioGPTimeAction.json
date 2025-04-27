@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "GP_TA_REMOVE": {
+      "value": 0,
+      "documentation": null
+    },
+    "GP_TA_CONTINUE": {
+      "value": 1,
+      "documentation": null
+    },
+    "GP_TA_BREAK": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

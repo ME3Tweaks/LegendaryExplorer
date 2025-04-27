@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "TCC_Red": {
+      "value": 0,
+      "documentation": null
+    },
+    "TCC_Green": {
+      "value": 1,
+      "documentation": null
+    },
+    "TCC_Blue": {
+      "value": 2,
+      "documentation": null
+    },
+    "TCC_Alpha": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

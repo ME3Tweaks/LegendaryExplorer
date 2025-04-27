@@ -1,0 +1,426 @@
+{
+  "parent": "SFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_IISFXOnlineComponent": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "ExternalUIChangeDelegates": {
+      "type": "OnExternalUIChange",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ControllerChangeDelegates": {
+      "type": "OnControllerChange",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "TitleManagedFiles": {
+      "type": "TitleFile",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ReadTitleFileCompleteDelegates": {
+      "type": "OnReadTitleFileComplete",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "StorageDeviceChangeDelegates": {
+      "type": "OnStorageDeviceChange",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ConnectionStatusChangeDelegates": {
+      "type": "OnConnectionStatusChange",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "LinkStatusChangeDelegates": {
+      "type": "OnConnectionStatusChange",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnLinkStatusChange__Delegate": {
+      "type": "OnLinkStatusChange",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnExternalUIChange__Delegate": {
+      "type": "OnExternalUIChange",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnControllerChange__Delegate": {
+      "type": "OnControllerChange",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnConnectionStatusChange__Delegate": {
+      "type": "OnConnectionStatusChange",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnStorageDeviceChange__Delegate": {
+      "type": "OnStorageDeviceChange",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnReadTitleFileComplete__Delegate": {
+      "type": "OnReadTitleFileComplete",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "CurrentNotificationPosition": {
+      "type": "ENetworkNotificationPosition",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {
+    "GetTitleFileState": {
+      "documentation": null,
+      "signature_members": {
+        "Filename": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "EOnlineEnumerationReadState",
+      "signature": "EOnlineEnumerationReadState GetTitleFileState(string Filename)"
+    },
+    "GetTitleFileContents": {
+      "documentation": null,
+      "signature_members": {
+        "Filename": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "FileContents": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTitleFileContents(string Filename, out array<byte> FileContents)"
+    },
+    "ClearReadTitleFileCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ReadTitleFileCompleteDelegate": {
+          "type": "OnReadTitleFileComplete",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadTitleFileCompleteDelegate(delegate<OnReadTitleFileComplete> ReadTitleFileCompleteDelegate)"
+    },
+    "AddReadTitleFileCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ReadTitleFileCompleteDelegate": {
+          "type": "OnReadTitleFileComplete",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadTitleFileCompleteDelegate(delegate<OnReadTitleFileComplete> ReadTitleFileCompleteDelegate)"
+    },
+    "ReadTitleFile": {
+      "documentation": null,
+      "signature_members": {
+        "FileToRead": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadTitleFile(string FileToRead)"
+    },
+    "OnReadTitleFileComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "Filename": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadTitleFileComplete(bool bWasSuccessful, string Filename)"
+    },
+    "ClearStorageDeviceChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "StorageDeviceChangeDelegate": {
+          "type": "OnStorageDeviceChange",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearStorageDeviceChangeDelegate(delegate<OnStorageDeviceChange> StorageDeviceChangeDelegate)"
+    },
+    "AddStorageDeviceChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "StorageDeviceChangeDelegate": {
+          "type": "OnStorageDeviceChange",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AddStorageDeviceChangeDelegate(delegate<OnStorageDeviceChange> StorageDeviceChangeDelegate)"
+    },
+    "OnStorageDeviceChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStorageDeviceChange()"
+    },
+    "GetNATType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ENATType",
+      "signature": "ENATType GetNATType()"
+    },
+    "ClearConnectionStatusChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ConnectionStatusDelegate": {
+          "type": "OnConnectionStatusChange",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearConnectionStatusChangeDelegate(delegate<OnConnectionStatusChange> ConnectionStatusDelegate)"
+    },
+    "AddConnectionStatusChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ConnectionStatusDelegate": {
+          "type": "OnConnectionStatusChange",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AddConnectionStatusChangeDelegate(delegate<OnConnectionStatusChange> ConnectionStatusDelegate)"
+    },
+    "OnConnectionStatusChange": {
+      "documentation": null,
+      "signature_members": {
+        "ConnectionStatus": {
+          "type": "EOnlineServerConnectionStatus",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnConnectionStatusChange(EOnlineServerConnectionStatus ConnectionStatus)"
+    },
+    "IsControllerConnected": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsControllerConnected(int ControllerId)"
+    },
+    "ClearControllerChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerChangeDelegate": {
+          "type": "OnControllerChange",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearControllerChangeDelegate(delegate<OnControllerChange> ControllerChangeDelegate)"
+    },
+    "AddControllerChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerChangeDelegate": {
+          "type": "OnControllerChange",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AddControllerChangeDelegate(delegate<OnControllerChange> ControllerChangeDelegate)"
+    },
+    "OnControllerChange": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIsConnected": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnControllerChange(int ControllerId, bool bIsConnected)"
+    },
+    "SetNetworkNotificationPosition": {
+      "documentation": null,
+      "signature_members": {
+        "NewPos": {
+          "type": "ENetworkNotificationPosition",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNetworkNotificationPosition(ENetworkNotificationPosition NewPos)"
+    },
+    "GetNetworkNotificationPosition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ENetworkNotificationPosition",
+      "signature": "ENetworkNotificationPosition GetNetworkNotificationPosition()"
+    },
+    "ProcessExternalUINotification": {
+      "documentation": null,
+      "signature_members": {
+        "bOpening": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessExternalUINotification(bool bOpening)"
+    },
+    "ClearExternalUIChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ExternalUIDelegate": {
+          "type": "OnExternalUIChange",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearExternalUIChangeDelegate(delegate<OnExternalUIChange> ExternalUIDelegate)"
+    },
+    "AddExternalUIChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ExternalUIDelegate": {
+          "type": "OnExternalUIChange",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AddExternalUIChangeDelegate(delegate<OnExternalUIChange> ExternalUIDelegate)"
+    },
+    "OnExternalUIChange": {
+      "documentation": null,
+      "signature_members": {
+        "bIsOpening": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnExternalUIChange(bool bIsOpening)"
+    },
+    "ClearLinkStatusChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LinkStatusDelegate": {
+          "type": "OnLinkStatusChange",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearLinkStatusChangeDelegate(delegate<OnLinkStatusChange> LinkStatusDelegate)"
+    },
+    "AddLinkStatusChangeDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "LinkStatusDelegate": {
+          "type": "OnLinkStatusChange",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AddLinkStatusChangeDelegate(delegate<OnLinkStatusChange> LinkStatusDelegate)"
+    },
+    "OnLinkStatusChange": {
+      "documentation": null,
+      "signature_members": {
+        "bIsConnected": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLinkStatusChange(bool bIsConnected)"
+    },
+    "HasLinkConnection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasLinkConnection()"
+    },
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    }
+  },
+  "states": {},
+  "classflags": 136315030,
+  "configname": "Engine",
+  "documentation": null
+}

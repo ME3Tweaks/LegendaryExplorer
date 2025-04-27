@@ -1,0 +1,23 @@
+{
+  "members": {
+    "MappedText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "FieldName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "Set": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "UIDataStore_StringAliasMap",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

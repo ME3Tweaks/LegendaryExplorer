@@ -1,0 +1,195 @@
+{
+  "parent": "BioAI_Core",
+  "package": "SFXGame",
+  "variables": {
+    "bHopping": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "HearNoise": {
+      "documentation": null,
+      "signature_members": {
+        "Loudness": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "NoiseMaker": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vNoiseLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "NoiseType": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HearNoise(float Loudness, Actor NoiseMaker, Vector vNoiseLocation, optional Name NoiseType)"
+    },
+    "OnSquadSeen": {
+      "documentation": null,
+      "signature_members": {
+        "oSquad": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSquadSeen(Actor oSquad)"
+    },
+    "OnActionComplete_Movement": {
+      "documentation": null,
+      "signature_members": {
+        "nmAction": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nReason": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnActionComplete_Movement(Name nmAction, int nReason, Actor oTarget, Vector vLocation)"
+    },
+    "OnActionComplete_Combat": {
+      "documentation": null,
+      "signature_members": {
+        "nmAction": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmTechnique": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nReason": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "oLastTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnActionComplete_Combat(Name nmAction, Name nmTechnique, int nReason, Actor oLastTarget)"
+    },
+    "OnDamaged": {
+      "documentation": null,
+      "signature_members": {
+        "oInstigator": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDamaged(Controller oInstigator, float fDamage)"
+    },
+    "EvaluateMovement": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "bLOS": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EvaluateMovement(Pawn oTarget, bool bLOS)"
+    },
+    "EvaluateCapabilities": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "bLOS": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EvaluateCapabilities(Pawn oTarget, bool bLOS)"
+    },
+    "Hop": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
+        },
+        "fMoveDelay": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Hop(optional Pawn oTarget, optional float fMoveDelay)"
+    },
+    "FindHopperNode": {
+      "documentation": null,
+      "signature_members": {
+        "pSource": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "pTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioWP_Hopper",
+      "signature": "BioWP_Hopper FindHopperNode(Pawn pSource, Pawn pTarget)"
+    }
+  },
+  "states": {},
+  "classflags": 144704150,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,95 @@
+{
+  "parent": "Settings",
+  "package": "Engine",
+  "variables": {
+    "ManualSkillOverride": {
+      "type": "OverrideSkill",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "FilterQuery": {
+      "type": "OnlineGameSearchQuery",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "Results": {
+      "type": "OnlineGameSearchResult",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "NamedProperties": {
+      "type": "NamedObjectProperty",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "AdditionalSearchCriteria": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "GameSettingsClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "Query": {
+      "type": "LocalizedStringSetting",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxSearchResults": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "PingBucketSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsLanQuery": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1073741824
+    },
+    "bUsesArbitration": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1073741824
+    },
+    "bIsSearchInProgress": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {
+    "SortSearchResults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SortSearchResults()"
+    },
+    "SetSkillOverride": {
+      "documentation": null,
+      "signature_members": {
+        "LeaderboardId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Players": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSkillOverride(int LeaderboardId, const out array<UniqueNetId> Players)"
+    }
+  },
+  "states": {},
+  "classflags": 136315058,
+  "configname": "None",
+  "documentation": null
+}

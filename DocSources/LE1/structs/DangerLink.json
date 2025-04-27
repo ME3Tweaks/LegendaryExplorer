@@ -1,0 +1,18 @@
+{
+  "members": {
+    "DangerNav": {
+      "type": "ActorReference",
+      "documentation": null,
+      "flags": 131075
+    },
+    "DangerCost": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "CoverLink",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 385
+}

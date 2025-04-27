@@ -1,0 +1,29 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "SceneCapture": {
+      "type": "SceneCaptureComponent",
+      "documentation": null,
+      "flags": 67633163
+    }
+  },
+  "functions": {
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    }
+  },
+  "states": {},
+  "classflags": 144703635,
+  "configname": "None",
+  "documentation": null
+}

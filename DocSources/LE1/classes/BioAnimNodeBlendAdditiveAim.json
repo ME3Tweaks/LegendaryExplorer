@@ -1,0 +1,26 @@
+{
+  "parent": "BioAnimNodeBlendAdditive",
+  "package": "SFXGame",
+  "variables": {
+    "BlendInDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "BlendOutDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIsCoverAiming": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

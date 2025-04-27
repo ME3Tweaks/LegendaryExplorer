@@ -1,0 +1,18 @@
+{
+  "members": {
+    "A": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "B": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

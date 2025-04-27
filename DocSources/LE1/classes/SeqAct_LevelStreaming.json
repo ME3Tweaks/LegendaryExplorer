@@ -1,0 +1,26 @@
+{
+  "parent": "SeqAct_LevelStreamingBase",
+  "package": "Engine",
+  "variables": {
+    "Level": {
+      "type": "LevelStreaming",
+      "documentation": null,
+      "flags": 2
+    },
+    "LevelName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 3
+    },
+    "bStatusIsOk": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

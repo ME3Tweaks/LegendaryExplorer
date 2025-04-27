@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "HUD_OBJECT_TYPE_PAWN": {
+      "value": 0,
+      "documentation": null
+    },
+    "HUD_OBJECT_TYPE_PLACEABLE": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

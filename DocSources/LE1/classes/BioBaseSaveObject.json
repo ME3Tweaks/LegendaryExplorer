@@ -1,0 +1,58 @@
+{
+  "parent": "Object",
+  "package": "Core",
+  "variables": {
+    "OwnerName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "OwnerClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SaveBaseObjectInfo": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SaveBaseObjectInfo(Object O)"
+    },
+    "LoadObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadObject(Object O)"
+    },
+    "SaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveObject(Object O)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

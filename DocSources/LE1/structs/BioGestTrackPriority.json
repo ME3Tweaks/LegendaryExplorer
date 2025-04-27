@@ -1,0 +1,18 @@
+{
+  "members": {
+    "nTrackIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nPriority": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioEvtSysTrackGesture",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

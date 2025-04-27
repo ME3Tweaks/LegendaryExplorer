@@ -1,0 +1,18 @@
+{
+  "members": {
+    "LastTargetLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "LastSrcLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "CoverLink",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 385
+}

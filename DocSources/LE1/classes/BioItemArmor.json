@@ -1,0 +1,65 @@
+{
+  "parent": "BioItemXModdable",
+  "package": "SFXGame",
+  "variables": {
+    "m_eArmorType": {
+      "type": "EBioArmorType",
+      "documentation": null,
+      "flags": 3
+    }
+  },
+  "functions": {
+    "OnUnequipInternal": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUnequipInternal(BioPawn oPawn)"
+    },
+    "OnEquipInternal": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnEquipInternal(BioPawn oPawn)"
+    },
+    "DescribeItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeItem()"
+    },
+    "ComputeSophistication": {
+      "documentation": null,
+      "signature_members": {
+        "oBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67109008
+        }
+      },
+      "returntype": "int",
+      "signature": "int ComputeSophistication(optional BioPawnBehavior oBehavior)"
+    },
+    "GetItemTypeName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetItemTypeName()"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,486 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "CollisionDisableTable": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Bodies": {
+      "type": "RB_BodyInstance",
+      "documentation": null,
+      "flags": 71303178
+    },
+    "Constraints": {
+      "type": "RB_ConstraintInstance",
+      "documentation": null,
+      "flags": 71303178
+    },
+    "Owner": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8194
+    },
+    "RootBodyIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8194
+    },
+    "LinearSpringScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "LinearDampingScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "LinearForceLimitScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "AngularSpringScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "AngularDampingScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "AngularForceLimitScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "bInitBodies": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bHasFixedBody": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "FindConstraintInstance": {
+      "documentation": null,
+      "signature_members": {
+        "ConName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "InAsset": {
+          "type": "PhysicsAsset",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "RB_ConstraintInstance",
+      "signature": "RB_ConstraintInstance FindConstraintInstance(Name ConName, PhysicsAsset InAsset)"
+    },
+    "FindBodyInstance": {
+      "documentation": null,
+      "signature_members": {
+        "BodyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "InAsset": {
+          "type": "PhysicsAsset",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "RB_BodyInstance",
+      "signature": "RB_BodyInstance FindBodyInstance(Name BodyName, PhysicsAsset InAsset)"
+    },
+    "SetFullAnimWeightBonesFixed": {
+      "documentation": null,
+      "signature_members": {
+        "bNewFixed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "SkelMesh": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFullAnimWeightBonesFixed(bool bNewFixed, SkeletalMeshComponent SkelMesh)"
+    },
+    "SetFullAnimWeightBlockRigidBody": {
+      "documentation": null,
+      "signature_members": {
+        "bNewBlockRigidBody": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "SkelMesh": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFullAnimWeightBlockRigidBody(bool bNewBlockRigidBody, SkeletalMeshComponent SkelMesh)"
+    },
+    "SetNamedBodiesBlockRigidBody": {
+      "documentation": null,
+      "signature_members": {
+        "bNewBlockRigidBody": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "BoneNames": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "SkelMesh": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNamedBodiesBlockRigidBody(bool bNewBlockRigidBody, array<Name> BoneNames, SkeletalMeshComponent SkelMesh)"
+    },
+    "SetNamedRBBoneSprings": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "BoneNames": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "InBoneLinearSpring": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InBoneAngularSpring": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "SkelMeshComp": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNamedRBBoneSprings(bool bEnable, array<Name> BoneNames, float InBoneLinearSpring, float InBoneAngularSpring, SkeletalMeshComponent SkelMeshComp)"
+    },
+    "SetNamedMotorsAngularVelocityDrive": {
+      "documentation": null,
+      "signature_members": {
+        "bEnableSwingDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bEnableTwistDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "BoneNames": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "SkelMeshComp": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "bSetOtherBodiesToComplement": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNamedMotorsAngularVelocityDrive(bool bEnableSwingDrive, bool bEnableTwistDrive, array<Name> BoneNames, SkeletalMeshComponent SkelMeshComp, optional bool bSetOtherBodiesToComplement)"
+    },
+    "SetNamedMotorsAngularPositionDrive": {
+      "documentation": null,
+      "signature_members": {
+        "bEnableSwingDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bEnableTwistDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "BoneNames": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "SkelMeshComp": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "bSetOtherBodiesToComplement": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNamedMotorsAngularPositionDrive(bool bEnableSwingDrive, bool bEnableTwistDrive, array<Name> BoneNames, SkeletalMeshComponent SkelMeshComp, optional bool bSetOtherBodiesToComplement)"
+    },
+    "SetAllMotorsAngularDriveParams": {
+      "documentation": null,
+      "signature_members": {
+        "InSpring": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InDamping": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InForceLimit": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "SkelMesh": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67109008
+        },
+        "bSkipFullAnimWeightBodies": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAllMotorsAngularDriveParams(float InSpring, float InDamping, float InForceLimit, optional SkeletalMeshComponent SkelMesh, optional bool bSkipFullAnimWeightBodies)"
+    },
+    "SetAllMotorsAngularVelocityDrive": {
+      "documentation": null,
+      "signature_members": {
+        "bEnableSwingDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bEnableTwistDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "SkelMeshComp": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "bSkipFullAnimWeightBodies": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAllMotorsAngularVelocityDrive(bool bEnableSwingDrive, bool bEnableTwistDrive, SkeletalMeshComponent SkelMeshComp, optional bool bSkipFullAnimWeightBodies)"
+    },
+    "SetAllMotorsAngularPositionDrive": {
+      "documentation": null,
+      "signature_members": {
+        "bEnableSwingDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bEnableTwistDrive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "SkelMesh": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67109008
+        },
+        "bSkipFullAnimWeightBodies": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAllMotorsAngularPositionDrive(bool bEnableSwingDrive, bool bEnableTwistDrive, optional SkeletalMeshComponent SkelMesh, optional bool bSkipFullAnimWeightBodies)"
+    },
+    "ForceAllBodiesBelowUnfixed": {
+      "documentation": null,
+      "signature_members": {
+        "InBoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 386
+        },
+        "InAsset": {
+          "type": "PhysicsAsset",
+          "documentation": null,
+          "flags": 128
+        },
+        "InSkelMesh": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "InbInstanceAlwaysFullAnimWeight": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceAllBodiesBelowUnfixed(const out Name InBoneName, PhysicsAsset InAsset, SkeletalMeshComponent InSkelMesh, bool InbInstanceAlwaysFullAnimWeight)"
+    },
+    "SetNamedBodiesFixed": {
+      "documentation": null,
+      "signature_members": {
+        "bNewFixed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "BoneNames": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "SkelMesh": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "bSetOtherBodiesToComplement": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bSkipFullAnimWeightBodies": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNamedBodiesFixed(bool bNewFixed, array<Name> BoneNames, SkeletalMeshComponent SkelMesh, optional bool bSetOtherBodiesToComplement, optional bool bSkipFullAnimWeightBodies)"
+    },
+    "SetAllBodiesFixed": {
+      "documentation": null,
+      "signature_members": {
+        "bNewFixed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAllBodiesFixed(bool bNewFixed)"
+    },
+    "GetTotalMassBelowBone": {
+      "documentation": null,
+      "signature_members": {
+        "InBoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "InAsset": {
+          "type": "PhysicsAsset",
+          "documentation": null,
+          "flags": 128
+        },
+        "InSkelMesh": {
+          "type": "SkeletalMesh",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetTotalMassBelowBone(Name InBoneName, PhysicsAsset InAsset, SkeletalMesh InSkelMesh)"
+    },
+    "SetAngularDriveScale": {
+      "documentation": null,
+      "signature_members": {
+        "InAngularSpringScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InAngularDampingScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InAngularForceLimitScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAngularDriveScale(float InAngularSpringScale, float InAngularDampingScale, float InAngularForceLimitScale)"
+    },
+    "SetLinearDriveScale": {
+      "documentation": null,
+      "signature_members": {
+        "InLinearSpringScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InLinearDampingScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InLinearForceLimitScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLinearDriveScale(float InLinearSpringScale, float InLinearDampingScale, float InLinearForceLimitScale)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

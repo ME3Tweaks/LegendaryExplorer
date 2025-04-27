@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "SPEAKERPAN_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "SPEAKERPAN_Center": {
+      "value": 1,
+      "documentation": null
+    },
+    "SPEAKERPAN_Left": {
+      "value": 2,
+      "documentation": null
+    },
+    "SPEAKERPAN_Right": {
+      "value": 3,
+      "documentation": null
+    },
+    "SPEAKERPAN_Rear": {
+      "value": 4,
+      "documentation": null
+    },
+    "SPEAKERPAN_FrontLeft": {
+      "value": 5,
+      "documentation": null
+    },
+    "SPEAKERPAN_FrontRight": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

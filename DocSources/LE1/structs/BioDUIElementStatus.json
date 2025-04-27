@@ -1,0 +1,18 @@
+{
+  "members": {
+    "bVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bFading": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFHandler_DesignerUI",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

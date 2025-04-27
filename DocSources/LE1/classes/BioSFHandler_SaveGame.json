@@ -1,0 +1,144 @@
+{
+  "parent": "BioSFHandler_SaveLoadBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_oSaveGuiMessageBoxHandler": {
+      "type": "BioSFHandler_MessageBox",
+      "documentation": null,
+      "flags": 8192
+    },
+    "srOverwriteMessage": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srOverwriteConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srOverwriteCancel": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSaving": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSaveComplete": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nMaxSaveGameNumber": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "fUpdateTimer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nSaveIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "CheckFreeSpaceComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Args": {
+          "type": "SFXSaveGameCommandEventArgs",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "CheckFreeSpaceComplete(SFXSaveGameCommandEventArgs Args)"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "NotifyCorruptSavesAndDelete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyCorruptSavesAndDelete()"
+    },
+    "DeleteCorruptGamesConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DeleteCorruptGamesConfirm(bool bAPressed)"
+    },
+    "SaveComplete": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "oMsgBox": {
+          "type": "BioSFHandler_MessageBox",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveComplete(float fDeltaT, BioSFHandler_MessageBox oMsgBox)"
+    },
+    "SaveGameConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveGameConfirm(bool bAPressed, int nContext)"
+    },
+    "DeleteGameConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DeleteGameConfirm(bool bAPressed, int nContext)"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
+  "documentation": null
+}

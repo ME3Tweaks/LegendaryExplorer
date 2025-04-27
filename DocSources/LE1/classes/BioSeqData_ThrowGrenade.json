@@ -1,0 +1,36 @@
+{
+  "parent": "BioSeqData_ActionBase",
+  "package": "SFXGame",
+  "variables": {
+    "vTarget": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "oTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "nGrenadeType": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bStartThrow": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bTerminate_LostLOS": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

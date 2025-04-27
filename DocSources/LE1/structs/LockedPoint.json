@@ -1,0 +1,18 @@
+{
+  "members": {
+    "oPoint": {
+      "type": "NavigationPoint",
+      "documentation": null,
+      "flags": 0
+    },
+    "oLockedBy": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioBaseSquadDesign",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

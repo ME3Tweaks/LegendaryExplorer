@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BIO_SIDE_RIGHT": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_SIDE_LEFT": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

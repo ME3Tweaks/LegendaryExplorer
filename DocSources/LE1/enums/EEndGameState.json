@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EGS_NotFinished": {
+      "value": 0,
+      "documentation": null
+    },
+    "EGS_OutInABlazeOfGlory": {
+      "value": 1,
+      "documentation": null
+    },
+    "EGS_LivedToFightAgain": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

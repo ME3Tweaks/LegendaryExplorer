@@ -1,0 +1,48 @@
+{
+  "members": {
+    "ChanceOfPhysicsChunkOverride": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxExplosionChunkSize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxDamageChunkSize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxNumFacturedChunksToSpawnInAFrame": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "FractureExplosionVelScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEnableChanceOfPhysicsChunkOverride": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bLimitExplosionChunkSize": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bLimitDamageChunkSize": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "WorldInfo",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

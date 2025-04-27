@@ -1,0 +1,80 @@
+{
+  "parent": "DamageType",
+  "package": "SFXGame",
+  "variables": {
+    "m_pDeathVFX": {
+      "type": "BioDeathVFX",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_pAttributes": {
+      "type": "BioAttributesDamage",
+      "documentation": null,
+      "flags": 71434249
+    },
+    "m_bIsInitialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SetDeathVFX": {
+      "documentation": null,
+      "signature_members": {
+        "pDeathVFX": {
+          "type": "BioDeathVFX",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDeathVFX(BioDeathVFX pDeathVFX)"
+    },
+    "GetDeathVFX": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioDeathVFX",
+      "signature": "BioDeathVFX GetDeathVFX()"
+    },
+    "SetAttributes": {
+      "documentation": null,
+      "signature_members": {
+        "pAttributes": {
+          "type": "BioAttributesDamage",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAttributes(BioAttributesDamage pAttributes)"
+    },
+    "GetAttributes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioAttributesDamage",
+      "signature": "BioAttributesDamage GetAttributes()"
+    },
+    "InitializeDamageType": {
+      "documentation": null,
+      "signature_members": {
+        "pAttributes": {
+          "type": "BioAttributesDamage",
+          "documentation": null,
+          "flags": 67109008
+        },
+        "pDeathVFX": {
+          "type": "BioDeathVFX",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeDamageType(optional BioAttributesDamage pAttributes, optional BioDeathVFX pDeathVFX)"
+    }
+  },
+  "states": {},
+  "classflags": 144703666,
+  "configname": "None",
+  "documentation": null
+}

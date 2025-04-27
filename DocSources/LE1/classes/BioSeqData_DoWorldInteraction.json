@@ -1,0 +1,26 @@
+{
+  "parent": "BioSeqData_StateBase",
+  "package": "SFXGame",
+  "variables": {
+    "Activities": {
+      "type": "BioActivityTiming",
+      "documentation": null,
+      "flags": 71303169
+    },
+    "WI_Station": {
+      "type": "BioWp_ActionStation",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_Mode": {
+      "type": "EWI_Mode",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142618770,
+  "configname": "None",
+  "documentation": null
+}

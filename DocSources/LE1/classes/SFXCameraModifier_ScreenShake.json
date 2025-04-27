@@ -1,0 +1,204 @@
+{
+  "parent": "CameraModifier",
+  "package": "SFXGame",
+  "variables": {
+    "Shakes": {
+      "type": "ScreenShakeStruct",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "TestShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "ModifyCamera": {
+      "documentation": null,
+      "signature_members": {
+        "Camera": {
+          "type": "Camera",
+          "documentation": null,
+          "flags": 128
+        },
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutPOV": {
+          "type": "TPOV",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ModifyCamera(Camera Camera, float DeltaTime, out TPOV OutPOV)"
+    },
+    "UpdateScreenShake": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "Shake": {
+          "type": "ScreenShakeStruct",
+          "documentation": null,
+          "flags": 384
+        },
+        "OutPOV": {
+          "type": "TPOV",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateScreenShake(float DeltaTime, out ScreenShakeStruct Shake, out TPOV OutPOV)"
+    },
+    "StartNewShake": {
+      "documentation": null,
+      "signature_members": {
+        "Duration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "newRotAmplitude": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "newRotFrequency": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "newLocAmplitude": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "newLocFrequency": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "newFOVAmplitude": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "newFOVFrequency": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "StartNewShake(float Duration, Vector newRotAmplitude, Vector newRotFrequency, Vector newLocAmplitude, Vector newLocFrequency, float newFOVAmplitude, float newFOVFrequency)"
+    },
+    "ComposeNewShake": {
+      "documentation": null,
+      "signature_members": {
+        "Duration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "newRotAmplitude": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "newRotFrequency": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "newLocAmplitude": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "newLocFrequency": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "newFOVAmplitude": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "newFOVFrequency": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "ScreenShakeStruct",
+      "signature": "ScreenShakeStruct ComposeNewShake(float Duration, Vector newRotAmplitude, Vector newRotFrequency, Vector newLocAmplitude, Vector newLocFrequency, float newFOVAmplitude, float newFOVFrequency)"
+    },
+    "InitializeOffset": {
+      "documentation": null,
+      "signature_members": {
+        "Param": {
+          "type": "EShakeParam",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float InitializeOffset(EShakeParam Param)"
+    },
+    "InitializeShake": {
+      "documentation": null,
+      "signature_members": {
+        "NewShake": {
+          "type": "ScreenShakeStruct",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "ScreenShakeStruct",
+      "signature": "ScreenShakeStruct InitializeShake(ScreenShakeStruct NewShake)"
+    },
+    "AddScreenShake": {
+      "documentation": null,
+      "signature_members": {
+        "NewShake": {
+          "type": "ScreenShakeStruct",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "AddScreenShake(const out ScreenShakeStruct NewShake)"
+    },
+    "RemoveScreenShake": {
+      "documentation": null,
+      "signature_members": {
+        "ShakeName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveScreenShake(Name ShakeName)"
+    },
+    "RemoveAllScreenShakes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveAllScreenShakes()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "Camera",
+  "documentation": null
+}

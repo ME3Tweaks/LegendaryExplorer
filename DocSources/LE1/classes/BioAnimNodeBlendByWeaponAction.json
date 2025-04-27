@@ -1,0 +1,28 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "SFXGame",
+  "variables": {
+    "m_isInitialStateDetermined": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_eCurrentAnimNode": {
+      "type": "EBioWeaponActionAnimNode",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "PlayCurrentChildAnimation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayCurrentChildAnimation()"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "LoadGame_Success": {
+      "value": 0,
+      "documentation": null
+    },
+    "LoadGame_Fail": {
+      "value": 1,
+      "documentation": null
+    },
+    "LoadGame_InitialChunk": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

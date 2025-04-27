@@ -1,0 +1,41 @@
+{
+  "parent": "FogVolumeDensityComponent",
+  "package": "Engine",
+  "variables": {
+    "ConeVertex": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "ConeAxis": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "PreviewCone": {
+      "type": "DrawLightConeComponent",
+      "documentation": null,
+      "flags": 67633162
+    },
+    "MaxDensity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "ConeRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "ConeMaxAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934593
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142618770,
+  "configname": "None",
+  "documentation": null
+}

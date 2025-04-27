@@ -1,0 +1,207 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "UpdatePawnAppearanceStatic": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Source": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePawnAppearanceStatic(BioPawn Target, string Source)"
+    },
+    "UpdatePawnAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Source": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdatePawnAppearance(BioPawn Target, string Source)"
+    },
+    "IsMergeModInstalled": {
+      "documentation": null,
+      "signature_members": {
+        "basegamgeInstance": {
+          "type": "AMM_AppearanceUpdater_Base",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsMergeModInstalled(out AMM_AppearanceUpdater_Base basegamgeInstance)"
+    },
+    "IsDlcModInstalled": {
+      "documentation": null,
+      "signature_members": {
+        "dlcInstance": {
+          "type": "AMM_AppearanceUpdater_Base",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsDlcModInstalled(out AMM_AppearanceUpdater_Base dlcInstance)"
+    },
+    "GetInstance": {
+      "documentation": null,
+      "signature_members": {
+        "Instance": {
+          "type": "AMM_AppearanceUpdater_Base",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetInstance(out AMM_AppearanceUpdater_Base Instance)"
+    },
+    "ShouldShowHelmetButton": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string ShouldShowHelmetButton(BioPawn Target)"
+    },
+    "ShouldShowHelmetButtonStatic": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string ShouldShowHelmetButtonStatic(BioPawn Target)"
+    },
+    "HelmetButtonPressed": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HelmetButtonPressed(BioPawn Target)"
+    },
+    "HelmetButtonPressedStatic": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HelmetButtonPressedStatic(BioPawn Target)"
+    },
+    "UpdateHelmetPreference": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "bPreferVisible": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bForce": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateHelmetPreference(BioPawn Target, bool bPreferVisible, bool bForce)"
+    },
+    "UpdateHelmetPreferenceStatic": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "bPreferVisible": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bForce": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateHelmetPreferenceStatic(BioPawn Target, bool bPreferVisible, bool bForce)"
+    },
+    "GameModeChanged": {
+      "documentation": null,
+      "signature_members": {
+        "newGameMode": {
+          "type": "SFXGameModeBase",
+          "documentation": null,
+          "flags": 128
+        },
+        "Activated": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GameModeChanged(SFXGameModeBase newGameMode, bool Activated)"
+    },
+    "GameModeChangedStatic": {
+      "documentation": null,
+      "signature_members": {
+        "newGameMode": {
+          "type": "SFXGameModeBase",
+          "documentation": null,
+          "flags": 128
+        },
+        "Activated": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GameModeChangedStatic(SFXGameModeBase newGameMode, bool Activated)"
+    }
+  },
+  "states": {},
+  "classflags": 18,
+  "configname": "None",
+  "documentation": null
+}

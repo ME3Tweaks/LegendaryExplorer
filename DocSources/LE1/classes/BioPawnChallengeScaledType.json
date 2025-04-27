@@ -1,0 +1,65 @@
+{
+  "parent": "BioPawnType",
+  "package": "SFXGame",
+  "variables": {
+    "m_aRankNames": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 2
+    },
+    "m_tblEquipment": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_tblChallenge": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 2
+    },
+    "m_tblAttributes": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_tblTalents": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_bEnsureXModIntegrity": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_eRank": {
+      "type": "EBioPawnChallengeRank",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetBioPawnChallengeRank": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EBioPawnChallengeRank",
+      "signature": "EBioPawnChallengeRank GetBioPawnChallengeRank()"
+    },
+    "ComputeRankedChallengeLevel": {
+      "documentation": null,
+      "signature_members": {
+        "effectiveChallengeLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int ComputeRankedChallengeLevel(int effectiveChallengeLevel)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

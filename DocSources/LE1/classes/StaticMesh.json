@@ -1,0 +1,61 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "UseSimpleRigidBodyCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "UseSimpleLineCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "UseSimpleBoxCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUsedForInstancing": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "ForceDoubleSidedShadowVolumes": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "UseFullPrecisionUVs": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "LODDistanceRatio": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "LightMapCoordinateIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "LightMapResolution": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "BodySetup": {
+      "type": "RB_BodySetup",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 268443712,
+  "configname": null,
+  "documentation": null
+}

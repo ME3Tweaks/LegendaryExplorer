@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BIO_GRENADE_ACTIVE_ANIMATION_PLAYBACK_IDLE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_GRENADE_ACTIVE_ANIMATION_PLAYBACK_PENDING": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_GRENADE_ACTIVE_ANIMATION_PLAYBACK_STARTING": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_GRENADE_ACTIVE_ANIMATION_PLAYBACK_STARTED": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

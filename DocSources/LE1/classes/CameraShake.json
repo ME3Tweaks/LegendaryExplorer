@@ -1,0 +1,94 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "RotOscillation": {
+      "type": "ROscillator",
+      "documentation": null,
+      "flags": 1
+    },
+    "LocOscillation": {
+      "type": "VOscillator",
+      "documentation": null,
+      "flags": 1
+    },
+    "FOVOscillation": {
+      "type": "FOscillator",
+      "documentation": null,
+      "flags": 1
+    },
+    "Anim": {
+      "type": "CameraAnim",
+      "documentation": null,
+      "flags": 1
+    },
+    "OscillationDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "OscillationBlendInTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "OscillationBlendOutTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimPlayRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimBlendInTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimBlendOutTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RandomAnimSegmentDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSingleInstance": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRandomAnimSegment": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetLocOscillationMagnitude": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetLocOscillationMagnitude()"
+    },
+    "GetRotOscillationMagnitude": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRotOscillationMagnitude()"
+    }
+  },
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

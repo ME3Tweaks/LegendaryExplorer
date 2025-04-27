@@ -1,0 +1,182 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "ActorGameName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_aPowers": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_clsActor": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 2
+    },
+    "AIController": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_CharacterIcons": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nTreasureType": {
+      "type": "int",
+      "documentation": null,
+      "flags": 3
+    },
+    "ActorGameNameStrRef": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fPhysicsDamageRelativeVelocityThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fPhysicsDamageScalar": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fPhysicsDamageImpulseScalar": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fPhysicsDamageMinThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fPhysicsDamageMaxAllowedPerHit": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nPhysicsLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fUseRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nRequiredScanLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nTargetTipText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nCharHeadId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIsGrenadeObstruction": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bGenerateTreasure": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_bMin1Health": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIsAffectedByBioRadialImpulse": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bBlockBioRadialImpulse": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bTargetable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bCombatTargetable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bDefaultActionPossibleOverridden": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIsThorianControlled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bPlotProtected": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bSuppressDisintegration": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "IsDisintegrationSuppressed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDisintegrationSuppressed()"
+    },
+    "IsPlotProtected": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPlotProtected()"
+    },
+    "GetSquadName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "stringref",
+      "signature": "stringref GetSquadName()"
+    },
+    "GetSquadIcon": {
+      "documentation": null,
+      "signature_members": {
+        "bIsDead": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetSquadIcon(bool bIsDead)"
+    }
+  },
+  "states": {},
+  "classflags": 142606483,
+  "configname": "None",
+  "documentation": null
+}

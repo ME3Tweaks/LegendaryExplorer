@@ -1,0 +1,48 @@
+{
+  "members": {
+    "m_RankIconArray": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_RankNameArray": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_RankDescArray": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_RankUnlockBlurbArray": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_CurrentRank": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_AvailableRank": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_MaxRank": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_IsUnlocked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioTalentContainer",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

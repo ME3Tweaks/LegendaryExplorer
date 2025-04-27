@@ -1,0 +1,48 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "animGroupName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "AnimName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "FaceFXAsset": {
+      "type": "FaceFXAsset",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimSet": {
+      "type": "FaceFXAnimSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "AnimGroup": {
+      "type": "EBioAutoSetFXGroup",
+      "documentation": null,
+      "flags": 1
+    },
+    "Anim": {
+      "type": "EBioAutoSetFXAnim",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Widget": {
+      "type": "UIObject",
+      "documentation": null,
+      "flags": 1
+    },
+    "Face": {
+      "type": "EUIWidgetFace",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

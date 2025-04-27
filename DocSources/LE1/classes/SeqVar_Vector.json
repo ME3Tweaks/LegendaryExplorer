@@ -1,0 +1,16 @@
+{
+  "parent": "SequenceVariable",
+  "package": "Engine",
+  "variables": {
+    "VectValue": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

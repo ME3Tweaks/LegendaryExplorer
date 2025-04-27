@@ -1,0 +1,33 @@
+{
+  "members": {
+    "PropertyName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 131075
+    },
+    "ActualPropertyName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "bDisplayProperty": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bOldDisplayProperty": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "ePropertyType": {
+      "type": "EBioPropertyType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSeqAct_InteractProperty",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

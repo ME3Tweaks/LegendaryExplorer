@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_FOLLOWFORMATION_INVALID": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_FOLLOWFORMATION_FOLLOW": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_FOLLOWFORMATION_HOLD": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

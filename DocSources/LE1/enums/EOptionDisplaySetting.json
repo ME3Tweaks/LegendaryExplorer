@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "DISPLAY_SETTING_EPICDEFAULT": {
+      "value": 0,
+      "documentation": null
+    },
+    "DISPLAY_SETTING_DEFAULT": {
+      "value": 1,
+      "documentation": null
+    },
+    "DISPLAY_SETTING_SOFT": {
+      "value": 2,
+      "documentation": null
+    },
+    "DISPLAY_SETTING_LUCENT": {
+      "value": 3,
+      "documentation": null
+    },
+    "DISPLAY_SETTING_VIBRANT": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

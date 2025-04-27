@@ -1,0 +1,85 @@
+{
+  "parent": "BioVISSimple",
+  "package": "SFXGame",
+  "variables": {
+    "DirtGrimeMappings": {
+      "type": "BioVISFootstepData",
+      "documentation": null,
+      "flags": 71303169
+    }
+  },
+  "functions": {
+    "ApplyFootstepVisualImpact": {
+      "documentation": null,
+      "signature_members": {
+        "vFootstepLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "rFootstepRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "oHit": {
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "fSpeedRatio": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioVisualEffect",
+      "signature": "BioVisualEffect ApplyFootstepVisualImpact(Vector vFootstepLocation, Rotator rFootstepRotation, TraceHitInfo oHit, float fSpeedRatio, Actor oActor)"
+    },
+    "GetCombatValue": {
+      "documentation": null,
+      "signature_members": {
+        "oPhysMat": {
+          "type": "PhysicalMaterial",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetCombatValue(PhysicalMaterial oPhysMat)"
+    },
+    "GetDirtValue": {
+      "documentation": null,
+      "signature_members": {
+        "oPhysMat": {
+          "type": "PhysicalMaterial",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetDirtValue(PhysicalMaterial oPhysMat)"
+    },
+    "GetGrimeValue": {
+      "documentation": null,
+      "signature_members": {
+        "oPhysMat": {
+          "type": "PhysicalMaterial",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetGrimeValue(PhysicalMaterial oPhysMat)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

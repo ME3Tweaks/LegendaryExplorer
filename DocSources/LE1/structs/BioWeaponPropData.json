@@ -1,0 +1,23 @@
+{
+  "members": {
+    "aWeaponClassPrefixes": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "aWeaponPackages": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "nmWeaponBaseClassName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioGestureRuntimeData",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

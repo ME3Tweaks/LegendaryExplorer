@@ -1,0 +1,34 @@
+{
+  "parent": "AnimNotify_Scripted",
+  "package": "SFXGame",
+  "variables": {
+    "CameraShake": {
+      "type": "ScreenShakeStruct",
+      "documentation": null,
+      "flags": 67108865
+    }
+  },
+  "functions": {
+    "Notify": {
+      "documentation": null,
+      "signature_members": {
+        "Owner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "Sequence": {
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Notify(Actor Owner, AnimNodeSequence Sequence)"
+    }
+  },
+  "states": {},
+  "classflags": 8400914,
+  "configname": "None",
+  "documentation": null
+}

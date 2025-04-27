@@ -1,0 +1,49 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "BodySetupIndexMap": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4098
+    },
+    "BodySetup": {
+      "type": "RB_BodySetup",
+      "documentation": null,
+      "flags": 71303178
+    },
+    "BoundsBodies": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "ConstraintSetup": {
+      "type": "RB_ConstraintSetup",
+      "documentation": null,
+      "flags": 71303178
+    },
+    "DefaultInstance": {
+      "type": "PhysicsAssetInstance",
+      "documentation": null,
+      "flags": 71303178
+    }
+  },
+  "functions": {
+    "FindBodyIndex": {
+      "documentation": null,
+      "signature_members": {
+        "BodyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindBodyIndex(Name BodyName)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,158 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "DeathString": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227075
+    },
+    "FemaleSuicide": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227075
+    },
+    "MaleSuicide": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227075
+    },
+    "DamagedFFWaveform": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null,
+      "flags": 0
+    },
+    "KilledFFWaveform": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null,
+      "flags": 0
+    },
+    "KDamageImpulse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "KDeathVel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "KDeathUpKick": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RadialDamageImpulse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "VehicleDamageScaling": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "VehicleMomentumScaling": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FracturedMeshDamage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bArmorStops": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAlwaysGibs": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNeverGibs": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLocationalHit": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCausesBlood": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCausedByWorld": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bExtraMomentumZ": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIgnoreDriverDamageMult": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bRadialDamageVelChange": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "VehicleDamageScalingFor": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": "Vehicle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float VehicleDamageScalingFor(Vehicle V)"
+    },
+    "SuicideMessage": {
+      "documentation": null,
+      "signature_members": {
+        "Victim": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string SuicideMessage(PlayerReplicationInfo Victim)"
+    },
+    "DeathMessage": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "Victim": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string DeathMessage(PlayerReplicationInfo Killer, PlayerReplicationInfo Victim)"
+    }
+  },
+  "states": {},
+  "classflags": 134217907,
+  "configname": "None",
+  "documentation": null
+}

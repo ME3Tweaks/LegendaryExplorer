@@ -1,0 +1,147 @@
+{
+  "parent": "UIObject",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIDataStorePublisher": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "ImageDataSource": {
+      "type": "UIDataStoreBinding",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ImageComponent": {
+      "type": "UIComp_DrawImage",
+      "documentation": null,
+      "flags": 101187595
+    }
+  },
+  "functions": {
+    "SaveSubscriberValue": {
+      "documentation": null,
+      "signature_members": {
+        "out_BoundDataStores": {
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "BindingIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SaveSubscriberValue(out array<UIDataStore> out_BoundDataStores, optional int BindingIndex)"
+    },
+    "ClearBoundDataStores": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearBoundDataStores()"
+    },
+    "GetBoundDataStores": {
+      "documentation": null,
+      "signature_members": {
+        "out_BoundDataStores": {
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetBoundDataStores(out array<UIDataStore> out_BoundDataStores)"
+    },
+    "NotifyDataStoreValueUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "SourceDataStore": {
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 128
+        },
+        "bValuesInvalidated": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "PropertyTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "SourceProvider": {
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
+        },
+        "ArrayIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyDataStoreValueUpdated(UIDataStore SourceDataStore, bool bValuesInvalidated, Name PropertyTag, UIDataProvider SourceProvider, int ArrayIndex)"
+    },
+    "RefreshSubscriberValue": {
+      "documentation": null,
+      "signature_members": {
+        "BindingIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RefreshSubscriberValue(optional int BindingIndex)"
+    },
+    "GetDataStoreBinding": {
+      "documentation": null,
+      "signature_members": {
+        "BindingIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetDataStoreBinding(optional int BindingIndex)"
+    },
+    "SetDataStoreBinding": {
+      "documentation": null,
+      "signature_members": {
+        "MarkupText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "BindingIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDataStoreBinding(string MarkupText, optional int BindingIndex)"
+    },
+    "SetValue": {
+      "documentation": null,
+      "signature_members": {
+        "NewImage": {
+          "type": "Surface",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetValue(Surface NewImage)"
+    }
+  },
+  "states": {},
+  "classflags": 144704150,
+  "configname": "UI",
+  "documentation": null
+}

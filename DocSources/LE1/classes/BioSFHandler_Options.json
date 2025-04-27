@@ -1,0 +1,198 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_oOriginalOptions": {
+      "type": "GameOptions",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oNewOptions": {
+      "type": "GameOptions",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oHandlerFrom": {
+      "type": "BioSFHandler",
+      "documentation": null,
+      "flags": 0
+    },
+    "srOptionsOverwriteMessage": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srOptionsOverwriteConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srOptionsOverwriteCancel": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srOptionsSaveOptionsFailMessage": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srOptionsSaveOptionsFailOk": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srOptionsReturnToMainMenuWarning": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_bDirty": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bWaitingForMsgBox": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nGuiMode": {
+      "type": "EOptionsGuiMode",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "ConfirmResetTutorials": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ConfirmResetTutorials(bool bAPressed, int nContext)"
+    },
+    "ConfirmResetToDefaults": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ConfirmResetToDefaults(bool bAPressed, int nContext)"
+    },
+    "OptionsConfirmCancel": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OptionsConfirmCancel(bool bAPressed, int nContext)"
+    },
+    "SetHDRStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetHDRStatus()"
+    },
+    "CloseGui": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseGui()"
+    },
+    "ConfirmGoToMainMenu": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ConfirmGoToMainMenu(bool bAPressed, int nContext)"
+    },
+    "OptionsConfirmCommit": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bDoNotClose": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "OptionsConfirmCommit(bool bAPressed, int nContext, optional bool bDoNotClose)"
+    },
+    "SetOptionsOnGUI": {
+      "documentation": null,
+      "signature_members": {
+        "i_GameOptions": {
+          "type": "GameOptions",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOptionsOnGUI(out GameOptions i_GameOptions)"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
+  "documentation": null
+}

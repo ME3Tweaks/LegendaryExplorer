@@ -1,0 +1,10 @@
+{
+  "parent": "BioSpawnBeacon",
+  "package": "SFXGameContent_Powers",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 10485778,
+  "configname": "None",
+  "documentation": null
+}

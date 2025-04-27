@@ -1,0 +1,693 @@
+{
+  "parent": "BioInventoryView",
+  "package": "SFXGame",
+  "variables": {
+    "m_CachedItemInfo": {
+      "type": "MultiMap_Mirror",
+      "documentation": null,
+      "flags": 4096
+    },
+    "lstRacialLabels": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "lstSlotDetails": {
+      "type": "GuiEquipSlotDetails",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "lstEquipSlotOrder": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "EquippableItemsList": {
+      "type": "ItemInfo",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ResourcesList": {
+      "type": "ResourceInfo",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "MaxDamagePerSecond": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "MaxRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "MaxHeatsinkEfficiency": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "MaxKickbackEfficiency": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "MaxChargeEfficiency": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "MaxEffectBoost": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "MaxDamageResistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "MaxShieldStrength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "MaxTechResistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "MaxGrenadeDamage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "MaxGrenadeImpulse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "MaxGrenadeRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "internalSortIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nInventorySize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bInventoryChangedSize": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDebugLoggingEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_shouldSortInventory": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bShouldCacheInventoryInfo": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 67108872
+    },
+    "m_eCurrentSlot": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "BuildEquippableXModList": {
+      "documentation": null,
+      "signature_members": {
+        "nXModSlotType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "BuildEquippableXModList(int nXModSlotType)"
+    },
+    "Appraise": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "eResource": {
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float Appraise(int nIndex, EInventoryResourceTypes eResource)"
+    },
+    "ConvertItemIntoResource": {
+      "documentation": null,
+      "signature_members": {
+        "nFilteredIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "eResource": {
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "SellAllJunked": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ConvertItemIntoResource(int nFilteredIndex, EInventoryResourceTypes eResource, optional bool SellAllJunked)"
+    },
+    "GetStatLabel": {
+      "documentation": null,
+      "signature_members": {
+        "eStat": {
+          "type": "EBioInventoryGuiInterfaceItemStat",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "stringref",
+      "signature": "stringref GetStatLabel(EBioInventoryGuiInterfaceItemStat eStat)"
+    },
+    "GetPrevEquipSlot": {
+      "documentation": null,
+      "signature_members": {
+        "eCompareSlot": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "GuiEquipSlots",
+      "signature": "GuiEquipSlots GetPrevEquipSlot(optional GuiEquipSlots eCompareSlot)"
+    },
+    "GetNextEquipSlot": {
+      "documentation": null,
+      "signature_members": {
+        "eCompareSlot": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "GuiEquipSlots",
+      "signature": "GuiEquipSlots GetNextEquipSlot(optional GuiEquipSlots eCompareSlot)"
+    },
+    "GetFirstEquipSlot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "GuiEquipSlots",
+      "signature": "GuiEquipSlots GetFirstEquipSlot()"
+    },
+    "HasEquipSlot": {
+      "documentation": null,
+      "signature_members": {
+        "eSlot": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasEquipSlot(GuiEquipSlots eSlot)"
+    },
+    "DescribeGuiItemStats": {
+      "documentation": null,
+      "signature_members": {
+        "Stats": {
+          "type": "BioInventoryGuiInterfaceItemStats",
+          "documentation": null,
+          "flags": 4194434
+        }
+      },
+      "returntype": "None",
+      "signature": "DescribeGuiItemStats(const BioInventoryGuiInterfaceItemStats Stats)"
+    },
+    "DescribeGuiItem": {
+      "documentation": null,
+      "signature_members": {
+        "ItemToDescribe": {
+          "type": "ItemInfo",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "DescribeGuiItem(ItemInfo ItemToDescribe)"
+    },
+    "ComplementAndScale": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "FMax": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ComplementAndScale(out float fValue, float FMax)"
+    },
+    "Scale": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "FMax": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Scale(out float fValue, float FMax)"
+    },
+    "Drop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Drop()"
+    },
+    "Equip": {
+      "documentation": null,
+      "signature_members": {
+        "filteredIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bXferXMods": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Equip(int filteredIndex, optional bool bXferXMods)"
+    },
+    "Unequip": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Unequip()"
+    },
+    "DirectSetTargetInventory": {
+      "documentation": null,
+      "signature_members": {
+        "pInv": {
+          "type": "BioInventory",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DirectSetTargetInventory(BioInventory pInv)"
+    },
+    "SetTargetInventory": {
+      "documentation": null,
+      "signature_members": {
+        "pInv": {
+          "type": "BioInventory",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetTargetInventory(BioInventory pInv)"
+    },
+    "DirectSetTarget": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DirectSetTarget(BioPawn pPawn)"
+    },
+    "SetTarget": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetTarget(BioPawn pPawn)"
+    },
+    "GetEquippedItem": {
+      "documentation": null,
+      "signature_members": {
+        "stEquippedItem": {
+          "type": "ItemInfo",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetEquippedItem(out ItemInfo stEquippedItem)"
+    },
+    "SelectItemSlot": {
+      "documentation": null,
+      "signature_members": {
+        "eSlot": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SelectItemSlot(GuiEquipSlots eSlot)"
+    },
+    "MapSlotToType": {
+      "documentation": null,
+      "signature_members": {
+        "eSlot": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        },
+        "nWeapon": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "nEquipment": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "MapSlotToType(GuiEquipSlots eSlot, out int nWeapon, out int nEquipment)"
+    },
+    "ItemStatValue": {
+      "documentation": null,
+      "signature_members": {
+        "oItem": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "eItemStatType": {
+          "type": "GuiItemStatTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "Stat": {
+          "type": "BioInventoryGuiInterfaceItemStat",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "ItemStatValue(BioItem oItem, GuiItemStatTypes eItemStatType, out BioInventoryGuiInterfaceItemStat Stat)"
+    },
+    "CanBearArmorWeight": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oArmor": {
+          "type": "BioItemArmor",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanBearArmorWeight(BioPawn oPawn, BioItemArmor oArmor)"
+    },
+    "PrepareSlotList": {
+      "documentation": null,
+      "signature_members": {
+        "Slot": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotList": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "PrepareSlotList(GuiEquipSlots Slot, out array<GuiEquipSlots> SlotList)"
+    },
+    "BuildResourcesList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BuildResourcesList()"
+    },
+    "BuildEquippableItemList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BuildEquippableItemList()"
+    },
+    "BuildResourceInfo": {
+      "documentation": null,
+      "signature_members": {
+        "eResource": {
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "fQty": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "oResourceInfo": {
+          "type": "ResourceInfo",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "BuildResourceInfo(EInventoryResourceTypes eResource, float fQty, out ResourceInfo oResourceInfo)"
+    },
+    "IsMerchandisable": {
+      "documentation": null,
+      "signature_members": {
+        "eItemsSlot": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsMerchandisable(GuiEquipSlots eItemsSlot)"
+    },
+    "CreateXModInfo": {
+      "documentation": null,
+      "signature_members": {
+        "oItem": {
+          "type": "BioItemXMod",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "nXModType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "XModInfo",
+      "signature": "XModInfo CreateXModInfo(BioItemXMod oItem, int nXModType)"
+    },
+    "CreateItemInfo": {
+      "documentation": null,
+      "signature_members": {
+        "oItem": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "slotType": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        },
+        "nOverrideIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "ItemInfo",
+      "signature": "ItemInfo CreateItemInfo(BioItem oItem, GuiEquipSlots slotType, int nOverrideIndex)"
+    },
+    "FullReset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FullReset()"
+    },
+    "ClearCachedItemInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearCachedItemInfo()"
+    },
+    "CacheItemInfo": {
+      "documentation": null,
+      "signature_members": {
+        "oItem": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "rItemInfo": {
+          "type": "ItemInfo",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "CacheItemInfo(BioItem oItem, const out ItemInfo rItemInfo)"
+    },
+    "FindCachedItemInfo": {
+      "documentation": null,
+      "signature_members": {
+        "oItem": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "slotType": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        },
+        "rItemInfo": {
+          "type": "ItemInfo",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindCachedItemInfo(BioItem oItem, GuiEquipSlots slotType, out ItemInfo rItemInfo)"
+    },
+    "ExtractRawItemStats": {
+      "documentation": null,
+      "signature_members": {
+        "oItem": {
+          "type": "BioItemSophisticated",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "ePrimaryStatType": {
+          "type": "GuiItemStatTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "eSecondaryStatType": {
+          "type": "GuiItemStatTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "eTertiaryStatType": {
+          "type": "GuiItemStatTypes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioInventoryGuiInterfaceItemStats",
+      "signature": "BioInventoryGuiInterfaceItemStats ExtractRawItemStats(BioItemSophisticated oItem, GuiItemStatTypes ePrimaryStatType, GuiItemStatTypes eSecondaryStatType, GuiItemStatTypes eTertiaryStatType)"
+    },
+    "GetStatTypes": {
+      "documentation": null,
+      "signature_members": {
+        "eSlot": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        },
+        "ePrimaryStatType": {
+          "type": "GuiItemStatTypes",
+          "documentation": null,
+          "flags": 384
+        },
+        "eSecondaryStatType": {
+          "type": "GuiItemStatTypes",
+          "documentation": null,
+          "flags": 384
+        },
+        "eTertiaryStatType": {
+          "type": "GuiItemStatTypes",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetStatTypes(GuiEquipSlots eSlot, out GuiItemStatTypes ePrimaryStatType, out GuiItemStatTypes eSecondaryStatType, out GuiItemStatTypes eTertiaryStatType)"
+    },
+    "FilterEquippableItemsByPlotConditional": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "FilterEquippableItemsByPlotConditional(BioWorldInfo WorldInfo)"
+    },
+    "SortEquippableItems": {
+      "documentation": null,
+      "signature_members": {
+        "nSortMode": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SortEquippableItems(int nSortMode)"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "UI",
+  "documentation": null
+}

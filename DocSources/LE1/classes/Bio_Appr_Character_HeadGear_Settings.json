@@ -1,0 +1,41 @@
+{
+  "parent": "Bio_Appr_Character_Base_Settings",
+  "package": "SFXGame",
+  "variables": {
+    "m_visor": {
+      "type": "BioHeadGearComponentSettings",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_facePlate": {
+      "type": "BioHeadGearComponentSettings",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nModelSpec": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nMaterialConfig": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bUseBodyMaterialConfig": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_eVisualOverride": {
+      "type": "EBioArmorType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134226066,
+  "configname": "None",
+  "documentation": null
+}

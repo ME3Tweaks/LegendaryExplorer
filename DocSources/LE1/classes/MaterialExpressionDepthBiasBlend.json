@@ -1,0 +1,26 @@
+{
+  "parent": "MaterialExpressionTextureSample",
+  "package": "Engine",
+  "variables": {
+    "Bias": {
+      "type": "ExpressionInput",
+      "documentation": null,
+      "flags": 0
+    },
+    "BiasScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNormalize": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134226066,
+  "configname": "None",
+  "documentation": null
+}

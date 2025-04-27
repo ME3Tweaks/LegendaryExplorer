@@ -1,0 +1,49 @@
+{
+  "EnumValues": {
+    "PCSLIDER_VIDEO_BRIGHTNESS": {
+      "value": 0,
+      "documentation": null
+    },
+    "PCSLIDER_AUDIO_VOICE": {
+      "value": 1,
+      "documentation": null
+    },
+    "PCSLIDER_AUDIO_FX": {
+      "value": 2,
+      "documentation": null
+    },
+    "PCSLIDER_AUDIO_MUSIC": {
+      "value": 3,
+      "documentation": null
+    },
+    "PCSLIDER_MOUSE_SENSE": {
+      "value": 4,
+      "documentation": null
+    },
+    "PCSLIDER_CONTROLLER_SENSE_HC": {
+      "value": 5,
+      "documentation": null
+    },
+    "PCSLIDER_CONTROLLER_SENSE_VC": {
+      "value": 6,
+      "documentation": null
+    },
+    "PCSLIDER_CONTROLLER_SENSE_HE": {
+      "value": 7,
+      "documentation": null
+    },
+    "PCSLIDER_CONTROLLER_SENSE_VE": {
+      "value": 8,
+      "documentation": null
+    },
+    "PCSLIDER_VIDEO_HDR_BRIGHTNESS": {
+      "value": 9,
+      "documentation": null
+    },
+    "PCSLIDER_VIDEO_HDR_CONTRAST": {
+      "value": 10,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

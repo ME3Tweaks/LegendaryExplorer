@@ -1,0 +1,43 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_pInstigator": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pDamage": {
+      "type": "BioDamageType",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "m_fDamageAmountAsPercentOfMaxHealth": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fMomentum": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bForceCinematicDamage": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 10485778,
+  "configname": "None",
+  "documentation": null
+}

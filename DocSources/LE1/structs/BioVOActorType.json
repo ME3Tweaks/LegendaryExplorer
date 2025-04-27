@@ -1,0 +1,18 @@
+{
+  "members": {
+    "sTag": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "sActorType": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "classdef": "BioEvtSysTrackVOElementsInst",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

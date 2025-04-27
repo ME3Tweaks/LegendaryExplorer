@@ -1,0 +1,16 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "PlaybackDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8194
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217883,
+  "configname": "None",
+  "documentation": null
+}

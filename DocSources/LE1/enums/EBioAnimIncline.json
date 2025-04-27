@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "eBioAnimIncline_Up": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimIncline_Level": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimIncline_Down": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

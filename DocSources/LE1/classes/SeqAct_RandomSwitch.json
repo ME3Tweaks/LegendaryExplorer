@@ -1,0 +1,16 @@
+{
+  "parent": "SeqAct_Switch",
+  "package": "Engine",
+  "variables": {
+    "AutoDisabledIndices": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

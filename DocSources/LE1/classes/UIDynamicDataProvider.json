@@ -1,0 +1,93 @@
+{
+  "parent": "UIPropertyDataProvider",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "DataClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 2
+    },
+    "DataSource": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 8194
+    }
+  },
+  "functions": {
+    "CleanupDataProvider": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CleanupDataProvider()"
+    },
+    "GetDataSource": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Object",
+      "signature": "Object GetDataSource()"
+    },
+    "IsValidDataSourceClass": {
+      "documentation": null,
+      "signature_members": {
+        "PotentialDataSourceClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidDataSourceClass(Class<Object> PotentialDataSourceClass)"
+    },
+    "ProviderInstanceUnbound": {
+      "documentation": null,
+      "signature_members": {
+        "DataSourceInstance": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProviderInstanceUnbound(Object DataSourceInstance)"
+    },
+    "ProviderInstanceBound": {
+      "documentation": null,
+      "signature_members": {
+        "DataSourceInstance": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProviderInstanceBound(Object DataSourceInstance)"
+    },
+    "UnbindProviderInstance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool UnbindProviderInstance()"
+    },
+    "BindProviderInstance": {
+      "documentation": null,
+      "signature_members": {
+        "DataSourceInstance": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool BindProviderInstance(Object DataSourceInstance)"
+    }
+  },
+  "states": {},
+  "classflags": 136315035,
+  "configname": "None",
+  "documentation": null
+}

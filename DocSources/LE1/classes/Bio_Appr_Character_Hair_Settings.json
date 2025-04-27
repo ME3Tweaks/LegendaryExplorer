@@ -1,0 +1,16 @@
+{
+  "parent": "Bio_Appr_Character_Base_Settings",
+  "package": "SFXGame",
+  "variables": {
+    "m_nMaterial": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134226066,
+  "configname": "None",
+  "documentation": null
+}

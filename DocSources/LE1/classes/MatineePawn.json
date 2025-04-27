@@ -1,0 +1,10 @@
+{
+  "parent": "Pawn",
+  "package": "Engine",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 144704182,
+  "configname": "Game",
+  "documentation": null
+}

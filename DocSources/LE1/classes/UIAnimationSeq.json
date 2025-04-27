@@ -1,0 +1,89 @@
+{
+  "parent": "UIAnimation",
+  "package": "Engine",
+  "variables": {
+    "Tracks": {
+      "type": "UIAnimTrack",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "SeqName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "LoopMode": {
+      "type": "EUIAnimationLoopMode",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetSequenceLength": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetSequenceLength()"
+    },
+    "GetTrackLength": {
+      "documentation": null,
+      "signature_members": {
+        "TrackIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_TrackLength": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTrackLength(int TrackIndex, out float out_TrackLength)"
+    },
+    "GetFrameLength": {
+      "documentation": null,
+      "signature_members": {
+        "TrackIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "FrameIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_FrameLength": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFrameLength(int TrackIndex, int FrameIndex, out float out_FrameLength)"
+    },
+    "IsValidFrameIndex": {
+      "documentation": null,
+      "signature_members": {
+        "TrackIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "FrameIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidFrameIndex(int TrackIndex, int FrameIndex)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,1216 @@
+{
+  "parent": "BioPowerScript",
+  "package": "SFXGameContent_Powers",
+  "variables": {},
+  "functions": {
+    "AdjustInventoryResource": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "eResource": {
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "fAmount": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AdjustInventoryResource(Actor oActor, EInventoryResourceTypes eResource, float fAmount)"
+    },
+    "EffectCarnageSetup": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "nNumberOfUses": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectCarnageSetup(Actor oCaster, int nNumberOfUses, float fDuration)"
+    },
+    "InstantRegenerateShield": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fPercentOfShieldRegained": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InstantRegenerateShield(Actor oActor, float fPercentOfShieldRegained)"
+    },
+    "IncreaseAllPowerCooldowns": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fPercentOfTotalToIncreaseBy": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIncreaseTech": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bIncreaseBiotic": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bIncreaseWeapon": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bIncreaseCombat": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IncreaseAllPowerCooldowns(Actor oActor, float fPercentOfTotalToIncreaseBy, optional bool bIncreaseTech, optional bool bIncreaseBiotic, optional bool bIncreaseWeapon, optional bool bIncreaseCombat)"
+    },
+    "ClearAllPowerCooldowns": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ClearAllPowerCooldowns(Actor oActor)"
+    },
+    "EffectSingularity": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vSingularityLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "fForce": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fForceInterval": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fBubbleRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectSingularity(Actor oCaster, Actor oImpacted, Vector vSingularityLocation, float fForce, float fForceInterval, float fDuration, float fBubbleRadius)"
+    },
+    "EffectRagdoll": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nGroupID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectRagdoll(Actor oCaster, Actor oImpacted, float fDuration, optional int nGroupID)"
+    },
+    "EffectEntrenchShield": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fShieldInc": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectEntrenchShield(Actor oCaster, Actor oImpacted, float fShieldInc, float fDuration)"
+    },
+    "EffectRegenerateShield": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fAmountPerInterval": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fInterval": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectRegenerateShield(Actor oCaster, Actor oImpacted, float fAmountPerInterval, float fInterval, float fDuration)"
+    },
+    "EffectDamageVulnerability": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDamageMultiplier": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectDamageVulnerability(Actor oCaster, Actor oImpacted, float fDamageMultiplier, float fDuration)"
+    },
+    "EffectRegen": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fHealingFactor": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectRegen(Actor oCaster, float fHealingFactor, float fDuration)"
+    },
+    "EffectHealInstant": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fHealth": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fToxic": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectHealInstant(Actor oCaster, Actor oImpacted, float fHealth, float fToxic)"
+    },
+    "EffectHeal": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fHealthPerInterval": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fToxicPerInterval": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fInterval": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectHeal(Actor oCaster, Actor oImpacted, float fHealthPerInterval, float fToxicPerInterval, float fInterval, float fDuration)"
+    },
+    "EffectCombatBoost": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDmgDurBonus": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fRegenBonus": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fSuppResistBonus": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fMobilityBonus": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectCombatBoost(Actor oCaster, Actor oImpacted, float fDuration, float fDmgDurBonus, float fRegenBonus, float fSuppResistBonus, float fMobilityBonus)"
+    },
+    "EffectImmunity": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDamageResistBonus": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectImmunity(Actor oCaster, float fDuration, float fDamageResistBonus)"
+    },
+    "EffectSniperCritical": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDamageBonus": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fStunDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "fMaxDriftRed": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "fMinDriftRed": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectSniperCritical(Actor oCaster, float fDuration, float fDamageBonus, optional float fStunDuration, optional float fMaxDriftRed, optional float fMinDriftRed)"
+    },
+    "EffectOverkill": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fSuppDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fKickbackRed": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fHeatRed": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDamageBonus": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectOverkill(Actor oCaster, float fDuration, float fSuppDamage, float fKickbackRed, float fHeatRed, float fDamageBonus)"
+    },
+    "EffectMarksman": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fMaxDriftRed": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fMinDriftRed": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDamageBonus": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fRPSBonus": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fHeatRed": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectMarksman(Actor oCaster, float fDuration, float fMaxDriftRed, float fMinDriftRed, float fDamageBonus, float fRPSBonus, float fHeatRed)"
+    },
+    "EffectCorrosion": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fCorrosion": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectCorrosion(Actor oImpacted, Actor oCaster, float fCorrosion, float fDuration)"
+    },
+    "EffectSuppressingFire": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDriftInc": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectSuppressingFire(Actor oCaster, float fDuration, float fDriftInc)"
+    },
+    "EffectZeroGLift": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fLiftForce": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fLiftDistance": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDeceleration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fMinVelocity": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectZeroGLift(Actor oImpacted, Actor oCaster, float fDuration, float fLiftForce, float fLiftDistance, float fDeceleration, float fMinVelocity)"
+    },
+    "EffectAIHacking": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectAIHacking(Actor oCaster, Actor oImpacted, float fDuration)"
+    },
+    "EffectDisablePowers": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nGFXGroup": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bDisableTech": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bDisableBiotics": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bDisableWeaponPowers": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bDisableCombat": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectDisablePowers(Actor oCaster, Actor oImpacted, float fDuration, int nGFXGroup, bool bDisableTech, bool bDisableBiotics, bool bDisableWeaponPowers, bool bDisableCombat)"
+    },
+    "EffectOverheatWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fHeat": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectOverheatWeapons(Actor oCaster, Actor oImpacted, float fDuration, float fHeat)"
+    },
+    "EffectDisableWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nGFXGroup": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectDisableWeapons(Actor oCaster, Actor oImpacted, float fDuration, int nGFXGroup)"
+    },
+    "EffectDisableActions": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nGFXGroup": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bDisableActionQueue": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bDisableMovementStack": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectDisableActions(Actor oCaster, Actor oImpacted, float fDuration, int nGFXGroup, optional bool bDisableActionQueue, optional bool bDisableMovementStack)"
+    },
+    "EffectAdjustStability": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fAmount": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fApplyInterval": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fTotalTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectAdjustStability(BioPawn oTarget, Actor oCaster, float fAmount, float fApplyInterval, float fTotalTime)"
+    },
+    "EffectDamageOverTime": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDamagePerInterval": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "vMomentumPerInterval": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "pDamage": {
+          "type": "BioDamageType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fInterval": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nGroup": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectDamageOverTime(Actor oImpacted, Actor oCaster, float fDamagePerInterval, Vector vMomentumPerInterval, BioDamageType pDamage, float fInterval, float fDuration, optional int nGroup)"
+    },
+    "EffectTakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "vMomentum": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "pDamage": {
+          "type": "BioDamageType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EffectTakeDamage(Actor oImpacted, Actor oCaster, float fDamage, Vector vMomentum, BioDamageType pDamage)"
+    },
+    "SpawnBeacon": {
+      "documentation": null,
+      "signature_members": {
+        "oCasterBehavior": {
+          "type": "BioActorBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "sBeaconActorType": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vFacing": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bFloatingBeacon": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bSnapToFloor": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bSpawnAsProxMine": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "fSquadActivateDelay": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "fRadiusMulti": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "fDamageMulti": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "oOwner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor SpawnBeacon(BioActorBehavior oCasterBehavior, string sBeaconActorType, Vector vLocation, Rotator vFacing, float fDuration, optional bool bFloatingBeacon, optional bool bSnapToFloor, optional bool bSpawnAsProxMine, optional float fSquadActivateDelay, optional float fRadiusMulti, optional float fDamageMulti, optional Actor oOwner)"
+    },
+    "SpawnBarrier": {
+      "documentation": null,
+      "signature_members": {
+        "oCasterBehavior": {
+          "type": "BioActorBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "sBarrierActorType": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vFacing": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "fHealth": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bSnapToFloor": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bAddToSquadCover": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "oOwner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor SpawnBarrier(BioActorBehavior oCasterBehavior, string sBarrierActorType, Vector vLocation, Rotator vFacing, float fHealth, float fDuration, optional bool bSnapToFloor, optional bool bAddToSquadCover, optional Actor oOwner)"
+    },
+    "WeaponPowerActivated": {
+      "documentation": null,
+      "signature_members": {
+        "Caster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "bNeedsRetrigger": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "WeaponPowerActivated(Actor Caster, bool bNeedsRetrigger)"
+    },
+    "ShouldIncrementPowerUsage": {
+      "documentation": null,
+      "signature_members": {
+        "Caster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldIncrementPowerUsage(Actor Caster)"
+    },
+    "GetFactionRelationship": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "EBioFactionRelationship",
+      "signature": "EBioFactionRelationship GetFactionRelationship(Actor oCaster, Actor oTarget)"
+    },
+    "GetTechResistance": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetTechResistance(Actor oTarget)"
+    },
+    "GetBioticResistance": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetBioticResistance(Actor oTarget)"
+    },
+    "GetTargetResistance": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetTargetResistance(Actor oTarget)"
+    },
+    "GetDistanceModifier": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "eFalloff": {
+          "type": "EBioAttributesDamageFalloff",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetDistanceModifier(Actor oTarget, EBioAttributesDamageFalloff eFalloff)"
+    },
+    "GetDmgDurModifier": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetDmgDurModifier(Actor oCaster)"
+    },
+    "GetPhysicsLevel": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetPhysicsLevel(Actor oImpacted)"
+    },
+    "IsOfRace": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "eRace": {
+          "type": "EBio_Appr_CharacterTalentRaceType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsOfRace(Actor oImpacted, EBio_Appr_CharacterTalentRaceType eRace)"
+    },
+    "HasShields": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "bCheckMax": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasShields(Actor oImpacted, optional bool bCheckMax)"
+    },
+    "IsDeadBody": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsDeadBody(Actor oImpacted)"
+    },
+    "IsPlaceable": {
+      "documentation": null,
+      "signature_members": {
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPlaceable(Actor oImpacted)"
+    },
+    "InitializePowerScript": {
+      "documentation": null,
+      "signature_members": {
+        "pPower": {
+          "type": "BioPower",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializePowerScript(BioPower pPower)"
+    }
+  },
+  "states": {},
+  "classflags": 8388627,
+  "configname": "None",
+  "documentation": null
+}

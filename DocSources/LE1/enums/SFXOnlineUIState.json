@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "SFXONLINE_UISTATE_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_UISTATE_NUCLEUS_CONNECTING": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_UISTATE_NUCLEUS_CONNECTED": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_UISTATE_CERBERUS_CONNECTING": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXONLINE_UISTATE_CERBERUS_ENTITLED": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXONLINE_UISTATE_CERBERUS_CONNECTED": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXONLINE_UISTATE_PS3_RDYTOREDEEMCODE": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

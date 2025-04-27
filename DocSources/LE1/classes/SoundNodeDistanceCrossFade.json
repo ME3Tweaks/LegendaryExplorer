@@ -1,0 +1,16 @@
+{
+  "parent": "SoundNode",
+  "package": "Engine",
+  "variables": {
+    "CrossFadeInput": {
+      "type": "DistanceDatum",
+      "documentation": null,
+      "flags": 4718665
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144715922,
+  "configname": "None",
+  "documentation": null
+}

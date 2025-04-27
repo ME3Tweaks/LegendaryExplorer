@@ -1,0 +1,38 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "vPoint": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "vRelitivePoint": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "oWho": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 1
+    },
+    "oFocus": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

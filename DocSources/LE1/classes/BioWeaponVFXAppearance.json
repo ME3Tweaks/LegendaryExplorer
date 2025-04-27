@@ -1,0 +1,106 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "nmMuzzleFlash": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "nmMuzzleFlash2": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "nmTracer": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "nmCoolDown": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "nmSabotage": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "VisualImpactSet": {
+      "type": "BioVISWeapon",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_VisualExplosionSet": {
+      "type": "BioVISGrenade",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_pDeathVFX": {
+      "type": "BioDeathVFX",
+      "documentation": null,
+      "flags": 1
+    },
+    "vfxMuzzleFlash": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "vfxMuzzleFlash2": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "vfxTracer": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "vfxCoolDown": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "vfxSabotage": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "vfxImpactCrust": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "vfxGunCrust": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "vfxWhileFiring": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "fPerShotIncrease": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fIncreaseTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fCooldownPerSecond": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

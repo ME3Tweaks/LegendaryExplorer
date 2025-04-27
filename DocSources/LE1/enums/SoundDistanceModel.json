@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ATTENUATION_Linear": {
+      "value": 0,
+      "documentation": null
+    },
+    "ATTENUATION_Logarithmic": {
+      "value": 1,
+      "documentation": null
+    },
+    "ATTENUATION_Inverse": {
+      "value": 2,
+      "documentation": null
+    },
+    "ATTENUATION_LogReverse": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

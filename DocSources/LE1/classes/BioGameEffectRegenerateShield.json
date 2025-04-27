@@ -1,0 +1,46 @@
+{
+  "parent": "BioGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "m_fAmount": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Apply": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object Apply(Object oTarget)"
+    },
+    "Create": {
+      "documentation": null,
+      "signature_members": {
+        "oProperty": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "fAmount": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Create(BioGameProperty oProperty, float fAmount)"
+    }
+  },
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

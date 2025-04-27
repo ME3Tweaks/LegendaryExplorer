@@ -1,0 +1,57 @@
+{
+  "EnumValues": {
+    "XAxisFacing_NoUp": {
+      "value": 0,
+      "documentation": null
+    },
+    "XAxisFacing_ZUp": {
+      "value": 1,
+      "documentation": null
+    },
+    "XAxisFacing_NegativeZUp": {
+      "value": 2,
+      "documentation": null
+    },
+    "XAxisFacing_YUp": {
+      "value": 3,
+      "documentation": null
+    },
+    "XAxisFacing_NegativeYUp": {
+      "value": 4,
+      "documentation": null
+    },
+    "LockedAxis_ZAxisFacing": {
+      "value": 5,
+      "documentation": null
+    },
+    "LockedAxis_NegativeZAxisFacing": {
+      "value": 6,
+      "documentation": null
+    },
+    "LockedAxis_YAxisFacing": {
+      "value": 7,
+      "documentation": null
+    },
+    "LockedAxis_NegativeYAxisFacing": {
+      "value": 8,
+      "documentation": null
+    },
+    "VelocityAligned_ZAxisFacing": {
+      "value": 9,
+      "documentation": null
+    },
+    "VelocityAligned_NegativeZAxisFacing": {
+      "value": 10,
+      "documentation": null
+    },
+    "VelocityAligned_YAxisFacing": {
+      "value": 11,
+      "documentation": null
+    },
+    "VelocityAligned_NegativeYAxisFacing": {
+      "value": 12,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

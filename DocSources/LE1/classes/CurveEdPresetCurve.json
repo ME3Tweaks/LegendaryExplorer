@@ -1,0 +1,39 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "CurveName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227075
+    },
+    "Points": {
+      "type": "PresetGeneratedPoint",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "RetrieveFloatCurvePoints": {
+      "documentation": null,
+      "signature_members": {
+        "CurveIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Distribution": {
+          "type": "DistributionFloat",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RetrieveFloatCurvePoints(int CurveIndex, DistributionFloat Distribution)"
+    }
+  },
+  "states": {},
+  "classflags": 134222002,
+  "configname": "None",
+  "documentation": null
+}

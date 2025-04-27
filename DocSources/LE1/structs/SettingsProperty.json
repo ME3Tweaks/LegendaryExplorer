@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Data": {
+      "type": "SettingsData",
+      "documentation": null,
+      "flags": 0
+    },
+    "PropertyId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "AdvertisementType": {
+      "type": "EOnlineDataAdvertisementType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Settings",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

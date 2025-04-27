@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BioPCR_Disengaged": {
+      "value": 0,
+      "documentation": null
+    },
+    "BioPCR_PlayerKilled": {
+      "value": 1,
+      "documentation": null
+    },
+    "BioPCR_SquadKilled": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "members": {
+    "ParticleMBInfoMap": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 12290
+    }
+  },
+  "classdef": "ParticleSystemComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

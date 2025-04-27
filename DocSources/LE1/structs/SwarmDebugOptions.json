@@ -1,0 +1,23 @@
+{
+  "members": {
+    "bDistributionEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bForceContentExport": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "EngineTypes",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

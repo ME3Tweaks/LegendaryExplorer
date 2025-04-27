@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BSHop_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "BSHop_PawnSurface": {
+      "value": 1,
+      "documentation": null
+    },
+    "BSHop_HopSequence": {
+      "value": 2,
+      "documentation": null
+    },
+    "BSHop_HopPhys": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

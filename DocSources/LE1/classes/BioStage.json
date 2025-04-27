@@ -1,0 +1,370 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "m_CameraCustomList": {
+      "type": "BioStageCameraCustom",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_oPlacementOverride": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vOldPositon": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Mesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "Type": {
+      "type": "BioStageType",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_sSpeakerTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_sListenerTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_sCurrentCamera": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fCameraHeightDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fCameraPitchDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fCameraYawDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fCameraFOVDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fCameraNearPlaneDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fCameraFocusInnerRadiusDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fCameraFocusDistanceDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fHeightAdjust": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fStageZ": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fSpeakerFeetZ": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fSpeakerEyeHeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "Enabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bDoHeightAdjustment": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bLookAtActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bDOFActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bUseOldProceduralCameraAdjust": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bDisableProceduralCameraAdjust": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bPositionLocked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetBestCameraPosition": {
+      "documentation": null,
+      "signature_members": {
+        "Conv": {
+          "type": "BioConversation",
+          "documentation": null,
+          "flags": 128
+        },
+        "bLineOfActionCheck": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIntimacyLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "vCamLoc": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "vCamRot": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        },
+        "fFov": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "fNearPlane": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "tDOFData": {
+          "type": "BioStageDOFData",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetBestCameraPosition(BioConversation Conv, bool bLineOfActionCheck, int nIntimacyLevel, out Vector vCamLoc, out Rotator vCamRot, out float fFov, out float fNearPlane, out BioStageDOFData tDOFData)"
+    },
+    "BioVINCE_MapName_FailedStagePlacement": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BioVINCE_MapName_FailedStagePlacement()"
+    },
+    "CameraSpeaker": {
+      "documentation": null,
+      "signature_members": {
+        "sLabel": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "int",
+      "signature": "int CameraSpeaker(string sLabel)"
+    },
+    "CameraListener": {
+      "documentation": null,
+      "signature_members": {
+        "sLabel": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "int",
+      "signature": "int CameraListener(string sLabel)"
+    },
+    "GetActorByNode": {
+      "documentation": null,
+      "signature_members": {
+        "eNode": {
+          "type": "EStageNodes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor GetActorByNode(EStageNodes eNode)"
+    },
+    "GetActorOnNode": {
+      "documentation": null,
+      "signature_members": {
+        "nNode": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor GetActorOnNode(int nNode)"
+    },
+    "GetActorStageNodePosition": {
+      "documentation": null,
+      "signature_members": {
+        "pActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "bPuppetsUseParentNode": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "vPosition": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetActorStageNodePosition(Actor pActor, bool bPuppetsUseParentNode, out Vector vPosition)"
+    },
+    "GetStageCamName": {
+      "documentation": null,
+      "signature_members": {
+        "eNode": {
+          "type": "EStageNodes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetStageCamName(EStageNodes eNode)"
+    },
+    "GetStageCamLocRot": {
+      "documentation": null,
+      "signature_members": {
+        "eNode": {
+          "type": "EStageNodes",
+          "documentation": null,
+          "flags": 128
+        },
+        "vCamLoc": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "vCamRot": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetStageCamLocRot(EStageNodes eNode, out Vector vCamLoc, out Rotator vCamRot)"
+    },
+    "GetStageCamDOFData": {
+      "documentation": null,
+      "signature_members": {
+        "nCamIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "tDOFData": {
+          "type": "BioStageDOFData",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetStageCamDOFData(int nCamIndex, out BioStageDOFData tDOFData)"
+    },
+    "GetStageCamNearPlane": {
+      "documentation": null,
+      "signature_members": {
+        "nCamIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetStageCamNearPlane(int nCamIndex)"
+    },
+    "GetStageCamFov": {
+      "documentation": null,
+      "signature_members": {
+        "nCamIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetStageCamFov(int nCamIndex)"
+    },
+    "GetStageCamIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nmCamName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetStageCamIndex(Name nmCamName)"
+    },
+    "PlaceActors": {
+      "documentation": null,
+      "signature_members": {
+        "Conv": {
+          "type": "BioConversation",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PlaceActors(BioConversation Conv)"
+    },
+    "EndConversation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndConversation()"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

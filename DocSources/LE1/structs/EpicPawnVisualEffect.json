@@ -1,0 +1,23 @@
+{
+  "members": {
+    "m_nmLabel": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oVFXTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmTagOfActorAtVFXLocation": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioEpicPawnBehavior",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,58 @@
+{
+  "members": {
+    "LU": {
+      "type": "AimTransform",
+      "documentation": null,
+      "flags": 1
+    },
+    "LC": {
+      "type": "AimTransform",
+      "documentation": null,
+      "flags": 1
+    },
+    "LD": {
+      "type": "AimTransform",
+      "documentation": null,
+      "flags": 1
+    },
+    "CU": {
+      "type": "AimTransform",
+      "documentation": null,
+      "flags": 1
+    },
+    "CC": {
+      "type": "AimTransform",
+      "documentation": null,
+      "flags": 1
+    },
+    "CD": {
+      "type": "AimTransform",
+      "documentation": null,
+      "flags": 1
+    },
+    "RU": {
+      "type": "AimTransform",
+      "documentation": null,
+      "flags": 1
+    },
+    "RC": {
+      "type": "AimTransform",
+      "documentation": null,
+      "flags": 1
+    },
+    "RD": {
+      "type": "AimTransform",
+      "documentation": null,
+      "flags": 1
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "AnimNodeAimOffset",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 385
+}

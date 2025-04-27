@@ -1,0 +1,733 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapPreviousWeps": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 12288
+    },
+    "m_StartingList": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4325377
+    },
+    "m_EntryList": {
+      "type": "BioDialogEntryNode",
+      "documentation": null,
+      "flags": 4325377
+    },
+    "m_ReplyList": {
+      "type": "BioDialogReplyNode",
+      "documentation": null,
+      "flags": 4325377
+    },
+    "m_SpeakerList": {
+      "type": "BioDialogSpeaker",
+      "documentation": null,
+      "flags": 4325377
+    },
+    "m_LookAtList": {
+      "type": "BioDialogLookat",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_ScriptList": {
+      "type": "BioDialogScript",
+      "documentation": null,
+      "flags": 4325377
+    },
+    "m_lstCurrentReplyIndices": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_sAreaCode": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_aFSPrevPositions": {
+      "type": "BioSavedActorPos",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_sCurrentSubTitle": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_sCurrentFaceFXAnim": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_aMaleFaceSets": {
+      "type": "FaceFXAnimSet",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aFemaleFaceSets": {
+      "type": "FaceFXAnimSet",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aPreLoadNodesVisited": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "PreloadAnimations": {
+      "type": "AnimSequence",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "m_tNextCamOverride": {
+      "type": "BioNextCamData",
+      "documentation": null,
+      "flags": 8192
+    },
+    "vLineOfAction": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pConversationOwner": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pConversationPlayer": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pSpeaker": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oPreviousSpeaker": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pListener": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pKismetStart": {
+      "type": "BioSeqAct_StartConversation",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oTlkFile": {
+      "type": "BioTlkFile",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_stage": {
+      "type": "BioStage",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pCurrentSound": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pNoFaceFXAudioComp": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67641352
+    },
+    "m_oTlkFileSet": {
+      "type": "BioTlkFileSet",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pEvtSystemSeq": {
+      "type": "Sequence",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pConvFaceFXSet": {
+      "type": "FaceFXAnimSet",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pNonSpeakerFaceFXSet": {
+      "type": "FaceFXAnimSet",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nmTutorialConversation": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_pPreLoadingSoundCue": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pCurrentRampDownSpeaker": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nResRefID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 131073
+    },
+    "m_nCurrentEntry": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fStartTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nSelectedReply": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nDialogMode": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nSubtitlesMode": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_intimacy": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fShowRepliesOffset": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fShowLastLineOffset": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fNodePlayTimer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fInterruptRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fSubtitleTimingModifier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fSubtitleTimingMinimum": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fVOInterruptRampDownTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nNodeStateFlags": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fRemainingVOLength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fRemainingLastLineSubtitleDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nDelayedReplyChoice": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_colSubtitleColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fTutorialDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_fAudioHitchBuffer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fPreLoadTimer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fPreLoadStartDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bOneLinerConversation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 131073
+    },
+    "bUseFixedCameras": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bConversationEnded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bHasAttachedCameraTrack": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bHasAttachedDOFTrack": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bSkipRequested": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bForceUnskippable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bDisplayNonAmbientName": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bSkipProtectionDisabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bAmbient": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bDisableTargeting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bSkippable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bFailed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bInterrupted": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bKismetInitiated": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bConversationOver": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bEnableLookAtWithStage": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bPlayerIsFemale": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bPassiveConversation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bNoGestures": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bForceShowReplies": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bCleanupNeeded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bEarlyTermination": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bRemoveWeapons": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bNextLinePreLoadEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bPlayerSexIsValid": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "DisableCamera": {
+      "documentation": null,
+      "signature_members": {
+        "bDisableCamera": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DisableCamera(bool bDisableCamera)"
+    },
+    "BioVINCE_MapName_MissingLipSync": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BioVINCE_MapName_MissingLipSync()"
+    },
+    "BioVINCE_MapName_MissingVO": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BioVINCE_MapName_MissingVO()"
+    },
+    "GetReplyGUIStyle": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "EConvGUIStyles",
+      "signature": "EConvGUIStyles GetReplyGUIStyle(int nIndex)"
+    },
+    "FinishEntryNode": {
+      "documentation": null,
+      "signature_members": {
+        "nEntryIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FinishEntryNode(int nEntryIndex)"
+    },
+    "NeedToDisplayReplies": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NeedToDisplayReplies()"
+    },
+    "StopScript": {
+      "documentation": null,
+      "signature_members": {
+        "Script": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "StopScript(string Script)"
+    },
+    "GetReplyExportID": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetReplyExportID(int nIndex)"
+    },
+    "GetReplyCategory": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetReplyCategory(int nIndex)"
+    },
+    "GetReplyParaphraseText": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetReplyParaphraseText(int nIndex)"
+    },
+    "GetReplyText": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bParse": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetReplyText(int nIndex, optional bool bParse)"
+    },
+    "GetEntryText": {
+      "documentation": null,
+      "signature_members": {
+        "bParse": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetEntryText(optional bool bParse)"
+    },
+    "GetSpeaker": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor GetSpeaker(int nIndex)"
+    },
+    "UpdateFacing": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateFacing()"
+    },
+    "UpdateLookAtTargets": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateLookAtTargets(float fDeltaT)"
+    },
+    "UpdateLookAtList": {
+      "documentation": null,
+      "signature_members": {
+        "pBioPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateLookAtList(BioPawn pBioPawn)"
+    },
+    "switchToAmbient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "switchToAmbient()"
+    },
+    "IsAmbient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAmbient()"
+    },
+    "WaitingForReply": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool WaitingForReply()"
+    },
+    "SkipNode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SkipNode()"
+    },
+    "FinishSelectedReply": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool FinishSelectedReply()"
+    },
+    "QueueReply": {
+      "documentation": null,
+      "signature_members": {
+        "nReply": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool QueueReply(int nReply)"
+    },
+    "SelectReply": {
+      "documentation": null,
+      "signature_members": {
+        "nReply": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SelectReply(int nReply)"
+    },
+    "UpdateConversation": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateConversation(float fDeltaT)"
+    },
+    "EndConversation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndConversation()"
+    },
+    "StartConversation": {
+      "documentation": null,
+      "signature_members": {
+        "aOwner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "aPlayer": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartConversation(Actor aOwner, Actor aPlayer)"
+    },
+    "GetConversationObject": {
+      "documentation": null,
+      "signature_members": {
+        "nObjectIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bNoisyErrors": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor GetConversationObject(int nObjectIndex, optional bool bNoisyErrors)"
+    },
+    "SetPositionRotator": {
+      "documentation": null,
+      "signature_members": {
+        "pActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "Position": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "facing": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPositionRotator(Actor pActor, Vector Position, Rotator facing)"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

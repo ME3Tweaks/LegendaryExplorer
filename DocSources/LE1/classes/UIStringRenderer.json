@@ -1,0 +1,28 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "SetTextAlignment": {
+      "documentation": null,
+      "signature_members": {
+        "Horizontal": {
+          "type": "EUIAlignment",
+          "documentation": null,
+          "flags": 128
+        },
+        "Vertical": {
+          "type": "EUIAlignment",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTextAlignment(EUIAlignment Horizontal, EUIAlignment Vertical)"
+    }
+  },
+  "states": {},
+  "classflags": 134234259,
+  "configname": "None",
+  "documentation": null
+}

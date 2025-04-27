@@ -1,0 +1,48 @@
+{
+  "members": {
+    "BoolVariables": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "IntVariables": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "FloatVariables": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "QuestProgress": {
+      "type": "PlotQuest",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "QuestIDs": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "CodexEntries": {
+      "type": "PlotCodex",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "CodexIDs": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "QuestProgressCounter": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "SFXSaveGame",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

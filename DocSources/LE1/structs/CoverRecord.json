@@ -1,0 +1,28 @@
+{
+  "members": {
+    "oCoverObject": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "nCoverSlot": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "nRank": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "fDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "CoverLink",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

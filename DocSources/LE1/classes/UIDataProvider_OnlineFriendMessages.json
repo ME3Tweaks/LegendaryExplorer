@@ -1,0 +1,159 @@
+{
+  "parent": "UIDataProvider_OnlinePlayerDataBase",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "Messages": {
+      "type": "OnlineFriendMessage",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "SendingPlayerNameCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "bIsFriendInviteCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "bWasAcceptedCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "bWasDeniedCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "MessageCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "LastInviteFrom": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "OnGameInviteReceived": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "InviterName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGameInviteReceived(byte LocalUserNum, string InviterName)"
+    },
+    "OnLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginChange(byte LocalUserNum)"
+    },
+    "OnFriendMessageReceived": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "SendingPlayer": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
+        },
+        "SendingNick": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Message": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFriendMessageReceived(byte LocalUserNum, UniqueNetId SendingPlayer, string SendingNick, string Message)"
+    },
+    "OnFriendInviteReceived": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "RequestingPlayer": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
+        },
+        "RequestingNick": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Message": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFriendInviteReceived(byte LocalUserNum, UniqueNetId RequestingPlayer, string RequestingNick, string Message)"
+    },
+    "ReadMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReadMessages()"
+    },
+    "OnUnregister": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUnregister()"
+    },
+    "OnRegister": {
+      "documentation": null,
+      "signature_members": {
+        "InPlayer": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegister(LocalPlayer InPlayer)"
+    }
+  },
+  "states": {},
+  "classflags": 136315066,
+  "configname": "None",
+  "documentation": null
+}

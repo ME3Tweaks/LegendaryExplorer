@@ -1,0 +1,231 @@
+{
+  "parent": "BioEpicPawnBehaviorSaveObject",
+  "package": "SFXGame",
+  "variables": {
+    "m_aEquipped": {
+      "type": "BioItemSaveObject",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_QuickSlotArray": {
+      "type": "BioItemSaveObject",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aActionMapping": {
+      "type": "BioActionMapping",
+      "documentation": null,
+      "flags": 2305843009217888256
+    },
+    "m_aSimpleTalents": {
+      "type": "BioSimpleTalentSave",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aComplexTalents": {
+      "type": "BioComplexTalentSave",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_Squad": {
+      "type": "BioBaseSaveObject",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Inventory": {
+      "type": "BioBaseSaveObject",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_XPLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_HealthPerLevel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_StabilityCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ToxicCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Stamina": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Focus": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Precision": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Coordination": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Experience": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_TalentPoints": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_TalentPoolPoints": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_LocalizedClassName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_AutoLevelUpTemplateID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_SpecializationBonusID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_SkillCharm": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_SkillIntimidate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_SkillHaggle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Audibility": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Blindness": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_DamageDurationMult": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Deafness": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nUnlootableGrenadeCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bHeadGearVisiblePreference": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Gender": {
+      "type": "EBioAttributePawnGender",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Race": {
+      "type": "EBioAttributePawnRace",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eQuickSlotCurrent": {
+      "type": "EBioItemWeaponRangedType",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_AttributePrimary": {
+      "type": "EBioPartyMemberAbility",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_AttributeSecondary": {
+      "type": "EBioPartyMemberAbility",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ClassBase": {
+      "type": "EBioPartyMemberClassBase",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_SpectreRank": {
+      "type": "EBioPlayerCharacterSpectreRank",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_BackgroundOrigin": {
+      "type": "EBioPlayerCharacterBackgroundOrigin",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_BackgroundNotoriety": {
+      "type": "EBioPlayerCharacterBackgroundNotoriety",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "LoadObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadObject(Object O)"
+    },
+    "SaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveObject(Object O)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

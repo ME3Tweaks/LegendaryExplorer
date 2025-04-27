@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Time": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Duration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ClipIDNumber": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "InterpTrackParticleReplay",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

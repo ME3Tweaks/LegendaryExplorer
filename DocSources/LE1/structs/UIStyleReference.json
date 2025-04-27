@@ -1,0 +1,28 @@
+{
+  "members": {
+    "RequiredStyleClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 2
+    },
+    "AssignedStyleID": {
+      "type": "STYLE_ID",
+      "documentation": null,
+      "flags": 2
+    },
+    "DefaultStyleTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "ResolvedStyle": {
+      "type": "UIStyle",
+      "documentation": null,
+      "flags": 8194
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

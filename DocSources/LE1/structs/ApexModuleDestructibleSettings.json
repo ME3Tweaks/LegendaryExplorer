@@ -1,0 +1,23 @@
+{
+  "members": {
+    "MaxChunkIslandCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxRrbActorCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxChunkSeparationLOD": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "WorldInfo",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,68 @@
+{
+  "parent": "BioAttributesItemXModdable",
+  "package": "SFXGame",
+  "variables": {
+    "m_Damage": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_DrawTimeMultiplier": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_WeaponFireNoise": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ProjectileImpactNoise": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ShotPhysicsImpulse": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_SoundSetIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_initialWeaponFireNoise": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialProjectileImpactNoise": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialShotPhysicsImpulse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_DualWield": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "DescribeAttributes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeAttributes()"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,10 @@
+{
+  "parent": "BioArtPlaceable",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

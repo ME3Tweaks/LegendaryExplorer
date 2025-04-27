@@ -1,0 +1,34 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aEvent": {
+      "type": "EBioGamePropertyEvent",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "m_oOwnerGameProperty": {
+      "type": "BioGameProperty",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Uninitialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Uninitialize()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    }
+  },
+  "states": {},
+  "classflags": 134217875,
+  "configname": "None",
+  "documentation": null
+}

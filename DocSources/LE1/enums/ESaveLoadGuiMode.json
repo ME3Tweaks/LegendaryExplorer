@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SAVELOAD_GUI_BROWSER_WHEEL": {
+      "value": 0,
+      "documentation": null
+    },
+    "SAVELOAD_GUI_MAINMENU": {
+      "value": 1,
+      "documentation": null
+    },
+    "SAVELOAD_GUI_GAMEOVER": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

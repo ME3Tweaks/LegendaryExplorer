@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ENM_CameraFacing": {
+      "value": 0,
+      "documentation": null
+    },
+    "ENM_Spherical": {
+      "value": 1,
+      "documentation": null
+    },
+    "ENM_Cylindrical": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

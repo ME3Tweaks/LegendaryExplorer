@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "DecalTransform_OwnerAbsolute": {
+      "value": 0,
+      "documentation": null
+    },
+    "DecalTransform_OwnerRelative": {
+      "value": 1,
+      "documentation": null
+    },
+    "DecalTransform_SpawnRelative": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

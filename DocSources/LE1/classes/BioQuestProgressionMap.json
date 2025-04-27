@@ -1,0 +1,28 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "QuestProgression": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4098
+    },
+    "nQuestProgressCounter": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Clear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Clear()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

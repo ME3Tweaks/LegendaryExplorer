@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "VEHICLE_EQUIPMENT_SLOT_CANNON": {
+      "value": 0,
+      "documentation": null
+    },
+    "VEHICLE_EQUIPMENT_SLOT_MACHINE_GUN": {
+      "value": 1,
+      "documentation": null
+    },
+    "VEHICLE_EQUIPMENT_SLOT_ARMOR": {
+      "value": 2,
+      "documentation": null
+    },
+    "VEHICLE_EQUIPMENT_SLOT_SHIELDS": {
+      "value": 3,
+      "documentation": null
+    },
+    "VEHICLE_EQUIPMENT_SLOT_THRUSTER_BOOST": {
+      "value": 4,
+      "documentation": null
+    },
+    "VEHICLE_EQUIPMENT_SLOT_REPAIR": {
+      "value": 5,
+      "documentation": null
+    },
+    "VEHICLE_EQUIPMENT_SLOT_RADAR": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

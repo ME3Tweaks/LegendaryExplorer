@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Extent": {
+      "type": "UIScreenValue_AutoSizeRegion",
+      "documentation": null,
+      "flags": 1
+    },
+    "Padding": {
+      "type": "AutoSizePadding",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAutoSizeEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

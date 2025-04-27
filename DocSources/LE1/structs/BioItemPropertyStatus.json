@@ -1,0 +1,18 @@
+{
+  "members": {
+    "m_nID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioItem",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

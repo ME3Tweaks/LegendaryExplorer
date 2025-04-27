@@ -1,0 +1,69 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "sTitle": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "sDescription": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "sInputValue": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "bKeyboardVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bKeyboardEntrySucceeded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "DisplayKeyboard": {
+      "documentation": null,
+      "signature_members": {
+        "srTitle": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        },
+        "srDescription": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        },
+        "nOptions": {
+          "type": "Keyboard_Options",
+          "documentation": null,
+          "flags": 128
+        },
+        "nMaxLength": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "sDefault": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayKeyboard(stringref srTitle, stringref srDescription, Keyboard_Options nOptions, int nMaxLength, optional string sDefault)"
+    }
+  },
+  "states": {},
+  "classflags": 136315034,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,23 @@
+{
+  "members": {
+    "EquipAction": {
+      "type": "OnEquipAction",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "UnEquipAction": {
+      "type": "OnUnEquipAction",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "oEquippedItem": {
+      "type": "BioItem",
+      "documentation": null,
+      "flags": 67108864
+    }
+  },
+  "classdef": "BioEquipmentBase",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

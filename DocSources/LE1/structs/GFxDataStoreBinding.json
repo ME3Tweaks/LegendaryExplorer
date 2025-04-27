@@ -1,0 +1,68 @@
+{
+  "members": {
+    "DataSource": {
+      "type": "UIDataStoreBinding",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "VarPath": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ModelId": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ControlId": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "CellTags": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ModelIdUtf8": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "ControlIdUtf8": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "FullCellTags": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "ModelRef": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ControlRef": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ListDataProvider": {
+      "type": "UIListElementProvider",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bEditable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "GFxMovie",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

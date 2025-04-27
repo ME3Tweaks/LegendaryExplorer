@@ -1,0 +1,332 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "ACDisplayText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "ACDescText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "IPPolicies": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4472832
+    },
+    "BannedIDs": {
+      "type": "UniqueNetId",
+      "documentation": null,
+      "flags": 4472832
+    },
+    "IPBanned": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "WrongPassword": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "NeedPassword": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "SessionBanned": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "KickedMsg": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "DefaultKickReason": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "IdleKickReason": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "AdminPassword": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4472832
+    },
+    "GamePassword": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4472832
+    },
+    "AdminClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "bDontAddDefaultAdmin": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "IsIDBanned": {
+      "documentation": null,
+      "signature_members": {
+        "NetId": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsIDBanned(const out UniqueNetId NetId)"
+    },
+    "CheckIPPolicy": {
+      "documentation": null,
+      "signature_members": {
+        "Address": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckIPPolicy(string Address)"
+    },
+    "PreLogin": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Address": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "OutError": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "bSpectator": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PreLogin(string Options, string Address, out string OutError, bool bSpectator)"
+    },
+    "ValidLogin": {
+      "documentation": null,
+      "signature_members": {
+        "UserName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Password": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ValidLogin(string UserName, string Password)"
+    },
+    "ParseAdminOptions": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ParseAdminOptions(string Options)"
+    },
+    "AdminExited": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AdminExited(PlayerController P)"
+    },
+    "AdminEntered": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AdminEntered(PlayerController P)"
+    },
+    "AdminLogout": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AdminLogout(PlayerController P)"
+    },
+    "AdminLogin": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "Password": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AdminLogin(PlayerController P, string Password)"
+    },
+    "KickPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "KickReason": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool KickPlayer(PlayerController C, string KickReason)"
+    },
+    "ForceKickPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "KickReason": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ForceKickPlayer(PlayerController C, string KickReason)"
+    },
+    "KickBan": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "KickBan(string Target)"
+    },
+    "Kick": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "Kick(string Target)"
+    },
+    "GetControllerFromString": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "Controller",
+      "signature": "Controller GetControllerFromString(string Target)"
+    },
+    "RequiresPassword": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RequiresPassword()"
+    },
+    "SetGamePassword": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGamePassword(string P)"
+    },
+    "SetAdminPassword": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetAdminPassword(string P)"
+    },
+    "IsAdmin": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAdmin(PlayerController P)"
+    }
+  },
+  "states": {},
+  "classflags": 10485814,
+  "configname": "Game",
+  "documentation": null
+}

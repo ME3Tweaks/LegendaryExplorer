@@ -1,0 +1,71 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "RawFaceFXActorBytes": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4098
+    },
+    "RawFaceFXSessionBytes": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4098
+    },
+    "LoopingTrackAssets": {
+      "type": "FaceFXAsset",
+      "documentation": null,
+      "flags": 4096
+    },
+    "MountedFaceFXAnimSets": {
+      "type": "FaceFXAnimSet",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "ReferencedSoundCues": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "FaceFXActor": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "NumLoadErrors": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "UnmountFaceFXAnimSet": {
+      "documentation": null,
+      "signature_members": {
+        "AnimSet": {
+          "type": "FaceFXAnimSet",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UnmountFaceFXAnimSet(FaceFXAnimSet AnimSet)"
+    },
+    "MountFaceFXAnimSet": {
+      "documentation": null,
+      "signature_members": {
+        "AnimSet": {
+          "type": "FaceFXAnimSet",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MountFaceFXAnimSet(FaceFXAnimSet AnimSet)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,139 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "InterpolateFloatCurve": {
+      "documentation": null,
+      "signature_members": {
+        "Output": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "Curve": {
+          "type": "InterpCurveFloat",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "Source": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "Target": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "normalizedDisplacement": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InterpolateFloatCurve(out float Output, const out InterpCurveFloat Curve, float Source, float Target, float normalizedDisplacement)"
+    },
+    "InterpolateFloat": {
+      "documentation": null,
+      "signature_members": {
+        "Output": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "InterpolationMethod": {
+          "type": "EBioInterpolationMethod",
+          "documentation": null,
+          "flags": 128
+        },
+        "Source": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "Target": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "normalizedDisplacement": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InterpolateFloat(out float Output, EBioInterpolationMethod InterpolationMethod, float Source, float Target, float normalizedDisplacement)"
+    },
+    "InterpolateVector": {
+      "documentation": null,
+      "signature_members": {
+        "Output": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "InterpolationMethod": {
+          "type": "EBioInterpolationMethod",
+          "documentation": null,
+          "flags": 128
+        },
+        "Source": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Target": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "normalizedDisplacement": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InterpolateVector(out Vector Output, EBioInterpolationMethod InterpolationMethod, Vector Source, Vector Target, float normalizedDisplacement)"
+    },
+    "InterpolateRotator": {
+      "documentation": null,
+      "signature_members": {
+        "Output": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        },
+        "InterpolationMethod": {
+          "type": "EBioInterpolationMethod",
+          "documentation": null,
+          "flags": 128
+        },
+        "Source": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "Target": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "normalizedDisplacement": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InterpolateRotator(out Rotator Output, EBioInterpolationMethod InterpolationMethod, Rotator Source, Rotator Target, float normalizedDisplacement)"
+    }
+  },
+  "states": {},
+  "classflags": 134217875,
+  "configname": "None",
+  "documentation": null
+}

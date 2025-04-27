@@ -1,0 +1,44 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_aGameProperty2DANames": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_aGameProperty2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nmGameProperty2DAPackage": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDefault2DAsLoaded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "LoadGameProperty": {
+      "documentation": null,
+      "signature_members": {
+        "oGPData": {
+          "type": "BioGPLoadData",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "BioGameProperty",
+      "signature": "BioGameProperty LoadGameProperty(const out BioGPLoadData oGPData)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

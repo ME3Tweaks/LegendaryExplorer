@@ -1,0 +1,38 @@
+{
+  "members": {
+    "DrawColor": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 1
+    },
+    "Padding": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Opacity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bOverrideDrawColor": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverrideOpacity": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverridePadding": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

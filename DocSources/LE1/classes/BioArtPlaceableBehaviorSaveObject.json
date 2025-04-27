@@ -1,0 +1,106 @@
+{
+  "parent": "BioActorBehaviorSaveObject",
+  "package": "SFXGame",
+  "variables": {
+    "CurrentFSMStateName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_State0": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_State1": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_oInventory": {
+      "type": "BioBaseSaveObject",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fHealth": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_fCurrentHealth": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "Enabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_bIsDestroyed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bUseCaseOverride": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_bPlayerOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_bSkillGameFailed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bSkillGameXpAwarded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_eUseCase": {
+      "type": "eBioAPLUseCase",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_SkillDifficulty": {
+      "type": "EBioSkillGameDifficulty",
+      "documentation": null,
+      "flags": 2305843009213693952
+    }
+  },
+  "functions": {
+    "LoadObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadObject(Object O)"
+    },
+    "SaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveObject(Object O)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

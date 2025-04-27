@@ -1,0 +1,31 @@
+{
+  "parent": "UIResourceDataProvider",
+  "package": "Engine",
+  "variables": {
+    "DisplayName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4243458
+    },
+    "Description": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4243458
+    },
+    "PlaylistGameTypeName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 16384
+    },
+    "GameTypeId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 2098238,
+  "configname": "Playlist",
+  "documentation": null
+}

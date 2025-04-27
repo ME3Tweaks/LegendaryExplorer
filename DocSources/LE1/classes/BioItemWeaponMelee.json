@@ -1,0 +1,29 @@
+{
+  "parent": "BioItemWeapon",
+  "package": "SFXGame",
+  "variables": {
+    "m_eWeaponMeleeType": {
+      "type": "EBioItemWeaponMeleeType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "DescribeItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeItem()"
+    },
+    "GetItemTypeName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetItemTypeName()"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Link": {
+      "type": "CoverLink",
+      "documentation": null,
+      "flags": 131073
+    },
+    "SlotIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 131073
+    }
+  },
+  "classdef": "CoverLink",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 385
+}

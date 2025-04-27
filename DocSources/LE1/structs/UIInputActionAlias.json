@@ -1,0 +1,18 @@
+{
+  "members": {
+    "LinkedInputKeys": {
+      "type": "RawInputKeyEventData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "InputAliasName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 3
+}

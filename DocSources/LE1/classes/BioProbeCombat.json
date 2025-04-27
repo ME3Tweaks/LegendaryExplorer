@@ -1,0 +1,84 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_nAreaName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_nChunkName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_nSquadName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_nSquadTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_fStartTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4096
+    }
+  },
+  "functions": {
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "Stop": {
+      "documentation": null,
+      "signature_members": {
+        "CombatResult": {
+          "type": "EBioProbeCombatResult",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Stop(EBioProbeCombatResult CombatResult)"
+    },
+    "Start": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Start()"
+    },
+    "IsRecording": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsRecording()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "SquadName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "SquadTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(Name SquadName, Name SquadTag)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

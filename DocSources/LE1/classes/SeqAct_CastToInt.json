@@ -1,0 +1,26 @@
+{
+  "parent": "SeqAct_SetSequenceVariable",
+  "package": "Engine",
+  "variables": {
+    "Value": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "IntResult": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bTruncate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

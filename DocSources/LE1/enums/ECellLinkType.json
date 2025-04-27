@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "LINKED_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "LINKED_Rows": {
+      "value": 1,
+      "documentation": null
+    },
+    "LINKED_Columns": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

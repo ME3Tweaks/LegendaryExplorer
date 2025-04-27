@@ -1,0 +1,17 @@
+{
+  "parent": "NavigationPoint",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "GetDebugAbbrev": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDebugAbbrev()"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "BIO_SHIELD_STATE_INVALID": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_SHIELD_STATE_FULLY_CHARGED": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_SHIELD_STATE_DAMAGED": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_SHIELD_STATE_RECHARGING": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_SHIELD_STATE_COUNT": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

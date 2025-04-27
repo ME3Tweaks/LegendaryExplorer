@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "FXRO_Add": {
+      "value": 0,
+      "documentation": null
+    },
+    "FXRO_Multiply": {
+      "value": 1,
+      "documentation": null
+    },
+    "FXRO_Replace": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

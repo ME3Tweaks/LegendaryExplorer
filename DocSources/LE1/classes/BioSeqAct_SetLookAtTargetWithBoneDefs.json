@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_oTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oPawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

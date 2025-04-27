@@ -1,0 +1,10 @@
+{
+  "parent": "AnimNotify_Scripted",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 12306,
+  "configname": "None",
+  "documentation": null
+}

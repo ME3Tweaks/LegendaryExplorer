@@ -1,0 +1,48 @@
+{
+  "members": {
+    "NetIdValue": {
+      "type": "UniqueNetId",
+      "documentation": null,
+      "flags": 0
+    },
+    "StringValue": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ArrayValue": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "RangeValue": {
+      "type": "UIRangeData",
+      "documentation": null,
+      "flags": 0
+    },
+    "AtlasCoordinates": {
+      "type": "TextureCoordinates",
+      "documentation": null,
+      "flags": 0
+    },
+    "PropertyTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "ImageValue": {
+      "type": "Surface",
+      "documentation": null,
+      "flags": 0
+    },
+    "PropertyType": {
+      "type": "EUIDataProviderFieldType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

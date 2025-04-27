@@ -1,0 +1,187 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_oMainMenuGuiMessageBoxHandler": {
+      "type": "BioSFHandler_MessageBox",
+      "documentation": null,
+      "flags": 8192
+    },
+    "srPRCAvailableMessage": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "fPCRMessageDispTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bDisplayForNewContentOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_bSetupMainMenu": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bAchievementsEnumerating": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "nSelectedEntry": {
+      "type": "MainMenuEntries",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "StartAchievementEnumeration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartAchievementEnumeration()"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "OnQueryAvailableDownloadsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnQueryAvailableDownloadsComplete(bool bWasSuccessful)"
+    },
+    "UpdateGUILayout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateGUILayout()"
+    },
+    "SetupMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupMainMenu()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "SetEnabledAndVisible": {
+      "documentation": null,
+      "signature_members": {
+        "bVal": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabledAndVisible(bool bVal)"
+    },
+    "ExitConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bYPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ExitConfirm(bool bAPressed, int nContext, bool bYPressed)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "OnResumeFailed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnResumeFailed()"
+    },
+    "DismissCareerLimitMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DismissCareerLimitMessage()"
+    },
+    "SetResumeFailedHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetResumeFailedHandler()"
+    },
+    "CheckMaxCareersExceeded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckMaxCareersExceeded()"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
+  "documentation": null
+}

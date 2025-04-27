@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "HUD_POWERMAP_SLOT_UNASSIGNED_0": {
+      "value": 0,
+      "documentation": null
+    },
+    "HUD_POWERMAP_SLOT_DPADLEFT": {
+      "value": 1,
+      "documentation": null
+    },
+    "HUD_POWERMAP_SLOT_DPADTOP": {
+      "value": 2,
+      "documentation": null
+    },
+    "HUD_POWERMAP_SLOT_DPADRIGHT": {
+      "value": 3,
+      "documentation": null
+    },
+    "HUD_POWERMAP_SLOT_DPADBOTTOM": {
+      "value": 4,
+      "documentation": null
+    },
+    "HUD_POWERMAP_SLOT_BUMPLEFT": {
+      "value": 5,
+      "documentation": null
+    },
+    "HUD_POWERMAP_SLOT_BUMPRIGHT": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

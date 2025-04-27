@@ -1,0 +1,63 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_mEventSubscriptions": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 8392706
+    }
+  },
+  "functions": {
+    "Dispatch": {
+      "documentation": null,
+      "signature_members": {
+        "oEventName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Dispatch(Name oEventName)"
+    },
+    "Unsubscribe": {
+      "documentation": null,
+      "signature_members": {
+        "oEventName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "oSubscriber": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Unsubscribe(Name oEventName, Object oSubscriber)"
+    },
+    "Subscribe": {
+      "documentation": null,
+      "signature_members": {
+        "oEventName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "oSubscriber": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Subscribe(Name oEventName, Object oSubscriber)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

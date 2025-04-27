@@ -1,0 +1,57 @@
+{
+  "EnumValues": {
+    "BIO_ATTRIBUTE_TYPE_PAWN": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_TYPE_PAWNPARTY": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_TYPE_PAWNPLAYER": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_TYPE_POWER": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_TYPE_ITEM": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_TYPE_ITEM_WEAPON": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_TYPE_ITEM_ARMOR": {
+      "value": 6,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_TYPE_ITEM_BIOAMP": {
+      "value": 7,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_TYPE_ITEM_OMNITOOL": {
+      "value": 8,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_TYPE_SHIELD": {
+      "value": 9,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_TYPE_DAMAGE": {
+      "value": 10,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_TYPE_PAWN_VEHICLE": {
+      "value": 11,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_TYPE_ITEM_GRENADE": {
+      "value": 12,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

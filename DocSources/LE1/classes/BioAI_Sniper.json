@@ -1,0 +1,23 @@
+{
+  "parent": "BioAI_HumanoidMinion",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "EvaluateAttackCapabilities": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EvaluateAttackCapabilities(Pawn oTarget)"
+    }
+  },
+  "states": {},
+  "classflags": 10486294,
+  "configname": "Game",
+  "documentation": null
+}

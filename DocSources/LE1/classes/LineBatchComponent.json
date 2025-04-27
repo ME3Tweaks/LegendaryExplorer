@@ -1,0 +1,36 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "FPrimitiveDrawInterfaceVfTable": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "FPrimitiveDrawInterfaceView": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "BatchedLines": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "BatchedPoints": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "DefaultLifeTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 12290
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 2155872658,
+  "configname": "None",
+  "documentation": null
+}

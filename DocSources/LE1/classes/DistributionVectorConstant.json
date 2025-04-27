@@ -1,0 +1,26 @@
+{
+  "parent": "DistributionVector",
+  "package": "Engine",
+  "variables": {
+    "Constant": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLockAxes": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "LockedAxes": {
+      "type": "EDistributionVectorLockFlags",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134230162,
+  "configname": "None",
+  "documentation": null
+}

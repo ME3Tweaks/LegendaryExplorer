@@ -1,0 +1,28 @@
+{
+  "members": {
+    "ViewLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "ViewDir": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "InViewer": {
+      "type": "PlayerController",
+      "documentation": null,
+      "flags": 0
+    },
+    "Viewer": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "WorldInfo",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

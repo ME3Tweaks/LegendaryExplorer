@@ -1,0 +1,33 @@
+{
+  "members": {
+    "OctreeNode": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "BoundingBox": {
+      "type": "Box",
+      "documentation": null,
+      "flags": 0
+    },
+    "BoxCenter": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Owner": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 8388610
+    },
+    "OwnerType": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 8388610
+    }
+  },
+  "classdef": "NavigationPoint",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

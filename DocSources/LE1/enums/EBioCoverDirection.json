@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "BCD_PopUp": {
+      "value": 0,
+      "documentation": null
+    },
+    "BCD_StepLeft": {
+      "value": 1,
+      "documentation": null
+    },
+    "BCD_StepRight": {
+      "value": 2,
+      "documentation": null
+    },
+    "BCD_StepAny": {
+      "value": 3,
+      "documentation": null
+    },
+    "BCD_None": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

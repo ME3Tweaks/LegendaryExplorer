@@ -1,0 +1,53 @@
+{
+  "members": {
+    "m_vPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fModeTotalTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fModeTimeRemaining": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fDistanceToTarget": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fMagnificationLevel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDisplayCrosshair": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bIsMagneticLocked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eMode": {
+      "type": "EReticuleMode",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFHandler_Reticule",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

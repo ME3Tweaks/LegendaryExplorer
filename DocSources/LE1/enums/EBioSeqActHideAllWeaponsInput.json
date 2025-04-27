@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "EBioSeqActHideAllWeaponsInput_PawnList": {
+      "value": 0,
+      "documentation": null
+    },
+    "EBioSeqActHideAllWeaponsInput_ShouldHide": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

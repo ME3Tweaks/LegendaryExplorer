@@ -1,0 +1,213 @@
+{
+  "EnumValues": {
+    "EMT_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "EMT_Stun": {
+      "value": 1,
+      "documentation": null
+    },
+    "EMT_X_Gamma": {
+      "value": 2,
+      "documentation": null
+    },
+    "EMT_X_Ice": {
+      "value": 3,
+      "documentation": null
+    },
+    "EMT_X_Plasma": {
+      "value": 4,
+      "documentation": null
+    },
+    "EMT_X_Tesla": {
+      "value": 5,
+      "documentation": null
+    },
+    "EMT_X_Vorpal": {
+      "value": 6,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_X_Fusion": {
+      "value": 7,
+      "documentation": null
+    },
+    "EMT_X_Fire": {
+      "value": 8,
+      "documentation": null
+    },
+    "EMT_B_BioticMode": {
+      "value": 9,
+      "documentation": null
+    },
+    "EMT_B_Lift": {
+      "value": 10,
+      "documentation": null
+    },
+    "EMT_B_Throw": {
+      "value": 11,
+      "documentation": null
+    },
+    "EMT_B_Warp": {
+      "value": 12,
+      "documentation": null
+    },
+    "EMT_B_Weaken": {
+      "value": 13,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_B_Barrier": {
+      "value": 14,
+      "documentation": null
+    },
+    "EMT_B_Stasis": {
+      "value": 15,
+      "documentation": null
+    },
+    "EMT_DarkArmour": {
+      "value": 16,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_T_TechMode": {
+      "value": 17,
+      "documentation": null
+    },
+    "EMT_T_Hacking": {
+      "value": 18,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_T_EMP": {
+      "value": 19,
+      "documentation": null
+    },
+    "EMT_T_DampingField": {
+      "value": 20,
+      "documentation": null
+    },
+    "EMT_T_Sabotage": {
+      "value": 21,
+      "documentation": null
+    },
+    "EMT_T_Heal": {
+      "value": 22,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_T_Shock": {
+      "value": 23,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_C_SeigePulse": {
+      "value": 24,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_C_RadiationBurst": {
+      "value": 25,
+      "documentation": null
+    },
+    "EMT_Adrenaline": {
+      "value": 26,
+      "documentation": null
+    },
+    "EMT_Zombie": {
+      "value": 27,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_ShieldBoost": {
+      "value": 28,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_Xray": {
+      "value": 29,
+      "documentation": null
+    },
+    "EMT_HoloWipe": {
+      "value": 30,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_Goo": {
+      "value": 31,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_Acid": {
+      "value": 32,
+      "documentation": null
+    },
+    "EMT_Immune": {
+      "value": 33,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_X_KRO_Regen": {
+      "value": 34,
+      "documentation": null
+    },
+    "EMT_GUI_1": {
+      "value": 35,
+      "documentation": null
+    },
+    "EMT_GUI_2": {
+      "value": 36,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_Wet": {
+      "value": 37,
+      "documentation": null
+    },
+    "EMT_W_Wrinkle": {
+      "value": 38,
+      "documentation": null
+    },
+    "EMT_Mem_Metal": {
+      "value": 39,
+      "documentation": null
+    },
+    "EMT_X_Husk_Pulse": {
+      "value": 40,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_Cinematics01": {
+      "value": 41,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_Cinematics02": {
+      "value": 42,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_Cinematics03": {
+      "value": 43,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_Cinematics04": {
+      "value": 44,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_Cinematics05": {
+      "value": 45,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_Cinematics06": {
+      "value": 46,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_Cinematics07": {
+      "value": 47,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_Cinematics08": {
+      "value": 48,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_Cinematics09": {
+      "value": 49,
+      "documentation": null
+    },
+    "DEPRECATED_EMT_Cinematics10": {
+      "value": 50,
+      "documentation": null
+    },
+    "EMT_Num": {
+      "value": 51,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

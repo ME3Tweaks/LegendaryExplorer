@@ -1,0 +1,166 @@
+{
+  "parent": "BioBaseAppearance",
+  "package": "SFXGame",
+  "variables": {
+    "Head": {
+      "type": "Bio_Appr_Character_Head",
+      "documentation": null,
+      "flags": 71303169
+    },
+    "Footsteps": {
+      "type": "BioVISFootstep",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_FootStepAttachments": {
+      "type": "FootStepAttachment",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_aLookBoneDefs": {
+      "type": "LookAtBoneDef",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_vFootstepLineCheckOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "vProceduralCameraPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "rProceduralCameraRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 1
+    },
+    "vCameraFocusPoint": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "Body": {
+      "type": "Bio_Appr_Character_Body",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "BloodColor": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oSettings": {
+      "type": "Bio_Appr_Character_Settings",
+      "documentation": null,
+      "flags": 67772425
+    },
+    "CreatureSpeed": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "LifetimeCrust": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_LookAtDefinition": {
+      "type": "BioLookAtDefinition",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_pDefaultGesturesPoseSet": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmDefaultGesturesPoseAnim": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_pCookedDefGestPoseSet": {
+      "type": "BioDynamicAnimSet",
+      "documentation": null,
+      "flags": 0
+    },
+    "DefaultFaceFXAsset": {
+      "type": "FaceFXAsset",
+      "documentation": null,
+      "flags": 1
+    },
+    "LifetimeMaterialFadeDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fCullFootstepDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fFov": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fNearClip": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fDOFFocusInnerRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fDOFFocusDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "HideEquipedItems": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "CanStrafe": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLoopSingleFootstep": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bCullFootsteps": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "ModelType": {
+      "type": "eModelType",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_ItemRaceType": {
+      "type": "EBioAttributesItemRaceType",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_TalentRaceType": {
+      "type": "EBio_Appr_CharacterTalentRaceType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

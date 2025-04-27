@@ -1,0 +1,16 @@
+{
+  "parent": "UIAction",
+  "package": "Engine",
+  "variables": {
+    "bVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 2097682,
+  "configname": "None",
+  "documentation": null
+}

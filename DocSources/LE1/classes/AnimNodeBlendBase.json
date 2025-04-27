@@ -1,0 +1,61 @@
+{
+  "parent": "AnimNode",
+  "package": "Engine",
+  "variables": {
+    "Children": {
+      "type": "AnimBlendChild",
+      "documentation": null,
+      "flags": 71303240
+    },
+    "bFixNumChildren": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "BlendTypeAlpha": {
+      "type": "AlphaBlendType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "ReplayAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReplayAnim()"
+    },
+    "StopAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopAnim()"
+    },
+    "PlayAnim": {
+      "documentation": null,
+      "signature_members": {
+        "bLoop": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "Rate": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "StartTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayAnim(optional bool bLoop, optional float Rate, optional float StartTime)"
+    }
+  },
+  "states": {},
+  "classflags": 144703635,
+  "configname": "None",
+  "documentation": null
+}

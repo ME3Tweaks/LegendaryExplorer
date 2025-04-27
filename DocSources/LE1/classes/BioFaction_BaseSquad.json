@@ -1,0 +1,10 @@
+{
+  "parent": "BioFaction",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 4115,
+  "configname": "None",
+  "documentation": null
+}

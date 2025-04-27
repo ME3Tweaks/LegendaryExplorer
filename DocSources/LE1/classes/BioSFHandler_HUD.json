@@ -1,0 +1,744 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_lstMappedPowers": {
+      "type": "CustomMappingDisplayInfo",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_lstMappablePowersPawn0": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_lstMappablePowersPawn1": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_lstMappablePowersPawn2": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "vInput": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oPlayerSquad": {
+      "type": "BioPlayerSquad",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oCommandTarget": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nShieldPointsPerBar": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srMeters": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srGrenadePowerTitle": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSwitching": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srIncapacitated": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nShepardIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nHench1Index": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nHench2Index": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nCommandTargetIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nSquadPopulation": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nMappablePowers": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nSelectedPowerWheelIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nPowerWheelMode": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "fRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fLastRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "nAngle": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nLastAngle": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ObjectNameColourR": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_ObjectNameColourB": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_ObjectNameColourG": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_ObjectNameAlpha": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_bVehicleWidgetOn": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bSquadWidgetOn": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bWasHUDSwapped": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bWasHUDInitialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDisplayingMapBounds": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bForceRadarUpdate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_ePowerWheelMode": {
+      "type": "EHudPowerPadModes",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "GetVariableObject": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Type": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "GFxValue",
+      "signature": "GFxValue GetVariableObject(string Path, optional Class<GFxValue> Type)"
+    },
+    "UpdateStormWidget": {
+      "documentation": null,
+      "signature_members": {
+        "oPlayerInput": {
+          "type": "BioPlayerInput",
+          "documentation": null,
+          "flags": 128
+        },
+        "oCtrl": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateStormWidget(BioPlayerInput oPlayerInput, BioPlayerController oCtrl)"
+    },
+    "UpdateXPTotalWidget": {
+      "documentation": null,
+      "signature_members": {
+        "nDelta": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nNewTotal": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateXPTotalWidget(int nDelta, int nNewTotal)"
+    },
+    "UpdateIconDumpWidget": {
+      "documentation": null,
+      "signature_members": {
+        "oEventNotifier": {
+          "type": "BioEventNotifier",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateIconDumpWidget(BioEventNotifier oEventNotifier)"
+    },
+    "DerivePowerBarPercentage": {
+      "documentation": null,
+      "signature_members": {
+        "eBehaviorType": {
+          "type": "EHUDPowerBehaviorTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "oPower": {
+          "type": "BioPower",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "int",
+      "signature": "int DerivePowerBarPercentage(EHUDPowerBehaviorTypes eBehaviorType, BioPower oPower)"
+    },
+    "DeriveComplexPowerBehaviorType": {
+      "documentation": null,
+      "signature_members": {
+        "oPower": {
+          "type": "BioPower",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "EHUDPowerBehaviorTypes",
+      "signature": "EHUDPowerBehaviorTypes DeriveComplexPowerBehaviorType(BioPower oPower)"
+    },
+    "UpdateCustomMappingWidget": {
+      "documentation": null,
+      "signature_members": {
+        "eMapSlot": {
+          "type": "EHUDDPadSlots",
+          "documentation": null,
+          "flags": 128
+        },
+        "oPlayerCtrl": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCustomMappingWidget(EHUDDPadSlots eMapSlot, BioPlayerController oPlayerCtrl, optional BioPawn oTarget)"
+    },
+    "UpdateAllCustomMappingWidgets": {
+      "documentation": null,
+      "signature_members": {
+        "pPlayerInput": {
+          "type": "BioPlayerInput",
+          "documentation": null,
+          "flags": 128
+        },
+        "oPlayerCtrl": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateAllCustomMappingWidgets(BioPlayerInput pPlayerInput, BioPlayerController oPlayerCtrl, optional BioPawn oTarget)"
+    },
+    "PopulateCommandsFromPawn": {
+      "documentation": null,
+      "signature_members": {
+        "oPlayer": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nPawnIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateCommandsFromPawn(BioPawn oPlayer, int nPawnIndex)"
+    },
+    "PopulatePowersFromPawn": {
+      "documentation": null,
+      "signature_members": {
+        "oPlayer": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nPawnIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulatePowersFromPawn(BioPawn oPlayer, int nPawnIndex)"
+    },
+    "PopulatePowerFromPawn": {
+      "documentation": null,
+      "signature_members": {
+        "oPlayer": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nPawnIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nPowerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulatePowerFromPawn(BioPawn oPlayer, int nPawnIndex, int nPowerIndex)"
+    },
+    "PopulateArmorEmitterPower": {
+      "documentation": null,
+      "signature_members": {
+        "oPlayer": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nPawnIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateArmorEmitterPower(BioPawn oPlayer, int nPawnIndex)"
+    },
+    "PopulateWeaponAltPower": {
+      "documentation": null,
+      "signature_members": {
+        "oPlayer": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nPawnIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateWeaponAltPower(BioPawn oPlayer, int nPawnIndex)"
+    },
+    "PopulateHealPower": {
+      "documentation": null,
+      "signature_members": {
+        "oPlayer": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nPawnIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateHealPower(BioPawn oPlayer, int nPawnIndex)"
+    },
+    "PopulateGrenadePower": {
+      "documentation": null,
+      "signature_members": {
+        "oPlayer": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nPawnIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateGrenadePower(BioPawn oPlayer, int nPawnIndex)"
+    },
+    "SetPowerPadMode": {
+      "documentation": null,
+      "signature_members": {
+        "eMode": {
+          "type": "EHudPowerPadModes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPowerPadMode(EHudPowerPadModes eMode)"
+    },
+    "UpdateMinimapWidget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateMinimapWidget()"
+    },
+    "SetSquadStatusWidgetInvisible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetSquadStatusWidgetInvisible()"
+    },
+    "SetSquadStatusWidgetVisible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetSquadStatusWidgetVisible()"
+    },
+    "DeriveNameIconRef": {
+      "documentation": null,
+      "signature_members": {
+        "nSourceRef": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int DeriveNameIconRef(int nSourceRef)"
+    },
+    "UpdateSquadFormationWidget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateSquadFormationWidget()"
+    },
+    "GetHenchmanFormation": {
+      "documentation": null,
+      "signature_members": {
+        "nSquadIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "ESquadIcons",
+      "signature": "ESquadIcons GetHenchmanFormation(int nSquadIndex)"
+    },
+    "UpdateSquadStatusWidgets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateSquadStatusWidgets()"
+    },
+    "SiftPlayerSquad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SiftPlayerSquad()"
+    },
+    "SetVehicleStatusWidgetVisible": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetVehicleStatusWidgetVisible()"
+    },
+    "UpdateVehicleStatusWidget": {
+      "documentation": null,
+      "signature_members": {
+        "oVehicle": {
+          "type": "BioVehicleBase",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateVehicleStatusWidget(BioVehicleBase oVehicle)"
+    },
+    "UpdateCurrentWeaponWidget": {
+      "documentation": null,
+      "signature_members": {
+        "nWeaponSlot": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "oRangedWeapon": {
+          "type": "BioWeaponRanged",
+          "documentation": null,
+          "flags": 128
+        },
+        "bUsageSituationAmenable": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCurrentWeaponWidget(int nWeaponSlot, BioWeaponRanged oRangedWeapon, bool bUsageSituationAmenable)"
+    },
+    "UpdateWeaponSwitchWidget": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nPawnIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateWeaponSwitchWidget(BioPawn oPawn, int nPawnIndex)"
+    },
+    "DeriveSlotFromWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "eWeapon": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int DeriveSlotFromWeapon(EBioItemWeaponRangedType eWeapon)"
+    },
+    "HideTargetStatusWidget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideTargetStatusWidget()"
+    },
+    "UpdateTargetStatusWidget": {
+      "documentation": null,
+      "signature_members": {
+        "pTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "pPlayer": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIsTargetCombattant": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bPlayerInVehicle": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateTargetStatusWidget(Actor pTarget, Pawn pPlayer, bool bIsTargetCombattant, bool bPlayerInVehicle)"
+    },
+    "UpdateHUDModes": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "EActionState": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateHUDModes(BioPlayerController PC, int EActionState)"
+    },
+    "PreReleaseHUD": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreReleaseHUD()"
+    },
+    "InitializeEverything": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeEverything()"
+    },
+    "assignKeyMaps": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "assignKeyMaps()"
+    },
+    "assignHotKeys": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "assignHotKeys()"
+    },
+    "getSquadUniqueIndex": {
+      "documentation": null,
+      "signature_members": {
+        "HUDMemberIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int getSquadUniqueIndex(int HUDMemberIndex)"
+    },
+    "doHotKey": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "doHotKey(int Index)"
+    },
+    "AStoLog": {
+      "documentation": null,
+      "signature_members": {
+        "msg": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AStoLog(string msg)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "ToggleKeyMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleKeyMap()"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
+  "documentation": null
+}

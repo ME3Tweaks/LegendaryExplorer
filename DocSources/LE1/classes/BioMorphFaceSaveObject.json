@@ -1,0 +1,86 @@
+{
+  "parent": "BioBaseSaveObject",
+  "package": "SFXGame",
+  "variables": {
+    "m_oOtherMeshes": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 2305843009217888256
+    },
+    "m_aMorphFeatures": {
+      "type": "MorphFeature",
+      "documentation": null,
+      "flags": 2305843009217888256
+    },
+    "m_aFinalSkeleton": {
+      "type": "OffsetBonePos",
+      "documentation": null,
+      "flags": 2305843009217888256
+    },
+    "m_aVertexBuffersLOD0": {
+      "type": "VertexBuffer",
+      "documentation": null,
+      "flags": 2305843009217888256
+    },
+    "m_aVertexBuffersLOD1": {
+      "type": "VertexBuffer",
+      "documentation": null,
+      "flags": 2305843009217888256
+    },
+    "m_aVertexBuffersLOD2": {
+      "type": "VertexBuffer",
+      "documentation": null,
+      "flags": 2305843009217888256
+    },
+    "m_aVertexBuffersLOD3": {
+      "type": "VertexBuffer",
+      "documentation": null,
+      "flags": 2305843009217888256
+    },
+    "m_oBaseHead": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_oHairMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_oMaterialOverrides": {
+      "type": "BioBaseSaveObject",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "LoadObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadObject(Object O)"
+    },
+    "SaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveObject(Object O)"
+    }
+  },
+  "states": {},
+  "classflags": 18,
+  "configname": "None",
+  "documentation": null
+}

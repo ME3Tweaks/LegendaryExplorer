@@ -1,0 +1,41 @@
+{
+  "parent": "SequenceVariable",
+  "package": "Engine",
+  "variables": {
+    "SupportedVariableClasses": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "StringValue": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ObjectValue": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 1
+    },
+    "IntValue": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "BoolValue": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "FloatValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 169869458,
+  "configname": "None",
+  "documentation": null
+}

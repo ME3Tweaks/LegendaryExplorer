@@ -1,0 +1,28 @@
+{
+  "members": {
+    "AnimationTracks": {
+      "type": "UIAnimTrack",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "SequenceRef": {
+      "type": "UIAnimationSeq",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "PlaybackRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "LoopMode": {
+      "type": "EUIAnimationLoopMode",
+      "documentation": null,
+      "flags": 1048576
+    }
+  },
+  "classdef": "UIAnimation",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 9
+}

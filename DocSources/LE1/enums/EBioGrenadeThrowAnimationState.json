@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BIO_GRENADE_THROW_ANIMATION_STATE_STARTED": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_GRENADE_THROW_ANIMATION_STATE_GRAB": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_GRENADE_THROW_ANIMATION_STATE_THROW": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_GRENADE_THROW_ANIMATION_STATE_FINISHED": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,53 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "RelativeOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "RelativeRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 1
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDetach": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bHardAttach": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseRelativeOffset": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseRelativeRotation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

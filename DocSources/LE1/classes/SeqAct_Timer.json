@@ -1,0 +1,34 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "ActivationTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "Time": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

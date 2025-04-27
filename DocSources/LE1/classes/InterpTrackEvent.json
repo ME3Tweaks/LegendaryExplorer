@@ -1,0 +1,31 @@
+{
+  "parent": "InterpTrack",
+  "package": "Engine",
+  "variables": {
+    "EventTrack": {
+      "type": "EventTrackKey",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "bFireEventsWhenForwards": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bFireEventsWhenBackwards": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bFireEventsWhenJumpingForwards": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134226066,
+  "configname": "None",
+  "documentation": null
+}

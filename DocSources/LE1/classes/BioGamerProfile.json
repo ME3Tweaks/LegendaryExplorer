@@ -1,0 +1,1228 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "BoolVariables": {
+      "type": "ProfileBOOL",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "IntVariables": {
+      "type": "ProfileINT",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "FloatVariables": {
+      "type": "ProfileFLOAT",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "PlotManagerAchievementMaps": {
+      "type": "PlotManagerAchievement",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "lstPlaythroughs": {
+      "type": "ProfilePlaythrough",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "RewardStats": {
+      "type": "ProfileRewardStat",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "anAchievementStates": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "aUnlockedBonusTalents": {
+      "type": "BonusTalent",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "BonusWeaponTalents": {
+      "type": "BonusTalent",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "aPassiveBonusTalents": {
+      "type": "BonusTalent",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "IntStats": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "FloatStats": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "lstCharacterProfiles": {
+      "type": "CharacterProfile",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sLastPlayedCharacterID": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sLastSaveGame": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "KeyBindings": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_GameOptions": {
+      "type": "GameOptions",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nmSKU": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 24576
+    },
+    "RewardsTable": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_DefaultGammaPostProcessTemplate": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultCombatDifficulty": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultDialogMode": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultAutoLevelUp": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nLegacyLevelUpMode": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultAutoEquip": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultTutorialFlag": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultSubTitles": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultAutoPauseEnemySighted": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultAutoPauseSquadMemberDown": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultMusicVolume": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultFXVolume": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultDialogVolume": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultSouthpawFlag": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultTargetingAssistMode": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultTargetingAssistModifierHigh": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultTargetingAssistModifierNormal": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultTargetingAssistModifierLow": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultHorizontalCombatSensitivity": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultVerticalCombatSensitivity": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultHorizontalExplorationSensitivity": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultVerticalExplorationSensitivity": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultControllerSensativityLow": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultControllerSensativityMedium": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultControllerSensativityHigh": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultRumbleFlag": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultAutoPauseBleedOut": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultMotionBlur": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultFilmGrain": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultSquadPowerUse": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultAutoSave": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultAntiAliasing": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultTextureDetailLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultDynamicResolution": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultAmbientOcclusion": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultBrightness": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultHDRBrightness": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultHDRContrast": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nAchievedCombatDifficultyOverride": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultStickConfiguration": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultTriggerConfiguration": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "ParagonPlotIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "RenegadePlotIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "PrincipledAchievementThreshold": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nDefaultMouseSensitivity": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultSensePerc": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bDefaultMonitorIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nDefaultFramerateIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_nLastUsedPlaythroughID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nMostMoneyAccumulated": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nMostPlaythroughPlayerKills": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nLowestPlaythroughPlayerDeaths": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fFastestPlaythroughTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_DefaultSaveDeviceId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_BioProfileSaveDeviceId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDefaultYAxisInverted": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bDefaultVsync": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bDefaultShadowDetailLevel": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bDefaultHDREnable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bDefaultCameraRelativeSteering": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 24576
+    },
+    "m_bInvalidProfileCreator": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bGamerProfileDeviceHasBeenRemoved": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "UpdateRichPresence": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateRichPresence()"
+    },
+    "UpdateSoundOptions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateSoundOptions()"
+    },
+    "ApplyGraphicsOptions": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": "GameOptions",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyGraphicsOptions(GameOptions Options)"
+    },
+    "UpdateGraphicsOptions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateGraphicsOptions()"
+    },
+    "UpdateAllOptions": {
+      "documentation": null,
+      "signature_members": {
+        "bUpdateRichPresence": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateAllOptions(optional bool bUpdateRichPresence)"
+    },
+    "DuplicateGameOptions": {
+      "documentation": null,
+      "signature_members": {
+        "destOptions": {
+          "type": "GameOptions",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "DuplicateGameOptions(out GameOptions destOptions)"
+    },
+    "OverwiteGameOptions": {
+      "documentation": null,
+      "signature_members": {
+        "sourceOptions": {
+          "type": "GameOptions",
+          "documentation": null,
+          "flags": 128
+        },
+        "bUpdateRichPresence": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "OverwiteGameOptions(GameOptions sourceOptions, optional bool bUpdateRichPresence)"
+    },
+    "GetTargetingAssistModifier": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetTargetingAssistModifier()"
+    },
+    "GetOptionEx": {
+      "documentation": null,
+      "signature_members": {
+        "io_oGameOptions": {
+          "type": "GameOptions",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_nOptionType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_nOptionValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetOptionEx(GameOptions io_oGameOptions, int i_nOptionType, out int i_nOptionValue)"
+    },
+    "GetOption": {
+      "documentation": null,
+      "signature_members": {
+        "i_nOptionType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_nOptionValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetOption(int i_nOptionType, out int i_nOptionValue)"
+    },
+    "SetOptionEx": {
+      "documentation": null,
+      "signature_members": {
+        "io_oGameOptions": {
+          "type": "GameOptions",
+          "documentation": null,
+          "flags": 384
+        },
+        "i_nOptionType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_nOptionValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_bSuppressUpdate": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOptionEx(out GameOptions io_oGameOptions, int i_nOptionType, int i_nOptionValue, bool i_bSuppressUpdate)"
+    },
+    "SetOption": {
+      "documentation": null,
+      "signature_members": {
+        "i_nOptionType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_nOptionValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_bSuppressUpdate": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOption(int i_nOptionType, int i_nOptionValue, bool i_bSuppressUpdate)"
+    },
+    "GetCombatDifficulty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetCombatDifficulty()"
+    },
+    "SetCombatDifficulty": {
+      "documentation": null,
+      "signature_members": {
+        "i_Template": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCombatDifficulty(int i_Template)"
+    },
+    "DumpAchievementStats": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DumpAchievementStats()"
+    },
+    "GetGammaPostProcessTemplate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetGammaPostProcessTemplate()"
+    },
+    "SetGammaPostProcessTemplate": {
+      "documentation": null,
+      "signature_members": {
+        "i_Template": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGammaPostProcessTemplate(int i_Template)"
+    },
+    "SelectDefaultStorageDevice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SelectDefaultStorageDevice()"
+    },
+    "GetDefaultStorageDevice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetDefaultStorageDevice()"
+    },
+    "SetDefaultStorageDevice": {
+      "documentation": null,
+      "signature_members": {
+        "i_DeviceId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDefaultStorageDevice(int i_DeviceId)"
+    },
+    "GetBioProfileStorageDevice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetBioProfileStorageDevice()"
+    },
+    "SetBioProfileStorageDevice": {
+      "documentation": null,
+      "signature_members": {
+        "i_DeviceId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBioProfileStorageDevice(int i_DeviceId)"
+    },
+    "SetYAxisInverted": {
+      "documentation": null,
+      "signature_members": {
+        "bInverted": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetYAxisInverted(bool bInverted)"
+    },
+    "GetYAxisInverted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetYAxisInverted()"
+    },
+    "GetAllUnlockedBonusTalentInfo": {
+      "documentation": null,
+      "signature_members": {
+        "aUnlockedBonusTalentInfo": {
+          "type": "UnlockedBonusTalentInfo",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "nmCharClass": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAllUnlockedBonusTalentInfo(out array<UnlockedBonusTalentInfo> aUnlockedBonusTalentInfo, Name nmCharClass)"
+    },
+    "AwardAllPassiveBonusTalents": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AwardAllPassiveBonusTalents()"
+    },
+    "UpdateAchievementState": {
+      "documentation": null,
+      "signature_members": {
+        "nAchievementID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bEarned": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bUpdatePlotState": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bAwardBonusTalent": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bSaveProfile": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateAchievementState(int nAchievementID, bool bEarned, bool bUpdatePlotState, bool bAwardBonusTalent, optional bool bSaveProfile)"
+    },
+    "GetDefaultValues": {
+      "documentation": null,
+      "signature_members": {
+        "io_Options": {
+          "type": "GameOptions",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetDefaultValues(out GameOptions io_Options)"
+    },
+    "ResetToDefaults": {
+      "documentation": null,
+      "signature_members": {
+        "bUpdateRichPresence": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetToDefaults(optional bool bUpdateRichPresence)"
+    },
+    "SortAchievementInfo": {
+      "documentation": null,
+      "signature_members": {
+        "aAchievementList": {
+          "type": "AchievementInfo",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "SortAchievementInfo(out array<AchievementInfo> aAchievementList)"
+    },
+    "GetAllAchievementInfo": {
+      "documentation": null,
+      "signature_members": {
+        "aAchievementList": {
+          "type": "AchievementInfo",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAllAchievementInfo(out array<AchievementInfo> aAchievementList)"
+    },
+    "GetAchievementID": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetAchievementID(int Index)"
+    },
+    "GetIsAchievementEarned": {
+      "documentation": null,
+      "signature_members": {
+        "AchievementId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetIsAchievementEarned(int AchievementId)"
+    },
+    "UpdateAchievements": {
+      "documentation": null,
+      "signature_members": {
+        "Achievements": {
+          "type": "AchievementDetails",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "PC": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateAchievements(array<AchievementDetails> Achievements, BioPlayerController PC)"
+    },
+    "UpdateCharacterProfilePawnDataEx": {
+      "documentation": null,
+      "signature_members": {
+        "sCharProfile": {
+          "type": "CharacterProfile",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "i_playerPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_bUpdateFirstName": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_oHoursPlayed": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_oMinPlayed": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_oSecPlayed": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateCharacterProfilePawnDataEx(out CharacterProfile sCharProfile, BioPawn i_playerPawn, bool i_bUpdateFirstName, int i_oHoursPlayed, int i_oMinPlayed, int i_oSecPlayed)"
+    },
+    "UpdateCharacterProfilePawnData": {
+      "documentation": null,
+      "signature_members": {
+        "sCharacterID": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "i_playerPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_oHoursPlayed": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_oMinPlayed": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_oSecPlayed": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_bUpdateFirstName": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateCharacterProfilePawnData(string sCharacterID, BioPawn i_playerPawn, int i_oHoursPlayed, int i_oMinPlayed, int i_oSecPlayed, optional bool i_bUpdateFirstName)"
+    },
+    "DeleteCharacterProfile": {
+      "documentation": null,
+      "signature_members": {
+        "sCharacterID": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DeleteCharacterProfile(string sCharacterID)"
+    },
+    "GetCharacterProfileIndex": {
+      "documentation": null,
+      "signature_members": {
+        "sCharacterID": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetCharacterProfileIndex(string sCharacterID)"
+    },
+    "SetCharacterProfile": {
+      "documentation": null,
+      "signature_members": {
+        "sCharacterID": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "i_CharProfile": {
+          "type": "CharacterProfile",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "i_bAddProfileIfNotExist": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCharacterProfile(string sCharacterID, CharacterProfile i_CharProfile, optional bool i_bAddProfileIfNotExist)"
+    },
+    "GetCharacterProfile": {
+      "documentation": null,
+      "signature_members": {
+        "sCharacterID": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "CharacterProfile",
+      "signature": "CharacterProfile GetCharacterProfile(string sCharacterID)"
+    },
+    "SetCharacterProfileLastPlayedSlot": {
+      "documentation": null,
+      "signature_members": {
+        "sCharacaterID": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nLastPlayedSlot": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetCharacterProfileLastPlayedSlot(string sCharacaterID, int nLastPlayedSlot)"
+    },
+    "ConvertToValidCharacterID": {
+      "documentation": null,
+      "signature_members": {
+        "sCharacterName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bConvertAccentCharacters": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string ConvertToValidCharacterID(string sCharacterName, bool bConvertAccentCharacters)"
+    },
+    "CreateNewCharacterProfile": {
+      "documentation": null,
+      "signature_members": {
+        "sCharacterName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "string",
+      "signature": "string CreateNewCharacterProfile(string sCharacterName)"
+    },
+    "SetFloatStatistic": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetFloatStatistic(int nIndex, float fValue)"
+    },
+    "InrementFloatStatistic": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "fAmount": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float InrementFloatStatistic(int nIndex, float fAmount)"
+    },
+    "GetFloatStatistic": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetFloatStatistic(int nIndex)"
+    },
+    "SetIntStatistic": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetIntStatistic(int nIndex, int nValue)"
+    },
+    "IncrementIntStatistic": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nAmount": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int IncrementIntStatistic(int nIndex, int nAmount)"
+    },
+    "GetIntStatistic": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetIntStatistic(int nIndex)"
+    },
+    "GetHighestDifficultyCompleted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetHighestDifficultyCompleted()"
+    },
+    "GetPlaythroughCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "nDifficulty": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetPlaythroughCompleted(int nDifficulty)"
+    },
+    "GetNumberOfPlaythroughsCompleted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumberOfPlaythroughsCompleted()"
+    },
+    "UpdateEndGameGamerProfileStats": {
+      "documentation": null,
+      "signature_members": {
+        "bLogStats": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateEndGameGamerProfileStats(bool bLogStats)"
+    },
+    "GetUnlockedTalentTrees": {
+      "documentation": null,
+      "signature_members": {
+        "aUnlockedTalentTrees": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUnlockedTalentTrees(out array<int> aUnlockedTalentTrees)"
+    },
+    "GetRewardStatUnlockedAt": {
+      "documentation": null,
+      "signature_members": {
+        "sStatisticName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetRewardStatUnlockedAt(string sStatisticName)"
+    },
+    "GetRewardStatName": {
+      "documentation": null,
+      "signature_members": {
+        "nAchievementID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetRewardStatName(int nAchievementID)"
+    },
+    "GetIsRewardStatUnlocked": {
+      "documentation": null,
+      "signature_members": {
+        "sStatisticName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetIsRewardStatUnlocked(string sStatisticName)"
+    },
+    "IncrementRewardStat": {
+      "documentation": null,
+      "signature_members": {
+        "sStatisticName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nAmount": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int IncrementRewardStat(string sStatisticName, int nAmount)"
+    },
+    "SetRewardStat": {
+      "documentation": null,
+      "signature_members": {
+        "sStatisticName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetRewardStat(string sStatisticName, int nValue)"
+    },
+    "RestoreGamerProfilePlotManagerVariables": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RestoreGamerProfilePlotManagerVariables()"
+    },
+    "SetGamerProfilePlotManagerVariables": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool SetGamerProfilePlotManagerVariables()"
+    }
+  },
+  "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
+  "documentation": null
+}

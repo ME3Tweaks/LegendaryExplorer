@@ -1,0 +1,26 @@
+{
+  "parent": "BioSoundNode_Base",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmSoundInputName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_fCrossFadeTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bLooping": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136327314,
+  "configname": "None",
+  "documentation": null
+}

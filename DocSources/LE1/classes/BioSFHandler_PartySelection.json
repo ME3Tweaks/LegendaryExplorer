@@ -1,0 +1,164 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "lstMemberInfo": {
+      "type": "PartySelectMemberInfo",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "nmForcedHenchman": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "srPartyConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srPartyCancel": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srPartyQuestion": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nPartyMember1": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nPartyMember2": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetHenchmenStats": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nStat1": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "nStat2": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "nStat3": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetHenchmenStats(int nIndex, out int nStat1, out int nStat2, out int nStat3)"
+    },
+    "GetStatsFromClass": {
+      "documentation": null,
+      "signature_members": {
+        "nClassID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nStat1": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "nStat2": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "nStat3": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetStatsFromClass(int nClassID, out int nStat1, out int nStat2, out int nStat3)"
+    },
+    "GetHenchmenName": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetHenchmenName(int nIndex)"
+    },
+    "FinalizeParty": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bYPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "FinalizeParty(bool bAPressed, int nContext, bool bYPressed)"
+    },
+    "ConfirmParty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ConfirmParty()"
+    },
+    "DoInitialization": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoInitialization()"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    }
+  },
+  "states": {},
+  "classflags": 2097182,
+  "configname": "UI",
+  "documentation": null
+}

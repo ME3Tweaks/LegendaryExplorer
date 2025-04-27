@@ -1,0 +1,54 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_vTargetMomentumDirection": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oInstigator": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pDamage": {
+      "type": "BioDamageType",
+      "documentation": null,
+      "flags": 71434249
+    },
+    "m_fMomentum": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fDamageAmount": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

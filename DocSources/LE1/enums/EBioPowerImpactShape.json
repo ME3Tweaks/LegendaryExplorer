@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_POWER_IMPACT_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_POWER_IMPACT_CONE": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_POWER_IMPACT_VERTICAL_CYLINDER": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

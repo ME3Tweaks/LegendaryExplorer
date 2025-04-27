@@ -1,0 +1,66 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aCreatureVFXs": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_aPlaceableVFXs": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "functions": {
+    "ApplyEffect": {
+      "documentation": null,
+      "signature_members": {
+        "MetaEffect": {
+          "type": "BioMetaVFX",
+          "documentation": null,
+          "flags": 128
+        },
+        "Target": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "fLifeTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyEffect(BioMetaVFX MetaEffect, Object Target, optional float fLifeTime)"
+    },
+    "ApplyEffectByName": {
+      "documentation": null,
+      "signature_members": {
+        "sEffect": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Target": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "fLifeTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyEffectByName(string sEffect, Object Target, optional float fLifeTime)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

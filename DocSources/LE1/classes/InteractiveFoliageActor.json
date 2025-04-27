@@ -1,0 +1,156 @@
+{
+  "parent": "StaticMeshActor",
+  "package": "Engine",
+  "variables": {
+    "TouchingActorEntryPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "FoliageVelocity": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "FoliageForce": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "FoliagePosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "CylinderComponent": {
+      "type": "CylinderComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "FoliageDamageImpulseScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FoliageTouchImpulseScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FoliageStiffness": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FoliageStiffnessQuadratic": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FoliageDamping": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxDamageImpulse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxTouchImpulse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxForce": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Mass": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Touch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "OtherComp": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Touch(Actor Other, PrimitiveComponent OtherComp, Vector HitLocation, Vector HitNormal)"
+    },
+    "TakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "EventInstigator": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitInfo": {
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "DamageCauser": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamage": {
+          "type": "DamageType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeDamage(float Damage, Controller EventInstigator, Vector HitLocation, Vector Momentum, Class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser, optional DamageType pDamage)"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

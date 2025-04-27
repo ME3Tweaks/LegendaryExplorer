@@ -1,0 +1,38 @@
+{
+  "parent": "UIObject",
+  "package": "Engine",
+  "variables": {
+    "ArchetypeToInstanceMap": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4098
+    },
+    "PI_ObjectMap": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4098
+    },
+    "SourcePrefab": {
+      "type": "UIPrefab",
+      "documentation": null,
+      "flags": 1099511627778
+    },
+    "PrefabInstanceVersion": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {
+    "DetachFromSourcePrefab": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DetachFromSourcePrefab()"
+    }
+  },
+  "states": {},
+  "classflags": 211813014,
+  "configname": "UI",
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceVariable",
+  "package": "Engine",
+  "variables": {
+    "VariableLabel": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ExpectedType": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,60 @@
+{
+  "parent": "BioPowerScriptDesign",
+  "package": "SFXGameContent_Powers",
+  "variables": {},
+  "functions": {
+    "OnImpact": {
+      "documentation": null,
+      "signature_members": {
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fCasterStability": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "oImpacted": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "nPreviouslyImpacted": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnImpact(Actor oCaster, float fCasterStability, Actor oImpacted, int nPreviouslyImpacted)"
+    },
+    "StartPhase": {
+      "documentation": null,
+      "signature_members": {
+        "ePhase": {
+          "type": "EBioPowerState",
+          "documentation": null,
+          "flags": 128
+        },
+        "oCaster": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StartPhase(EBioPowerState ePhase, Actor oCaster, float fDuration)"
+    }
+  },
+  "states": {},
+  "classflags": 8388626,
+  "configname": "None",
+  "documentation": null
+}

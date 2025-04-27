@@ -1,0 +1,58 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_aoCoverFrom": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_oSeeksCover": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oNear": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oNoCoverFrom": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oCover": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fMaxRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nSlot": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSquadCoverOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

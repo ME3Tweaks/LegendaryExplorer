@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "GUILayout_PC": {
+      "value": 0,
+      "documentation": null
+    },
+    "GUILayout_XBox": {
+      "value": 1,
+      "documentation": null
+    },
+    "GUILayout_PS3": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

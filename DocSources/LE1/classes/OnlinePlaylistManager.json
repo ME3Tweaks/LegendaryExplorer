@@ -1,0 +1,174 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Playlists": {
+      "type": "Playlist",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "PlaylistFileNames": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "DatastoresToRefresh": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "__OnReadPlaylistComplete__Delegate": {
+      "type": "OnReadPlaylistComplete",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "DownloadCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "SuccessfulCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "VersionNumber": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "GetContentIdsFromPlaylist": {
+      "documentation": null,
+      "signature_members": {
+        "PlaylistId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "ContentIds": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetContentIdsFromPlaylist(int PlaylistId, out array<int> ContentIds)"
+    },
+    "GetTeamInfoFromPlaylist": {
+      "documentation": null,
+      "signature_members": {
+        "PlaylistId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "TeamSize": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "TeamCount": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetTeamInfoFromPlaylist(int PlaylistId, out int TeamSize, out int TeamCount)"
+    },
+    "PlaylistSupportsDedicatedServers": {
+      "documentation": null,
+      "signature_members": {
+        "PlaylistId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlaylistSupportsDedicatedServers(int PlaylistId)"
+    },
+    "HasAnyGameSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PlaylistId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasAnyGameSettings(int PlaylistId)"
+    },
+    "GetGameSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PlaylistId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "GameSettingsId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "OnlineGameSettings",
+      "signature": "OnlineGameSettings GetGameSettings(int PlaylistId, int GameSettingsId)"
+    },
+    "FinalizePlaylistObjects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FinalizePlaylistObjects()"
+    },
+    "OnReadTitleFileComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "Filename": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadTitleFileComplete(bool bWasSuccessful, string Filename)"
+    },
+    "DetermineFilesToDownload": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DetermineFilesToDownload()"
+    },
+    "DownloadPlaylist": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DownloadPlaylist()"
+    },
+    "OnReadPlaylistComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnReadPlaylistComplete()"
+    }
+  },
+  "states": {},
+  "classflags": 136315030,
+  "configname": "Playlist",
+  "documentation": null
+}

@@ -1,0 +1,333 @@
+{
+  "EnumValues": {
+    "OUT_OF_WORLD": {
+      "value": 0,
+      "documentation": null
+    },
+    "OUT_OF_TEXTUREMEMORY": {
+      "value": 1,
+      "documentation": null
+    },
+    "OUT_OF_SYSTEMMEMORY": {
+      "value": 2,
+      "documentation": null
+    },
+    "COMBAT_START": {
+      "value": 3,
+      "documentation": null
+    },
+    "COMBAT_END": {
+      "value": 4,
+      "documentation": null
+    },
+    "GAME_START": {
+      "value": 5,
+      "documentation": null
+    },
+    "GAME_END": {
+      "value": 6,
+      "documentation": null
+    },
+    "GAME_LOADGAME": {
+      "value": 7,
+      "documentation": null
+    },
+    "GAME_SAVEGAME": {
+      "value": 8,
+      "documentation": null
+    },
+    "GAME_PROFILINGTIME": {
+      "value": 9,
+      "documentation": null
+    },
+    "CONVERSATION_MISSINGVO": {
+      "value": 10,
+      "documentation": null
+    },
+    "CONVERSATION_MISSINGLIPSYNC": {
+      "value": 11,
+      "documentation": null
+    },
+    "CONVERSATION_FAILEDSTAGING": {
+      "value": 12,
+      "documentation": null
+    },
+    "CONVERSATION_START": {
+      "value": 13,
+      "documentation": null
+    },
+    "CONVERSATION_END": {
+      "value": 14,
+      "documentation": null
+    },
+    "CONVERSATION_SKIPPEDLINE": {
+      "value": 15,
+      "documentation": null
+    },
+    "CONVERSATION_SELECTRESPONSE": {
+      "value": 16,
+      "documentation": null
+    },
+    "CONVERSATION_NODETRANSITION": {
+      "value": 17,
+      "documentation": null
+    },
+    "PAWN_DEATH": {
+      "value": 18,
+      "documentation": null
+    },
+    "PAWN_LEVELUP": {
+      "value": 19,
+      "documentation": null
+    },
+    "PAWN_FAILEDPATHFIND": {
+      "value": 20,
+      "documentation": null
+    },
+    "PAWN_TELEPORT": {
+      "value": 21,
+      "documentation": null
+    },
+    "PAWN_USEPLACEABLE": {
+      "value": 22,
+      "documentation": null
+    },
+    "PAWN_USEPOWER": {
+      "value": 23,
+      "documentation": null
+    },
+    "PAWN_USEGRENADE": {
+      "value": 24,
+      "documentation": null
+    },
+    "OUT_OF_TRIGGERSTREAM": {
+      "value": 25,
+      "documentation": null
+    },
+    "BAD_STREAMING": {
+      "value": 26,
+      "documentation": null
+    },
+    "SLOW_STREAMING": {
+      "value": 27,
+      "documentation": null
+    },
+    "ERROR_LOADING": {
+      "value": 28,
+      "documentation": null
+    },
+    "ERROR_NOAREAMAP": {
+      "value": 29,
+      "documentation": null
+    },
+    "GAME_ENTERMAP": {
+      "value": 30,
+      "documentation": null
+    },
+    "GAME_EXITMAP": {
+      "value": 31,
+      "documentation": null
+    },
+    "PLACEABLE_STATECHANGE": {
+      "value": 32,
+      "documentation": null
+    },
+    "PLOTSTATE_CHANGE": {
+      "value": 33,
+      "documentation": null
+    },
+    "GAME_STATISTICS": {
+      "value": 34,
+      "documentation": null
+    },
+    "SCRIPTING_FAILED": {
+      "value": 35,
+      "documentation": null
+    },
+    "SCRIPTING_PASSED": {
+      "value": 36,
+      "documentation": null
+    },
+    "USE_COVER": {
+      "value": 37,
+      "documentation": null
+    },
+    "TREASURE": {
+      "value": 38,
+      "documentation": null
+    },
+    "MISC_DEBUG": {
+      "value": 39,
+      "documentation": null
+    },
+    "PURPLE_LEVEL": {
+      "value": 40,
+      "documentation": null
+    },
+    "USE_ZOOM": {
+      "value": 41,
+      "documentation": null
+    },
+    "PLAYER_DEALTDAMAGE": {
+      "value": 42,
+      "documentation": null
+    },
+    "PLAYER_TOOKDAMAGE": {
+      "value": 43,
+      "documentation": null
+    },
+    "PLAYER_FIREDWEAPON": {
+      "value": 44,
+      "documentation": null
+    },
+    "PLAYER_DREWWEAPON": {
+      "value": 45,
+      "documentation": null
+    },
+    "PLAYER_OBTAINEDMEDIGEL": {
+      "value": 46,
+      "documentation": null
+    },
+    "PLAYER_OBTAINEDCREDITS": {
+      "value": 47,
+      "documentation": null
+    },
+    "PLAYER_STARTEDSTORM": {
+      "value": 48,
+      "documentation": null
+    },
+    "PLAYER_ENDEDSTORM": {
+      "value": 49,
+      "documentation": null
+    },
+    "AUTOMATION_START": {
+      "value": 50,
+      "documentation": null
+    },
+    "AUTOMATION_WARNING": {
+      "value": 51,
+      "documentation": null
+    },
+    "AUTOMATION_ERROR": {
+      "value": 52,
+      "documentation": null
+    },
+    "AUTOMATION_PRINT": {
+      "value": 53,
+      "documentation": null
+    },
+    "AUTOMATION_END": {
+      "value": 54,
+      "documentation": null
+    },
+    "AUTOMATION_OPERROR": {
+      "value": 55,
+      "documentation": null
+    },
+    "TEXTUREMEMORY_SACRIFICED": {
+      "value": 56,
+      "documentation": null
+    },
+    "PAWN_KILL_INFO": {
+      "value": 57,
+      "documentation": null
+    },
+    "PLAYER_OBTAINEDEEZO": {
+      "value": 58,
+      "documentation": null
+    },
+    "PLAYER_OBTAINEDIRIDIUM": {
+      "value": 59,
+      "documentation": null
+    },
+    "PLAYER_OBTAINEDPALLADIUM": {
+      "value": 60,
+      "documentation": null
+    },
+    "PLAYER_OBTAINEDAMMO": {
+      "value": 61,
+      "documentation": null
+    },
+    "PLAYER_OBTAINEDPLATINUM": {
+      "value": 62,
+      "documentation": null
+    },
+    "TEXTUREMEMORY_FACTOR": {
+      "value": 63,
+      "documentation": null
+    },
+    "PLAYER_OBTAINEDPROBES": {
+      "value": 64,
+      "documentation": null
+    },
+    "BLOCKING_ADDTOWORLD": {
+      "value": 65,
+      "documentation": null
+    },
+    "ENDGM1": {
+      "value": 66,
+      "documentation": null
+    },
+    "ENDGM2": {
+      "value": 67,
+      "documentation": null
+    },
+    "ENDGM3": {
+      "value": 68,
+      "documentation": null
+    },
+    "PLAYER_OUTOFAMMO": {
+      "value": 69,
+      "documentation": null
+    },
+    "PAWN_AIBARK": {
+      "value": 70,
+      "documentation": null
+    },
+    "CONVERSATION_ENTRYNODE": {
+      "value": 71,
+      "documentation": null
+    },
+    "CONVERSATION_REPLYNODE": {
+      "value": 72,
+      "documentation": null
+    },
+    "CONVERSATION_MISCLOG": {
+      "value": 73,
+      "documentation": null
+    },
+    "PLAYER_NOTFUN": {
+      "value": 74,
+      "documentation": null
+    },
+    "CONVAMBIENT_IGNOREBODYGESTURESNOTSET": {
+      "value": 75,
+      "documentation": null
+    },
+    "STRREF_NOT_FOUND": {
+      "value": 76,
+      "documentation": null
+    },
+    "PLAYER_OBTAINEDFUEL": {
+      "value": 77,
+      "documentation": null
+    },
+    "VSYNC_ENABLED": {
+      "value": 78,
+      "documentation": null
+    },
+    "LEVEL_LOAD_TIME": {
+      "value": 79,
+      "documentation": null
+    },
+    "BLAZE_LOGIN_INFO": {
+      "value": 80,
+      "documentation": null
+    },
+    "BLAZE_TELEMETRY": {
+      "value": 81,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "CurveName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "CurveObject": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 1048576
+    }
+  },
+  "classdef": "ParticleModule",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 9
+}

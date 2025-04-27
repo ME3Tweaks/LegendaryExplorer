@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BIOSEVERITY_FATAL": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIOSEVERITY_ERROR": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIOSEVERITY_WARNING": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIOSEVERITY_INFORMATION": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

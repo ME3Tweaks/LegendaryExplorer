@@ -1,0 +1,136 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "__CompletionCallback__Delegate": {
+      "type": "CompletionCallback",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__CancelCallback__Delegate": {
+      "type": "CancelCallback",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_bDeviceSelectionVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bIsSaveGame": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SetCancelDelegateEx": {
+      "documentation": null,
+      "signature_members": {
+        "nmFunction": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "pTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCancelDelegateEx(Name nmFunction, Object pTarget)"
+    },
+    "SetCancelDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "pDelegate": {
+          "type": "CompletionCallback",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCancelDelegate(delegate<CompletionCallback> pDelegate)"
+    },
+    "SetCompletionDelegateEx": {
+      "documentation": null,
+      "signature_members": {
+        "nmFunction": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "pTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCompletionDelegateEx(Name nmFunction, Object pTarget)"
+    },
+    "SetCompletionDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "pDelegate": {
+          "type": "CompletionCallback",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCompletionDelegate(delegate<CompletionCallback> pDelegate)"
+    },
+    "DisplayDeviceSelection": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "SizeNeeded": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bForceShowUI": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayDeviceSelection(byte LocalUserNum, int SizeNeeded, bool bForceShowUI)"
+    },
+    "CancelCallback": {
+      "documentation": null,
+      "signature_members": {
+        "i_dwDeviceSelectionId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "CancelCallback(int i_dwDeviceSelectionId)"
+    },
+    "CompletionCallback": {
+      "documentation": null,
+      "signature_members": {
+        "i_dwDeviceSelectionId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "CompletionCallback(int i_dwDeviceSelectionId)"
+    }
+  },
+  "states": {},
+  "classflags": 136315034,
+  "configname": "None",
+  "documentation": null
+}

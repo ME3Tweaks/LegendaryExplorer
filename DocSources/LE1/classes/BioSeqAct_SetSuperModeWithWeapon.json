@@ -1,0 +1,26 @@
+{
+  "parent": "BioSeqAct_SetSuperMode",
+  "package": "SFXGame",
+  "variables": {
+    "nTweedleDee": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nTweedleDum": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "eWeapon": {
+      "type": "ESwitchToWeapon",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

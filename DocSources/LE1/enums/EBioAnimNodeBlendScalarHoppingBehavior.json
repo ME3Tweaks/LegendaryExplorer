@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BScHop_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "BScHop_NotUsed": {
+      "value": 1,
+      "documentation": null
+    },
+    "BScHop_LandAngle": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

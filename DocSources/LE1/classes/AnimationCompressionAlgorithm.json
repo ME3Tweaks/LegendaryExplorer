@@ -1,0 +1,31 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Description": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "bNeedsSkeleton": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "TranslationCompressionFormat": {
+      "type": "AnimationCompressionFormat",
+      "documentation": null,
+      "flags": 0
+    },
+    "RotationCompressionFormat": {
+      "type": "AnimationCompressionFormat",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217875,
+  "configname": "None",
+  "documentation": null
+}

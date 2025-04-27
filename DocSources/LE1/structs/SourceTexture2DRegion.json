@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Texture2D": {
+      "type": "Texture2D",
+      "documentation": null,
+      "flags": 0
+    },
+    "OffsetX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "OffsetY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "SizeX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "SizeY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Texture2DComposite",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

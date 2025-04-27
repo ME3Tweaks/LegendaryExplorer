@@ -1,0 +1,33 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "VelocityDir": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "VelocityMag": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bVelocityRelativeToActorRotation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

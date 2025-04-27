@@ -1,0 +1,189 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "HandleData": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "KinActorData": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "LinearStiffnessScale3D": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "LinearDampingScale3D": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "Destination": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "StepSize": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Location": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "GrabbedComponent": {
+      "type": "PrimitiveComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "GrabbedBoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "SceneIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 12290
+    },
+    "LinearDamping": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "LinearStiffness": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "AngularDamping": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "AngularStiffness": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bInHardware": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 12290
+    },
+    "bRotationConstrained": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 12290
+    },
+    "bInterpolating": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetOrientation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Quat",
+      "signature": "Quat GetOrientation()"
+    },
+    "SetOrientation": {
+      "documentation": null,
+      "signature_members": {
+        "NewOrientation": {
+          "type": "Quat",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOrientation(const out Quat NewOrientation)"
+    },
+    "UpdateSmoothLocation": {
+      "documentation": null,
+      "signature_members": {
+        "NewLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateSmoothLocation(const out Vector NewLocation)"
+    },
+    "SetSmoothLocation": {
+      "documentation": null,
+      "signature_members": {
+        "NewLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "MoveTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSmoothLocation(Vector NewLocation, float MoveTime)"
+    },
+    "SetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "NewLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLocation(Vector NewLocation)"
+    },
+    "ReleaseComponent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReleaseComponent()"
+    },
+    "GrabComponent": {
+      "documentation": null,
+      "signature_members": {
+        "Component": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "InBoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "GrabLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "bConstrainRotation": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GrabComponent(PrimitiveComponent Component, Name InBoneName, Vector GrabLocation, bool bConstrainRotation)"
+    }
+  },
+  "states": {},
+  "classflags": 142614674,
+  "configname": "None",
+  "documentation": null
+}

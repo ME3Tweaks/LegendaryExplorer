@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "AS_Low": {
+      "value": 0,
+      "documentation": null
+    },
+    "AS_Medium": {
+      "value": 1,
+      "documentation": null
+    },
+    "AS_High": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

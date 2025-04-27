@@ -1,0 +1,230 @@
+{
+  "parent": "SkelControlBase",
+  "package": "Engine",
+  "variables": {
+    "TargetLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "DesiredTargetLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "LimitLookDir": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8194
+    },
+    "BaseLookDir": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8194
+    },
+    "BaseBonePos": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8194
+    },
+    "TargetSpaceBoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "AllowRotationOtherBoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "TargetLocationInterpSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "OuterMaxAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DeadZoneAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "LookAtAlpha": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8194
+    },
+    "LookAtAlphaTarget": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8194
+    },
+    "LookAtAlphaBlendTimeToGo": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8194
+    },
+    "LastCalcTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bInvertLookAtAxis": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDefineUpAxis": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bInvertUpAxis": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableLimit": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLimitBasedOnRefPose": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDisableBeyondLimit": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNotifyBeyondLimit": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bShowLimit": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAllowRotationX": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAllowRotationY": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAllowRotationZ": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "TargetLocationSpace": {
+      "type": "EBoneControlSpace",
+      "documentation": null,
+      "flags": 1
+    },
+    "LookAtAxis": {
+      "type": "EAxis",
+      "documentation": null,
+      "flags": 1
+    },
+    "UpAxis": {
+      "type": "EAxis",
+      "documentation": null,
+      "flags": 1
+    },
+    "AllowRotationSpace": {
+      "type": "EBoneControlSpace",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "CanLookAtPoint": {
+      "documentation": null,
+      "signature_members": {
+        "PointLoc": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "bDrawDebugInfo": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bDebugUsePersistentLines": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bDebugFlushLinesFirst": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanLookAtPoint(Vector PointLoc, optional bool bDrawDebugInfo, optional bool bDebugUsePersistentLines, optional bool bDebugFlushLinesFirst)"
+    },
+    "SetLookAtAlpha": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredAlpha": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "DesiredBlendTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLookAtAlpha(float DesiredAlpha, float DesiredBlendTime)"
+    },
+    "InterpolateTargetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InterpolateTargetLocation(float DeltaTime)"
+    },
+    "SetTargetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "NewTargetLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetLocation(Vector NewTargetLocation)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

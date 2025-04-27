@@ -1,0 +1,28 @@
+{
+  "members": {
+    "m_vPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nScale": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bLOS": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eObjectType": {
+      "type": "EHUDObjectType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFHandler_Reticule",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

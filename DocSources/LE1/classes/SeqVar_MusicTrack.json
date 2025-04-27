@@ -1,0 +1,16 @@
+{
+  "parent": "SeqVar_Object",
+  "package": "Engine",
+  "variables": {
+    "MusicTrack": {
+      "type": "MusicTrackStruct",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

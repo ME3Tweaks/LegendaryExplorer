@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "BIO_WEAPON_VISUAL_EFFECT_MESH": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_WEAPON_VISUAL_EFFECT_MUZZLE_FLASH": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_WEAPON_VISUAL_EFFECT_SECONDARY_MUZZLE_FLASH": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_WEAPON_VISUAL_EFFECT_COOL_DOWN": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_WEAPON_VISUAL_EFFECT_SABOTAGE": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_WEAPON_VISUAL_EFFECT_WHILE_FIRING": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

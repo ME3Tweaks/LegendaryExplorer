@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Poly": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4096
+    },
+    "P1": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "P2": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "NavigationHandle",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "GAMEPROP_IMPORTER_2DA_GAMEPROPERTY_GAMEPROPERTIES": {
+      "value": 0,
+      "documentation": null
+    },
+    "GAMEPROP_IMPORTER_2DA_GAMEPROPERTY_CONDITIONALS": {
+      "value": 1,
+      "documentation": null
+    },
+    "GAMEPROP_IMPORTER_2DA_GAMEPROPERTY_GAMEPROPERTY_CONDITIONALS": {
+      "value": 2,
+      "documentation": null
+    },
+    "GAMEPROP_IMPORTER_2DA_GAMEPROPERTY_GAMEEFFECTS": {
+      "value": 3,
+      "documentation": null
+    },
+    "GAMEPROP_IMPORTER_2DA_GAMEPROPERTY_EVENTSETS": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

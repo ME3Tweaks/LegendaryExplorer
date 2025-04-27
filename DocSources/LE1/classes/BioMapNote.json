@@ -1,0 +1,116 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "m_sVarName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sRefName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_oAreaMap": {
+      "type": "GFxMovieInfo",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fVisibleRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_sMapNoteName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nLinkedQuest": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_sJournalTask": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 8192
+    },
+    "Argument": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nPrevRegionIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nPrevPlotIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fUpdateDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fUpdateTimer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bReducedVisibility": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bShowOnRadar": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bShowOnAreamap": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bLinkedToJournal": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bSeen": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "Region": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "Plot": {
+      "type": "EBioPlotAutoSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "Conditional": {
+      "type": "EBioAutoSet",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704150,
+  "configname": "Game",
+  "documentation": null
+}

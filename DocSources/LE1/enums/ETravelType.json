@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "TRAVEL_Absolute": {
+      "value": 0,
+      "documentation": null
+    },
+    "TRAVEL_Partial": {
+      "value": 1,
+      "documentation": null
+    },
+    "TRAVEL_Relative": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "members": {
+    "CustomStringNode": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": "UIProviderScriptFieldValue",
+  "documentation": null,
+  "modifiers": 1
+}

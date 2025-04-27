@@ -1,0 +1,46 @@
+{
+  "parent": "BioItemSophisticated",
+  "package": "SFXGame",
+  "variables": {
+    "m_type": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetSaveObjectClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<BioBaseSaveObject> GetSaveObjectClass()"
+    },
+    "OnGPEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEvent": {
+          "type": "EBioGamePropertyEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "pTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGPEvent(EBioGamePropertyEvent eEvent, Object pTarget)"
+    },
+    "DescribeItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeItem()"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

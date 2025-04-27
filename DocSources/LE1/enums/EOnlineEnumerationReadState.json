@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "OERS_NotStarted": {
+      "value": 0,
+      "documentation": null
+    },
+    "OERS_InProgress": {
+      "value": 1,
+      "documentation": null
+    },
+    "OERS_Done": {
+      "value": 2,
+      "documentation": null
+    },
+    "OERS_Failed": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

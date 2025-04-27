@@ -1,0 +1,28 @@
+{
+  "members": {
+    "oGP": {
+      "type": "BioGameProperty",
+      "documentation": null,
+      "flags": 0
+    },
+    "fTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bFrameTicked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "eTimingType": {
+      "type": "EBioGPTimingType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioGamePropertyTimer",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

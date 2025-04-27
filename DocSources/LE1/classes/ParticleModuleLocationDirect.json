@@ -1,0 +1,31 @@
+{
+  "parent": "ParticleModuleLocationBase",
+  "package": "Engine",
+  "variables": {
+    "LocationRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "LocationOffsetRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "ScaleFactorRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "DirectionRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null,
+      "flags": 4718593
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

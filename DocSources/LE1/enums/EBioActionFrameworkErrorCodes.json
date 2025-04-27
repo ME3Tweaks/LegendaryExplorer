@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BIO_AFE_NOERROR": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_AFE_NOLINEOFSIGHT": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_AFE_OUTOFAMMO": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_AFE_WEAPONOVERHEAT": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

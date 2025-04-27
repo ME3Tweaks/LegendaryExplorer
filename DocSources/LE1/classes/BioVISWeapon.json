@@ -1,0 +1,21 @@
+{
+  "parent": "BioVISSimple",
+  "package": "SFXGame",
+  "variables": {
+    "m_bApplyMaterialEffectToFriendlies": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bApplyVisualEffectToFriendlies": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

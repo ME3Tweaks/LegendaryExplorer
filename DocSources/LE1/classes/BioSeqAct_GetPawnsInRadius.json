@@ -1,0 +1,31 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "vLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "oPawn": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "fRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "nNumElements": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 169869458,
+  "configname": "None",
+  "documentation": null
+}

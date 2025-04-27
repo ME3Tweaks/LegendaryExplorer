@@ -1,0 +1,110 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "MaxFocusDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "InnerRadiusFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "InterpFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FalloffExponent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "BlurKernelSize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxNearBlurAmount": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxFarBlurAmount": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ModulateBlurColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 0
+    },
+    "FocusDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FocusDistanceTarget": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "Distance": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(float Distance)"
+    },
+    "ModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": "PostProcessSettings",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "Focus": {
+      "documentation": null,
+      "signature_members": {
+        "Distance": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Focus(float Distance)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "Game",
+  "documentation": null
+}

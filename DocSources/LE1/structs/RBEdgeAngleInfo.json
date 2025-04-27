@@ -1,0 +1,13 @@
+{
+  "members": {
+    "Angle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "PBRuleNodeEdgeAngle",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,28 @@
+{
+  "members": {
+    "SplitName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "FixedSize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ExpandRatio": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bFixSize": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "PBRuleNodeSplit",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

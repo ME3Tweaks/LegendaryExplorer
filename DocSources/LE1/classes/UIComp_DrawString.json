@@ -1,0 +1,649 @@
+{
+  "parent": "UIComp_DrawComponents",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIStyleResolver": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "StringStyle": {
+      "type": "UIStyleReference",
+      "documentation": null,
+      "flags": 0
+    },
+    "StringClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 8194
+    },
+    "TextStyleCustomization": {
+      "type": "UITextStyleOverride",
+      "documentation": null,
+      "flags": 1
+    },
+    "AutoSizeParameters": {
+      "type": "AutoSizeData",
+      "documentation": null,
+      "flags": 1
+    },
+    "ClampRegion": {
+      "type": "UIRenderingSubregion",
+      "documentation": null,
+      "flags": 1
+    },
+    "SubscriberOwner": {
+      "type": "UIDataStoreSubscriber",
+      "documentation": null,
+      "flags": 8192
+    },
+    "DropShadowColor": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 1
+    },
+    "StyleResolverTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "ValueString": {
+      "type": "UIString",
+      "documentation": null,
+      "flags": 8192
+    },
+    "DropShadowOffset": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDropShadow": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIgnoreMarkup": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAllowBoundsAdjustment": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRefreshString": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8193
+    },
+    "bReapplyFormatting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "SetAutoSizePadding": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
+        },
+        "NearValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "FarValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "NearScaleType": {
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 128
+        },
+        "FarScaleType": {
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAutoSizePadding(EUIOrientation Orientation, float NearValue, float FarValue, EUIExtentEvalType NearScaleType, EUIExtentEvalType FarScaleType)"
+    },
+    "EnableAutoSizing": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
+        },
+        "bShouldEnable": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableAutoSizing(EUIOrientation Orientation, optional bool bShouldEnable)"
+    },
+    "IsAutoSizeEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAutoSizeEnabled(EUIOrientation Orientation)"
+    },
+    "SetAutoSizeExtent": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
+        },
+        "MinValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "MaxValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "MinScaleType": {
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 128
+        },
+        "MaxScaleType": {
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAutoSizeExtent(EUIOrientation Orientation, float MinValue, float MaxValue, EUIExtentEvalType MinScaleType, EUIExtentEvalType MaxScaleType)"
+    },
+    "NotifyResolveStyle": {
+      "documentation": null,
+      "signature_members": {
+        "ActiveSkin": {
+          "type": "UISkin",
+          "documentation": null,
+          "flags": 128
+        },
+        "bClearExistingValue": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "CurrentMenuState": {
+          "type": "UIState",
+          "documentation": null,
+          "flags": 144
+        },
+        "StylePropertyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 146
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyResolveStyle(UISkin ActiveSkin, bool bClearExistingValue, optional UIState CurrentMenuState, optional const Name StylePropertyName)"
+    },
+    "SetStyleResolverTag": {
+      "documentation": null,
+      "signature_members": {
+        "NewResolverTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetStyleResolverTag(Name NewResolverTag)"
+    },
+    "GetStyleResolverTag": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetStyleResolverTag()"
+    },
+    "GetFinalStringStyle": {
+      "documentation": null,
+      "signature_members": {
+        "FinalStyleData": {
+          "type": "UICombinedStyleData",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFinalStringStyle(out UICombinedStyleData FinalStyleData)"
+    },
+    "GetAppliedStringStyle": {
+      "documentation": null,
+      "signature_members": {
+        "DesiredMenuState": {
+          "type": "UIState",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "UIStyle_Combo",
+      "signature": "UIStyle_Combo GetAppliedStringStyle(optional UIState DesiredMenuState)"
+    },
+    "GetWrapMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ETextClipMode",
+      "signature": "ETextClipMode GetWrapMode()"
+    },
+    "DisableCustomSpacingAdjust": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCustomSpacingAdjust()"
+    },
+    "DisableCustomScale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCustomScale()"
+    },
+    "DisableCustomAutoScaling": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCustomAutoScaling()"
+    },
+    "DisableCustomClipAlignment": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCustomClipAlignment()"
+    },
+    "DisableCustomClipMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCustomClipMode()"
+    },
+    "DisableCustomAlignment": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCustomAlignment()"
+    },
+    "DisableCustomAttributes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCustomAttributes()"
+    },
+    "DisableCustomFont": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCustomFont()"
+    },
+    "DisableCustomPadding": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCustomPadding()"
+    },
+    "DisableCustomOpacity": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCustomOpacity()"
+    },
+    "DisableCustomColor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableCustomColor()"
+    },
+    "SetSpacingAdjust": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewSpacingAdjust": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSpacingAdjust(EUIOrientation Orientation, float NewSpacingAdjust)"
+    },
+    "SetScale": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScale(EUIOrientation Orientation, float NewScale)"
+    },
+    "SetAutoScaling": {
+      "documentation": null,
+      "signature_members": {
+        "NewAutoScaleMode": {
+          "type": "ETextAutoScaleMode",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewMinScaleValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAutoScaling(ETextAutoScaleMode NewAutoScaleMode, optional float NewMinScaleValue)"
+    },
+    "SetClipAlignment": {
+      "documentation": null,
+      "signature_members": {
+        "NewClipAlignment": {
+          "type": "EUIAlignment",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClipAlignment(EUIAlignment NewClipAlignment)"
+    },
+    "SetWrapMode": {
+      "documentation": null,
+      "signature_members": {
+        "NewClipMode": {
+          "type": "ETextClipMode",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWrapMode(ETextClipMode NewClipMode)"
+    },
+    "SetAlignment": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewAlignment": {
+          "type": "EUIAlignment",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAlignment(EUIOrientation Orientation, EUIAlignment NewAlignment)"
+    },
+    "SetAttributes": {
+      "documentation": null,
+      "signature_members": {
+        "NewAttributes": {
+          "type": "UITextAttributes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAttributes(UITextAttributes NewAttributes)"
+    },
+    "SetFont": {
+      "documentation": null,
+      "signature_members": {
+        "NewFont": {
+          "type": "Font",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFont(Font NewFont)"
+    },
+    "SetPadding": {
+      "documentation": null,
+      "signature_members": {
+        "HorizontalPadding": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "VerticalPadding": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPadding(float HorizontalPadding, float VerticalPadding)"
+    },
+    "SetOpacity": {
+      "documentation": null,
+      "signature_members": {
+        "NewOpacity": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOpacity(float NewOpacity)"
+    },
+    "SetColor": {
+      "documentation": null,
+      "signature_members": {
+        "NewColor": {
+          "type": "LinearColor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetColor(LinearColor NewColor)"
+    },
+    "SetSubregionAlignment": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewValue": {
+          "type": "EUIAlignment",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSubregionAlignment(EUIOrientation Orientation, EUIAlignment NewValue)"
+    },
+    "SetSubregionOffset": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "EvalType": {
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSubregionOffset(EUIOrientation Orientation, float NewValue, EUIExtentEvalType EvalType)"
+    },
+    "SetSubregionSize": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "EvalType": {
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSubregionSize(EUIOrientation Orientation, float NewValue, EUIExtentEvalType EvalType)"
+    },
+    "EnableSubregion": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
+        },
+        "bShouldEnable": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableSubregion(EUIOrientation Orientation, optional bool bShouldEnable)"
+    },
+    "GetSubregionAlignment": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "EUIAlignment",
+      "signature": "EUIAlignment GetSubregionAlignment(EUIOrientation Orientation)"
+    },
+    "GetSubregionOffset": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutputType": {
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetSubregionOffset(EUIOrientation Orientation, optional EUIExtentEvalType OutputType)"
+    },
+    "GetSubregionSize": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutputType": {
+          "type": "EUIExtentEvalType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetSubregionSize(EUIOrientation Orientation, optional EUIExtentEvalType OutputType)"
+    },
+    "IsSubregionEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "Orientation": {
+          "type": "EUIOrientation",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsSubregionEnabled(EUIOrientation Orientation)"
+    },
+    "RefreshValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshValue()"
+    },
+    "GetValue": {
+      "documentation": null,
+      "signature_members": {
+        "bReturnProcessedText": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetValue(optional bool bReturnProcessedText)"
+    },
+    "SetValue": {
+      "documentation": null,
+      "signature_members": {
+        "NewText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetValue(string NewText)"
+    }
+  },
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

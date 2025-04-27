@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "JSM_Newest": {
+      "value": 0,
+      "documentation": null
+    },
+    "JSM_Name": {
+      "value": 1,
+      "documentation": null
+    },
+    "JSM_Oldest": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

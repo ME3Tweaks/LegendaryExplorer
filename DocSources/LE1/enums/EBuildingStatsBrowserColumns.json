@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "BSBC_Name": {
+      "value": 0,
+      "documentation": null
+    },
+    "BSBC_Ruleset": {
+      "value": 1,
+      "documentation": null
+    },
+    "BSBC_NumStaticMeshComps": {
+      "value": 2,
+      "documentation": null
+    },
+    "BSBC_NumInstancedStaticMeshComps": {
+      "value": 3,
+      "documentation": null
+    },
+    "BSBC_NumInstancedTris": {
+      "value": 4,
+      "documentation": null
+    },
+    "BSBC_LightmapMemBytes": {
+      "value": 5,
+      "documentation": null
+    },
+    "BSBC_ShadowmapMemBytes": {
+      "value": 6,
+      "documentation": null
+    },
+    "BSBC_LODDiffuseMemBytes": {
+      "value": 7,
+      "documentation": null
+    },
+    "BSBC_LODLightingMemBytes": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

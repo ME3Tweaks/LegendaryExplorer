@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_POWER_DUAL_TYPE_INVALID": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_POWER_DUAL_TYPE_DELIVERY": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_POWER_DUAL_TYPE_ACTIVATION": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

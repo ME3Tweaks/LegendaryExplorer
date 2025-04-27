@@ -1,0 +1,94 @@
+{
+  "parent": "Component",
+  "package": "Engine",
+  "variables": {
+    "Scene": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "Owner": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bAttached": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 12290
+    },
+    "bTickInEditor": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bNeedsReattach": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bNeedsUpdateTransform": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "TickGroup": {
+      "type": "ETickingGroup",
+      "documentation": null,
+      "flags": 2
+    },
+    "ComponentType": {
+      "type": "EComponentType",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {
+    "DetachFromAny": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DetachFromAny()"
+    },
+    "ForceUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "bTransformOnly": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceUpdate(bool bTransformOnly)"
+    },
+    "SetComponentRBFixed": {
+      "documentation": null,
+      "signature_members": {
+        "bFixed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetComponentRBFixed(bool bFixed)"
+    },
+    "SetTickGroup": {
+      "documentation": null,
+      "signature_members": {
+        "NewTickGroup": {
+          "type": "ETickingGroup",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTickGroup(ETickingGroup NewTickGroup)"
+    }
+  },
+  "states": {},
+  "classflags": 403,
+  "configname": "None",
+  "documentation": null
+}

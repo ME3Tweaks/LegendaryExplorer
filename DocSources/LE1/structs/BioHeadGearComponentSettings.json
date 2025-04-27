@@ -1,0 +1,33 @@
+{
+  "members": {
+    "m_nMeshIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nMaterialIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bUseBodyMaterialConfig": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIsHidden": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIsLoaded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "Bio_Appr_Character_HeadGear_Settings",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

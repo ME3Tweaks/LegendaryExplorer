@@ -1,0 +1,23 @@
+{
+  "members": {
+    "m_animSets": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_drawAnimSet": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_weaponType": {
+      "type": "EBioItemWeaponRangedType",
+      "documentation": null,
+      "flags": 131075
+    }
+  },
+  "classdef": "Bio_Appr_Character_Body",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

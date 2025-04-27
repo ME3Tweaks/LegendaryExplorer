@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Subtitles": {
+      "type": "SubtitleCue",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "bMature": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bManualWordWrap": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "EngineTypes",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

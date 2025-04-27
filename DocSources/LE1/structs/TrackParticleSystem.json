@@ -1,0 +1,18 @@
+{
+  "members": {
+    "oPhysMat": {
+      "type": "PhysicalMaterial",
+      "documentation": null,
+      "flags": 1
+    },
+    "oParticleSystem": {
+      "type": "ParticleSystem",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioVehicleTrackSet",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

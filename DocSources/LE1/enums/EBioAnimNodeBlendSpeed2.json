@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BioAnimNodeBlendSpeed2_Idle": {
+      "value": 0,
+      "documentation": null
+    },
+    "BioAnimNodeBlendSpeed2_Walk": {
+      "value": 1,
+      "documentation": null
+    },
+    "BioAnimNodeBlendSpeed2_Run": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

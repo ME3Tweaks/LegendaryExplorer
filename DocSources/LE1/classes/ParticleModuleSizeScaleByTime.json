@@ -1,0 +1,31 @@
+{
+  "parent": "ParticleModuleSizeBase",
+  "package": "Engine",
+  "variables": {
+    "SizeScaleByTimeRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "bEnableX": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableY": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableZ": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

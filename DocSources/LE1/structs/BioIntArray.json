@@ -1,0 +1,13 @@
+{
+  "members": {
+    "m_a": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "classdef": "BioCharacterImporter",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,16 @@
+{
+  "parent": "ApexComponentBase",
+  "package": "Engine",
+  "variables": {
+    "ComponentDynamicResources": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 2290094226,
+  "configname": "None",
+  "documentation": null
+}

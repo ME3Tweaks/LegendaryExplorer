@@ -1,0 +1,41 @@
+{
+  "parent": "BioSpriteTranslucentComponent",
+  "package": "SFXGame",
+  "variables": {
+    "FlareTint": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 1
+    },
+    "Intensity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Distance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "BrightPercent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "UseParentOverrideTint": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "IsHaloComponent": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 2290102418,
+  "configname": "None",
+  "documentation": null
+}

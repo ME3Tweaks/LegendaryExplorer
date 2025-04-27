@@ -1,0 +1,41 @@
+{
+  "parent": "BioBaseTlkFile",
+  "package": "SFXGame",
+  "variables": {
+    "m_HashTable": {
+      "type": "TlkHashEntry",
+      "documentation": null,
+      "flags": 4098
+    },
+    "m_HuffmanTree": {
+      "type": "BioHuffmanDecodeNode",
+      "documentation": null,
+      "flags": 4098
+    },
+    "m_sStringEntries": {
+      "type": "BioHuffmanEntry",
+      "documentation": null,
+      "flags": 4098
+    },
+    "m_nLanguageID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "m_nHashTableSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "m_bDisplayStringId": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
+  "documentation": null
+}

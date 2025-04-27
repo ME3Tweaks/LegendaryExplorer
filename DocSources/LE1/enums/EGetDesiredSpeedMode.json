@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "GDSM_Absolute": {
+      "value": 0,
+      "documentation": null
+    },
+    "GDSM_Scaled": {
+      "value": 1,
+      "documentation": null
+    },
+    "GDSM_MaxDesired": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

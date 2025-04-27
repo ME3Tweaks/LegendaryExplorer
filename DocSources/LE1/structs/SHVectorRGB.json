@@ -1,0 +1,23 @@
+{
+  "members": {
+    "R": {
+      "type": "SHVector",
+      "documentation": null,
+      "flags": 1
+    },
+    "G": {
+      "type": "SHVector",
+      "documentation": null,
+      "flags": 1
+    },
+    "B": {
+      "type": "SHVector",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

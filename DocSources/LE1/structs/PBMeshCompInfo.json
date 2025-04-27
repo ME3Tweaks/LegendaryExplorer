@@ -1,0 +1,18 @@
+{
+  "members": {
+    "MeshComp": {
+      "type": "StaticMeshComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "TopLevelScopeIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "ProcBuilding",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

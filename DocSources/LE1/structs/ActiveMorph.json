@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Target": {
+      "type": "MorphTarget",
+      "documentation": null,
+      "flags": 0
+    },
+    "Weight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SkeletalMeshComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

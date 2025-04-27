@@ -1,0 +1,534 @@
+{
+  "parent": "ISFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {},
+  "functions": {
+    "GetConnectMode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineConnectMode",
+      "signature": "SFXOnlineConnectMode GetConnectMode()"
+    },
+    "GetUIState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineUIState",
+      "signature": "SFXOnlineUIState GetUIState()"
+    },
+    "CanShowPresenceInformation": {
+      "documentation": null,
+      "signature_members": {
+        "nUserIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanShowPresenceInformation(optional int nUserIndex)"
+    },
+    "CanViewPlayerProfiles": {
+      "documentation": null,
+      "signature_members": {
+        "nUserIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanViewPlayerProfiles(optional int nUserIndex)"
+    },
+    "CanPurchaseContent": {
+      "documentation": null,
+      "signature_members": {
+        "nUserIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanPurchaseContent(optional int nUserIndex)"
+    },
+    "CanDownloadUserContent": {
+      "documentation": null,
+      "signature_members": {
+        "nUserIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanDownloadUserContent(optional int nUserIndex)"
+    },
+    "CanCommunicate": {
+      "documentation": null,
+      "signature_members": {
+        "nUserIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanCommunicate(optional int nUserIndex)"
+    },
+    "CanPlayOnline": {
+      "documentation": null,
+      "signature_members": {
+        "nUserIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "EFeaturePrivilegeLevel",
+      "signature": "EFeaturePrivilegeLevel CanPlayOnline(optional int nUserIndex)"
+    },
+    "EnterCDKey": {
+      "documentation": null,
+      "signature_members": {
+        "sKey": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "EnterCDKey(string sKey)"
+    },
+    "OnDownloadOffersUICompleted": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnDownloadOffersUICompleted()"
+    },
+    "OnDLCInfoLoaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnDLCInfoLoaded()"
+    },
+    "OpenCerberusUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OpenCerberusUI()"
+    },
+    "CheckEntitlement": {
+      "documentation": null,
+      "signature_members": {
+        "sGroup": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sTag": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckEntitlement(string sGroup, string sTag)"
+    },
+    "IsCerberusMember": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCerberusMember()"
+    },
+    "DisablePersona": {
+      "documentation": null,
+      "signature_members": {
+        "sPersonaNonGrata": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "DisablePersona(string sPersonaNonGrata)"
+    },
+    "CreatePersona": {
+      "documentation": null,
+      "signature_members": {
+        "sPersonaName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "CreatePersona(string sPersonaName)"
+    },
+    "SelectPersona": {
+      "documentation": null,
+      "signature_members": {
+        "sPersonaName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SelectPersona(string sPersonaName)"
+    },
+    "AcceptTOS": {
+      "documentation": null,
+      "signature_members": {
+        "bAccepted": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AcceptTOS(bool bAccepted)"
+    },
+    "Disconnect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Disconnect()"
+    },
+    "SubmitStore": {
+      "documentation": null,
+      "signature_members": {
+        "aiChosen": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SubmitStore(array<int> aiChosen)"
+    },
+    "SubmitCreateNucleusAccountEx": {
+      "documentation": null,
+      "signature_members": {
+        "sEmail": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sPassword": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bEAProducts": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bThirdParty": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bBioWareProducts": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_sCountryCode": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "BirthDay": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "BirthMonth": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "BirthYear": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_sLanguageCode": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bSubmit": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SubmitCreateNucleusAccountEx(string sEmail, string sPassword, bool bEAProducts, bool bThirdParty, bool bBioWareProducts, string i_sCountryCode, int BirthDay, int BirthMonth, int BirthYear, string i_sLanguageCode, bool bSubmit)"
+    },
+    "SubmitEmailPasswordMismatch": {
+      "documentation": null,
+      "signature_members": {
+        "Email": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Password": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "eReturnCode": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SubmitEmailPasswordMismatch(string Email, string Password, int eReturnCode)"
+    },
+    "SubmitMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "eReturnCode": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SubmitMessageBox(int eReturnCode)"
+    },
+    "SubmitRedeemCode": {
+      "documentation": null,
+      "signature_members": {
+        "bContinue": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_sCode": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SubmitRedeemCode(bool bContinue, string i_sCode)"
+    },
+    "SubmitCerberusWelcomeMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SubmitCerberusWelcomeMessage()"
+    },
+    "SubmitCerberusIntro": {
+      "documentation": null,
+      "signature_members": {
+        "eReturnCode": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SubmitCerberusIntro(int eReturnCode)"
+    },
+    "SubmitNucleusWelcomeMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SubmitNucleusWelcomeMessage()"
+    },
+    "SubmitCreateNucleusAccount": {
+      "documentation": null,
+      "signature_members": {
+        "sEmail": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sPassword": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bEAProducts": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bThirdParty": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bBioWareProducts": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bSubmit": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SubmitCreateNucleusAccount(string sEmail, string sPassword, bool bEAProducts, bool bThirdParty, bool bBioWareProducts, bool bSubmit)"
+    },
+    "SubmitParentEmail": {
+      "documentation": null,
+      "signature_members": {
+        "bContinue": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "ParentEmail": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SubmitParentEmail(bool bContinue, string ParentEmail)"
+    },
+    "SubmitNucleusLogin": {
+      "documentation": null,
+      "signature_members": {
+        "Email": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Password": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "eReturnCode": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SubmitNucleusLogin(string Email, string Password, byte eReturnCode)"
+    },
+    "SubmitIntroPage": {
+      "documentation": null,
+      "signature_members": {
+        "bContinue": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bSimulated": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SubmitIntroPage(bool bContinue, bool bSimulated)"
+    },
+    "Connect": {
+      "documentation": null,
+      "signature_members": {
+        "connectMode": {
+          "type": "SFXOnlineConnectMode",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Connect(SFXOnlineConnectMode connectMode)"
+    },
+    "GoBackInUI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GoBackInUI()"
+    },
+    "Cancel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Cancel()"
+    },
+    "GetUserId": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UniqueNetId",
+      "signature": "UniqueNetId GetUserId()"
+    },
+    "GetPersonaName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetPersonaName()"
+    },
+    "HasInternetConnection": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasInternetConnection()"
+    },
+    "IsConnectedTo3rdPartyOnlineService": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsConnectedTo3rdPartyOnlineService()"
+    },
+    "HasAccountFor3rdPartyOnlineService": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasAccountFor3rdPartyOnlineService()"
+    },
+    "IsSignedIn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSignedIn()"
+    },
+    "IsConnected": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsConnected()"
+    },
+    "SwitchActiveUserIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nNewIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SwitchActiveUserIndex(int nNewIndex)"
+    },
+    "GetActiveUserIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetActiveUserIndex()"
+    },
+    "GetLoginStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ELoginStatus",
+      "signature": "ELoginStatus GetLoginStatus()"
+    }
+  },
+  "states": {},
+  "classflags": 134234259,
+  "configname": "None",
+  "documentation": null
+}

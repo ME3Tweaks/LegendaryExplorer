@@ -1,0 +1,104 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "Markers": {
+      "type": "BioDEBUGMarkerComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "TimeTillDestroy": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Clear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Clear()"
+    },
+    "AddMarker": {
+      "documentation": null,
+      "signature_members": {
+        "_Start": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "_size": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "_R": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "_G": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "_B": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddMarker(Vector _Start, int _size, byte _R, byte _G, byte _B)"
+    },
+    "AddLine": {
+      "documentation": null,
+      "signature_members": {
+        "_Start": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "_End": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "_R": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "_G": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "_B": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddLine(Vector _Start, Vector _End, byte _R, byte _G, byte _B)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

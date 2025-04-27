@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Properties": {
+      "type": "SoundGroupProperties",
+      "documentation": null,
+      "flags": 1
+    },
+    "GroupName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "ChildGroupNames": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "nPauseCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bWasPaused": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "AudioDevice",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

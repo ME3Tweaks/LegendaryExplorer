@@ -1,0 +1,118 @@
+{
+  "parent": "NxForceField",
+  "package": "Engine",
+  "variables": {
+    "LinearKernel": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "Constant": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "PositionMultiplierX": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "PositionMultiplierY": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "PositionMultiplierZ": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "PositionTarget": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "VelocityMultiplierX": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "VelocityMultiplierY": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "VelocityMultiplierZ": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "VelocityTarget": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "Noise": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "FalloffLinear": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "FalloffQuadratic": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "Shape": {
+      "type": "ForceFieldShape",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "DrawComponent": {
+      "type": "ActorComponent",
+      "documentation": null,
+      "flags": 67637256
+    },
+    "RoughExtentX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RoughExtentY": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RoughExtentZ": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "TorusRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Coordinates": {
+      "type": "FFG_ForceFieldCoordinates",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "DoInitRBPhys": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoInitRBPhys()"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

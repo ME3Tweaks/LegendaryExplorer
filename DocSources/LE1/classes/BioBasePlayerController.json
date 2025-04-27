@@ -1,0 +1,29 @@
+{
+  "parent": "PlayerController",
+  "package": "SFXGame",
+  "variables": {
+    "m_grenadeInterface": {
+      "type": "BioGrenadeInterfacePlayer",
+      "documentation": null,
+      "flags": 71303176
+    }
+  },
+  "functions": {
+    "QuickLoad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "QuickLoad()"
+    },
+    "QuickSave": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "QuickSave()"
+    }
+  },
+  "states": {},
+  "classflags": 144703671,
+  "configname": "Game",
+  "documentation": null
+}

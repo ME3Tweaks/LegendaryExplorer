@@ -1,0 +1,28 @@
+{
+  "members": {
+    "CellStyle": {
+      "type": "UIStyleReference",
+      "documentation": null,
+      "flags": 0
+    },
+    "OwnerList": {
+      "type": "UIList",
+      "documentation": null,
+      "flags": 8194
+    },
+    "ContainerElementIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ValueObject": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 8396800
+    }
+  },
+  "classdef": "UIComp_ListPresenter",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

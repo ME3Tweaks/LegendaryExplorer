@@ -1,0 +1,33 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "TriggerDialogueEvent": {
+      "documentation": null,
+      "signature_members": {
+        "InEventClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "InInstigator": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "InOriginator": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TriggerDialogueEvent(Class<SequenceEvent> InEventClass, Actor InInstigator, Actor InOriginator)"
+    }
+  },
+  "states": {},
+  "classflags": 10485778,
+  "configname": "None",
+  "documentation": null
+}

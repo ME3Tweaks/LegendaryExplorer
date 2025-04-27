@@ -1,0 +1,26 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_shop": {
+      "type": "BioShop",
+      "documentation": null,
+      "flags": 2
+    },
+    "m_priceAdjustmentFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "m_nOverrideLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

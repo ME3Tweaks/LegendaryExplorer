@@ -1,0 +1,272 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aPowerProjectiles": {
+      "type": "BioLinePowerProjectile",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_nmWeaponPowerID": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nmHealPowerID": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nmArmorEmitterPowerID": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fPowerHalfAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 24576
+    }
+  },
+  "functions": {
+    "GetAimTargetForPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "fMaxRange": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 384
+        },
+        "vTargetLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAimTargetForPlayer(float fMaxRange, out Actor oTarget, out Vector vTargetLocation)"
+    },
+    "AreActorsFriendly": {
+      "documentation": null,
+      "signature_members": {
+        "oFirstActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oSecondActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AreActorsFriendly(Actor oFirstActor, Actor oSecondActor)"
+    },
+    "CanImpactActor": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanImpactActor(Actor oActor)"
+    },
+    "CheckLOSToLocation": {
+      "documentation": null,
+      "signature_members": {
+        "oSourceActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vStartLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vEndLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "fMaxRange": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIgnoreFriendlies": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "oHitActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 384
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "vHitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckLOSToLocation(Actor oSourceActor, Vector vStartLocation, Vector vEndLocation, float fMaxRange, bool bIgnoreFriendlies, out Actor oHitActor, out Vector vHitLocation, out Vector vHitNormal)"
+    },
+    "CheckLOSToActor": {
+      "documentation": null,
+      "signature_members": {
+        "oSourceActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oDestinationActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vStartLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "fMaxRange": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIgnoreFriendlies": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "oHitActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 384
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "vHitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckLOSToActor(Actor oSourceActor, Actor oDestinationActor, Vector vStartLocation, float fMaxRange, bool bIgnoreFriendlies, out Actor oHitActor, out Vector vHitLocation, out Vector vHitNormal)"
+    },
+    "RemoveProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "oProjectile": {
+          "type": "BioLinePowerProjectile",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveProjectile(BioLinePowerProjectile oProjectile)"
+    },
+    "AddProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "oProjectile": {
+          "type": "BioLinePowerProjectile",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddProjectile(BioLinePowerProjectile oProjectile)"
+    },
+    "GetCurrentArmorEmitterPower": {
+      "documentation": null,
+      "signature_members": {
+        "oBehavior": {
+          "type": "BioEpicPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "oPower": {
+          "type": "BioPower",
+          "documentation": null,
+          "flags": 67109248
+        },
+        "nIndexInPowerArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCurrentArmorEmitterPower(BioEpicPawnBehavior oBehavior, out BioPower oPower, out int nIndexInPowerArray)"
+    },
+    "GetCurrentHealPower": {
+      "documentation": null,
+      "signature_members": {
+        "oBehavior": {
+          "type": "BioEpicPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "oPower": {
+          "type": "BioPower",
+          "documentation": null,
+          "flags": 67109248
+        },
+        "nIndexInPowerArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCurrentHealPower(BioEpicPawnBehavior oBehavior, out BioPower oPower, out int nIndexInPowerArray)"
+    },
+    "GetCurrentWeaponPower": {
+      "documentation": null,
+      "signature_members": {
+        "oBehavior": {
+          "type": "BioEpicPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "oPower": {
+          "type": "BioPower",
+          "documentation": null,
+          "flags": 67109248
+        },
+        "nIndexInPowerArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetCurrentWeaponPower(BioEpicPawnBehavior oBehavior, out BioPower oPower, out int nIndexInPowerArray)"
+    }
+  },
+  "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
+  "documentation": null
+}

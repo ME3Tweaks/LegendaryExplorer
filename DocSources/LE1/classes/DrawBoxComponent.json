@@ -1,0 +1,36 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "BoxColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 1
+    },
+    "BoxMaterial": {
+      "type": "Material",
+      "documentation": null,
+      "flags": 1
+    },
+    "BoxExtent": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDrawWireBox": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDrawLitBox": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 2155884946,
+  "configname": "None",
+  "documentation": null
+}

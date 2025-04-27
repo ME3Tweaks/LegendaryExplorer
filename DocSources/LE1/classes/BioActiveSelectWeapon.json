@@ -1,0 +1,156 @@
+{
+  "parent": "BioActive",
+  "package": "SFXGame",
+  "variables": {
+    "m_oEquipment": {
+      "type": "BioEquipment",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_oPawnBehavior": {
+      "type": "BioPawnBehavior",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_oWeaponIKControl": {
+      "type": "SkelControlLimb",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nmWeaponNode": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oSelectWeaponAnimNode": {
+      "type": "BioAnimNodeBlendWeaponEquip",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bHolsterCurrentWeapon": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDrawCurrentWeapon": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bCycleNextWeapon": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_isWeaponHolstered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_isWeaponDrawn": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_isFadingOutDrawAnim": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bHasActiveTicked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bHasAnimTicked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eWeaponToSwitchTo": {
+      "type": "EBioItemWeaponRangedType",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_state": {
+      "type": "EBioActiveSelectWeaponState",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_previousState": {
+      "type": "EBioActiveSelectWeaponState",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ePendingActionState": {
+      "type": "EActionStateVariable",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "StartActive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool StartActive()"
+    },
+    "FinishDrawAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FinishDrawAnim()"
+    },
+    "FadeOutDrawAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FadeOutDrawAnim()"
+    },
+    "SwapDrawAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SwapDrawAnim()"
+    },
+    "FinishHolsterAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FinishHolsterAnim()"
+    },
+    "FadeOutHolsterAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FadeOutHolsterAnim()"
+    },
+    "SwapHolsterAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SwapHolsterAnim()"
+    },
+    "ValidSuperMode": {
+      "documentation": null,
+      "signature_members": {
+        "eMode": {
+          "type": "EBioSuperModes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ValidSuperMode(EBioSuperModes eMode)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

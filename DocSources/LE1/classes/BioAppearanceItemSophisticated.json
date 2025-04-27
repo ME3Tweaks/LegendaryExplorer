@@ -1,0 +1,87 @@
+{
+  "parent": "BioAppearanceItemEquippable",
+  "package": "SFXGame",
+  "variables": {
+    "m_variants": {
+      "type": "BioAppearanceItemSophisticatedVariant",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "m_previewVariantLabel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8193
+    }
+  },
+  "functions": {
+    "GetPhysicsAsset": {
+      "documentation": null,
+      "signature_members": {
+        "Variant": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "PhysicsAsset",
+      "signature": "PhysicsAsset GetPhysicsAsset(int Variant)"
+    },
+    "GetAnimationTree": {
+      "documentation": null,
+      "signature_members": {
+        "Variant": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "AnimTree",
+      "signature": "AnimTree GetAnimationTree(int Variant)"
+    },
+    "GetAnimationSet": {
+      "documentation": null,
+      "signature_members": {
+        "Variant": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "AnimSet",
+      "signature": "AnimSet GetAnimationSet(int Variant)"
+    },
+    "ApplyMaterials": {
+      "documentation": null,
+      "signature_members": {
+        "Variant": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "SkeletalMeshComponent": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyMaterials(int Variant, SkeletalMeshComponent SkeletalMeshComponent)"
+    },
+    "GetSkeletalMesh": {
+      "documentation": null,
+      "signature_members": {
+        "Variant": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "SkeletalMesh",
+      "signature": "SkeletalMesh GetSkeletalMesh(int Variant)"
+    }
+  },
+  "states": {},
+  "classflags": 144703635,
+  "configname": "None",
+  "documentation": null
+}

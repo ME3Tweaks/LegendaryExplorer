@@ -1,0 +1,33 @@
+{
+  "members": {
+    "sVar": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "nVar": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "fVar": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bVar": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "Type": {
+      "type": "ASParamTypes",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFSharedBase",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

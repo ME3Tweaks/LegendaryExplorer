@@ -1,0 +1,138 @@
+{
+  "parent": "BioBaseSquadDesignCombat",
+  "package": "SFXStrategicAI",
+  "variables": {},
+  "functions": {
+    "CalculateLikelihoodCasting": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float CalculateLikelihoodCasting()"
+    },
+    "SquadMemberBeginCasting": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SquadMemberBeginCasting(BioAiController oMember)"
+    },
+    "CalculateLikelihood": {
+      "documentation": null,
+      "signature_members": {
+        "sStrategyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float CalculateLikelihood(Name sStrategyName)"
+    }
+  },
+  "states": {
+    "Casting": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnActionComplete_Combat": {
+          "documentation": null,
+          "signature_members": {
+            "oMember": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmAction": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            },
+            "nmTechnique": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            },
+            "nReason": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            },
+            "oLastTarget": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberAdded": {
+          "documentation": null,
+          "signature_members": {
+            "nIndex": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberRemoved": {
+          "documentation": null,
+          "signature_members": {
+            "oPawn": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "OnDeath": {
+          "documentation": null,
+          "signature_members": {
+            "P": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            },
+            "Killer": {
+              "type": "Controller",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ReEvaluateStrategy": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "classflags": 10486294,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "m_EffectTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUsePowerTime": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioPowerVFXAppearance",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

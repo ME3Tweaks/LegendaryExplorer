@@ -1,0 +1,23 @@
+{
+  "parent": "SequenceCondition",
+  "package": "SFXGame",
+  "variables": {
+    "eCriteria": {
+      "type": "EBioSeqCondCheckChunkStatusCriteria",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

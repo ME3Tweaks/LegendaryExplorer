@@ -1,0 +1,324 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "SkillGameConfig": {
+      "type": "SkillGameInfo",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "SkillSalvageConfig": {
+      "type": "SkillGameSalvage",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "m_oUsingPawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oDependent": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nMinSalvage": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nMaxSalvage": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nTotalButtonsToDisplay": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fButtonTimeout": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fButtonDelayTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_GameMessageSuccess": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_GameMessageFailure": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_GameMessageDuringGame": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_preGameButtonAText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_preGameButtonBText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_preGameButtonXText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bSalvageCheckParam": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nSkillGameType": {
+      "type": "EBioSkillGame",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_GameDifficulty": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "InitializeSkillGameStringReferences": {
+      "documentation": null,
+      "signature_members": {
+        "i_GameMessageSuccess": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_GameMessageFailure": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_GameMessageDuringGame": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_preGameButtonAText": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_preGameButtonBText": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_preGameButtonXText": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeSkillGameStringReferences(stringref i_GameMessageSuccess, stringref i_GameMessageFailure, stringref i_GameMessageDuringGame, stringref i_preGameButtonAText, stringref i_preGameButtonBText, stringref i_preGameButtonXText)"
+    },
+    "CallbackShowAdditonalTutorial": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CallbackShowAdditonalTutorial()"
+    },
+    "CallbackSkillGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CallbackSkillGame()"
+    },
+    "InitializeSkillGameCustom": {
+      "documentation": null,
+      "signature_members": {
+        "oUsingPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oDependent": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "nSkillGameType": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "nMinSalvage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nMaxSalvage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nTotalButtonsToDisplay": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "fButtonTimeout": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fButtonDelayTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmFunctionSuccessCallback": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmFunctionFailureCallback": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmFunctionCancelCallback": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_bDoNotUseSalvage": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "eGameDifficulty": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InitializeSkillGameCustom(BioPawn oUsingPawn, Object oDependent, byte nSkillGameType, int nMinSalvage, int nMaxSalvage, int nTotalButtonsToDisplay, float fButtonTimeout, float fButtonDelayTime, Name nmFunctionSuccessCallback, Name nmFunctionFailureCallback, Name nmFunctionCancelCallback, bool i_bDoNotUseSalvage, byte eGameDifficulty)"
+    },
+    "InitializeSkillGame": {
+      "documentation": null,
+      "signature_members": {
+        "oUsingPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oDependent": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "nSkillGameType": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "nMinSalvage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nMaxSalvage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nTotalButtonsToDisplay": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "fButtonTimeout": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fButtonDelayTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "eGameDifficulty": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InitializeSkillGame(BioPawn oUsingPawn, Object oDependent, byte nSkillGameType, int nMinSalvage, int nMaxSalvage, int nTotalButtonsToDisplay, float fButtonTimeout, float fButtonDelayTime, byte eGameDifficulty)"
+    },
+    "GetBestSkillMember": {
+      "documentation": null,
+      "signature_members": {
+        "eSkillGameType": {
+          "type": "EBioSkillGame",
+          "documentation": null,
+          "flags": 128
+        },
+        "oInputSquad": {
+          "type": "BioBaseSquad",
+          "documentation": null,
+          "flags": 128
+        },
+        "nBestSkillLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "Pawn",
+      "signature": "Pawn GetBestSkillMember(EBioSkillGame eSkillGameType, BioBaseSquad oInputSquad, out int nBestSkillLevel)"
+    },
+    "GetSalvageLimits": {
+      "documentation": null,
+      "signature_members": {
+        "nSkillRank": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "eDifficulty": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "fSalvageMin": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "fSalvageMax": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSalvageLimits(int nSkillRank, int eDifficulty, out int fSalvageMin, out int fSalvageMax)"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

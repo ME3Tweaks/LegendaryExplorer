@@ -1,0 +1,28 @@
+{
+  "members": {
+    "fHalfCycleTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fMinAlpha": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fCurCycle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "nElement": {
+      "type": "BioDUIElements",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFHandler_DesignerUI",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

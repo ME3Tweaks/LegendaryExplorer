@@ -1,0 +1,62 @@
+{
+  "parent": "PathConstraint",
+  "package": "Engine",
+  "variables": {
+    "Radius": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Height": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxFallSpeed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "MoveFlags": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "DontGetStuck": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DontGetStuck(Pawn P)"
+    },
+    "CachePawnReacFlags": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "CachePawnReacFlags(Pawn P)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

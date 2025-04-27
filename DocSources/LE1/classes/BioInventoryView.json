@@ -1,0 +1,294 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_pawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oInventory": {
+      "type": "BioInventory",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_oEquipment": {
+      "type": "BioEquipment",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_itemSelection": {
+      "type": "BioItemSelection",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SetShieldRatio": {
+      "documentation": null,
+      "signature_members": {
+        "ratio": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetShieldRatio(float ratio)"
+    },
+    "GetShieldRatio": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetShieldRatio()"
+    },
+    "ReplaceSelectedItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReplaceSelectedItem()"
+    },
+    "RemoveSelectedItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveSelectedItem()"
+    },
+    "IsSelectedItemVolatile": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsSelectedItemVolatile()"
+    },
+    "GetSelectedItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioItem",
+      "signature": "BioItem GetSelectedItem()"
+    },
+    "UninstallXMod": {
+      "documentation": null,
+      "signature_members": {
+        "xModType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "xModIndexInItem": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UninstallXMod(int xModType, int xModIndexInItem)"
+    },
+    "InstallXMod": {
+      "documentation": null,
+      "signature_members": {
+        "filteredIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "xModTypeUsedForFilter": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InstallXMod(int filteredIndex, int xModTypeUsedForFilter)"
+    },
+    "Drop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Drop()"
+    },
+    "Equip": {
+      "documentation": null,
+      "signature_members": {
+        "filteredIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bXferXMods": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Equip(int filteredIndex, optional bool bXferXMods)"
+    },
+    "Unequip": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Unequip()"
+    },
+    "SetTargetInventory": {
+      "documentation": null,
+      "signature_members": {
+        "pInv": {
+          "type": "BioInventory",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetTargetInventory(BioInventory pInv)"
+    },
+    "SetTargetEquipment": {
+      "documentation": null,
+      "signature_members": {
+        "pEqp": {
+          "type": "BioEquipment",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetTargetEquipment(BioEquipment pEqp)"
+    },
+    "SetTarget": {
+      "documentation": null,
+      "signature_members": {
+        "pPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetTarget(BioPawn pPawn)"
+    },
+    "ResetTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ResetTarget()"
+    },
+    "SelectQuickslotItem": {
+      "documentation": null,
+      "signature_members": {
+        "eType": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SelectQuickslotItem(EBioItemWeaponRangedType eType)"
+    },
+    "SelectEquipmentItem": {
+      "documentation": null,
+      "signature_members": {
+        "eSlot": {
+          "type": "EBioEquipmentSlot",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SelectEquipmentItem(EBioEquipmentSlot eSlot)"
+    },
+    "SelectInventoryItem": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SelectInventoryItem(int Index)"
+    },
+    "ExtractXModIndices": {
+      "documentation": null,
+      "signature_members": {
+        "aIndices": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "nXModTypeID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ExtractXModIndices(out array<int> aIndices, optional int nXModTypeID)"
+    },
+    "ExtractXModIndicesByEquipmentType": {
+      "documentation": null,
+      "signature_members": {
+        "aIndices": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "eEquipType": {
+          "type": "EBioEquipmentType",
+          "documentation": null,
+          "flags": 128
+        },
+        "xModTypeUsedForFilter": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ExtractXModIndicesByEquipmentType(out array<int> aIndices, EBioEquipmentType eEquipType, optional int xModTypeUsedForFilter)"
+    },
+    "ExtractEquippableIndices": {
+      "documentation": null,
+      "signature_members": {
+        "aEquipIndices": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "eEquipType": {
+          "type": "EBioEquipmentType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ExtractEquippableIndices(out array<int> aEquipIndices, EBioEquipmentType eEquipType)"
+    },
+    "ExtractWeaponIndices": {
+      "documentation": null,
+      "signature_members": {
+        "aEquipIndices": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "eWeaponRangedType": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ExtractWeaponIndices(out array<int> aEquipIndices, EBioItemWeaponRangedType eWeaponRangedType)"
+    },
+    "ClearObjectRefs": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearObjectRefs()"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "State": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 0
+    },
+    "CriticalSection": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "LocalPlayer",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

@@ -1,0 +1,23 @@
+{
+  "members": {
+    "GameDataProviderClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 2
+    },
+    "PlayerDataProviderClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 2
+    },
+    "TeamDataProviderClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "classdef": "CurrentGameDataStore",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,184 @@
+{
+  "parent": "BioCameraBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "m_vFixedCamPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_rFixedCamRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vProceduralCamPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_rProceduralCamRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_tDOFData": {
+      "type": "BioStageDOFData",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_rRotationOffset": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vPrevFixedCamPos": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_rPrevFixedCamRot": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_tPrevDOFData": {
+      "type": "BioStageDOFData",
+      "documentation": null,
+      "flags": 0
+    },
+    "ViewSource": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "Target": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fNearPlane": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CAMERA_FOV": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fLateralOffset": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fPrevCamFOV": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fPrevNearPlane": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDOFSettingDisabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bSavedData": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetProceduralCam": {
+      "documentation": null,
+      "signature_members": {
+        "vCamLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "rCamRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        },
+        "bInvert": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GetProceduralCam(out Vector vCamLocation, out Rotator rCamRotation, bool bInvert)"
+    },
+    "ModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": "PostProcessSettings",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    },
+    "InternalModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": "PostProcessSettings",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "InternalModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "MakeInactive": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MakeInactive()"
+    },
+    "ForcePOV": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ForcePOV()"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

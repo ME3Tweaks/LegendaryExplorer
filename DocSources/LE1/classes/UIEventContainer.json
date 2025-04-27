@@ -1,0 +1,69 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "RemoveSequenceObjects": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectsToRemove": {
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveSequenceObjects(array<SequenceObject> ObjectsToRemove)"
+    },
+    "RemoveSequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectToRemove": {
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveSequenceObject(SequenceObject ObjectToRemove)"
+    },
+    "AddSequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "NewObj": {
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "bRecurse": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddSequenceObject(SequenceObject NewObj, optional bool bRecurse)"
+    },
+    "GetUIEvents": {
+      "documentation": null,
+      "signature_members": {
+        "out_Events": {
+          "type": "UIEvent",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "LimitClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUIEvents(out array<UIEvent> out_Events, optional Class<UIEvent> LimitClass)"
+    }
+  },
+  "states": {},
+  "classflags": 134234259,
+  "configname": "None",
+  "documentation": null
+}

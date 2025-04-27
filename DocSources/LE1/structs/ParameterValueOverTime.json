@@ -1,0 +1,53 @@
+{
+  "members": {
+    "ExpressionGUID": {
+      "type": "Guid",
+      "documentation": null,
+      "flags": 0
+    },
+    "ParameterName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "StartTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "CycleTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "OffsetTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLoop": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAutoActivate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNormalizeTime": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bOffsetFromEnd": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "MaterialInstanceTimeVarying",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

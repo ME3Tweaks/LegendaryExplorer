@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Elements": {
+      "type": "SparseArray_Mirror",
+      "documentation": null,
+      "flags": 4098
+    },
+    "InlineHash": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Hash": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "HashSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

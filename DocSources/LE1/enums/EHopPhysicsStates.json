@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "HPS_INVALID": {
+      "value": 0,
+      "documentation": null
+    },
+    "HPS_Idle": {
+      "value": 1,
+      "documentation": null
+    },
+    "HPS_Launch": {
+      "value": 2,
+      "documentation": null
+    },
+    "HPS_Flying": {
+      "value": 3,
+      "documentation": null
+    },
+    "HPS_Landing": {
+      "value": 4,
+      "documentation": null
+    },
+    "HPS_Landed": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

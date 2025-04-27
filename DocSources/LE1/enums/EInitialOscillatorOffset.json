@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "EOO_OffsetRandom": {
+      "value": 0,
+      "documentation": null
+    },
+    "EOO_OffsetZero": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

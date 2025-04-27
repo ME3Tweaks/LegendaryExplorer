@@ -1,0 +1,18 @@
+{
+  "members": {
+    "SlotName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "NumChannels": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1048576
+    }
+  },
+  "classdef": "Actor",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 9
+}

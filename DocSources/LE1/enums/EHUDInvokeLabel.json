@@ -1,0 +1,81 @@
+{
+  "EnumValues": {
+    "HUD_INVOKELABEL_UpdateHUDMode": {
+      "value": 0,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_UpdateTargetStatus": {
+      "value": 1,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_ChangeSelectedWeapon": {
+      "value": 2,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_UpdateWeaponHeat": {
+      "value": 3,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_UpdateVehicleStatus": {
+      "value": 4,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_UpdateVehicleStatusSquad": {
+      "value": 5,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_UpdateSquadStatus": {
+      "value": 6,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_ChangeSelectedSquadOrder": {
+      "value": 7,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_UpdateSquadFormation": {
+      "value": 8,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_UpdatePowerPadMode": {
+      "value": 9,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_UpdateCustomButtons": {
+      "value": 10,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_UpdateStorm": {
+      "value": 11,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_updateRadarArrow": {
+      "value": 12,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_setRadarParameters": {
+      "value": 13,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_updateRadarBoundaries": {
+      "value": 14,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_RETICULE_updateCombatReticule": {
+      "value": 15,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_RETICULE_updateSelectionReticule": {
+      "value": 16,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_RETICULE_updateLosReticule": {
+      "value": 17,
+      "documentation": null
+    },
+    "HUD_INVOKELABEL_updateNorthIndicator": {
+      "value": 18,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ECMDM_DistToFixedVert": {
+      "value": 0,
+      "documentation": null
+    },
+    "ECMDM_VertexBoneWeight": {
+      "value": 1,
+      "documentation": null
+    },
+    "ECMDM_Empty": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

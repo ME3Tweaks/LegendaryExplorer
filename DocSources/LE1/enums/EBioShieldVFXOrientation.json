@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BIO_SHIELD_VFX_ORIENTATION_IMPACT_NORMAL": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_SHIELD_VFX_ORIENTATION_OWNER_ORIENTATION": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

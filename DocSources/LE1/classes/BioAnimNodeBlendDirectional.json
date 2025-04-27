@@ -1,0 +1,21 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "BlendSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "DirAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

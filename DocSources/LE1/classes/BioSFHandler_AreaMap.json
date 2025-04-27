@@ -1,0 +1,84 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_levelBox": {
+      "type": "Box",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_vLeftInput": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_vRightInput": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_sMapName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pAreaMapTable": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fScrollSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fCursorSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nLeftScrollDelta": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nRightScrollDelta": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fCurrentZoom": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bWaitingForMsgBox": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "RTNConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RTNConfirm(bool bAPressed, int nContext)"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
+  "documentation": null
+}

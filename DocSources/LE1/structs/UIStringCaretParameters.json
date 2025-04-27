@@ -1,0 +1,38 @@
+{
+  "members": {
+    "CaretStyle": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "CaretMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 8192
+    },
+    "CaretWidth": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "CaretPosition": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bDisplayCaret": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "CaretType": {
+      "type": "EUIDefaultPenColor",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "ICONSET_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "ICONSET_Manufacturer": {
+      "value": 1,
+      "documentation": null
+    },
+    "ICONSET_Combat": {
+      "value": 2,
+      "documentation": null
+    },
+    "ICONSET_Plot": {
+      "value": 3,
+      "documentation": null
+    },
+    "ICONSET_ItemProperties": {
+      "value": 4,
+      "documentation": null
+    },
+    "ICONSET_SaveLoad": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

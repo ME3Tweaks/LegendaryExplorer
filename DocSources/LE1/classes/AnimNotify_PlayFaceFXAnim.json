@@ -1,0 +1,59 @@
+{
+  "parent": "AnimNotify_Scripted",
+  "package": "Engine",
+  "variables": {
+    "GroupName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "AnimName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "FaceFXAnimSetRef": {
+      "type": "FaceFXAnimSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "SoundCueToPlay": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 1
+    },
+    "PlayFrequency": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bOverridePlayingAnim": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Notify": {
+      "documentation": null,
+      "signature_members": {
+        "Owner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "AnimSeqInstigator": {
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Notify(Actor Owner, AnimNodeSequence AnimSeqInstigator)"
+    }
+  },
+  "states": {},
+  "classflags": 12306,
+  "configname": "None",
+  "documentation": null
+}

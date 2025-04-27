@@ -1,0 +1,21 @@
+{
+  "parent": "BioAppearanceItemSophisticated",
+  "package": "SFXGame",
+  "variables": {
+    "m_vfxSpecs": {
+      "type": "BioAppearanceItemWeaponVFXSpec",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_oPawnWeaponAnimations": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

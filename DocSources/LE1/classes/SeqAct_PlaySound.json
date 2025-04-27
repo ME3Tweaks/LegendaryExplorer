@@ -1,0 +1,63 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "Engine",
+  "variables": {
+    "PlaySound": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 1
+    },
+    "ExtraDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SoundDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "FadeInTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FadeOutTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "VolumeMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "PitchMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSuppressSubtitles": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bStopped": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

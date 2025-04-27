@@ -1,0 +1,111 @@
+{
+  "parent": "Subsystem",
+  "package": "Engine",
+  "variables": {
+    "MaxChannels": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16386
+    },
+    "UseEffectsProcessing": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16386
+    },
+    "AudioComponents": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 71835658
+    },
+    "Sources": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "FreeSources": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "WaveInstanceSourceMap": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4098
+    },
+    "bLastRealtime": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Listeners": {
+      "type": "ListenerStruct",
+      "documentation": null,
+      "flags": 4098
+    },
+    "CurrentTick": {
+      "type": "QWord",
+      "documentation": null,
+      "flags": 4098
+    },
+    "NameToSoundGroupMap": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4098
+    },
+    "NameToPropagatedSoundGroupPropertiesMap": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4098
+    },
+    "BioNameToSoundGroupPlayCountMap": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4098
+    },
+    "BioPackageToPlayCountMap": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4098
+    },
+    "SoundGroups": {
+      "type": "SoundGroup",
+      "documentation": null,
+      "flags": 4210689
+    },
+    "Effects": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "bForcePause": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_bTriggerPriorityList": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_bOcclusionEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_bGameMusicDisabledByXBox": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_ReverbSettings_Override": {
+      "type": "ReverbSettings",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 10486174,
+  "configname": "Engine",
+  "documentation": null
+}

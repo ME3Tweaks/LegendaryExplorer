@@ -1,0 +1,167 @@
+{
+  "parent": "CameraModifier",
+  "package": "Engine",
+  "variables": {
+    "ActiveShakes": {
+      "type": "CameraShakeInstance",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "SplitScreenShakeScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    }
+  },
+  "functions": {
+    "ModifyCamera": {
+      "documentation": null,
+      "signature_members": {
+        "Camera": {
+          "type": "Camera",
+          "documentation": null,
+          "flags": 128
+        },
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutPOV": {
+          "type": "TPOV",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ModifyCamera(Camera Camera, float DeltaTime, out TPOV OutPOV)"
+    },
+    "UpdateCameraShake": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "Shake": {
+          "type": "CameraShakeInstance",
+          "documentation": null,
+          "flags": 384
+        },
+        "OutPOV": {
+          "type": "TPOV",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateCameraShake(float DeltaTime, out CameraShakeInstance Shake, out TPOV OutPOV)"
+    },
+    "RemoveAllCameraShakes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveAllCameraShakes()"
+    },
+    "RemoveCameraShake": {
+      "documentation": null,
+      "signature_members": {
+        "Shake": {
+          "type": "CameraShake",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveCameraShake(CameraShake Shake)"
+    },
+    "AddCameraShake": {
+      "documentation": null,
+      "signature_members": {
+        "NewShake": {
+          "type": "CameraShake",
+          "documentation": null,
+          "flags": 128
+        },
+        "Scale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlaySpace": {
+          "type": "ECameraAnimPlaySpace",
+          "documentation": null,
+          "flags": 144
+        },
+        "UserPlaySpaceRot": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCameraShake(CameraShake NewShake, float Scale, optional ECameraAnimPlaySpace PlaySpace, optional Rotator UserPlaySpaceRot)"
+    },
+    "InitializeShake": {
+      "documentation": null,
+      "signature_members": {
+        "NewShake": {
+          "type": "CameraShake",
+          "documentation": null,
+          "flags": 128
+        },
+        "Scale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlaySpace": {
+          "type": "ECameraAnimPlaySpace",
+          "documentation": null,
+          "flags": 128
+        },
+        "UserPlaySpaceRot": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "CameraShakeInstance",
+      "signature": "CameraShakeInstance InitializeShake(CameraShake NewShake, float Scale, ECameraAnimPlaySpace PlaySpace, optional Rotator UserPlaySpaceRot)"
+    },
+    "ReinitShake": {
+      "documentation": null,
+      "signature_members": {
+        "ActiveShakeIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Scale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReinitShake(int ActiveShakeIdx, float Scale)"
+    },
+    "InitializeOffset": {
+      "documentation": null,
+      "signature_members": {
+        "Param": {
+          "type": "FOscillator",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "float",
+      "signature": "float InitializeOffset(const out FOscillator Param)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "Camera",
+  "documentation": null
+}

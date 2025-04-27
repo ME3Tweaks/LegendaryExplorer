@@ -1,0 +1,21 @@
+{
+  "parent": "BioItemSelectionPawn",
+  "package": "SFXGame",
+  "variables": {
+    "m_isActiveQuickslot": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_weaponType": {
+      "type": "EBioItemWeaponRangedType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

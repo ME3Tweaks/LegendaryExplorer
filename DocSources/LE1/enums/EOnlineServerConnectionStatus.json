@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "OSCS_NotConnected": {
+      "value": 0,
+      "documentation": null
+    },
+    "OSCS_Connected": {
+      "value": 1,
+      "documentation": null
+    },
+    "OSCS_ConnectionDropped": {
+      "value": 2,
+      "documentation": null
+    },
+    "OSCS_NoNetworkConnection": {
+      "value": 3,
+      "documentation": null
+    },
+    "OSCS_ServiceUnavailable": {
+      "value": 4,
+      "documentation": null
+    },
+    "OSCS_UpdateRequired": {
+      "value": 5,
+      "documentation": null
+    },
+    "OSCS_ServersTooBusy": {
+      "value": 6,
+      "documentation": null
+    },
+    "OSCS_DuplicateLoginDetected": {
+      "value": 7,
+      "documentation": null
+    },
+    "OSCS_InvalidUser": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

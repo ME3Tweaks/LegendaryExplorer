@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "ITEM_WEAPON_MELEE_KNIFE": {
+      "value": 0,
+      "documentation": null
+    },
+    "ITEM_WEAPON_MELEE_SWORD": {
+      "value": 1,
+      "documentation": null
+    },
+    "ITEM_WEAPON_MELEE_AXE": {
+      "value": 2,
+      "documentation": null
+    },
+    "ITEM_WEAPON_MELEE_POLEARM": {
+      "value": 3,
+      "documentation": null
+    },
+    "ITEM_WEAPON_MELEE_SPEAR": {
+      "value": 4,
+      "documentation": null
+    },
+    "ITEM_WEAPON_MELEE_BLUNT": {
+      "value": 5,
+      "documentation": null
+    },
+    "ITEM_WEAPON_MELEE_COUNT": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

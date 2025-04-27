@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ABILITY_STAMINA": {
+      "value": 0,
+      "documentation": null
+    },
+    "ABILITY_FOCUS": {
+      "value": 1,
+      "documentation": null
+    },
+    "ABILITY_COORDINATION": {
+      "value": 2,
+      "documentation": null
+    },
+    "ABILITY_PRECISION": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

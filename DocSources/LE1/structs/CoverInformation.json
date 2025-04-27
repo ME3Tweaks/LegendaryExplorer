@@ -1,0 +1,58 @@
+{
+  "members": {
+    "vOverridenPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "rOverridenRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 1
+    },
+    "fStepLeftDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fStepRightDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bOverridePosition": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bOverrideRotation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDisableWhenOnTop": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "CoverType": {
+      "type": "ECoverType",
+      "documentation": null,
+      "flags": 1
+    },
+    "CoverDirection": {
+      "type": "EBioCoverDirection",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioArtPlaceableType",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

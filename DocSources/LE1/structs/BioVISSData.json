@@ -1,0 +1,23 @@
+{
+  "members": {
+    "oPhysMat": {
+      "type": "PhysicalMaterial",
+      "documentation": null,
+      "flags": 1
+    },
+    "oVFXTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "oImpactOverrideVFXTemplate": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioVISSimple",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

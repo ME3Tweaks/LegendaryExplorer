@@ -1,0 +1,33 @@
+{
+  "members": {
+    "VfTable": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "VertexData": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Data": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "Stride": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "NumVertices": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

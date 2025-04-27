@@ -1,0 +1,35 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Materials": {
+      "type": "TerrainFilteredMaterial",
+      "documentation": null,
+      "flags": 4194307
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "SetMaterials": {
+      "documentation": null,
+      "signature_members": {
+        "NewMaterials": {
+          "type": "TerrainFilteredMaterial",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaterials(array<TerrainFilteredMaterial> NewMaterials)"
+    }
+  },
+  "states": {},
+  "classflags": 134226066,
+  "configname": "None",
+  "documentation": null
+}

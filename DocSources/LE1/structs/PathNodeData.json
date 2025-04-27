@@ -1,0 +1,33 @@
+{
+  "members": {
+    "vPathNode": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "rRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "rDirectionOfTravel": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "NodeActionOn": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "NodeAction": {
+      "type": "EPathNodeAction",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioBaseSquad",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

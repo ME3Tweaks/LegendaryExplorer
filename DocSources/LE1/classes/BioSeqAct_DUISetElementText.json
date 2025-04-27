@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "sText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Element": {
+      "type": "BioDUIElements",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

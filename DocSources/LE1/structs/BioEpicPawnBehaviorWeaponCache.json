@@ -1,0 +1,58 @@
+{
+  "members": {
+    "m_targetPoint": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_muzzleLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_muzzleToTargetDisplacement": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_muzzleToTargetDirection": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_traceHitLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_traceHitNormal": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_weapon": {
+      "type": "BioWeaponRanged",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_traceHitActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_flags": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_traceHitDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioEpicPawnBehavior",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

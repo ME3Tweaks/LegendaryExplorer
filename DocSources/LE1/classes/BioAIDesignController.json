@@ -1,0 +1,10 @@
+{
+  "parent": "BioAiController",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 44040726,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,173 @@
+{
+  "parent": "BioSFHandler_SaveLoadBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_sDeleteCharId": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_oLoadGuiMessageBoxHandler": {
+      "type": "BioSFHandler_MessageBox",
+      "documentation": null,
+      "flags": 8192
+    },
+    "srAbandonProgressMessage": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srAbandonProgressConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srAbandonProgressCancel": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srLoading": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srChunksNotInstalledMessage": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srChunksNotInstalledConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_bCorruptSaveDirty": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "SetDirty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetDirty()"
+    },
+    "RebuildLoadGameList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RebuildLoadGameList()"
+    },
+    "NotifyCorruptSavesAndDelete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyCorruptSavesAndDelete()"
+    },
+    "DeleteCorruptGamesConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DeleteCorruptGamesConfirm(bool bAPressed)"
+    },
+    "ChunksNotInstalledConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ChunksNotInstalledConfirm(bool bAPressed, int nContext)"
+    },
+    "DeleteGameConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DeleteGameConfirm(bool bAPressed, int nContext)"
+    },
+    "DeleteCharacterConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DeleteCharacterConfirm(bool bAPressed, int nContext)"
+    },
+    "LoadGameConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadGameConfirm(bool bAPressed, int nContext)"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
+  "documentation": null
+}

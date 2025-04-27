@@ -1,0 +1,120 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "StandingLeanOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "CrouchLeanOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "CylinderComponent": {
+      "type": "CylinderComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "FireTraceDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bLeftEdgeSlot": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bRightEdgeSlot": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bStandLeanLeft": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bStandLeanRight": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCrouchLeanLeft": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCrouchLeanRight": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "DebugDraw": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugDraw()"
+    },
+    "UpdateLeanFlags": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "ECoverAction",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateLeanFlags(ECoverAction Action)"
+    },
+    "GetViewPoint": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": "ECoverType",
+          "documentation": null,
+          "flags": 128
+        },
+        "Action": {
+          "type": "ECoverAction",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetViewPoint(ECoverType Type, ECoverAction Action)"
+    },
+    "CanLean": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanLean()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

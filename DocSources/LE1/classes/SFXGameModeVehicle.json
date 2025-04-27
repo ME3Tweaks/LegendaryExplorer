@@ -1,0 +1,141 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "MagnifiedInput": {
+      "type": "SFXCameraInput",
+      "documentation": null,
+      "flags": 0
+    },
+    "VehicleCam": {
+      "type": "SFXCameraMode_Vehicle",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "VehicleTightAimCam": {
+      "type": "SFXCameraMode_VehicleTightAim",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "VehicleTightAimExCam": {
+      "type": "SFXCameraMode_VehicleTightAimEx",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "InputDelayTightAimExit": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "MagnificationTransitionDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "ShowMenuGui": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShowMenuGui()"
+    },
+    "LeaveWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeaveWorld()"
+    },
+    "RepairVehicle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RepairVehicle()"
+    },
+    "StopFiringCannon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopFiringCannon()"
+    },
+    "FireCannon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FireCannon()"
+    },
+    "ToggleVehicleAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleVehicleAim()"
+    },
+    "ChangeMagnification": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ChangeMagnification()"
+    },
+    "TurnOffVehicleTightAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnOffVehicleTightAim()"
+    },
+    "StopVehicleTightAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopVehicleTightAim()"
+    },
+    "VehicleTightAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "VehicleTightAim()"
+    },
+    "TryExitVehicle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryExitVehicle()"
+    },
+    "TryUprightVehicle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TryUprightVehicle()"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
+        },
+        "PreserveTarget": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "TransitionTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "Transition": {
+          "type": "SFXCameraMode_Interpolate",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    }
+  },
+  "states": {},
+  "classflags": 10485782,
+  "configname": "Input",
+  "documentation": null
+}

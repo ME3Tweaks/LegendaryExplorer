@@ -1,0 +1,23 @@
+{
+  "members": {
+    "BoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "SourceBoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "BoneFlipAxis": {
+      "type": "EAxis",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "SkeletalMesh",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

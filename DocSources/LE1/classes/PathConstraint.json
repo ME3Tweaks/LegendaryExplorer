@@ -1,0 +1,34 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "NextConstraint": {
+      "type": "PathConstraint",
+      "documentation": null,
+      "flags": 0
+    },
+    "CacheIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {
+    "GetDumpString": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDumpString()"
+    },
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

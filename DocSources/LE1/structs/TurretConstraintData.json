@@ -1,0 +1,23 @@
+{
+  "members": {
+    "PitchConstraint": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "YawConstraint": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "RollConstraint": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioSkelControl_TurretConstrained",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

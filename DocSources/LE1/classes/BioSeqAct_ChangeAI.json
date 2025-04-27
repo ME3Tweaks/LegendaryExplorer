@@ -1,0 +1,33 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "ControllerClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 1
+    },
+    "oPawn": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "SaveOldAIController": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "BIO_DEATH_VFX_CONDITION_VFX_TYPE_BOTH": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_DEATH_VFX_CONDITION_VFX_TYPE_DAMAGE_PREFERRED": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_DEATH_VFX_CONDITION_VFX_TYPE_APPEARANCE_PREFERRED": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_DEATH_VFX_CONDITION_VFX_TYPE_DAMAGE_ONLY": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_DEATH_VFX_CONDITION_VFX_TYPE_APPEARANCE_ONLY": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

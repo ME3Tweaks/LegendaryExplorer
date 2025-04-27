@@ -1,0 +1,17 @@
+{
+  "parent": "UIMessageBoxBase",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "SetupDockingRelationships": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetupDockingRelationships()"
+    }
+  },
+  "states": {},
+  "classflags": 10486294,
+  "configname": "UI",
+  "documentation": null
+}

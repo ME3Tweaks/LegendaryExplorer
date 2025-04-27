@@ -1,0 +1,36 @@
+{
+  "parent": "UIResourceDataProvider",
+  "package": "Engine",
+  "variables": {
+    "PlaylistGameTypeNames": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "DisplayName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4243458
+    },
+    "PlaylistId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "Priority": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bIsArbitrated": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 2098238,
+  "configname": "Playlist",
+  "documentation": null
+}

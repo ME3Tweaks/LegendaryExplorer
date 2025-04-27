@@ -1,0 +1,106 @@
+{
+  "parent": "BioAttributesPawn",
+  "package": "SFXGame",
+  "variables": {
+    "m_IsProficientPistol": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_IsProficientRifle": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_IsProficientShotgun": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_IsProficientSniper": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_Experience": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_TalentPoints": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_TalentPoolPoints": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_LocalizedClassName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_AutoLevelUpTemplateID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_AttributePrimary": {
+      "type": "EBioPartyMemberAbility",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_AttributeSecondary": {
+      "type": "EBioPartyMemberAbility",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ClassBase": {
+      "type": "EBioPartyMemberClassBase",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetParagon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetParagon()"
+    },
+    "GetRenegade": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetRenegade()"
+    },
+    "SetMainAttributes": {
+      "documentation": null,
+      "signature_members": {
+        "primary": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "secondary": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "tertiary": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetMainAttributes(int primary, int secondary, int tertiary)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

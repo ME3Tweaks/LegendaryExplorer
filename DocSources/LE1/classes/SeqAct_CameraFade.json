@@ -1,0 +1,48 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "CachedPCs": {
+      "type": "PlayerController",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "FadeColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 1
+    },
+    "FadeOpacity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FadeTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FadeTimeRemaining": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bPersistFade": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

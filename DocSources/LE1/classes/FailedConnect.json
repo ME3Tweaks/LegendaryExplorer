@@ -1,0 +1,61 @@
+{
+  "parent": "LocalMessage",
+  "package": "Engine",
+  "variables": {
+    "FailMessage": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    }
+  },
+  "functions": {
+    "GetString": {
+      "documentation": null,
+      "signature_members": {
+        "Switch": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        },
+        "bPRI1HUD": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "RelatedPRI_1": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "RelatedPRI_2": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "OptionalObject": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetString(optional int Switch, optional bool bPRI1HUD, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)"
+    },
+    "GetFailSwitch": {
+      "documentation": null,
+      "signature_members": {
+        "FailString": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetFailSwitch(string FailString)"
+    }
+  },
+  "states": {},
+  "classflags": 51,
+  "configname": "None",
+  "documentation": null
+}

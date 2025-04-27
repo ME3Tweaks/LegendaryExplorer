@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_ATTRIBUTE_PAWN_GENDER_MALE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_PAWN_GENDER_FEMALE": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_ATTRIBUTE_PAWN_GENDER_NONE": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

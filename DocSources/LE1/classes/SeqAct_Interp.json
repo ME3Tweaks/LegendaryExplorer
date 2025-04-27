@@ -1,0 +1,351 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "Engine",
+  "variables": {
+    "LinkedCover": {
+      "type": "CoverLink",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "GroupInst": {
+      "type": "InterpGroupInst",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "CameraCuts": {
+      "type": "CameraCutInfo",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "ReplicatedActorClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 2
+    },
+    "m_tBioOriginalCam": {
+      "type": "BioScrubbingCamData",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_tBioCurrentCam": {
+      "type": "BioScrubbingCamData",
+      "documentation": null,
+      "flags": 8192
+    },
+    "InterpData": {
+      "type": "InterpData",
+      "documentation": null,
+      "flags": 8
+    },
+    "ReplicatedActor": {
+      "type": "MatineeActor",
+      "documentation": null,
+      "flags": 2
+    },
+    "PlayRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Position": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ForceStartPosition": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "nTexturesPrimed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "PreferredSplitScreenNum": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "TerminationTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nBioCurrentPreLoadIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nBioScrubCamPriority": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nBioScrubDOFPriority": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bIsPlaying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bPaused": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsBeingEdited": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bResetPositionOnFinish": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bFreeAnimsetsOnFinish": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLooping": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRewindOnPlay": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNoResetOnRewind": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRewindIfAlreadyPlaying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bReversePlayback": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bInterpForPathBuilding": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bForceStartPos": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bClientSideOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSkipUpdateIfNotVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIsSkippable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bBlockForPriming": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bTexturesPrimed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bShouldShowGore": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bBioPreLoadStarted": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bBioIsUnderLoadingScreen": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bBioDryRunRequired": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bBioSkipToEnd": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bBioHACK_StopPinFired": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bDisableCulling": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bWasCullingEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bBioUseCamData": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bBioSaveCamData": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bBioResetCamData": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "PrimePhase": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "AddPlayerToDirectorTracks": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPlayerToDirectorTracks(PlayerController PC)"
+    },
+    "Stop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Stop()"
+    },
+    "SetPosition": {
+      "documentation": null,
+      "signature_members": {
+        "NewPosition": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bJump": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPosition(float NewPosition, optional bool bJump)"
+    },
+    "BioScrubbingDisableDOF": {
+      "documentation": null,
+      "signature_members": {
+        "nPriority": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "BioScrubbingDisableDOF(int nPriority)"
+    },
+    "BioScrubbingGetDOF": {
+      "documentation": null,
+      "signature_members": {
+        "nPriority": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "DOFAndBloomEffect",
+      "signature": "DOFAndBloomEffect BioScrubbingGetDOF(int nPriority)"
+    },
+    "BioResetScrubbingCamera": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BioResetScrubbingCamera()"
+    },
+    "BioSetScrubbingCamera": {
+      "documentation": null,
+      "signature_members": {
+        "vCamPos": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "rCamRot": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "fFov": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fNearPlane": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nPriority": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "BioSetScrubbingCamera(Vector vCamPos, Rotator rCamRot, float fFov, float fNearPlane, int nPriority)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

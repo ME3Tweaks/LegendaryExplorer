@@ -1,0 +1,93 @@
+{
+  "EnumValues": {
+    "SFXONLINE_COMPONENT_TYPE_COORDINATOR": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_ONLINE_API": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_ONLINE_UI": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_PLATFORM": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_LOGIN": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_TELEMETRY": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_LEADERBOARD": {
+      "value": 6,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_STATS": {
+      "value": 7,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_ACHIEVEMENT": {
+      "value": 8,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_PLAYGROUP": {
+      "value": 9,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_MATCH_MAKER": {
+      "value": 10,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_GAME_MANAGER": {
+      "value": 11,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_VOICE": {
+      "value": 12,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_ANTICHEAT": {
+      "value": 13,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_SERVER_LIST": {
+      "value": 14,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_GAMEFLOW": {
+      "value": 15,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_ASSOCIATION": {
+      "value": 16,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_UNREALSYSTEM": {
+      "value": 17,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_UNREALPLAYER": {
+      "value": 18,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_UNREALPLAYEREX": {
+      "value": 19,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_ORIGIN": {
+      "value": 20,
+      "documentation": null
+    },
+    "SFXONLINE_COMPONENT_TYPE_NOTIFICATION": {
+      "value": 21,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

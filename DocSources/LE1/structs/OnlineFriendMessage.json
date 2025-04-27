@@ -1,0 +1,43 @@
+{
+  "members": {
+    "SendingPlayerId": {
+      "type": "UniqueNetId",
+      "documentation": null,
+      "flags": 0
+    },
+    "SendingPlayerNick": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Message": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "bIsFriendInvite": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsGameInvite": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bWasAccepted": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bWasDenied": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "OnlineSubsystem",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

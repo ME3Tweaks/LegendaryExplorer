@@ -1,0 +1,289 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "CachedTerrainMaterials": {
+      "type": "CachedTerrainMaterialArray",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Heights": {
+      "type": "TerrainHeight",
+      "documentation": null,
+      "flags": 4098
+    },
+    "InfoData": {
+      "type": "TerrainInfoData",
+      "documentation": null,
+      "flags": 4098
+    },
+    "AlphaMaps": {
+      "type": "AlphaMap",
+      "documentation": null,
+      "flags": 4098
+    },
+    "WeightedMaterials": {
+      "type": "TerrainWeightedMaterial",
+      "documentation": null,
+      "flags": 4098
+    },
+    "WeightedTextureMaps": {
+      "type": "TerrainWeightMapTexture",
+      "documentation": null,
+      "flags": 4098
+    },
+    "CachedDisplacements": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Layers": {
+      "type": "TerrainLayer",
+      "documentation": null,
+      "flags": 4194307
+    },
+    "DecoLayers": {
+      "type": "TerrainDecoLayer",
+      "documentation": null,
+      "flags": 4718595
+    },
+    "TerrainComponents": {
+      "type": "TerrainComponent",
+      "documentation": null,
+      "flags": 17251696650
+    },
+    "SelectedVertices": {
+      "type": "SelectedTerrainVertex",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "ReleaseResourcesFence": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "LightmassSettings": {
+      "type": "LightmassPrimitiveSettings",
+      "documentation": null,
+      "flags": 1
+    },
+    "LightingGuid": {
+      "type": "Guid",
+      "documentation": null,
+      "flags": 2
+    },
+    "TerrainPhysMaterialOverride": {
+      "type": "PhysicalMaterial",
+      "documentation": null,
+      "flags": 3
+    },
+    "NormalMapLayer": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "NumSectionsX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "NumSectionsY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "SectionSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "MaxCollisionDisplacement": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4098
+    },
+    "MaxTesselationLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinTessellationLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "TesselationDistanceScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "TessellationCheckDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "CollisionTesselationLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "NumVerticesX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "NumVerticesY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "NumPatchesX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "NumPatchesY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxComponentSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "StaticLightingResolution": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "CullComponentsDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "LightingChannels": {
+      "type": "LightingChannelContainer",
+      "documentation": null,
+      "flags": 3
+    },
+    "EditorTessellationLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8193
+    },
+    "WireframeColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIsOverridingLightResolution": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bBilinearFilterLightmapGeneration": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCastShadow": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bForceDirectLightMap": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bCastDynamicShadow": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAddLightMapPaddingToRemoveSeams": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bEnableSpecular": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bBlockRigidBody": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bCullComponentsByDistance": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAllowRigidBodyUnderneath": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bNoPhysCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAcceptsDynamicLights": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bMorphingEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bMorphingGradientsEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLocked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bHeightmapLocked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bShowingCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bShowWireframe": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "CalcLayerBounds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CalcLayerBounds()"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

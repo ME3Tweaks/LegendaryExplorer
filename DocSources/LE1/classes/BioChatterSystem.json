@@ -1,0 +1,51 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_afFrequency": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "m_MinTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "m_LastPlayedTimes": {
+      "type": "ChatterLineData",
+      "documentation": null,
+      "flags": 4202496
+    }
+  },
+  "functions": {
+    "OnChatterLinePlayed": {
+      "documentation": null,
+      "signature_members": {
+        "SoundSet": {
+          "type": "EBioSoundSetType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnChatterLinePlayed(EBioSoundSetType SoundSet)"
+    },
+    "CanPlayLine": {
+      "documentation": null,
+      "signature_members": {
+        "SoundSet": {
+          "type": "EBioSoundSetType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanPlayLine(EBioSoundSetType SoundSet)"
+    }
+  },
+  "states": {},
+  "classflags": 18,
+  "configname": "None",
+  "documentation": null
+}

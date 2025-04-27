@@ -1,0 +1,75 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "EvaluateInt": {
+      "documentation": null,
+      "signature_members": {
+        "nA": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "eOp": {
+          "type": "EBioOp",
+          "documentation": null,
+          "flags": 128
+        },
+        "nB": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bInvertOp": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nU": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "EvaluateInt(out int nA, EBioOp eOp, int nB, bool bInvertOp, int nU)"
+    },
+    "EvaluateFloat": {
+      "documentation": null,
+      "signature_members": {
+        "fA": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "eOp": {
+          "type": "EBioOp",
+          "documentation": null,
+          "flags": 128
+        },
+        "fB": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "bInvertOp": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "fU": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "EvaluateFloat(out float fA, EBioOp eOp, out float fB, bool bInvertOp, optional float fU)"
+    }
+  },
+  "states": {},
+  "classflags": 19,
+  "configname": "None",
+  "documentation": null
+}

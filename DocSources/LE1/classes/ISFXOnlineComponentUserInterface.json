@@ -1,0 +1,358 @@
+{
+  "parent": "ISFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {},
+  "functions": {
+    "ShowStore": {
+      "documentation": null,
+      "signature_members": {
+        "aOffers": {
+          "type": "SFXOfferDescriptor",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowStore(array<SFXOfferDescriptor> aOffers)"
+    },
+    "HasCerberusDLC": {
+      "documentation": null,
+      "signature_members": {
+        "bVal": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HasCerberusDLC(bool bVal)"
+    },
+    "OnDisplayNotification": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": "SFXOnlineConnection_MessageType",
+          "documentation": null,
+          "flags": 128
+        },
+        "MessageData": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Title": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Image": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDisplayNotification(SFXOnlineConnection_MessageType Type, string MessageData, string Title, string Image)"
+    },
+    "ClearNotifications": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearNotifications()"
+    },
+    "CloseEANetworking": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseEANetworking()"
+    },
+    "SetState": {
+      "documentation": null,
+      "signature_members": {
+        "eState": {
+          "type": "SFXOnlineUIState",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetState(SFXOnlineUIState eState)"
+    },
+    "ShowEmailPasswordMismatch": {
+      "documentation": null,
+      "signature_members": {
+        "Email": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Password": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowEmailPasswordMismatch(string Email, string Password)"
+    },
+    "ShowMessageBoxWait": {
+      "documentation": null,
+      "signature_members": {
+        "srMessage": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        },
+        "srButton1Text": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        },
+        "srButton2Text": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowMessageBoxWait(stringref srMessage, stringref srButton1Text, stringref srButton2Text)"
+    },
+    "ShowMessageBox": {
+      "documentation": null,
+      "signature_members": {
+        "sTitle": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sMessage": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sButton1Text": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        },
+        "sButton2Text": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        },
+        "sButton3Text": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowMessageBox(string sTitle, string sMessage, optional string sButton1Text, optional string sButton2Text, optional string sButton3Text)"
+    },
+    "ShowCreateNucleusAccountEx": {
+      "documentation": null,
+      "signature_members": {
+        "sEmail": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sPassword": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bEAProducts": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bThirdParty": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bBioWareProducts": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_sCountryCode": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "BirthDay": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "BirthMonth": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "BirthYear": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_sLanguageCode": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "m_CountryCodeList": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "m_CountryDisplayList": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowCreateNucleusAccountEx(string sEmail, string sPassword, bool bEAProducts, bool bThirdParty, bool bBioWareProducts, string i_sCountryCode, int BirthDay, int BirthMonth, int BirthYear, string i_sLanguageCode, array<string> m_CountryCodeList, array<string> m_CountryDisplayList)"
+    },
+    "ShowCerberusWelcomeMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowCerberusWelcomeMessage()"
+    },
+    "ShowRedeemCode": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowRedeemCode()"
+    },
+    "ShowCerberusIntro": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowCerberusIntro()"
+    },
+    "ShowNucleusWelcomeMessage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowNucleusWelcomeMessage()"
+    },
+    "ShowCreateNucleusAccount": {
+      "documentation": null,
+      "signature_members": {
+        "sEmail": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sPassword": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bEAProducts": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bThirdParty": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bRegisterProduct": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bBioWareProducts": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bUnderage": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowCreateNucleusAccount(string sEmail, string sPassword, bool bEAProducts, bool bThirdParty, bool bRegisterProduct, bool bBioWareProducts, bool bUnderage)"
+    },
+    "ShowParentEmail": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowParentEmail()"
+    },
+    "ShowAccountDemographics": {
+      "documentation": null,
+      "signature_members": {
+        "m_CountryCodeList": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "m_CountryDisplayList": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowAccountDemographics(array<string> m_CountryCodeList, array<string> m_CountryDisplayList)"
+    },
+    "ShowTermsOfService": {
+      "documentation": null,
+      "signature_members": {
+        "i_sTermsOfService": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bTOSChanged": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowTermsOfService(string i_sTermsOfService, optional bool bTOSChanged)"
+    },
+    "ShowNucleusLogin": {
+      "documentation": null,
+      "signature_members": {
+        "Email": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Password": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "eScreenState": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowNucleusLogin(string Email, string Password, int eScreenState)"
+    },
+    "ShowIntroPage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowIntroPage()"
+    }
+  },
+  "states": {},
+  "classflags": 134234259,
+  "configname": "None",
+  "documentation": null
+}

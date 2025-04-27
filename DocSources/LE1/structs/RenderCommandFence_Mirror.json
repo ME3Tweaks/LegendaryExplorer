@@ -1,0 +1,13 @@
+{
+  "members": {
+    "NumPendingFences": {
+      "type": "int",
+      "documentation": null,
+      "flags": 12290
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

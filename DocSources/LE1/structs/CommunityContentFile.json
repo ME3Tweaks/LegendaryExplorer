@@ -1,0 +1,58 @@
+{
+  "members": {
+    "Owner": {
+      "type": "UniqueNetId",
+      "documentation": null,
+      "flags": 0
+    },
+    "LocalFilePath": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ContentId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "FileId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ContentType": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "FileSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "DownloadCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "AverageRating": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "RatingCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "LastRatingGiven": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "OnlineSubsystem",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

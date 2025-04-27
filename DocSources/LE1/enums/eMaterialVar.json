@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "BioTV_Sophistication1": {
+      "value": 0,
+      "documentation": null
+    },
+    "BioTV_Sophistication2": {
+      "value": 1,
+      "documentation": null
+    },
+    "BioTV_Sophistication3": {
+      "value": 2,
+      "documentation": null
+    },
+    "BioTV_Sophistication4": {
+      "value": 3,
+      "documentation": null
+    },
+    "BioTV_Sophistication5": {
+      "value": 4,
+      "documentation": null
+    },
+    "BioTV_Sophistication6": {
+      "value": 5,
+      "documentation": null
+    },
+    "BioTV_Sophistication7": {
+      "value": 6,
+      "documentation": null
+    },
+    "BioTV_Sophistication8": {
+      "value": 7,
+      "documentation": null
+    },
+    "BioTV_Sophistication9": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

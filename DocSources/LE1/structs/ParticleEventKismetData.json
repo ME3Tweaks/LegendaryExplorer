@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Normal": {
+      "type": "RwVector3",
+      "documentation": null,
+      "flags": 0
+    },
+    "UsePSysCompLocation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "ParticleSystemComponent",
+  "extends": "ParticleEventData",
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,33 @@
+{
+  "members": {
+    "POV": {
+      "type": "TPOV",
+      "documentation": null,
+      "flags": 1
+    },
+    "Target": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "Controller": {
+      "type": "Controller",
+      "documentation": null,
+      "flags": 1
+    },
+    "PRI": {
+      "type": "PlayerReplicationInfo",
+      "documentation": null,
+      "flags": 1
+    },
+    "AspectRatio": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "Camera",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

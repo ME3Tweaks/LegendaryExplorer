@@ -1,0 +1,67 @@
+{
+  "parent": "UIDataStore_StringBase",
+  "package": "Engine",
+  "variables": {
+    "MenuInputSets": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 12290
+    },
+    "MenuInputMapArray": {
+      "type": "UIMenuInputMap",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "PlayerIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8194
+    }
+  },
+  "functions": {
+    "GetStringWithFieldName": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "MappedString": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetStringWithFieldName(string FieldName, out string MappedString)"
+    },
+    "FindMappingWithFieldName": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        },
+        "SetName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindMappingWithFieldName(optional string FieldName, optional string SetName)"
+    },
+    "GetPlayerOwner": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "LocalPlayer",
+      "signature": "LocalPlayer GetPlayerOwner()"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "Game",
+  "documentation": null
+}

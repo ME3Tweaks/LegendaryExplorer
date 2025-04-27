@@ -1,0 +1,21 @@
+{
+  "parent": "ParticleModuleTrailBase",
+  "package": "Engine",
+  "variables": {
+    "TaperFactor": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "TaperMethod": {
+      "type": "ETrailTaperMethod",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142618770,
+  "configname": "None",
+  "documentation": null
+}

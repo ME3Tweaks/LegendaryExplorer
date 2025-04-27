@@ -1,0 +1,81 @@
+{
+  "EnumValues": {
+    "ITEM_STAT_TYPE_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_DamagePerSecond": {
+      "value": 1,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_Range": {
+      "value": 2,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_KickbackEfficiency": {
+      "value": 3,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_ChargeEfficiency": {
+      "value": 4,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_EffectBoost": {
+      "value": 5,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_DamageResistance": {
+      "value": 6,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_ShieldStrength": {
+      "value": 7,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_TechResistance": {
+      "value": 8,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_School_Electronics": {
+      "value": 9,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_School_Decryption": {
+      "value": 10,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_School_Medical": {
+      "value": 11,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_School_Kinetics": {
+      "value": 12,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_School_Telekinetics": {
+      "value": 13,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_School_SpatialDistortion": {
+      "value": 14,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_HeatsinkEfficiency": {
+      "value": 15,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_Grenade_Damage": {
+      "value": 16,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_Grenade_Impulse": {
+      "value": 17,
+      "documentation": null
+    },
+    "ITEM_STAT_TYPE_Grenade_Radius": {
+      "value": 18,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

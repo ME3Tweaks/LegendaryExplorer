@@ -1,0 +1,68 @@
+{
+  "members": {
+    "m_PrereqTalentIDArray": {
+      "type": "int",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_PrereqTalentRankArray": {
+      "type": "int",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_Talent": {
+      "type": "BioTalent",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_MaxRank": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_LevelOffset": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_LevelsPerRank": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_OriginalRank": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_VisualOrder": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_LocalizedName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_LocalizedDesc": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_StringForUnlockReferences": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_BlurbForUnlockReferences": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioTalentContainer",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

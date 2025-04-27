@@ -1,0 +1,161 @@
+{
+  "parent": "InventoryManager",
+  "package": "SFXGame",
+  "variables": {
+    "AccBufferValues": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "AccuracyLastViewRot": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 8192
+    },
+    "WeaponRecoilOffset": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "TotalRecoil": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "InterpRange": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 16385
+    },
+    "Base_Acc_Standing": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "Base_Acc_Zoom": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "AccMod_Move": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "AccMod_ViewTurn": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "AccMod_MouseMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "AccMod_MaxCameraLoss": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "Base_Interp_Speed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "InterpMod_Move": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "InterpMul_ViewTurn": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "Accuracy": {
+      "type": "float",
+      "documentation": null,
+      "flags": 549755813888
+    },
+    "AccMod_WeaponFired": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bWeaponFired": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "DebugDraw_Accuracy": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_Accuracy(BioHUD HUD)"
+    },
+    "ResetAccuracy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetAccuracy()"
+    },
+    "UpdateKickbackFade": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_DeltaRot": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateKickbackFade(float DeltaTime, out Rotator out_DeltaRot)"
+    },
+    "UpdateKickback": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_DeltaRot": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateKickback(float DeltaTime, out Rotator out_DeltaRot)"
+    },
+    "SetWeaponRecoil": {
+      "documentation": null,
+      "signature_members": {
+        "PitchRecoil": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponRecoil(float PitchRecoil)"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Weapon",
+  "documentation": null
+}

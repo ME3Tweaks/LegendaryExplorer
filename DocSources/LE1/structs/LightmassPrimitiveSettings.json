@@ -1,0 +1,53 @@
+{
+  "members": {
+    "bUseTwoSidedLighting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bShadowIndirectOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseEmissiveForStaticLighting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmissiveLightFalloffExponent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmissiveLightExplicitInfluenceRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "EmissiveBoost": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DiffuseBoost": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SpecularBoost": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FullyOccludedSamplesFraction": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "EngineTypes",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

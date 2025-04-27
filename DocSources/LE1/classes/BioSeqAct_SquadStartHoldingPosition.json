@@ -1,0 +1,43 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_aoHoldMarkers": {
+      "type": "BioSquadHoldMarker",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_oSquad": {
+      "type": "BioBaseSquad",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fTimeOut": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fCountDown": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bLeaderHoldPosition": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

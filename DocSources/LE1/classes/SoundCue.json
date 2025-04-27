@@ -1,0 +1,78 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "FaceFXGroupName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "FaceFXAnimName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "EditorData": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4098
+    },
+    "SoundGroup": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "SoundEntityNode": {
+      "type": "SoundNodeAttenuation",
+      "documentation": null,
+      "flags": 0
+    },
+    "FirstNode": {
+      "type": "SoundNode",
+      "documentation": null,
+      "flags": 0
+    },
+    "FaceFXAnimSetRef": {
+      "type": "FaceFXAnimSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxAudibleDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "VolumeMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "PitchMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxConcurrentPlayCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "CurrentPlayCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2105346
+    }
+  },
+  "functions": {
+    "GetCueDuration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCueDuration()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

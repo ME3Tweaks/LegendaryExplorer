@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "m_oPawn": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

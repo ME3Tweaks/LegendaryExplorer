@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "GameEndReason_Leave": {
+      "value": 0,
+      "documentation": null
+    },
+    "GameEndReason_GameEnd": {
+      "value": 1,
+      "documentation": null
+    },
+    "GameEndReason_Restart": {
+      "value": 2,
+      "documentation": null
+    },
+    "GameEndReason_Error": {
+      "value": 3,
+      "documentation": null
+    },
+    "GameEndReason_OptOutTelemetry": {
+      "value": 4,
+      "documentation": null
+    },
+    "GameEndReason_Unknown": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

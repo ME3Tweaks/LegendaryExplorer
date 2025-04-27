@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "SLIDER_AXIS_PITCH": {
+      "value": 0,
+      "documentation": null
+    },
+    "SLIDER_AXIS_YAW": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

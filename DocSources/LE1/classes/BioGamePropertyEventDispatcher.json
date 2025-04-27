@@ -1,0 +1,86 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapQueued": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4098
+    },
+    "m_mapEventRegistry": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "functions": {
+    "ProcessQueue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ProcessQueue()"
+    },
+    "UnregisterGameProperty": {
+      "documentation": null,
+      "signature_members": {
+        "oGameProp": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UnregisterGameProperty(BioGameProperty oGameProp)"
+    },
+    "RegisterGameProperty": {
+      "documentation": null,
+      "signature_members": {
+        "oGameProp": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RegisterGameProperty(BioGameProperty oGameProp)"
+    },
+    "OnEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEvent": {
+          "type": "EBioGamePropertyEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "pTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnEvent(EBioGamePropertyEvent eEvent, Object pTarget)"
+    },
+    "LogDebugInfo": {
+      "documentation": null,
+      "signature_members": {
+        "pEvents": {
+          "type": "BioGamePropertyEventSet",
+          "documentation": null,
+          "flags": 128
+        },
+        "pTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogDebugInfo(BioGamePropertyEventSet pEvents, Object pTarget)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,63 @@
+{
+  "parent": "BioDeathVFXControl",
+  "package": "SFXGame",
+  "variables": {
+    "m_bAppearanceVFXWaitsForDeathAnimEnd": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_ePreferredExclusiveVFXType": {
+      "type": "EBioDeathVFXControlVFXType",
+      "documentation": null,
+      "flags": 3
+    }
+  },
+  "functions": {
+    "ShouldDamageVFXPlay": {
+      "documentation": null,
+      "signature_members": {
+        "pGameState": {
+          "type": "BioDeathVFXGameState",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldDamageVFXPlay(BioDeathVFXGameState pGameState)"
+    },
+    "ShouldAppearanceVFXPlay": {
+      "documentation": null,
+      "signature_members": {
+        "pGameState": {
+          "type": "BioDeathVFXGameState",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldAppearanceVFXPlay(BioDeathVFXGameState pGameState)"
+    },
+    "Evaluate": {
+      "documentation": null,
+      "signature_members": {
+        "pDeathVFXSpecArrayWrapper": {
+          "type": "BioDeathVFXSpecArrayWrapper",
+          "documentation": null,
+          "flags": 128
+        },
+        "pGameState": {
+          "type": "BioDeathVFXGameState",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Evaluate(BioDeathVFXSpecArrayWrapper pDeathVFXSpecArrayWrapper, BioDeathVFXGameState pGameState)"
+    }
+  },
+  "states": {},
+  "classflags": 4114,
+  "configname": "None",
+  "documentation": null
+}

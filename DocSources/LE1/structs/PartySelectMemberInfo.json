@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Tag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "DiscoveredLabel": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "AvailableLabel": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "InPartyLabel": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "ImageIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFHandler_PartySelection",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

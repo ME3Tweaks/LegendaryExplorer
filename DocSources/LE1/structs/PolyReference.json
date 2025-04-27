@@ -1,0 +1,18 @@
+{
+  "members": {
+    "OwningPylon": {
+      "type": "ActorReference",
+      "documentation": null,
+      "flags": 0
+    },
+    "PolyId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Pylon",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 385
+}

@@ -1,0 +1,278 @@
+{
+  "members": {
+    "Appearance": {
+      "type": "AppearanceSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "FirstName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Items": {
+      "type": "ItemSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "BuybackItems": {
+      "type": "ItemSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "simpleTalents": {
+      "type": "SimpleTalentSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "complexTalents": {
+      "type": "ComplexTalentSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Equipment": {
+      "type": "ItemSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Weapons": {
+      "type": "ItemSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "FaceCode": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "GameOptions": {
+      "type": "GameOptionsSaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "HotKeys": {
+      "type": "HotKeySaveRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "MappedTalent": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "PrimaryWeapon": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "SecondaryWeapon": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "LastPower": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "PlayerClassName": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "Level": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "currentXP": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "XPLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "LastName": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "TalentPoints": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "TalentPoolPoints": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "Credits": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "MediGel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "Grenades": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "OmniGel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SpecializationBonusID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "AutoLevelUpTemplateID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "HealthPerLevel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "StabilityCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ToxicCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Stamina": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Focus": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Precision": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Coordination": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "SkillCharm": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "SkillIntimidate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "SkillHaggle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "HealthCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ShieldCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "HealthMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "LastQuickSlot": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsFemale": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "isDriving": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "ArmorOverridden": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "HelmetShown": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayerClass": {
+      "type": "EBioPartyMemberClassBase",
+      "documentation": null,
+      "flags": 1
+    },
+    "Origin": {
+      "type": "EBioPlayerCharacterBackgroundOrigin",
+      "documentation": null,
+      "flags": 1
+    },
+    "Notoriety": {
+      "type": "EBioPlayerCharacterBackgroundNotoriety",
+      "documentation": null,
+      "flags": 1
+    },
+    "SpectreRank": {
+      "type": "EBioPlayerCharacterSpectreRank",
+      "documentation": null,
+      "flags": 0
+    },
+    "Race": {
+      "type": "EBioAttributePawnRace",
+      "documentation": null,
+      "flags": 0
+    },
+    "AttributePrimary": {
+      "type": "EBioPartyMemberAbility",
+      "documentation": null,
+      "flags": 0
+    },
+    "AttributeSecondary": {
+      "type": "EBioPartyMemberAbility",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurrentQuickSlot": {
+      "type": "EBioItemWeaponRangedType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXSaveGame",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

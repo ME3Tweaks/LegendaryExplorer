@@ -1,0 +1,51 @@
+{
+  "parent": "ParticleModuleTrailBase",
+  "package": "Engine",
+  "variables": {
+    "SourceStrength": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "SourceOffsetDefaults": {
+      "type": "RwVector3",
+      "documentation": null,
+      "flags": 4194369
+    },
+    "SourceName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "SourceOffsetCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLockSourceStength": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bInheritRotation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "SourceMethod": {
+      "type": "ETrail2SourceMethod",
+      "documentation": null,
+      "flags": 1
+    },
+    "SelectionMethod": {
+      "type": "EParticleSourceSelectionMethod",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

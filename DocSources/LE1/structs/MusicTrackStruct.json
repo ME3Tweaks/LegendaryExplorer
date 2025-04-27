@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Params": {
+      "type": "MusicTrackParamStruct",
+      "documentation": null,
+      "flags": 1
+    },
+    "TrackType": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "TheSoundCue": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "MusicTrackDataStructures",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

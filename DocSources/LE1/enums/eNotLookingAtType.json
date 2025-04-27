@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "LNAT_Both": {
+      "value": 0,
+      "documentation": null
+    },
+    "LNAT_CO": {
+      "value": 1,
+      "documentation": null
+    },
+    "LNAT_NCO": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,117 @@
+{
+  "parent": "BioGameEffectAttributeNumeric",
+  "package": "SFXGame",
+  "variables": {
+    "m_value": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bSetToZeroOnUnapply": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Create": {
+      "documentation": null,
+      "signature_members": {
+        "GP": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "nValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmAttributeName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "eAspect": {
+          "type": "EBioGameEffectAttributeAspect",
+          "documentation": null,
+          "flags": 128
+        },
+        "eModifier": {
+          "type": "EBioAttrModType",
+          "documentation": null,
+          "flags": 128
+        },
+        "eType": {
+          "type": "EBioGameEffectAttributeType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bSetToZeroOnUnapply": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Create(BioGameProperty GP, int nValue, Name nmAttributeName, EBioGameEffectAttributeAspect eAspect, EBioAttrModType eModifier, EBioGameEffectAttributeType eType, int nIndex, bool bSetToZeroOnUnapply)"
+    },
+    "Unapply": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Unapply(Object oTarget)"
+    },
+    "RemoveModifier": {
+      "documentation": null,
+      "signature_members": {
+        "attribs": {
+          "type": "BioAttributes",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveModifier(BioAttributes attribs)"
+    },
+    "AddModifier": {
+      "documentation": null,
+      "signature_members": {
+        "attribs": {
+          "type": "BioAttributes",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "AddModifier(BioAttributes attribs)"
+    },
+    "SetBase": {
+      "documentation": null,
+      "signature_members": {
+        "attribs": {
+          "type": "BioAttributes",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBase(BioAttributes attribs)"
+    }
+  },
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

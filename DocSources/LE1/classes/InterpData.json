@@ -1,0 +1,56 @@
+{
+  "parent": "SequenceVariable",
+  "package": "Engine",
+  "variables": {
+    "InterpGroups": {
+      "type": "InterpGroup",
+      "documentation": null,
+      "flags": 4194312
+    },
+    "m_aBioPreLoadData": {
+      "type": "BioSoundPreLoadInfo",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "CurveEdSetup": {
+      "type": "InterpCurveEdSetup",
+      "documentation": null,
+      "flags": 8
+    },
+    "InterpLength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "PathBuildTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "EdSectionStart": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "EdSectionEnd": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nBioCutSceneVersion": {
+      "type": "int",
+      "documentation": null,
+      "flags": 131073
+    },
+    "bShouldBakeAndPrune": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

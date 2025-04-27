@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BNCT_ICONIC_MALE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BNCT_ICONIC_FEMALE": {
+      "value": 1,
+      "documentation": null
+    },
+    "BNCT_CUSTOM_MALE": {
+      "value": 2,
+      "documentation": null
+    },
+    "BNCT_CUSTOM_FEMALE": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,119 @@
+{
+  "parent": "SFXOnlineComponent",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "VfTable_IISFXOnlineComponent": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "mPresenceString": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4096
+    },
+    "mGamePresenceString": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4096
+    },
+    "mQueryAchievementsTimeOut": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "mServiceStarted": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4096
+    },
+    "mIsLoggedIn": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4096
+    }
+  },
+  "functions": {
+    "OnTick": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnTick()"
+    },
+    "RefreshServerAchievements_ASync": {
+      "documentation": null,
+      "signature_members": {
+        "cached": {
+          "type": "SFXCachedAchievements",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RefreshServerAchievements_ASync(out SFXCachedAchievements cached)"
+    },
+    "SetRichPresence": {
+      "documentation": null,
+      "signature_members": {
+        "presence": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "gamePresence": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetRichPresence(string presence, string gamePresence)"
+    },
+    "RequestProfile": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RequestProfile()"
+    },
+    "StartService": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool StartService()"
+    },
+    "EnsureSignedIn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool EnsureSignedIn()"
+    },
+    "GetAPIName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetAPIName()"
+    },
+    "OnRelease": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnRelease()"
+    },
+    "OnInitialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOnlineSubsystem": {
+          "type": "SFXOnlineSubsystem",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnInitialize(SFXOnlineSubsystem oOnlineSubsystem)"
+    }
+  },
+  "states": {},
+  "classflags": 134217878,
+  "configname": "Engine",
+  "documentation": null
+}

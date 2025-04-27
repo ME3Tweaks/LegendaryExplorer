@@ -1,0 +1,59 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "QueryLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "TraceExtent": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "HitLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 131073
+    },
+    "HitNormal": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 131073
+    },
+    "HitObject": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 131073
+    },
+    "VecticalRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Distance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 131073
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BBT_ByActorTag": {
+      "value": 0,
+      "documentation": null
+    },
+    "BBT_ByActorClass": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

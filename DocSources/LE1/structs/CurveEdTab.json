@@ -1,0 +1,38 @@
+{
+  "members": {
+    "TabName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Curves": {
+      "type": "CurveEdEntry",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ViewStartInput": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ViewEndInput": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ViewStartOutput": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ViewEndOutput": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "InterpCurveEdSetup",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

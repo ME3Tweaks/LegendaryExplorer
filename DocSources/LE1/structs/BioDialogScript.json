@@ -1,0 +1,13 @@
+{
+  "members": {
+    "sScriptTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioConversation",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

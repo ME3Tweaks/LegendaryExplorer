@@ -1,0 +1,26 @@
+{
+  "parent": "BioSeqAct_PMBase",
+  "package": "SFXGame",
+  "variables": {
+    "Param": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "OutValue": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "Conditional": {
+      "type": "EBioAutoSet",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

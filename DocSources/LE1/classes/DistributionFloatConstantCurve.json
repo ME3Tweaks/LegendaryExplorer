@@ -1,0 +1,16 @@
+{
+  "parent": "DistributionFloat",
+  "package": "Engine",
+  "variables": {
+    "ConstantCurve": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134230162,
+  "configname": "None",
+  "documentation": null
+}

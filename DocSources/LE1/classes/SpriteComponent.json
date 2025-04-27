@@ -1,0 +1,118 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "Engine",
+  "variables": {
+    "Sprite": {
+      "type": "Texture2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "ScreenSize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "U": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "UL": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "V": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "VL": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIsScreenSizeScaled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "SetSpriteAndUV": {
+      "documentation": null,
+      "signature_members": {
+        "NewSprite": {
+          "type": "Texture2D",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewU": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewUL": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewV": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewVL": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSpriteAndUV(Texture2D NewSprite, int NewU, int NewUL, int NewV, int NewVL)"
+    },
+    "SetUV": {
+      "documentation": null,
+      "signature_members": {
+        "NewU": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewUL": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewV": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewVL": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetUV(int NewU, int NewUL, int NewV, int NewVL)"
+    },
+    "SetSprite": {
+      "documentation": null,
+      "signature_members": {
+        "NewSprite": {
+          "type": "Texture2D",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSprite(Texture2D NewSprite)"
+    }
+  },
+  "states": {},
+  "classflags": 2290102418,
+  "configname": "None",
+  "documentation": null
+}

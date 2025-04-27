@@ -1,0 +1,49 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "Indices": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "LinkCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "IncrementAmount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLooping": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAutoDisableLinks": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

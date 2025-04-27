@@ -1,0 +1,71 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "SRH": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 2101250
+    },
+    "LightingGuid": {
+      "type": "Guid",
+      "documentation": null,
+      "flags": 2
+    },
+    "WindDirection": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "Branch1Material": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 1
+    },
+    "Branch2Material": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 1
+    },
+    "FrondMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 1
+    },
+    "LeafCardMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 1
+    },
+    "LeafMeshMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 1
+    },
+    "BillboardMaterial": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 1
+    },
+    "LeafStaticShadowOpacity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WindStrength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLegacySpeedTree": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

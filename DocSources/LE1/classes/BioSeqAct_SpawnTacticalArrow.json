@@ -1,0 +1,26 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_clsTacticalMarker": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "oLocation": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oTacticalMarker": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

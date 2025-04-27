@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "GFxUI",
+  "variables": {
+    "GCReferences": {
+      "type": "GCReference",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "RefCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

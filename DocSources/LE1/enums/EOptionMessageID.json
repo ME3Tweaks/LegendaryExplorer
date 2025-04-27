@@ -1,0 +1,49 @@
+{
+  "EnumValues": {
+    "OPTION_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "OPTION_CLOSE": {
+      "value": 1,
+      "documentation": null
+    },
+    "OPTION_QUIT": {
+      "value": 2,
+      "documentation": null
+    },
+    "OPTION_RESET_DEFAULTS": {
+      "value": 3,
+      "documentation": null
+    },
+    "OPTION_INITIALIZE": {
+      "value": 4,
+      "documentation": null
+    },
+    "OPTION_SET_OPTION": {
+      "value": 5,
+      "documentation": null
+    },
+    "OPTION_GOTO_MAINMENU": {
+      "value": 6,
+      "documentation": null
+    },
+    "OPTION_RESET_TUTORIALS": {
+      "value": 7,
+      "documentation": null
+    },
+    "OPTION_COMMIT": {
+      "value": 8,
+      "documentation": null
+    },
+    "OPTION_CANCEL_PROMPT": {
+      "value": 9,
+      "documentation": null
+    },
+    "OPTION_REFRESH_HDR": {
+      "value": 10,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,43 @@
+{
+  "members": {
+    "aEffectLevelRows": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "oOwner": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 0
+    },
+    "oContainer": {
+      "type": "BioGamePropertyContainer",
+      "documentation": null,
+      "flags": 0
+    },
+    "oFXLevelTable": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "nGamePropId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nPowerLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nMaxRanks": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioGamePropertyImporter",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

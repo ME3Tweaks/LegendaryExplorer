@@ -1,0 +1,28 @@
+{
+  "members": {
+    "tDOFData": {
+      "type": "BioStageDOFData",
+      "documentation": null,
+      "flags": 1
+    },
+    "sCameraTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "fFov": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fNearPlane": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioStageType",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

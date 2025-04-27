@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "FULLYLOAD_Map": {
+      "value": 0,
+      "documentation": null
+    },
+    "FULLYLOAD_Game_PreLoadClass": {
+      "value": 1,
+      "documentation": null
+    },
+    "FULLYLOAD_Game_PostLoadClass": {
+      "value": 2,
+      "documentation": null
+    },
+    "FULLYLOAD_Always": {
+      "value": 3,
+      "documentation": null
+    },
+    "FULLYLOAD_Mutator": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

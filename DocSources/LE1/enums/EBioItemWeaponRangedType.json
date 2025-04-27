@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ITEM_WEAPON_RANGED_PISTOL": {
+      "value": 0,
+      "documentation": null
+    },
+    "ITEM_WEAPON_RANGED_SHOTGUN": {
+      "value": 1,
+      "documentation": null
+    },
+    "ITEM_WEAPON_RANGED_ASSAULT_RIFLE": {
+      "value": 2,
+      "documentation": null
+    },
+    "ITEM_WEAPON_RANGED_SNIPER": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

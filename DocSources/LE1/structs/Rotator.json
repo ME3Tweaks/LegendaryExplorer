@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Pitch": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "Yaw": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "Roll": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 48
+}

@@ -1,0 +1,51 @@
+{
+  "parent": "AnimNodeSequence",
+  "package": "SFXGame",
+  "variables": {
+    "m_pDFCurTimeProp": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "m_pDFRateProp": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "m_pDFSeqLenProp": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "m_vTotalTranslation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "DF_CurrentTime": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "DF_Rate": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "DF_SequenceLength": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRandomizeStartTime": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

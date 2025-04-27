@@ -1,0 +1,197 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aEvents": {
+      "type": "EBioGamePropertyEvent",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "Create3": {
+      "documentation": null,
+      "signature_members": {
+        "eEvent1": {
+          "type": "EBioGamePropertyEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "eEvent2": {
+          "type": "EBioGamePropertyEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "eEvent3": {
+          "type": "EBioGamePropertyEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "oSource": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "BioGamePropertyEventSet",
+      "signature": "BioGamePropertyEventSet Create3(EBioGamePropertyEvent eEvent1, EBioGamePropertyEvent eEvent2, EBioGamePropertyEvent eEvent3, optional Object oSource)"
+    },
+    "Create2": {
+      "documentation": null,
+      "signature_members": {
+        "eEvent1": {
+          "type": "EBioGamePropertyEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "eEvent2": {
+          "type": "EBioGamePropertyEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "oSource": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "BioGamePropertyEventSet",
+      "signature": "BioGamePropertyEventSet Create2(EBioGamePropertyEvent eEvent1, EBioGamePropertyEvent eEvent2, optional Object oSource)"
+    },
+    "Create1": {
+      "documentation": null,
+      "signature_members": {
+        "eEvent1": {
+          "type": "EBioGamePropertyEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "oSource": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "BioGamePropertyEventSet",
+      "signature": "BioGamePropertyEventSet Create1(EBioGamePropertyEvent eEvent1, optional Object oSource)"
+    },
+    "CheckForAnyEvents": {
+      "documentation": null,
+      "signature_members": {
+        "oEvents": {
+          "type": "BioGamePropertyEventSet",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckForAnyEvents(BioGamePropertyEventSet oEvents)"
+    },
+    "CheckForAllEvents": {
+      "documentation": null,
+      "signature_members": {
+        "oEvents": {
+          "type": "BioGamePropertyEventSet",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckForAllEvents(BioGamePropertyEventSet oEvents)"
+    },
+    "CheckForEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEvent": {
+          "type": "EBioGamePropertyEvent",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckForEvent(EBioGamePropertyEvent eEvent)"
+    },
+    "RemoveEventSet": {
+      "documentation": null,
+      "signature_members": {
+        "oEvents": {
+          "type": "BioGamePropertyEventSet",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveEventSet(BioGamePropertyEventSet oEvents)"
+    },
+    "RemoveEvents": {
+      "documentation": null,
+      "signature_members": {
+        "aEvents": {
+          "type": "EBioGamePropertyEvent",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveEvents(array<EBioGamePropertyEvent> aEvents)"
+    },
+    "RemoveEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEvent": {
+          "type": "EBioGamePropertyEvent",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveEvent(EBioGamePropertyEvent eEvent)"
+    },
+    "AddEventSet": {
+      "documentation": null,
+      "signature_members": {
+        "oEvents": {
+          "type": "BioGamePropertyEventSet",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddEventSet(BioGamePropertyEventSet oEvents)"
+    },
+    "AddEvents": {
+      "documentation": null,
+      "signature_members": {
+        "aEvents": {
+          "type": "EBioGamePropertyEvent",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AddEvents(array<EBioGamePropertyEvent> aEvents)"
+    },
+    "AddEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEvent": {
+          "type": "EBioGamePropertyEvent",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddEvent(EBioGamePropertyEvent eEvent)"
+    },
+    "Clear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Clear()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

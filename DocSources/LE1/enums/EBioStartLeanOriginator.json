@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BIO_SLO_Attack": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_SLO_Zoom": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,75 @@
+{
+  "parent": "BioGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "m_pSourceBehavior": {
+      "type": "BioEpicPawnBehavior",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_pOriginalSquad": {
+      "type": "BioBaseSquad",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Create": {
+      "documentation": null,
+      "signature_members": {
+        "oProperty": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "oHacker": {
+          "type": "BioEpicPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "Create(BioGameProperty oProperty, BioEpicPawnBehavior oHacker)"
+    },
+    "Unapply": {
+      "documentation": null,
+      "signature_members": {
+        "pTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Unapply(Object pTarget)"
+    },
+    "Apply": {
+      "documentation": null,
+      "signature_members": {
+        "pTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object Apply(Object pTarget)"
+    },
+    "InitializeHackAI": {
+      "documentation": null,
+      "signature_members": {
+        "pSourceBehavior": {
+          "type": "BioEpicPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeHackAI(BioEpicPawnBehavior pSourceBehavior)"
+    }
+  },
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

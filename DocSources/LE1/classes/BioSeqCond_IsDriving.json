@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceCondition",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

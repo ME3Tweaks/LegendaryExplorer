@@ -1,0 +1,18 @@
+{
+  "members": {
+    "BoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinPeriodTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "Bio_Appr_Character",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

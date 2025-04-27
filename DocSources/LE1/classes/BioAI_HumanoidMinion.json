@@ -1,0 +1,95 @@
+{
+  "parent": "BioAI_Core",
+  "package": "SFXGame",
+  "variables": {
+    "m_vAvoidLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "OnHacked": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnHacked()"
+    },
+    "HearNoise": {
+      "documentation": null,
+      "signature_members": {
+        "Loudness": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "NoiseMaker": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vNoiseLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "NoiseType": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HearNoise(float Loudness, Actor NoiseMaker, Vector vNoiseLocation, optional Name NoiseType)"
+    },
+    "onDamagedInCover": {
+      "documentation": null,
+      "signature_members": {
+        "oInstigator": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "onDamagedInCover(Controller oInstigator, float fDamage)"
+    },
+    "IsCoverPositionValid": {
+      "documentation": null,
+      "signature_members": {
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "rRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "nRank": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsCoverPositionValid(Vector vLocation, Rotator rRotation, out int nRank)"
+    },
+    "ShouldUseCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldUseCover()"
+    }
+  },
+  "states": {},
+  "classflags": 10486294,
+  "configname": "Game",
+  "documentation": null
+}

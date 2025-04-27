@@ -1,0 +1,28 @@
+{
+  "members": {
+    "SkelMeshLinkupRUID": {
+      "type": "QWord",
+      "documentation": null,
+      "flags": 0
+    },
+    "BoneToTrackTable": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "BoneUseAnimTranslation": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ForceUseMeshTranslation": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "classdef": "AnimSet",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

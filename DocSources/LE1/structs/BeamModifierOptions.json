@@ -1,0 +1,23 @@
+{
+  "members": {
+    "bModify": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bScale": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLock": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "ParticleModuleBeamModifier",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

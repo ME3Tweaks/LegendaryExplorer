@@ -1,0 +1,77 @@
+{
+  "parent": "RigidBodyBase",
+  "package": "Engine",
+  "variables": {
+    "Arrow": {
+      "type": "ArrowComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "ImpulseStrength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ImpulseRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bVelChange": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bStopAtFirstHit": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCauseFracture": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "ImpulseCount": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4294967328
+    }
+  },
+  "functions": {
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "inAction": {
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle inAction)"
+    },
+    "FireLineImpulse": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FireLineImpulse()"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

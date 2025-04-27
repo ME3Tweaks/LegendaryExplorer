@@ -1,0 +1,41 @@
+{
+  "parent": "ActorFactory",
+  "package": "Engine",
+  "variables": {
+    "PawnName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "InventoryList": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ControllerClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 1
+    },
+    "PawnClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 1
+    },
+    "TeamIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bGiveDefaultInventory": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134230166,
+  "configname": "Editor",
+  "documentation": null
+}

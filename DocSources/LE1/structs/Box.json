@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Min": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "Max": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "IsValid": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 48
+}

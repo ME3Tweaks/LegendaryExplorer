@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Descriptor": {
+      "type": "SFXSaveDescriptor",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "Save": {
+      "type": "SFXSaveGame",
+      "documentation": null,
+      "flags": 1048576
+    }
+  },
+  "classdef": "SFXEngine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 131073
+}

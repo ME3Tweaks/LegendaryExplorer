@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "eBioBlendStatePlayAction_NoAction": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioBlendStatePlayAction_Play": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioBlendStatePlayAction_Stop": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioBlendStatePlayAction_Reset": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioBlendStatePlayAction_PlayFromStart": {
+      "value": 4,
+      "documentation": null
+    },
+    "eBioBlendStatePlayAction_PlayFromTime": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

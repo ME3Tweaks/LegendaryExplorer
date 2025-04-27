@@ -1,0 +1,33 @@
+{
+  "members": {
+    "FadeInTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FadeInVolumeLevel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DelayBetweenOldAndNewTrack": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FadeOutTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FadeOutVolumeLevel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "MusicTrackDataStructures",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

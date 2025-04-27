@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "HUD_POWER_BEHAVIOR_TYPE_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "HUD_POWER_BEHAVIOR_TYPE_STANDARD": {
+      "value": 1,
+      "documentation": null
+    },
+    "HUD_POWER_BEHAVIOR_TYPE_ACTIVATION": {
+      "value": 2,
+      "documentation": null
+    },
+    "HUD_POWER_BEHAVIOR_TYPE_DELIVERY": {
+      "value": 3,
+      "documentation": null
+    },
+    "HUD_POWER_BEHAVIOR_TYPE_WEAPON": {
+      "value": 4,
+      "documentation": null
+    },
+    "HUD_POWER_BEHAVIOR_TYPE_WEAPONALT": {
+      "value": 5,
+      "documentation": null
+    },
+    "HUD_POWER_BEHAVIOR_TYPE_GRENADEAMMO": {
+      "value": 6,
+      "documentation": null
+    },
+    "HUD_POWER_BEHAVIOR_TYPE_WEAPONALT_OVERLOAD": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

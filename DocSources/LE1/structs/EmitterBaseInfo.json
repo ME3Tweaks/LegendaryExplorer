@@ -1,0 +1,33 @@
+{
+  "members": {
+    "RelativeLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "RelativeRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "PSC": {
+      "type": "ParticleSystemComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "Base": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "bInheritBaseScale": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "EmitterPool",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

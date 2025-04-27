@@ -1,0 +1,31 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "KillZDamageType": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 1
+    },
+    "KillZ": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SoftKill": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSoftKillZ": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "ETTA_Off": {
+      "value": 0,
+      "documentation": null
+    },
+    "ETTA_On": {
+      "value": 1,
+      "documentation": null
+    },
+    "ETTA_Toggle": {
+      "value": 2,
+      "documentation": null
+    },
+    "ETTA_Trigger": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

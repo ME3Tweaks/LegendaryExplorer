@@ -1,0 +1,23 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXQA",
+  "variables": {
+    "bQAMachine": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 2097174,
+  "configname": "QA",
+  "documentation": null
+}

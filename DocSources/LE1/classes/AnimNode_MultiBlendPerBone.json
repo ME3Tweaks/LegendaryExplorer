@@ -1,0 +1,49 @@
+{
+  "parent": "AnimNodeBlendBase",
+  "package": "Engine",
+  "variables": {
+    "MaskList": {
+      "type": "PerBoneMaskInfo",
+      "documentation": null,
+      "flags": 71303233
+    },
+    "PawnOwner": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 8194
+    },
+    "RotationBlendType": {
+      "type": "EBlendType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "SetMaskWeight": {
+      "documentation": null,
+      "signature_members": {
+        "MaskIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "DesiredWeight": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "BlendTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaskWeight(int MaskIndex, float DesiredWeight, float BlendTime)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

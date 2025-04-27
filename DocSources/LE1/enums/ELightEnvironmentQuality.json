@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "ELEQ_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "ELEQ_NonFlat": {
+      "value": 1,
+      "documentation": null
+    },
+    "ELEQ_MultiLight": {
+      "value": 2,
+      "documentation": null
+    },
+    "ELEQ_Cinematic": {
+      "value": 3,
+      "documentation": null
+    },
+    "ELEQ_CinematicPlusMod": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

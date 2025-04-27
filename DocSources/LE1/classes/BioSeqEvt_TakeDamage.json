@@ -1,0 +1,92 @@
+{
+  "parent": "SequenceEvent",
+  "package": "SFXGame",
+  "variables": {
+    "DamageTypes": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "IgnoreDamageTypes": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "MinDamageAmount": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DamageThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "CurrentDamage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurrentMitigatedDamage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "HandleDamage": {
+      "documentation": null,
+      "signature_members": {
+        "InOriginator": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "InInstigator": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "inDamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "inAmount": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "inMitigatedAmount": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleDamage(Actor InOriginator, Actor InInstigator, Class<DamageType> inDamageType, float inAmount, float inMitigatedAmount)"
+    },
+    "IsValidDamageType": {
+      "documentation": null,
+      "signature_members": {
+        "inDamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidDamageType(Class<DamageType> inDamageType)"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

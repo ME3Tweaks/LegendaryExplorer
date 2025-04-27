@@ -1,0 +1,80 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "ConvexMeshes": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ExclusionShapes": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ExclusionShapePoses": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ForceField": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "U2NRotation": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ExcludeChannel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "CollideWithChannels": {
+      "type": "RBCollisionChannelContainer",
+      "documentation": null,
+      "flags": 3
+    },
+    "SceneIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "bForceActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 33
+    },
+    "RBChannel": {
+      "type": "ERBCollisionChannel",
+      "documentation": null,
+      "flags": 3
+    }
+  },
+  "functions": {
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "inAction": {
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle inAction)"
+    },
+    "DoInitRBPhys": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoInitRBPhys()"
+    }
+  },
+  "states": {},
+  "classflags": 144703635,
+  "configname": "None",
+  "documentation": null
+}

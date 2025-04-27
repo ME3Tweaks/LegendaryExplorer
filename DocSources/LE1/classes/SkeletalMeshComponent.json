@@ -1,0 +1,2612 @@
+{
+  "parent": "MeshComponent",
+  "package": "Engine",
+  "variables": {
+    "SkeletalMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 1
+    },
+    "AttachedToSkelComponent": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "AnimTreeTemplate": {
+      "type": "AnimTree",
+      "documentation": null,
+      "flags": 3
+    },
+    "Animations": {
+      "type": "AnimNode",
+      "documentation": null,
+      "flags": 71303179
+    },
+    "AnimTickArray": {
+      "type": "AnimTickEntry",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "PhysicsAsset": {
+      "type": "PhysicsAsset",
+      "documentation": null,
+      "flags": 3
+    },
+    "PhysicsAssetInstance": {
+      "type": "PhysicsAssetInstance",
+      "documentation": null,
+      "flags": 71311370
+    },
+    "ApexClothing": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12289
+    },
+    "PhysicsWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "GlobalAnimRateScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MeshObject": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "WireframeColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 1
+    },
+    "SpaceBases": {
+      "type": "Matrix",
+      "documentation": null,
+      "flags": 12290
+    },
+    "LocalAtoms": {
+      "type": "BoneAtom",
+      "documentation": null,
+      "flags": 12290
+    },
+    "RequiredBones": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ComposeOrderedRequiredBones": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ComposeOrderedRequiredBonesSkelControlIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 12290
+    },
+    "PhysicsBodySetupToBoneIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ParentAnimComponent": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null,
+      "flags": 67633163
+    },
+    "ParentBoneMap": {
+      "type": "int",
+      "documentation": null,
+      "flags": 12290
+    },
+    "AnimSets": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "TemporarySavedAnimSets": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 12290
+    },
+    "MorphSets": {
+      "type": "MorphTargetSet",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "ActiveMorphs": {
+      "type": "ActiveMorph",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "ActiveCurveMorphs": {
+      "type": "ActiveMorph",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "MorphTargetIndexMap": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Attachments": {
+      "type": "Attachment",
+      "documentation": null,
+      "flags": 6815746
+    },
+    "SkelControlIndex": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "PostPhysSkelControlIndex": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "ForcedLodModel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinLodModel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "PredictedLODLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "OldPredictedLODLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxDistanceFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "bForceWireframe": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bForceRefpose": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOldForceRefPose": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bNoSkeletonUpdate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDisplayBones": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bShowPrePhysBones": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bHideSkin": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bForceRawOffset": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIgnoreControllers": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bTransformFromAnimParent": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "TickTag": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8194
+    },
+    "CachedAtomsTag": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bUseSingleBodyPhysics": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "bRequiredBonesUpToDate": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "MinDistFactorForKinematicUpdate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FramesPhysicsAsleep": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bSkipAllUpdateWhenPhysicsAsleep": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bConsiderAllBodiesForBounds": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUpdateSkelWhenNotRendered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIgnoreControllersWhenNotRendered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bTickAnimNodesWhenNotRendered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bNotUpdatingKinematicDueToDistance": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bForceDiscardRootMotion": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRootMotionModeChangeNotify": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bRootMotionExtractedNotify": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bDisableFaceFXMaterialInstanceCreation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAnimTreeInitialised": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bAnimSetUpdated": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bForceMeshObjectUpdate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bHasPhysicsAssetInstance": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bUpdateKinematicBonesFromAnimation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUpdateJointsFromAnimation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSkelCompFixed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bHasHadPhysicsBlendedIn": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bForceUpdateAttachmentsInTick": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableFullAnimWeightBodies": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bPerBoneVolumeEffects": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSyncActorLocationToRootRigidBody": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseRawData": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bDisableWarningWhenAnimNotFound": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverrideAttachmentOwnerVisibility": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bNeedsToDeleteHitMask": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bBioComputedValidPose": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bBioAllowResubmitPose": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bPauseAnims": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bChartDistanceFactor": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEnableLineCheckWithBounds": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsFrozen": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bFrozenMeshProcessed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bMeshShouldBeFrozen": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LineCheckBoundsScale": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "BioActorsToReBase": {
+      "type": "BioActorReBase",
+      "documentation": null,
+      "flags": 4726786
+    },
+    "BioActorsToAttach": {
+      "type": "BioActorAttach",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "bEnableClothSimulation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bDisableClothCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bClothFrozen": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAutoFreezeClothWhenNotRendered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bClothAwakeOnStartup": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bClothBaseVelClamp": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bClothBaseVelInterp": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAttachClothVertsToBaseBody": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIsClothOnStaticObject": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUpdatedFixedClothVerts": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bClothPositionalDampening": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bClothWindRelativeToOwner": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRecentlyRendered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bCacheAnimSequenceNodes": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bAlwaysUpdateMeshObject": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bNeedsInstanceWeightUpdate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bAlwaysUseInstanceWeights": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bUpdateComposeSkeletonPasses": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "HiddenMaterials": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "InstanceVertexWeightBones": {
+      "type": "BonePair",
+      "documentation": null,
+      "flags": 12290
+    },
+    "FrozenLocalToWorldPos": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 2
+    },
+    "FrozenLocalToWorldRot": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 2
+    },
+    "ClothExternalForce": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 3
+    },
+    "ClothWind": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "ClothBaseVelClampRange": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "ClothBlendWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ClothDynamicBlendWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ClothBlendMinDistanceFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ClothBlendMaxDistanceFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinPosDampRange": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxPosDampRange": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinPosDampScale": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxPosDampScale": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "ClothSim": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "SceneIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ClothMeshPosData": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "ClothMeshNormalData": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "ClothMeshIndexData": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "NumClothMeshVerts": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "NumClothMeshIndices": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ClothMeshParentData": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "NumClothMeshParentIndices": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ClothMeshWeldedPosData": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ClothMeshWeldedNormalData": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ClothMeshWeldedIndexData": {
+      "type": "int",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ClothDirtyBufferFlag": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ClothRBChannel": {
+      "type": "ERBCollisionChannel",
+      "documentation": null,
+      "flags": 3
+    },
+    "ClothRBCollideWithChannels": {
+      "type": "RBCollisionChannelContainer",
+      "documentation": null,
+      "flags": 3
+    },
+    "ClothForceScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "ClothImpulseScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ClothAttachmentTearFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "bClothUseCompartment": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "MinDistanceForClothReset": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "LastClothLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8194
+    },
+    "SoftBodySim": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "SoftBodySceneIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 12290
+    },
+    "bEnableSoftBodySimulation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "SoftBodyTetraPosData": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "SoftBodyTetraIndexData": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "NumSoftBodyTetraVerts": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "NumSoftBodyTetraIndices": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "SoftBodyImpulseScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSoftBodyFrozen": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAutoFreezeSoftBodyWhenNotRendered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSoftBodyAwakeOnStartup": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSoftBodyUseCompartment": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "SoftBodyRBChannel": {
+      "type": "ERBCollisionChannel",
+      "documentation": null,
+      "flags": 3
+    },
+    "SoftBodyRBCollideWithChannels": {
+      "type": "RBCollisionChannelContainer",
+      "documentation": null,
+      "flags": 3
+    },
+    "SoftBodyASVPlane": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "LimitMaterial": {
+      "type": "Material",
+      "documentation": null,
+      "flags": 0
+    },
+    "RootMotionDelta": {
+      "type": "BoneAtom",
+      "documentation": null,
+      "flags": 8194
+    },
+    "RootMotionVelocity": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "RootBoneTranslation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8194
+    },
+    "RootMotionAccelScale": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "RootMotionMode": {
+      "type": "ERootMotionMode",
+      "documentation": null,
+      "flags": 1
+    },
+    "PreviousRMM": {
+      "type": "ERootMotionMode",
+      "documentation": null,
+      "flags": 2
+    },
+    "PendingRMM": {
+      "type": "ERootMotionMode",
+      "documentation": null,
+      "flags": 0
+    },
+    "OldPendingRMM": {
+      "type": "ERootMotionMode",
+      "documentation": null,
+      "flags": 0
+    },
+    "bRMMOneFrameDelay": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "RootMotionRotationMode": {
+      "type": "ERootMotionRotationMode",
+      "documentation": null,
+      "flags": 1
+    },
+    "FaceFXBlendMode": {
+      "type": "EFaceFXBlendMode",
+      "documentation": null,
+      "flags": 1
+    },
+    "FaceFXActorInstance": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12288
+    },
+    "bFaceFXDisabled": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "FaceFXTimer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FaceBlendAtoms": {
+      "type": "BoneAtom",
+      "documentation": null,
+      "flags": 12290
+    },
+    "MaterialBlendValues": {
+      "type": "float",
+      "documentation": null,
+      "flags": 12290
+    },
+    "bDoClipToClipBlend": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bNotThisFrame": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bSetNotThisFrame": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bBioFaceFXOpenInMatinee": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "FaceBlendTimer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "FaceBlendSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "FaceBlendInterpolator": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bOverrideParentSkeleton": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmOverrideStartBoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "OverrideBones": {
+      "type": "BoneOverrideInfo",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "MinAutoLODLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "CachedFaceFXAudioComp": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "BoneVisibility": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "LocalToWorldBoneAtom": {
+      "type": "BoneAtom",
+      "documentation": null,
+      "flags": 8194
+    },
+    "ProgressiveDrawingFraction": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "BoneMaterialDrivers": {
+      "type": "BoneDrivenMaterialParameter",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_fBioFaceAudioRampDownTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bBioAreRigidBodiesAwake": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bCachedRootBodyOffset": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "RootBodyOffsetInvTM": {
+      "type": "Matrix",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bStopFaceFXAnim": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 12288
+    },
+    "m_pBioFaceFXAsset": {
+      "type": "FaceFXAsset",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_aBioFFXBoneMap": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 12288
+    },
+    "m_bBioFFXShouldRelinkBoneMap": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "BreakConstraint": {
+      "documentation": null,
+      "signature_members": {
+        "Impulse": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "InBoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bVelChange": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "BreakConstraint(Vector Impulse, Vector HitLocation, Name InBoneName, optional bool bVelChange)"
+    },
+    "SkelMeshCompOnParticleSystemFinished": {
+      "documentation": null,
+      "signature_members": {
+        "PSC": {
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "SkelMeshCompOnParticleSystemFinished(ParticleSystemComponent PSC)"
+    },
+    "PlayParticleEffect": {
+      "documentation": null,
+      "signature_members": {
+        "AnimNotifyData": {
+          "type": "AnimNotify_PlayParticleEffect",
+          "documentation": null,
+          "flags": 130
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayParticleEffect(const AnimNotify_PlayParticleEffect AnimNotifyData)"
+    },
+    "StopAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopAnim()"
+    },
+    "PlayAnim": {
+      "documentation": null,
+      "signature_members": {
+        "AnimName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Duration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "bLoop": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bRestartIfAlreadyPlaying": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "StartTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "bPlayBackwards": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayAnim(Name AnimName, optional float Duration, optional bool bLoop, optional bool bRestartIfAlreadyPlaying, optional float StartTime, optional bool bPlayBackwards)"
+    },
+    "ShowMaterialSection": {
+      "documentation": null,
+      "signature_members": {
+        "MaterialID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bShow": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowMaterialSection(int MaterialID, bool bShow)"
+    },
+    "CalculateRootBodyOffsetInvTM": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CalculateRootBodyOffsetInvTM()"
+    },
+    "BioEnableFaceFX": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "BioEnableFaceFX(bool bEnable)"
+    },
+    "IsFrozen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsFrozen()"
+    },
+    "SetFrozen": {
+      "documentation": null,
+      "signature_members": {
+        "bFrozen": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFrozen(bool bFrozen)"
+    },
+    "UpdateMeshForBrokenConstraints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateMeshForBrokenConstraints()"
+    },
+    "UnHideBoneByName": {
+      "documentation": null,
+      "signature_members": {
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UnHideBoneByName(Name BoneName)"
+    },
+    "HideBoneByName": {
+      "documentation": null,
+      "signature_members": {
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "PhysBodyOption": {
+          "type": "EPhysBodyOp",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HideBoneByName(Name BoneName, EPhysBodyOp PhysBodyOption)"
+    },
+    "IsBoneHidden": {
+      "documentation": null,
+      "signature_members": {
+        "BoneIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsBoneHidden(int BoneIndex)"
+    },
+    "UnHideBone": {
+      "documentation": null,
+      "signature_members": {
+        "BoneIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UnHideBone(int BoneIndex)"
+    },
+    "HideBone": {
+      "documentation": null,
+      "signature_members": {
+        "BoneIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "PhysBodyOption": {
+          "type": "EPhysBodyOp",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HideBone(int BoneIndex, EPhysBodyOp PhysBodyOption)"
+    },
+    "SetFaceFXRegisterEx": {
+      "documentation": null,
+      "signature_members": {
+        "RegName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "RegOp": {
+          "type": "EFaceFXRegOp",
+          "documentation": null,
+          "flags": 128
+        },
+        "FirstValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "FirstInterpDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "NextValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "NextInterpDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFaceFXRegisterEx(string RegName, EFaceFXRegOp RegOp, float FirstValue, float FirstInterpDuration, float NextValue, float NextInterpDuration)"
+    },
+    "SetFaceFXRegister": {
+      "documentation": null,
+      "signature_members": {
+        "RegName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "RegVal": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "RegOp": {
+          "type": "EFaceFXRegOp",
+          "documentation": null,
+          "flags": 128
+        },
+        "InterpDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFaceFXRegister(string RegName, float RegVal, EFaceFXRegOp RegOp, optional float InterpDuration)"
+    },
+    "GetFaceFXRegister": {
+      "documentation": null,
+      "signature_members": {
+        "RegName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetFaceFXRegister(string RegName)"
+    },
+    "DeclareFaceFXRegister": {
+      "documentation": null,
+      "signature_members": {
+        "RegName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "DeclareFaceFXRegister(string RegName)"
+    },
+    "IsPlayingFaceFXAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPlayingFaceFXAnim()"
+    },
+    "StopFaceFXAnim": {
+      "documentation": null,
+      "signature_members": {
+        "fBioRampDownTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "StopFaceFXAnim(optional float fBioRampDownTime)"
+    },
+    "PlayFaceFXAnim": {
+      "documentation": null,
+      "signature_members": {
+        "FaceFXAnimSetRef": {
+          "type": "FaceFXAnimSet",
+          "documentation": null,
+          "flags": 128
+        },
+        "AnimName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "GroupName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "SoundCueToPlay": {
+          "type": "SoundCue",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayFaceFXAnim(FaceFXAnimSet FaceFXAnimSetRef, string AnimName, string GroupName, SoundCue SoundCueToPlay)"
+    },
+    "ToggleInstanceVertexWeights": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ToggleInstanceVertexWeights(bool bEnable)"
+    },
+    "UpdateInstanceVertexWeightBones": {
+      "documentation": null,
+      "signature_members": {
+        "BonePairs": {
+          "type": "BonePair",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateInstanceVertexWeightBones(array<BonePair> BonePairs)"
+    },
+    "FindInstanceVertexweightBonePair": {
+      "documentation": null,
+      "signature_members": {
+        "Bones": {
+          "type": "BonePair",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindInstanceVertexweightBonePair(BonePair Bones)"
+    },
+    "RemoveInstanceVertexWeightBoneParented": {
+      "documentation": null,
+      "signature_members": {
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveInstanceVertexWeightBoneParented(Name BoneName)"
+    },
+    "AddInstanceVertexWeightBoneParented": {
+      "documentation": null,
+      "signature_members": {
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bPairWithParent": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "AddInstanceVertexWeightBoneParented(Name BoneName, optional bool bPairWithParent)"
+    },
+    "GetBonesWithinRadius": {
+      "documentation": null,
+      "signature_members": {
+        "Origin": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Radius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "TraceFlags": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_Bones": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetBonesWithinRadius(Vector Origin, float Radius, int TraceFlags, out array<Name> out_Bones)"
+    },
+    "UpdateAnimations": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateAnimations()"
+    },
+    "ForceSkelUpdate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ForceSkelUpdate()"
+    },
+    "UpdateRBBonesFromSpaceBases": {
+      "documentation": null,
+      "signature_members": {
+        "bMoveUnfixedBodies": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bTeleport": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateRBBonesFromSpaceBases(bool bMoveUnfixedBodies, bool bTeleport)"
+    },
+    "SetHasPhysicsAssetInstance": {
+      "documentation": null,
+      "signature_members": {
+        "bHasInstance": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHasPhysicsAssetInstance(bool bHasInstance)"
+    },
+    "FindBodyInstanceNamed": {
+      "documentation": null,
+      "signature_members": {
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "RB_BodyInstance",
+      "signature": "RB_BodyInstance FindBodyInstanceNamed(Name BoneName)"
+    },
+    "FindConstraintBoneName": {
+      "documentation": null,
+      "signature_members": {
+        "ConstraintIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name FindConstraintBoneName(int ConstraintIndex)"
+    },
+    "FindConstraintIndex": {
+      "documentation": null,
+      "signature_members": {
+        "ConstraintName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindConstraintIndex(Name ConstraintName)"
+    },
+    "InitMorphTargets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitMorphTargets()"
+    },
+    "InitSkelControls": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitSkelControls()"
+    },
+    "UpdateParentBoneMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateParentBoneMap()"
+    },
+    "SetParentAnimComponent": {
+      "documentation": null,
+      "signature_members": {
+        "NewParentAnimComp": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "SetParentAnimComponent(SkeletalMeshComponent NewParentAnimComp)"
+    },
+    "SetAnimTreeTemplate": {
+      "documentation": null,
+      "signature_members": {
+        "NewTemplate": {
+          "type": "AnimTree",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAnimTreeTemplate(AnimTree NewTemplate)"
+    },
+    "GetClosestCollidingBoneLocation": {
+      "documentation": null,
+      "signature_members": {
+        "TestLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "bCheckZeroExtent": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bCheckNonZeroExtent": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetClosestCollidingBoneLocation(Vector TestLocation, bool bCheckZeroExtent, bool bCheckNonZeroExtent)"
+    },
+    "BioFindClosestBones": {
+      "documentation": null,
+      "signature_members": {
+        "vTestLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "BoneNames": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "fRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bOutsideRadius": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "BioFindClosestBones(Vector vTestLocation, out array<Name> BoneNames, float fRadius, optional bool bOutsideRadius)"
+    },
+    "FindClosestBone": {
+      "documentation": null,
+      "signature_members": {
+        "TestLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "BoneLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 400
+        },
+        "IgnoreScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name FindClosestBone(Vector TestLocation, optional out Vector BoneLocation, optional float IgnoreScale)"
+    },
+    "TransformFromBoneSpace": {
+      "documentation": null,
+      "signature_members": {
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "InPosition": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "InRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutPosition": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "OutRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "TransformFromBoneSpace(Name BoneName, Vector InPosition, Rotator InRotation, out Vector OutPosition, out Rotator OutRotation)"
+    },
+    "TransformToBoneSpace": {
+      "documentation": null,
+      "signature_members": {
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "InPosition": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "InRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutPosition": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "OutRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "TransformToBoneSpace(Name BoneName, Vector InPosition, Rotator InRotation, out Vector OutPosition, out Rotator OutRotation)"
+    },
+    "GetBoneAxis": {
+      "documentation": null,
+      "signature_members": {
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Axis": {
+          "type": "EAxis",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetBoneAxis(Name BoneName, EAxis Axis)"
+    },
+    "GetRefPosePosition": {
+      "documentation": null,
+      "signature_members": {
+        "BoneIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetRefPosePosition(int BoneIndex)"
+    },
+    "BoneIsChildOf": {
+      "documentation": null,
+      "signature_members": {
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ParentBoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool BoneIsChildOf(Name BoneName, Name ParentBoneName)"
+    },
+    "GetBoneNames": {
+      "documentation": null,
+      "signature_members": {
+        "BoneNames": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetBoneNames(out array<Name> BoneNames)"
+    },
+    "GetParentBoneIndex": {
+      "documentation": null,
+      "signature_members": {
+        "BoneIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetParentBoneIndex(int BoneIndex)"
+    },
+    "GetParentBone": {
+      "documentation": null,
+      "signature_members": {
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetParentBone(Name BoneName)"
+    },
+    "GetBoneMatrix": {
+      "documentation": null,
+      "signature_members": {
+        "BoneIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Matrix",
+      "signature": "Matrix GetBoneMatrix(int BoneIndex)"
+    },
+    "GetBoneName": {
+      "documentation": null,
+      "signature_members": {
+        "BoneIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetBoneName(int BoneIndex)"
+    },
+    "MatchRefBone": {
+      "documentation": null,
+      "signature_members": {
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int MatchRefBone(Name BoneName)"
+    },
+    "GetBoneLocation": {
+      "documentation": null,
+      "signature_members": {
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Space": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetBoneLocation(Name BoneName, optional int Space)"
+    },
+    "GetBoneQuaternion": {
+      "documentation": null,
+      "signature_members": {
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Space": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Quat",
+      "signature": "Quat GetBoneQuaternion(Name BoneName, optional int Space)"
+    },
+    "FindMorphNode": {
+      "documentation": null,
+      "signature_members": {
+        "InNodeName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "MorphNodeBase",
+      "signature": "MorphNodeBase FindMorphNode(Name InNodeName)"
+    },
+    "FindSkelControl": {
+      "documentation": null,
+      "signature_members": {
+        "InControlName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "SkelControlBase",
+      "signature": "SkelControlBase FindSkelControl(Name InControlName)"
+    },
+    "AllAnimNodes": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "AnimNode",
+      "signature": "array<AnimNode> AllAnimNodes(Class<AnimNode> BaseClass)"
+    },
+    "FindAnimNode": {
+      "documentation": null,
+      "signature_members": {
+        "InNodeName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "AnimNode",
+      "signature": "AnimNode FindAnimNode(Name InNodeName)"
+    },
+    "FindMorphTarget": {
+      "documentation": null,
+      "signature_members": {
+        "MorphTargetName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "MorphTarget",
+      "signature": "MorphTarget FindMorphTarget(Name MorphTargetName)"
+    },
+    "GetAnimLength": {
+      "documentation": null,
+      "signature_members": {
+        "AnimSeqName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetAnimLength(Name AnimSeqName)"
+    },
+    "GetAnimRateByDuration": {
+      "documentation": null,
+      "signature_members": {
+        "AnimSeqName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Duration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetAnimRateByDuration(Name AnimSeqName, float Duration)"
+    },
+    "RestoreSavedAnimSets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RestoreSavedAnimSets()"
+    },
+    "SaveAnimSets": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SaveAnimSets()"
+    },
+    "BioGetDetails": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string BioGetDetails()"
+    },
+    "FindAnimSequence": {
+      "documentation": null,
+      "signature_members": {
+        "AnimSeqName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "AnimSequence",
+      "signature": "AnimSequence FindAnimSequence(Name AnimSeqName)"
+    },
+    "WakeSoftBody": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "WakeSoftBody()"
+    },
+    "SetSoftBodyFrozen": {
+      "documentation": null,
+      "signature_members": {
+        "bNewFrozen": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSoftBodyFrozen(bool bNewFrozen)"
+    },
+    "UpdateSoftBodyParams": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateSoftBodyParams()"
+    },
+    "SetClothValidBounds": {
+      "documentation": null,
+      "signature_members": {
+        "ClothValidBoundsMin": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "ClothValidBoundsMax": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothValidBounds(Vector ClothValidBoundsMin, Vector ClothValidBoundsMax)"
+    },
+    "EnableClothValidBounds": {
+      "documentation": null,
+      "signature_members": {
+        "IfEnableClothValidBounds": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableClothValidBounds(bool IfEnableClothValidBounds)"
+    },
+    "AttachClothToCollidingShapes": {
+      "documentation": null,
+      "signature_members": {
+        "AttatchTwoWay": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "AttachTearable": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachClothToCollidingShapes(bool AttatchTwoWay, bool AttachTearable)"
+    },
+    "SetClothVelocity": {
+      "documentation": null,
+      "signature_members": {
+        "VelocityOffSet": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothVelocity(Vector VelocityOffSet)"
+    },
+    "SetClothPosition": {
+      "documentation": null,
+      "signature_members": {
+        "ClothOffSet": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothPosition(Vector ClothOffSet)"
+    },
+    "SetClothSleep": {
+      "documentation": null,
+      "signature_members": {
+        "IfClothSleep": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothSleep(bool IfClothSleep)"
+    },
+    "SetClothThickness": {
+      "documentation": null,
+      "signature_members": {
+        "ClothThickness": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothThickness(float ClothThickness)"
+    },
+    "SetClothTearFactor": {
+      "documentation": null,
+      "signature_members": {
+        "ClothTearFactor": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothTearFactor(float ClothTearFactor)"
+    },
+    "SetClothStretchingStiffness": {
+      "documentation": null,
+      "signature_members": {
+        "ClothStretchingStiffness": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothStretchingStiffness(float ClothStretchingStiffness)"
+    },
+    "SetClothSolverIterations": {
+      "documentation": null,
+      "signature_members": {
+        "ClothSolverIterations": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothSolverIterations(int ClothSolverIterations)"
+    },
+    "SetClothSleepLinearVelocity": {
+      "documentation": null,
+      "signature_members": {
+        "ClothSleepLinearVelocity": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothSleepLinearVelocity(float ClothSleepLinearVelocity)"
+    },
+    "SetClothPressure": {
+      "documentation": null,
+      "signature_members": {
+        "ClothPressure": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothPressure(float ClothPressure)"
+    },
+    "SetClothFriction": {
+      "documentation": null,
+      "signature_members": {
+        "ClothFriction": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothFriction(float ClothFriction)"
+    },
+    "SetClothFlags": {
+      "documentation": null,
+      "signature_members": {
+        "ClothFlags": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothFlags(int ClothFlags)"
+    },
+    "SetClothDampingCoefficient": {
+      "documentation": null,
+      "signature_members": {
+        "ClothDampingCoefficient": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothDampingCoefficient(float ClothDampingCoefficient)"
+    },
+    "SetClothCollisionResponseCoefficient": {
+      "documentation": null,
+      "signature_members": {
+        "ClothCollisionResponseCoefficient": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothCollisionResponseCoefficient(float ClothCollisionResponseCoefficient)"
+    },
+    "SetClothBendingStiffness": {
+      "documentation": null,
+      "signature_members": {
+        "ClothBendingStiffness": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothBendingStiffness(float ClothBendingStiffness)"
+    },
+    "SetClothAttachmentTearFactor": {
+      "documentation": null,
+      "signature_members": {
+        "ClothAttachTearFactor": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothAttachmentTearFactor(float ClothAttachTearFactor)"
+    },
+    "SetClothAttachmentResponseCoefficient": {
+      "documentation": null,
+      "signature_members": {
+        "ClothAttachmentResponseCoefficient": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothAttachmentResponseCoefficient(float ClothAttachmentResponseCoefficient)"
+    },
+    "GetBioFaceFXAsset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "FaceFXAsset",
+      "signature": "FaceFXAsset GetBioFaceFXAsset()"
+    },
+    "GetClothThickness": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetClothThickness()"
+    },
+    "GetClothTearFactor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetClothTearFactor()"
+    },
+    "GetClothStretchingStiffness": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetClothStretchingStiffness()"
+    },
+    "GetClothSolverIterations": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetClothSolverIterations()"
+    },
+    "GetClothSleepLinearVelocity": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetClothSleepLinearVelocity()"
+    },
+    "GetClothPressure": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetClothPressure()"
+    },
+    "GetClothFriction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetClothFriction()"
+    },
+    "GetClothFlags": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetClothFlags()"
+    },
+    "GetClothDampingCoefficient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetClothDampingCoefficient()"
+    },
+    "GetClothCollisionResponseCoefficient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetClothCollisionResponseCoefficient()"
+    },
+    "GetClothBendingStiffness": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetClothBendingStiffness()"
+    },
+    "GetClothAttachmentTearFactor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetClothAttachmentTearFactor()"
+    },
+    "GetClothAttachmentResponseCoefficient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetClothAttachmentResponseCoefficient()"
+    },
+    "ResetClothVertsToRefPose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetClothVertsToRefPose()"
+    },
+    "SetAttachClothVertsToBaseBody": {
+      "documentation": null,
+      "signature_members": {
+        "bAttachVerts": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAttachClothVertsToBaseBody(bool bAttachVerts)"
+    },
+    "SetClothExternalForce": {
+      "documentation": null,
+      "signature_members": {
+        "InForce": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothExternalForce(Vector InForce)"
+    },
+    "UpdateClothParams": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateClothParams()"
+    },
+    "SetClothFrozen": {
+      "documentation": null,
+      "signature_members": {
+        "bNewFrozen": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetClothFrozen(bool bNewFrozen)"
+    },
+    "SetEnableClothSimulation": {
+      "documentation": null,
+      "signature_members": {
+        "bInEnable": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnableClothSimulation(bool bInEnable)"
+    },
+    "SetForceRefPose": {
+      "documentation": null,
+      "signature_members": {
+        "bNewForceRefPose": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetForceRefPose(bool bNewForceRefPose)"
+    },
+    "SetPhysicsAsset": {
+      "documentation": null,
+      "signature_members": {
+        "NewPhysicsAsset": {
+          "type": "PhysicsAsset",
+          "documentation": null,
+          "flags": 128
+        },
+        "bForceReInit": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPhysicsAsset(PhysicsAsset NewPhysicsAsset, optional bool bForceReInit)"
+    },
+    "SetSkeletalMesh": {
+      "documentation": null,
+      "signature_members": {
+        "NewMesh": {
+          "type": "SkeletalMesh",
+          "documentation": null,
+          "flags": 128
+        },
+        "bKeepSpaceBases": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "InbAlwaysUseInstanceWeights": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSkeletalMesh(SkeletalMesh NewMesh, optional bool bKeepSpaceBases, optional bool InbAlwaysUseInstanceWeights)"
+    },
+    "BioComputeAttachedComponentPositionRotation": {
+      "documentation": null,
+      "signature_members": {
+        "Component": {
+          "type": "ActorComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "Position": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "Orientation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        },
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool BioComputeAttachedComponentPositionRotation(ActorComponent Component, out Vector Position, out Rotator Orientation, optional Name BoneName)"
+    },
+    "AttachedComponents": {
+      "documentation": null,
+      "signature_members": {
+        "BaseClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutComponent": {
+          "type": "ActorComponent",
+          "documentation": null,
+          "flags": 67109248
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachedComponents(Class<ActorComponent> BaseClass, out ActorComponent OutComponent)"
+    },
+    "IsComponentAttached": {
+      "documentation": null,
+      "signature_members": {
+        "Component": {
+          "type": "ActorComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsComponentAttached(ActorComponent Component, optional Name BoneName)"
+    },
+    "FindComponentAttachedToBone": {
+      "documentation": null,
+      "signature_members": {
+        "InBoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "ActorComponent",
+      "signature": "ActorComponent FindComponentAttachedToBone(Name InBoneName)"
+    },
+    "GetSocketBoneName": {
+      "documentation": null,
+      "signature_members": {
+        "InSocketName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetSocketBoneName(Name InSocketName)"
+    },
+    "GetSocketByName": {
+      "documentation": null,
+      "signature_members": {
+        "InSocketName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "SkeletalMeshSocket",
+      "signature": "SkeletalMeshSocket GetSocketByName(Name InSocketName)"
+    },
+    "GetSocketWorldLocationAndRotation": {
+      "documentation": null,
+      "signature_members": {
+        "InSocketName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "OutRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 400
+        },
+        "Space": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSocketWorldLocationAndRotation(Name InSocketName, out Vector OutLocation, optional out Rotator OutRotation, optional int Space)"
+    },
+    "AttachComponentToSocket": {
+      "documentation": null,
+      "signature_members": {
+        "Component": {
+          "type": "ActorComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "SocketName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachComponentToSocket(ActorComponent Component, Name SocketName)"
+    },
+    "DetachComponent": {
+      "documentation": null,
+      "signature_members": {
+        "Component": {
+          "type": "ActorComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "DetachComponent(ActorComponent Component)"
+    },
+    "AttachComponent": {
+      "documentation": null,
+      "signature_members": {
+        "Component": {
+          "type": "ActorComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "BoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "RelativeLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
+        },
+        "RelativeRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 144
+        },
+        "RelativeScale": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachComponent(ActorComponent Component, Name BoneName, optional Vector RelativeLocation, optional Rotator RelativeRotation, optional Vector RelativeScale)"
+    }
+  },
+  "states": {},
+  "classflags": 2157973906,
+  "configname": "None",
+  "documentation": null
+}

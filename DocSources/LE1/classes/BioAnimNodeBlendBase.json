@@ -1,0 +1,79 @@
+{
+  "parent": "AnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_fBlendTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fRemainingTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fTotalBlendTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fTargetWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nLastChild": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nTargetChild": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bIsBlending": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bTriggerTimeBlend": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bBlendDirect": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bShowSlider": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SetChildAnimTime": {
+      "documentation": null,
+      "signature_members": {
+        "oChild": {
+          "type": "AnimNode",
+          "documentation": null,
+          "flags": 128
+        },
+        "fTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetChildAnimTime(AnimNode oChild, float fTime)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

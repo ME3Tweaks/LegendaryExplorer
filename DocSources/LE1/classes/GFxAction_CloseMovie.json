@@ -1,0 +1,28 @@
+{
+  "parent": "SequenceAction",
+  "package": "GFxUI",
+  "variables": {
+    "Movie": {
+      "type": "GFxMovie",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUnload": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "IsValidLevelSequenceObject": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsValidLevelSequenceObject()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

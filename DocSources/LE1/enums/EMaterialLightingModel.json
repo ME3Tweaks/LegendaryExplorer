@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "MLM_Phong": {
+      "value": 0,
+      "documentation": null
+    },
+    "MLM_NonDirectional": {
+      "value": 1,
+      "documentation": null
+    },
+    "MLM_Unlit": {
+      "value": 2,
+      "documentation": null
+    },
+    "MLM_SHPRT": {
+      "value": 3,
+      "documentation": null
+    },
+    "MLM_Custom": {
+      "value": 4,
+      "documentation": null
+    },
+    "MLM_Anisotropic": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,61 @@
+{
+  "parent": "BioGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmProperty": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_p2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmColumn": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bZeroOnUnapply": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Unapply": {
+      "documentation": null,
+      "signature_members": {
+        "pTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Unapply(Object pTarget)"
+    },
+    "Apply": {
+      "documentation": null,
+      "signature_members": {
+        "pTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object Apply(Object pTarget)"
+    }
+  },
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

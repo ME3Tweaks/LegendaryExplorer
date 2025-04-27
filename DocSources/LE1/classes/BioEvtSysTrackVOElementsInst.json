@@ -1,0 +1,96 @@
+{
+  "parent": "BioInterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapPawnHistory": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 12288
+    },
+    "m_aDefaultActorTypes": {
+      "type": "BioVOActorType",
+      "documentation": null,
+      "flags": 4218880
+    },
+    "m_vCamPos": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_rCamRot": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_tDOFData": {
+      "type": "BioStageDOFData",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nProceduralCameraClass": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_pFactory": {
+      "type": "BioActorFactory",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pConvOwner": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nmConvOwnerTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pConvStage": {
+      "type": "BioStage",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pConversation": {
+      "type": "BioConversation",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_pPawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nSpeakerIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fFOV": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fNearPlane": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bGoodCamData": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bMale": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
+  "documentation": null
+}

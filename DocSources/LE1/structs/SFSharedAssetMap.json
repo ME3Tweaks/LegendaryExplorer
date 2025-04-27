@@ -1,0 +1,18 @@
+{
+  "members": {
+    "SharedFile": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "SharedResource": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "classdef": "BioSFManager",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

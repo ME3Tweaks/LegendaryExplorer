@@ -1,0 +1,272 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "InventoryClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 4294967328
+    },
+    "Inventory": {
+      "type": "Inventory",
+      "documentation": null,
+      "flags": 0
+    },
+    "PickupCache": {
+      "type": "NavigationPoint",
+      "documentation": null,
+      "flags": 0
+    },
+    "bFadeOut": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4294967328
+    }
+  },
+  "functions": {
+    "RecheckValidTouch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RecheckValidTouch()"
+    },
+    "PickedUpBy": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PickedUpBy(Pawn P)"
+    },
+    "GiveTo": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GiveTo(Pawn P)"
+    },
+    "Landed": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "FloorActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Landed(Vector HitNormal, Actor FloorActor)"
+    },
+    "DetourWeight": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "PathWeight": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float DetourWeight(Pawn Other, float PathWeight)"
+    },
+    "EncroachedBy": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "EncroachedBy(Actor Other)"
+    },
+    "SetPickupParticles": {
+      "documentation": null,
+      "signature_members": {
+        "PickupParticles": {
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPickupParticles(ParticleSystemComponent PickupParticles)"
+    },
+    "SetPickupMesh": {
+      "documentation": null,
+      "signature_members": {
+        "PickupMesh": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPickupMesh(PrimitiveComponent PickupMesh)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "RemoveFromNavigation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RemoveFromNavigation()"
+    },
+    "AddToNavigation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AddToNavigation()"
+    }
+  },
+  "states": {
+    "FadeOut": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Pickup": {
+      "functions": {
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "CheckTouching": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "Timer": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "Touch": {
+          "documentation": null,
+          "signature_members": {
+            "Other": {
+              "type": "Actor",
+              "documentation": null,
+              "flags": 128
+            },
+            "OtherComp": {
+              "type": "PrimitiveComponent",
+              "documentation": null,
+              "flags": 67108992
+            },
+            "HitLocation": {
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
+            },
+            "HitNormal": {
+              "type": "Vector",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "RecheckValidTouch": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ValidTouch": {
+          "documentation": null,
+          "signature_members": {
+            "Other": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

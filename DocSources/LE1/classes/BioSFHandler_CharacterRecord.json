@@ -1,0 +1,301 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_PawnIsSpawned": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_lstSquadNicknames": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_WorldInfo": {
+      "type": "BioWorldInfo",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_CurrentPawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_TalentContainer": {
+      "type": "BioTalentContainer",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_CurrentPawnIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nMaxRenegade": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "nMaxParagon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_srFaceCodeFormat": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fScrollValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bWasWearingHelmet": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetSquadMemberNames": {
+      "documentation": null,
+      "signature_members": {
+        "srCurMember": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
+        },
+        "srPrevMember": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
+        },
+        "srNextMember": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSquadMemberNames(out stringref srCurMember, out stringref srPrevMember, out stringref srNextMember)"
+    },
+    "RestoreHeadGear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RestoreHeadGear()"
+    },
+    "HideHeadGear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideHeadGear()"
+    },
+    "GetExperienceProgress": {
+      "documentation": null,
+      "signature_members": {
+        "currentXP": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "targetXP": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetExperienceProgress(out int currentXP, out int targetXP)"
+    },
+    "UpdateTalentPoints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateTalentPoints()"
+    },
+    "UpdateTalentRanks": {
+      "documentation": null,
+      "signature_members": {
+        "talentIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Data": {
+          "type": "BioTalentDynamicData",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateTalentRanks(int talentIndex, const out BioTalentDynamicData Data)"
+    },
+    "UpdateTalentList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateTalentList()"
+    },
+    "CreateTalentList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CreateTalentList()"
+    },
+    "UpdateCharacterStats": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCharacterStats()"
+    },
+    "GetCharacterLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetCharacterLevel()"
+    },
+    "UpdateCharacter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCharacter()"
+    },
+    "CancelTalentChanges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CancelTalentChanges()"
+    },
+    "ClearTalentChanges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearTalentChanges()"
+    },
+    "CommitTalentChanges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CommitTalentChanges()"
+    },
+    "PurchaseTalentRank": {
+      "documentation": null,
+      "signature_members": {
+        "talentIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PurchaseTalentRank(int talentIndex)"
+    },
+    "AutoLevelUp": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AutoLevelUp()"
+    },
+    "ChangeToCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "NextCharacter": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ChangeToCharacter(BioPawn NextCharacter)"
+    },
+    "NextCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "bNext": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NextCharacter(bool bNext)"
+    },
+    "InitializeCharacterRecord": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InitializeCharacterRecord()"
+    },
+    "ToggleHelmet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleHelmet()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "Parameters": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> Parameters)"
+    }
+  },
+  "states": {},
+  "classflags": 10485790,
+  "configname": "UI",
+  "documentation": null
+}

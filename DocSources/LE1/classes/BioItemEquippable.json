@@ -1,0 +1,88 @@
+{
+  "parent": "BioItemSophisticated",
+  "package": "SFXGame",
+  "variables": {
+    "m_eEquipmentType": {
+      "type": "EBioEquipmentType",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {
+    "OnGPEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEvent": {
+          "type": "EBioGamePropertyEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "pTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGPEvent(EBioGamePropertyEvent eEvent, Object pTarget)"
+    },
+    "DescribeItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeItem()"
+    },
+    "OnUnequipInternal": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUnequipInternal(BioPawn oPawn)"
+    },
+    "OnUnequip": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnUnequip(BioPawn oPawn)"
+    },
+    "OnEquipInternal": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnEquipInternal(BioPawn oPawn)"
+    },
+    "OnEquip": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnEquip(BioPawn oPawn)"
+    }
+  },
+  "states": {},
+  "classflags": 144703639,
+  "configname": "Game",
+  "documentation": null
+}

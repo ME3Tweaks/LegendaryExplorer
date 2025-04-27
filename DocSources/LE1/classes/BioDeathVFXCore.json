@@ -1,0 +1,23 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "IsValidVFXSpec": {
+      "documentation": null,
+      "signature_members": {
+        "deathVFXSpec": {
+          "type": "BioDeathVFXSpec",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidVFXSpec(BioDeathVFXSpec deathVFXSpec)"
+    }
+  },
+  "states": {},
+  "classflags": 134217875,
+  "configname": "None",
+  "documentation": null
+}

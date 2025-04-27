@@ -1,0 +1,43 @@
+{
+  "members": {
+    "VertexData": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "PermutedVertexData": {
+      "type": "Plane",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "FaceTriData": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "EdgeDirections": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "FaceNormalDirections": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "FacePlaneData": {
+      "type": "Plane",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ElemBox": {
+      "type": "Box",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "KMeshProps",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

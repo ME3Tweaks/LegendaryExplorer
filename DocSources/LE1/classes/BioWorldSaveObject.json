@@ -1,0 +1,21 @@
+{
+  "parent": "BioBaseSaveObject",
+  "package": "SFXGame",
+  "variables": {
+    "m_Levels": {
+      "type": "LevelLookup",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_WorldInfoSave": {
+      "type": "BioBaseSaveObject",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

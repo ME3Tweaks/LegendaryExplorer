@@ -1,0 +1,43 @@
+{
+  "members": {
+    "Route": {
+      "type": "BioWaypointSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "AssignedSquadMember": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 1
+    },
+    "oCurrentlyAssignedMember": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "LowAgitation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "HighAgitation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "SpeedRun": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "RouteType": {
+      "type": "eWalkWaypointsTypes",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioBaseSquadDesign",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,43 @@
+{
+  "members": {
+    "Expression": {
+      "type": "MaterialExpression",
+      "documentation": null,
+      "flags": 0
+    },
+    "Mask": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaskR": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaskG": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaskB": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaskA": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "GCC64_Padding": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "MaterialExpression",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

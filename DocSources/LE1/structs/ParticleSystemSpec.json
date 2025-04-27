@@ -1,0 +1,23 @@
+{
+  "members": {
+    "m_aBoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_oParticleSystem": {
+      "type": "ParticleSystem",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_ePawnParticleSystem": {
+      "type": "EBioPawnParticleSystem",
+      "documentation": null,
+      "flags": 131075
+    }
+  },
+  "classdef": "BioPawnType",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,21 @@
+{
+  "parent": "SceneCaptureActor",
+  "package": "Engine",
+  "variables": {
+    "StaticMesh": {
+      "type": "StaticMeshComponent",
+      "documentation": null,
+      "flags": 67633162
+    },
+    "CubeMaterialInst": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

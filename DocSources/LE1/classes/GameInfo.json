@@ -1,0 +1,2637 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "CauseEventCommand": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "BugLocString": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "BugRotString": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "PendingArbitrationPCs": {
+      "type": "PlayerController",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ArbitrationPCs": {
+      "type": "PlayerController",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "DefaultPlayerName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "GameName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "InactivePRIArray": {
+      "type": "PlayerReplicationInfo",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Pausers": {
+      "type": "CanUnpause",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ServerOptions": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "GameInfoClassAliases": {
+      "type": "GameClassShortName",
+      "documentation": null,
+      "flags": 4210691
+    },
+    "DefaultGameType": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "DefaultMapPrefixes": {
+      "type": "GameTypePrefix",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "CustomMapPrefixes": {
+      "type": "GameTypePrefix",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "__CanUnpause__Delegate": {
+      "type": "CanUnpause",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "DefaultPawnClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "ScoreBoardType": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "HUDType": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "DeathMessageClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "GameMessageClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "AccessControlClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "BroadcastHandlerClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "AutoTestManagerClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayerControllerClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayerReplicationInfoClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "GameReplicationInfoClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 1
+    },
+    "OnlineStatsWriteClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "OnlineGameSettingsClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 2
+    },
+    "GameInterface": {
+      "type": "OnlineGameInterface",
+      "documentation": null,
+      "flags": 0
+    },
+    "BaseMutator": {
+      "type": "Mutator",
+      "documentation": null,
+      "flags": 0
+    },
+    "AccessControl": {
+      "type": "AccessControl",
+      "documentation": null,
+      "flags": 0
+    },
+    "BroadcastHandler": {
+      "type": "BroadcastHandler",
+      "documentation": null,
+      "flags": 0
+    },
+    "MyAutoTestManager": {
+      "type": "AutoTestManager",
+      "documentation": null,
+      "flags": 0
+    },
+    "GameReplicationInfo": {
+      "type": "GameReplicationInfo",
+      "documentation": null,
+      "flags": 0
+    },
+    "OnlineSub": {
+      "type": "OnlineSubsystem",
+      "documentation": null,
+      "flags": 0
+    },
+    "CoverReplicatorBase": {
+      "type": "CoverReplicator",
+      "documentation": null,
+      "flags": 0
+    },
+    "ArbitrationHandshakeTimeout": {
+      "type": "float",
+      "documentation": null,
+      "flags": 278528
+    },
+    "GameDifficulty": {
+      "type": "float",
+      "documentation": null,
+      "flags": 278528
+    },
+    "GoreLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 278528
+    },
+    "GameSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 278528
+    },
+    "MaxSpectators": {
+      "type": "int",
+      "documentation": null,
+      "flags": 278528
+    },
+    "MaxSpectatorsAllowed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "NumSpectators": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxPlayers": {
+      "type": "int",
+      "documentation": null,
+      "flags": 278528
+    },
+    "MaxPlayersAllowed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "NumPlayers": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "NumBots": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "NumTravellingPlayers": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurrentID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "FearCostFallOff": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "GoalScore": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "MaxLives": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "TimeLimit": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "MaxIdleTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 278528
+    },
+    "MaxTimeMargin": {
+      "type": "float",
+      "documentation": null,
+      "flags": 278528
+    },
+    "TimeMarginSlack": {
+      "type": "float",
+      "documentation": null,
+      "flags": 278528
+    },
+    "MinTimeMargin": {
+      "type": "float",
+      "documentation": null,
+      "flags": 278528
+    },
+    "LeaderboardId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "ArbitratedLeaderboardId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "AdjustedNetSpeed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "LastNetSpeedUpdateTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "TotalNetBandwidth": {
+      "type": "int",
+      "documentation": null,
+      "flags": 278528
+    },
+    "MinDynamicBandwidth": {
+      "type": "int",
+      "documentation": null,
+      "flags": 278528
+    },
+    "MaxDynamicBandwidth": {
+      "type": "int",
+      "documentation": null,
+      "flags": 278528
+    },
+    "StandbyRxCheatTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "StandbyTxCheatTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "BadPingThreshold": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "PercentMissingForRxStandby": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "PercentMissingForTxStandby": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "PercentForBadPing": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bRestartLevel": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bPauseable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bTeamGame": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bGameEnded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOverTime": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bDelayedStart": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bWaitingToStartMatch": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bChangeLevels": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 278528
+    },
+    "bAlreadyChanged": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bAdminCanPause": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 278528
+    },
+    "bGameRestarted": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bLevelChange": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bKickLiveIdlers": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 278528
+    },
+    "bUsingArbitration": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bHasArbitratedHandshakeBegun": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bNeedsEndGameHandshake": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsEndGameHandshakeComplete": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bHasEndGameHandshakeBegun": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bFixedPlayerStart": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bDoFearCostFallOff": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUseSeamlessTravel": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bHasNetworkError": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bRequiresPushToTalk": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bIsStandbyCheckingEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bHasStandbyCheatTriggered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "StandbyCheatDetected": {
+      "documentation": null,
+      "signature_members": {
+        "StandbyType": {
+          "type": "EStandbyType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "StandbyCheatDetected(EStandbyType StandbyType)"
+    },
+    "EnableStandbyCheatDetection": {
+      "documentation": null,
+      "signature_members": {
+        "bIsEnabled": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableStandbyCheatDetection(bool bIsEnabled)"
+    },
+    "BeginBVT": {
+      "documentation": null,
+      "signature_members": {
+        "TagDesc": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4196496
+        }
+      },
+      "returntype": "None",
+      "signature": "BeginBVT(optional coerce string TagDesc)"
+    },
+    "CheckForSentinelRun": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckForSentinelRun()"
+    },
+    "ShouldAutoContinueToNextRound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldAutoContinueToNextRound()"
+    },
+    "IsDoingASentinelRun": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsDoingASentinelRun()"
+    },
+    "IsCheckingForMemLeaks": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCheckingForMemLeaks()"
+    },
+    "IsCheckingForFragmentation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCheckingForFragmentation()"
+    },
+    "IsAutomatedPerfTesting": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAutomatedPerfTesting()"
+    },
+    "DoTravelTheWorld": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoTravelTheWorld()"
+    },
+    "TellClientsToTravelToSession": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "SearchClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlatformSpecificInfo": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TellClientsToTravelToSession(Name SessionName, Class<OnlineGameSearch> SearchClass, byte PlatformSpecificInfo[80])"
+    },
+    "TellClientsToReturnToPartyHost": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TellClientsToReturnToPartyHost()"
+    },
+    "OnServerCreateComplete": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnServerCreateComplete(Name SessionName, bool bWasSuccessful)"
+    },
+    "RegisterServer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegisterServer()"
+    },
+    "OnLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginChange(byte LocalUserNum)"
+    },
+    "OnLoginFailed": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "ErrorCode": {
+          "type": "EOnlineServerConnectionStatus",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginFailed(byte LocalUserNum, EOnlineServerConnectionStatus ErrorCode)"
+    },
+    "ClearAutoLoginDelegates": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearAutoLoginDelegates()"
+    },
+    "ProcessServerLogin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ProcessServerLogin()"
+    },
+    "MatineeCancelled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MatineeCancelled()"
+    },
+    "RecalculateSkillRating": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RecalculateSkillRating()"
+    },
+    "UpdateGameplayMuteList": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateGameplayMuteList(PlayerController PC)"
+    },
+    "NotifyArbitratedMatchEnd": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyArbitratedMatchEnd()"
+    },
+    "MatchIsInProgress": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool MatchIsInProgress()"
+    },
+    "ArbitrationRegistrationComplete": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ArbitrationRegistrationComplete(Name SessionName, bool bWasSuccessful)"
+    },
+    "RegisterServerForArbitration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegisterServerForArbitration()"
+    },
+    "StartArbitratedMatch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartArbitratedMatch()"
+    },
+    "StartArbitrationRegistration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartArbitrationRegistration()"
+    },
+    "ProcessClientRegistrationCompletion": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessClientRegistrationCompletion(PlayerController PC, bool bWasSuccessful)"
+    },
+    "UpdateGameSettingsCounts": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateGameSettingsCounts()"
+    },
+    "SetSeamlessTravelViewTarget": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSeamlessTravelViewTarget(PlayerController PC)"
+    },
+    "HandleSeamlessTravelPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleSeamlessTravelPlayer(out Controller C)"
+    },
+    "UpdateGameSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateGameSettings()"
+    },
+    "PostSeamlessTravel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostSeamlessTravel()"
+    },
+    "SwapPlayerControllers": {
+      "documentation": null,
+      "signature_members": {
+        "OldPC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewPC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SwapPlayerControllers(PlayerController OldPC, PlayerController NewPC)"
+    },
+    "GetSeamlessTravelActorList": {
+      "documentation": null,
+      "signature_members": {
+        "bToEntry": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "ActorList": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSeamlessTravelActorList(bool bToEntry, out array<Actor> ActorList)"
+    },
+    "OverridePRI": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "OldPRI": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OverridePRI(PlayerController PC, PlayerReplicationInfo OldPRI)"
+    },
+    "FindInactivePRI": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindInactivePRI(PlayerController PC)"
+    },
+    "AddInactivePRI": {
+      "documentation": null,
+      "signature_members": {
+        "PRI": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "PC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddInactivePRI(PlayerReplicationInfo PRI, PlayerController PC)"
+    },
+    "PostCommitMapChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostCommitMapChange()"
+    },
+    "PreCommitMapChange": {
+      "documentation": null,
+      "signature_members": {
+        "PreviousMapName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "NextMapName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "PreCommitMapChange(string PreviousMapName, string NextMapName)"
+    },
+    "AllowPausing": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AllowPausing(optional PlayerController PC)"
+    },
+    "AllowCheats": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AllowCheats(PlayerController P)"
+    },
+    "AllowMutator": {
+      "documentation": null,
+      "signature_members": {
+        "MutatorClassName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AllowMutator(string MutatorClassName)"
+    },
+    "PlayerCanRestart": {
+      "documentation": null,
+      "signature_members": {
+        "aPlayer": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayerCanRestart(PlayerController aPlayer)"
+    },
+    "PlayerCanRestartGame": {
+      "documentation": null,
+      "signature_members": {
+        "aPlayer": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlayerCanRestartGame(PlayerController aPlayer)"
+    },
+    "KillBots": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "KillBots()"
+    },
+    "DriverLeftVehicle": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": "Vehicle",
+          "documentation": null,
+          "flags": 128
+        },
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DriverLeftVehicle(Vehicle V, Pawn P)"
+    },
+    "CanLeaveVehicle": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": "Vehicle",
+          "documentation": null,
+          "flags": 128
+        },
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanLeaveVehicle(Vehicle V, Pawn P)"
+    },
+    "DriverEnteredVehicle": {
+      "documentation": null,
+      "signature_members": {
+        "V": {
+          "type": "Vehicle",
+          "documentation": null,
+          "flags": 128
+        },
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DriverEnteredVehicle(Vehicle V, Pawn P)"
+    },
+    "ModifyScoreKill": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "Other": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyScoreKill(Controller Killer, Controller Other)"
+    },
+    "ScoreKill": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "Other": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ScoreKill(Controller Killer, Controller Other)"
+    },
+    "CheckScore": {
+      "documentation": null,
+      "signature_members": {
+        "Scorer": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckScore(PlayerReplicationInfo Scorer)"
+    },
+    "ScoreObjective": {
+      "documentation": null,
+      "signature_members": {
+        "Scorer": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "Score": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ScoreObjective(PlayerReplicationInfo Scorer, int Score)"
+    },
+    "AddObjectiveScore": {
+      "documentation": null,
+      "signature_members": {
+        "Scorer": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "Score": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddObjectiveScore(PlayerReplicationInfo Scorer, int Score)"
+    },
+    "RatePlayerStart": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "PlayerStart",
+          "documentation": null,
+          "flags": 128
+        },
+        "Team": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "Player": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float RatePlayerStart(PlayerStart P, byte Team, Controller Player)"
+    },
+    "ChoosePlayerStart": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "InTeam": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "PlayerStart",
+      "signature": "PlayerStart ChoosePlayerStart(Controller Player, optional byte InTeam)"
+    },
+    "FindPlayerStart": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "InTeam": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
+        },
+        "IncomingName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "NavigationPoint",
+      "signature": "NavigationPoint FindPlayerStart(Controller Player, optional byte InTeam, optional string IncomingName)"
+    },
+    "ShouldSpawnAtStartSpot": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldSpawnAtStartSpot(Controller Player)"
+    },
+    "EndLogging": {
+      "documentation": null,
+      "signature_members": {
+        "Reason": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "EndLogging(string Reason)"
+    },
+    "EndOnlineGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndOnlineGame()"
+    },
+    "PerformEndGameHandling": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PerformEndGameHandling()"
+    },
+    "EndGame": {
+      "documentation": null,
+      "signature_members": {
+        "Winner": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "Reason": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "EndGame(PlayerReplicationInfo Winner, string Reason)"
+    },
+    "WriteOnlinePlayerScores": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "WriteOnlinePlayerScores()"
+    },
+    "WriteOnlineStats": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "WriteOnlineStats()"
+    },
+    "CheckEndGame": {
+      "documentation": null,
+      "signature_members": {
+        "Winner": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "Reason": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckEndGame(PlayerReplicationInfo Winner, string Reason)"
+    },
+    "CheckModifiedEndGame": {
+      "documentation": null,
+      "signature_members": {
+        "Winner": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "Reason": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckModifiedEndGame(PlayerReplicationInfo Winner, string Reason)"
+    },
+    "BroadcastLocalizedTeam": {
+      "documentation": null,
+      "signature_members": {
+        "TeamIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Sender": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "Message": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "Switch": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        },
+        "RelatedPRI_1": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "RelatedPRI_2": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "OptionalObject": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "BroadcastLocalizedTeam(int TeamIndex, Actor Sender, Class<LocalMessage> Message, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)"
+    },
+    "BroadcastLocalized": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "Message": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "Switch": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        },
+        "RelatedPRI_1": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "RelatedPRI_2": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "OptionalObject": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "BroadcastLocalized(Actor Sender, Class<LocalMessage> Message, optional int Switch, optional PlayerReplicationInfo RelatedPRI_1, optional PlayerReplicationInfo RelatedPRI_2, optional Object OptionalObject)"
+    },
+    "BroadcastTeam": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "msg": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
+        },
+        "Type": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "BroadcastTeam(Controller Sender, coerce string msg, optional Name Type)"
+    },
+    "Broadcast": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "msg": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
+        },
+        "Type": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "Broadcast(Actor Sender, coerce string msg, optional Name Type)"
+    },
+    "RestartGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RestartGame()"
+    },
+    "GetTravelType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool GetTravelType()"
+    },
+    "GetNextMap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetNextMap()"
+    },
+    "SendPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "aPlayer": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "URL": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SendPlayer(PlayerController aPlayer, string URL)"
+    },
+    "PickTeam": {
+      "documentation": null,
+      "signature_members": {
+        "Current": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "C": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "byte",
+      "signature": "byte PickTeam(byte Current, Controller C)"
+    },
+    "ChangeTeam": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "N": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bNewTeam": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ChangeTeam(Controller Other, int N, bool bNewTeam)"
+    },
+    "ChangeName": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "S": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
+        },
+        "bNameChange": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ChangeName(Controller Other, coerce string S, bool bNameChange)"
+    },
+    "DiscardInventory": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Killer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "DiscardInventory(Pawn Other, optional Controller Killer)"
+    },
+    "PickupQuery": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "ItemClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "Pickup": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PickupQuery(Pawn Other, Class<Inventory> ItemClass, Actor Pickup)"
+    },
+    "ShouldRespawn": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "PickupFactory",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldRespawn(PickupFactory Other)"
+    },
+    "CheckRelevance": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckRelevance(Actor Other)"
+    },
+    "ReduceDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "injured": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageCauser": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReduceDamage(out int Damage, Pawn injured, Controller InstigatedBy, Vector HitLocation, out Vector Momentum, Class<DamageType> DamageType, Actor DamageCauser)"
+    },
+    "CanSpectate": {
+      "documentation": null,
+      "signature_members": {
+        "Viewer": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "ViewTarget": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanSpectate(PlayerController Viewer, PlayerReplicationInfo ViewTarget)"
+    },
+    "KickBan": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "KickBan(string S)"
+    },
+    "Kick": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "Kick(string S)"
+    },
+    "ParseKillMessage": {
+      "documentation": null,
+      "signature_members": {
+        "KillerName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "VictimName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "DeathMessage": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "string",
+      "signature": "string ParseKillMessage(string KillerName, string VictimName, string DeathMessage)"
+    },
+    "BroadcastDeathMessage": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "Other": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "BroadcastDeathMessage(Controller Killer, Controller Other, Class<DamageType> DamageType)"
+    },
+    "PreventDeath": {
+      "documentation": null,
+      "signature_members": {
+        "KilledPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Killer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PreventDeath(Pawn KilledPawn, Controller Killer, Class<DamageType> DamageType, Vector HitLocation)"
+    },
+    "Killed": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "KilledPlayer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "KilledPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Killed(Controller Killer, Controller KilledPlayer, Pawn KilledPawn, Class<DamageType> DamageType)"
+    },
+    "NotifyKilled": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "Killed": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "KilledPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyKilled(Controller Killer, Controller Killed, Pawn KilledPawn)"
+    },
+    "SetPlayerDefaults": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerDefaults(Pawn PlayerPawn)"
+    },
+    "Mutate": {
+      "documentation": null,
+      "signature_members": {
+        "MutateString": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Sender": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Mutate(string MutateString, PlayerController Sender)"
+    },
+    "AddDefaultInventory": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddDefaultInventory(Pawn P)"
+    },
+    "AcceptInventory": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AcceptInventory(Pawn PlayerPawn)"
+    },
+    "UnregisterPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UnregisterPlayer(PlayerController PC)"
+    },
+    "Logout": {
+      "documentation": null,
+      "signature_members": {
+        "Exiting": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Logout(Controller Exiting)"
+    },
+    "PreExit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreExit()"
+    },
+    "CalculatedNetSpeed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int CalculatedNetSpeed()"
+    },
+    "UpdateNetSpeeds": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateNetSpeeds()"
+    },
+    "PostLogin": {
+      "documentation": null,
+      "signature_members": {
+        "NewPlayer": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PostLogin(PlayerController NewPlayer)"
+    },
+    "GenericPlayerInitialization": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GenericPlayerInitialization(Controller C)"
+    },
+    "ReplicateStreamingStatus": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicateStreamingStatus(PlayerController PC)"
+    },
+    "GetDefaultPlayerClass": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<Pawn> GetDefaultPlayerClass(Controller C)"
+    },
+    "SpawnDefaultPawnFor": {
+      "documentation": null,
+      "signature_members": {
+        "NewPlayer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "StartSpot": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Pawn",
+      "signature": "Pawn SpawnDefaultPawnFor(Controller NewPlayer, NavigationPoint StartSpot)"
+    },
+    "RestartPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "NewPlayer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RestartPlayer(Controller NewPlayer)"
+    },
+    "LoadPlayer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LoadPlayer()"
+    },
+    "StartBots": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartBots()"
+    },
+    "StartHumans": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartHumans()"
+    },
+    "OnStartOnlineGameComplete": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnStartOnlineGameComplete(Name SessionName, bool bWasSuccessful)"
+    },
+    "StartOnlineGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartOnlineGame()"
+    },
+    "StartMatch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartMatch()"
+    },
+    "Login": {
+      "documentation": null,
+      "signature_members": {
+        "Portal": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Options": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "UniqueId": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 130
+        },
+        "ErrorMessage": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "PlayerController",
+      "signature": "PlayerController Login(string Portal, string Options, const UniqueNetId UniqueId, out string ErrorMessage)"
+    },
+    "SpawnPlayerController": {
+      "documentation": null,
+      "signature_members": {
+        "SpawnLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "SpawnRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "PlayerController",
+      "signature": "PlayerController SpawnPlayerController(Vector SpawnLocation, Rotator SpawnRotation)"
+    },
+    "GetNextPlayerID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNextPlayerID()"
+    },
+    "AtCapacity": {
+      "documentation": null,
+      "signature_members": {
+        "bSpectator": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AtCapacity(bool bSpectator)"
+    },
+    "PreLogin": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Address": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "ErrorMessage": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "PreLogin(string Options, string Address, out string ErrorMessage)"
+    },
+    "RequiresPassword": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RequiresPassword()"
+    },
+    "ProcessClientTravel": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "NextMapGuid": {
+          "type": "Guid",
+          "documentation": null,
+          "flags": 128
+        },
+        "bSeamless": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bAbsolute": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "PlayerController",
+      "signature": "PlayerController ProcessClientTravel(out string URL, Guid NextMapGuid, bool bSeamless, bool bAbsolute)"
+    },
+    "ProcessServerTravel": {
+      "documentation": null,
+      "signature_members": {
+        "URL": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bAbsolute": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessServerTravel(string URL, optional bool bAbsolute)"
+    },
+    "RemoveMutator": {
+      "documentation": null,
+      "signature_members": {
+        "MutatorToRemove": {
+          "type": "Mutator",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveMutator(Mutator MutatorToRemove)"
+    },
+    "AddMutator": {
+      "documentation": null,
+      "signature_members": {
+        "mutname": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bUserAdded": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "AddMutator(string mutname, optional bool bUserAdded)"
+    },
+    "NotifyPendingConnectionLost": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyPendingConnectionLost()"
+    },
+    "InitGame": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "ErrorMessage": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "InitGame(string Options, out string ErrorMessage)"
+    },
+    "SetGameType": {
+      "documentation": null,
+      "signature_members": {
+        "MapName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Options": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Portal": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<GameInfo> SetGameType(string MapName, string Options, string Portal)"
+    },
+    "GetDefaultGameClassPath": {
+      "documentation": null,
+      "signature_members": {
+        "MapName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Options": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Portal": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetDefaultGameClassPath(string MapName, string Options, string Portal)"
+    },
+    "GetIntOption": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "ParseString": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "CurrentValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetIntOption(string Options, string ParseString, int CurrentValue)"
+    },
+    "HasOption": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "InKey": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HasOption(string Options, string InKey)"
+    },
+    "ParseOption": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "InKey": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "string",
+      "signature": "string ParseOption(string Options, string InKey)"
+    },
+    "GetKeyValue": {
+      "documentation": null,
+      "signature_members": {
+        "Pair": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Key": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Value": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetKeyValue(string Pair, out string Key, out string Value)"
+    },
+    "GrabOption": {
+      "documentation": null,
+      "signature_members": {
+        "Options": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "Result": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GrabOption(out string Options, out string Result)"
+    },
+    "SetGameSpeed": {
+      "documentation": null,
+      "signature_members": {
+        "T": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGameSpeed(float T)"
+    },
+    "DebugPause": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugPause()"
+    },
+    "ForceClearUnpauseDelegates": {
+      "documentation": null,
+      "signature_members": {
+        "PauseActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceClearUnpauseDelegates(Actor PauseActor)"
+    },
+    "ClearPause": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearPause()"
+    },
+    "SetPause": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "CanUnpauseDelegate": {
+          "type": "CanUnpause",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPause(PlayerController PC, optional delegate<CanUnpause> CanUnpauseDelegate)"
+    },
+    "CanUnpause": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanUnpause()"
+    },
+    "GetServerPort": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetServerPort()"
+    },
+    "GetNumPlayers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetNumPlayers()"
+    },
+    "GetNetworkNumber": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetNetworkNumber()"
+    },
+    "InitGameReplicationInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitGameReplicationInfo()"
+    },
+    "ForceKickPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        },
+        "KickReason": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ForceKickPlayer(PlayerController PC, string KickReason)"
+    },
+    "KickIdler": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "KickIdler(PlayerController PC)"
+    },
+    "GameEnding": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GameEnding()"
+    },
+    "NotifyNavigationChanged": {
+      "documentation": null,
+      "signature_members": {
+        "N": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyNavigationChanged(NavigationPoint N)"
+    },
+    "DoNavFearCostFallOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoNavFearCostFallOff()"
+    },
+    "Timer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Timer()"
+    },
+    "ResetLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetLevel()"
+    },
+    "ShouldReset": {
+      "documentation": null,
+      "signature_members": {
+        "ActorToReset": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldReset(Actor ActorToReset)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "DisplayDebug": {
+      "documentation": null,
+      "signature_members": {
+        "HUD": {
+          "type": "HUD",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_YL": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "out_YPos": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "DisplayDebug(HUD HUD, out float out_YL, out float out_YPos)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "GetCoverReplicator": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "CoverReplicator",
+      "signature": "CoverReplicator GetCoverReplicator()"
+    },
+    "UseLowGore": {
+      "documentation": null,
+      "signature_members": {
+        "WI": {
+          "type": "WorldInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UseLowGore(WorldInfo WI)"
+    },
+    "FindPlayerByID": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string FindPlayerByID(int PlayerID)"
+    },
+    "PreBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreBeginPlay()"
+    },
+    "GetMapCommonPackageName": {
+      "documentation": null,
+      "signature_members": {
+        "InFilename": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "OutCommonPackageName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetMapCommonPackageName(const out string InFilename, out string OutCommonPackageName)"
+    },
+    "GetSupportedGameTypes": {
+      "documentation": null,
+      "signature_members": {
+        "InFilename": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "OutGameType": {
+          "type": "GameTypePrefix",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "bCheckExt": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSupportedGameTypes(const out string InFilename, out GameTypePrefix OutGameType, optional bool bCheckExt)"
+    }
+  },
+  "states": {
+    "TravelTheWorld": {
+      "functions": {},
+      "documentation": null
+    },
+    "PendingMatch": {
+      "functions": {
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ProcessClientRegistrationCompletion": {
+          "documentation": null,
+          "signature_members": {
+            "PC": {
+              "type": "PlayerController",
+              "documentation": null,
+              "flags": 128
+            },
+            "bWasSuccessful": {
+              "type": "bool",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "StartArbitratedMatch": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ArbitrationTimeout": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "ArbitrationRegistrationComplete": {
+          "documentation": null,
+          "signature_members": {
+            "SessionName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            },
+            "bWasSuccessful": {
+              "type": "bool",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "RegisterServerForArbitration": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "StartArbitrationRegistration": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "StartMatch": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        },
+        "MatchIsInProgress": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "classflags": 144703670,
+  "configname": "Game",
+  "documentation": null
+}

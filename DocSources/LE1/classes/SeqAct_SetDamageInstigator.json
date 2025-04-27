@@ -1,0 +1,16 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "DamageInstigator": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

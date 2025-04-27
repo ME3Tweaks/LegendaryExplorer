@@ -1,0 +1,18 @@
+{
+  "members": {
+    "fQty": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "eType": {
+      "type": "EInventoryResourceTypes",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioInventoryGuiInterface",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

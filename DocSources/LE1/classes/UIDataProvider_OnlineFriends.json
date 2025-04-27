@@ -1,0 +1,140 @@
+{
+  "parent": "UIDataProvider_OnlinePlayerDataBase",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "FriendsList": {
+      "type": "OnlineFriend",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "NickNameCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "PresenceInfoCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "FriendStateCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "bIsOnlineCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "bIsPlayingCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "bIsPlayingThisGameCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "bIsJoinableCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "bHasVoiceSupportCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "bHaveInvitedCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "bHasInvitedYouCol": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "OfflineText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "OnlineText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "AwayText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "BusyText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    }
+  },
+  "functions": {
+    "RefreshFriendsList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshFriendsList()"
+    },
+    "OnLoginChange": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnLoginChange(byte LocalUserNum)"
+    },
+    "OnFriendsReadComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFriendsReadComplete(bool bWasSuccessful)"
+    },
+    "OnUnregister": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUnregister()"
+    },
+    "OnRegister": {
+      "documentation": null,
+      "signature_members": {
+        "InPlayer": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegister(LocalPlayer InPlayer)"
+    }
+  },
+  "states": {},
+  "classflags": 136315066,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "LAT_Both": {
+      "value": 0,
+      "documentation": null
+    },
+    "LAT_CO": {
+      "value": 1,
+      "documentation": null
+    },
+    "LAT_NCO": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,10 @@
+{
+  "parent": "BioSFHandler_DataCodex",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 144703646,
+  "configname": "UI",
+  "documentation": null
+}

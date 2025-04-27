@@ -1,0 +1,28 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_sMapToClear": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_sChunkToClear": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

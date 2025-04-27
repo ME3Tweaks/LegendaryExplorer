@@ -1,0 +1,13 @@
+{
+  "members": {
+    "CachedConvexElements": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "classdef": "BrushComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

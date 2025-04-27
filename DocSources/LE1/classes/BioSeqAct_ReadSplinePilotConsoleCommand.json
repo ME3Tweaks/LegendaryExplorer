@@ -1,0 +1,28 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXQA",
+  "variables": {
+    "sConsoleCommand": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "m_sOutputString": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 2097174,
+  "configname": "QA",
+  "documentation": null
+}

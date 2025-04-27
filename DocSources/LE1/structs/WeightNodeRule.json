@@ -1,0 +1,33 @@
+{
+  "members": {
+    "NodeName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "CachedNode": {
+      "type": "AnimNodeBlendBase",
+      "documentation": null,
+      "flags": 0
+    },
+    "CachedSlotNode": {
+      "type": "AnimNodeSlot",
+      "documentation": null,
+      "flags": 0
+    },
+    "ChildIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "WeightCheck": {
+      "type": "EWeightCheck",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "AnimNode_MultiBlendPerBone",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

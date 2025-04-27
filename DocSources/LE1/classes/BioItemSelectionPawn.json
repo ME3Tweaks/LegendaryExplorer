@@ -1,0 +1,16 @@
+{
+  "parent": "BioItemSelection",
+  "package": "SFXGame",
+  "variables": {
+    "m_itemInterface": {
+      "type": "BioPawnItemInterface",
+      "documentation": null,
+      "flags": 67108864
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606483,
+  "configname": "None",
+  "documentation": null
+}

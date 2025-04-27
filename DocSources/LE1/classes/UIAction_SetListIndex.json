@@ -1,0 +1,26 @@
+{
+  "parent": "UIAction_SetValue",
+  "package": "Engine",
+  "variables": {
+    "NewIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bClampInvalidValues": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bActivateListChangeEvent": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 2097682,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,64 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapIntPropertyToValueArray": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "m_mapFloatPropertyToValueArray": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "m_mapBytePropertyToValueArray": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "m_mapBoolPropertyToValueArray": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "m_mapNamePropertyToValueArray": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "m_mapStringPropertyToValueArray": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "m_mapStringRefPropertyToValueArray": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "m_mapObjectPropertyToValueArray": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 8392706
+    }
+  },
+  "functions": {
+    "ScaleProperties": {
+      "documentation": null,
+      "signature_members": {
+        "nLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ScaleProperties(int nLevel)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

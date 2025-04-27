@@ -1,0 +1,16 @@
+{
+  "parent": "BioItemSelectionPawn",
+  "package": "SFXGame",
+  "variables": {
+    "m_slot": {
+      "type": "EBioEquipmentSlot",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

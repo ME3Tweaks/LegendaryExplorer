@@ -1,0 +1,23 @@
+{
+  "parent": "BioGameEffectAttributeString",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "Apply": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object Apply(Object oTarget)"
+    }
+  },
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

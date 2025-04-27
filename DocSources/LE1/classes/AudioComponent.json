@@ -1,0 +1,524 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "SoundCue": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 1
+    },
+    "CueFirstNode": {
+      "type": "SoundNode",
+      "documentation": null,
+      "flags": 4098
+    },
+    "InstanceParameters": {
+      "type": "AudioComponentParam",
+      "documentation": null,
+      "flags": 71303169
+    },
+    "SoundEntityVariablesGlobal": {
+      "type": "EntityVariable",
+      "documentation": null,
+      "flags": 71303169
+    },
+    "SoundEntityVariablesLocal": {
+      "type": "EntityVariable",
+      "documentation": null,
+      "flags": 71303169
+    },
+    "SoundEntityMasterRPC": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_bIsEntityPlaying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUseOwnerLocation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bAutoPlay": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bAutoDestroy": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bStopWhenOwnerDestroyed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bFinished": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bNonRealtime": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bWasPlaying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bAllowSpatialization": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bWasFlushed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bShouldRemainActiveIfDropped": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bCurrentIsMusic": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bCurrentNoReverb": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LowPassFilterApplied": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bStopWhenQuiet": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bCurrentConversationDuck": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "nPauseCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "fOcclusion": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "WaveInstances": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 2101250
+    },
+    "SoundNodeData": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 2101250
+    },
+    "SoundNodeOffsetMap": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 2101250
+    },
+    "SoundNodeWaveMap": {
+      "type": "MultiMap_Mirror",
+      "documentation": null,
+      "flags": 2101250
+    },
+    "SoundNodeResetWaveMap": {
+      "type": "MultiMap_Mirror",
+      "documentation": null,
+      "flags": 2101250
+    },
+    "Listener": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 2101250
+    },
+    "PlaybackTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2101250
+    },
+    "Location": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 2101248
+    },
+    "ComponentLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 2101250
+    },
+    "SubtitlePriority": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4096
+    },
+    "bSuppressSubtitles": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "FadeInStartTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FadeInStopTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FadeInTargetVolume": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FadeOutStartTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FadeOutStopTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FadeOutTargetVolume": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "AdjustVolumeStartTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "AdjustVolumeStopTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "AdjustVolumeTargetVolume": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurrAdjustVolumeTargetVolume": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "SoundGroupVolumeFadeStartTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "SoundGroupVolumeFadeStopTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurrSoundGroupVolumeTargetVolume": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurrentNotifyBufferFinishedHook": {
+      "type": "SoundNode",
+      "documentation": null,
+      "flags": 4098
+    },
+    "CurrentLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 4098
+    },
+    "CurrentVolume": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4098
+    },
+    "CurrentPitch": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4098
+    },
+    "CurrentUseSpatialization": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "CurrentUseSeamlessLooping": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "bForceCenterChannel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "vListenerRelative": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 4098
+    },
+    "eSpeakerChannel": {
+      "type": "ESpeakerChannels",
+      "documentation": null,
+      "flags": 4098
+    },
+    "fMaxDistancePercent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4098
+    },
+    "CurrentVolumeMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4098
+    },
+    "CurrentPriorityMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4098
+    },
+    "CurrentPitchMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4098
+    },
+    "CurrentVoiceCenterChannelVolume": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4098
+    },
+    "CurrentVoiceRadioVolume": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4098
+    },
+    "CurrentSoundModeVoice": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "VolumeMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "PitchMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "PriorityMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934593
+    },
+    "PreviewSoundRadius": {
+      "type": "DrawSoundRadiusComponent",
+      "documentation": null,
+      "flags": 67633162
+    },
+    "__OnAudioFinished__Delegate": {
+      "type": "OnAudioFinished",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "OnAudioFinished": {
+      "documentation": null,
+      "signature_members": {
+        "AC": {
+          "type": "AudioComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAudioFinished(AudioComponent AC)"
+    },
+    "UnPause": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool UnPause()"
+    },
+    "Pause": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Pause()"
+    },
+    "BioIsPlaying": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool BioIsPlaying()"
+    },
+    "GetListenerLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetListenerLocation()"
+    },
+    "SetWaveParameter": {
+      "documentation": null,
+      "signature_members": {
+        "InName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "InWave": {
+          "type": "SoundNodeWave",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWaveParameter(Name InName, SoundNodeWave InWave)"
+    },
+    "SetFloatParameter": {
+      "documentation": null,
+      "signature_members": {
+        "InName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "InFloat": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatParameter(Name InName, float InFloat)"
+    },
+    "FadeSoundGroupVolume": {
+      "documentation": null,
+      "signature_members": {
+        "Duration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "Volume": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "FadeSoundGroupVolume(float Duration, float Volume)"
+    },
+    "AdjustVolume": {
+      "documentation": null,
+      "signature_members": {
+        "AdjustVolumeDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "AdjustVolumeLevel": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustVolume(float AdjustVolumeDuration, float AdjustVolumeLevel)"
+    },
+    "FadeOut": {
+      "documentation": null,
+      "signature_members": {
+        "FadeOutDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "FadeVolumeLevel": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "FadeOut(float FadeOutDuration, float FadeVolumeLevel)"
+    },
+    "FadeIn": {
+      "documentation": null,
+      "signature_members": {
+        "FadeInDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "FadeVolumeLevel": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "FadeIn(float FadeInDuration, float FadeVolumeLevel)"
+    },
+    "SetSoundEntityLocalVariableState": {
+      "documentation": null,
+      "signature_members": {
+        "sVariableName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sVariableState": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetSoundEntityLocalVariableState(string sVariableName, string sVariableState)"
+    },
+    "Stop": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Stop()"
+    },
+    "Play": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Play()"
+    }
+  },
+  "states": {},
+  "classflags": 10498450,
+  "configname": "None",
+  "documentation": null
+}

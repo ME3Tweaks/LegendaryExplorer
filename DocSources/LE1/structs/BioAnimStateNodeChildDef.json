@@ -1,0 +1,23 @@
+{
+  "members": {
+    "BlendParams": {
+      "type": "BioAnimBlendParams",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Name": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "DefaultWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioAnimNodeBlendStateBehavior",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

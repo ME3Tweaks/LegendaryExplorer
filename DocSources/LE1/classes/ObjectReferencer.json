@@ -1,0 +1,16 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "ReferencedObjects": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

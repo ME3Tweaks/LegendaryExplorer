@@ -1,0 +1,28 @@
+{
+  "members": {
+    "U": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "V": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "UL": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "VL": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

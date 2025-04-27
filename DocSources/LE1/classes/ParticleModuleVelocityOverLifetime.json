@@ -1,0 +1,21 @@
+{
+  "parent": "ParticleModuleVelocityBase",
+  "package": "Engine",
+  "variables": {
+    "VelOverLifeRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "Absolute": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 9
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

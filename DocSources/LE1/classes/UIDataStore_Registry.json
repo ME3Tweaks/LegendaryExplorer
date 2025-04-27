@@ -1,0 +1,23 @@
+{
+  "parent": "UIDataStore",
+  "package": "Engine",
+  "variables": {
+    "RegistryDataProvider": {
+      "type": "UIDynamicFieldProvider",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetDataProvider": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIDynamicFieldProvider",
+      "signature": "UIDynamicFieldProvider GetDataProvider()"
+    }
+  },
+  "states": {},
+  "classflags": 136315034,
+  "configname": "None",
+  "documentation": null
+}

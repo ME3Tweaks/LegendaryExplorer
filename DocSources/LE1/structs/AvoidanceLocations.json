@@ -1,0 +1,33 @@
+{
+  "members": {
+    "vLoc": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "vVel": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "rRot": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "fCollision": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fExtendedCollision": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSeqData_DEBUGInfo",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

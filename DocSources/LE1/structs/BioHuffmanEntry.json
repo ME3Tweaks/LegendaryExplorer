@@ -1,0 +1,18 @@
+{
+  "members": {
+    "nLength_NATIVE_MIRROR": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "aBitStream_NATIVE_MIRROR": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "classdef": "BioTlkFile",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

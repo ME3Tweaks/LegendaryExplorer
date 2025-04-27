@@ -1,0 +1,31 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "SoundEntityVariablesGlobal": {
+      "type": "SoundEntityVariable",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "SoundEntityVariablesLocal": {
+      "type": "SoundEntityVariable",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ChildNodes": {
+      "type": "SoundNode",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "NodeUpdateHint": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136327315,
+  "configname": "None",
+  "documentation": null
+}

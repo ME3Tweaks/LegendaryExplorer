@@ -1,0 +1,23 @@
+{
+  "members": {
+    "m_pCallbackObject": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nmCallbackFunction": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_srTutorial": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "MassEffectGuiManager",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

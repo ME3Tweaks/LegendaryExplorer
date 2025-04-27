@@ -1,0 +1,63 @@
+{
+  "members": {
+    "vPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "vLast_Position": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "nIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "fPassTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "nSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nLast_Index": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nLast_Size": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bPlayerLockedOn": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bLast_PlayerLockedOn": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "eRadarType": {
+      "type": "EBioRadarType",
+      "documentation": null,
+      "flags": 0
+    },
+    "eLast_RadarType": {
+      "type": "EBioRadarType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioPlayerController",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

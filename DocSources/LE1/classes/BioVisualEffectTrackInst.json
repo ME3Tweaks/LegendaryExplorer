@@ -1,0 +1,34 @@
+{
+  "parent": "InterpTrackInst",
+  "package": "SFXGame",
+  "variables": {
+    "m_VFX": {
+      "type": "BioVisualEffect",
+      "documentation": null,
+      "flags": 0
+    },
+    "LastUpdatePosition": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Create": {
+      "documentation": null,
+      "signature_members": {
+        "Base": {
+          "type": "BioVisualEffect",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Create(BioVisualEffect Base)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Text": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "PRI": {
+      "type": "PlayerReplicationInfo",
+      "documentation": null,
+      "flags": 0
+    },
+    "TextColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 0
+    },
+    "MessageLife": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "HUD",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

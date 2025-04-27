@@ -1,0 +1,87 @@
+{
+  "parent": "BioInterpTrack",
+  "package": "SFXGame",
+  "variables": {
+    "fxInfo": {
+      "type": "FaceFXInfo",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "sActorTag": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sAnimSetName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sAnimName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_nStrRefID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fPreviewLeadInTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bIgnoreExportShrinking": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIgnoreExportGrowing": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bPlaySound": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "GetNewTrackSubMenuName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetNewTrackSubMenuName()"
+    },
+    "KeyDataDisplayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataDisplayName()"
+    },
+    "KeyDataArrayName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string KeyDataArrayName()"
+    },
+    "NewKeyDefaultName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string NewKeyDefaultName()"
+    },
+    "AllowKeyNaming": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool AllowKeyNaming()"
+    }
+  },
+  "states": {},
+  "classflags": 134226066,
+  "configname": "None",
+  "documentation": null
+}

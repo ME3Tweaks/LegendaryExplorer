@@ -1,0 +1,44 @@
+{
+  "parent": "BioPathPoint",
+  "package": "SFXGame",
+  "variables": {
+    "m_vOldPositon": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oStage": {
+      "type": "BioStage",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmStagePosition": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bPositionLocked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "OnCreatureReachedWayPoint": {
+      "documentation": null,
+      "signature_members": {
+        "PathFindingCreature": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnCreatureReachedWayPoint(Pawn PathFindingCreature)"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

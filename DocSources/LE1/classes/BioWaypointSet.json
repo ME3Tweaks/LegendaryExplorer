@@ -1,0 +1,46 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "WaypointReferences": {
+      "type": "ActorReference",
+      "documentation": null,
+      "flags": 71303169
+    },
+    "AlwaysShow": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetWaypoint": {
+      "documentation": null,
+      "signature_members": {
+        "nIdx": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "NavigationPoint",
+      "signature": "NavigationPoint GetWaypoint(int nIdx)"
+    },
+    "FindNearestPoint": {
+      "documentation": null,
+      "signature_members": {
+        "vLoc": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindNearestPoint(Vector vLoc)"
+    }
+  },
+  "states": {},
+  "classflags": 144712338,
+  "configname": "None",
+  "documentation": null
+}

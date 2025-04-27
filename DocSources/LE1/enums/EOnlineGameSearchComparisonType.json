@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "OGSCT_Equals": {
+      "value": 0,
+      "documentation": null
+    },
+    "OGSCT_NotEquals": {
+      "value": 1,
+      "documentation": null
+    },
+    "OGSCT_GreaterThan": {
+      "value": 2,
+      "documentation": null
+    },
+    "OGSCT_GreaterThanEquals": {
+      "value": 3,
+      "documentation": null
+    },
+    "OGSCT_LessThan": {
+      "value": 4,
+      "documentation": null
+    },
+    "OGSCT_LessThanEquals": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

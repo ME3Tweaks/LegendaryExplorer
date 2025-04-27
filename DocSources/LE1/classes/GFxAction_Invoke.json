@@ -1,0 +1,33 @@
+{
+  "parent": "SequenceAction",
+  "package": "GFxUI",
+  "variables": {
+    "MethodName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Arguments": {
+      "type": "ASValue",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Movie": {
+      "type": "GFxMovie",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "IsValidLevelSequenceObject": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsValidLevelSequenceObject()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "TF_Nearest": {
+      "value": 0,
+      "documentation": null
+    },
+    "TF_Linear": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

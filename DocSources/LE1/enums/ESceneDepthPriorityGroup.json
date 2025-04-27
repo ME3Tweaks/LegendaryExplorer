@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "SDPG_UnrealEdBackground": {
+      "value": 0,
+      "documentation": null
+    },
+    "SDPG_World": {
+      "value": 1,
+      "documentation": null
+    },
+    "SDPG_Foreground": {
+      "value": 2,
+      "documentation": null
+    },
+    "SDPG_UnrealEdForeground": {
+      "value": 3,
+      "documentation": null
+    },
+    "SDPG_PostProcess": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

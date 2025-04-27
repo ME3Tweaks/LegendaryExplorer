@@ -1,0 +1,38 @@
+{
+  "members": {
+    "ParamValue": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 71827457
+    },
+    "ParamName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 131073
+    },
+    "bUseEmitterTime": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSpawnTimeOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bScaleVelocityByParamValue": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "ValueMethod": {
+      "type": "EEmitterDynamicParameterValue",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "ParticleModuleParameterDynamic",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

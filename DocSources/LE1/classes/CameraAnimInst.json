@@ -1,0 +1,331 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "UserPlaySpaceMatrix": {
+      "type": "Matrix",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LastPPSettings": {
+      "type": "PostProcessSettings",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "CamAnim": {
+      "type": "CameraAnim",
+      "documentation": null,
+      "flags": 0
+    },
+    "MoveTrack": {
+      "type": "InterpTrackMove",
+      "documentation": null,
+      "flags": 8192
+    },
+    "MoveInst": {
+      "type": "InterpTrackInstMove",
+      "documentation": null,
+      "flags": 8192
+    },
+    "SourceAnimNode": {
+      "type": "AnimNodeSequence",
+      "documentation": null,
+      "flags": 8192
+    },
+    "InterpGroupInst": {
+      "type": "InterpGroupInst",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "CurTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "BlendInTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "BlendOutTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurBlendInTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "CurBlendOutTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "PlayRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "BasePlayScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "TransientScaleModifier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurrentBlendWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "RemainingTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LastPPSettingsAlpha": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bLooping": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bFinished": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bAutoReleaseWhenFinished": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bBlendingIn": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bBlendingOut": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "PlaySpace": {
+      "type": "ECameraAnimPlaySpace",
+      "documentation": null,
+      "flags": 549755813888
+    }
+  },
+  "functions": {
+    "SetPlaySpace": {
+      "documentation": null,
+      "signature_members": {
+        "NewSpace": {
+          "type": "ECameraAnimPlaySpace",
+          "documentation": null,
+          "flags": 128
+        },
+        "UserPlaySpace": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlaySpace(ECameraAnimPlaySpace NewSpace, optional Rotator UserPlaySpace)"
+    },
+    "ApplyTransientScaling": {
+      "documentation": null,
+      "signature_members": {
+        "Scalar": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyTransientScaling(float Scalar)"
+    },
+    "Stop": {
+      "documentation": null,
+      "signature_members": {
+        "bImmediate": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "Stop(optional bool bImmediate)"
+    },
+    "AdvanceAnim": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bJump": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AdvanceAnim(float DeltaTime, bool bJump)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "NewRate": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewBlendInTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewBlendOutTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewDuration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float NewRate, float NewScale, float NewBlendInTime, float NewBlendOutTime, optional float NewDuration)"
+    },
+    "PlayEx": {
+      "documentation": null,
+      "signature_members": {
+        "Anim": {
+          "type": "CameraAnim",
+          "documentation": null,
+          "flags": 128
+        },
+        "CamActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "InRate": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "StartTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InBlendInTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InBlendOutTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bInLoop": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bRandomStartTime": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "Duration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayEx(CameraAnim Anim, Actor CamActor, float InRate, float InScale, float StartTime, float InBlendInTime, float InBlendOutTime, bool bInLoop, bool bRandomStartTime, optional float Duration)"
+    },
+    "Play": {
+      "documentation": null,
+      "signature_members": {
+        "Anim": {
+          "type": "CameraAnim",
+          "documentation": null,
+          "flags": 128
+        },
+        "CamActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "InRate": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InBlendInTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InBlendOutTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bInLoop": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bRandomStartTime": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "Duration": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "Play(CameraAnim Anim, Actor CamActor, float InRate, float InScale, float InBlendInTime, float InBlendOutTime, bool bInLoop, bool bRandomStartTime, optional float Duration)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

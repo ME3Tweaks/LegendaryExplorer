@@ -1,0 +1,123 @@
+{
+  "members": {
+    "TEXTUREGROUP_World": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_WorldNormalMap": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_WorldSpecular": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_Character": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_CharacterNormalMap": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_CharacterSpecular": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_Weapon": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_WeaponNormalMap": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_WeaponSpecular": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_Vehicle": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_VehicleNormalMap": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_VehicleSpecular": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_Cinematic": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_Effects": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_EffectsNotFiltered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_Skybox": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_UI": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_Lightmap": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_RenderTarget": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_MobileFlattened": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_ProcBuilding_Face": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_ProcBuilding_LightMap": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "TEXTUREGROUP_Shadowmap": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    }
+  },
+  "classdef": "Texture",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

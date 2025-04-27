@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Description": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "BaseLevel": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 167772306,
+  "configname": "None",
+  "documentation": null
+}

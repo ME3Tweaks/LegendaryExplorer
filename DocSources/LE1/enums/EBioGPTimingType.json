@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "GP_TIMING_STATIC": {
+      "value": 0,
+      "documentation": null
+    },
+    "GP_TIMING_TIMEOUT": {
+      "value": 1,
+      "documentation": null
+    },
+    "GP_TIMING_TICK": {
+      "value": 2,
+      "documentation": null
+    },
+    "GP_TIMING_COOLDOWN": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

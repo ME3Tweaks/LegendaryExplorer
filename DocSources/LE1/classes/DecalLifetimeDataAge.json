@@ -1,0 +1,21 @@
+{
+  "parent": "DecalLifetimeData",
+  "package": "Engine",
+  "variables": {
+    "Age": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "LifeSpan": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

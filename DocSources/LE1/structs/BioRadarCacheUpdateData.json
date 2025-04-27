@@ -1,0 +1,18 @@
+{
+  "members": {
+    "vPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "nIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioPlayerController",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

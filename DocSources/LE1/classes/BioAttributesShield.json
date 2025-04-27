@@ -1,0 +1,172 @@
+{
+  "parent": "BioAttributes",
+  "package": "SFXGame",
+  "variables": {
+    "m_ShieldMax": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ShieldRegenDelay": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ShieldRegenRate": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_DamageCapacity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fInitialShieldMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fInitialShieldRegenDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fInitialShieldRegenRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_IsRechargeable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "RemoveFloatAttributeBaseOverrideModifier": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfOverride": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveFloatAttributeBaseOverrideModifier(Name attribute, int nIndexOfOverride, optional int nIndexOfAttributeInArray)"
+    },
+    "AddFloatAttributeBaseOverrideModifier": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddFloatAttributeBaseOverrideModifier(Name attribute, float Value, optional int nIndexOfAttributeInArray)"
+    },
+    "RemoveFloatAttributeModifier": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "modType": {
+          "type": "EBioAttrModType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveFloatAttributeModifier(Name attribute, EBioAttrModType modType, float fValue, optional int nIndexOfAttributeInArray)"
+    },
+    "AddFloatAttributeModifier": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "modType": {
+          "type": "EBioAttrModType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "AddFloatAttributeModifier(Name attribute, EBioAttrModType modType, float fValue, optional int nIndexOfAttributeInArray)"
+    },
+    "SetFloatAttribute": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatAttribute(Name attribute, float fValue, optional int nIndexOfAttributeInArray)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

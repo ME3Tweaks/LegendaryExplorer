@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "eBioLootGUINever": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioLootGUIPerPawn": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioLootGUISquadThreshold": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

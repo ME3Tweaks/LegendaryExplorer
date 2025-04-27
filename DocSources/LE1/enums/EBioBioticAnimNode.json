@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BIOTIC_ANIM_NODE_IDLE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIOTIC_ANIM_NODE_CASTING": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIOTIC_ANIM_NODE_LAUNCH": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIOTIC_ANIM_NODE_COUNT": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

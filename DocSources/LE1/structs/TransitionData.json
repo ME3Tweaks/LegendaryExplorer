@@ -1,0 +1,23 @@
+{
+  "members": {
+    "FromState": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "ToState": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "TransName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioSoundNodeAPTransition",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "ELESM_Random": {
+      "value": 0,
+      "documentation": null
+    },
+    "ELESM_Sequential": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

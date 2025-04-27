@@ -1,0 +1,43 @@
+{
+  "members": {
+    "ReadDelegates": {
+      "type": "OnReadProfileSettingsComplete",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "WriteDelegates": {
+      "type": "OnWriteProfileSettingsComplete",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ProfileDataChangedDelegates": {
+      "type": "OnProfileDataChanged",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Profile": {
+      "type": "OnlineProfileSettings",
+      "documentation": null,
+      "flags": 0
+    },
+    "TrilogyProfile": {
+      "type": "OnlineProfileSettings",
+      "documentation": null,
+      "flags": 0
+    },
+    "ProfileTempNewCachedSettings": {
+      "type": "OnlineProfileSettings",
+      "documentation": null,
+      "flags": 0
+    },
+    "TrilogyProfileTempNewCachedSettings": {
+      "type": "OnlineProfileSettings",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXOnlineComponentUnrealPlayer",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

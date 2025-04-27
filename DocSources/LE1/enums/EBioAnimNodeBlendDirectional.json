@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "eBioAnimNodeBlendDirectional_Forward": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendDirectional_Backward": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendDirectional_FwdLeft": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendDirectional_FwdRight": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendDirectional_BckLeft": {
+      "value": 4,
+      "documentation": null
+    },
+    "eBioAnimNodeBlendDirectional_BckRight": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

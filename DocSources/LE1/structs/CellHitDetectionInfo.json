@@ -1,0 +1,28 @@
+{
+  "members": {
+    "HitColumn": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "HitRow": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "ResizeColumn": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "ResizeRow": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1048576
+    }
+  },
+  "classdef": "UIList",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 9
+}

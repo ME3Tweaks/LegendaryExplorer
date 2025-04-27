@@ -1,0 +1,91 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_vFixedRotation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "PitchLimitDegrees": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "YawTwistLimitDegrees": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "YawTurnTriggerDegrees": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "HoldTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_AimBlendOutDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_AimBlendInDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_fYawRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fPitchRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fTimeToUpdate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fYaw": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fPitch": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fTargetYaw": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_RemainingBlendDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_BlendedOut": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "PreviewSliderAxis": {
+      "type": "eAimSliderAxis",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "OGSET_Property": {
+      "value": 0,
+      "documentation": null
+    },
+    "OGSET_LocalizedSetting": {
+      "value": 1,
+      "documentation": null
+    },
+    "OGSET_ObjectProperty": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "EBioSeqActGetTalentRankInput_TalentID": {
+      "value": 0,
+      "documentation": null
+    },
+    "EBioSeqActGetTalentRankInput_Pawn": {
+      "value": 1,
+      "documentation": null
+    },
+    "EBioSeqActGetTalentRankInput_ResultRank": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

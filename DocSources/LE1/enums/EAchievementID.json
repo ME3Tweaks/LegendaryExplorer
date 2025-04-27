@@ -1,0 +1,185 @@
+{
+  "EnumValues": {
+    "ACHIEVEMENT_00_HONORMEDAL": {
+      "value": 0,
+      "documentation": null
+    },
+    "ACHIEVEMENT_01_FEROS": {
+      "value": 1,
+      "documentation": null
+    },
+    "ACHIEVEMENT_02_EDENPRIME": {
+      "value": 2,
+      "documentation": null
+    },
+    "ACHIEVEMENT_03_VIRMIRE": {
+      "value": 3,
+      "documentation": null
+    },
+    "ACHIEVEMENT_04_NOVERIA": {
+      "value": 4,
+      "documentation": null
+    },
+    "ACHIEVEMENT_05_LIFT": {
+      "value": 5,
+      "documentation": null
+    },
+    "ACHIEVEMENT_06_THROW": {
+      "value": 6,
+      "documentation": null
+    },
+    "ACHIEVEMENT_07_WARP": {
+      "value": 7,
+      "documentation": null
+    },
+    "ACHIEVEMENT_08_SINGULARITY": {
+      "value": 8,
+      "documentation": null
+    },
+    "ACHIEVEMENT_09_BARRIER": {
+      "value": 9,
+      "documentation": null
+    },
+    "ACHIEVEMENT_10_STASIS": {
+      "value": 10,
+      "documentation": null
+    },
+    "ACHIEVEMENT_11_DAMPING": {
+      "value": 11,
+      "documentation": null
+    },
+    "ACHIEVEMENT_12_HACK": {
+      "value": 12,
+      "documentation": null
+    },
+    "ACHIEVEMENT_13_ELECTRONICS": {
+      "value": 13,
+      "documentation": null
+    },
+    "ACHIEVEMENT_14_SABOTAGE": {
+      "value": 14,
+      "documentation": null
+    },
+    "ACHIEVEMENT_15_FIRSTAID": {
+      "value": 15,
+      "documentation": null
+    },
+    "ACHIEVEMENT_16_NEURALSHOCK": {
+      "value": 16,
+      "documentation": null
+    },
+    "ACHIEVEMENT_17_ILOS": {
+      "value": 17,
+      "documentation": null
+    },
+    "ACHIEVEMENT_18_CODEX": {
+      "value": 18,
+      "documentation": null
+    },
+    "ACHIEVEMENT_19_COMPLETIONIST": {
+      "value": 19,
+      "documentation": null
+    },
+    "ACHIEVEMENT_20_EXPLORATIONI": {
+      "value": 20,
+      "documentation": null
+    },
+    "ACHIEVEMENT_21_EXPLORATIONII": {
+      "value": 21,
+      "documentation": null
+    },
+    "ACHIEVEMENT_22_EXPLORATIONIII": {
+      "value": 22,
+      "documentation": null
+    },
+    "ACHIEVEMENT_23_SOLDIERALLY": {
+      "value": 23,
+      "documentation": null
+    },
+    "ACHIEVEMENT_24_SENTINELALLY": {
+      "value": 24,
+      "documentation": null
+    },
+    "ACHIEVEMENT_25_KROGANALLY": {
+      "value": 25,
+      "documentation": null
+    },
+    "ACHIEVEMENT_26_TURIANALLY": {
+      "value": 26,
+      "documentation": null
+    },
+    "ACHIEVEMENT_27_QUARIANALLY": {
+      "value": 27,
+      "documentation": null
+    },
+    "ACHIEVEMENT_28_ASARIALLY": {
+      "value": 28,
+      "documentation": null
+    },
+    "ACHIEVEMENT_29_PRINCIPLED": {
+      "value": 29,
+      "documentation": null
+    },
+    "ACHIEVEMENT_30_SPECTRE": {
+      "value": 30,
+      "documentation": null
+    },
+    "ACHIEVEMENT_31_CHARISMATIC": {
+      "value": 31,
+      "documentation": null
+    },
+    "ACHIEVEMENT_32_SEARCHANDRESCUE": {
+      "value": 32,
+      "documentation": null
+    },
+    "ACHIEVEMENT_33_BRINGDOWNTHESKY": {
+      "value": 33,
+      "documentation": null
+    },
+    "ACHIEVEMENT_34_TRILOGY_INSANITYI": {
+      "value": 34,
+      "documentation": null
+    },
+    "ACHIEVEMENT_35_TRILOGY_INSANITYII": {
+      "value": 35,
+      "documentation": null
+    },
+    "ACHIEVEMENT_36_TRILOGY_INSANITYIII": {
+      "value": 36,
+      "documentation": null
+    },
+    "ACHIEVEMENT_37_TRILOGY_PARAMOURI": {
+      "value": 37,
+      "documentation": null
+    },
+    "ACHIEVEMENT_38_TRILOGY_PARAMOURII": {
+      "value": 38,
+      "documentation": null
+    },
+    "ACHIEVEMENT_39_TRILOGY_PARAMOURIII": {
+      "value": 39,
+      "documentation": null
+    },
+    "ACHIEVEMENT_40_TRILOGY_LONGSERVICE": {
+      "value": 40,
+      "documentation": null
+    },
+    "ACHIEVEMENT_41_TRILOGY_RECRUIT": {
+      "value": 41,
+      "documentation": null
+    },
+    "ACHIEVEMENT_42_TRILOGY_SOLDIER": {
+      "value": 42,
+      "documentation": null
+    },
+    "ACHIEVEMENT_43_TRILOGY_VETERAN": {
+      "value": 43,
+      "documentation": null
+    },
+    "ACHIEVEMENT_44_TRILOGY_BRUISER": {
+      "value": 44,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

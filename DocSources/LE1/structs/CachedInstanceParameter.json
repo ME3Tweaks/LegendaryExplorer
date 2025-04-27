@@ -1,0 +1,28 @@
+{
+  "members": {
+    "OffsetInfo": {
+      "type": "InterpPropertyInfo",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ParameterName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "fCurrentValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bInited": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioVisualEffect",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

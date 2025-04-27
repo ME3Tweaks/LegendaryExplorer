@@ -1,0 +1,18 @@
+{
+  "members": {
+    "CategoryData": {
+      "type": "AbilityDifficultyData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Category": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXDifficultyHandler",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

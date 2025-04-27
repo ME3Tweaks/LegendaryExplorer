@@ -1,0 +1,85 @@
+{
+  "parent": "BioVisualImpactSet",
+  "package": "SFXGame",
+  "variables": {
+    "rRotationBias": {
+      "type": "RawDistributionVector",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "VisualEffectMappings": {
+      "type": "BioVISSData",
+      "documentation": null,
+      "flags": 71303169
+    },
+    "MaterialParent": {
+      "type": "BioVISSimple",
+      "documentation": null,
+      "flags": 1
+    },
+    "vfxDefaultVisualEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "vfxDefaultMaterialEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "PreloadEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreloadEffects()"
+    },
+    "ApplyVisualImpact": {
+      "documentation": null,
+      "signature_members": {
+        "vImpactLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "rImpactRotation": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "rDirectionOfImpact": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "oHitInfo": {
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "oBase": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "bApplyMaterialEffect": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bApplyVisualEffect": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "BioVisualEffect",
+      "signature": "BioVisualEffect ApplyVisualImpact(Vector vImpactLocation, Rotator rImpactRotation, Rotator rDirectionOfImpact, TraceHitInfo oHitInfo, optional Actor oBase, optional bool bApplyMaterialEffect, optional bool bApplyVisualEffect)"
+    }
+  },
+  "states": {},
+  "classflags": 142606483,
+  "configname": "None",
+  "documentation": null
+}

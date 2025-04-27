@@ -1,0 +1,21 @@
+{
+  "parent": "BioSeqData_BehaviorBase",
+  "package": "SFXGame",
+  "variables": {
+    "oAPToUse": {
+      "type": "BioArtPlaceable",
+      "documentation": null,
+      "flags": 1
+    },
+    "bWalkToAP": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

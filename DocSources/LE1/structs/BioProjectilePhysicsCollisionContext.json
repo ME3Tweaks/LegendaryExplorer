@@ -1,0 +1,23 @@
+{
+  "members": {
+    "m_vHitLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vHitNormal": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioProjectile",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

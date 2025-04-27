@@ -1,0 +1,129 @@
+{
+  "parent": "BioAttributes",
+  "package": "SFXGame",
+  "variables": {
+    "m_pAntiThorianCount": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_pPhasicFactor": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_pToxicFactor": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_pStabilityFactor": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_pOrganicDamageFactor": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_pInorganicDamageFactor": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_fInitialPhasicFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fInitialToxicFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fInitialStabilityFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nInitialAntiThorianCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bHasImpulseOnDeath": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bHasImpulse": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIgnorePhysicsThreshold": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bDamagesMySquad": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIsEMP": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIgnoresShields": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bDamagesHealth": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIgnoresDamageResistance": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bSuppressDeathCapabilities": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_eExplosionFalloff": {
+      "type": "EBioAttributesDamageFalloff",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nWeaponType": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "SetWeaponDamageType": {
+      "documentation": null,
+      "signature_members": {
+        "nWeaponType": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWeaponDamageType(byte nWeaponType)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

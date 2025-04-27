@@ -1,0 +1,34 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "Targets": {
+      "type": "MorphTarget",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "BaseSkelMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "FindMorphTarget": {
+      "documentation": null,
+      "signature_members": {
+        "MorphTargetName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "MorphTarget",
+      "signature": "MorphTarget FindMorphTarget(Name MorphTargetName)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

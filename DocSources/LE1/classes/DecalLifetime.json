@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "PolicyName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "ManagedDecals": {
+      "type": "DecalComponent",
+      "documentation": null,
+      "flags": 71827466
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606483,
+  "configname": "None",
+  "documentation": null
+}

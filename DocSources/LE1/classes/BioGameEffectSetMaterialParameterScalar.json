@@ -1,0 +1,29 @@
+{
+  "parent": "BioGameEffectSetMaterialParameter",
+  "package": "SFXGame",
+  "variables": {
+    "m_fValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {
+    "Apply": {
+      "documentation": null,
+      "signature_members": {
+        "pTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object Apply(Object pTarget)"
+    }
+  },
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

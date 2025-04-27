@@ -1,0 +1,51 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "BoneDefinitions": {
+      "type": "LookAtBoneDefinition",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "RootAnimBoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "ValidTargetAngleRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RootAnimBoneLookAtInverted": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "RootAnimBoneUpInverted": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "RootBoneYawOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "RootAnimBoneLookAtAxis": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 1
+    },
+    "RootAnimBoneUpAxis": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

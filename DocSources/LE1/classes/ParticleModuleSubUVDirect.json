@@ -1,0 +1,21 @@
+{
+  "parent": "ParticleModuleSubUVBase",
+  "package": "Engine",
+  "variables": {
+    "SubUVPositionRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "SubUVSizeRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null,
+      "flags": 4718593
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

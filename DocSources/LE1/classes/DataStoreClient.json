@@ -1,0 +1,166 @@
+{
+  "parent": "UIRoot",
+  "package": "Engine",
+  "variables": {
+    "GlobalDataStoreClasses": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "GlobalDataStores": {
+      "type": "UIDataStore",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "PlayerDataStoreClassNames": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "PlayerDataStoreClasses": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "PlayerDataStores": {
+      "type": "PlayerDataStoreGroup",
+      "documentation": null,
+      "flags": 4194306
+    }
+  },
+  "functions": {
+    "DebugDumpDataStoreInfo": {
+      "documentation": null,
+      "signature_members": {
+        "bVerbose": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDumpDataStoreInfo(bool bVerbose)"
+    },
+    "NotifyGameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyGameSessionEnded()"
+    },
+    "FindDataStoreClass": {
+      "documentation": null,
+      "signature_members": {
+        "RequiredMetaClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<UIDataStore> FindDataStoreClass(Class<UIDataStore> RequiredMetaClass)"
+    },
+    "GetPlayerDataStoreClasses": {
+      "documentation": null,
+      "signature_members": {
+        "out_DataStoreClasses": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetPlayerDataStoreClasses(out array<Class<UIDataStore>> out_DataStoreClasses)"
+    },
+    "FindPlayerDataStoreIndex": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindPlayerDataStoreIndex(LocalPlayer PlayerOwner)"
+    },
+    "GetAvailableDataStores": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentScene": {
+          "type": "UIScene",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_DataStores": {
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAvailableDataStores(UIScene CurrentScene, out array<UIDataStore> out_DataStores)"
+    },
+    "UnregisterDataStore": {
+      "documentation": null,
+      "signature_members": {
+        "DataStore": {
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnregisterDataStore(UIDataStore DataStore)"
+    },
+    "RegisterDataStore": {
+      "documentation": null,
+      "signature_members": {
+        "DataStore": {
+          "type": "UIDataStore",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RegisterDataStore(UIDataStore DataStore, optional LocalPlayer PlayerOwner)"
+    },
+    "CreateDataStore": {
+      "documentation": null,
+      "signature_members": {
+        "DataStoreClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "UIDataStore",
+      "signature": "coerce UIDataStore CreateDataStore(Class<UIDataStore> DataStoreClass)"
+    },
+    "FindDataStore": {
+      "documentation": null,
+      "signature_members": {
+        "DataStoreTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "UIDataStore",
+      "signature": "UIDataStore FindDataStore(Name DataStoreTag, optional LocalPlayer PlayerOwner)"
+    }
+  },
+  "states": {},
+  "classflags": 136315030,
+  "configname": "Engine",
+  "documentation": null
+}

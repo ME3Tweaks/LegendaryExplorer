@@ -1,0 +1,29 @@
+{
+  "parent": "Info",
+  "package": "SFXGame",
+  "variables": {
+    "m_oBioMusicVolume": {
+      "type": "BioMusicVolume",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Timer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Timer()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

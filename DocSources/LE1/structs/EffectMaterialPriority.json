@@ -1,0 +1,18 @@
+{
+  "members": {
+    "nPriority": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "eType": {
+      "type": "EEffectsMaterialType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioEffectsMaterialsPriorityMap",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

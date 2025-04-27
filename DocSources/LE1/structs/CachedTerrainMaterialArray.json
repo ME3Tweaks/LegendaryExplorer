@@ -1,0 +1,13 @@
+{
+  "members": {
+    "CachedMaterials": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 2101250
+    }
+  },
+  "classdef": "Terrain",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

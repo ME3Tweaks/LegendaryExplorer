@@ -1,0 +1,168 @@
+{
+  "parent": "BioSequenceLatentAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_TimeToSpend": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "m_EntranceTransition": {
+      "type": "BioActionStationGestureData",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ExitTransition": {
+      "type": "BioActionStationGestureData",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_CombatExitTransition": {
+      "type": "BioActionStationGestureData",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vPathNodeOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oPawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oArtPlaceable": {
+      "type": "BioArtPlaceable",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oPathNode": {
+      "type": "BioPathPoint",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_RulesData": {
+      "type": "BioGestureRulesData",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nNumOutputTwitches": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fEntranceBlendTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fExitBlendTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fDelayBeforeTwitch": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fTimeSpent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fTimeToSpend": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nTwitchStartIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bSnapToPose": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bDontMovePathnode": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bPlayTwitchesInOrder": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bPawnInConversation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bActionStationComplete": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bResourcesReferenced": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bInEntranceTransition": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bStartedSuccessfully": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bFireFailedPin": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bTwitchesAborted": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_PawnEntranceTransition": {
+      "type": "EBioActionStationEntrancePose",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_PawnExitTransition": {
+      "type": "EBioActionStationExitPose",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_PawnCombatExitTransition": {
+      "type": "EBioActionStationCombatPose",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nExitCondition": {
+      "type": "EBioActionStationExitCondition",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

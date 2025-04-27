@@ -1,0 +1,16 @@
+{
+  "parent": "BioItemSaveObject",
+  "package": "SFXGame",
+  "variables": {
+    "m_type": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009213693952
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

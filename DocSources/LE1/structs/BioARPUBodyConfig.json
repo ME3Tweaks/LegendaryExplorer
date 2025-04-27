@@ -1,0 +1,38 @@
+{
+  "members": {
+    "nmCurveName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmAnimSet": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmAnimSeq": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "fStartBlendDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fEndBlendDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUsesSingleKeyframe": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioGestureRulesData",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

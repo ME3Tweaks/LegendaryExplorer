@@ -1,0 +1,47 @@
+{
+  "parent": "HUD",
+  "package": "Engine",
+  "variables": {
+    "bDisplayMessages": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "ChangeState": {
+      "documentation": null,
+      "signature_members": {
+        "bIsVisible": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ChangeState(bool bIsVisible)"
+    },
+    "UpdateScoreBoard": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateScoreBoard()"
+    },
+    "UpdateGRI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool UpdateGRI()"
+    },
+    "DrawHUD": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DrawHUD()"
+    }
+  },
+  "states": {},
+  "classflags": 10485790,
+  "configname": "Game",
+  "documentation": null
+}

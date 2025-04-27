@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "PNA_Blank": {
+      "value": 0,
+      "documentation": null
+    },
+    "PNA_Run": {
+      "value": 1,
+      "documentation": null
+    },
+    "PNA_Mounted": {
+      "value": 2,
+      "documentation": null
+    },
+    "PNA_Fell": {
+      "value": 3,
+      "documentation": null
+    },
+    "PNA_Ladder": {
+      "value": 4,
+      "documentation": null
+    },
+    "PNA_Elevator": {
+      "value": 5,
+      "documentation": null
+    },
+    "PNA_Door": {
+      "value": 6,
+      "documentation": null
+    },
+    "PNA_Teleport": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

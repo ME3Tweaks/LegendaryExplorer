@@ -1,0 +1,118 @@
+{
+  "members": {
+    "m_SaveAreaInfo": {
+      "type": "SaveGameAreaInfo",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ParentSaveAreaInfo": {
+      "type": "SaveGameAreaInfo",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_filename": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_saveName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_saveNameShort": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_charId": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sec": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Min": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_hr": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_day": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_mo": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_year": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_secPlayed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_minPlayed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_hrPlayed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ClassId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_CharcterLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_DeviceId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_SaveGameNumber": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bCanDelete": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bIsAutoSave": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bIsQuickSave": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSaveGame",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

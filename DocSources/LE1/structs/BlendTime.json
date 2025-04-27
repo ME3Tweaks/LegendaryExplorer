@@ -1,0 +1,18 @@
+{
+  "members": {
+    "m_fTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_eAnimNode": {
+      "type": "EBioActionAnimNode",
+      "documentation": null,
+      "flags": 131075
+    }
+  },
+  "classdef": "BioAnimNodeBlendByAction",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

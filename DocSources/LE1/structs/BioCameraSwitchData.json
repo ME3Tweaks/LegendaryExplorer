@@ -1,0 +1,43 @@
+{
+  "members": {
+    "nmExplicitCamera": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "nmStageSpecificCam": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nIntimacy": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bForceCrossingLineOfAction": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseForNextCamera": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "eStandardCamera": {
+      "type": "EBioCommonStageCameras",
+      "documentation": null,
+      "flags": 1
+    },
+    "eStageSpecificCam": {
+      "type": "EBioAutoSet",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioEvtSysTrackSwitchCamera",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

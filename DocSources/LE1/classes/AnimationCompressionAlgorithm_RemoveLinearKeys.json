@@ -1,0 +1,41 @@
+{
+  "parent": "AnimationCompressionAlgorithm",
+  "package": "Engine",
+  "variables": {
+    "MaxPosDiff": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxAngleDiff": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxEffectorDiff": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinEffectorDiff": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ParentKeyScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRetarget": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

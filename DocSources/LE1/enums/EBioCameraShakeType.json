@@ -1,0 +1,45 @@
+{
+  "EnumValues": {
+    "Grenade": {
+      "value": 0,
+      "documentation": null
+    },
+    "Rumble": {
+      "value": 1,
+      "documentation": null
+    },
+    "Ambient": {
+      "value": 2,
+      "documentation": null
+    },
+    "Run": {
+      "value": 3,
+      "documentation": null
+    },
+    "FireLoop": {
+      "value": 4,
+      "documentation": null
+    },
+    "Rifle": {
+      "value": 5,
+      "documentation": null
+    },
+    "Pistol": {
+      "value": 6,
+      "documentation": null
+    },
+    "Sniper": {
+      "value": 7,
+      "documentation": null
+    },
+    "Shotgun": {
+      "value": 8,
+      "documentation": null
+    },
+    "Biotics": {
+      "value": 9,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,16 @@
+{
+  "parent": "UIAction_SetValue",
+  "package": "Engine",
+  "variables": {
+    "NewMarkup": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 2097682,
+  "configname": "None",
+  "documentation": null
+}

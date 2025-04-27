@@ -1,0 +1,51 @@
+{
+  "parent": "SeqVar_Int",
+  "package": "SFXGame",
+  "variables": {
+    "m_sVarName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_sRefName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_nIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nPrevRegionIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nPrevPlotIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Region": {
+      "type": "EBioRegionAutoSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "Plot": {
+      "type": "EBioPlotAutoSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "Int": {
+      "type": "EBioAutoSet",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

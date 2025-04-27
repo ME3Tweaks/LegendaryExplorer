@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "SceneCapView_Lit": {
+      "value": 0,
+      "documentation": null
+    },
+    "SceneCapView_Unlit": {
+      "value": 1,
+      "documentation": null
+    },
+    "SceneCapView_LitNoShadows": {
+      "value": 2,
+      "documentation": null
+    },
+    "SceneCapView_Wire": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

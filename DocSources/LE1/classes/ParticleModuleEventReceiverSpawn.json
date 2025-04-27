@@ -1,0 +1,36 @@
+{
+  "parent": "ParticleModuleEventReceiverBase",
+  "package": "Engine",
+  "variables": {
+    "InheritVelocityScaleRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "SpawnCount": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "bUseParticleTime": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUsePSysLocation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bInheritVelocity": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

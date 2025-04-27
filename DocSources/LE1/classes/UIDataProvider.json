@@ -1,0 +1,241 @@
+{
+  "parent": "UIRoot",
+  "package": "Engine",
+  "variables": {
+    "ProviderChangedNotifies": {
+      "type": "OnDataProviderPropertyChange",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "__OnDataProviderPropertyChange__Delegate": {
+      "type": "OnDataProviderPropertyChange",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "WriteAccessType": {
+      "type": "EProviderAccessType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "ParseTagArrayDelimiter": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "int",
+      "signature": "int ParseTagArrayDelimiter(out Name FieldName)"
+    },
+    "RemovePropertyNotificationChangeRequest": {
+      "documentation": null,
+      "signature_members": {
+        "InDelegate": {
+          "type": "OnDataProviderPropertyChange",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemovePropertyNotificationChangeRequest(delegate<OnDataProviderPropertyChange> InDelegate)"
+    },
+    "AddPropertyNotificationChangeRequest": {
+      "documentation": null,
+      "signature_members": {
+        "InDelegate": {
+          "type": "OnDataProviderPropertyChange",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bAllowDuplicates": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddPropertyNotificationChangeRequest(delegate<OnDataProviderPropertyChange> InDelegate, optional bool bAllowDuplicates)"
+    },
+    "NotifyPropertyChanged": {
+      "documentation": null,
+      "signature_members": {
+        "PropTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyPropertyChanged(optional Name PropTag)"
+    },
+    "IsCollectionDataType": {
+      "documentation": null,
+      "signature_members": {
+        "FieldType": {
+          "type": "EUIDataProviderFieldType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsCollectionDataType(EUIDataProviderFieldType FieldType)"
+    },
+    "IsProviderDisabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsProviderDisabled()"
+    },
+    "GenerateFillerData": {
+      "documentation": null,
+      "signature_members": {
+        "DataTag": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "string",
+      "signature": "string GenerateFillerData(string DataTag)"
+    },
+    "GenerateScriptMarkupString": {
+      "documentation": null,
+      "signature_members": {
+        "DataTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GenerateScriptMarkupString(Name DataTag)"
+    },
+    "SetFieldValue": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "FieldValue": {
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "ArrayIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetFieldValue(string FieldName, const out UIProviderScriptFieldValue FieldValue, optional int ArrayIndex)"
+    },
+    "GetFieldValue": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "FieldValue": {
+          "type": "UIProviderScriptFieldValue",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "ArrayIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetFieldValue(string FieldName, out UIProviderScriptFieldValue FieldValue, optional int ArrayIndex)"
+    },
+    "AllowPublishingToField": {
+      "documentation": null,
+      "signature_members": {
+        "FieldName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "ArrayIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AllowPublishingToField(string FieldName, optional int ArrayIndex)"
+    },
+    "GetSupportedScriptFields": {
+      "documentation": null,
+      "signature_members": {
+        "out_Fields": {
+          "type": "UIDataProviderField",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSupportedScriptFields(out array<UIDataProviderField> out_Fields)"
+    },
+    "ParseArrayDelimiter": {
+      "documentation": null,
+      "signature_members": {
+        "DataTag": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "int",
+      "signature": "int ParseArrayDelimiter(out string DataTag)"
+    },
+    "GetProviderFieldType": {
+      "documentation": null,
+      "signature_members": {
+        "DataTag": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
+        },
+        "out_ProviderFieldType": {
+          "type": "EUIDataProviderFieldType",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetProviderFieldType(coerce string DataTag, out EUIDataProviderFieldType out_ProviderFieldType)"
+    },
+    "OnDataProviderPropertyChange": {
+      "documentation": null,
+      "signature_members": {
+        "SourceProvider": {
+          "type": "UIDataProvider",
+          "documentation": null,
+          "flags": 128
+        },
+        "PropTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDataProviderPropertyChange(UIDataProvider SourceProvider, optional Name PropTag)"
+    }
+  },
+  "states": {},
+  "classflags": 136315035,
+  "configname": "None",
+  "documentation": null
+}

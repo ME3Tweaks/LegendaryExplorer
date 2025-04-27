@@ -1,0 +1,23 @@
+{
+  "parent": "SequenceCondition",
+  "package": "Engine",
+  "variables": {
+    "NumNeededLoggedIn": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "CheckLogins": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CheckLogins()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

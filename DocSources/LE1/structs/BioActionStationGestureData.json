@@ -1,0 +1,33 @@
+{
+  "members": {
+    "nmPoseSet": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmPoseAnim": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmTransitionSet": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmTransitionAnim": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmEnumName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSeqAct_ActionStation",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

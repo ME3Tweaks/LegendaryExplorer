@@ -1,0 +1,28 @@
+{
+  "members": {
+    "ClampRegionSize": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null,
+      "flags": 1
+    },
+    "ClampRegionOffset": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSubregionEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "ClampRegionAlignment": {
+      "type": "EUIAlignment",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

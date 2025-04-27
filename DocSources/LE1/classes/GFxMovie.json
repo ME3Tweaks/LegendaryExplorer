@@ -1,0 +1,965 @@
+{
+  "parent": "Object",
+  "package": "GFxUI",
+  "variables": {
+    "CaptureKeys": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "FocusIgnoreKeys": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "OwnedGFxValues": {
+      "type": "GFxValue",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ExternalTextures": {
+      "type": "ExternalTexture",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "DataStoreBindings": {
+      "type": "GFxDataStoreBinding",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "pMovie": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "pCaptureKeys": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "pFocusIgnoreKeys": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ASUClasses": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ASUObjects": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 12290
+    },
+    "MovieInfo": {
+      "type": "GFxMovieInfo",
+      "documentation": null,
+      "flags": 1
+    },
+    "RenderTexture": {
+      "type": "TextureRenderTarget2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "PlayerOwner": {
+      "type": "PlayerController",
+      "documentation": null,
+      "flags": 8192
+    },
+    "FSCmdHandler": {
+      "type": "GFxFSCmdHandler",
+      "documentation": null,
+      "flags": 1
+    },
+    "ExternalInterface": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 1
+    },
+    "DataStoreSubscriber": {
+      "type": "GFxDataStoreSubscriber",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LocalPlayerOwnerIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "NextASUObject": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8194
+    },
+    "nZOrder": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "CreationTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fRenderTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fAdvanceTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDisplayWithHudOff": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bUsingController": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bGammaCorrection": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "SceneDPG": {
+      "type": "ESceneDepthPriorityGroup",
+      "documentation": null,
+      "flags": 1
+    },
+    "TimingMode": {
+      "type": "GFxTimingMode",
+      "documentation": null,
+      "flags": 1
+    },
+    "RenderTextureMode": {
+      "type": "GFxRenderTextureMode",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "UnregisterGFxValue": {
+      "documentation": null,
+      "signature_members": {
+        "i_val": {
+          "type": "GFxValue",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnregisterGFxValue(GFxValue i_val)"
+    },
+    "RegisterGFxValue": {
+      "documentation": null,
+      "signature_members": {
+        "i_val": {
+          "type": "GFxValue",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RegisterGFxValue(GFxValue i_val)"
+    },
+    "ActionScriptSetFunction": {
+      "documentation": null,
+      "signature_members": {
+        "Obj": {
+          "type": "GFxValue",
+          "documentation": null,
+          "flags": 128
+        },
+        "member": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ActionScriptSetFunction(GFxValue Obj, string member)"
+    },
+    "ActionScriptObject": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "GFxValue",
+      "signature": "GFxValue ActionScriptObject(string Path)"
+    },
+    "ActionScriptString": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "string",
+      "signature": "string ActionScriptString(string Path)"
+    },
+    "ActionScriptFloat": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "float",
+      "signature": "float ActionScriptFloat(string Path)"
+    },
+    "ActionScriptInt": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "int",
+      "signature": "int ActionScriptInt(string Path)"
+    },
+    "ActionScriptVoid": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ActionScriptVoid(string Path)"
+    },
+    "SetExternalInterface": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetExternalInterface(Object H)"
+    },
+    "SetFsCmdHandler": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": "GFxFSCmdHandler",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFsCmdHandler(GFxFSCmdHandler H)"
+    },
+    "SetVariableObject": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Value": {
+          "type": "GFxValue",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVariableObject(string Path, GFxValue Value)"
+    },
+    "GetVariableObject": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Type": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "GFxValue",
+      "signature": "GFxValue GetVariableObject(string Path, optional Class<GFxValue> Type)"
+    },
+    "CreateArray": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "GFxValue",
+      "signature": "GFxValue CreateArray()"
+    },
+    "CreateObject": {
+      "documentation": null,
+      "signature_members": {
+        "ASClass": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Type": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "GFxValue",
+      "signature": "GFxValue CreateObject(string ASClass, optional Class<GFxValue> Type)"
+    },
+    "SetVariableStringArray": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "arg": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetVariableStringArray(string Path, int Index, array<string> arg)"
+    },
+    "SetVariableFloatArray": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "arg": {
+          "type": "float",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetVariableFloatArray(string Path, int Index, array<float> arg)"
+    },
+    "SetVariableIntArray": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "arg": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetVariableIntArray(string Path, int Index, array<int> arg)"
+    },
+    "SetVariableArray": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "arg": {
+          "type": "ASValue",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetVariableArray(string Path, int Index, array<ASValue> arg)"
+    },
+    "GetVariableStringArray": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "arg": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetVariableStringArray(string Path, int Index, out array<string> arg)"
+    },
+    "GetVariableFloatArray": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "arg": {
+          "type": "float",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetVariableFloatArray(string Path, int Index, out array<float> arg)"
+    },
+    "GetVariableIntArray": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "arg": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetVariableIntArray(string Path, int Index, out array<int> arg)"
+    },
+    "GetVariableArray": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "arg": {
+          "type": "ASValue",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetVariableArray(string Path, int Index, out array<ASValue> arg)"
+    },
+    "SetVariableString": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "S": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVariableString(string Path, string S)"
+    },
+    "SetVariableNumber": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "F": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVariableNumber(string Path, float F)"
+    },
+    "SetVariableBool": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "B": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVariableBool(string Path, bool B)"
+    },
+    "SetVariable": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "arg": {
+          "type": "ASValue",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVariable(string Path, ASValue arg)"
+    },
+    "GetVariableString": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetVariableString(string Path)"
+    },
+    "GetVariableNumber": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetVariableNumber(string Path)"
+    },
+    "GetVariableBool": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetVariableBool(string Path)"
+    },
+    "GetVariable": {
+      "documentation": null,
+      "signature_members": {
+        "Path": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "ASValue",
+      "signature": "ASValue GetVariable(string Path)"
+    },
+    "PublishDataStoreValues": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PublishDataStoreValues()"
+    },
+    "RefreshDataStoreBindings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RefreshDataStoreBindings()"
+    },
+    "Invoke": {
+      "documentation": null,
+      "signature_members": {
+        "method": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Args": {
+          "type": "ASValue",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "ASValue",
+      "signature": "ASValue Invoke(string method, array<ASValue> Args)"
+    },
+    "GetPC": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PlayerController",
+      "signature": "PlayerController GetPC()"
+    },
+    "GetLP": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "LocalPlayer",
+      "signature": "LocalPlayer GetLP()"
+    },
+    "SetTimingMode": {
+      "documentation": null,
+      "signature_members": {
+        "Mode": {
+          "type": "GFxTimingMode",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTimingMode(GFxTimingMode Mode)"
+    },
+    "Pause": {
+      "documentation": null,
+      "signature_members": {
+        "pauseplay": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "Pause(optional bool pauseplay)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "Advance": {
+      "documentation": null,
+      "signature_members": {
+        "Time": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Advance(float Time)"
+    },
+    "SetExternalTexture": {
+      "documentation": null,
+      "signature_members": {
+        "Resource": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Texture": {
+          "type": "Texture",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetExternalTexture(string Resource, Texture Texture)"
+    },
+    "IsUsingGamepad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsUsingGamepad()"
+    },
+    "FlushPlayerInput": {
+      "documentation": null,
+      "signature_members": {
+        "capturekeysonly": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "FlushPlayerInput(bool capturekeysonly)"
+    },
+    "ClearFocusIgnoreKeys": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearFocusIgnoreKeys()"
+    },
+    "AddFocusIgnoreKey": {
+      "documentation": null,
+      "signature_members": {
+        "Key": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddFocusIgnoreKey(Name Key)"
+    },
+    "ClearCaptureKeys": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearCaptureKeys()"
+    },
+    "AddCaptureKey": {
+      "documentation": null,
+      "signature_members": {
+        "Key": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCaptureKey(Name Key)"
+    },
+    "SetFocus": {
+      "documentation": null,
+      "signature_members": {
+        "captureInput": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "Focus": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFocus(bool captureInput, optional bool Focus)"
+    },
+    "SetSceneDPG": {
+      "documentation": null,
+      "signature_members": {
+        "NewDPG": {
+          "type": "ESceneDepthPriorityGroup",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSceneDPG(ESceneDepthPriorityGroup NewDPG)"
+    },
+    "SetPerspective3D": {
+      "documentation": null,
+      "signature_members": {
+        "matPersp": {
+          "type": "Matrix",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPerspective3D(const out Matrix matPersp)"
+    },
+    "SetView3D": {
+      "documentation": null,
+      "signature_members": {
+        "matView": {
+          "type": "Matrix",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "SetView3D(const out Matrix matView)"
+    },
+    "GetVisibleFrameRect": {
+      "documentation": null,
+      "signature_members": {
+        "x0": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "y0": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "X1": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "Y1": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetVisibleFrameRect(out float x0, out float y0, out float X1, out float Y1)"
+    },
+    "SetAlignment": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": "GFxAlign",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAlignment(GFxAlign A)"
+    },
+    "SetViewScaleMode": {
+      "documentation": null,
+      "signature_members": {
+        "sm": {
+          "type": "GFxScaleMode",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetViewScaleMode(GFxScaleMode sm)"
+    },
+    "SetViewport": {
+      "documentation": null,
+      "signature_members": {
+        "X": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Y": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Width": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Height": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetViewport(int X, int Y, int Width, int Height)"
+    },
+    "GetGameViewportClient": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "GameViewportClient",
+      "signature": "GameViewportClient GetGameViewportClient()"
+    },
+    "SetMovieInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Data": {
+          "type": "GFxMovieInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMovieInfo(GFxMovieInfo Data)"
+    },
+    "OnClose": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnClose()"
+    },
+    "Close": {
+      "documentation": null,
+      "signature_members": {
+        "Unload": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "Close(optional bool Unload)"
+    },
+    "Start": {
+      "documentation": null,
+      "signature_members": {
+        "StartPaused": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Start(optional bool StartPaused)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

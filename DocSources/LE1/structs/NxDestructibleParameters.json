@@ -1,0 +1,123 @@
+{
+  "members": {
+    "DepthParameters": {
+      "type": "NxDestructibleDepthParameters",
+      "documentation": null,
+      "flags": 4194369
+    },
+    "ValidBounds": {
+      "type": "Box",
+      "documentation": null,
+      "flags": 1
+    },
+    "DamageThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DamageToRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DamageCap": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ForceToDamage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ImpactVelocityThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DamageToPercentDeformation": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DeformationPercentLimit": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SupportDepth": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "DebrisDepth": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "EssentialDepth": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "DebrisLifetimeMin": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DebrisLifetimeMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DebrisMaxSeparationMin": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DebrisMaxSeparationMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxChunkSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MassScaleExponent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Flags": {
+      "type": "NxDestructibleParametersFlag",
+      "documentation": null,
+      "flags": 1
+    },
+    "GrbVolumeLimit": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "GrbParticleSpacing": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FractureImpulseScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bFormExtendedStructures": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "ApexDestructibleAsset",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

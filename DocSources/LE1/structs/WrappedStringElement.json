@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Value": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "LineExtent": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 1048576
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 9
+}

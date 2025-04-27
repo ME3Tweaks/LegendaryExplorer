@@ -1,0 +1,13 @@
+{
+  "members": {
+    "ZDepth": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": "UIScreenValue_Position",
+  "documentation": null,
+  "modifiers": 1
+}

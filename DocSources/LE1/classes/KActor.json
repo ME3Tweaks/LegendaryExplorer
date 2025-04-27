@@ -1,0 +1,363 @@
+{
+  "parent": "DynamicSMActor",
+  "package": "Engine",
+  "variables": {
+    "RBState": {
+      "type": "RigidBodyState",
+      "documentation": null,
+      "flags": 4130
+    },
+    "ImpactEffectInfo": {
+      "type": "PhysEffectInfo",
+      "documentation": null,
+      "flags": 0
+    },
+    "SlideEffectInfo": {
+      "type": "PhysEffectInfo",
+      "documentation": null,
+      "flags": 0
+    },
+    "ReplicatedDrawScale3D": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 4294967328
+    },
+    "InitialLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "InitialRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 8192
+    },
+    "ImpactEffectComponent": {
+      "type": "ParticleSystemComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "ImpactSoundComponent": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "ImpactSoundComponent2": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "SlideEffectComponent": {
+      "type": "ParticleSystemComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "SlideSoundComponent": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "LastImpactTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "LastSlideTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "StayUprightTorqueFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "StayUprightMaxTorque": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxPhysicsVelocity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "AngErrorAccumulator": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4098
+    },
+    "bDamageAppliesImpulse": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bWakeOnLevelStart": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4294967329
+    },
+    "bCurrentSlide": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSlideActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEnableStayUprightSpring": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLimitMaxPhysicsVelocity": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNeedsRBStateReplication": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bDisableClientSidePawnInteractions": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "OnTeleport": {
+      "documentation": null,
+      "signature_members": {
+        "inAction": {
+          "type": "SeqAct_Teleport",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTeleport(SeqAct_Teleport inAction)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    },
+    "TakeRadiusDamage": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "BaseDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "HurtOrigin": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "bFullDamage": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageCauser": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "pDamage": {
+          "type": "DamageType",
+          "documentation": null,
+          "flags": 144
+        },
+        "DamageFalloffExponent": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeRadiusDamage(Controller InstigatedBy, float BaseDamage, float DamageRadius, Class<DamageType> DamageType, float Momentum, Vector HurtOrigin, bool bFullDamage, Actor DamageCauser, optional DamageType pDamage, optional float DamageFalloffExponent)"
+    },
+    "TakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "Damage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "EventInstigator": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitInfo": {
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "DamageCauser": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamage": {
+          "type": "DamageType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "TakeDamage(float Damage, Controller EventInstigator, Vector HitLocation, Vector Momentum, Class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor DamageCauser, optional DamageType pDamage)"
+    },
+    "ApplyImpulse": {
+      "documentation": null,
+      "signature_members": {
+        "ImpulseDir": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "ImpulseMag": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitInfo": {
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyImpulse(Vector ImpulseDir, float ImpulseMag, Vector HitLocation, optional TraceHitInfo HitInfo, optional Class<DamageType> DamageType)"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "SpawnedByKismet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SpawnedByKismet()"
+    },
+    "SetPhysicalCollisionProperties": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetPhysicalCollisionProperties()"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "FellOutOfWorld": {
+      "documentation": null,
+      "signature_members": {
+        "dmgType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "FellOutOfWorld(Class<DamageType> dmgType)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "ResolveRBState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResolveRBState()"
+    },
+    "GetKActorPhysMaterial": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PhysicalMaterial",
+      "signature": "PhysicalMaterial GetKActorPhysMaterial()"
+    }
+  },
+  "states": {},
+  "classflags": 144706194,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,607 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "NavOctreeObject": {
+      "type": "NavigationOctreeObject",
+      "documentation": null,
+      "flags": 12290
+    },
+    "PathList": {
+      "type": "ReachSpec",
+      "documentation": null,
+      "flags": 73531395
+    },
+    "Volumes": {
+      "type": "ActorReference",
+      "documentation": null,
+      "flags": 4325379
+    },
+    "CostArray": {
+      "type": "DebugNavCost",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "NavGuid": {
+      "type": "Guid",
+      "documentation": null,
+      "flags": 2228227
+    },
+    "nextNavigationPoint": {
+      "type": "NavigationPoint",
+      "documentation": null,
+      "flags": 2
+    },
+    "nextOrdered": {
+      "type": "NavigationPoint",
+      "documentation": null,
+      "flags": 2
+    },
+    "prevOrdered": {
+      "type": "NavigationPoint",
+      "documentation": null,
+      "flags": 2
+    },
+    "previousPath": {
+      "type": "NavigationPoint",
+      "documentation": null,
+      "flags": 2
+    },
+    "InventoryCache": {
+      "type": "DroppedPickup",
+      "documentation": null,
+      "flags": 0
+    },
+    "CylinderComponent": {
+      "type": "CylinderComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "MaxPathSize": {
+      "type": "Cylinder",
+      "documentation": null,
+      "flags": 131075
+    },
+    "GoodSprite": {
+      "type": "SpriteComponent",
+      "documentation": null,
+      "flags": 67641354
+    },
+    "BadSprite": {
+      "type": "SpriteComponent",
+      "documentation": null,
+      "flags": 67641354
+    },
+    "AnchoredPawn": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 8192
+    },
+    "visitedWeight": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bestPathWeight": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "Cost": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ExtraCost": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "TransientCost": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "FearCost": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "InventoryDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "LastDetourWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "NetworkID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 131075
+    },
+    "LastAnchoredPawnTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "PathfindTag": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bEndPoint": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bTransientEndPoint": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bHideEditorPaths": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bCanReach": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bBlocked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bOneWayPath": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNeverUseStrafing": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bAlwaysUseStrafing": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bForceNoStrafing": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bAutoBuilt": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bSpecialMove": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bNoAutoConnect": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bNotBased": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bPathsChanged": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bDestinationOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSourceOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSpecialForced": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bMustBeReachable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bBlockable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bFlyingPreferred": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bMayCausePain": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bAlreadyVisited": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bVehicleDestination": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bMakeSourceOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bMustTouchToReach": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bCanWalkOnToReach": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bBuildLongPaths": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bBlockedForVehicles": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bPreferredVehiclePath": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRequiresPrecisionMovement": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bHasCrossLevelPaths": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "m_bBioAutoCollisionResize": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bDebugPathBuild": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bShouldSaveForCheckpoint": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "GetDebugAbbrev": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDebugAbbrev()"
+    },
+    "ApplyCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyCheckpointRecord(const out CheckpointRecord Record)"
+    },
+    "CreateCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateCheckpointRecord(out CheckpointRecord Record)"
+    },
+    "ShouldSaveForCheckpoint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldSaveForCheckpoint()"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "inAction": {
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle inAction)"
+    },
+    "IsOnDifferentNetwork": {
+      "documentation": null,
+      "signature_members": {
+        "Nav": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsOnDifferentNetwork(NavigationPoint Nav)"
+    },
+    "GetAllNavInRadius": {
+      "documentation": null,
+      "signature_members": {
+        "ChkActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "ChkPoint": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Radius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "out_NavList": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "bSkipBlocked": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "inNetworkID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        },
+        "MinSize": {
+          "type": "Cylinder",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetAllNavInRadius(Actor ChkActor, Vector ChkPoint, float Radius, out array<NavigationPoint> out_NavList, optional bool bSkipBlocked, optional int inNetworkID, optional Cylinder MinSize)"
+    },
+    "GetNearestNavToPoint": {
+      "documentation": null,
+      "signature_members": {
+        "ChkActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "ChkPoint": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "RequiredClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
+        },
+        "ExcludeList": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "NavigationPoint",
+      "signature": "NavigationPoint GetNearestNavToPoint(Actor ChkActor, Vector ChkPoint, optional Class<NavigationPoint> RequiredClass, optional array<NavigationPoint> ExcludeList)"
+    },
+    "GetNearestNavToActor": {
+      "documentation": null,
+      "signature_members": {
+        "ChkActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "RequiredClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
+        },
+        "ExcludeList": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 4194448
+        },
+        "MinDist": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "NavigationPoint",
+      "signature": "NavigationPoint GetNearestNavToActor(Actor ChkActor, optional Class<NavigationPoint> RequiredClass, optional array<NavigationPoint> ExcludeList, optional float MinDist)"
+    },
+    "ProceedWithMove": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProceedWithMove(Pawn Other)"
+    },
+    "SuggestMovePreparation": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SuggestMovePreparation(Pawn Other)"
+    },
+    "DetourWeight": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "PathWeight": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float DetourWeight(Pawn Other, float PathWeight)"
+    },
+    "Accept": {
+      "documentation": null,
+      "signature_members": {
+        "Incoming": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "Source": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Accept(Actor Incoming, Actor Source)"
+    },
+    "SpecialCost": {
+      "documentation": null,
+      "signature_members": {
+        "Seeker": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Path": {
+          "type": "ReachSpec",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int SpecialCost(Pawn Seeker, ReachSpec Path)"
+    },
+    "CanTeleport": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanTeleport(Actor A)"
+    },
+    "IsUsableAnchorFor": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsUsableAnchorFor(Pawn P)"
+    },
+    "GetReachSpecTo": {
+      "documentation": null,
+      "signature_members": {
+        "Nav": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        },
+        "SpecClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "ReachSpec",
+      "signature": "ReachSpec GetReachSpecTo(NavigationPoint Nav, optional Class<ReachSpec> SpecClass)"
+    },
+    "GetBoundingCylinder": {
+      "documentation": null,
+      "signature_members": {
+        "CollisionRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "CollisionHeight": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetBoundingCylinder(out float CollisionRadius, out float CollisionHeight)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "SoundName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "SoundToPlay": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "UISkin",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

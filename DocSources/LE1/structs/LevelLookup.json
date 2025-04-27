@@ -1,0 +1,18 @@
+{
+  "members": {
+    "m_Name": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_Save": {
+      "type": "BioLevelSaveObject",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioWorldSaveObject",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BIOPAWNCHALLENGERANK_MINION": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIOPAWNCHALLENGERANK_ELITE": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIOPAWNCHALLENGERANK_SUB_BOSS": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIOPAWNCHALLENGERANK_BOSS": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

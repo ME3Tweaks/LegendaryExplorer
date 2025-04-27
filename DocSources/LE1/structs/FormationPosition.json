@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Formation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "facing": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "InvFormation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "InvFacing": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "EscapeDistance": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioFormations",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

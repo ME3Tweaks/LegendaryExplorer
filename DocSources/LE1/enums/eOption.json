@@ -1,0 +1,177 @@
+{
+  "EnumValues": {
+    "OPTION_TYPE_COMBAT_DIFFICULTY": {
+      "value": 0,
+      "documentation": null
+    },
+    "OPTION_TYPE_DIALOG_MODE": {
+      "value": 1,
+      "documentation": null
+    },
+    "OPTION_TYPE_AUTO_LEVELUP": {
+      "value": 2,
+      "documentation": null
+    },
+    "OPTION_TYPE_AUTO_EQUIP": {
+      "value": 3,
+      "documentation": null
+    },
+    "OPTION_TYPE_TUTORIAL_FLAG": {
+      "value": 4,
+      "documentation": null
+    },
+    "OPTION_TYPE_SUBTITLES": {
+      "value": 5,
+      "documentation": null
+    },
+    "OPTION_TYPE_AUTOPAUSE_ENEMY_SIGHTED": {
+      "value": 6,
+      "documentation": null
+    },
+    "OPTION_TYPE_AUTOPAUSE_SQUADMEMBER_DOWN": {
+      "value": 7,
+      "documentation": null
+    },
+    "OPTION_TYPE_BRIGHTNESS": {
+      "value": 8,
+      "documentation": null
+    },
+    "OPTION_TYPE_DISPLAY_SETTING": {
+      "value": 9,
+      "documentation": null
+    },
+    "OPTION_TYPE_MUSIC_VOLUME": {
+      "value": 10,
+      "documentation": null
+    },
+    "OPTION_TYPE_FX_VOLUME": {
+      "value": 11,
+      "documentation": null
+    },
+    "OPTION_TYPE_DIALOG_VOLUME": {
+      "value": 12,
+      "documentation": null
+    },
+    "OPTION_TYPE_INVERT_YAXIS": {
+      "value": 13,
+      "documentation": null
+    },
+    "OPTION_TYPE_SOUTHPAW_FLAG": {
+      "value": 14,
+      "documentation": null
+    },
+    "OPTION_TYPE_TARGET_ASSIST_MODE": {
+      "value": 15,
+      "documentation": null
+    },
+    "OPTION_TYPE_H_COMBAT_SENSITIVITY": {
+      "value": 16,
+      "documentation": null
+    },
+    "OPTION_TYPE_V_COMBAT_SENSITIVITY": {
+      "value": 17,
+      "documentation": null
+    },
+    "OPTION_TYPE_H_EXPLORATION_SENSITIVITY": {
+      "value": 18,
+      "documentation": null
+    },
+    "OPTION_TYPE_V_EXPLORATION_SENSITIVITY": {
+      "value": 19,
+      "documentation": null
+    },
+    "OPTION_TYPE_RUMBLE_FLAG": {
+      "value": 20,
+      "documentation": null
+    },
+    "OPTION_TYPE_AUTOPAUSE_BLEEDOUT": {
+      "value": 21,
+      "documentation": null
+    },
+    "OPTION_TYPE_MOTION_BLUR": {
+      "value": 22,
+      "documentation": null
+    },
+    "OPTION_TYPE_FILM_GRAIN": {
+      "value": 23,
+      "documentation": null
+    },
+    "OPTION_TYPE_SQUAD_POWER_USE": {
+      "value": 24,
+      "documentation": null
+    },
+    "OPTION_TYPE_AUTO_SAVE": {
+      "value": 25,
+      "documentation": null
+    },
+    "OPTION_TYPE_STICK_CONFIGURATION": {
+      "value": 26,
+      "documentation": null
+    },
+    "OPTION_TYPE_TRIGGER_CONFIGURATION": {
+      "value": 27,
+      "documentation": null
+    },
+    "OPTION_TYPE_MOUSE_SENSITIVITY": {
+      "value": 28,
+      "documentation": null
+    },
+    "OPTION_TYPE_ANALOG_SENSITIVITY": {
+      "value": 29,
+      "documentation": null
+    },
+    "OPTION_TYPE_MAKO_STEERING": {
+      "value": 30,
+      "documentation": null
+    },
+    "OPTION_TYPE_ANTI_ALIASING": {
+      "value": 31,
+      "documentation": null
+    },
+    "OPTION_TYPE_VSYNC": {
+      "value": 32,
+      "documentation": null
+    },
+    "OPTION_TYPE_DYNAMIC_SHADOWS": {
+      "value": 33,
+      "documentation": null
+    },
+    "OPTION_TYPE_TEXTURE_DETAIL": {
+      "value": 34,
+      "documentation": null
+    },
+    "OPTION_TYPE_DYNAMIC_RESOLUTION": {
+      "value": 35,
+      "documentation": null
+    },
+    "OPTION_TYPE_HDR_ENABLE": {
+      "value": 36,
+      "documentation": null
+    },
+    "OPTION_TYPE_HDR_CONTRAST": {
+      "value": 37,
+      "documentation": null
+    },
+    "OPTION_TYPE_HDR_BRIGHTNESS": {
+      "value": 38,
+      "documentation": null
+    },
+    "OPTION_TYPE_AMBIENT_OCCLUSION": {
+      "value": 39,
+      "documentation": null
+    },
+    "OPTION_TYPE_LEGACY_LEVELUP": {
+      "value": 40,
+      "documentation": null
+    },
+    "OPTION_TYPE_SELECTED_MONITOR": {
+      "value": 41,
+      "documentation": null
+    },
+    "OPTION_TYPE_UNCAPPED_FRAMERATE": {
+      "value": 42,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

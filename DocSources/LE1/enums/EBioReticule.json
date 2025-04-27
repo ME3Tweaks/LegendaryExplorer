@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "RETICULE_COMBAT": {
+      "value": 0,
+      "documentation": null
+    },
+    "RETICULE_BIOTIC": {
+      "value": 1,
+      "documentation": null
+    },
+    "RETICULE_TECH": {
+      "value": 2,
+      "documentation": null
+    },
+    "RETICULE_COUNT": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

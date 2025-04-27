@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Target": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "SlotIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Direction": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "CoverLink",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 385
+}

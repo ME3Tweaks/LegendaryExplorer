@@ -1,0 +1,86 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "SpawningModules": {
+      "type": "ParticleModuleSpawnBase",
+      "documentation": null,
+      "flags": 4096
+    },
+    "SpawnModules": {
+      "type": "ParticleModule",
+      "documentation": null,
+      "flags": 4096
+    },
+    "UpdateModules": {
+      "type": "ParticleModule",
+      "documentation": null,
+      "flags": 4096
+    },
+    "OrbitModules": {
+      "type": "ParticleModuleOrbit",
+      "documentation": null,
+      "flags": 4096
+    },
+    "EventReceiverModules": {
+      "type": "ParticleModuleEventReceiverBase",
+      "documentation": null,
+      "flags": 4096
+    },
+    "SpawnRateModules": {
+      "type": "ParticleModule",
+      "documentation": null,
+      "flags": 4096
+    },
+    "Modules": {
+      "type": "ParticleModule",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "TypeDataModule": {
+      "type": "ParticleModule",
+      "documentation": null,
+      "flags": 8
+    },
+    "SpawnModule": {
+      "type": "ParticleModuleSpawn",
+      "documentation": null,
+      "flags": 8
+    },
+    "EventGenerator": {
+      "type": "ParticleModuleEventGenerator",
+      "documentation": null,
+      "flags": 8
+    },
+    "RequiredModule": {
+      "type": "ParticleModuleRequired",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "Level": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "PeakActiveParticles": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "ConvertedModules": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144715922,
+  "configname": "None",
+  "documentation": null
+}

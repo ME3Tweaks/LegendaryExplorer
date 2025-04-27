@@ -1,0 +1,23 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "CreateDeathEffects": {
+      "documentation": null,
+      "signature_members": {
+        "pGameState": {
+          "type": "BioDeathVFXGameState",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateDeathEffects(BioDeathVFXGameState pGameState)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

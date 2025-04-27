@@ -1,0 +1,29 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "bHasTargets": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "UpdateOp": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateOp(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "classflags": 136315027,
+  "configname": "None",
+  "documentation": null
+}

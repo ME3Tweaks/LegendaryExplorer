@@ -1,0 +1,174 @@
+{
+  "parent": "MeshComponent",
+  "package": "Engine",
+  "variables": {
+    "ForcedLodModel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "PreviousLODLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "StaticMesh": {
+      "type": "StaticMesh",
+      "documentation": null,
+      "flags": 3
+    },
+    "WireframeColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIsOwnerAStaticMeshActor": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bIgnoreInstanceForTextureStreaming": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bOverrideLightMapRes": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "OverriddenLightMapRes": {
+      "type": "int",
+      "documentation": null,
+      "flags": 3
+    },
+    "OverriddenLODMaxRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SubDivisionStepSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 3
+    },
+    "MinSubDivisions": {
+      "type": "int",
+      "documentation": null,
+      "flags": 3
+    },
+    "MaxSubDivisions": {
+      "type": "int",
+      "documentation": null,
+      "flags": 3
+    },
+    "bUseSubDivisions": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bForceStaticDecals": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bNeverBecomeDynamic": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bBioIsReceivingDecals": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bReceivesGI": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bUseSeperateAmbientLightMap": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "nAmbientVertexLMResolution": {
+      "type": "int",
+      "documentation": null,
+      "flags": 3
+    },
+    "IrrelevantLights": {
+      "type": "Guid",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "LODData": {
+      "type": "StaticMeshComponentLODInfo",
+      "documentation": null,
+      "flags": 2147487746
+    },
+    "LightmassSettings": {
+      "type": "LightmassPrimitiveSettings",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "CanBecomeDynamic": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanBecomeDynamic()"
+    },
+    "SetForceStaticDecals": {
+      "documentation": null,
+      "signature_members": {
+        "bInForceStaticDecals": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetForceStaticDecals(bool bInForceStaticDecals)"
+    },
+    "DisableRBCollisionWithSMC": {
+      "documentation": null,
+      "signature_members": {
+        "OtherSMC": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "bDisabled": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DisableRBCollisionWithSMC(PrimitiveComponent OtherSMC, bool bDisabled)"
+    },
+    "SetStaticMesh": {
+      "documentation": null,
+      "signature_members": {
+        "NewMesh": {
+          "type": "StaticMesh",
+          "documentation": null,
+          "flags": 128
+        },
+        "bForce": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetStaticMesh(StaticMesh NewMesh, optional bool bForce)"
+    }
+  },
+  "states": {},
+  "classflags": 2155876754,
+  "configname": "None",
+  "documentation": null
+}

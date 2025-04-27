@@ -1,0 +1,76 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "WheelSuspensionStiffness": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelSuspensionDamping": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelSuspensionBias": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelLongExtremumSlip": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelLongExtremumValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelLongAsymptoteSlip": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelLongAsymptoteValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelLatExtremumSlip": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelLatExtremumValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelLatAsymptoteSlip": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelLatAsymptoteValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelInertia": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bWheelSpeedOverride": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

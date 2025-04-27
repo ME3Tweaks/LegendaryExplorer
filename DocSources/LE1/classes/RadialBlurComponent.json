@@ -1,0 +1,140 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "LocalToWorld": {
+      "type": "Matrix",
+      "documentation": null,
+      "flags": 12290
+    },
+    "Material": {
+      "type": "MaterialInterface",
+      "documentation": null,
+      "flags": 3
+    },
+    "BlurScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934595
+    },
+    "BlurFalloffExponent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934595
+    },
+    "BlurOpacity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8589934595
+    },
+    "MaxCullDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "DistanceFalloffExponent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "bRenderAsVelocity": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "DepthPriorityGroup": {
+      "type": "ESceneDepthPriorityGroup",
+      "documentation": null,
+      "flags": 3
+    }
+  },
+  "functions": {
+    "OnUpdatePropertyBlurOpacity": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyBlurOpacity()"
+    },
+    "OnUpdatePropertyBlurFalloffExponent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyBlurFalloffExponent()"
+    },
+    "OnUpdatePropertyBlurScale": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnUpdatePropertyBlurScale()"
+    },
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bInEnabled": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bInEnabled)"
+    },
+    "SetBlurOpacity": {
+      "documentation": null,
+      "signature_members": {
+        "InBlurOpacity": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBlurOpacity(float InBlurOpacity)"
+    },
+    "SetBlurFalloffExponent": {
+      "documentation": null,
+      "signature_members": {
+        "InBlurFalloffExponent": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBlurFalloffExponent(float InBlurFalloffExponent)"
+    },
+    "SetBlurScale": {
+      "documentation": null,
+      "signature_members": {
+        "InBlurScale": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBlurScale(float InBlurScale)"
+    },
+    "SetMaterial": {
+      "documentation": null,
+      "signature_members": {
+        "InMaterial": {
+          "type": "MaterialInterface",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaterial(MaterialInterface InMaterial)"
+    }
+  },
+  "states": {},
+  "classflags": 134230162,
+  "configname": "None",
+  "documentation": null
+}

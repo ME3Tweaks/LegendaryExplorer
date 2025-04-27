@@ -1,0 +1,92 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "ExploreCam": {
+      "type": "SFXCameraMode_Cinematic",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "CombatCam": {
+      "type": "SFXCameraMode_Cinematic",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "VehicleCam": {
+      "type": "SFXCameraMode_Cinematic",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "InstantTransition": {
+      "type": "SFXCameraTransition_GalaxyMap",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "CinematicSkipDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bCineFastForwardEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bEnableCinematicSkip": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {
+    "SkipCinematic": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SkipCinematic()"
+    },
+    "CinematicFF": {
+      "documentation": null,
+      "signature_members": {
+        "bOn": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "CinematicFF(bool bOn)"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
+        },
+        "PreserveTarget": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "TransitionTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "Transition": {
+          "type": "SFXCameraMode_Interpolate",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    }
+  },
+  "states": {},
+  "classflags": 10485782,
+  "configname": "Input",
+  "documentation": null
+}

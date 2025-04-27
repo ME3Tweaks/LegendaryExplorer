@@ -1,0 +1,306 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_aEquipped": {
+      "type": "BioItemEquippable",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_QuickSlotArray": {
+      "type": "BioWeapon",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_bIsQuickSlotActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bAreWeaponsHidden": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eQuickSlotCurrent": {
+      "type": "EBioItemWeaponRangedType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "TickEquipment": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TickEquipment(float fDeltaTime)"
+    },
+    "OnHide": {
+      "documentation": null,
+      "signature_members": {
+        "bHide": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnHide(bool bHide)"
+    },
+    "SetScalerMaterialParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScalerMaterialParameter(Name ParameterName, float Value)"
+    },
+    "SetHiddenForAllWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "shouldHide": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHiddenForAllWeapons(bool shouldHide)"
+    },
+    "ReattachAllWeapons": {
+      "documentation": null,
+      "signature_members": {
+        "Pawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReattachAllWeapons(BioPawn Pawn)"
+    },
+    "ChangeToQuickSlot": {
+      "documentation": null,
+      "signature_members": {
+        "Slot": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ChangeToQuickSlot(EBioItemWeaponRangedType Slot)"
+    },
+    "ComputePrevQuickSlot": {
+      "documentation": null,
+      "signature_members": {
+        "Slot": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 384
+        },
+        "fromslot": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ComputePrevQuickSlot(out EBioItemWeaponRangedType Slot, optional EBioItemWeaponRangedType fromslot)"
+    },
+    "ComputeNextQuickSlot": {
+      "documentation": null,
+      "signature_members": {
+        "Slot": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 384
+        },
+        "fromslot": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ComputeNextQuickSlot(out EBioItemWeaponRangedType Slot, optional EBioItemWeaponRangedType fromslot)"
+    },
+    "PrevQuickSlot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PrevQuickSlot()"
+    },
+    "NextQuickSlot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NextQuickSlot()"
+    },
+    "DeactivateCurrentQuickSlot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DeactivateCurrentQuickSlot()"
+    },
+    "ActivateCurrentQuickSlot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ActivateCurrentQuickSlot()"
+    },
+    "ClearQuickSlot": {
+      "documentation": null,
+      "signature_members": {
+        "Slot": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioItemWeapon",
+      "signature": "BioItemWeapon ClearQuickSlot(EBioItemWeaponRangedType Slot)"
+    },
+    "SetQuickSlot": {
+      "documentation": null,
+      "signature_members": {
+        "Slot": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 128
+        },
+        "Pawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "itemWeapon": {
+          "type": "BioItemWeapon",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "BioItemWeapon",
+      "signature": "BioItemWeapon SetQuickSlot(EBioItemWeaponRangedType Slot, BioPawn Pawn, BioItemWeapon itemWeapon)"
+    },
+    "IsActiveQuickSlot": {
+      "documentation": null,
+      "signature_members": {
+        "Slot": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsActiveQuickSlot(EBioItemWeaponRangedType Slot)"
+    },
+    "IsQuickSlotEmpty": {
+      "documentation": null,
+      "signature_members": {
+        "Slot": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsQuickSlotEmpty(EBioItemWeaponRangedType Slot)"
+    },
+    "GetCurrentQuickSlot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioWeapon",
+      "signature": "BioWeapon GetCurrentQuickSlot()"
+    },
+    "IsEquipped": {
+      "documentation": null,
+      "signature_members": {
+        "Item": {
+          "type": "BioItemEquippable",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsEquipped(BioItemEquippable Item)"
+    },
+    "Unequip": {
+      "documentation": null,
+      "signature_members": {
+        "Slot": {
+          "type": "EBioEquipmentSlot",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioItemEquippable",
+      "signature": "BioItemEquippable Unequip(EBioEquipmentSlot Slot)"
+    },
+    "Equip": {
+      "documentation": null,
+      "signature_members": {
+        "Item": {
+          "type": "BioItemEquippable",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Equip(BioItemEquippable Item)"
+    },
+    "GetEquipmentType": {
+      "documentation": null,
+      "signature_members": {
+        "Slot": {
+          "type": "EBioEquipmentSlot",
+          "documentation": null,
+          "flags": 128
+        },
+        "Type": {
+          "type": "EBioEquipmentType",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetEquipmentType(EBioEquipmentSlot Slot, out EBioEquipmentType Type)"
+    },
+    "GetEquipmentSlot": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": "EBioEquipmentType",
+          "documentation": null,
+          "flags": 128
+        },
+        "Slot": {
+          "type": "EBioEquipmentSlot",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetEquipmentSlot(EBioEquipmentType Type, out EBioEquipmentSlot Slot)"
+    }
+  },
+  "states": {},
+  "classflags": 144707730,
+  "configname": "None",
+  "documentation": null
+}

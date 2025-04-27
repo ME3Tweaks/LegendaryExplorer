@@ -1,0 +1,327 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {
+    "__OnFlushOnlineStatsComplete__Delegate": {
+      "type": "OnFlushOnlineStatsComplete",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnRegisterHostStatGuidComplete__Delegate": {
+      "type": "OnRegisterHostStatGuidComplete",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnReadOnlineStatsComplete__Delegate": {
+      "type": "OnReadOnlineStatsComplete",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "RegisterStatGuid": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerID": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
+        },
+        "ClientStatGuid": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RegisterStatGuid(UniqueNetId PlayerID, const out string ClientStatGuid)"
+    },
+    "GetClientStatGuid": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetClientStatGuid()"
+    },
+    "ClearRegisterHostStatGuidCompleteDelegateDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "RegisterHostStatGuidCompleteDelegate": {
+          "type": "OnRegisterHostStatGuidComplete",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearRegisterHostStatGuidCompleteDelegateDelegate(delegate<OnRegisterHostStatGuidComplete> RegisterHostStatGuidCompleteDelegate)"
+    },
+    "AddRegisterHostStatGuidCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "RegisterHostStatGuidCompleteDelegate": {
+          "type": "OnRegisterHostStatGuidComplete",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AddRegisterHostStatGuidCompleteDelegate(delegate<OnRegisterHostStatGuidComplete> RegisterHostStatGuidCompleteDelegate)"
+    },
+    "OnRegisterHostStatGuidComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnRegisterHostStatGuidComplete(bool bWasSuccessful)"
+    },
+    "RegisterHostStatGuid": {
+      "documentation": null,
+      "signature_members": {
+        "HostStatGuid": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RegisterHostStatGuid(const out string HostStatGuid)"
+    },
+    "GetHostStatGuid": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetHostStatGuid()"
+    },
+    "WriteOnlinePlayerScores": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "LeaderboardId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerScores": {
+          "type": "OnlinePlayerScore",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WriteOnlinePlayerScores(Name SessionName, int LeaderboardId, const out array<OnlinePlayerScore> PlayerScores)"
+    },
+    "ClearFlushOnlineStatsCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "FlushOnlineStatsCompleteDelegate": {
+          "type": "OnFlushOnlineStatsComplete",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearFlushOnlineStatsCompleteDelegate(delegate<OnFlushOnlineStatsComplete> FlushOnlineStatsCompleteDelegate)"
+    },
+    "AddFlushOnlineStatsCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "FlushOnlineStatsCompleteDelegate": {
+          "type": "OnFlushOnlineStatsComplete",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AddFlushOnlineStatsCompleteDelegate(delegate<OnFlushOnlineStatsComplete> FlushOnlineStatsCompleteDelegate)"
+    },
+    "OnFlushOnlineStatsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFlushOnlineStatsComplete(Name SessionName, bool bWasSuccessful)"
+    },
+    "FlushOnlineStats": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FlushOnlineStats(Name SessionName)"
+    },
+    "WriteOnlineStats": {
+      "documentation": null,
+      "signature_members": {
+        "SessionName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Player": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
+        },
+        "StatsWrite": {
+          "type": "OnlineStatsWrite",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool WriteOnlineStats(Name SessionName, UniqueNetId Player, OnlineStatsWrite StatsWrite)"
+    },
+    "FreeStats": {
+      "documentation": null,
+      "signature_members": {
+        "StatsRead": {
+          "type": "OnlineStatsRead",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "FreeStats(OnlineStatsRead StatsRead)"
+    },
+    "ClearReadOnlineStatsCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ReadOnlineStatsCompleteDelegate": {
+          "type": "OnReadOnlineStatsComplete",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearReadOnlineStatsCompleteDelegate(delegate<OnReadOnlineStatsComplete> ReadOnlineStatsCompleteDelegate)"
+    },
+    "AddReadOnlineStatsCompleteDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "ReadOnlineStatsCompleteDelegate": {
+          "type": "OnReadOnlineStatsComplete",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AddReadOnlineStatsCompleteDelegate(delegate<OnReadOnlineStatsComplete> ReadOnlineStatsCompleteDelegate)"
+    },
+    "OnReadOnlineStatsComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnReadOnlineStatsComplete(bool bWasSuccessful)"
+    },
+    "ReadOnlineStatsByRankAroundPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "StatsRead": {
+          "type": "OnlineStatsRead",
+          "documentation": null,
+          "flags": 128
+        },
+        "NumRows": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadOnlineStatsByRankAroundPlayer(byte LocalUserNum, OnlineStatsRead StatsRead, optional int NumRows)"
+    },
+    "ReadOnlineStatsByRank": {
+      "documentation": null,
+      "signature_members": {
+        "StatsRead": {
+          "type": "OnlineStatsRead",
+          "documentation": null,
+          "flags": 128
+        },
+        "StartIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        },
+        "NumToRead": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadOnlineStatsByRank(OnlineStatsRead StatsRead, optional int StartIndex, optional int NumToRead)"
+    },
+    "ReadOnlineStatsForFriends": {
+      "documentation": null,
+      "signature_members": {
+        "LocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "StatsRead": {
+          "type": "OnlineStatsRead",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadOnlineStatsForFriends(byte LocalUserNum, OnlineStatsRead StatsRead)"
+    },
+    "ReadOnlineStats": {
+      "documentation": null,
+      "signature_members": {
+        "Players": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "StatsRead": {
+          "type": "OnlineStatsRead",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadOnlineStats(const out array<UniqueNetId> Players, OnlineStatsRead StatsRead)"
+    }
+  },
+  "states": {},
+  "classflags": 16403,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "NetDriver": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "NetDriverName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "GameEngine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

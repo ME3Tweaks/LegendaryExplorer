@@ -1,0 +1,36 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Text": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "PosX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "PosY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "SizeX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "SizeY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

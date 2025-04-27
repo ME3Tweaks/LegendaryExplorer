@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "DETAIL_LEVEL_LOW": {
+      "value": 0,
+      "documentation": null
+    },
+    "DETAIL_LEVEL_MEDIUM": {
+      "value": 1,
+      "documentation": null
+    },
+    "DETAIL_LEVEL_HIGH": {
+      "value": 2,
+      "documentation": null
+    },
+    "DETAIL_LEVEL_ULTRA_HIGH": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

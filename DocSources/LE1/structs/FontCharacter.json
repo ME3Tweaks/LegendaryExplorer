@@ -1,0 +1,38 @@
+{
+  "members": {
+    "StartU": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "StartV": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "USize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "VSize": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "TextureIndex": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 1
+    },
+    "VerticalOffset": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "Font",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 49
+}

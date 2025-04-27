@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceAction",
+  "package": "GFxUI",
+  "variables": {
+    "Movie": {
+      "type": "GFxMovie",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCaptureInput": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

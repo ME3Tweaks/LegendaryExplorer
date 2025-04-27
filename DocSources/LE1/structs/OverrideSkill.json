@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Players": {
+      "type": "UniqueNetId",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Mus": {
+      "type": "Double",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Sigmas": {
+      "type": "Double",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "LeaderboardId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "OnlineGameSearch",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

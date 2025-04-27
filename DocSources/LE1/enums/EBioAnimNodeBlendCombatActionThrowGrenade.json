@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BIO_ANIM_NODE_BLEND_COMBAT_ACTION_THROW_GRENADE_FRISBEE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_ANIM_NODE_BLEND_COMBAT_ACTION_THROW_GRENADE_BALLISTIC": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "AI_ATTACK_TYPE_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "AI_ATTACK_TYPE_SNIPER": {
+      "value": 1,
+      "documentation": null
+    },
+    "AI_ATTACK_TYPE_ACCURATE": {
+      "value": 2,
+      "documentation": null
+    },
+    "AI_ATTACK_TYPE_INACCURATE": {
+      "value": 3,
+      "documentation": null
+    },
+    "AI_ATTACK_TYPE_SUPPRESSING": {
+      "value": 4,
+      "documentation": null
+    },
+    "AI_ATTACK_TYPE_POWER": {
+      "value": 5,
+      "documentation": null
+    },
+    "AI_ATTACK_TYPE_MELEE": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

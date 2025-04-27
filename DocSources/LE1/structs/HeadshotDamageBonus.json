@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Rank": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16385
+    },
+    "Bonus": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    }
+  },
+  "classdef": "SFXWeaponStatsBase",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

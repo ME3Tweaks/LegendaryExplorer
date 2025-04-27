@@ -1,0 +1,29 @@
+{
+  "parent": "MorphNodeWeightBase",
+  "package": "Engine",
+  "variables": {
+    "NodeWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SetNodeWeight": {
+      "documentation": null,
+      "signature_members": {
+        "NewWeight": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetNodeWeight(float NewWeight)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

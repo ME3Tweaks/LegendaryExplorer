@@ -1,0 +1,143 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "LeftDebugInfo": {
+      "type": "CachedDebugInfo",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "RightDebugInfo": {
+      "type": "CachedDebugInfo",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "LeftSearchInfo": {
+      "type": "CoverSearchCache",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "RightSearchInfo": {
+      "type": "CoverSearchCache",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "EdgeMarkers": {
+      "type": "SFXDynamicEdgeMarker",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "WalkableFloorZ": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CollisionRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CoverStandHeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CoverMidHeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CoverHeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "EdgePullbackDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "MaxIterations": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "SearchDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "NormalThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "DistanceThresholdAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bFoundLeftEdge": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bFoundRightEdge": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bDebugCover": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "PlayerFinishedCoverAlign": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayerFinishedCoverAlign()"
+    },
+    "PlayerLeftCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayerLeftCover()"
+    },
+    "PlayerEnteredCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayerEnteredCover()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    }
+  },
+  "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
+  "documentation": null
+}

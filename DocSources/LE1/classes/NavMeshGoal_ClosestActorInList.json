@@ -1,0 +1,56 @@
+{
+  "parent": "NavMeshPathGoalEvaluator",
+  "package": "Engine",
+  "variables": {
+    "PolyToGoalActorMap": {
+      "type": "MultiMap_Mirror",
+      "documentation": null,
+      "flags": 12290
+    },
+    "GoalList": {
+      "type": "BiasedGoalActor",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "CachedAnchorPoly": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4096
+    }
+  },
+  "functions": {
+    "RecycleInternal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RecycleInternal()"
+    },
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "ClosestActorInList": {
+      "documentation": null,
+      "signature_members": {
+        "NavHandle": {
+          "type": "NavigationHandle",
+          "documentation": null,
+          "flags": 128
+        },
+        "InGoalList": {
+          "type": "BiasedGoalActor",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "NavMeshGoal_ClosestActorInList",
+      "signature": "NavMeshGoal_ClosestActorInList ClosestActorInList(NavigationHandle NavHandle, const out array<BiasedGoalActor> InGoalList)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

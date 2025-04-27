@@ -1,0 +1,23 @@
+{
+  "members": {
+    "m_object": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 2
+    },
+    "m_count": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_statid": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "GFxEngine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

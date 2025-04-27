@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_APPR_CHARACTER_TALENT_RACE_TYPE_HUMANOID": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_APPR_CHARACTER_TALENT_RACE_TYPE_ANIMAL": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_APPR_CHARACTER_TALENT_RACE_TYPE_MACHINE": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

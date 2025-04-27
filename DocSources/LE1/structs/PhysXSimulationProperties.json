@@ -1,0 +1,28 @@
+{
+  "members": {
+    "TimeStep": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxSubSteps": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseHardware": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bFixedTimeStep": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "WorldInfo",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,28 @@
+{
+  "members": {
+    "ItemName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_oXMod": {
+      "type": "BioItemXMod",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_nType": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "sophistication": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioInventoryGuiInterface",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_POWER_AIM_CAMERA_TRACE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_POWER_AIM_SELECTED_TARGET": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_POWER_AIM_SELECTED_TARGET_AT_CASTING": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

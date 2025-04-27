@@ -1,0 +1,33 @@
+{
+  "members": {
+    "CurrentValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "NudgeValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIntRange": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

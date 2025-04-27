@@ -1,0 +1,59 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "InterpAction": {
+      "type": "SeqAct_Interp",
+      "documentation": null,
+      "flags": 34
+    },
+    "PlayRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 32
+    },
+    "Position": {
+      "type": "float",
+      "documentation": null,
+      "flags": 32
+    },
+    "ClientSidePositionErrorTolerance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsPlaying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 32
+    },
+    "bReversePlayback": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 32
+    },
+    "bPaused": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 32
+    }
+  },
+  "functions": {
+    "CheckPriorityRefresh": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CheckPriorityRefresh()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Update()"
+    }
+  },
+  "states": {},
+  "classflags": 144705682,
+  "configname": "None",
+  "documentation": null
+}

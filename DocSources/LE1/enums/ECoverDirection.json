@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "CD_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "CD_Left": {
+      "value": 1,
+      "documentation": null
+    },
+    "CD_Right": {
+      "value": 2,
+      "documentation": null
+    },
+    "CD_Up": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

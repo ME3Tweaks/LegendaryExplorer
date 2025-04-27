@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "BIO_AS_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_AS_EXIT": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_AS_COMBAT_EXIT": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_AS_INTERRUPT": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_AS_FAIL": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_AS_ABORT_TWITCHES": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

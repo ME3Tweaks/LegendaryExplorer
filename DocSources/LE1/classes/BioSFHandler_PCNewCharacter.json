@@ -1,0 +1,115 @@
+{
+  "parent": "BioSFHandler_NewCharacter",
+  "package": "SFXGame",
+  "variables": {
+    "fScrollValueMouse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fLookAtUpDownValueMouse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fLookAtLeftRightValueMouse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bRightMouseDown": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "setZoominFaceVar": {
+      "documentation": null,
+      "signature_members": {
+        "zoomIn": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "setZoominFaceVar(bool zoomIn)"
+    },
+    "HandleLookAtLeftRightMouse": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleLookAtLeftRightMouse(float fValue)"
+    },
+    "HandleLookAtUpDownMouse": {
+      "documentation": null,
+      "signature_members": {
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleLookAtUpDownMouse(float fValue)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "UI",
+  "documentation": null
+}

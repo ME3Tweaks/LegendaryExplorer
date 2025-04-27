@@ -1,0 +1,38 @@
+{
+  "members": {
+    "LocalizedName": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "LocalizedDesc": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "ExportID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "basePrice": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "ShopGUIImageID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "PlotConditional": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "SFXSaveGame",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,28 @@
+{
+  "parent": "BioAttributesItem",
+  "package": "SFXGame",
+  "variables": {
+    "m_appearanceVariant": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_MaterialParameterBlockIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "DescribeAttributes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeAttributes()"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

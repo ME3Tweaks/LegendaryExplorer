@@ -1,0 +1,89 @@
+{
+  "parent": "BioBaseSquadDesign",
+  "package": "SFXStrategicAI",
+  "variables": {},
+  "functions": {
+    "CalculateLikelihoodIdle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float CalculateLikelihoodIdle()"
+    },
+    "CalculateLikelihood": {
+      "documentation": null,
+      "signature_members": {
+        "sStrategyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float CalculateLikelihood(Name sStrategyName)"
+    }
+  },
+  "states": {
+    "Idle": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberAdded": {
+          "documentation": null,
+          "signature_members": {
+            "nIndex": {
+              "type": "int",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "MemberRemoved": {
+          "documentation": null,
+          "signature_members": {
+            "oPawn": {
+              "type": "Pawn",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ReEvaluateStrategy": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "classflags": 10486294,
+  "configname": "Game",
+  "documentation": null
+}

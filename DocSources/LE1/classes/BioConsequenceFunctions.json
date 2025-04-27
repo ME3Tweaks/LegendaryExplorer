@@ -1,0 +1,113 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "GrantBonusTalents": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "bonusIdentifier": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GrantBonusTalents(BioWorldInfo WorldInfo, int bonusIdentifier)"
+    },
+    "GrantCredits": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "Count": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GrantCredits(BioWorldInfo WorldInfo, int Count)"
+    },
+    "GrantMediGel": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "Count": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GrantMediGel(BioWorldInfo WorldInfo, int Count)"
+    },
+    "GrantSalvage": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "Count": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GrantSalvage(BioWorldInfo WorldInfo, int Count)"
+    },
+    "GrantGrenades": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "Count": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GrantGrenades(BioWorldInfo WorldInfo, int Count)"
+    },
+    "GrantScaledXP": {
+      "documentation": null,
+      "signature_members": {
+        "WorldInfo": {
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "Curve": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GrantScaledXP(BioWorldInfo WorldInfo, int Curve)"
+    }
+  },
+  "states": {},
+  "classflags": 19,
+  "configname": "None",
+  "documentation": null
+}

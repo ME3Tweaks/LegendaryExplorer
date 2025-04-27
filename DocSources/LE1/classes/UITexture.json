@@ -1,0 +1,58 @@
+{
+  "parent": "UIRoot",
+  "package": "Engine",
+  "variables": {
+    "ImageStyleData": {
+      "type": "UICombinedStyleData",
+      "documentation": null,
+      "flags": 8192
+    },
+    "ImageTexture": {
+      "type": "Surface",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetSurface": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Surface",
+      "signature": "Surface GetSurface()"
+    },
+    "HasValidStyleData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HasValidStyleData()"
+    },
+    "SetImageStyle": {
+      "documentation": null,
+      "signature_members": {
+        "NewImageStyle": {
+          "type": "UIStyle_Image",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetImageStyle(UIStyle_Image NewImageStyle)"
+    },
+    "GetOwnerWidget": {
+      "documentation": null,
+      "signature_members": {
+        "OwnerComponent": {
+          "type": "UIComponent",
+          "documentation": null,
+          "flags": 67109264
+        }
+      },
+      "returntype": "UIScreenObject",
+      "signature": "UIScreenObject GetOwnerWidget(optional out UIComponent OwnerComponent)"
+    }
+  },
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

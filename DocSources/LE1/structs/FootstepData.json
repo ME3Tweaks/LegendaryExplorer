@@ -1,0 +1,28 @@
+{
+  "members": {
+    "nFoot": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "nNodeIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "nHeel_Toe": {
+      "type": "eFootStepType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioSoundNodeFootsteps",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

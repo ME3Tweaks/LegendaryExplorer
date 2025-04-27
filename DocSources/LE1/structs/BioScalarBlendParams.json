@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Min": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Peak": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Max": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioAnimNodeBlendScalar",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

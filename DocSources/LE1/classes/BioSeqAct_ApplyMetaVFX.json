@@ -1,0 +1,33 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "Target": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Effect": {
+      "type": "BioMetaVFX",
+      "documentation": null,
+      "flags": 1
+    },
+    "fLifeTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "EBioSeqActGetTalentRankOutput_Success": {
+      "value": 0,
+      "documentation": null
+    },
+    "EBioSeqActGetTalentRankOutput_Failure": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

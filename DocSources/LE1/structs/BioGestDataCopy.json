@@ -1,0 +1,73 @@
+{
+  "members": {
+    "nmPoseSet": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmPoseAnim": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmGestureSet": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmGestureAnim": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmTransitionSet": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmTransitionAnim": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "fPlayRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fStartOffset": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fEndOffset": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fStartBlendDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fEndBlendDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bOneShotAnim": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioPawn",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

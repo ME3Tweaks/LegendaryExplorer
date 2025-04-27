@@ -1,0 +1,179 @@
+{
+  "parent": "OnlineStats",
+  "package": "Engine",
+  "variables": {
+    "StatMappings": {
+      "type": "StringIdToStringMapping",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "Properties": {
+      "type": "SettingsProperty",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "ViewIds": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ArbitratedViewIds": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnStatsWriteComplete__Delegate": {
+      "type": "OnStatsWriteComplete",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "RatingId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {
+    "DecrementIntStat": {
+      "documentation": null,
+      "signature_members": {
+        "StatId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "DecBy": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "DecrementIntStat(int StatId, optional int DecBy)"
+    },
+    "DecrementFloatStat": {
+      "documentation": null,
+      "signature_members": {
+        "StatId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "DecBy": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "DecrementFloatStat(int StatId, optional float DecBy)"
+    },
+    "IncrementIntStat": {
+      "documentation": null,
+      "signature_members": {
+        "StatId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "IncBy": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "IncrementIntStat(int StatId, optional int IncBy)"
+    },
+    "IncrementFloatStat": {
+      "documentation": null,
+      "signature_members": {
+        "StatId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "IncBy": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "IncrementFloatStat(int StatId, optional float IncBy)"
+    },
+    "SetIntStat": {
+      "documentation": null,
+      "signature_members": {
+        "StatId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetIntStat(int StatId, int Value)"
+    },
+    "SetFloatStat": {
+      "documentation": null,
+      "signature_members": {
+        "StatId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatStat(int StatId, float Value)"
+    },
+    "GetStatName": {
+      "documentation": null,
+      "signature_members": {
+        "StatId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetStatName(int StatId)"
+    },
+    "GetStatId": {
+      "documentation": null,
+      "signature_members": {
+        "StatName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "StatId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetStatId(Name StatName, out int StatId)"
+    },
+    "OnStatsWriteComplete": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnStatsWriteComplete()"
+    }
+  },
+  "states": {},
+  "classflags": 134217907,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,146 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_oEquipmentSlots": {
+      "type": "BioEquipmentBaseSlotType",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "__OnEquipAction__Delegate": {
+      "type": "OnEquipAction",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "__OnUnEquipAction__Delegate": {
+      "type": "OnUnEquipAction",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_oDelegateObject": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bInitialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_eGamePropertyEvent": {
+      "type": "EBioGamePropertyEvent",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "ScaleEquipment": {
+      "documentation": null,
+      "signature_members": {
+        "nSophisticationLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ScaleEquipment(int nSophisticationLevel)"
+    },
+    "GetEquippedSlotID": {
+      "documentation": null,
+      "signature_members": {
+        "oItem": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetEquippedSlotID(BioItem oItem)"
+    },
+    "UnequipSlot": {
+      "documentation": null,
+      "signature_members": {
+        "nSlot": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "oOldItem": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67109248
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnequipSlot(int nSlot, out BioItem oOldItem)"
+    },
+    "EquipSlot": {
+      "documentation": null,
+      "signature_members": {
+        "oNewItem": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "nSlot": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "oOldItem": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67109248
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EquipSlot(BioItem oNewItem, int nSlot, out BioItem oOldItem)"
+    },
+    "ClearAll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ClearAll()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "oOwner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oDelegateObj": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Initialize(Actor oOwner, Object oDelegateObj)"
+    },
+    "OnUnEquipAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool OnUnEquipAction()"
+    },
+    "OnEquipAction": {
+      "documentation": null,
+      "signature_members": {
+        "oNewItem": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnEquipAction(BioItem oNewItem)"
+    }
+  },
+  "states": {},
+  "classflags": 144703635,
+  "configname": "None",
+  "documentation": null
+}

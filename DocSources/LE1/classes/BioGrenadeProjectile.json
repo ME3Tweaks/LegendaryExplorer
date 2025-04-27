@@ -1,0 +1,229 @@
+{
+  "parent": "BioProjectile",
+  "package": "SFXGame",
+  "variables": {
+    "m_ExpHitLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ExpHitNormal": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Mesh": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "m_GrenadeHandle": {
+      "type": "RB_Handle",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "m_pItem": {
+      "type": "BioItemGrenade",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_bInstigatorIsPlayer": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bShowDebugAiming": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Detonate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Detonate()"
+    },
+    "SetVelocity": {
+      "documentation": null,
+      "signature_members": {
+        "vVelocity": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVelocity(Vector vVelocity)"
+    },
+    "SetTargetPoint": {
+      "documentation": null,
+      "signature_members": {
+        "vTarget": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetPoint(Vector vTarget)"
+    },
+    "SetTargetActor": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetActor(Actor oTarget)"
+    },
+    "HurtRadius": {
+      "documentation": null,
+      "signature_members": {
+        "fBaseDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDamageRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "clsDamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "fMomentum": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHurtOrigin": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "oIgnoredActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "oInstigatedByController": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 144
+        },
+        "bDoFullDamage": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamage": {
+          "type": "DamageType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HurtRadius(float fBaseDamage, float fDamageRadius, Class<DamageType> clsDamageType, float fMomentum, Vector vHurtOrigin, optional Actor oIgnoredActor, optional Controller oInstigatedByController, optional bool bDoFullDamage, optional DamageType pDamage)"
+    },
+    "Explode": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Explode(Vector HitLocation, Vector HitNormal)"
+    },
+    "ShouldExplode": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldExplode(float DeltaTime)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "pDamage": {
+          "type": "BioDamageType",
+          "documentation": null,
+          "flags": 128
+        },
+        "pItem": {
+          "type": "BioItemGrenade",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(BioDamageType pDamage, BioItemGrenade pItem)"
+    },
+    "GetActorTargetLocation": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetActorTargetLocation(Actor oActor)"
+    },
+    "IsValidTarget": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidTarget(Actor oActor)"
+    },
+    "InitializeUpgradableStats": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeUpgradableStats()"
+    }
+  },
+  "states": {},
+  "classflags": 144703635,
+  "configname": "None",
+  "documentation": null
+}

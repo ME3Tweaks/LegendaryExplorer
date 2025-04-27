@@ -1,0 +1,69 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "VfTable_FExec": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "Actor": {
+      "type": "PlayerController",
+      "documentation": null,
+      "flags": 8194
+    },
+    "CurrentNetSpeed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "ConfiguredInternetSpeed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 278528
+    },
+    "ConfiguredLanSpeed": {
+      "type": "int",
+      "documentation": null,
+      "flags": 278528
+    },
+    "PP_DesaturationMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "PP_HighlightsMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "PP_MidTonesMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "PP_ShadowsMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {
+    "SwitchController": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SwitchController(PlayerController PC)"
+    }
+  },
+  "states": {},
+  "classflags": 134217886,
+  "configname": "Engine",
+  "documentation": null
+}

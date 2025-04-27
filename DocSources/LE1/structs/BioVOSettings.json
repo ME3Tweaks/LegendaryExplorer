@@ -1,0 +1,28 @@
+{
+  "members": {
+    "cSubtitleColour": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSuppressSubtitlesIfVO": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bAlert": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "nSubtitleMode": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioActorBehavior",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

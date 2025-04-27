@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "IMF_World": {
+      "value": 0,
+      "documentation": null
+    },
+    "IMF_RelativeToInitial": {
+      "value": 1,
+      "documentation": null
+    },
+    "IMF_AnchorObject": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

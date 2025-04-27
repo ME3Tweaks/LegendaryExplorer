@@ -1,0 +1,13 @@
+{
+  "members": {
+    "CachedConvexElements": {
+      "type": "KCachedConvexDataElement",
+      "documentation": null,
+      "flags": 4096
+    }
+  },
+  "classdef": "RB_BodySetup",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

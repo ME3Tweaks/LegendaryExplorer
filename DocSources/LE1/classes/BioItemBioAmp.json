@@ -1,0 +1,29 @@
+{
+  "parent": "BioItemXModdable",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "DescribeItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeItem()"
+    },
+    "ComputeSophistication": {
+      "documentation": null,
+      "signature_members": {
+        "oBehavior": {
+          "type": "BioPawnBehavior",
+          "documentation": null,
+          "flags": 67109008
+        }
+      },
+      "returntype": "int",
+      "signature": "int ComputeSophistication(optional BioPawnBehavior oBehavior)"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

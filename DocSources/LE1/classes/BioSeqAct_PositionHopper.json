@@ -1,0 +1,21 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_oHopper": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oHopperNode": {
+      "type": "BioWP_Hopper",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

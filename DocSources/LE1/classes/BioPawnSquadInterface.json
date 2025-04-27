@@ -1,0 +1,88 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "FindSquadMemberByTag": {
+      "documentation": null,
+      "signature_members": {
+        "nmTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Pawn",
+      "signature": "Pawn FindSquadMemberByTag(Name nmTag)"
+    },
+    "FindSquadIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int FindSquadIndex()"
+    },
+    "ChangeSquads": {
+      "documentation": null,
+      "signature_members": {
+        "NewSquad": {
+          "type": "BioBaseSquad",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ChangeSquads(BioBaseSquad NewSquad)"
+    },
+    "ChangeToPlayerSquad": {
+      "documentation": null,
+      "signature_members": {
+        "sClass": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "aSquadName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ChangeToPlayerSquad(string sClass, Name aSquadName)"
+    },
+    "ChangeToDefaultSquad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ChangeToDefaultSquad()"
+    },
+    "PawnDestroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PawnDestroyed()"
+    },
+    "LeaveSquad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "LeaveSquad()"
+    },
+    "JoinSquad": {
+      "documentation": null,
+      "signature_members": {
+        "NewSquad": {
+          "type": "BioBaseSquad",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "JoinSquad(BioBaseSquad NewSquad)"
+    }
+  },
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

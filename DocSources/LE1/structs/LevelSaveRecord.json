@@ -1,0 +1,23 @@
+{
+  "members": {
+    "LevelName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "bShouldBeLoaded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bShouldBeVisible": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "SFXSaveGame",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

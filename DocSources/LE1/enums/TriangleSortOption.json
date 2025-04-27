@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "TRISORT_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "TRISORT_CenterRadialDistance": {
+      "value": 1,
+      "documentation": null
+    },
+    "TRISORT_Random": {
+      "value": 2,
+      "documentation": null
+    },
+    "TRISORT_Tootle": {
+      "value": 3,
+      "documentation": null
+    },
+    "TRISORT_MergeContiguous": {
+      "value": 4,
+      "documentation": null
+    },
+    "TRISORT_Custom": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

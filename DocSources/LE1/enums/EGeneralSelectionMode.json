@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_SELECTION_MODE_INACTIVE": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_SELECTION_MODE_NORMAL": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_SELECTION_MODE_SPECTATOR": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

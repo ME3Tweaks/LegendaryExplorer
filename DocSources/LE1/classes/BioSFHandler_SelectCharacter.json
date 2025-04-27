@@ -1,0 +1,40 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "UpdateCharacterData": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCharacterData()"
+    },
+    "DoCharactersExist": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DoCharactersExist()"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    }
+  },
+  "states": {},
+  "classflags": 2097178,
+  "configname": "None",
+  "documentation": null
+}

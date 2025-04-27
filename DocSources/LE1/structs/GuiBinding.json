@@ -1,0 +1,43 @@
+{
+  "members": {
+    "Alias": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "GameModeBindings": {
+      "type": "GameModeBinding",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Keys": {
+      "type": "KeyBind",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "KeysLocName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "Name": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsCategory": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "GameMode": {
+      "type": "EGameModes",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFHandler_PCOptions",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

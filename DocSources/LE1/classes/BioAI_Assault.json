@@ -1,0 +1,74 @@
+{
+  "parent": "BioAI_HumanoidMinion",
+  "package": "SFXGame",
+  "variables": {
+    "m_bShouldAdvance": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "OnDamaged": {
+      "documentation": null,
+      "signature_members": {
+        "oInstigator": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDamaged(Controller oInstigator, float fDamage)"
+    },
+    "InRangeOfTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InRangeOfTarget()"
+    },
+    "EvaluateMovement": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "bLOS": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EvaluateMovement(Pawn oTarget, bool bLOS)"
+    },
+    "GetFollowTargets": {
+      "documentation": null,
+      "signature_members": {
+        "oFollow": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 384
+        },
+        "vMoveTo": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetFollowTargets(out Pawn oFollow, out Vector vMoveTo)"
+    }
+  },
+  "states": {},
+  "classflags": 10486294,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,31 @@
+{
+  "parent": "BioSeqData",
+  "package": "SFXGame",
+  "variables": {
+    "aoCoverFrom": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "aoCoverFromRank": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "oCoverInfo": {
+      "type": "CoverRecord",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bHasFoundCover": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

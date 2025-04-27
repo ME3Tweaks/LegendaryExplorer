@@ -1,0 +1,113 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_aTargetZone": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_nmPhysicsImpactBone": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oShieldView": {
+      "type": "BioShieldView",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_pDeathVFX": {
+      "type": "BioDeathVFX",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_pDeathVFXControl": {
+      "type": "BioDeathVFXControl",
+      "documentation": null,
+      "flags": 71303179
+    },
+    "m_fNotifyRBCollisionThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fVFXScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bNotifyRBCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bIsTargetZoneEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_eReportMethod": {
+      "type": "EBioBaseAppearanceReportMethod",
+      "documentation": null,
+      "flags": 8193
+    }
+  },
+  "functions": {
+    "GetModelByName": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "SkeletalMesh",
+      "signature": "SkeletalMesh GetModelByName(string S)"
+    },
+    "GetTargetZoneName": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmZoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTargetZoneName(int nIndex, out Name nmZoneName)"
+    },
+    "GetTargetZoneLocation": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "oMeshComponent": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTargetZoneLocation(int nIndex, SkeletalMeshComponent oMeshComponent, out Vector vLocation)"
+    }
+  },
+  "states": {},
+  "classflags": 144703635,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,53 @@
+{
+  "members": {
+    "strTitle": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "nEventType": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nTimeToLive": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nIconIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nContext": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "srTitle": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "nQuantity": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nQuantMin": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nQuantMax": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioEventNotifier",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

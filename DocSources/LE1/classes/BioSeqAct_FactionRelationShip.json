@@ -1,0 +1,46 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_oSquadA": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oSquadB": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    },
+    "GetSquadFrom": {
+      "documentation": null,
+      "signature_members": {
+        "oInObj": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioBaseSquad",
+      "signature": "BioBaseSquad GetSquadFrom(Object oInObj)"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

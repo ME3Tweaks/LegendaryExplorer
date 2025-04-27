@@ -1,0 +1,16 @@
+{
+  "parent": "MaterialExpression",
+  "package": "SFXGame",
+  "variables": {
+    "Input": {
+      "type": "ExpressionInput",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

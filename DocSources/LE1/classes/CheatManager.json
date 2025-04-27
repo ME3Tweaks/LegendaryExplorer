@@ -1,0 +1,518 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "DebugCameraControllerClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "DebugCameraControllerRef": {
+      "type": "DebugCameraController",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "NavMeshVerification": {
+      "documentation": null,
+      "signature_members": {
+        "interval": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "NavMeshVerification(optional float interval)"
+    },
+    "VerifyNavMeshObjects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "VerifyNavMeshObjects()"
+    },
+    "LogParticleActivateSystemCalls": {
+      "documentation": null,
+      "signature_members": {
+        "bShouldLog": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogParticleActivateSystemCalls(bool bShouldLog)"
+    },
+    "LogPlaySoundCalls": {
+      "documentation": null,
+      "signature_members": {
+        "bShouldLog": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LogPlaySoundCalls(bool bShouldLog)"
+    },
+    "InitCheatManager": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitCheatManager()"
+    },
+    "VerbosePathDebug": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "VerbosePathDebug()"
+    },
+    "TestNavMeshPath": {
+      "documentation": null,
+      "signature_members": {
+        "bDrawPath": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "TestNavMeshPath(optional bool bDrawPath)"
+    },
+    "SetOnlineDebugLevel": {
+      "documentation": null,
+      "signature_members": {
+        "DebugLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetOnlineDebugLevel(int DebugLevel)"
+    },
+    "DumpVoiceMutingState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DumpVoiceMutingState()"
+    },
+    "DumpOnlineSessionState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DumpOnlineSessionState()"
+    },
+    "TestLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TestLevel()"
+    },
+    "EnableDebugCamera": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableDebugCamera()"
+    },
+    "ToggleDebugCamera": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleDebugCamera()"
+    },
+    "StreamLevelOut": {
+      "documentation": null,
+      "signature_members": {
+        "PackageName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "StreamLevelOut(Name PackageName)"
+    },
+    "OnlyLoadLevel": {
+      "documentation": null,
+      "signature_members": {
+        "PackageName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnlyLoadLevel(Name PackageName)"
+    },
+    "StreamLevelIn": {
+      "documentation": null,
+      "signature_members": {
+        "PackageName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "StreamLevelIn(Name PackageName)"
+    },
+    "SetMass": {
+      "documentation": null,
+      "signature_members": {
+        "F": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMass(float F)"
+    },
+    "SetLevelStreamingStatus": {
+      "documentation": null,
+      "signature_members": {
+        "PackageName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bShouldBeLoaded": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bShouldBeVisible": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLevelStreamingStatus(Name PackageName, bool bShouldBeLoaded, bool bShouldBeVisible)"
+    },
+    "AllWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AllWeapons()"
+    },
+    "Loaded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Loaded()"
+    },
+    "ViewClass": {
+      "documentation": null,
+      "signature_members": {
+        "aClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ViewClass(Class<Actor> aClass)"
+    },
+    "ViewBot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ViewBot()"
+    },
+    "ViewFlag": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ViewFlag()"
+    },
+    "ViewActor": {
+      "documentation": null,
+      "signature_members": {
+        "actorName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ViewActor(Name actorName)"
+    },
+    "ViewPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "S": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ViewPlayer(string S)"
+    },
+    "ViewSelf": {
+      "documentation": null,
+      "signature_members": {
+        "bQuiet": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ViewSelf(optional bool bQuiet)"
+    },
+    "RememberSpot": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RememberSpot()"
+    },
+    "PlayersOnly": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PlayersOnly()"
+    },
+    "GiveWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "WeaponClassStr": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "Weapon",
+      "signature": "Weapon GiveWeapon(string WeaponClassStr)"
+    },
+    "Summon": {
+      "documentation": null,
+      "signature_members": {
+        "ClassName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "Summon(string ClassName)"
+    },
+    "Avatar": {
+      "documentation": null,
+      "signature_members": {
+        "ClassName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Avatar(Name ClassName)"
+    },
+    "KillPawns": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "KillPawns()"
+    },
+    "KillAllPawns": {
+      "documentation": null,
+      "signature_members": {
+        "aClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "KillAllPawns(Class<Pawn> aClass)"
+    },
+    "KillAll": {
+      "documentation": null,
+      "signature_members": {
+        "aClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "KillAll(Class<Actor> aClass)"
+    },
+    "SetSpeed": {
+      "documentation": null,
+      "signature_members": {
+        "F": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSpeed(float F)"
+    },
+    "SetGravity": {
+      "documentation": null,
+      "signature_members": {
+        "F": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetGravity(float F)"
+    },
+    "SetJumpZ": {
+      "documentation": null,
+      "signature_members": {
+        "F": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetJumpZ(float F)"
+    },
+    "Slomo": {
+      "documentation": null,
+      "signature_members": {
+        "T": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Slomo(float T)"
+    },
+    "AffectedByHitEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AffectedByHitEffects()"
+    },
+    "God": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "God()"
+    },
+    "AllAmmo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "AllAmmo()"
+    },
+    "Ghost": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Ghost()"
+    },
+    "Walk": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Walk()"
+    },
+    "Fly": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Fly()"
+    },
+    "Amphibious": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Amphibious()"
+    },
+    "EndPath": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EndPath()"
+    },
+    "ChangeSize": {
+      "documentation": null,
+      "signature_members": {
+        "F": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ChangeSize(float F)"
+    },
+    "Teleport": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Teleport()"
+    },
+    "KillViewedActor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "KillViewedActor()"
+    },
+    "WriteToLog": {
+      "documentation": null,
+      "signature_members": {
+        "Param": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "WriteToLog(string Param)"
+    },
+    "FreezeFrame": {
+      "documentation": null,
+      "signature_members": {
+        "Delay": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "FreezeFrame(float Delay)"
+    },
+    "ListDynamicActors": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ListDynamicActors()"
+    },
+    "DebugPause": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DebugPause()"
+    },
+    "DebugAI": {
+      "documentation": null,
+      "signature_members": {
+        "Category": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 2192
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugAI(optional coerce Name Category)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

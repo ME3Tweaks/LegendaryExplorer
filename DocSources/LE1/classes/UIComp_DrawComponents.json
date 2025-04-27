@@ -1,0 +1,109 @@
+{
+  "parent": "UIComponent",
+  "package": "Engine",
+  "variables": {
+    "__OnFadeComplete__Delegate": {
+      "type": "OnFadeComplete",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "FadeAlpha": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8193
+    },
+    "FadeTarget": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8193
+    },
+    "FadeTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8193
+    },
+    "LastRenderTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "FadeRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "FadeType": {
+      "type": "EFadeType",
+      "documentation": null,
+      "flags": 8193
+    }
+  },
+  "functions": {
+    "OnFadeComplete": {
+      "documentation": null,
+      "signature_members": {
+        "Sender": {
+          "type": "UIComp_DrawComponents",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFadeComplete(UIComp_DrawComponents Sender)"
+    },
+    "ResetFade": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetFade()"
+    },
+    "Pulse": {
+      "documentation": null,
+      "signature_members": {
+        "MaxAlpha": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "MinAlpha": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "PulseRate": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "Pulse(optional float MaxAlpha, optional float MinAlpha, optional float PulseRate)"
+    },
+    "Fade": {
+      "documentation": null,
+      "signature_members": {
+        "FromAlpha": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "ToAlpha": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "TargetFadeTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Fade(float FromAlpha, float ToAlpha, float TargetFadeTime)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,51 @@
+{
+  "parent": "SkelControlSingleBone",
+  "package": "Engine",
+  "variables": {
+    "WheelDisplacement": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8193
+    },
+    "WheelMaxRenderDisplacement": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelRoll": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8193
+    },
+    "WheelSteering": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8193
+    },
+    "bInvertWheelRoll": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bInvertWheelSteering": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelRollAxis": {
+      "type": "EAxis",
+      "documentation": null,
+      "flags": 1
+    },
+    "WheelSteeringAxis": {
+      "type": "EAxis",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

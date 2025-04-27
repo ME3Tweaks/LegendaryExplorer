@@ -1,0 +1,28 @@
+{
+  "members": {
+    "TransformMatrix": {
+      "type": "Matrix",
+      "documentation": null,
+      "flags": 8194
+    },
+    "AnchorPosition": {
+      "type": "UIAnchorPosition",
+      "documentation": null,
+      "flags": 3
+    },
+    "Rotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 3
+    },
+    "AnchorType": {
+      "type": "ERotationAnchor",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

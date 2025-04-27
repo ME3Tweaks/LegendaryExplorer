@@ -1,0 +1,28 @@
+{
+  "members": {
+    "m_Stamina": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Focus": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Precision": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Coordination": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioGamerProfile",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

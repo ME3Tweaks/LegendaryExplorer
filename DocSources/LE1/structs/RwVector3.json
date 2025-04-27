@@ -1,0 +1,23 @@
+{
+  "members": {
+    "X": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Y": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Z": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 48
+}

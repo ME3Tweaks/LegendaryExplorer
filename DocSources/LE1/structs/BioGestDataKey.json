@@ -1,0 +1,23 @@
+{
+  "members": {
+    "tRawData": {
+      "type": "BioGestureData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "pChainTree": {
+      "type": "BioGestChainTree",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUseDynamicAnimSets": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioPawn",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

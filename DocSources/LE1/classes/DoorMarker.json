@@ -1,0 +1,106 @@
+{
+  "parent": "NavigationPoint",
+  "package": "Engine",
+  "variables": {
+    "MyDoor": {
+      "type": "InterpActor",
+      "documentation": null,
+      "flags": 1
+    },
+    "DoorTrigger": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "bWaitUntilCompletelyOpened": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bInitiallyClosed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bBlockedWhenClosed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDoorOpen": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bTempDisabledCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "DoorType": {
+      "type": "EDoorType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "SuggestMovePreparation": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SuggestMovePreparation(Pawn Other)"
+    },
+    "ProceedWithMove": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProceedWithMove(Pawn Other)"
+    },
+    "SpecialHandling": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor SpecialHandling(Pawn Other)"
+    },
+    "MoverClosed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MoverClosed()"
+    },
+    "MoverOpened": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "MoverOpened()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

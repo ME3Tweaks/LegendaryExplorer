@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BIOSEQACT_SPAWNHENCHMAN_SIDE_LEFT": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIOSEQACT_SPAWNHENCHMAN_SIDE_RIGHT": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

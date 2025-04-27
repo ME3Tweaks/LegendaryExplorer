@@ -1,0 +1,38 @@
+{
+  "members": {
+    "m_vSize": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_pEffect": {
+      "type": "BioVisualEffect",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_aScale": {
+      "type": "EBioShieldVFXScale",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_ePosition": {
+      "type": "EBioShieldVFXPosition",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_eOrientation": {
+      "type": "EBioShieldVFXOrientation",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioShieldView",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

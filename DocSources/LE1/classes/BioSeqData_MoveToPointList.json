@@ -1,0 +1,31 @@
+{
+  "parent": "BioSeqData_StateBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_aMoveTargets": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_fMoveTolerance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bWalking": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Terminate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

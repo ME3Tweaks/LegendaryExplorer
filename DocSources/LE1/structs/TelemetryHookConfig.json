@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Name": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Event": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "AutoFillParameters": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Channel": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "classdef": "SFXTelemetry",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

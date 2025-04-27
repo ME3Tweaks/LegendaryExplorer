@@ -1,0 +1,36 @@
+{
+  "parent": "InterpTrackVectorBase",
+  "package": "Engine",
+  "variables": {
+    "Sounds": {
+      "type": "SoundTrackKey",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "bContinueSoundOnMatineeEnd": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSuppressSubtitles": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRequireActor": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bBioRequiresPreload": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134226066,
+  "configname": "None",
+  "documentation": null
+}

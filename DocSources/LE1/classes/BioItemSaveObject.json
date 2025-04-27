@@ -1,0 +1,44 @@
+{
+  "parent": "BioBaseSaveObject",
+  "package": "SFXGame",
+  "variables": {
+    "m_nID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_manufacturer": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_plotConditionalID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "m_eSophistication": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveObject(Object O)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

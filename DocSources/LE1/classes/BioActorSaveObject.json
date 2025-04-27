@@ -1,0 +1,95 @@
+{
+  "parent": "BioBaseSaveObject",
+  "package": "Engine",
+  "variables": {
+    "Location": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Rotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "Velocity": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Acceleration": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "bScriptInitialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2305843009213693952
+    },
+    "bHidden": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bStasis": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "LoadPositionAndOrientation": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool LoadPositionAndOrientation(Actor O)"
+    },
+    "SavePositionAndOrientation": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SavePositionAndOrientation(Actor O)"
+    },
+    "LoadObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadObject(Object O)"
+    },
+    "SaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveObject(Object O)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,79 @@
+{
+  "parent": "TextureRenderTarget",
+  "package": "Engine",
+  "variables": {
+    "ClearColor": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 2
+    },
+    "SizeX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 3
+    },
+    "SizeY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 3
+    },
+    "bForceLinearGamma": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8195
+    },
+    "Format": {
+      "type": "EPixelFormat",
+      "documentation": null,
+      "flags": 2
+    },
+    "AddressX": {
+      "type": "TextureAddress",
+      "documentation": null,
+      "flags": 1
+    },
+    "AddressY": {
+      "type": "TextureAddress",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Create": {
+      "documentation": null,
+      "signature_members": {
+        "InSizeX": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "InSizeY": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "InFormat": {
+          "type": "EPixelFormat",
+          "documentation": null,
+          "flags": 144
+        },
+        "InClearColor": {
+          "type": "LinearColor",
+          "documentation": null,
+          "flags": 144
+        },
+        "bOnlyRenderOnce": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "TextureRenderTarget2D",
+      "signature": "TextureRenderTarget2D Create(int InSizeX, int InSizeY, optional EPixelFormat InFormat, optional LinearColor InClearColor, optional bool bOnlyRenderOnce)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

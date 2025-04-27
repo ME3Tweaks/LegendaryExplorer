@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SIDE_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "SIDE_Left": {
+      "value": 1,
+      "documentation": null
+    },
+    "SIDE_Right": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

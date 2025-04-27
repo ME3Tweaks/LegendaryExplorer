@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ACN_Cancelled": {
+      "value": 0,
+      "documentation": null
+    },
+    "ACN_Success": {
+      "value": 1,
+      "documentation": null
+    },
+    "ACN_Disabled": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

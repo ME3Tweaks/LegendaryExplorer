@@ -1,0 +1,10 @@
+{
+  "parent": "BioAttributes",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 8388626,
+  "configname": "Game",
+  "documentation": null
+}

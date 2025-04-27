@@ -1,0 +1,16 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "lstReferencedSoundCues": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

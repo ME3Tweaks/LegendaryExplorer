@@ -1,0 +1,16 @@
+{
+  "parent": "LevelStreaming",
+  "package": "Engine",
+  "variables": {
+    "bNeverAutoStreamOut": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136319126,
+  "configname": "Engine",
+  "documentation": null
+}

@@ -1,0 +1,45 @@
+{
+  "parent": "SequenceVariable",
+  "package": "Engine",
+  "variables": {
+    "SupportedClasses": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "ActorLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "ObjValue": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "SetObjectValue": {
+      "documentation": null,
+      "signature_members": {
+        "NewValue": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetObjectValue(Object NewValue)"
+    },
+    "GetObjectValue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Object",
+      "signature": "Object GetObjectValue()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

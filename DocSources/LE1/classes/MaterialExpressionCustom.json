@@ -1,0 +1,31 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Code": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4398050705409
+    },
+    "Description": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Inputs": {
+      "type": "CustomInput",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "OutputType": {
+      "type": "ECustomMaterialOutputType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136323218,
+  "configname": "None",
+  "documentation": null
+}

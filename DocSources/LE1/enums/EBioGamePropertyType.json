@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "GPT_Static": {
+      "value": 0,
+      "documentation": null
+    },
+    "GPT_Timed": {
+      "value": 1,
+      "documentation": null
+    },
+    "GPT_Instant": {
+      "value": 2,
+      "documentation": null
+    },
+    "GPT_Frame": {
+      "value": 3,
+      "documentation": null
+    },
+    "GPT_StaticFrame": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

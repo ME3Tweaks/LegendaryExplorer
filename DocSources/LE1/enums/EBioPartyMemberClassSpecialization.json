@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "BIO_PARTY_MEMBER_CLASS_SPECIALIZATION_NONE_DEPRECATED": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_SPECIALIZATION_MARINE_DEPRECATED": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_SPECIALIZATION_RANGER_DEPRECATED": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_SPECIALIZATION_INFILTRATOR_DEPRECATED": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_SPECIALIZATION_MEDIC_DEPRECATED": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_SPECIALIZATION_REAVER_DEPRECATED": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_SPECIALIZATION_BASTION_DEPRECATED": {
+      "value": 6,
+      "documentation": null
+    },
+    "BIO_PARTY_MEMBER_CLASS_SPECIALIZATION_MAX_DEPRECATED": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

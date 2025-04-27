@@ -1,0 +1,56 @@
+{
+  "parent": "BioSeqData_ActionBase",
+  "package": "SFXGame",
+  "variables": {
+    "vTarget": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmPowerName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "oTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oPowerCache": {
+      "type": "BioPower",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "fTimeOut": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bStartedCasting": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bAcquiredActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bLOS": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bOrderedByPlayer": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

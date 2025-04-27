@@ -1,0 +1,129 @@
+{
+  "parent": "SeqAct_Latent",
+  "package": "SFXGame",
+  "variables": {
+    "m_GameMessageSuccess": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_GameMessageFailure": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_GameMessageDuringGame": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_preGameButtonAText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_preGameButtonBText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_preGameButtonXText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nNumberOfButtons": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fButtonTimeout": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fButtonStartDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nMinSalvage": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nMaxSalvage": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bDoNotUseSalvage": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_Completed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bSkillGameFailed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_CompletionState": {
+      "type": "ECustomSkillGameComplete",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GrantCustomGameXp": {
+      "documentation": null,
+      "signature_members": {
+        "oBWorldInfo": {
+          "type": "BioWorldInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "GrantCustomGameXp(BioWorldInfo oBWorldInfo)"
+    },
+    "OnCancel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnCancel()"
+    },
+    "OnFailure": {
+      "documentation": null,
+      "signature_members": {
+        "i_salvage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFailure(int i_salvage)"
+    },
+    "OnSuccess": {
+      "documentation": null,
+      "signature_members": {
+        "i_salvage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSuccess(int i_salvage)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

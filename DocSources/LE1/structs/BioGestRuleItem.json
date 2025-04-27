@@ -1,0 +1,33 @@
+{
+  "members": {
+    "nmPose1": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmPose2": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmGesture": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmAnimSet": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmAnimSeq": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioGestureRulesData",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

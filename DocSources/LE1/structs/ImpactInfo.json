@@ -1,0 +1,38 @@
+{
+  "members": {
+    "HitInfo": {
+      "type": "TraceHitInfo",
+      "documentation": null,
+      "flags": 68681728
+    },
+    "HitLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "HitNormal": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "RayDir": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "StartTrace": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1048576
+    },
+    "HitActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1048576
+    }
+  },
+  "classdef": "Actor",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 13
+}

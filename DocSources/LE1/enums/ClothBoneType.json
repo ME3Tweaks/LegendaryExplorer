@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "CLOTHBONE_Fixed": {
+      "value": 0,
+      "documentation": null
+    },
+    "CLOTHBONE_BreakableAttachment": {
+      "value": 1,
+      "documentation": null
+    },
+    "CLOTHBONE_TearLine": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

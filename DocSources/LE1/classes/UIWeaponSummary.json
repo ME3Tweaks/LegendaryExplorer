@@ -1,0 +1,38 @@
+{
+  "parent": "UIResourceDataProvider",
+  "package": "Engine",
+  "variables": {
+    "ClassPathName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "FriendlyName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4243458
+    },
+    "WeaponDescription": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4243458
+    },
+    "bIsDisabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {
+    "IsProviderDisabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsProviderDisabled()"
+    }
+  },
+  "states": {},
+  "classflags": 2098238,
+  "configname": "Game",
+  "documentation": null
+}

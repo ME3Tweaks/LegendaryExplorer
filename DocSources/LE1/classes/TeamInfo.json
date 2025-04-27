@@ -1,0 +1,115 @@
+{
+  "parent": "ReplicationInfo",
+  "package": "Engine",
+  "variables": {
+    "TeamName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 1077968930
+    },
+    "Size": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1073741824
+    },
+    "Score": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1073741856
+    },
+    "TeamIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 5368709152
+    },
+    "TeamColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 1073741824
+    }
+  },
+  "functions": {
+    "GetTeamNum": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "byte",
+      "signature": "byte GetTeamNum()"
+    },
+    "GetTextColor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Color",
+      "signature": "Color GetTextColor()"
+    },
+    "GetHUDColor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Color",
+      "signature": "Color GetHUDColor()"
+    },
+    "GetHumanReadableName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetHumanReadableName()"
+    },
+    "RemoveFromTeam": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveFromTeam(Controller Other)"
+    },
+    "AddToTeam": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddToTeam(Controller Other)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "UnbindTeamDataProvider": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnbindTeamDataProvider()"
+    },
+    "GetCurrentGameDS": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "CurrentGameDataStore",
+      "signature": "CurrentGameDataStore GetCurrentGameDS()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    }
+  },
+  "states": {},
+  "classflags": 144705714,
+  "configname": "None",
+  "documentation": null
+}

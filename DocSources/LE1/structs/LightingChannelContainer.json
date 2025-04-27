@@ -1,0 +1,143 @@
+{
+  "members": {
+    "bInitialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "BSP": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Static": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Dynamic": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "CompositeDynamic": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Skybox": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Unnamed_1": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Unnamed_2": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Unnamed_3": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Unnamed_4": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Unnamed_5": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Unnamed_6": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Cinematic_1": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Cinematic_2": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Cinematic_3": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Cinematic_4": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Cinematic_5": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Cinematic_6": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Cinematic_7": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Cinematic_8": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Cinematic_9": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Cinematic_10": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Gameplay_1": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Gameplay_2": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Gameplay_3": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Gameplay_4": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Crowd": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "LightComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

@@ -1,0 +1,23 @@
+{
+  "members": {
+    "ScopeFrame": {
+      "type": "Matrix",
+      "documentation": null,
+      "flags": 0
+    },
+    "DimX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "DimZ": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "ProcBuilding",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

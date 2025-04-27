@@ -1,0 +1,21 @@
+{
+  "parent": "BioAnimNodeBlendStateBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "m_bPlayedAnim": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "HoppingBehavior": {
+      "type": "EBioAnimNodeBlendStateHoppingBehavior",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136319122,
+  "configname": "None",
+  "documentation": null
+}

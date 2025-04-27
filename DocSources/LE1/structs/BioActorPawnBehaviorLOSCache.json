@@ -1,0 +1,13 @@
+{
+  "members": {
+    "m_WeaponLOSCaches": {
+      "type": "BioActorBehaviorWeaponLOSCache",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "classdef": "BioActorBehavior",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

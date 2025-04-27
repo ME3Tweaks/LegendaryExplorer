@@ -1,0 +1,23 @@
+{
+  "members": {
+    "NumVariations": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaterialsPerVariation": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bHasHeadGear": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "Bio_Appr_Character_Body",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

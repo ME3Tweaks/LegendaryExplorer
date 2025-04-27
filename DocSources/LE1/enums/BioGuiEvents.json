@@ -1,0 +1,217 @@
+{
+  "EnumValues": {
+    "BIOGUI_EVENT_ON_ENTER": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_ON_EXIT": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_AXIS_LSTICK_X": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_AXIS_LSTICK_Y": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_AXIS_RSTICK_X": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_AXIS_RSTICK_Y": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_AXIS_MOUSE_X": {
+      "value": 6,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_AXIS_MOUSE_Y": {
+      "value": 7,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_CONTROL_DOWN": {
+      "value": 8,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_CONTROL_LEFT": {
+      "value": 9,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_CONTROL_RIGHT": {
+      "value": 10,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_CONTROL_UP": {
+      "value": 11,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_A": {
+      "value": 12,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_B": {
+      "value": 13,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_X": {
+      "value": 14,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_Y": {
+      "value": 15,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_LT": {
+      "value": 16,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_RT": {
+      "value": 17,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_LB": {
+      "value": 18,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_RB": {
+      "value": 19,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_BACK": {
+      "value": 20,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_START": {
+      "value": 21,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_LTHUMB": {
+      "value": 22,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_RTHUMB": {
+      "value": 23,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_KEY_ESCAPE": {
+      "value": 24,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_KEY_SPACE": {
+      "value": 25,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_KEY_DELETE": {
+      "value": 26,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_KEY_TAB": {
+      "value": 27,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_KEY_WHEEL_UP": {
+      "value": 28,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_KEY_WHEEL_DOWN": {
+      "value": 29,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_CONTROL_DOWN_RELEASE": {
+      "value": 30,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_CONTROL_LEFT_RELEASE": {
+      "value": 31,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_CONTROL_RIGHT_RELEASE": {
+      "value": 32,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_CONTROL_UP_RELEASE": {
+      "value": 33,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_A_RELEASE": {
+      "value": 34,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_B_RELEASE": {
+      "value": 35,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_X_RELEASE": {
+      "value": 36,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_Y_RELEASE": {
+      "value": 37,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_LT_RELEASE": {
+      "value": 38,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_RT_RELEASE": {
+      "value": 39,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_LB_RELEASE": {
+      "value": 40,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_RB_RELEASE": {
+      "value": 41,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_BACK_RELEASE": {
+      "value": 42,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_START_RELEASE": {
+      "value": 43,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_LTHUMB_RELEASE": {
+      "value": 44,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_BUTTON_RTHUMB_RELEASE": {
+      "value": 45,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_KEY_ESCAPE_RELEASE": {
+      "value": 46,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_KEY_SPACE_RELEASE": {
+      "value": 47,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_CONTROL_COOLDOWN_EXPIRE": {
+      "value": 48,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_MOUSE_BUTTON_RIGHT": {
+      "value": 49,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_MOUSE_BUTTON_LEFT": {
+      "value": 50,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_MOUSE_BUTTON_RIGHT_RELEASE": {
+      "value": 51,
+      "documentation": null
+    },
+    "BIOGUI_EVENT_MOUSE_BUTTON_LEFT_RELEASE": {
+      "value": 52,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

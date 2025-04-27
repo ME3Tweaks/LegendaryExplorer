@@ -1,0 +1,338 @@
+{
+  "parent": "BioAttributesItemWeapon",
+  "package": "SFXGame",
+  "variables": {
+    "m_pExplosionEnabled": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_pImpactDelayEnabled": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ProjectilesFired": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_vfxType": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_Kickback": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_RoundsPerSec": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_DriftAngleMax": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ProjectilesSpreadAngle": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_TrackingPenalty": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_DriftAngleMin": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_TargetIndicatorFixedDistance": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_SelHalfAngleFar": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_SelHalfAngleClose": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_SelRangeFar": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_SelRangeClose": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_HeatPerShot": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_HeatMax": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_HeatLossRate": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_HeatLossRateWhileOverheated": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_HeatMin": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_MagneticLockHalfAngleFarZoom": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_MagneticLockHalfAngleCloseZoom": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_MagneticLockRangeFarZoom": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_MagneticLockRangeCloseZoom": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_nmPowerToUse": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_minZoomFOV": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_maxZoomFOV": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_zoomRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_zoomCameraOffsetX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_zoomCameraOffsetY": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_zoomCameraOffsetZ": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_zoomKickbackDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_zoomSettleDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fExplosionRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fExplosionMomentum": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nMaxTargetZones": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fDamagePerExplosion": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fImpactOriginOffsetAlongNegatedNormal": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fImpactDelayProjectileSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fWeaponRecoilImpulse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_VFXLevel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nPowerCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "TEMP_CONFIG_m_DriftAngleMin": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "TEMP_CONFIG_m_ImpactJumpPerShot": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "TEMP_CONFIG_m_ImpactRollStepSizeMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "TEMP_CONFIG_m_DriftAngleMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "TEMP_CONFIG_m_ImpactAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "TEMP_CONFIG_m_ImpactTrackingSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "TEMP_CONFIG_m_Kickback": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "TEMP_CONFIG_m_TrackingPenalty": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "TEMP_CONFIG_m_SelHalfAngleClose": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "TEMP_CONFIG_m_SelHalfAngleFar": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "TEMP_CONFIG_m_SelRangeClose": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "TEMP_CONFIG_m_SelRangeFar": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "TEMP_CONFIG_m_HeatPerShot": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "TEMP_CONFIG_m_HeatMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "TEMP_CONFIG_m_HeatLossRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "TEMP_CONFIG_m_HeatLossRateWhileOverheated": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "TEMP_CONFIG_m_HeatMin": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "m_FullAuto": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_SupressionFire": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_isSecondaryMuzzleFlashEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_hasFired": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_ePowerMode": {
+      "type": "EWeaponPowerMode",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "DescribeAttributes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeAttributes()"
+    }
+  },
+  "states": {},
+  "classflags": 142606486,
+  "configname": "Game",
+  "documentation": null
+}

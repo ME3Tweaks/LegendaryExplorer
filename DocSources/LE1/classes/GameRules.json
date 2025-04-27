@@ -1,0 +1,234 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "NextGameRules": {
+      "type": "GameRules",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "NetDamage": {
+      "documentation": null,
+      "signature_members": {
+        "OriginalDamage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Damage": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "injured": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NetDamage(int OriginalDamage, out int Damage, Pawn injured, Controller InstigatedBy, Vector HitLocation, out Vector Momentum, Class<DamageType> DamageType)"
+    },
+    "CriticalPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CriticalPlayer(Controller Other)"
+    },
+    "ScoreKill": {
+      "documentation": null,
+      "signature_members": {
+        "Killer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "Killed": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ScoreKill(Controller Killer, Controller Killed)"
+    },
+    "ScoreObjective": {
+      "documentation": null,
+      "signature_members": {
+        "Scorer": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "Score": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ScoreObjective(PlayerReplicationInfo Scorer, int Score)"
+    },
+    "PreventDeath": {
+      "documentation": null,
+      "signature_members": {
+        "Killed": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Killer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PreventDeath(Pawn Killed, Controller Killer, Class<DamageType> DamageType, Vector HitLocation)"
+    },
+    "OverridePickupQuery": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "ItemClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "Pickup": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "bAllowPickup": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OverridePickupQuery(Pawn Other, Class<Inventory> ItemClass, Actor Pickup, out byte bAllowPickup)"
+    },
+    "CheckScore": {
+      "documentation": null,
+      "signature_members": {
+        "Scorer": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckScore(PlayerReplicationInfo Scorer)"
+    },
+    "CheckEndGame": {
+      "documentation": null,
+      "signature_members": {
+        "Winner": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "Reason": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckEndGame(PlayerReplicationInfo Winner, string Reason)"
+    },
+    "HandleRestartGame": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool HandleRestartGame()"
+    },
+    "GetRules": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetRules()"
+    },
+    "FindPlayerStart": {
+      "documentation": null,
+      "signature_members": {
+        "Player": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "InTeam": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 144
+        },
+        "IncomingName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "NavigationPoint",
+      "signature": "NavigationPoint FindPlayerStart(Controller Player, optional byte InTeam, optional string IncomingName)"
+    },
+    "AddGameRules": {
+      "documentation": null,
+      "signature_members": {
+        "GR": {
+          "type": "GameRules",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddGameRules(GameRules GR)"
+    }
+  },
+  "states": {},
+  "classflags": 10485778,
+  "configname": "None",
+  "documentation": null
+}

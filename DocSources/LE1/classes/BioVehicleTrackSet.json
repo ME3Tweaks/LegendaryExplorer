@@ -1,0 +1,34 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_ParticleSystems": {
+      "type": "TrackParticleSystem",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_DefaultParticleSystem": {
+      "type": "ParticleSystem",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "FindParticleSystem": {
+      "documentation": null,
+      "signature_members": {
+        "a_Material": {
+          "type": "PhysicalMaterial",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "ParticleSystem",
+      "signature": "ParticleSystem FindParticleSystem(PhysicalMaterial a_Material)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

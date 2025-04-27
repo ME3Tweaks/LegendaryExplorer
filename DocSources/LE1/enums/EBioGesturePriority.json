@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "eBioGesturePriority_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioGesturePriority_Kismet": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioGesturePriority_Conversations": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioGesturePriority_ActionStations": {
+      "value": 3,
+      "documentation": null
+    },
+    "eBioGesturePriority_Always": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

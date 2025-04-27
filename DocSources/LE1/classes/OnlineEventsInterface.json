@@ -1,0 +1,62 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "UploadHardwareData": {
+      "documentation": null,
+      "signature_members": {
+        "UniqueId": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerNick": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UploadHardwareData(UniqueNetId UniqueId, string PlayerNick)"
+    },
+    "UploadGameplayEventsData": {
+      "documentation": null,
+      "signature_members": {
+        "Events": {
+          "type": "OnlineGameplayEvents",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UploadGameplayEventsData(OnlineGameplayEvents Events)"
+    },
+    "UploadProfileData": {
+      "documentation": null,
+      "signature_members": {
+        "UniqueId": {
+          "type": "UniqueNetId",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerNick": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "ProfileSettings": {
+          "type": "OnlineProfileSettings",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UploadProfileData(UniqueNetId UniqueId, string PlayerNick, OnlineProfileSettings ProfileSettings)"
+    }
+  },
+  "states": {},
+  "classflags": 16403,
+  "configname": "None",
+  "documentation": null
+}

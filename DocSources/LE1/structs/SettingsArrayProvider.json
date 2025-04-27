@@ -1,0 +1,23 @@
+{
+  "members": {
+    "SettingsName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "Provider": {
+      "type": "UIDataProvider_SettingsArray",
+      "documentation": null,
+      "flags": 0
+    },
+    "SettingsId": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "UIDataProvider_Settings",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

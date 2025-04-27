@@ -1,0 +1,38 @@
+{
+  "members": {
+    "TargetPerBoneWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "TargetRequiredBones": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "InitTargetStartBone": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "OldStartBone": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 2
+    },
+    "InitPerBoneIncrease": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "OldBoneIncrease": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "classdef": "AnimNodeBlendMultiBone",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,23 @@
+{
+  "members": {
+    "AutoCompleteListIndices": {
+      "type": "int",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "ChildNodes": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "IndexChar": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Console",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

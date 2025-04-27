@@ -1,0 +1,117 @@
+{
+  "EnumValues": {
+    "PSI_Unknown": {
+      "value": 0,
+      "documentation": null
+    },
+    "PSI_ControllerVibration": {
+      "value": 1,
+      "documentation": null
+    },
+    "PSI_YInversion": {
+      "value": 2,
+      "documentation": null
+    },
+    "PSI_GamerCred": {
+      "value": 3,
+      "documentation": null
+    },
+    "PSI_GamerRep": {
+      "value": 4,
+      "documentation": null
+    },
+    "PSI_VoiceMuted": {
+      "value": 5,
+      "documentation": null
+    },
+    "PSI_VoiceThruSpeakers": {
+      "value": 6,
+      "documentation": null
+    },
+    "PSI_VoiceVolume": {
+      "value": 7,
+      "documentation": null
+    },
+    "PSI_GamerPictureKey": {
+      "value": 8,
+      "documentation": null
+    },
+    "PSI_GamerMotto": {
+      "value": 9,
+      "documentation": null
+    },
+    "PSI_GamerTitlesPlayed": {
+      "value": 10,
+      "documentation": null
+    },
+    "PSI_GamerAchievementsEarned": {
+      "value": 11,
+      "documentation": null
+    },
+    "PSI_GameDifficulty": {
+      "value": 12,
+      "documentation": null
+    },
+    "PSI_ControllerSensitivity": {
+      "value": 13,
+      "documentation": null
+    },
+    "PSI_PreferredColor1": {
+      "value": 14,
+      "documentation": null
+    },
+    "PSI_PreferredColor2": {
+      "value": 15,
+      "documentation": null
+    },
+    "PSI_AutoAim": {
+      "value": 16,
+      "documentation": null
+    },
+    "PSI_AutoCenter": {
+      "value": 17,
+      "documentation": null
+    },
+    "PSI_MovementControl": {
+      "value": 18,
+      "documentation": null
+    },
+    "PSI_RaceTransmission": {
+      "value": 19,
+      "documentation": null
+    },
+    "PSI_RaceCameraLocation": {
+      "value": 20,
+      "documentation": null
+    },
+    "PSI_RaceBrakeControl": {
+      "value": 21,
+      "documentation": null
+    },
+    "PSI_RaceAcceleratorControl": {
+      "value": 22,
+      "documentation": null
+    },
+    "PSI_GameCredEarned": {
+      "value": 23,
+      "documentation": null
+    },
+    "PSI_GameAchievementsEarned": {
+      "value": 24,
+      "documentation": null
+    },
+    "PSI_EndLiveIds": {
+      "value": 25,
+      "documentation": null
+    },
+    "PSI_ProfileVersionNum": {
+      "value": 26,
+      "documentation": null
+    },
+    "PSI_ProfileSaveCount": {
+      "value": 27,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

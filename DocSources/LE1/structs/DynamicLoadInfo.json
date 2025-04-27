@@ -1,0 +1,28 @@
+{
+  "members": {
+    "ObjectName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "SeekFreePackageName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "CachedObjectHandle": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LoadedLinkerRoot": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "classdef": "SFXEngine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

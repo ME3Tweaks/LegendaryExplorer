@@ -1,0 +1,444 @@
+{
+  "parent": "BioAttributesEpicPawn",
+  "package": "SFXGame",
+  "variables": {
+    "m_Stamina": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_Focus": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_Precision": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_Coordination": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_HazardLevel": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_StabilityMax": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_StabilityRegenRate": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_StabilityCrouchBonus": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_StabilityCombatModeModifier": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_DamageDurationMult": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ResistanceSuppression": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ResistanceBiotic": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_Visibility": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_Audibility": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_SkillElectronics": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_SkillDecryption": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_HealthPerLevel": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ThreatMultiplier": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_Blindness": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_Deafness": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_ExperienceMultiplier": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_CreditsMultiplier": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_SalvageMultiplier": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_MediGelMultiplier": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_PhysicsResistance": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_XPLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_StabilityCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_StabilityModifier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ToxicCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_initialStamina": {
+      "type": "int",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialFocus": {
+      "type": "int",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialPrecision": {
+      "type": "int",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialCoordination": {
+      "type": "int",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialStabilityCrouchBonus": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialStabilityCombatModeModifier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialResistanceSuppression": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialResistanceBiotic": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialVisibility": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialAudibility": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialSkillElectronics": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialSkillDecryption": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialHealthPerLevel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialThreatMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialBlindness": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialDeafness": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_EquipPistol": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_EquipAssault": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_EquipShotgun": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_EquipSniper": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_EquipArmorLight": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_EquipArmorMedium": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_EquipArmorHeavy": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_EquipBioAmp": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_EquipOmniTool": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Gender": {
+      "type": "EBioAttributePawnGender",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Race": {
+      "type": "EBioAttributePawnRace",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "RemoveFloatAttributeModifier": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "modType": {
+          "type": "EBioAttrModType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveFloatAttributeModifier(Name attribute, EBioAttrModType modType, float fValue, optional int nIndexOfAttributeInArray)"
+    },
+    "RemoveIntAttributeModifier": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "modType": {
+          "type": "EBioAttrModType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveIntAttributeModifier(Name attribute, EBioAttrModType modType, int nValue, optional int nIndexOfAttributeInArray)"
+    },
+    "AddFloatAttributeModifier": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "modType": {
+          "type": "EBioAttrModType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "AddFloatAttributeModifier(Name attribute, EBioAttrModType modType, float fValue, optional int nIndexOfAttributeInArray)"
+    },
+    "AddIntAttributeModifier": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "modType": {
+          "type": "EBioAttrModType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "AddIntAttributeModifier(Name attribute, EBioAttrModType modType, int nValue, optional int nIndexOfAttributeInArray)"
+    },
+    "SetFloatAttribute": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatAttribute(Name attribute, float fValue, optional int nIndexOfAttributeInArray)"
+    },
+    "SetIntAttribute": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetIntAttribute(Name attribute, int nValue, optional int nIndexOfAttributeInArray)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

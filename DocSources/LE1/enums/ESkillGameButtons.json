@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "SKILL_GAME_BUTTON_A": {
+      "value": 0,
+      "documentation": null
+    },
+    "SKILL_GAME_BUTTON_B": {
+      "value": 1,
+      "documentation": null
+    },
+    "SKILL_GAME_BUTTON_X": {
+      "value": 2,
+      "documentation": null
+    },
+    "SKILL_GAME_BUTTON_Y": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

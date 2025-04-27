@@ -1,0 +1,18 @@
+{
+  "members": {
+    "PackageName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "SeekFreePackageName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXEngine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

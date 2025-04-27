@@ -1,0 +1,16 @@
+{
+  "parent": "Object",
+  "package": "Core",
+  "variables": {
+    "VfTable_FExec": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217883,
+  "configname": "None",
+  "documentation": null
+}

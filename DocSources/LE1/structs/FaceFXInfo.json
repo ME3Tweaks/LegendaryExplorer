@@ -1,0 +1,38 @@
+{
+  "members": {
+    "AnimName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Pawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "Asset": {
+      "type": "FaceFXAsset",
+      "documentation": null,
+      "flags": 0
+    },
+    "AnimSet": {
+      "type": "FaceFXAnimSet",
+      "documentation": null,
+      "flags": 0
+    },
+    "AnimPos": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Dirty": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioEvtSysTrackVOElements",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

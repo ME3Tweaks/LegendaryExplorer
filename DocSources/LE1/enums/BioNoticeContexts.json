@@ -1,0 +1,57 @@
+{
+  "EnumValues": {
+    "NOTICE_CONTEXT_JOURNAL": {
+      "value": 0,
+      "documentation": null
+    },
+    "NOTICE_CONTEXT_CODEX": {
+      "value": 1,
+      "documentation": null
+    },
+    "NOTICE_CONTEXT_INVENTORY": {
+      "value": 2,
+      "documentation": null
+    },
+    "NOTICE_CONTEXT_PARTYLEVEL": {
+      "value": 3,
+      "documentation": null
+    },
+    "NOTICE_CONTEXT_XP": {
+      "value": 4,
+      "documentation": null
+    },
+    "NOTICE_CONTEXT_MEDIGEL": {
+      "value": 5,
+      "documentation": null
+    },
+    "NOTICE_CONTEXT_SALVAGE": {
+      "value": 6,
+      "documentation": null
+    },
+    "NOTICE_CONTEXT_CREDITS": {
+      "value": 7,
+      "documentation": null
+    },
+    "NOTICE_CONTEXT_GRENADES": {
+      "value": 8,
+      "documentation": null
+    },
+    "NOTICE_CONTEXT_PARAGON": {
+      "value": 9,
+      "documentation": null
+    },
+    "NOTICE_CONTEXT_RENEGADE": {
+      "value": 10,
+      "documentation": null
+    },
+    "NOTICE_CONTEXT_AREAMAP": {
+      "value": 11,
+      "documentation": null
+    },
+    "NOTICE_CONTEXT_ABILITY": {
+      "value": 12,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

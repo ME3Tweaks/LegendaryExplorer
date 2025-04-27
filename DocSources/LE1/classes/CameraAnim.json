@@ -1,0 +1,41 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "BasePPSettings": {
+      "type": "PostProcessSettings",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "BoundingBox": {
+      "type": "Box",
+      "documentation": null,
+      "flags": 2
+    },
+    "CameraInterpGroup": {
+      "type": "InterpGroup",
+      "documentation": null,
+      "flags": 0
+    },
+    "AnimLength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "BasePPSettingsAlpha": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "BaseFOV": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

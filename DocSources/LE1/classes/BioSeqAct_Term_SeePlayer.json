@@ -1,0 +1,33 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "oInstigator": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 1
+    },
+    "oWho": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 1
+    },
+    "oData": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 169869458,
+  "configname": "None",
+  "documentation": null
+}

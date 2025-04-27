@@ -1,0 +1,49 @@
+{
+  "EnumValues": {
+    "BioCaps_AllTypes": {
+      "value": 0,
+      "documentation": null
+    },
+    "BioCaps_SingleTargetAttack": {
+      "value": 1,
+      "documentation": null
+    },
+    "BioCaps_AreaAttack": {
+      "value": 2,
+      "documentation": null
+    },
+    "BioCaps_Disable": {
+      "value": 3,
+      "documentation": null
+    },
+    "BioCaps_Debuff": {
+      "value": 4,
+      "documentation": null
+    },
+    "BioCaps_Defense": {
+      "value": 5,
+      "documentation": null
+    },
+    "BioCaps_Heal": {
+      "value": 6,
+      "documentation": null
+    },
+    "BioCaps_Buff": {
+      "value": 7,
+      "documentation": null
+    },
+    "BioCaps_Suicide": {
+      "value": 8,
+      "documentation": null
+    },
+    "BioCaps_Death": {
+      "value": 9,
+      "documentation": null
+    },
+    "BioCaps_ERROR": {
+      "value": 10,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

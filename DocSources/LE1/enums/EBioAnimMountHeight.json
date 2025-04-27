@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "eBioAnimMountHeight_HighUpper": {
+      "value": 0,
+      "documentation": null
+    },
+    "eBioAnimMountHeight_HighLower": {
+      "value": 1,
+      "documentation": null
+    },
+    "eBioAnimMountHeight_LowUpper": {
+      "value": 2,
+      "documentation": null
+    },
+    "eBioAnimMountHeight_LowLower": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Position": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "Velocity": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "AnimNotify_Trails",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

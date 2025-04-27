@@ -1,0 +1,43 @@
+{
+  "members": {
+    "sTitle": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "nActivatable": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nIconRef": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nBarBehaviorType": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nBarPercentage": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "nQtyConsumable": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "eMapSlot": {
+      "type": "EHUDPowerMapSlots",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFHandler_HUD",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "BIO_POWER_NOT_STARTED": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_POWER_CASTING": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_POWER_RELEASE": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_POWER_USING": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_POWER_FINISHED": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

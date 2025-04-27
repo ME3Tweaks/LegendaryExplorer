@@ -1,0 +1,38 @@
+{
+  "members": {
+    "ActorToReBase": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "NewBase": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "SkelComponent": {
+      "type": "SkeletalMeshComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "NewFloor": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "AttachName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "bNotifyActor": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SkeletalMeshComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 4
+}

@@ -1,0 +1,258 @@
+{
+  "parent": "SFXGameModeBase",
+  "package": "SFXGame",
+  "variables": {
+    "CameraSetup": {
+      "type": "SFXCameraSetup",
+      "documentation": null,
+      "flags": 71303177
+    },
+    "InputDelayStormExit": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "InputDelayTightAimExit": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    }
+  },
+  "functions": {
+    "TrySkipElevator": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TrySkipElevator()"
+    },
+    "EnterCommandMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnterCommandMenu()"
+    },
+    "EnterWeaponWheel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnterWeaponWheel()"
+    },
+    "EnterPowerWheel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnterPowerWheel()"
+    },
+    "UseGrenade": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UseGrenade()"
+    },
+    "UseFirstAid": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UseFirstAid()"
+    },
+    "TryHolster": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryHolster()"
+    },
+    "ChangeMagnification": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ChangeMagnification()"
+    },
+    "ToggleCrouch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleCrouch()"
+    },
+    "ToggleWalk": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ToggleWalk()"
+    },
+    "DisableWalking": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DisableWalking()"
+    },
+    "EnableWalking": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "EnableWalking()"
+    },
+    "TryUseMappedPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryUseMappedPower()"
+    },
+    "SwitchToWeapon": {
+      "documentation": null,
+      "signature_members": {
+        "Slot": {
+          "type": "EBioItemWeaponRangedType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SwitchToWeapon(EBioItemWeaponRangedType Slot)"
+    },
+    "TrySwapWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TrySwapWeapon()"
+    },
+    "PrevWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PrevWeapon()"
+    },
+    "NextWeapon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NextWeapon()"
+    },
+    "GetPrimaryWeaponIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetPrimaryWeaponIndex()"
+    },
+    "UseAbility": {
+      "documentation": null,
+      "signature_members": {
+        "Ability": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UseAbility(int Ability)"
+    },
+    "TryMelee": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryMelee()"
+    },
+    "TurnOffTightAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnOffTightAim()"
+    },
+    "StopTightAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopTightAim()"
+    },
+    "TightAim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TightAim()"
+    },
+    "TurnStormOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TurnStormOff()"
+    },
+    "StormOff": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StormOff()"
+    },
+    "StormOn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StormOn()"
+    },
+    "TryExitCover": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TryExitCover()"
+    },
+    "TryFallOrClimb": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TryFallOrClimb()"
+    },
+    "TryEnterVehicle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool TryEnterVehicle()"
+    },
+    "Used": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Used()"
+    },
+    "TapAction": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TapAction()"
+    },
+    "GetCameraMode": {
+      "documentation": null,
+      "signature_members": {
+        "OldCameraMode": {
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
+        },
+        "PreserveTarget": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "TransitionTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "Transition": {
+          "type": "SFXCameraMode_Interpolate",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "SFXCameraMode",
+      "signature": "SFXCameraMode GetCameraMode(SFXCameraMode OldCameraMode, out int PreserveTarget, out float TransitionTime, out SFXCameraMode_Interpolate Transition)"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    }
+  },
+  "states": {},
+  "classflags": 10485782,
+  "configname": "Input",
+  "documentation": null
+}

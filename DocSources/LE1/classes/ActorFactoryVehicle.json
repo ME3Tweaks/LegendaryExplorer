@@ -1,0 +1,16 @@
+{
+  "parent": "ActorFactory",
+  "package": "Engine",
+  "variables": {
+    "VehicleClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134230166,
+  "configname": "Editor",
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "CAPS_CameraLocal": {
+      "value": 0,
+      "documentation": null
+    },
+    "CAPS_World": {
+      "value": 1,
+      "documentation": null
+    },
+    "CAPS_UserDefined": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

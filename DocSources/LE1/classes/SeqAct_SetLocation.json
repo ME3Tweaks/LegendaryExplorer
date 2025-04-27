@@ -1,0 +1,43 @@
+{
+  "parent": "SeqAct_SetSequenceVariable",
+  "package": "Engine",
+  "variables": {
+    "LocationValue": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "RotationValue": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 1
+    },
+    "Target": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSetLocation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSetRotation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

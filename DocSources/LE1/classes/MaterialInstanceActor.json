@@ -1,0 +1,16 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "MatInst": {
+      "type": "MaterialInstanceConstant",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,38 @@
+{
+  "members": {
+    "Items": {
+      "type": "FireLinkItem",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "TargetActor": {
+      "type": "CoverReference",
+      "documentation": null,
+      "flags": 131075
+    },
+    "bDynamicIndexInited": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bFallbackLink": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "DynamicLinkInfoIndex": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    },
+    "DynamicLinkInfoIndexHigh": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "CoverLink",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 385
+}

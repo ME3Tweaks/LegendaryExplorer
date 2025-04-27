@@ -1,0 +1,104 @@
+{
+  "parent": "AnimNodeSequence",
+  "package": "SFXGame",
+  "variables": {
+    "EyeBoneDeltas": {
+      "type": "BoneAtom",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "EyeBoneIndices": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "EyeBoneNames": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4325377
+    },
+    "DebugDeltas": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "EyeRotationThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 131073
+    },
+    "bEnableEyeFixup": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 147456
+    },
+    "bPoseCached": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "SetPosition": {
+      "documentation": null,
+      "signature_members": {
+        "NewTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bFireNotifies": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPosition(float NewTime, bool bFireNotifies)"
+    },
+    "StopAnim": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopAnim()"
+    },
+    "PlayAnim": {
+      "documentation": null,
+      "signature_members": {
+        "bLoop": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "InRate": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "StartTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayAnim(optional bool bLoop, optional float InRate, optional float StartTime)"
+    },
+    "SetAnim": {
+      "documentation": null,
+      "signature_members": {
+        "Sequence": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAnim(Name Sequence)"
+    }
+  },
+  "states": {},
+  "classflags": 142606486,
+  "configname": "Game",
+  "documentation": null
+}

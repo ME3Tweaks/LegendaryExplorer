@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "BIO_HOLD_Following": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_HOLD_Holding": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

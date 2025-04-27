@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Text": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227075
+    },
+    "Time": {
+      "type": "float",
+      "documentation": null,
+      "flags": 32771
+    }
+  },
+  "classdef": "SoundNodeWave",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

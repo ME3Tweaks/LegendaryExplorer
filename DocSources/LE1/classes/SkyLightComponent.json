@@ -1,0 +1,21 @@
+{
+  "parent": "LightComponent",
+  "package": "Engine",
+  "variables": {
+    "LowerBrightness": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "LowerColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 3
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144707730,
+  "configname": "None",
+  "documentation": null
+}

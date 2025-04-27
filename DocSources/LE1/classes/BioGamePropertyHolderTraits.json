@@ -1,0 +1,35 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "GetGPContainer": {
+      "documentation": null,
+      "signature_members": {
+        "pObject": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioGamePropertyContainer",
+      "signature": "BioGamePropertyContainer GetGPContainer(Object pObject)"
+    },
+    "GetGPManager": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioGamePropertyManager",
+      "signature": "BioGamePropertyManager GetGPManager(Object oTarget)"
+    }
+  },
+  "states": {},
+  "classflags": 134217875,
+  "configname": "None",
+  "documentation": null
+}

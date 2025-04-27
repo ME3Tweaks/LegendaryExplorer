@@ -1,0 +1,146 @@
+{
+  "parent": "TriggerVolume",
+  "package": "SFXGame",
+  "variables": {
+    "StreamingStates": {
+      "type": "BioStreamingState",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_oAreaMapOverride": {
+      "type": "GFxMovieInfo",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_StoredStateIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nPriorityLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "UnTouch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UnTouch(Actor Other)"
+    },
+    "Touch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "OtherComp": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Touch(Actor Other, PrimitiveComponent OtherComp, Vector HitLocation, Vector HitNormal)"
+    },
+    "ForegroundStreamingDone": {
+      "documentation": null,
+      "signature_members": {
+        "Sequences": {
+          "type": "Sequence",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "PlayerPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ForegroundStreamingDone(array<Sequence> Sequences, Pawn PlayerPawn)"
+    },
+    "BackgroundStreamingDone": {
+      "documentation": null,
+      "signature_members": {
+        "Sequences": {
+          "type": "Sequence",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "PlayerPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "BackgroundStreamingDone(array<Sequence> Sequences, Pawn PlayerPawn)"
+    },
+    "Retouch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Retouch()"
+    },
+    "DoStasis": {
+      "documentation": null,
+      "signature_members": {
+        "Touched": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "bTouched": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DoStasis(Actor Touched, bool bTouched)"
+    },
+    "DoUntouch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DoUntouch(Actor Other)"
+    },
+    "DoTouch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoTouch()"
+    }
+  },
+  "states": {},
+  "classflags": 144704178,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,436 @@
+{
+  "parent": "UIContainer",
+  "package": "Engine",
+  "variables": {
+    "CalloutButtons": {
+      "type": "UICalloutButton",
+      "documentation": null,
+      "flags": 71442433
+    },
+    "CalloutButtonAliases": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "ButtonInputKeyMappings": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ButtonPadding": {
+      "type": "UIScreenValue_Extent",
+      "documentation": null,
+      "flags": 1
+    },
+    "ButtonTemplate": {
+      "type": "UICalloutButton",
+      "documentation": null,
+      "flags": 69337089
+    },
+    "bGeneratingInitialButtons": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bSupportsButtonRepeat": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRefreshButtonDocking": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8193
+    },
+    "ButtonBarOrientation": {
+      "type": "EUIOrientation",
+      "documentation": null,
+      "flags": 1
+    },
+    "ButtonLayout": {
+      "type": "ECalloutButtonLayoutType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "OnButtonVisibilityChanged": {
+      "documentation": null,
+      "signature_members": {
+        "SourceWidget": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "bIsVisible": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnButtonVisibilityChanged(UIScreenObject SourceWidget, bool bIsVisible)"
+    },
+    "InitializeInputProxy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeInputProxy()"
+    },
+    "ConfigureChildButton": {
+      "documentation": null,
+      "signature_members": {
+        "ChildButton": {
+          "type": "UICalloutButton",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ConfigureChildButton(UICalloutButton ChildButton)"
+    },
+    "RemovedFromParent": {
+      "documentation": null,
+      "signature_members": {
+        "WidgetOwner": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemovedFromParent(UIScreenObject WidgetOwner)"
+    },
+    "PostInitialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostInitialize()"
+    },
+    "CanButtonAcceptFocus": {
+      "documentation": null,
+      "signature_members": {
+        "InputAliasTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanButtonAcceptFocus(Name InputAliasTag, optional int PlayerIndex)"
+    },
+    "ContainsButton": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonInputAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ContainsButton(Name ButtonInputAlias)"
+    },
+    "FindButtonIndex": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonInputAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindButtonIndex(Name ButtonInputAlias)"
+    },
+    "FindButton": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonInputAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "UICalloutButton",
+      "signature": "UICalloutButton FindButton(Name ButtonInputAlias)"
+    },
+    "EnableButton": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonInputAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        },
+        "bEnableButton": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bUpdateButtonVisibility": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EnableButton(Name ButtonInputAlias, optional int PlayerIndex, optional bool bEnableButton, optional bool bUpdateButtonVisibility)"
+    },
+    "ShowButton": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonInputAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bShowButton": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowButton(Name ButtonInputAlias, optional bool bShowButton)"
+    },
+    "SetButtonCallback": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonInputAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewClickHandler": {
+          "type": "OnClicked",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetButtonCallback(Name ButtonInputAlias, delegate<OnClicked> NewClickHandler)"
+    },
+    "SetButtonInputAlias": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonInputAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewButtonInputAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 2176
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetButtonInputAlias(Name ButtonInputAlias, coerce Name NewButtonInputAlias)"
+    },
+    "SetButtonCaption": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonInputAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewButtonCaption": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetButtonCaption(Name ButtonInputAlias, string NewButtonCaption)"
+    },
+    "RemoveAllButtons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool RemoveAllButtons()"
+    },
+    "RemoveButtonByAlias": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonInputAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveButtonByAlias(Name ButtonInputAlias)"
+    },
+    "RemoveButton": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonToRemove": {
+          "type": "UICalloutButton",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemoveButton(UICalloutButton ButtonToRemove)"
+    },
+    "InsertButton": {
+      "documentation": null,
+      "signature_members": {
+        "NewButton": {
+          "type": "UICalloutButton",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int InsertButton(UICalloutButton NewButton)"
+    },
+    "RequestButtonDockingUpdate": {
+      "documentation": null,
+      "signature_members": {
+        "bImmediately": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "RequestButtonDockingUpdate(optional bool bImmediately)"
+    },
+    "FindBestInsertionIndex": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonToInsert": {
+          "type": "UICalloutButton",
+          "documentation": null,
+          "flags": 128
+        },
+        "bSearchChildrenArray": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindBestInsertionIndex(UICalloutButton ButtonToInsert, optional bool bSearchChildrenArray)"
+    },
+    "GetCalloutInputProxy": {
+      "documentation": null,
+      "signature_members": {
+        "bCreateIfNecessary": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "UIEvent_CalloutButtonInputProxy",
+      "signature": "UIEvent_CalloutButtonInputProxy GetCalloutInputProxy(optional bool bCreateIfNecessary)"
+    },
+    "CreateCalloutButton": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonInputAlias": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ButtonName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        },
+        "bInsertChild": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "UICalloutButton",
+      "signature": "UICalloutButton CreateCalloutButton(Name ButtonInputAlias, optional Name ButtonName, optional bool bInsertChild)"
+    },
+    "GetAvailableCalloutButtonAliases": {
+      "documentation": null,
+      "signature_members": {
+        "AvailableAliases": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "PlayerOwner": {
+          "type": "LocalPlayer",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAvailableCalloutButtonAliases(out array<Name> AvailableAliases, optional LocalPlayer PlayerOwner)"
+    },
+    "RemovedChild": {
+      "documentation": null,
+      "signature_members": {
+        "WidgetOwner": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "OldChild": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "ExclusionSet": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "None",
+      "signature": "RemovedChild(UIScreenObject WidgetOwner, UIObject OldChild, optional array<UIObject> ExclusionSet)"
+    },
+    "AddedChild": {
+      "documentation": null,
+      "signature_members": {
+        "WidgetOwner": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewChild": {
+          "type": "UIObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddedChild(UIScreenObject WidgetOwner, UIObject NewChild)"
+    },
+    "SynchronizeInputAliases": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SynchronizeInputAliases()"
+    },
+    "PopulateCalloutButtonArray": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PopulateCalloutButtonArray()"
+    }
+  },
+  "states": {},
+  "classflags": 144705174,
+  "configname": "UI",
+  "documentation": null
+}

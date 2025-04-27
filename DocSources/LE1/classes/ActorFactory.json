@@ -1,0 +1,59 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "MenuName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "GameplayActorClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "NewActorClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "MenuPriority": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "AlternateMenuPriority": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bPlaceable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bNoCollisionFail": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "PostCreateActor": {
+      "documentation": null,
+      "signature_members": {
+        "NewActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PostCreateActor(Actor NewActor)"
+    }
+  },
+  "states": {},
+  "classflags": 134230167,
+  "configname": "Editor",
+  "documentation": null
+}

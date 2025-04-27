@@ -1,0 +1,33 @@
+{
+  "members": {
+    "InVal": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "OutVal": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "ArriveTangent": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "LeaveTangent": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "InterpMode": {
+      "type": "EInterpCurveMode",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

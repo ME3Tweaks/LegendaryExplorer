@@ -1,0 +1,17 @@
+{
+  "parent": "BioItemXModdable",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "DescribeItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeItem()"
+    }
+  },
+  "states": {},
+  "classflags": 144703638,
+  "configname": "Game",
+  "documentation": null
+}

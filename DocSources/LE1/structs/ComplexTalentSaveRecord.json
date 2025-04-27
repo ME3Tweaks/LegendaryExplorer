@@ -1,0 +1,48 @@
+{
+  "members": {
+    "PrereqTalentIDArray": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "PrereqTalentRankArray": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "TalentID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurrentRank": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxRank": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "LevelOffset": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "LevelsPerRank": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "VisualOrder": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXSaveGame",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

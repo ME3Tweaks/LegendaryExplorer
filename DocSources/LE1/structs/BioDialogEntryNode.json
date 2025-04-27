@@ -1,0 +1,33 @@
+{
+  "members": {
+    "ReplyListNew": {
+      "type": "BioDialogReplyListDetails",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "aSpeakerList": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "nSpeakerIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "nListenerIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSkippable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioConversation",
+  "extends": "BioDialogNode",
+  "documentation": null,
+  "modifiers": 1
+}

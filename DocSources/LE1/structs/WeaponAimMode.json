@@ -1,0 +1,33 @@
+{
+  "members": {
+    "ZoomFOV": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "CameraSensitivityMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "FrictionMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "AdhesionMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16385
+    },
+    "bScoped": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16385
+    }
+  },
+  "classdef": "SFXWeaponStatsBase",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,200 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_lSelectionsInRange": {
+      "type": "BioSelection",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_oCurrentSelectionTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oLastSelectionTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fSelectionConeHalfAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fTimeSinceSelectionChanged": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_fSelectionRangeClose": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fSelectionRangePlayer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fSelectionRangeVehicle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fSelectionAngleClose": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fSelectionAngleFar": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fSelectionHalfAngleVehicle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fCamFOVScalar": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bCurrentSelectionObstructed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bCurrentSelectionIsCombatTarget": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bCurrentSelectionIsMagneticLocked": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bOnPlayerSelectionFailed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_eCurrentSelectionMode": {
+      "type": "EGeneralSelectionMode",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ePreviousSelectionMode": {
+      "type": "EGeneralSelectionMode",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "IsSelectable": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "sourcePawnBehavior": {
+          "type": "BioEpicPawnBehavior",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsSelectable(Actor oTarget, BioEpicPawnBehavior sourcePawnBehavior)"
+    },
+    "DrawSelectionReticule": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "ReticuleColor": {
+          "type": "Color",
+          "documentation": null,
+          "flags": 128
+        },
+        "fOffset": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawSelectionReticule(Actor oTarget, Color ReticuleColor, optional float fOffset)"
+    },
+    "IsInLineOfSightFrom": {
+      "documentation": null,
+      "signature_members": {
+        "vSourceLoc": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsInLineOfSightFrom(Vector vSourceLoc, Actor oTarget)"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Init()"
+    },
+    "SetPreviousSelectionMode": {
+      "documentation": null,
+      "signature_members": {
+        "bForceActive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetPreviousSelectionMode(optional bool bForceActive)"
+    },
+    "SetSelectionMode": {
+      "documentation": null,
+      "signature_members": {
+        "nSelectionMode": {
+          "type": "EGeneralSelectionMode",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetSelectionMode(EGeneralSelectionMode nSelectionMode)"
+    },
+    "UpdateSelection": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateSelection(float fDeltaTime)"
+    }
+  },
+  "states": {},
+  "classflags": 134217878,
+  "configname": "Game",
+  "documentation": null
+}

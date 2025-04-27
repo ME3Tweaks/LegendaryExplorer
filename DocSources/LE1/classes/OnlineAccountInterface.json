@@ -1,0 +1,148 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {
+    "__OnCreateOnlineAccountCompleted__Delegate": {
+      "type": "OnCreateOnlineAccountCompleted",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "GetLocalAccountNames": {
+      "documentation": null,
+      "signature_members": {
+        "Accounts": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetLocalAccountNames(out array<string> Accounts)"
+    },
+    "DeleteLocalAccount": {
+      "documentation": null,
+      "signature_members": {
+        "UserName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Password": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DeleteLocalAccount(string UserName, optional string Password)"
+    },
+    "RenameLocalAccount": {
+      "documentation": null,
+      "signature_members": {
+        "NewUserName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "OldUserName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Password": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RenameLocalAccount(string NewUserName, string OldUserName, optional string Password)"
+    },
+    "CreateLocalAccount": {
+      "documentation": null,
+      "signature_members": {
+        "UserName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Password": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateLocalAccount(string UserName, optional string Password)"
+    },
+    "ClearCreateOnlineAccountCompletedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "AccountCreateDelegate": {
+          "type": "OnCreateOnlineAccountCompleted",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearCreateOnlineAccountCompletedDelegate(delegate<OnCreateOnlineAccountCompleted> AccountCreateDelegate)"
+    },
+    "AddCreateOnlineAccountCompletedDelegate": {
+      "documentation": null,
+      "signature_members": {
+        "AccountCreateDelegate": {
+          "type": "OnCreateOnlineAccountCompleted",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AddCreateOnlineAccountCompletedDelegate(delegate<OnCreateOnlineAccountCompleted> AccountCreateDelegate)"
+    },
+    "OnCreateOnlineAccountCompleted": {
+      "documentation": null,
+      "signature_members": {
+        "ErrorStatus": {
+          "type": "EOnlineAccountCreateStatus",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCreateOnlineAccountCompleted(EOnlineAccountCreateStatus ErrorStatus)"
+    },
+    "CreateOnlineAccount": {
+      "documentation": null,
+      "signature_members": {
+        "UserName": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Password": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "EmailAddress": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "ProductKey": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateOnlineAccount(string UserName, string Password, string EmailAddress, optional string ProductKey)"
+    }
+  },
+  "states": {},
+  "classflags": 16403,
+  "configname": "None",
+  "documentation": null
+}

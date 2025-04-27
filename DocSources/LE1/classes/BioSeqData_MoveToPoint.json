@@ -1,0 +1,59 @@
+{
+  "parent": "BioSeqData_StateBase",
+  "package": "SFXGame",
+  "variables": {
+    "MoveTarget": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "MoveTolerance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bWalking": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Terminate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bReset": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bRequiresPrecisionMovement": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "ResetMoveTarget": {
+      "documentation": null,
+      "signature_members": {
+        "vNewLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "fMoveTolerance": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetMoveTarget(Vector vNewLocation, optional float fMoveTolerance)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

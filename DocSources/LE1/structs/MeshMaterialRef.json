@@ -1,0 +1,18 @@
+{
+  "members": {
+    "MeshComp": {
+      "type": "MeshComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "MaterialIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "EngineTypes",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

@@ -1,0 +1,23 @@
+{
+  "members": {
+    "ParamName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "FloatParam": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "WaveParam": {
+      "type": "SoundNodeWave",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "AudioComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

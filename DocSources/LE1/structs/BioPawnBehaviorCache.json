@@ -1,0 +1,23 @@
+{
+  "members": {
+    "m_flags": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_driftAngle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_driftZoneRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioPawnBehavior",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

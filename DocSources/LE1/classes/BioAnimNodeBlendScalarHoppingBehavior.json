@@ -1,0 +1,16 @@
+{
+  "parent": "BioAnimNodeBlendScalarBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "HoppingBehavior": {
+      "type": "EBioAnimNodeBlendScalarHoppingBehavior",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136319122,
+  "configname": "None",
+  "documentation": null
+}

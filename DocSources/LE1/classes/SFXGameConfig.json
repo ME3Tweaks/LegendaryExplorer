@@ -1,0 +1,31 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "PawnInRagdollDamageMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bAimAssistEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bUseConsoleControls": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    },
+    "bCoverProtectedCone": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 22,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,26 @@
+{
+  "parent": "BioParticleModuleSoundBase",
+  "package": "SFXGame",
+  "variables": {
+    "oSoundCue": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 33554441
+    },
+    "ObjInstanceVersion": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bPerParticle": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134230162,
+  "configname": "None",
+  "documentation": null
+}

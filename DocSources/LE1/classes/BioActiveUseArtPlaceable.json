@@ -1,0 +1,57 @@
+{
+  "parent": "BioActive",
+  "package": "SFXGame",
+  "variables": {
+    "Reactive": {
+      "type": "BioReactiveUseArtPlaceable",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDone": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "DisplayProgress": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool DisplayProgress()"
+    },
+    "GetProgress": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetProgress()"
+    },
+    "ValidSuperMode": {
+      "documentation": null,
+      "signature_members": {
+        "eMode": {
+          "type": "EBioSuperModes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ValidSuperMode(EBioSuperModes eMode)"
+    },
+    "InitializeInternal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeInternal()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

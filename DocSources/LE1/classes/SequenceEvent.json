@@ -1,0 +1,149 @@
+{
+  "parent": "SequenceOp",
+  "package": "Engine",
+  "variables": {
+    "DuplicateEvts": {
+      "type": "SequenceEvent",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "lstTags": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "Originator": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "Instigator": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "ActivationTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "TriggerCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxTriggerCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "ReTriggerDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxWidth": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bTagListInclusionary": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRegistered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bClientSideOnly": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "Priority": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 1
+    },
+    "WhoTriggers": {
+      "type": "EWhoTriggers",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Toggled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Toggled()"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "PassesWhoTriggers": {
+      "documentation": null,
+      "signature_members": {
+        "InInstigator": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PassesWhoTriggers(Actor InInstigator)"
+    },
+    "CheckActivate": {
+      "documentation": null,
+      "signature_members": {
+        "InOriginator": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "InInstigator": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "bTest": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "ActivateIndices": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194706
+        },
+        "bPushTop": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckActivate(Actor InOriginator, Actor InInstigator, optional bool bTest, optional const out array<int> ActivateIndices, optional bool bPushTop)"
+    },
+    "RegisterEvent": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RegisterEvent()"
+    }
+  },
+  "states": {},
+  "classflags": 136315027,
+  "configname": "None",
+  "documentation": null
+}

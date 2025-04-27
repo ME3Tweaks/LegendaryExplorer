@@ -1,0 +1,28 @@
+{
+  "members": {
+    "GlowColor": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 0
+    },
+    "GlowOuterRadius": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 0
+    },
+    "GlowInnerRadius": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEnableGlow": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Canvas",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

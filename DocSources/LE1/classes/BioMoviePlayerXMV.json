@@ -1,0 +1,34 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "IsPlaying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "ShouldPlayNextFrame": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Play": {
+      "documentation": null,
+      "signature_members": {
+        "MovieFile": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "Play(string MovieFile)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

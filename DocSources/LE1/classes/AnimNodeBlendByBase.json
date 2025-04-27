@@ -1,0 +1,36 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "Engine",
+  "variables": {
+    "ActorClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 1
+    },
+    "ActorTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "CachedBase": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "BlendTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Type": {
+      "type": "EBaseBlendType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

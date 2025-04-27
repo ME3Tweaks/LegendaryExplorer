@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_GAME_EFFECT_CLASS_PRIORITY_STANDARD": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_GAME_EFFECT_CLASS_PRIORITY_ADD_POWER_PARAMETER": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_GAME_EFFECT_CLASS_PRIORITY_GIVE_POWER": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

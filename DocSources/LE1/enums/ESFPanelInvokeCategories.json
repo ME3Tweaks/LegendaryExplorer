@@ -1,0 +1,61 @@
+{
+  "EnumValues": {
+    "SFP_INVOKECAT_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFP_INVOKECAT_HUD_Init": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFP_INVOKECAT_HUD_Radar": {
+      "value": 2,
+      "documentation": null
+    },
+    "SFP_INVOKECAT_HUD_Squad": {
+      "value": 3,
+      "documentation": null
+    },
+    "SFP_INVOKECAT_HUD_Target": {
+      "value": 4,
+      "documentation": null
+    },
+    "SFP_INVOKECAT_HUD_Ticker": {
+      "value": 5,
+      "documentation": null
+    },
+    "SFP_INVOKECAT_HUD_Environment": {
+      "value": 6,
+      "documentation": null
+    },
+    "SFP_INVOKECAT_HUD_Power": {
+      "value": 7,
+      "documentation": null
+    },
+    "SFP_INVOKECAT_HUD_Weapon": {
+      "value": 8,
+      "documentation": null
+    },
+    "SFP_INVOKECAT_HUD_Wheel": {
+      "value": 9,
+      "documentation": null
+    },
+    "SFP_INVOKECAT_HUD_Keys": {
+      "value": 10,
+      "documentation": null
+    },
+    "SFP_INVOKECAT_RETICLE_Combat": {
+      "value": 11,
+      "documentation": null
+    },
+    "SFP_INVOKECAT_RETICLE_Selection": {
+      "value": 12,
+      "documentation": null
+    },
+    "SFP_INVOKECAT_RETICLE_Los": {
+      "value": 13,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

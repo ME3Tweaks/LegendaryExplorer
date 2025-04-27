@@ -1,0 +1,65 @@
+{
+  "parent": "BioGrenadeProjectile",
+  "package": "SFXGame",
+  "variables": {
+    "m_fProximityRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "ShouldExplode": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShouldExplode(float DeltaTime)"
+    },
+    "SetVelocity": {
+      "documentation": null,
+      "signature_members": {
+        "vVelocity": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVelocity(Vector vVelocity)"
+    },
+    "SetTargetPoint": {
+      "documentation": null,
+      "signature_members": {
+        "vTarget": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetPoint(Vector vTarget)"
+    },
+    "SetTargetActor": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTargetActor(Actor oTarget)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

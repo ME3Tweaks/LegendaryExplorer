@@ -1,0 +1,194 @@
+{
+  "parent": "BioGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "m_vForce": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vDestination": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vDeceleration": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nmBoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oInstigator": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fMinVelocity": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fTimeElapsed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDecelerate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bApplyToAllBones": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bApplied": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDestinationReached": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetClosestBone": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetClosestBone(Actor oTarget)"
+    },
+    "Decelerate": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Decelerate(Actor oActor)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(Object oTarget, float fDeltaTime)"
+    },
+    "Unapply": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Unapply(Object oTarget)"
+    },
+    "Apply": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Object",
+      "signature": "Object Apply(Object oTarget)"
+    },
+    "Create": {
+      "documentation": null,
+      "signature_members": {
+        "oProperty": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        },
+        "vForce": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmBoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "vPosition": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vDestination": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "bDecelerateAtDestination": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "vDeceleration": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "fMinVelocity": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "oInstigator": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "bApplyToAllBones": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Create(BioGameProperty oProperty, Vector vForce, Name nmBoneName, Vector vPosition, Vector vDestination, bool bDecelerateAtDestination, Vector vDeceleration, float fMinVelocity, Actor oInstigator, bool bApplyToAllBones)"
+    }
+  },
+  "states": {},
+  "classflags": 134221970,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,68 @@
+{
+  "parent": "BioSequenceLatentStateAction",
+  "package": "SFXGame",
+  "variables": {
+    "oPawn": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 1
+    },
+    "oTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "fMoveTolerance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "nCompletionReason": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nReason": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bWalking": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRequiresPrecisionMovement": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSetOrientationToTarget": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDesiredOrientationSet": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bDone": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "LinkedOp": {
+      "type": "SequenceOp",
+      "documentation": null,
+      "flags": 0
+    },
+    "InputLinkIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SequenceOp",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,48 @@
+{
+  "members": {
+    "Attachment": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "RelativeOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "RelativeRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "BoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "bDetach": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bHardAttach": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUseRelativeOffset": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUseRelativeRotation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SkeletalMeshComponent",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

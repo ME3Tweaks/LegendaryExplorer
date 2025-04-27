@@ -1,0 +1,204 @@
+{
+  "parent": "NavigationPoint",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IEditorLinkSelectionInterface": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "NextPassSeedList": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "ExpansionVolumes": {
+      "type": "Volume",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "OctreeId": {
+      "type": "OctreeElementId",
+      "documentation": null,
+      "flags": 4098
+    },
+    "NavMeshPtr": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "ObstacleMesh": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "DynamicObstacleMesh": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "WorkingSetPtr": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "PathObjectsThatAffectThisPylon": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "OctreeIWasAddedTo": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "ExpansionSphereCenter": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "NextPylon": {
+      "type": "Pylon",
+      "documentation": null,
+      "flags": 2
+    },
+    "PylonRadiusPreview": {
+      "type": "DrawPylonRadiusComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "RenderingComp": {
+      "type": "NavMeshRenderingComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "BrokenSprite": {
+      "type": "SpriteComponent",
+      "documentation": null,
+      "flags": 67641354
+    },
+    "ExpansionRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxExpansionRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "DebugEdgeCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bImportedMesh": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bUseExpansionSphereOverride": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bNeedsCostCheck": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bDrawEdgePolys": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDrawPolyBounds": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRenderInShowPaths": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDrawWalkableSurface": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDrawObstacleSurface": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bBuildThisPylon": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bDisabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bForceObstacleMeshCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "CanReachPylon": {
+      "documentation": null,
+      "signature_members": {
+        "DestPylon": {
+          "type": "Pylon",
+          "documentation": null,
+          "flags": 128
+        },
+        "C": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanReachPylon(Pylon DestPylon, Controller C)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    },
+    "IsEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsEnabled()"
+    },
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bEnabled)"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,71 @@
+{
+  "parent": "BioActorBehaviorSaveObject",
+  "package": "SFXGame",
+  "variables": {
+    "m_FirstName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_HealthCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ShieldCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_LastName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_HealthMax": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_HealthRegenRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fRadarRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "LoadObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LoadObject(Object O)"
+    },
+    "SaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "O": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SaveObject(Object O)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

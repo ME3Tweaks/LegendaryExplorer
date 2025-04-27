@@ -1,0 +1,23 @@
+{
+  "members": {
+    "nmAction": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmTech": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nReason": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSeqData_DEBUGInfo",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

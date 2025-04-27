@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Width": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Height": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "SizeID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFHandler_PCOptions",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

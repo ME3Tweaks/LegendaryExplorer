@@ -1,0 +1,325 @@
+{
+  "EnumValues": {
+    "BIO_SOUNDSET_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_AttackGrunt": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_TargetDown": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_PainGrunt": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_LowHealth": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_ShieldsDown": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_DeathCry": {
+      "value": 6,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_SpecialAttackPistol": {
+      "value": 7,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_SpecialAttackAssaultRifle": {
+      "value": 8,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_SpecialAttackShotgun": {
+      "value": 9,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_SpecialAttackSniperRifle": {
+      "value": 10,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_SpecialAbilityImmunity": {
+      "value": 11,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_SpecialAbilityAssassination": {
+      "value": 12,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_SpecialAbilityShieldBoost": {
+      "value": 13,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_SpecialAbilityAdrenalineRush": {
+      "value": 14,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_SpecialAbilityTakeDown": {
+      "value": 15,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_SpecialAbilityRacial1": {
+      "value": 16,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_SpecialAbilityRacial2": {
+      "value": 17,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_SpecialAbilityRacial3": {
+      "value": 18,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_BioticThrow": {
+      "value": 19,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_BioticLift": {
+      "value": 20,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_BioticWarp": {
+      "value": 21,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_BioticWeaken": {
+      "value": 22,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_BioticBarrier": {
+      "value": 23,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_BioticStasis": {
+      "value": 24,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_TechEMP": {
+      "value": 25,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_TechSabotage": {
+      "value": 26,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_TechDampeningField": {
+      "value": 27,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_TechAIHacking": {
+      "value": 28,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_TechHeal": {
+      "value": 29,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_TechNeuralShock": {
+      "value": 30,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_SpecialAbilityTaunt": {
+      "value": 31,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_ThrowGrenade": {
+      "value": 32,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_PerceptionHearEnemy": {
+      "value": 33,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_PerceptionSeeEnemy": {
+      "value": 34,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_PerceptionAttackedByEnemy": {
+      "value": 35,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_DebuffToxic": {
+      "value": 36,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_DebuffBodyDisabled": {
+      "value": 37,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_DebuffWeaponDisabled": {
+      "value": 38,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_DebuffSuppressed": {
+      "value": 39,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_LostCover": {
+      "value": 40,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_IncomingGrenade": {
+      "value": 41,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_AcceptedAttack": {
+      "value": 42,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_AcceptedLockTarget": {
+      "value": 43,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_AcceptedMove": {
+      "value": 44,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_CompletedAttack": {
+      "value": 45,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_CompletedMove": {
+      "value": 46,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_CompletedTakingCover": {
+      "value": 47,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_GiveCommandFollow": {
+      "value": 48,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_GiveCommandAttack": {
+      "value": 49,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_GiveCommandMove": {
+      "value": 50,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_TechUseElectronics": {
+      "value": 51,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_TechUseDecryption": {
+      "value": 52,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_selected": {
+      "value": 53,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_ambient": {
+      "value": 54,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_AbilityNotReady": {
+      "value": 55,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_Alert": {
+      "value": 56,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_BuffActivated": {
+      "value": 57,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_HealingSquad": {
+      "value": 58,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_HoldingPosition": {
+      "value": 59,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_Investigate": {
+      "value": 60,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_LOSestablished": {
+      "value": 61,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_LOSunavailable": {
+      "value": 62,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_MoveToFailure": {
+      "value": 63,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_MoveToSuccess": {
+      "value": 64,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_ResourcesScarce": {
+      "value": 65,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_ResourcesToLow": {
+      "value": 66,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_SkillInitiation": {
+      "value": 67,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_SkillUseFailure": {
+      "value": 68,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_UNUSED_SkillUseSuccess": {
+      "value": 69,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_StartMoveToConfirmation": {
+      "value": 70,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_TacticalDeathRecovery": {
+      "value": 71,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_TechBeaconDeployed": {
+      "value": 72,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_Jump": {
+      "value": 73,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_Land": {
+      "value": 74,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_VehicleDamaged": {
+      "value": 75,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_VehicleShieldsDown": {
+      "value": 76,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_Allclear": {
+      "value": 77,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_PlayerRecovery": {
+      "value": 78,
+      "documentation": null
+    },
+    "BIO_SOUNDSET_ChargeAtPlayer": {
+      "value": 79,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

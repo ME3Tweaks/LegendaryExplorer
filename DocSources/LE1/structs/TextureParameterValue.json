@@ -1,0 +1,23 @@
+{
+  "members": {
+    "ExpressionGUID": {
+      "type": "Guid",
+      "documentation": null,
+      "flags": 0
+    },
+    "ParameterName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "ParameterValue": {
+      "type": "Texture",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "MaterialInstanceConstant",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

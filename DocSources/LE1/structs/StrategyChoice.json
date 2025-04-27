@@ -1,0 +1,23 @@
+{
+  "members": {
+    "StateName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 131073
+    },
+    "MaxLikelihood": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "CurrentLikelihood": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioBaseSquad",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

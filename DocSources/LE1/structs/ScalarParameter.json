@@ -1,0 +1,18 @@
+{
+  "members": {
+    "nName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "sValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioMaterialOverride",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

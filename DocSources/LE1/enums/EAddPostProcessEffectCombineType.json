@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "EAPPE_Override": {
+      "value": 0,
+      "documentation": null
+    },
+    "EAPPE_Combine": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

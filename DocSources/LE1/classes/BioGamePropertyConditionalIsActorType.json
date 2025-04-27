@@ -1,0 +1,29 @@
+{
+  "parent": "BioGamePropertyConditional",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmActorType": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "SetActorType": {
+      "documentation": null,
+      "signature_members": {
+        "nmActorType": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActorType(Name nmActorType)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,136 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "m_specializationArray": {
+      "type": "BioSpecializationData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_playerTalents": {
+      "type": "BioTalentContainer",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_playerAttributes": {
+      "type": "BioAttributesPawnPlayer",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_specializationGuiDescription": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fRScrollValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_preInitializationSucceeded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "UpdateSpecializations": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateSpecializations()"
+    },
+    "ChooseSpecialization": {
+      "documentation": null,
+      "signature_members": {
+        "SpecIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ChooseSpecialization(int SpecIndex)"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "Parameters": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> Parameters)"
+    },
+    "PreInitialization": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PreInitialization(BioPawn PlayerPawn)"
+    }
+  },
+  "states": {},
+  "classflags": 10485790,
+  "configname": "UI",
+  "documentation": null
+}

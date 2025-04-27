@@ -1,0 +1,28 @@
+{
+  "members": {
+    "LastSettings": {
+      "type": "PostProcessSettings",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "LastVolumeUsed": {
+      "type": "PostProcessVolume",
+      "documentation": null,
+      "flags": 0
+    },
+    "BlendStartTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "LastBlendTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "LocalPlayer",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

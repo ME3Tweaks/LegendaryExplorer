@@ -1,0 +1,168 @@
+{
+  "parent": "AnimObject",
+  "package": "Engine",
+  "variables": {
+    "StrengthAnimNodeNameList": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "CachedNodeList": {
+      "type": "AnimNode",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "AnimMetadataCachedAnimNodeSeqList": {
+      "type": "AnimNodeSequence",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "ControlName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "NextControl": {
+      "type": "SkelControlBase",
+      "documentation": null,
+      "flags": 0
+    },
+    "ControlStrength": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "BlendInTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "BlendOutTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "StrengthTarget": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "BlendTimeToGo": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "AnimMetadataWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "BoneScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "ControlTickTag": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "IgnoreAtOrAboveLOD": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "bPostPhysicsController": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSetStrengthFromAnimNode": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bInitializedCachedNodeList": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bControlledByAnimMetada": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bPropagateSetActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIgnoreWhenNotRendered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bShouldTickInScript": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "BlendType": {
+      "type": "AlphaBlendType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "TickSkelControl": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "SkelComp": {
+          "type": "SkeletalMeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "TickSkelControl(float DeltaTime, SkeletalMeshComponent SkelComp)"
+    },
+    "SetSkelControlStrength": {
+      "documentation": null,
+      "signature_members": {
+        "NewStrength": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InBlendTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSkelControlStrength(float NewStrength, float InBlendTime)"
+    },
+    "SetSkelControlActive": {
+      "documentation": null,
+      "signature_members": {
+        "bInActive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSkelControlActive(bool bInActive)"
+    }
+  },
+  "states": {},
+  "classflags": 142606483,
+  "configname": "None",
+  "documentation": null
+}

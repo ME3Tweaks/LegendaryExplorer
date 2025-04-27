@@ -1,0 +1,150 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "TracePrecise": {
+      "documentation": null,
+      "signature_members": {
+        "pOwner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "Projectile": {
+          "type": "Projectile",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool TracePrecise(Actor pOwner, Projectile Projectile, out Vector HitLocation, out Vector HitNormal)"
+    },
+    "ComputePosition": {
+      "documentation": null,
+      "signature_members": {
+        "Projectile": {
+          "type": "BioGrenadeProjectileFrisbee",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector ComputePosition(BioGrenadeProjectileFrisbee Projectile)"
+    },
+    "StaticDetach": {
+      "documentation": null,
+      "signature_members": {
+        "oOwnerBehavior": {
+          "type": "BioActorBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "Projectile": {
+          "type": "BioGrenadeProjectileFrisbee",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "StaticDetach(BioActorBehavior oOwnerBehavior, BioGrenadeProjectileFrisbee Projectile)"
+    },
+    "Detach": {
+      "documentation": null,
+      "signature_members": {
+        "oOwnerBehavior": {
+          "type": "BioActorBehavior",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "Projectile": {
+          "type": "BioGrenadeProjectileFrisbee",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Detach(BioActorBehavior oOwnerBehavior, BioGrenadeProjectileFrisbee Projectile)"
+    },
+    "StaticAttach": {
+      "documentation": null,
+      "signature_members": {
+        "pOwner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "Projectile": {
+          "type": "BioGrenadeProjectileFrisbee",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StaticAttach(Actor pOwner, BioGrenadeProjectileFrisbee Projectile, Vector HitLocation, Vector HitNormal)"
+    },
+    "Attach": {
+      "documentation": null,
+      "signature_members": {
+        "Projectile": {
+          "type": "BioGrenadeProjectileFrisbee",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Attach(BioGrenadeProjectileFrisbee Projectile, Vector HitLocation, Vector HitNormal)"
+    },
+    "SetRotationByUpVector": {
+      "documentation": null,
+      "signature_members": {
+        "pActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vUp": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRotationByUpVector(Actor pActor, const out Vector vUp)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

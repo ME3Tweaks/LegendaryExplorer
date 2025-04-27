@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "FSM_SELF_INTERACTION": {
+      "value": 0,
+      "documentation": null
+    },
+    "FSM_NO_SELF_INTERACTION": {
+      "value": 1,
+      "documentation": null
+    },
+    "FSM_MIXED_MODE": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

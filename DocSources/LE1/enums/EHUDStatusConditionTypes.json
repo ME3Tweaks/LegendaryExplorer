@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "HUD_STATUS_TYPE_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "HUD_STATUS_TYPE_MISCTEXT": {
+      "value": 1,
+      "documentation": null
+    },
+    "HUD_STATUS_TYPE_POISON": {
+      "value": 2,
+      "documentation": null
+    },
+    "HUD_STATUS_TYPE_IMMUNE": {
+      "value": 3,
+      "documentation": null
+    },
+    "HUD_STATUS_TYPE_SHOCK": {
+      "value": 4,
+      "documentation": null
+    },
+    "HUD_STATUS_TYPE_HACK": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

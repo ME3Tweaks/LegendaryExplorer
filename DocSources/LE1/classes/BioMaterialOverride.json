@@ -1,0 +1,33 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aTextureOverrides": {
+      "type": "TextureParameter",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_aColorOverrides": {
+      "type": "ColorParameter",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_aScalarOverrides": {
+      "type": "ScalarParameter",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "functions": {
+    "GetSaveObjectClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<BioBaseSaveObject> GetSaveObjectClass()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

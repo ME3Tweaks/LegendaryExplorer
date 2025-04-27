@@ -1,0 +1,33 @@
+{
+  "members": {
+    "DestAsColor": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 0
+    },
+    "DestAsRotator": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "DestAsVector": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "DestAsNotify": {
+      "type": "UIAnimationNotify",
+      "documentation": null,
+      "flags": 0
+    },
+    "DestAsFloat": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "UIAnimation",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

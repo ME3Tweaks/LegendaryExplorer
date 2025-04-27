@@ -1,0 +1,10 @@
+{
+  "parent": "ActorFactoryDynamicSM",
+  "package": "Engine",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 134230166,
+  "configname": "Editor",
+  "documentation": null
+}

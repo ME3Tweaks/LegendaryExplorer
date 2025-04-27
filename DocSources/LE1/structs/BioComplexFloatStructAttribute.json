@@ -1,0 +1,73 @@
+{
+  "members": {
+    "m_baseOverrides": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_isBaseOverrideValid": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_Parent": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_modifiers": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_isModifierEnabled": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_LookupTable": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Base": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Current": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Max": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Min": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_TableColumn": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_isBaseOverrideInEffect": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_Dirty": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioAttributes",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

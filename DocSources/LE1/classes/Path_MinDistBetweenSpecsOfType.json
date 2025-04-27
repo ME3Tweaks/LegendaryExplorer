@@ -1,0 +1,60 @@
+{
+  "parent": "PathConstraint",
+  "package": "Engine",
+  "variables": {
+    "ReachSpecClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "InitLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "MinDistBetweenSpecTypes": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "EnforceMinDist": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "InMinDist": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InSpecClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "LastLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EnforceMinDist(Pawn P, float InMinDist, Class<ReachSpec> InSpecClass, optional Vector LastLocation)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

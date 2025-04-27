@@ -1,0 +1,33 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "Location": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 131073
+    },
+    "RotationVector": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 131073
+    },
+    "SocketOrBoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

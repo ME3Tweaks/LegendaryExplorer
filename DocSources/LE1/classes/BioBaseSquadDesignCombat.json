@@ -1,0 +1,328 @@
+{
+  "parent": "BioBaseSquadDesign",
+  "package": "SFXStrategicAI",
+  "variables": {
+    "CombatRestFormations": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 1
+    },
+    "DelayReactionCombat": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DelaySwitchTarget": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "CombatRestOrientation": {
+      "type": "EOrientationType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "OnActionComplete_Combat": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmAction": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmTechnique": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nReason": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "oLastTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnActionComplete_Combat(Pawn oMember, Name nmAction, Name nmTechnique, int nReason, Actor oLastTarget)"
+    },
+    "OnActionComplete_Movement": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmAction": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nReason": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnActionComplete_Movement(Pawn oMember, Name nmAction, int nReason, Actor oTarget, Vector vLocation)"
+    },
+    "UseAttackCapability": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oCap": {
+          "type": "BioCapability",
+          "documentation": null,
+          "flags": 128
+        },
+        "eAttackType": {
+          "type": "eATTACK_TYPE",
+          "documentation": null,
+          "flags": 128
+        },
+        "fStabilityOffset": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "oMoveDest": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "fMovementDelay": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UseAttackCapability(BioAiController oMember, Pawn oTarget, BioCapability oCap, eATTACK_TYPE eAttackType, optional float fStabilityOffset, optional Actor oMoveDest, optional float fMovementDelay)"
+    },
+    "FindDangerousEnemy": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        },
+        "oIgnore": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Pawn",
+      "signature": "Pawn FindDangerousEnemy(BioAiController oMember, optional Pawn oIgnore)"
+    },
+    "GetClosestPerceivedTarget": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        },
+        "oIgnoreTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Pawn",
+      "signature": "Pawn GetClosestPerceivedTarget(BioAiController oMember, optional Pawn oIgnoreTarget)"
+    },
+    "GetDistanceToNearestHostile": {
+      "documentation": null,
+      "signature_members": {
+        "bSquareDist": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "oNearestMember": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 400
+        },
+        "oNearestTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 400
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetDistanceToNearestHostile(optional bool bSquareDist, optional out BioAiController oNearestMember, optional out Pawn oNearestTarget)"
+    },
+    "GetOrientationType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EOrientationType",
+      "signature": "EOrientationType GetOrientationType()"
+    },
+    "GetRestFormation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<BioFormations> GetRestFormation()"
+    },
+    "OnCastAt": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oAttacker": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmPower": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCastAt(Pawn oMember, Pawn oAttacker, Name nmPower)"
+    },
+    "OnAttacked": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oAttacker": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmWeapon": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAttacked(Pawn oMember, Pawn oAttacker, Name nmWeapon)"
+    },
+    "HearNoise": {
+      "documentation": null,
+      "signature_members": {
+        "Who": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Loudness": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "NoiseMaker": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vNoiseLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "NoiseType": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HearNoise(Pawn Who, float Loudness, Actor NoiseMaker, Vector vNoiseLocation, optional Name NoiseType)"
+    },
+    "NoLongerSeePlayer": {
+      "documentation": null,
+      "signature_members": {
+        "Who": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Seen": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NoLongerSeePlayer(Pawn Who, Pawn Seen)"
+    },
+    "SeePlayer": {
+      "documentation": null,
+      "signature_members": {
+        "Who": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Seen": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SeePlayer(Pawn Who, Pawn Seen)"
+    },
+    "SeenSquad": {
+      "documentation": null,
+      "signature_members": {
+        "oSquad": {
+          "type": "BioBaseSquad",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SeenSquad(BioBaseSquad oSquad)"
+    }
+  },
+  "states": {},
+  "classflags": 10485783,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,1542 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "ResolutionList": {
+      "type": "BioScreenResolution",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "MonitorList": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "GuiBindings": {
+      "type": "GuiBinding",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "SampleMusicName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "SampleFXName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "SampleVoiceName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "TelemetryInfo": {
+      "type": "OptionTelemetryInfo",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "ExtendedTelemetryInfo": {
+      "type": "OptionTelemetryInfo",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_oOriginalOptions": {
+      "type": "GameOptions",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oNewOptions": {
+      "type": "GameOptions",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oHandlerFrom": {
+      "type": "BioSFHandler",
+      "documentation": null,
+      "flags": 0
+    },
+    "SampleMusicSoundCue": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 0
+    },
+    "SampleFXSoundCue": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 0
+    },
+    "SampleVoiceSoundCue": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 0
+    },
+    "SampleMusicAudioComponent": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "SampleFXAudioComponent": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "SampleVoiceAudioComponent": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "IncomingKey": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "ConfirmDisplayMessageBox": {
+      "type": "BioSFHandler_MessageBox",
+      "documentation": null,
+      "flags": 8193
+    },
+    "NewScreenResIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "OldScreenResIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "newScreenResWidth": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "newScreenResHeight": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "CaptureBindIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "CaptureBindNumber": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "srOptionsOverwriteMessage": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srOptionsOverwriteConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srOptionsOverwriteCancel": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srOptionsSaveOptionsFailMessage": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srOptionsSaveOptionsFailOk": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srOptionsReturnToMainMenuWarning": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "KeyHasBeenBound": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 8193
+    },
+    "KeyHasBeenUnbound": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 8193
+    },
+    "CannotBindConstantKey": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 8193
+    },
+    "DisplayChangeText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 8193
+    },
+    "RebindWarning": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 8193
+    },
+    "OldAliasIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bWaitingForMsgBox": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bReturnToMainMenu": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bHasCalledInit": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bWaitingOnMsgBox": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSkippedFirstEvent": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nGuiMode": {
+      "type": "EPCOptionsGuiMode",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "StoreIncomingResolution": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StoreIncomingResolution()"
+    },
+    "WillChangeDisplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool WillChangeDisplay()"
+    },
+    "RevertSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RevertSettings()"
+    },
+    "SetInExtendedTelemetryCache": {
+      "documentation": null,
+      "signature_members": {
+        "eOptionId": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "nValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInExtendedTelemetryCache(byte eOptionId, int nValue)"
+    },
+    "SetInTelemetryCache": {
+      "documentation": null,
+      "signature_members": {
+        "eOptionId": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "nValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInTelemetryCache(byte eOptionId, int nValue)"
+    },
+    "ApplyShadowDetail": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyShadowDetail()"
+    },
+    "ApplyVideoChangesResolution": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyVideoChangesResolution()"
+    },
+    "InitSystemSettingsCache": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitSystemSettingsCache()"
+    },
+    "Callback_ConfirmDisplayChange": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "context": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bYPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Callback_ConfirmDisplayChange(bool bAPressed, int context, bool bYPressed)"
+    },
+    "UpdateResolutionIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateResolutionIndex()"
+    },
+    "Callback_DisplayChangeTimeout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Callback_DisplayChangeTimeout()"
+    },
+    "ConfirmDisplayChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ConfirmDisplayChange()"
+    },
+    "SetDisplayChanges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetDisplayChanges()"
+    },
+    "ApplyCalibrationChanges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyCalibrationChanges()"
+    },
+    "ApplyVideoChanges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyVideoChanges()"
+    },
+    "SetAntiAliasingLevel": {
+      "documentation": null,
+      "signature_members": {
+        "AALevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAntiAliasingLevel(int AALevel)"
+    },
+    "SetShadowDetailLevel": {
+      "documentation": null,
+      "signature_members": {
+        "ShadowDetailLevel": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetShadowDetailLevel(bool ShadowDetailLevel)"
+    },
+    "SetFilterLevel": {
+      "documentation": null,
+      "signature_members": {
+        "FilterLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFilterLevel(int FilterLevel)"
+    },
+    "SetShaderFilmLevel": {
+      "documentation": null,
+      "signature_members": {
+        "FilmDetailLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetShaderFilmLevel(int FilmDetailLevel)"
+    },
+    "SetShaderBlurLevel": {
+      "documentation": null,
+      "signature_members": {
+        "BlurDetailLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetShaderBlurLevel(int BlurDetailLevel)"
+    },
+    "SetTextureLevel": {
+      "documentation": null,
+      "signature_members": {
+        "TextureLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTextureLevel(int TextureLevel)"
+    },
+    "SetScreenRes": {
+      "documentation": null,
+      "signature_members": {
+        "NewScreenRes": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetScreenRes(int NewScreenRes)"
+    },
+    "SetWindow": {
+      "documentation": null,
+      "signature_members": {
+        "NewMode": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWindow(int NewMode)"
+    },
+    "SetParticleEffectsLevel": {
+      "documentation": null,
+      "signature_members": {
+        "newLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetParticleEffectsLevel(int newLevel)"
+    },
+    "SetVSyncOn": {
+      "documentation": null,
+      "signature_members": {
+        "bOn": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVSyncOn(bool bOn)"
+    },
+    "SetSelectedMonitor": {
+      "documentation": null,
+      "signature_members": {
+        "monitorIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSelectedMonitor(int monitorIndex)"
+    },
+    "GetSelectedMonitorIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetSelectedMonitorIndex()"
+    },
+    "SetAmbientOcclusion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetAmbientOcclusion()"
+    },
+    "GetAmbientOcclusion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetAmbientOcclusion()"
+    },
+    "BuildMonitorList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BuildMonitorList()"
+    },
+    "ApplyDynamicResolution": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyDynamicResolution()"
+    },
+    "GetDynamicResolution": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetDynamicResolution()"
+    },
+    "ApplyParticleEffectsLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyParticleEffectsLevel()"
+    },
+    "ApplyTextureLevelOfDetail": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyTextureLevelOfDetail()"
+    },
+    "GetTextureLevelOfDetail": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetTextureLevelOfDetail()"
+    },
+    "BuildResolutionList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BuildResolutionList()"
+    },
+    "AddMonitorOptionToUI": {
+      "documentation": null,
+      "signature_members": {
+        "monitorString": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AddMonitorOptionToUI(string monitorString)"
+    },
+    "UpdateMonitorSelections": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateMonitorSelections()"
+    },
+    "AddResolutionOptionToUI": {
+      "documentation": null,
+      "signature_members": {
+        "ScreenRes": {
+          "type": "BioScreenResolution",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddResolutionOptionToUI(BioScreenResolution ScreenRes)"
+    },
+    "UpdateResolutionSelections": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateResolutionSelections()"
+    },
+    "SetAnalogSens": {
+      "documentation": null,
+      "signature_members": {
+        "Percent": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAnalogSens(int Percent)"
+    },
+    "SetRumbleToggle": {
+      "documentation": null,
+      "signature_members": {
+        "bOn": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetRumbleToggle(bool bOn)"
+    },
+    "GetValidWindowedModeIndex": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetValidWindowedModeIndex()"
+    },
+    "SetAntiAliasingOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetAntiAliasingOption()"
+    },
+    "GetAntiAliasingOption": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetAntiAliasingOption()"
+    },
+    "ConvertLODBiasToParticleEffectsLevel": {
+      "documentation": null,
+      "signature_members": {
+        "LODBias": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int ConvertLODBiasToParticleEffectsLevel(int LODBias)"
+    },
+    "ConvertParticleEffectsLevelToLODBias": {
+      "documentation": null,
+      "signature_members": {
+        "ParticleEffectsLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int ConvertParticleEffectsLevelToLODBias(int ParticleEffectsLevel)"
+    },
+    "ApplyCalibrationOptions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyCalibrationOptions()"
+    },
+    "GetParticleEffectsLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetParticleEffectsLevel()"
+    },
+    "GetShadowDetailLevel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetShadowDetailLevel()"
+    },
+    "GetCurrentRes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetCurrentRes()"
+    },
+    "SetFilter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetFilter()"
+    },
+    "GetFilter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetFilter()"
+    },
+    "SetVsync": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetVsync()"
+    },
+    "GetVSync": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetVSync()"
+    },
+    "SetCalibration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetCalibration()"
+    },
+    "GetCurrentCalibration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetCurrentCalibration()"
+    },
+    "InitVideoValues": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitVideoValues()"
+    },
+    "ApplyAudioChanges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyAudioChanges()"
+    },
+    "ApplyAudioSettings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyAudioSettings()"
+    },
+    "SetLegacyLevelUpMode": {
+      "documentation": null,
+      "signature_members": {
+        "bOn": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetLegacyLevelUpMode(bool bOn)"
+    },
+    "SetAutoSave": {
+      "documentation": null,
+      "signature_members": {
+        "bOn": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAutoSave(bool bOn)"
+    },
+    "SetCaptionToggle": {
+      "documentation": null,
+      "signature_members": {
+        "bOn": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCaptionToggle(bool bOn)"
+    },
+    "SetAudioVolVoice": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAudioVolVoice(int Value)"
+    },
+    "SetAudioVolFX": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAudioVolFX(int Value)"
+    },
+    "SetAudioVolMusic": {
+      "documentation": null,
+      "signature_members": {
+        "Value": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetAudioVolMusic(int Value)"
+    },
+    "PlaySampleSound": {
+      "documentation": null,
+      "signature_members": {
+        "Comp": {
+          "type": "AudioComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "Volume": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PlaySampleSound(AudioComponent Comp, float Volume)"
+    },
+    "InitAudioValues": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitAudioValues()"
+    },
+    "GetHardwareSoundOn": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GetHardwareSoundOn()"
+    },
+    "LoadSound": {
+      "documentation": null,
+      "signature_members": {
+        "Section": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Cue": {
+          "type": "SoundCue",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "AudioComponent",
+      "signature": "AudioComponent LoadSound(string Section, SoundCue Cue)"
+    },
+    "ProcessInput": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Key": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "EventType": {
+          "type": "EInputEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "AmountDepressed": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "bGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProcessInput(int ControllerId, Name Key, EInputEvent EventType, optional float AmountDepressed, optional bool bGamepad)"
+    },
+    "CaptureNewBinding": {
+      "documentation": null,
+      "signature_members": {
+        "BindIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "BindNumber": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "CaptureNewBinding(int BindIndex, int BindNumber)"
+    },
+    "UpdateKeyToSF": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateKeyToSF(int Index)"
+    },
+    "UpdateTextOnButtons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateTextOnButtons()"
+    },
+    "BuildBindingList": {
+      "documentation": null,
+      "signature_members": {
+        "bUseDefaults": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "BuildBindingList(bool bUseDefaults)"
+    },
+    "ApplyPCBindings": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyPCBindings()"
+    },
+    "InitKeyboardValues": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitKeyboardValues()"
+    },
+    "SetBindingHelpText": {
+      "documentation": null,
+      "signature_members": {
+        "HelpText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBindingHelpText(string HelpText)"
+    },
+    "SetBindingKeyText": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "TalentText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "KeyIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBindingKeyText(int Index, string TalentText, int KeyIndex)"
+    },
+    "SetBindingTalentText": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "TalentText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBindingTalentText(int Index, string TalentText)"
+    },
+    "ShowBindingRow": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bShow": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ShowBindingRow(int Index, bool bShow)"
+    },
+    "ApplyAutos": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyAutos()"
+    },
+    "ApplyGamePlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyGamePlay()"
+    },
+    "ResetTutorialsMSG": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetTutorialsMSG()"
+    },
+    "ConfirmResetTutorials": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ConfirmResetTutorials(bool bAPressed, int nContext)"
+    },
+    "SaveProfile": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SaveProfile()"
+    },
+    "InitAutos": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitAutos()"
+    },
+    "InitGamePlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitGamePlay()"
+    },
+    "ApplyInput": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyInput()"
+    },
+    "SetMouseSense": {
+      "documentation": null,
+      "signature_members": {
+        "SliderValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMouseSense(int SliderValue)"
+    },
+    "SetHardwareMouseMouse": {
+      "documentation": null,
+      "signature_members": {
+        "bOn": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetHardwareMouseMouse(bool bOn)"
+    },
+    "InitInput": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitInput()"
+    },
+    "ApplyChanges": {
+      "documentation": null,
+      "signature_members": {
+        "SubPanelIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyChanges(int SubPanelIndex)"
+    },
+    "ExitMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitMenu()"
+    },
+    "ConfirmGoToMainMenu": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ConfirmGoToMainMenu(bool bAPressed, int nContext)"
+    },
+    "QuitToMainMenuFromOptions": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "QuitToMainMenuFromOptions()"
+    },
+    "ExitToMainMenu": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ExitToMainMenu()"
+    },
+    "ResetAutos": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetAutos()"
+    },
+    "ResetGameplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetGameplay()"
+    },
+    "ResetControls": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetControls()"
+    },
+    "ResetController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetController()"
+    },
+    "ResetInput": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetInput()"
+    },
+    "ResetSound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetSound()"
+    },
+    "ResetCalibration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetCalibration()"
+    },
+    "ResetGraphics": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetGraphics()"
+    },
+    "UpdateVideoOptionsOnRevert": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateVideoOptionsOnRevert()"
+    },
+    "ResetAllValues": {
+      "documentation": null,
+      "signature_members": {
+        "SubPanelIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetAllValues(int SubPanelIndex)"
+    },
+    "SetDefaultAutos": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetDefaultAutos()"
+    },
+    "SetDefaultGameplay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetDefaultGameplay()"
+    },
+    "SetDefaultControls": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetDefaultControls()"
+    },
+    "SetDefaultController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetDefaultController()"
+    },
+    "SetDefaultInput": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetDefaultInput()"
+    },
+    "SetDefaultSound": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetDefaultSound()"
+    },
+    "SetDefaultCalibration": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetDefaultCalibration()"
+    },
+    "SetDefaultVideo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetDefaultVideo()"
+    },
+    "SetDefaults": {
+      "documentation": null,
+      "signature_members": {
+        "SubPanelIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetDefaults(int SubPanelIndex)"
+    },
+    "setDropdownByID": {
+      "documentation": null,
+      "signature_members": {
+        "Id": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "setDropdownByID(int Id, int Index)"
+    },
+    "SetIndexedSliderByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bSetLastMarker": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetIndexedSliderByIndex(int Index, int Value, bool bSetLastMarker)"
+    },
+    "SetSliderByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bSetLastMarker": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSliderByIndex(int Index, float Value, bool bSetLastMarker)"
+    },
+    "SetCheckBoxByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bOn": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCheckBoxByIndex(int Index, bool bOn)"
+    },
+    "WarnUnsaved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "WarnUnsaved()"
+    },
+    "AStoLog": {
+      "documentation": null,
+      "signature_members": {
+        "msg": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "AStoLog(string msg)"
+    },
+    "ClosePanelWithOutSavingConfirm": {
+      "documentation": null,
+      "signature_members": {
+        "bConfimNoSave": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClosePanelWithOutSavingConfirm(bool bConfimNoSave)"
+    },
+    "ClosePanelWithOutSaving": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClosePanelWithOutSaving()"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Init()"
+    },
+    "HandleButtonRefresh": {
+      "documentation": null,
+      "signature_members": {
+        "usingGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleButtonRefresh(bool usingGamepad)"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "RestoreMappedSettingStep": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": "EMappedSettingTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "Step": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int RestoreMappedSettingStep(EMappedSettingTypes Type, int Step)"
+    },
+    "StoreMappedSettingStep": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": "EMappedSettingTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "Step": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int StoreMappedSettingStep(EMappedSettingTypes Type, int Step)"
+    },
+    "ResetTelemetryCache": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetTelemetryCache()"
+    },
+    "SendTelemetryChanges": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SendTelemetryChanges()"
+    },
+    "ConfirmKeybindOverwrite": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ConfirmKeybindOverwrite(bool bAPressed, int nContext)"
+    },
+    "ResetDefaultsMSG": {
+      "documentation": null,
+      "signature_members": {
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ResetDefaultsMSG(int nContext)"
+    },
+    "SetHDRStatus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetHDRStatus()"
+    },
+    "SavingMSG": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SavingMSG()"
+    },
+    "ConfirmResetToDefaults": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ConfirmResetToDefaults(bool bAPressed, int nContext)"
+    },
+    "OptionsConfirmCommit": {
+      "documentation": null,
+      "signature_members": {
+        "bAPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OptionsConfirmCommit(bool bAPressed, int nContext)"
+    }
+  },
+  "states": {},
+  "classflags": 144703646,
+  "configname": "UI",
+  "documentation": null
+}

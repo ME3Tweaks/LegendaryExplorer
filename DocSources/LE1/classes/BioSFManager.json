@@ -1,0 +1,533 @@
+{
+  "parent": "BioSFSharedBase",
+  "package": "Engine",
+  "variables": {
+    "m_UnrealKeyToGfxKeyMap": {
+      "type": "Map_Mirror",
+      "documentation": null,
+      "flags": 4096
+    },
+    "m_lstPanels": {
+      "type": "BioSFPanel",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_lstModalStack": {
+      "type": "BioSFPanel",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "lstEventCooldowns": {
+      "type": "EventCooldownStruct",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "HandlerLibrary": {
+      "type": "SFHandlerTemplate",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "SharedAssetLibrary": {
+      "type": "SFSharedAssetMap",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "m_aWorldSoundGroups": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "nmActiveMusic": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmActiveVoice": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "oFadeOutMusic": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "oActiveMusic": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "oActiveVoice": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "m_pGuiSounds2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pGuiMusic2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "oSoundCooker": {
+      "type": "BioGuiSoundCooker",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_FocusPanel": {
+      "type": "BioSFPanel",
+      "documentation": null,
+      "flags": 8192
+    },
+    "UDLRInitialCooldown": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "UDLRHeldCooldown": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "fNextFadeOut": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bControlEventFromThumbstick": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "nLastUDLR": {
+      "type": "BioGuiEvents",
+      "documentation": null,
+      "flags": 0
+    },
+    "nLStickX": {
+      "type": "BioThumbstickDir",
+      "documentation": null,
+      "flags": 0
+    },
+    "nLStickY": {
+      "type": "BioThumbstickDir",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "IsTriggerShoulderSwapped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsTriggerShoulderSwapped()"
+    },
+    "IsTriggerSouthpaw": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsTriggerSouthpaw()"
+    },
+    "IsStickSouthpaw": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsStickSouthpaw()"
+    },
+    "IsEnterMenuButtonAssignmentSwapped": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsEnterMenuButtonAssignmentSwapped()"
+    },
+    "IsGuiVisibleAndEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "Tag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsGuiVisibleAndEnabled(Name Tag)"
+    },
+    "IsMovieInFocus": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsMovieInFocus()"
+    },
+    "GetFocusMovie": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSFPanel",
+      "signature": "BioSFPanel GetFocusMovie()"
+    },
+    "GetPlayerController": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PlayerController",
+      "signature": "PlayerController GetPlayerController()"
+    },
+    "InitManager": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitManager()"
+    },
+    "SetMouseVisibility": {
+      "documentation": null,
+      "signature_members": {
+        "pObject": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "bShow": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetMouseVisibility(Object pObject, bool bShow)"
+    },
+    "GameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "GameSessionEnded()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "AddEventCooldown": {
+      "documentation": null,
+      "signature_members": {
+        "nEvent": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fCooldown": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddEventCooldown(BioGuiEvents nEvent, float fCooldown)"
+    },
+    "SetWorldSoundPaused": {
+      "documentation": null,
+      "signature_members": {
+        "bPause": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetWorldSoundPaused(bool bPause)"
+    },
+    "StopGuiVoice": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopGuiVoice()"
+    },
+    "PlayGuiVoice": {
+      "documentation": null,
+      "signature_members": {
+        "nmSound": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayGuiVoice(Name nmSound)"
+    },
+    "StopGuiMusic": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopGuiMusic()"
+    },
+    "PlayGuiMusic": {
+      "documentation": null,
+      "signature_members": {
+        "nmMusic": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bForceRestart": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayGuiMusic(Name nmMusic, optional bool bForceRestart)"
+    },
+    "PlayGuiSound": {
+      "documentation": null,
+      "signature_members": {
+        "nmSound": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PlayGuiSound(Name nmSound)"
+    },
+    "GetHandlerClass": {
+      "documentation": null,
+      "signature_members": {
+        "nmTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<BioSFHandler> GetHandlerClass(Name nmTag)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fCooldown": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "fDeadzoneValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fCooldown, optional float fValue, optional float fDeadzoneValue)"
+    },
+    "ClearAll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearAll()"
+    },
+    "ShowAll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShowAll()"
+    },
+    "HideAllModal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideAllModal()"
+    },
+    "HideAllMessages": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideAllMessages()"
+    },
+    "HideAll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideAll()"
+    },
+    "PopModalPanel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioSFPanel",
+      "signature": "BioSFPanel PopModalPanel()"
+    },
+    "PushModalPanel": {
+      "documentation": null,
+      "signature_members": {
+        "oPanel": {
+          "type": "BioSFPanel",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PushModalPanel(BioSFPanel oPanel)"
+    },
+    "IsOnTop": {
+      "documentation": null,
+      "signature_members": {
+        "oPanel": {
+          "type": "BioSFPanel",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsOnTop(BioSFPanel oPanel)"
+    },
+    "IsFullScreen": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsFullScreen()"
+    },
+    "PanelExists": {
+      "documentation": null,
+      "signature_members": {
+        "oPanel": {
+          "type": "BioSFPanel",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PanelExists(BioSFPanel oPanel)"
+    },
+    "GetPanelByTag": {
+      "documentation": null,
+      "signature_members": {
+        "nmMovieTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioSFPanel",
+      "signature": "BioSFPanel GetPanelByTag(Name nmMovieTag)"
+    },
+    "AdjustConversationZOrder": {
+      "documentation": null,
+      "signature_members": {
+        "convPanel": {
+          "type": "BioSFPanel",
+          "documentation": null,
+          "flags": 128
+        },
+        "usingGamepad": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustConversationZOrder(BioSFPanel convPanel, int usingGamepad)"
+    },
+    "RemovePanel": {
+      "documentation": null,
+      "signature_members": {
+        "oPanel": {
+          "type": "BioSFPanel",
+          "documentation": null,
+          "flags": 128
+        },
+        "bReportUsage": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemovePanel(BioSFPanel oPanel, optional bool bReportUsage)"
+    },
+    "SwitchPanel": {
+      "documentation": null,
+      "signature_members": {
+        "nmMovieTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Platform": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SwitchPanel(Name nmMovieTag, int Platform)"
+    },
+    "AddPanel": {
+      "documentation": null,
+      "signature_members": {
+        "oPanel": {
+          "type": "BioSFPanel",
+          "documentation": null,
+          "flags": 128
+        },
+        "bModal": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bAddDefaultHandler": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "AddPanel(BioSFPanel oPanel, optional bool bModal, optional bool bAddDefaultHandler)"
+    },
+    "CreatePanel": {
+      "documentation": null,
+      "signature_members": {
+        "nmMovieTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bAddPanel": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bModal": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "Platform": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "BioSFPanel",
+      "signature": "BioSFPanel CreatePanel(Name nmMovieTag, optional bool bAddPanel, optional bool bModal, optional int Platform)"
+    }
+  },
+  "states": {},
+  "classflags": 144703647,
+  "configname": "UI",
+  "documentation": null
+}

@@ -1,0 +1,29 @@
+{
+  "parent": "BioActive",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "ValidSuperMode": {
+      "documentation": null,
+      "signature_members": {
+        "eMode": {
+          "type": "EBioSuperModes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ValidSuperMode(EBioSuperModes eMode)"
+    },
+    "InitializeInternal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeInternal()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

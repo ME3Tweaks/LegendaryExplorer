@@ -1,0 +1,60 @@
+{
+  "parent": "BioItemXModdable",
+  "package": "SFXGame",
+  "variables": {
+    "m_weaponClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nmHook": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmOffhandHook": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oSounds": {
+      "type": "BioWeaponSoundsSet",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_pDamageAttributes": {
+      "type": "BioAttributesDamage",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_eWeaponType": {
+      "type": "EBioItemWeaponType",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "DescribeItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeItem()"
+    },
+    "GetItemTypeName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetItemTypeName()"
+    },
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Initialize()"
+    }
+  },
+  "states": {},
+  "classflags": 144703639,
+  "configname": "Game",
+  "documentation": null
+}

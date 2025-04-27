@@ -1,0 +1,36 @@
+{
+  "parent": "PBRuleNodeBase",
+  "package": "Engine",
+  "variables": {
+    "ASize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "BMaxSize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bInvertPatternOrder": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEqualSizeAB": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "RepeatAxis": {
+      "type": "EProcBuildingAxis",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136327314,
+  "configname": "None",
+  "documentation": null
+}

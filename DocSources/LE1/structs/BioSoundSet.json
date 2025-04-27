@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Label": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_aSounds": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_bRandomize": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioWeaponSoundsSet",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "fpCallback": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 0
+    },
+    "pData": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioPlayerController",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

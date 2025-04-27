@@ -1,0 +1,57 @@
+{
+  "EnumValues": {
+    "TC_Default": {
+      "value": 0,
+      "documentation": null
+    },
+    "TC_Normalmap": {
+      "value": 1,
+      "documentation": null
+    },
+    "TC_Displacementmap": {
+      "value": 2,
+      "documentation": null
+    },
+    "TC_NormalmapAlpha": {
+      "value": 3,
+      "documentation": null
+    },
+    "TC_Grayscale": {
+      "value": 4,
+      "documentation": null
+    },
+    "TC_HighDynamicRange": {
+      "value": 5,
+      "documentation": null
+    },
+    "TC_OneBitAlpha": {
+      "value": 6,
+      "documentation": null
+    },
+    "TC_NormalmapUncompressed": {
+      "value": 7,
+      "documentation": null
+    },
+    "TC_NormalmapBC5": {
+      "value": 8,
+      "documentation": null
+    },
+    "TC_OneBitMonochrome": {
+      "value": 9,
+      "documentation": null
+    },
+    "TC_NormalmapHQ": {
+      "value": 10,
+      "documentation": null
+    },
+    "TC_BC7": {
+      "value": 11,
+      "documentation": null
+    },
+    "TC_NormalmapBC7": {
+      "value": 12,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

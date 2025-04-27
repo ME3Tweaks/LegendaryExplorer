@@ -1,0 +1,415 @@
+{
+  "parent": "ReplicationInfo",
+  "package": "Engine",
+  "variables": {
+    "CoverReplicationData": {
+      "type": "CoverReplicationInfo",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "ClientReceiveLinkDisabledState": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Link": {
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
+        },
+        "bLinkDisabled": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientReceiveLinkDisabledState(int Index, CoverLink Link, bool bLinkDisabled)"
+    },
+    "ServerSendLinkDisabledState": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerSendLinkDisabledState(int Index)"
+    },
+    "NotifyLinkDisabledStateChange": {
+      "documentation": null,
+      "signature_members": {
+        "Link": {
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyLinkDisabledStateChange(CoverLink Link)"
+    },
+    "ClientReceiveManualCoverTypeSlots": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Link": {
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
+        },
+        "NumCoverTypesChanged": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotsCoverTypeChanged": {
+          "type": "ManualCoverTypeInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "bDone": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientReceiveManualCoverTypeSlots(int Index, CoverLink Link, byte NumCoverTypesChanged, ManualCoverTypeInfo SlotsCoverTypeChanged[8], bool bDone)"
+    },
+    "ServerSendManualCoverTypeSlots": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerSendManualCoverTypeSlots(int Index)"
+    },
+    "NotifySetManualCoverTypeForSlots": {
+      "documentation": null,
+      "signature_members": {
+        "Link": {
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotIndices": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "NewCoverType": {
+          "type": "ECoverType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifySetManualCoverTypeForSlots(CoverLink Link, const out array<int> SlotIndices, ECoverType NewCoverType)"
+    },
+    "ClientReceiveAdjustedSlots": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Link": {
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
+        },
+        "NumSlotsAdjusted": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotsAdjusted": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "bDone": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientReceiveAdjustedSlots(int Index, CoverLink Link, byte NumSlotsAdjusted, byte SlotsAdjusted[8], bool bDone)"
+    },
+    "ServerSendAdjustedSlots": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerSendAdjustedSlots(int Index)"
+    },
+    "NotifyAutoAdjustSlots": {
+      "documentation": null,
+      "signature_members": {
+        "Link": {
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotIndices": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyAutoAdjustSlots(CoverLink Link, const out array<int> SlotIndices)"
+    },
+    "ClientReceiveDisabledSlots": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Link": {
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
+        },
+        "NumSlotsDisabled": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotsDisabled": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "bDone": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientReceiveDisabledSlots(int Index, CoverLink Link, byte NumSlotsDisabled, byte SlotsDisabled[8], bool bDone)"
+    },
+    "ServerSendDisabledSlots": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerSendDisabledSlots(int Index)"
+    },
+    "NotifyDisabledSlots": {
+      "documentation": null,
+      "signature_members": {
+        "Link": {
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotIndices": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyDisabledSlots(CoverLink Link, const out array<int> SlotIndices)"
+    },
+    "ClientReceiveEnabledSlots": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Link": {
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
+        },
+        "NumSlotsEnabled": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotsEnabled": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "bDone": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientReceiveEnabledSlots(int Index, CoverLink Link, byte NumSlotsEnabled, byte SlotsEnabled[8], bool bDone)"
+    },
+    "ServerSendEnabledSlots": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerSendEnabledSlots(int Index)"
+    },
+    "NotifyEnabledSlots": {
+      "documentation": null,
+      "signature_members": {
+        "Link": {
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotIndices": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "NotifyEnabledSlots(CoverLink Link, const out array<int> SlotIndices)"
+    },
+    "ClientReceiveInitialCoverReplicationInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Link": {
+          "type": "CoverLink",
+          "documentation": null,
+          "flags": 128
+        },
+        "bLinkDisabled": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "NumSlotsEnabled": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotsEnabled": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "NumSlotsDisabled": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotsDisabled": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "NumSlotsAdjusted": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotsAdjusted": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "NumCoverTypesChanged": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "SlotsCoverTypeChanged": {
+          "type": "ManualCoverTypeInfo",
+          "documentation": null,
+          "flags": 128
+        },
+        "bDone": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientReceiveInitialCoverReplicationInfo(int Index, CoverLink Link, bool bLinkDisabled, byte NumSlotsEnabled, byte SlotsEnabled[8], byte NumSlotsDisabled, byte SlotsDisabled[8], byte NumSlotsAdjusted, byte SlotsAdjusted[8], byte NumCoverTypesChanged, ManualCoverTypeInfo SlotsCoverTypeChanged[8], bool bDone)"
+    },
+    "ServerSendInitialCoverReplicationInfo": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ServerSendInitialCoverReplicationInfo(int Index)"
+    },
+    "ClientSetOwner": {
+      "documentation": null,
+      "signature_members": {
+        "PC": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ClientSetOwner(PlayerController PC)"
+    },
+    "ReplicateInitialCoverInfo": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReplicateInitialCoverInfo()"
+    },
+    "PurgeOldEntries": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PurgeOldEntries()"
+    }
+  },
+  "states": {},
+  "classflags": 10485778,
+  "configname": "None",
+  "documentation": null
+}

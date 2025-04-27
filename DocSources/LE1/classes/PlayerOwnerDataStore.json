@@ -1,0 +1,61 @@
+{
+  "parent": "UIDataStore_GameState",
+  "package": "Engine",
+  "variables": {
+    "ProviderTypes": {
+      "type": "PlayerDataProviderTypes",
+      "documentation": null,
+      "flags": 2
+    },
+    "WeaponList": {
+      "type": "WeaponDataProvider",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "PowerupList": {
+      "type": "PowerupDataProvider",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "PlayerData": {
+      "type": "PlayerOwnerDataProvider",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurrentWeapon": {
+      "type": "CurrentWeaponDataProvider",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "NotifyGameSessionEnded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NotifyGameSessionEnded()"
+    },
+    "ClearDataProviders": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearDataProviders()"
+    },
+    "SetPlayerDataProvider": {
+      "documentation": null,
+      "signature_members": {
+        "NewPlayerData": {
+          "type": "PlayerDataProvider",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPlayerDataProvider(PlayerDataProvider NewPlayerData)"
+    }
+  },
+  "states": {},
+  "classflags": 136315034,
+  "configname": "None",
+  "documentation": null
+}

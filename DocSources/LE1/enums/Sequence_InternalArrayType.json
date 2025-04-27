@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "Array_ActiveSequenceOps": {
+      "value": 0,
+      "documentation": null
+    },
+    "Array_NestedSequences": {
+      "value": 1,
+      "documentation": null
+    },
+    "Array_UnregisteredEvents": {
+      "value": 2,
+      "documentation": null
+    },
+    "Array_DelayedActivatedOps": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

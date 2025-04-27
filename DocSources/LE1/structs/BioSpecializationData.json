@@ -1,0 +1,28 @@
+{
+  "members": {
+    "m_bonusID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_replaceTalentID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_LocalizedName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_LocalizedDesc": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioCharacterImporter",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

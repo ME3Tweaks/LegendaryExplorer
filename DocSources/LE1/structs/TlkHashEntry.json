@@ -1,0 +1,23 @@
+{
+  "members": {
+    "srID_NATIVE_MIRROR": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 4098
+    },
+    "nFlags_NATIVE_MIRROR": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "nStringIndex_NATIVE_MIRROR": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "classdef": "BioTlkFile",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

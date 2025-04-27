@@ -1,0 +1,229 @@
+{
+  "parent": "UIRoot",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIEventContainer": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "StateInputActions": {
+      "type": "InputKeyAction",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "DisabledInputActions": {
+      "type": "InputKeyAction",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "MouseCursorName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "StateSequence": {
+      "type": "UIStateSequence",
+      "documentation": null,
+      "flags": 88080392
+    },
+    "PlayerIndexMask": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 8192
+    },
+    "StackPriority": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 8194
+    }
+  },
+  "functions": {
+    "RemoveSequenceObjects": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectsToRemove": {
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveSequenceObjects(const out array<SequenceObject> ObjectsToRemove)"
+    },
+    "RemoveSequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "ObjectToRemove": {
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveSequenceObject(SequenceObject ObjectToRemove)"
+    },
+    "AddSequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "NewObj": {
+          "type": "SequenceObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "bRecurse": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AddSequenceObject(SequenceObject NewObj, optional bool bRecurse)"
+    },
+    "GetUIEvents": {
+      "documentation": null,
+      "signature_members": {
+        "out_Events": {
+          "type": "UIEvent",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "LimitClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "GetUIEvents(out array<UIEvent> out_Events, optional Class<UIEvent> LimitClass)"
+    },
+    "IsStateAllowed": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewState": {
+          "type": "UIState",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsStateAllowed(UIScreenObject Target, UIState NewState, int PlayerIndex)"
+    },
+    "OnDeactivate": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bPoppedState": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDeactivate(UIScreenObject Target, int PlayerIndex, bool bPoppedState)"
+    },
+    "OnActivate": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bPushedState": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnActivate(UIScreenObject Target, int PlayerIndex, bool bPushedState)"
+    },
+    "DeactivateState": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DeactivateState(UIScreenObject Target, int PlayerIndex)"
+    },
+    "ActivateState": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ActivateState(UIScreenObject Target, int PlayerIndex)"
+    },
+    "IsActiveForPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsActiveForPlayer(int PlayerIndex)"
+    },
+    "IsWidgetClassSupported": {
+      "documentation": null,
+      "signature_members": {
+        "WidgetClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsWidgetClassSupported(Class<UIScreenObject> WidgetClass)"
+    }
+  },
+  "states": {},
+  "classflags": 144707731,
+  "configname": "None",
+  "documentation": null
+}

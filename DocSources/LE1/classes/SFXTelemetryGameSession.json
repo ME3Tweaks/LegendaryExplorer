@@ -1,0 +1,126 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "VfTable_FTickableObject": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "VfTable_FCallbackEventDevice": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "CareerTime": {
+      "type": "Double",
+      "documentation": null,
+      "flags": 0
+    },
+    "GameTime": {
+      "type": "Double",
+      "documentation": null,
+      "flags": 0
+    },
+    "SessionTime": {
+      "type": "Double",
+      "documentation": null,
+      "flags": 0
+    },
+    "IdleTime": {
+      "type": "Double",
+      "documentation": null,
+      "flags": 0
+    },
+    "Career": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "Base64_CharacterID": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "SessionStartMapExclusion": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "TelemetryInstance": {
+      "type": "SFXTelemetry",
+      "documentation": null,
+      "flags": 0
+    },
+    "MapName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "ChunkName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "Difficulty": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayerXPGained": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayerScore": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "CombatScore": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayerKills": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "PlayerDeaths": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "TeamKills": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "TeamDeaths": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bStarted": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSentBootHooks": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSentBugSentryHook": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315038,
+  "configname": "Game",
+  "documentation": null
+}

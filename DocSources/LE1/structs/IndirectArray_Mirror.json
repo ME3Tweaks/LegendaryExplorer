@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Data": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "ArrayNum": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "ArrayMax": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "classdef": "Object",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

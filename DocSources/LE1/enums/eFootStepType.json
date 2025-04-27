@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "FST_Heel": {
+      "value": 0,
+      "documentation": null
+    },
+    "FST_Toe": {
+      "value": 1,
+      "documentation": null
+    },
+    "FST_VFX": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,54 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_aEventSpec": {
+      "type": "BioShieldViewEventSpec",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_pShieldMesh": {
+      "type": "StaticMesh",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "OnEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEvent": {
+          "type": "EBioShieldEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "oShieldOwner": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "oShield": {
+          "type": "BioShield",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
+        },
+        "rHitNormal": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "OnEvent(EBioShieldEvent eEvent, Actor oShieldOwner, BioShield oShield, optional Vector vHitLocation, optional Rotator rHitNormal)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

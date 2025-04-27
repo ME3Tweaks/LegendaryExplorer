@@ -1,0 +1,26 @@
+{
+  "parent": "ParticleModuleColorBase",
+  "package": "Engine",
+  "variables": {
+    "ColorOverLifeRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "AlphaOverLife": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "bClampAlpha": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

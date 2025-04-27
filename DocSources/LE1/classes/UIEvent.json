@@ -1,0 +1,217 @@
+{
+  "parent": "SequenceEvent",
+  "package": "Engine",
+  "variables": {
+    "Description": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "__AllowEventActivation__Delegate": {
+      "type": "AllowEventActivation",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "EventOwner": {
+      "type": "UIScreenObject",
+      "documentation": null,
+      "flags": 16777216
+    },
+    "EventActivator": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 0
+    },
+    "SubobjectVersionModifier": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "bShouldRegisterEvent": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bPropagateEvent": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "ShouldAlwaysInstance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldAlwaysInstance()"
+    },
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    },
+    "IsValidLevelSequenceObject": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsValidLevelSequenceObject()"
+    },
+    "ActivateUIEvent": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "InEventOwner": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "InEventActivator": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
+        },
+        "bActivateImmediately": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "IndicesToActivate": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194706
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ActivateUIEvent(int ControllerIndex, UIScreenObject InEventOwner, optional Object InEventActivator, optional bool bActivateImmediately, optional const out array<int> IndicesToActivate)"
+    },
+    "ConditionalActivateUIEvent": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "InEventOwner": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "InEventActivator": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
+        },
+        "bActivateImmediately": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "IndicesToActivate": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194706
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ConditionalActivateUIEvent(int ControllerIndex, UIScreenObject InEventOwner, optional Object InEventActivator, optional bool bActivateImmediately, optional const out array<int> IndicesToActivate)"
+    },
+    "CanBeActivated": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "InEventOwner": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "InEventActivator": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 144
+        },
+        "bActivateImmediately": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "IndicesToActivate": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194706
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanBeActivated(int ControllerIndex, UIScreenObject InEventOwner, optional Object InEventActivator, optional bool bActivateImmediately, optional const out array<int> IndicesToActivate)"
+    },
+    "GetOwnerScene": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIScene",
+      "signature": "UIScene GetOwnerScene()"
+    },
+    "GetOwner": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "UIScreenObject",
+      "signature": "UIScreenObject GetOwner()"
+    },
+    "AllowEventActivation": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "InEventOwner": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 128
+        },
+        "InEventActivator": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "bActivateImmediately": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "IndicesToActivate": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AllowEventActivation(int ControllerIndex, UIScreenObject InEventOwner, Object InEventActivator, bool bActivateImmediately, const out array<int> IndicesToActivate)"
+    }
+  },
+  "states": {},
+  "classflags": 136315571,
+  "configname": "None",
+  "documentation": null
+}

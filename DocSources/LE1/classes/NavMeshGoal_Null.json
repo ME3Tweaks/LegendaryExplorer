@@ -1,0 +1,46 @@
+{
+  "parent": "NavMeshPathGoalEvaluator",
+  "package": "Engine",
+  "variables": {
+    "PartialGoal": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4096
+    }
+  },
+  "functions": {
+    "Recycle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Recycle()"
+    },
+    "RecycleNative": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RecycleNative()"
+    },
+    "GoUntilBust": {
+      "documentation": null,
+      "signature_members": {
+        "NavHandle": {
+          "type": "NavigationHandle",
+          "documentation": null,
+          "flags": 128
+        },
+        "InMaxPathVisits": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GoUntilBust(NavigationHandle NavHandle, optional int InMaxPathVisits)"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

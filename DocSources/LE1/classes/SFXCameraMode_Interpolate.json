@@ -1,0 +1,209 @@
+{
+  "parent": "SFXCameraMode",
+  "package": "SFXGame",
+  "variables": {
+    "Curve": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "AimPoint": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "RotationOffset": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "LocationOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "From": {
+      "type": "SFXCameraMode",
+      "documentation": null,
+      "flags": 1
+    },
+    "To": {
+      "type": "SFXCameraMode",
+      "documentation": null,
+      "flags": 1
+    },
+    "TotalTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "CurrentTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DefaultTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "AimPointDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinAimPointPreservationDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bComplete": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDisableAimPointPreservation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "InterpMethod": {
+      "type": "EBioInterpolationMethod",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "DrawHUD": {
+      "documentation": null,
+      "signature_members": {
+        "M": {
+          "type": "BioCheatManager",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawHUD(BioCheatManager M)"
+    },
+    "GetCurrentShake": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Rotator",
+      "signature": "Rotator GetCurrentShake()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "TimeDelta": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float TimeDelta)"
+    },
+    "GetActorCameraHook": {
+      "documentation": null,
+      "signature_members": {
+        "OutLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetActorCameraHook(out Vector OutLocation)"
+    },
+    "Trace": {
+      "documentation": null,
+      "signature_members": {
+        "HitActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 384
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "Trace(out Actor HitActor, out Vector HitLocation)"
+    },
+    "InitializeTransition": {
+      "documentation": null,
+      "signature_members": {
+        "FromMode": {
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
+        },
+        "ToMode": {
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
+        },
+        "Time": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "PreserveTarget": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "InitializeTransition(SFXCameraMode FromMode, SFXCameraMode ToMode, float Time, bool PreserveTarget)"
+    },
+    "ModifyPostProcessSettings": {
+      "documentation": null,
+      "signature_members": {
+        "PPSettings": {
+          "type": "PostProcessSettings",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyPostProcessSettings(out PostProcessSettings PPSettings)"
+    },
+    "CheckLoop": {
+      "documentation": null,
+      "signature_members": {
+        "Mode": {
+          "type": "SFXCameraMode",
+          "documentation": null,
+          "flags": 128
+        },
+        "RecurseLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckLoop(SFXCameraMode Mode, int RecurseLevel)"
+    },
+    "Interpolate": {
+      "documentation": null,
+      "signature_members": {
+        "T": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float Interpolate(float T)"
+    }
+  },
+  "states": {},
+  "classflags": 10485778,
+  "configname": "None",
+  "documentation": null
+}

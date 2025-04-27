@@ -1,0 +1,18 @@
+{
+  "members": {
+    "PlayerNickColumnName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4227074
+    },
+    "PlayerNickName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "classdef": "UIDataStore_OnlineStats",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

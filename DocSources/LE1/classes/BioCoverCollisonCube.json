@@ -1,0 +1,21 @@
+{
+  "parent": "PrimitiveComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_vExtent": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 2290102418,
+  "configname": "None",
+  "documentation": null
+}

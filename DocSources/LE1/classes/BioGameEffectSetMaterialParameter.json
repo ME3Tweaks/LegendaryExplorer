@@ -1,0 +1,16 @@
+{
+  "parent": "BioGameEffect",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmMaterialParameter": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134221971,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,56 @@
+{
+  "parent": "Interface",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "NotifyResolveStyle": {
+      "documentation": null,
+      "signature_members": {
+        "ActiveSkin": {
+          "type": "UISkin",
+          "documentation": null,
+          "flags": 128
+        },
+        "bClearExistingValue": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "CurrentMenuState": {
+          "type": "UIState",
+          "documentation": null,
+          "flags": 144
+        },
+        "StylePropertyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 146
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool NotifyResolveStyle(UISkin ActiveSkin, bool bClearExistingValue, optional UIState CurrentMenuState, optional const Name StylePropertyName)"
+    },
+    "SetStyleResolverTag": {
+      "documentation": null,
+      "signature_members": {
+        "NewResolverTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetStyleResolverTag(Name NewResolverTag)"
+    },
+    "GetStyleResolverTag": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetStyleResolverTag()"
+    }
+  },
+  "states": {},
+  "classflags": 134234259,
+  "configname": "None",
+  "documentation": null
+}

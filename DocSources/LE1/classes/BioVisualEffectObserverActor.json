@@ -1,0 +1,21 @@
+{
+  "parent": "BioVisualEffectObserver",
+  "package": "SFXGame",
+  "variables": {
+    "m_actor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_isActorDeletedOnEffectDeath": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

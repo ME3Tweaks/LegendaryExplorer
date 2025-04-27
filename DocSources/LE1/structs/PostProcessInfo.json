@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Shadows": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "MidTones": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "HighLights": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Desaturation": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Preset": {
+      "type": "ETVType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioPlayerController",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

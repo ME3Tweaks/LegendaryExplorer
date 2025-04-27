@@ -1,0 +1,23 @@
+{
+  "members": {
+    "AnimInfo": {
+      "type": "AnimInfo",
+      "documentation": null,
+      "flags": 0
+    },
+    "AnimName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "Weight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "classdef": "AnimNodeSequenceBlendBase",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

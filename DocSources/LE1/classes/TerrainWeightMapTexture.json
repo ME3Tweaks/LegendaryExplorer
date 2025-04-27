@@ -1,0 +1,21 @@
+{
+  "parent": "Texture2D",
+  "package": "Engine",
+  "variables": {
+    "WeightedMaterials": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "ParentTerrain": {
+      "type": "Terrain",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217878,
+  "configname": "Engine",
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "DEBUGGER_NativeOnly": {
+      "value": 0,
+      "documentation": null
+    },
+    "DEBUGGER_ScriptOnly": {
+      "value": 1,
+      "documentation": null
+    },
+    "DEBUGGER_Both": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

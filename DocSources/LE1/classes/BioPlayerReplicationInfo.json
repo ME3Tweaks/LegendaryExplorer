@@ -1,0 +1,10 @@
+{
+  "parent": "PlayerReplicationInfo",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 10485810,
+  "configname": "None",
+  "documentation": null
+}

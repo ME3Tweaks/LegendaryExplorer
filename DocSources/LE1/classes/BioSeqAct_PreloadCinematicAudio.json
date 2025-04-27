@@ -1,0 +1,29 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "UpdateOp": {
+      "documentation": null,
+      "signature_members": {
+        "fDelta": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateOp(float fDelta)"
+    },
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

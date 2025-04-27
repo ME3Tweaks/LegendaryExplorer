@@ -1,0 +1,63 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "EventLocation": {
+      "type": "RwVector3",
+      "documentation": null,
+      "flags": 0
+    },
+    "EventDirection": {
+      "type": "RwVector3",
+      "documentation": null,
+      "flags": 0
+    },
+    "EventVelocity": {
+      "type": "RwVector3",
+      "documentation": null,
+      "flags": 0
+    },
+    "EventNormal": {
+      "type": "RwVector3",
+      "documentation": null,
+      "flags": 0
+    },
+    "EventNames": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "Instigator": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "EventTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseEmitterLocation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

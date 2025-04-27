@@ -1,0 +1,43 @@
+{
+  "members": {
+    "sIcon": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "nAchievementID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "srTitle": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "srIncomplete": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "srComplete": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "nIconRef": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEarned": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioGamerProfile",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

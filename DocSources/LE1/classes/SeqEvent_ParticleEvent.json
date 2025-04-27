@@ -1,0 +1,53 @@
+{
+  "parent": "SequenceEvent",
+  "package": "Engine",
+  "variables": {
+    "EventPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "EventVelocity": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "EventNormal": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "EventEmitterTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "EventParticleTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "UseRelfectedImpactVector": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "EventType": {
+      "type": "EParticleEventOutputType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

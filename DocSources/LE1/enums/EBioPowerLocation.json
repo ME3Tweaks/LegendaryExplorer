@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BIO_POWER_LOCATION_UNKNOWN": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_POWER_LOCATION_CASTER": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_POWER_LOCATION_TARGET": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,10 @@
+{
+  "parent": "SFXWeaponStats_AssaultRifleBase",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 8388630,
+  "configname": "Weapon",
+  "documentation": null
+}

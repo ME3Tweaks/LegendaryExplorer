@@ -1,0 +1,36 @@
+{
+  "parent": "InterpTrackInst",
+  "package": "Engine",
+  "variables": {
+    "InitialTM": {
+      "type": "Matrix",
+      "documentation": null,
+      "flags": 0
+    },
+    "InitialQuat": {
+      "type": "Quat",
+      "documentation": null,
+      "flags": 0
+    },
+    "ResetLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "ResetRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nSavedPhysicsMode": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

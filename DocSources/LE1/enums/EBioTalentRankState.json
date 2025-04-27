@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BioTalentRankState_Locked": {
+      "value": 0,
+      "documentation": null
+    },
+    "BioTalentRankState_Buyable": {
+      "value": 1,
+      "documentation": null
+    },
+    "BioTalentRankState_Bought": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

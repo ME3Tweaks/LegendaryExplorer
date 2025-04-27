@@ -1,0 +1,17 @@
+{
+  "parent": "BioAttributesItemWeapon",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "DescribeAttributes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeAttributes()"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

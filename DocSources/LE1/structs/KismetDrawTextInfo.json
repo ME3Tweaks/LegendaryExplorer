@@ -1,0 +1,38 @@
+{
+  "members": {
+    "MessageText": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "MessageFont": {
+      "type": "Font",
+      "documentation": null,
+      "flags": 1
+    },
+    "MessageFontScale": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "MessageOffset": {
+      "type": "Vector2D",
+      "documentation": null,
+      "flags": 1
+    },
+    "MessageColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 1
+    },
+    "MessageEndTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "HUD",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

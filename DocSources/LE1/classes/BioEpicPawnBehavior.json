@@ -1,0 +1,1075 @@
+{
+  "parent": "BioActorBehavior",
+  "package": "SFXGame",
+  "variables": {
+    "DefaultSquadClass": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aoCapabilities": {
+      "type": "BioCapability",
+      "documentation": null,
+      "flags": 71303169
+    },
+    "m_powers": {
+      "type": "BioPower",
+      "documentation": null,
+      "flags": 71303169
+    },
+    "m_epicPawnBehaviorCache": {
+      "type": "BioEpicPawnBehaviorCache",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_aVisualEffects": {
+      "type": "EpicPawnVisualEffect",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "SquadClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_attributesClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_rPrevRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_CurrentTargetZoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_ValidTargetZoneName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 8192
+    },
+    "Squad": {
+      "type": "BioBaseSquad",
+      "documentation": null,
+      "flags": 1
+    },
+    "SquadName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oSquadInterface": {
+      "type": "BioPawnSquadInterface",
+      "documentation": null,
+      "flags": 67117056
+    },
+    "m_PawnAttributes": {
+      "type": "BioAttributesEpicPawn",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_fZoneValidDelayTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_nALLEnabled": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nQueueEnabled": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nStackEnabled": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nWeaponsEnabled": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nGrenadesEnabled": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nPowersEnabled": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nCombatTransitionEnabled": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nCurrentPowerIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nDoorProximityRefCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bIsLockedOnTarget": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bTargetZoneChanged": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bFoundFirstTargetZoneHit": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bValidTargetZoneChanged": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bDoCameraBehaviorTransition": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "SquadLeader": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bDebugIgnoreArmor": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_eCurrentActionState": {
+      "type": "EActionStateVariable",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ePreviousActionState": {
+      "type": "EActionStateVariable",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eCombatStance": {
+      "type": "EBioCombatStance",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_combatModeFadeoutState": {
+      "type": "EBioAnimNodeCombatModeFadeOut",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eWeaponFireMode": {
+      "type": "EBioEpicPawnBehaviorWeaponFireMode",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "SetMatriarchZen": {
+      "documentation": null,
+      "signature_members": {
+        "bEnabled": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMatriarchZen(bool bEnabled)"
+    },
+    "DisplayEpicPawnVisualEffect": {
+      "documentation": null,
+      "signature_members": {
+        "nmLabel": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DisplayEpicPawnVisualEffect(Name nmLabel)"
+    },
+    "OnShieldsDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnShieldsDown()"
+    },
+    "AdjustSalvage": {
+      "documentation": null,
+      "signature_members": {
+        "fAmt": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustSalvage(float fAmt)"
+    },
+    "GetSalvage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetSalvage()"
+    },
+    "IsHealing": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsHealing()"
+    },
+    "Heal": {
+      "documentation": null,
+      "signature_members": {
+        "fHealthPoints": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fToxicDamageHealed": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "fResourcesRequired": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "Heal(float fHealthPoints, optional float fToxicDamageHealed, optional float fResourcesRequired)"
+    },
+    "GetPercentHealth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPercentHealth()"
+    },
+    "GetCurrentHealth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetCurrentHealth()"
+    },
+    "InitializeRunTimeOnlyTransients": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeRunTimeOnlyTransients()"
+    },
+    "SetCurrentHealth": {
+      "documentation": null,
+      "signature_members": {
+        "currentHealth": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentHealth(float currentHealth)"
+    },
+    "GetMaxHealth": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMaxHealth()"
+    },
+    "UpdatePowersOnDeath": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdatePowersOnDeath()"
+    },
+    "FindPowerIndex": {
+      "documentation": null,
+      "signature_members": {
+        "nmPowerName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindPowerIndex(Name nmPowerName)"
+    },
+    "FindPower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPowerName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioPower",
+      "signature": "BioPower FindPower(Name nmPowerName)"
+    },
+    "ApplyRadialImpulse": {
+      "documentation": null,
+      "signature_members": {
+        "vLineOfSightOrigin": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vImpulseOrigin": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "fImpulseMagnitude": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmPhysicsBoneName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ApplyRadialImpulse(Vector vLineOfSightOrigin, Vector vImpulseOrigin, float fImpulseMagnitude, optional Name nmPhysicsBoneName)"
+    },
+    "SetTarget": {
+      "documentation": null,
+      "signature_members": {
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "bLockOnTarget": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetTarget(Actor oTarget, optional bool bLockOnTarget)"
+    },
+    "IsLockedOnTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsLockedOnTarget()"
+    },
+    "LockOnTarget": {
+      "documentation": null,
+      "signature_members": {
+        "B": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "LockOnTarget(bool B)"
+    },
+    "GetSaveObjectClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<BioBaseSaveObject> GetSaveObjectClass()"
+    },
+    "WriteSaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "InOuter": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "Save": {
+          "type": "BioBaseSaveObject",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "BioBaseSaveObject",
+      "signature": "BioBaseSaveObject WriteSaveObject(Object InOuter, optional BioBaseSaveObject Save)"
+    },
+    "IsFriendlyFire": {
+      "documentation": null,
+      "signature_members": {
+        "pInstigatorController": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "pDamage": {
+          "type": "BioDamageType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsFriendlyFire(Controller pInstigatorController, BioDamageType pDamage)"
+    },
+    "ReactToDeath": {
+      "documentation": null,
+      "signature_members": {
+        "fDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDeathDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "pInstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vMomentum": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "clsDamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitInfo": {
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamage": {
+          "type": "BioDamageType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ReactToDeath(float fDamage, float fDeathDamage, Controller pInstigatedBy, Vector vHitLocation, Vector vMomentum, Class<DamageType> clsDamageType, optional TraceHitInfo HitInfo, optional BioDamageType pDamage)"
+    },
+    "IsHostile": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsHostile(Controller InstigatedBy)"
+    },
+    "IsNeutral": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsNeutral(Controller InstigatedBy)"
+    },
+    "IsFriendly": {
+      "documentation": null,
+      "signature_members": {
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsFriendly(Controller InstigatedBy)"
+    },
+    "GetHealthAndShieldsCapacities": {
+      "documentation": null,
+      "signature_members": {
+        "fHealth": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "fShields": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetHealthAndShieldsCapacities(out int fHealth, out int fShields)"
+    },
+    "GetHealthAndShieldsScaledToInt": {
+      "documentation": null,
+      "signature_members": {
+        "fHealth": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        },
+        "fShields": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetHealthAndShieldsScaledToInt(out int fHealth, out int fShields)"
+    },
+    "GetHealthAndShieldsScaled": {
+      "documentation": null,
+      "signature_members": {
+        "fHealth": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "fShields": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetHealthAndShieldsScaled(out float fHealth, out float fShields)"
+    },
+    "ClearAllActionsOnPawn": {
+      "documentation": null,
+      "signature_members": {
+        "sClearLabel": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearAllActionsOnPawn(optional string sClearLabel)"
+    },
+    "GetDoorProximityRefCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetDoorProximityRefCount()"
+    },
+    "ModifyDoorProximityRefCount": {
+      "documentation": null,
+      "signature_members": {
+        "bIncrement": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ModifyDoorProximityRefCount(bool bIncrement)"
+    },
+    "IsCombatSelectable": {
+      "documentation": null,
+      "signature_members": {
+        "pPlayerController": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsCombatSelectable(BioPlayerController pPlayerController)"
+    },
+    "IsExploreSelectable": {
+      "documentation": null,
+      "signature_members": {
+        "pPlayerController": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsExploreSelectable(BioPlayerController pPlayerController)"
+    },
+    "ProxyCacheGetMuzzleToTargetDirection": {
+      "documentation": null,
+      "signature_members": {
+        "Direction": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        },
+        "Weapon": {
+          "type": "BioWeaponRanged",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProxyCacheGetMuzzleToTargetDirection(out Rotator Direction, BioWeaponRanged Weapon)"
+    },
+    "ProxyCacheGetWeaponTargetPoint": {
+      "documentation": null,
+      "signature_members": {
+        "TargetPoint": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "Weapon": {
+          "type": "BioWeaponRanged",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProxyCacheGetWeaponTargetPoint(out Vector TargetPoint, BioWeaponRanged Weapon)"
+    },
+    "OnTargetInvalidated": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentSelection": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTargetInvalidated(Actor CurrentSelection)"
+    },
+    "OnNewPlayerPawnSelection": {
+      "documentation": null,
+      "signature_members": {
+        "Selection": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "pPlayerSelection": {
+          "type": "BioPlayerSelection",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OnNewPlayerPawnSelection(Actor Selection, BioPlayerSelection pPlayerSelection)"
+    },
+    "SetPreviousActionState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EActionStateVariable",
+      "signature": "EActionStateVariable SetPreviousActionState()"
+    },
+    "SetActionState": {
+      "documentation": null,
+      "signature_members": {
+        "eState": {
+          "type": "EActionStateVariable",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDelay": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "EActionStateVariable",
+      "signature": "EActionStateVariable SetActionState(EActionStateVariable eState, optional float fDelay)"
+    },
+    "TickPowers": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TickPowers(float DeltaTime)"
+    },
+    "ClearCurrentPower": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearCurrentPower()"
+    },
+    "SetCurrentPower": {
+      "documentation": null,
+      "signature_members": {
+        "nmPower": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "fCooldownRemaining": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetCurrentPower(Name nmPower, out float fCooldownRemaining)"
+    },
+    "AppendPawnCapabilitiesToList": {
+      "documentation": null,
+      "signature_members": {
+        "nCapType": {
+          "type": "EBioCapabilityTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "oOutCaps": {
+          "type": "BioCapability",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "AppendPawnCapabilitiesToList(EBioCapabilityTypes nCapType, out array<BioCapability> oOutCaps)"
+    },
+    "RecomputeCapabilities": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "RecomputeCapabilities()"
+    },
+    "IsAbilityEnabledCombatTransition": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabledCombatTransition()"
+    },
+    "IsAbilityEnabledPowers": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabledPowers()"
+    },
+    "IsAbilityEnabledGrenades": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabledGrenades()"
+    },
+    "IsAbilityEnabledWeapons": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabledWeapons()"
+    },
+    "IsAbilityEnabledStack": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabledStack()"
+    },
+    "IsAbilityEnabledQueue": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabledQueue()"
+    },
+    "IsAbilityEnabledAll": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabledAll()"
+    },
+    "DoDisabledEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEnableType": {
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmSubType": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DoDisabledEvent(EDisableType eEnableType, Name nmSubType)"
+    },
+    "DoEnabledEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEnableType": {
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmSubType": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DoEnabledEvent(EDisableType eEnableType, Name nmSubType)"
+    },
+    "IsAbilityEnabled_Power": {
+      "documentation": null,
+      "signature_members": {
+        "eEnableType": {
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmSubType": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabled_Power(EDisableType eEnableType, Name nmSubType)"
+    },
+    "AbilityEnable_Power": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "eEnableType": {
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmSubType": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int AbilityEnable_Power(bool bEnable, EDisableType eEnableType, Name nmSubType)"
+    },
+    "IsAbilityEnabled_Offense": {
+      "documentation": null,
+      "signature_members": {
+        "eEnableType": {
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmSubType": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabled_Offense(EDisableType eEnableType, Name nmSubType)"
+    },
+    "AbilityEnable_Offense": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "eEnableType": {
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmSubType": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int AbilityEnable_Offense(bool bEnable, EDisableType eEnableType, Name nmSubType)"
+    },
+    "IsAbilityEnabled_AI": {
+      "documentation": null,
+      "signature_members": {
+        "eEnableType": {
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmSubType": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAbilityEnabled_AI(EDisableType eEnableType, Name nmSubType)"
+    },
+    "AbilityEnable_AI": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "eEnableType": {
+          "type": "EDisableType",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmSubType": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int AbilityEnable_AI(bool bEnable, EDisableType eEnableType, Name nmSubType)"
+    },
+    "OnWeaponInstantFire": {
+      "documentation": null,
+      "signature_members": {
+        "oFiredWeapon": {
+          "type": "BioWeaponRanged",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponInstantFire(optional BioWeaponRanged oFiredWeapon)"
+    },
+    "InitializeActionFramework": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeActionFramework()"
+    },
+    "TickBehavior": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TickBehavior(float DeltaTime)"
+    },
+    "GetTargetZoneCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetTargetZoneCount()"
+    },
+    "GetTargetZoneNameN": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmTargetZone": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTargetZoneNameN(int nIndex, out Name nmTargetZone)"
+    },
+    "GetTargetZoneLocationN": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetTargetZoneLocationN(int nIndex, out Vector vLocation)"
+    },
+    "IsTargetZoneEnabled": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsTargetZoneEnabled()"
+    },
+    "GetTargetZoneLocation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetTargetZoneLocation()"
+    },
+    "CanSeeTarget": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "vSourceLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "bTraverseList": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "nOptLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name CanSeeTarget(float fDeltaTime, Vector vSourceLocation, optional Actor oTarget, optional bool bTraverseList, optional int nOptLevel)"
+    }
+  },
+  "states": {},
+  "classflags": 144740502,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,18 @@
+{
+  "members": {
+    "sSpeakerTag": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "aSpeaker": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "classdef": "BioConversation",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

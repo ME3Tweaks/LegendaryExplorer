@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Key": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242881
+    },
+    "Value": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242881
+    }
+  },
+  "classdef": "Info",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 11
+}

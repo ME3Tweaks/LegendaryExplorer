@@ -1,0 +1,443 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "MyDamageType": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "ZeroCollider": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "ZeroColliderComponent": {
+      "type": "PrimitiveComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "SpawnSound": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 0
+    },
+    "ImpactSound": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 0
+    },
+    "InstigatorController": {
+      "type": "Controller",
+      "documentation": null,
+      "flags": 0
+    },
+    "ImpactedActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "CylinderComponent": {
+      "type": "CylinderComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "NextProjectile": {
+      "type": "Projectile",
+      "documentation": null,
+      "flags": 0
+    },
+    "Speed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Damage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "DamageRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "MomentumTransfer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "NetCullDistanceSquared": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSwitchToZeroCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bBlockedByInstigator": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bBegunPlay": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bRotationFollowsVelocity": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bNotBlockedByShield": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "ApplyFluidSurfaceImpact": {
+      "documentation": null,
+      "signature_members": {
+        "Fluid": {
+          "type": "FluidSurfaceActor",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyFluidSurfaceImpact(FluidSurfaceActor Fluid, Vector HitLocation)"
+    },
+    "GetRange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetRange()"
+    },
+    "StaticGetTimeToLocation": {
+      "documentation": null,
+      "signature_members": {
+        "TargetLoc": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "StartLoc": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "RequestedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float StaticGetTimeToLocation(Vector TargetLoc, Vector StartLoc, Controller RequestedBy)"
+    },
+    "GetTimeToLocation": {
+      "documentation": null,
+      "signature_members": {
+        "TargetLoc": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetTimeToLocation(Vector TargetLoc)"
+    },
+    "FellOutOfWorld": {
+      "documentation": null,
+      "signature_members": {
+        "dmgType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "FellOutOfWorld(Class<DamageType> dmgType)"
+    },
+    "IsStationary": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsStationary()"
+    },
+    "RandSpin": {
+      "documentation": null,
+      "signature_members": {
+        "spinRate": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RandSpin(float spinRate)"
+    },
+    "Explode": {
+      "documentation": null,
+      "signature_members": {
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Explode(Vector HitLocation, Vector HitNormal)"
+    },
+    "EncroachedBy": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "EncroachedBy(Actor Other)"
+    },
+    "HitWall": {
+      "documentation": null,
+      "signature_members": {
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Wall": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "WallComp": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "HitWall(Vector HitNormal, Actor Wall, PrimitiveComponent WallComp)"
+    },
+    "ProcessTouch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessTouch(Actor Other, Vector HitLocation, Vector HitNormal)"
+    },
+    "Touch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "OtherComp": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Touch(Actor Other, PrimitiveComponent OtherComp, Vector HitLocation, Vector HitNormal)"
+    },
+    "HurtRadius": {
+      "documentation": null,
+      "signature_members": {
+        "DamageAmount": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InDamageRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "HurtOrigin": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "IgnoredActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "InstigatedByController": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 144
+        },
+        "bDoFullDamage": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamage": {
+          "type": "DamageType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool HurtRadius(float DamageAmount, float InDamageRadius, Class<DamageType> DamageType, float Momentum, Vector HurtOrigin, optional Actor IgnoredActor, optional Controller InstigatedByController, optional bool bDoFullDamage, optional DamageType pDamage)"
+    },
+    "ProjectileHurtRadius": {
+      "documentation": null,
+      "signature_members": {
+        "inDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InMomentum": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "HurtOrigin": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProjectileHurtRadius(float inDamage, float InRadius, float InMomentum, Vector HurtOrigin, Vector HitNormal)"
+    },
+    "Reset": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Reset()"
+    },
+    "CanSplash": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool CanSplash()"
+    },
+    "GetTeamNum": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "byte",
+      "signature": "byte GetTeamNum()"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {
+        "Direction": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Init(Vector Direction)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "PreBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreBeginPlay()"
+    },
+    "EncroachingOn": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EncroachingOn(Actor Other)"
+    }
+  },
+  "states": {},
+  "classflags": 144703635,
+  "configname": "None",
+  "documentation": null
+}

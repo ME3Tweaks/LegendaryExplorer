@@ -1,0 +1,111 @@
+{
+  "parent": "ParticleModuleBeamBase",
+  "package": "Engine",
+  "variables": {
+    "NoiseRangeRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "NoiseSpeedRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "NoiseRangeScale": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "NoiseTangentStrength": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "NoiseScale": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "Frequency": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "Frequency_LowRange": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "NoiseLockRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "NoiseLockTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "NoiseTension": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "NoiseTessellation": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "FrequencyDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLowFreq_Enabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNRScaleEmitterTime": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSmooth": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNoiseLock": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bOscillate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseNoiseTangents": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bTargetNoise": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bApplyNoiseScale": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

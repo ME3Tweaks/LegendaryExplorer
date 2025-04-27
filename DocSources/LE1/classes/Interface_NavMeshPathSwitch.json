@@ -1,0 +1,23 @@
+{
+  "parent": "Interface_NavMeshPathObject",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "AIActivateSwitch": {
+      "documentation": null,
+      "signature_members": {
+        "AI": {
+          "type": "AIController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool AIActivateSwitch(AIController AI)"
+    }
+  },
+  "states": {},
+  "classflags": 134234259,
+  "configname": "None",
+  "documentation": null
+}

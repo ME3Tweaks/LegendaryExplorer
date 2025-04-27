@@ -1,0 +1,229 @@
+{
+  "parent": "BioAttributes",
+  "package": "SFXGame",
+  "variables": {
+    "m_ScanLevel": {
+      "type": "BioComplexIntStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_HealthMax": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_HealthRegenRate": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_BioticMultiplier": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_TechMultiplier": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_PowerCooldownMultiplier": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_RadarRange": {
+      "type": "BioComplexFloatStructAttribute",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_FirstName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_PrimaryAttributeLookupTable": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_HealthCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ShieldCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_LastName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_initialRadarRange": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_initialHealthRegenRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_HealthAffectedByImmunity": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_ShieldsAffectedByShieldIncrease": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_MatriarchZen": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetName()"
+    },
+    "GetDesignedName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetDesignedName()"
+    },
+    "RemoveFloatAttributeBaseOverrideModifier": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfOverride": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveFloatAttributeBaseOverrideModifier(Name attribute, int nIndexOfOverride, optional int nIndexOfAttributeInArray)"
+    },
+    "AddFloatAttributeBaseOverrideModifier": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Value": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "int",
+      "signature": "int AddFloatAttributeBaseOverrideModifier(Name attribute, float Value, optional int nIndexOfAttributeInArray)"
+    },
+    "RemoveFloatAttributeModifier": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "modType": {
+          "type": "EBioAttrModType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveFloatAttributeModifier(Name attribute, EBioAttrModType modType, float fValue, optional int nIndexOfAttributeInArray)"
+    },
+    "AddFloatAttributeModifier": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "modType": {
+          "type": "EBioAttrModType",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "AddFloatAttributeModifier(Name attribute, EBioAttrModType modType, float fValue, optional int nIndexOfAttributeInArray)"
+    },
+    "SetFloatAttribute": {
+      "documentation": null,
+      "signature_members": {
+        "attribute": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndexOfAttributeInArray": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatAttribute(Name attribute, float fValue, optional int nIndexOfAttributeInArray)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

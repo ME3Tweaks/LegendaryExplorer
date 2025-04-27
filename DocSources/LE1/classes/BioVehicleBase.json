@@ -1,0 +1,350 @@
+{
+  "parent": "SVehicle",
+  "package": "SFXGame",
+  "variables": {
+    "m_oAreaMap": {
+      "type": "GFxMovieInfo",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oCurrentAreaMap": {
+      "type": "GFxMovieInfo",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_oBehavior": {
+      "type": "BioVehicleBehaviorBase",
+      "documentation": null,
+      "flags": 67108865
+    },
+    "m_OperationalSounds": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "m_pLightEnvComponent": {
+      "type": "LightEnvironmentComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "m_pLowShieldSound": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "m_sVehicleName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bShowVehicleDebugHUD": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16385
+    },
+    "m_bAwakeOnLevelStart": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bDebugVehicleEnterExitSequence": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "HandleVehicleChatterEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eSoundSet": {
+          "type": "EBioSoundSetType",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleVehicleChatterEvent(EBioSoundSetType eSoundSet)"
+    },
+    "OnTeleport": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_Teleport",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnTeleport(SeqAct_Teleport Action)"
+    },
+    "GetSaveObjectClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<BioBaseSaveObject> GetSaveObjectClass()"
+    },
+    "SetInputs": {
+      "documentation": null,
+      "signature_members": {
+        "InForward": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InStrafe": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InUp": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetInputs(float InForward, float InStrafe, float InUp)"
+    },
+    "ProxyTryToDrive": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ProxyTryToDrive(Pawn P)"
+    },
+    "RigidBodyCollision": {
+      "documentation": null,
+      "signature_members": {
+        "HitComponent": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "OtherComponent": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "RigidCollisionData": {
+          "type": "CollisionImpactData",
+          "documentation": null,
+          "flags": 4194690
+        },
+        "ContactIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RigidBodyCollision(PrimitiveComponent HitComponent, PrimitiveComponent OtherComponent, const out CollisionImpactData RigidCollisionData, int ContactIndex)"
+    },
+    "DrawHUD": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": "HUD",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DrawHUD(HUD H)"
+    },
+    "BioProxyDetachDriver": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "BioProxyDetachDriver(Pawn P)"
+    },
+    "DetachDriver": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DetachDriver(Pawn P)"
+    },
+    "BioProxyAttachDriver": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "BioProxyAttachDriver(Pawn P)"
+    },
+    "AttachDriver": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AttachDriver(Pawn P)"
+    },
+    "SetExitingSquadLocation": {
+      "documentation": null,
+      "signature_members": {
+        "vExitCenterLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "fPlacementOffset": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SetExitingSquadLocation(Vector vExitCenterLocation, float fPlacementOffset)"
+    },
+    "PlaceExitingDriver": {
+      "documentation": null,
+      "signature_members": {
+        "ExitingDriver": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PlaceExitingDriver(optional Pawn ExitingDriver)"
+    },
+    "DriverEnter": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DriverEnter(Pawn P)"
+    },
+    "DriverLeave": {
+      "documentation": null,
+      "signature_members": {
+        "bForceLeave": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DriverLeave(bool bForceLeave)"
+    },
+    "SetPartyCollisionState": {
+      "documentation": null,
+      "signature_members": {
+        "bCollideState": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPartyCollisionState(bool bCollideState)"
+    },
+    "BioBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BioBeginPlay()"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float DeltaTime)"
+    },
+    "ReattachAllPrimitiveComponents": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ReattachAllPrimitiveComponents()"
+    },
+    "KillAllMomentum": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "KillAllMomentum()"
+    },
+    "IsExitLocationValid": {
+      "documentation": null,
+      "signature_members": {
+        "vExitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsExitLocationValid(Vector vExitLocation)"
+    },
+    "InitializeForPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeForPlay()"
+    },
+    "PerformForceExitCleanup": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool PerformForceExitCleanup()"
+    },
+    "BioCanExitVehicle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool BioCanExitVehicle()"
+    },
+    "BioCanEnterVehicle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool BioCanEnterVehicle()"
+    },
+    "GetVisualImpactSet": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "BioVISSimple",
+      "signature": "BioVISSimple GetVisualImpactSet()"
+    }
+  },
+  "states": {},
+  "classflags": 144704183,
+  "configname": "Game",
+  "documentation": null
+}

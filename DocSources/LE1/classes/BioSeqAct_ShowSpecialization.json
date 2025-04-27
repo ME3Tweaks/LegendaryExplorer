@@ -1,0 +1,28 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_sSpecializationResource": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "m_oSpecializationGuiReferenced": {
+      "type": "GFxMovieInfo",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 136315030,
+  "configname": "UI",
+  "documentation": null
+}

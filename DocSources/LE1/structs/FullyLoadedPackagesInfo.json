@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Tag": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "PackagesToLoad": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "LoadedObjects": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "FullyLoadType": {
+      "type": "EFullyLoadPackageType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "GameEngine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

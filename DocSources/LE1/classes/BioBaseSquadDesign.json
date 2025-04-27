@@ -1,0 +1,1096 @@
+{
+  "parent": "BioSquadAI",
+  "package": "SFXStrategicAI",
+  "variables": {
+    "WaypointRoutes": {
+      "type": "WaypointRoute",
+      "documentation": null,
+      "flags": 71303169
+    },
+    "m_aoAssignedPathnodes": {
+      "type": "LockedPoint",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "InitialStrategy": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "FallBackStrategy": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "DelayReactionIdle": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DelayLostSight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DelayOrdersLoop": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SightMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "HearingMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fFlockingMinDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fFlockingMaxDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fFlockingMaxSquadDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bPerceptionScaled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bAttackedRecently": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "AgitationLevel": {
+      "type": "eAgitationLevel",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "OnProximityAlarm": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "nRelationship": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnProximityAlarm(Pawn oMember, Actor oTarget, int nRelationship)"
+    },
+    "OnSquadSeen": {
+      "documentation": null,
+      "signature_members": {
+        "oSquad": {
+          "type": "BioBaseSquad",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSquadSeen(BioBaseSquad oSquad)"
+    },
+    "OnDamaged": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oInstigator": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "fDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDamaged(Pawn oMember, Controller oInstigator, float fDamage)"
+    },
+    "OnCastAt": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oAttacker": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmPower": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnCastAt(Pawn oMember, Pawn oAttacker, Name nmPower)"
+    },
+    "OnAttacked": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oAttacker": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmWeapon": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnAttacked(Pawn oMember, Pawn oAttacker, Name nmWeapon)"
+    },
+    "OnDeath": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oKiller": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnDeath(Pawn oMember, Controller oKiller)"
+    },
+    "SetHackedSquad": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetHackedSquad()"
+    },
+    "SetInitialState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetInitialState()"
+    },
+    "OnActionComplete_Movement": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmAction": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nReason": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnActionComplete_Movement(Pawn oMember, Name nmAction, int nReason, Actor oTarget, Vector vLocation)"
+    },
+    "MemberAdded": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MemberAdded(int nIndex)"
+    },
+    "MemberRemoved": {
+      "documentation": null,
+      "signature_members": {
+        "oPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MemberRemoved(Pawn oPawn)"
+    },
+    "RemovePerceptionMultipliers": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        },
+        "fSightMult": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fHearingMult": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemovePerceptionMultipliers(BioAiController oMember, float fSightMult, float fHearingMult)"
+    },
+    "ApplyPerceptionMultipliers": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        },
+        "fSightMult": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fHearingMult": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyPerceptionMultipliers(BioAiController oMember, float fSightMult, float fHearingMult)"
+    },
+    "ResetAttackedRecently": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetAttackedRecently()"
+    },
+    "NoLongerSeePlayer": {
+      "documentation": null,
+      "signature_members": {
+        "Who": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Seen": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "NoLongerSeePlayer(Pawn Who, Pawn Seen)"
+    },
+    "SeePlayer": {
+      "documentation": null,
+      "signature_members": {
+        "Who": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "Seen": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SeePlayer(Pawn Who, Pawn Seen)"
+    },
+    "OnFactionChanged": {
+      "documentation": null,
+      "signature_members": {
+        "oOldFaction": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "oNewFaction": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnFactionChanged(Class<BioFaction> oOldFaction, Class<BioFaction> oNewFaction)"
+    },
+    "GetOrientationType": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EOrientationType",
+      "signature": "EOrientationType GetOrientationType()"
+    },
+    "GetRestFormation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<BioFormations> GetRestFormation()"
+    },
+    "SquadWalkWaypoints": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SquadWalkWaypoints()"
+    },
+    "SquadMemberWalkWaypoints": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SquadMemberWalkWaypoints(BioAiController oMember)"
+    },
+    "GetNavPointInPlaypen": {
+      "documentation": null,
+      "signature_members": {
+        "vNear": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vLateralOffset": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "fSearchRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fVerticalOffset": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "bCanFly": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bCanHop": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bSniper": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bAggressive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bDefensive": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "oLOSTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "oIgnoreIfLockedBy": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "NavigationPoint",
+      "signature": "NavigationPoint GetNavPointInPlaypen(Vector vNear, Vector vLateralOffset, float fSearchRadius, optional float fVerticalOffset, optional bool bCanFly, optional bool bCanHop, optional bool bSniper, optional bool bAggressive, optional bool bDefensive, optional Actor oLOSTarget, optional BioPawn oIgnoreIfLockedBy)"
+    },
+    "GetFlockingOffset": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetFlockingOffset(BioAiController oMember)"
+    },
+    "SetFlockingRanges": {
+      "documentation": null,
+      "signature_members": {
+        "FMin": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "FMax": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "fSquadMax": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFlockingRanges(float FMin, float FMax, float fSquadMax)"
+    },
+    "GetFurthestSquadMember": {
+      "documentation": null,
+      "signature_members": {
+        "vTarget": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "aoIgnoreMembers": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 4194448
+        },
+        "fLongestDistToTargetSq": {
+          "type": "float",
+          "documentation": null,
+          "flags": 400
+        }
+      },
+      "returntype": "BioAiController",
+      "signature": "BioAiController GetFurthestSquadMember(Vector vTarget, optional array<BioAiController> aoIgnoreMembers, optional out float fLongestDistToTargetSq)"
+    },
+    "ResetSquadProximity": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetSquadProximity()"
+    },
+    "SetSquadProximityByAttackRange": {
+      "documentation": null,
+      "signature_members": {
+        "fMultiplier": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSquadProximityByAttackRange(optional float fMultiplier)"
+    },
+    "SetSquadProximity": {
+      "documentation": null,
+      "signature_members": {
+        "fDefault": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "fCloseCombat": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "fSniperCombat": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "fSupport": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetSquadProximity(optional float fDefault, optional float fCloseCombat, optional float fSniperCombat, optional float fSupport)"
+    },
+    "PushMoveWithLocking": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "fTolerance": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "bWalking": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "fMovementDelay": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "bCrouch": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "PushMoveWithLocking(BioAiController oMember, Actor oTarget, optional float fTolerance, optional bool bWalking, optional float fMovementDelay, optional bool bCrouch)"
+    },
+    "SquadMemberTakeCover": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        },
+        "fCoverRange": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "fNavRange": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "oTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
+        },
+        "oAvoid": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
+        },
+        "bNewCover": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bCrouchIfNoCover": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "fMovementDelay": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "vCoverLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 144
+        },
+        "bUseDefNodeIfNoCover": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SquadMemberTakeCover(BioAiController oMember, optional float fCoverRange, optional float fNavRange, optional Pawn oTarget, optional Pawn oAvoid, optional bool bNewCover, optional bool bCrouchIfNoCover, optional float fMovementDelay, optional Vector vCoverLocation, optional bool bUseDefNodeIfNoCover)"
+    },
+    "IsAtDefenseNode": {
+      "documentation": null,
+      "signature_members": {
+        "oTestPawn": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsAtDefenseNode(Pawn oTestPawn)"
+    },
+    "SquadTakeCover": {
+      "documentation": null,
+      "signature_members": {
+        "fCoverRange": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "fNavRange": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "oTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
+        },
+        "oAvoid": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
+        },
+        "bNewCover": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bCrouchIfNoCover": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "fDelayOrdersLoop": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "bUseDefNodeIfNoCover": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SquadTakeCover(optional float fCoverRange, optional float fNavRange, optional Pawn oTarget, optional Pawn oAvoid, optional bool bNewCover, optional bool bCrouchIfNoCover, optional float fDelayOrdersLoop, optional bool bUseDefNodeIfNoCover)"
+    },
+    "PushCoverWithLocking": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        },
+        "vNear": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "oTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
+        },
+        "oAvoid": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
+        },
+        "fCoverRadius": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "fMovementDelay": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool PushCoverWithLocking(BioAiController oMember, Vector vNear, optional Pawn oTarget, optional Pawn oAvoid, optional float fCoverRadius, optional float fMovementDelay)"
+    },
+    "GetCoverList": {
+      "documentation": null,
+      "signature_members": {
+        "oMember": {
+          "type": "BioAiController",
+          "documentation": null,
+          "flags": 128
+        },
+        "aoCoverAgainst": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "aoCoverValue": {
+          "type": "int",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "oTarget": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
+        },
+        "oAvoid": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "GetCoverList(BioAiController oMember, out array<Pawn> aoCoverAgainst, out array<int> aoCoverValue, optional Pawn oTarget, optional Pawn oAvoid)"
+    },
+    "UnlockAllPathnodes": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UnlockAllPathnodes()"
+    },
+    "UnlockPathnodesByOwner": {
+      "documentation": null,
+      "signature_members": {
+        "oUnlockOwner": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UnlockPathnodesByOwner(BioPawn oUnlockOwner)"
+    },
+    "UnlockPathnode": {
+      "documentation": null,
+      "signature_members": {
+        "oUnlockNode": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UnlockPathnode(NavigationPoint oUnlockNode)"
+    },
+    "LockPathnode": {
+      "documentation": null,
+      "signature_members": {
+        "oLockNode": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        },
+        "oLockOwner": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 400
+        }
+      },
+      "returntype": "None",
+      "signature": "LockPathnode(NavigationPoint oLockNode, BioPawn oLockOwner, optional out int nIndex)"
+    },
+    "IsPathnodeLocked": {
+      "documentation": null,
+      "signature_members": {
+        "oTestNode": {
+          "type": "NavigationPoint",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 400
+        },
+        "oIgnoreMember": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPathnodeLocked(NavigationPoint oTestNode, optional out int nIndex, optional BioPawn oIgnoreMember)"
+    },
+    "GetLockedPathNodes": {
+      "documentation": null,
+      "signature_members": {
+        "oIgnoreMember": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "NavigationPoint",
+      "signature": "array<NavigationPoint> GetLockedPathNodes(optional BioPawn oIgnoreMember)"
+    },
+    "GetCurrentMovePoint": {
+      "documentation": null,
+      "signature_members": {
+        "oMemberPawn": {
+          "type": "BioPawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "NavigationPoint",
+      "signature": "NavigationPoint GetCurrentMovePoint(BioPawn oMemberPawn)"
+    },
+    "DropAgitationIfNoHostile": {
+      "documentation": null,
+      "signature_members": {
+        "nNewLevel": {
+          "type": "eAgitationLevel",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "DropAgitationIfNoHostile(optional eAgitationLevel nNewLevel)"
+    },
+    "UpgradeAgitationIfHostile": {
+      "documentation": null,
+      "signature_members": {
+        "oWho": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "oPerceived": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        },
+        "nNewLevel": {
+          "type": "eAgitationLevel",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpgradeAgitationIfHostile(Pawn oWho, Pawn oPerceived, eAgitationLevel nNewLevel)"
+    },
+    "SetFactionByType": {
+      "documentation": null,
+      "signature_members": {
+        "nNewFaction": {
+          "type": "EBioFactionTypes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFactionByType(EBioFactionTypes nNewFaction)"
+    },
+    "ClearAllSquadActions": {
+      "documentation": null,
+      "signature_members": {
+        "bClearQueue": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bClearState": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bUnlockTarget": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bLeaveCombat": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ClearAllSquadActions(optional bool bClearQueue, optional bool bClearState, optional bool bUnlockTarget, optional bool bLeaveCombat)"
+    },
+    "CalculateAllLikelihoods": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float CalculateAllLikelihoods()"
+    },
+    "CalculateLikelihood": {
+      "documentation": null,
+      "signature_members": {
+        "sStrategyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float CalculateLikelihood(Name sStrategyName)"
+    },
+    "IsValidStrategy": {
+      "documentation": null,
+      "signature_members": {
+        "sStrategyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidStrategy(Name sStrategyName)"
+    },
+    "GetStrategyList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "array<Name> GetStrategyList()"
+    },
+    "ActivateAfterDelay": {
+      "documentation": null,
+      "signature_members": {
+        "fDelay": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ActivateAfterDelay(float fDelay)"
+    },
+    "Activate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activate()"
+    },
+    "Deactivate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivate()"
+    },
+    "DoFallBackStrategy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DoFallBackStrategy()"
+    },
+    "ReEvaluateStrategy": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ReEvaluateStrategy()"
+    }
+  },
+  "states": {
+    "DetermineStrategy": {
+      "functions": {
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ChooseStrategy": {
+          "documentation": null,
+          "signature_members": {
+            "fMaxSum": {
+              "type": "float",
+              "documentation": null,
+              "flags": 144
+            }
+          },
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    },
+    "Inactive": {
+      "functions": {
+        "EndState": {
+          "documentation": null,
+          "signature_members": {
+            "NextStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "BeginState": {
+          "documentation": null,
+          "signature_members": {
+            "PreviousStateName": {
+              "type": "Name",
+              "documentation": null,
+              "flags": 128
+            }
+          },
+          "returntype": null,
+          "signature": null
+        },
+        "ReEvaluateStrategy": {
+          "documentation": null,
+          "signature_members": {},
+          "returntype": null,
+          "signature": null
+        }
+      },
+      "documentation": null
+    }
+  },
+  "classflags": 10485783,
+  "configname": "Game",
+  "documentation": null
+}

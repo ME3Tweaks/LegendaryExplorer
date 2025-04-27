@@ -1,0 +1,53 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "PlaceableStates": {
+      "type": "BioState",
+      "documentation": null,
+      "flags": 71303169
+    }
+  },
+  "functions": {
+    "GetStateByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioState",
+      "signature": "BioState GetStateByIndex(int Index)"
+    },
+    "DEBUG_DumpStates": {
+      "documentation": null,
+      "signature_members": {
+        "BPC": {
+          "type": "BioPlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DEBUG_DumpStates(BioPlayerController BPC)"
+    },
+    "GetState": {
+      "documentation": null,
+      "signature_members": {
+        "RequestedState": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioState",
+      "signature": "BioState GetState(Name RequestedState)"
+    }
+  },
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

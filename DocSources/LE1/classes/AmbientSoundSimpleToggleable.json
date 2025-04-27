@@ -1,0 +1,108 @@
+{
+  "parent": "AmbientSoundSimple",
+  "package": "Engine",
+  "variables": {
+    "FadeInDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FadeInVolumeLevel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FadeOutDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FadeOutVolumeLevel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCurrentlyPlaying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4294967328
+    },
+    "bFadeOnToggle": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "ApplyCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyCheckpointRecord(const out CheckpointRecord Record)"
+    },
+    "CreateCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateCheckpointRecord(out CheckpointRecord Record)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    },
+    "StopPlaying": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StopPlaying()"
+    },
+    "StartPlaying": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "StartPlaying()"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

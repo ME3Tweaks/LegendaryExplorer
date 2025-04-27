@@ -1,0 +1,21 @@
+{
+  "parent": "SoundNode",
+  "package": "Engine",
+  "variables": {
+    "LoopCount": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "bLoopIndefinitely": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144715922,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,13 @@
+{
+  "members": {
+    "m_weaponCaches": {
+      "type": "BioEpicPawnBehaviorWeaponCache",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "classdef": "BioEpicPawnBehavior",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

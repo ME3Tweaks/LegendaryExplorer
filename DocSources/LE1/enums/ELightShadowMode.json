@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "LightShadow_Normal": {
+      "value": 0,
+      "documentation": null
+    },
+    "LightShadow_Modulate": {
+      "value": 1,
+      "documentation": null
+    },
+    "LightShadow_ModulateBetter": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

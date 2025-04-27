@@ -1,0 +1,18 @@
+{
+  "members": {
+    "sDisplayName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "sFuncPropName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSeqAct_InteractProperty",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

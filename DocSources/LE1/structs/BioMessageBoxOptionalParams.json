@@ -1,0 +1,43 @@
+{
+  "members": {
+    "srAText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "srBText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "srYText": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "nIconIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bNoFade": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bModal": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "nIconSet": {
+      "type": "BioMessageBoxIconSets",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFHandler_MessageBox",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

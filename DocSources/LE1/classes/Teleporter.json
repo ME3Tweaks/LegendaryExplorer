@@ -1,0 +1,153 @@
+{
+  "parent": "NavigationPoint",
+  "package": "Engine",
+  "variables": {
+    "URL": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194337
+    },
+    "TargetVelocity": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 33
+    },
+    "ProductRequired": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "LastFired": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bChangesVelocity": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 33
+    },
+    "bChangesYaw": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 33
+    },
+    "bReversesX": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 33
+    },
+    "bReversesY": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 33
+    },
+    "bReversesZ": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 33
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 33
+    },
+    "bCanTeleportVehicles": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "SpecialHandling": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Pawn",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Actor",
+      "signature": "Actor SpecialHandling(Pawn Other)"
+    },
+    "PostTouch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PostTouch(Actor Other)"
+    },
+    "Touch": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "OtherComp": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Touch(Actor Other, PrimitiveComponent OtherComp, Vector HitLocation, Vector HitNormal)"
+    },
+    "Accept": {
+      "documentation": null,
+      "signature_members": {
+        "Incoming": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "Source": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Accept(Actor Incoming, Actor Source)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "CanTeleport": {
+      "documentation": null,
+      "signature_members": {
+        "A": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CanTeleport(Actor A)"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

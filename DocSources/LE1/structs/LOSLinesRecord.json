@@ -1,0 +1,28 @@
+{
+  "members": {
+    "vStart": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "vEnd": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSaw": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEnemy": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSeqData_DEBUGInfo",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

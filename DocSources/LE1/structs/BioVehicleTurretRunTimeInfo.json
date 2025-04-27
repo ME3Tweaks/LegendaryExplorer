@@ -1,0 +1,28 @@
+{
+  "members": {
+    "m_fCurrentTurretRelativeYaw": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fCurrentTurretRelativePitch": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bTurretAutoTrackYaw": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bTurretAutoTrackPitch": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioInterfaceAppearanceVehicle",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

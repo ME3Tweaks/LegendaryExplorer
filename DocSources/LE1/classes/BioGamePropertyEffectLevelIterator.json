@@ -1,0 +1,39 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aPairs": {
+      "type": "BioEffectLevelIteratorPair",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {
+    "Initialize": {
+      "documentation": null,
+      "signature_members": {
+        "o2DA": {
+          "type": "Bio2DA",
+          "documentation": null,
+          "flags": 128
+        },
+        "nKeyColumn": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nKey": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Initialize(Bio2DA o2DA, int nKeyColumn, int nKey)"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

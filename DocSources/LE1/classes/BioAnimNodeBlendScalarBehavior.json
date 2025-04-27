@@ -1,0 +1,16 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aNodeDefinitions": {
+      "type": "BioAnimScalarNodeBehaviorDef",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136319123,
+  "configname": "None",
+  "documentation": null
+}

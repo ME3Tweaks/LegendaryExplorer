@@ -1,0 +1,36 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "Text": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "oActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "nName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "nInt": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "fFloat": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

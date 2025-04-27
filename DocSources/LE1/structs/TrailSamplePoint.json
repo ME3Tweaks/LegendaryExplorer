@@ -1,0 +1,28 @@
+{
+  "members": {
+    "FirstEdgeSample": {
+      "type": "TrailSocketSamplePoint",
+      "documentation": null,
+      "flags": 0
+    },
+    "SecondEdgeSample": {
+      "type": "TrailSocketSamplePoint",
+      "documentation": null,
+      "flags": 0
+    },
+    "ControlPointSample": {
+      "type": "TrailSocketSamplePoint",
+      "documentation": null,
+      "flags": 0
+    },
+    "RelativeTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "AnimNotify_Trails",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

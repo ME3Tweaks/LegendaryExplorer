@@ -1,0 +1,39 @@
+{
+  "parent": "SeqAct_Toggle",
+  "package": "Engine",
+  "variables": {
+    "bToggleMovement": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bToggleTurning": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bBioToggleButtonInput": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

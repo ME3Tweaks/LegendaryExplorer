@@ -1,0 +1,28 @@
+{
+  "members": {
+    "fFinalWeight": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fRemainingTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fTotalBlendTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bApplyData": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioAnimNodeBlendMultiAdditive",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

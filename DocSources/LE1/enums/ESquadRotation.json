@@ -1,0 +1,13 @@
+{
+  "EnumValues": {
+    "SquadRotation_Next": {
+      "value": 0,
+      "documentation": null
+    },
+    "SquadRotation_Prev": {
+      "value": 1,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

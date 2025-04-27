@@ -1,0 +1,23 @@
+{
+  "members": {
+    "nBonusTalentID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "srTitle": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "srDesc": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioGamerProfile",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

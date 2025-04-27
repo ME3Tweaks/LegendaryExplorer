@@ -1,0 +1,216 @@
+{
+  "parent": "Texture",
+  "package": "Engine",
+  "variables": {
+    "Mips": {
+      "type": "IndirectArray_Mirror",
+      "documentation": null,
+      "flags": 4098
+    },
+    "CachedPVRTCMips": {
+      "type": "IndirectArray_Mirror",
+      "documentation": null,
+      "flags": 4098
+    },
+    "SystemMemoryData": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "ResourceMem": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "TextureFileCacheGuid": {
+      "type": "Guid",
+      "documentation": null,
+      "flags": 4098
+    },
+    "TFCFileGuid": {
+      "type": "Guid",
+      "documentation": null,
+      "flags": 0
+    },
+    "TFCFileGuidHiRes": {
+      "type": "Guid",
+      "documentation": null,
+      "flags": 0
+    },
+    "TextureFileCacheName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "SizeX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "SizeY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "OriginalSizeX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "OriginalSizeY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "ForceMiplevelsToBeResident": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "ForceMipLevelsToBeResidentTimestamp": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "HiResMipCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "RequestedMips": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8194
+    },
+    "ResidentMips": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8194
+    },
+    "PendingMipChangeRequestStatus": {
+      "type": "ThreadSafeCounter",
+      "documentation": null,
+      "flags": 12290
+    },
+    "MipTailBaseIdx": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "FirstResourceMemMip": {
+      "type": "int",
+      "documentation": null,
+      "flags": 12290
+    },
+    "BioMipMapCompressionSetting": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4096
+    },
+    "CurrentScreenSize": {
+      "type": "float",
+      "documentation": null,
+      "flags": 12288
+    },
+    "CurrentDistanceFromCameraSq": {
+      "type": "float",
+      "documentation": null,
+      "flags": 12288
+    },
+    "StreamingLinkIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 12288
+    },
+    "Timer": {
+      "type": "float",
+      "documentation": null,
+      "flags": 12290
+    },
+    "bIsStreamable": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bHasCancelationPending": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bHasBeenLoadedFromPersistentArchive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bGlobalForceMipLevelsToBeResident": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bConfigForceMiplevelsToBeResident": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    },
+    "Format": {
+      "type": "EPixelFormat",
+      "documentation": null,
+      "flags": 2
+    },
+    "AddressX": {
+      "type": "TextureAddress",
+      "documentation": null,
+      "flags": 1
+    },
+    "AddressY": {
+      "type": "TextureAddress",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Create": {
+      "documentation": null,
+      "signature_members": {
+        "InSizeX": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "InSizeY": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "InFormat": {
+          "type": "EPixelFormat",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "Texture2D",
+      "signature": "Texture2D Create(int InSizeX, int InSizeY, optional EPixelFormat InFormat)"
+    },
+    "SetForceMipLevelsToBeResident": {
+      "documentation": null,
+      "signature_members": {
+        "Seconds": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "CinematicTextureGroups": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetForceMipLevelsToBeResident(float Seconds, optional int CinematicTextureGroups)"
+    }
+  },
+  "states": {},
+  "classflags": 134217878,
+  "configname": "Engine",
+  "documentation": null
+}

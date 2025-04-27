@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "WIM_Entering": {
+      "value": 0,
+      "documentation": null
+    },
+    "WIM_Active": {
+      "value": 1,
+      "documentation": null
+    },
+    "WIM_Exiting": {
+      "value": 2,
+      "documentation": null
+    },
+    "WIM_StartingConv": {
+      "value": 3,
+      "documentation": null
+    },
+    "WIM_Conv": {
+      "value": 4,
+      "documentation": null
+    },
+    "WIM_EndingConv": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

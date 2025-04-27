@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "Sit": {
+      "value": 0,
+      "documentation": null
+    },
+    "Crouch": {
+      "value": 1,
+      "documentation": null
+    },
+    "Tele": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

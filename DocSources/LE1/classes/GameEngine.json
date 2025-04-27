@@ -1,0 +1,186 @@
+{
+  "parent": "Engine",
+  "package": "Engine",
+  "variables": {
+    "LastURL": {
+      "type": "URL",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "LastRemoteURL": {
+      "type": "URL",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "PendingLevelPlayerControllerClassName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "ServerActors": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "TravelURL": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "LevelsToLoadForPendingMapChange": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "LoadedLevelsForPendingMapChange": {
+      "type": "Level",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "PendingMapChangeFailureDescription": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "PendingLevelStreamingStatusUpdates": {
+      "type": "LevelStreamingStatus",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "ObjectReferencers": {
+      "type": "ObjectReferencer",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "PackagesToFullyLoad": {
+      "type": "FullyLoadedPackagesInfo",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "DefaultPackagesToLoadPerMap": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4218880
+    },
+    "PackagesToExcludePerMap": {
+      "type": "PerMapExclusionPackagesInfo",
+      "documentation": null,
+      "flags": 4218880
+    },
+    "GlobalPackagesLoaded": {
+      "type": "BioGlobalObjectContainer",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "NamedNetDrivers": {
+      "type": "NamedNetDriver",
+      "documentation": null,
+      "flags": 4202498
+    },
+    "GPendingLevel": {
+      "type": "PendingLevel",
+      "documentation": null,
+      "flags": 0
+    },
+    "OnlineSubsystem": {
+      "type": "OnlineSubsystem",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxDeltaTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nSkipFrames": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "NumPendingNonLatentOcclusionFrames": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bWorldWasLoadedThisTick": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8194
+    },
+    "bShouldCommitPendingMapChange": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    },
+    "bClearAnimSetLinkupCachesOnLoadMap": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 16384
+    },
+    "TravelType": {
+      "type": "byte",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetOnlineSubsystem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "OnlineSubsystem",
+      "signature": "OnlineSubsystem GetOnlineSubsystem()"
+    },
+    "ShouldUseNonLatentOcclusion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldUseNonLatentOcclusion()"
+    },
+    "TriggerLargeOcclusionChange": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "TriggerLargeOcclusionChange()"
+    },
+    "SkipFrames": {
+      "documentation": null,
+      "signature_members": {
+        "nFrames": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SkipFrames(int nFrames)"
+    },
+    "DestroyNamedNetDriver": {
+      "documentation": null,
+      "signature_members": {
+        "NetDriverName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DestroyNamedNetDriver(Name NetDriverName)"
+    },
+    "CreateNamedNetDriver": {
+      "documentation": null,
+      "signature_members": {
+        "NetDriverName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CreateNamedNetDriver(Name NetDriverName)"
+    }
+  },
+  "states": {},
+  "classflags": 136315038,
+  "configname": "Engine",
+  "documentation": null
+}

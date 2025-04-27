@@ -1,0 +1,23 @@
+{
+  "members": {
+    "fOrientation": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bApplyOrientation": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "eStageNode": {
+      "type": "EStageNodes",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioEvtSysTrackSetFacing",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

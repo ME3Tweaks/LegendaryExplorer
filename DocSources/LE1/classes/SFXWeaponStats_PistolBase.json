@@ -1,0 +1,10 @@
+{
+  "parent": "SFXWeaponStatsBase",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 8388630,
+  "configname": "Weapon",
+  "documentation": null
+}

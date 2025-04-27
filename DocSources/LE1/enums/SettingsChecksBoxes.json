@@ -1,0 +1,81 @@
+{
+  "EnumValues": {
+    "CB_VIDEO_VSYNC": {
+      "value": 0,
+      "documentation": null
+    },
+    "CB_AUDIO_CAPTIONING": {
+      "value": 1,
+      "documentation": null
+    },
+    "CB_MOUSE_INVERT": {
+      "value": 2,
+      "documentation": null
+    },
+    "CB_MOUSE_HARDWARE": {
+      "value": 3,
+      "documentation": null
+    },
+    "CB_GAMEPAD_RUMBLE": {
+      "value": 4,
+      "documentation": null
+    },
+    "CB_GAMEPLAY_TUTORIALS": {
+      "value": 5,
+      "documentation": null
+    },
+    "CB_AUTO_ENEMY_SIGHTED": {
+      "value": 6,
+      "documentation": null
+    },
+    "CB_AUTO_BLEED_OUT": {
+      "value": 7,
+      "documentation": null
+    },
+    "CB_AUTO_MEMBERDOWN": {
+      "value": 8,
+      "documentation": null
+    },
+    "CB_GAMEPLAY_AUTOSAVE": {
+      "value": 9,
+      "documentation": null
+    },
+    "CB_TUT_TUTORIALS": {
+      "value": 10,
+      "documentation": null
+    },
+    "CB_VIDEO_SHADOW": {
+      "value": 11,
+      "documentation": null
+    },
+    "CB_VIDEO_SHADER_BLUR": {
+      "value": 12,
+      "documentation": null
+    },
+    "CB_VIDEO_SHADER_FILM": {
+      "value": 13,
+      "documentation": null
+    },
+    "CB_SOUND_HARDWARE": {
+      "value": 14,
+      "documentation": null
+    },
+    "CB_MAKO_STEERING": {
+      "value": 15,
+      "documentation": null
+    },
+    "CB_VIDEO_AA": {
+      "value": 16,
+      "documentation": null
+    },
+    "CB_VIDEO_HDR_ENABLE": {
+      "value": 17,
+      "documentation": null
+    },
+    "CB_VIDEO_AO_ENABLE": {
+      "value": 18,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

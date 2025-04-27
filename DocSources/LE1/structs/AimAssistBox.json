@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Width": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Height": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SoftMargin": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "NodeType": {
+      "type": "EAimNodes",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "SFXModule_AimAssistTarget",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

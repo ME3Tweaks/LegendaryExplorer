@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Value": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "TimeDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Type": {
+      "type": "EInputTypes",
+      "documentation": null,
+      "flags": 0
+    },
+    "Action": {
+      "type": "EInputMatchAction",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "PlayerController",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

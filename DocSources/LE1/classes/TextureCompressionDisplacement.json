@@ -1,0 +1,10 @@
+{
+  "parent": "TextureCompressionProfile",
+  "package": "Engine",
+  "variables": {},
+  "functions": {},
+  "states": {},
+  "classflags": 33554450,
+  "configname": "None",
+  "documentation": null
+}

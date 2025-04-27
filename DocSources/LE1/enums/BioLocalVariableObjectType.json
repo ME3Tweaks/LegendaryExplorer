@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "BIO_LVOT_PLAYER": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_LVOT_OWNER": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_LVOT_TARGET": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_LVOT_BYTAG": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_LVOT_SPEAKER": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

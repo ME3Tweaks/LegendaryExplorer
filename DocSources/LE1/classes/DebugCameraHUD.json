@@ -1,0 +1,50 @@
+{
+  "parent": "HUD",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "PostRender": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostRender()"
+    },
+    "DisplayMaterials": {
+      "documentation": null,
+      "signature_members": {
+        "X": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "Y": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "DY": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "MeshComp": {
+          "type": "MeshComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool DisplayMaterials(float X, out float Y, float DY, MeshComponent MeshComp)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 10485790,
+  "configname": "Game",
+  "documentation": null
+}

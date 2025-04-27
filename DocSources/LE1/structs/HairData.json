@@ -1,0 +1,23 @@
+{
+  "members": {
+    "PackageName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "HairMorphSpecMaskName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "HairComponents": {
+      "type": "HairComponent",
+      "documentation": null,
+      "flags": 4194304
+    }
+  },
+  "classdef": "BioMorphUtility",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

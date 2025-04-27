@@ -1,0 +1,41 @@
+{
+  "EnumValues": {
+    "BioHTV_Hat1": {
+      "value": 0,
+      "documentation": null
+    },
+    "BioHTV_Hat2": {
+      "value": 1,
+      "documentation": null
+    },
+    "BioHTV_Hat3": {
+      "value": 2,
+      "documentation": null
+    },
+    "BioHTV_Hat4": {
+      "value": 3,
+      "documentation": null
+    },
+    "BioHTV_Hat5": {
+      "value": 4,
+      "documentation": null
+    },
+    "BioHTV_Hat6": {
+      "value": 5,
+      "documentation": null
+    },
+    "BioHTV_Hat7": {
+      "value": 6,
+      "documentation": null
+    },
+    "BioHTV_Hat8": {
+      "value": 7,
+      "documentation": null
+    },
+    "BioHTV_Hat9": {
+      "value": 8,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

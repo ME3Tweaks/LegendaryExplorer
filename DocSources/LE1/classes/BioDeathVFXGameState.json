@@ -1,0 +1,61 @@
+{
+  "parent": "BioDeathVFXCore",
+  "package": "SFXGame",
+  "variables": {
+    "m_vHitLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vMomentum": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pInstigatorController": {
+      "type": "Controller",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pAppearance": {
+      "type": "BioBaseAppearance",
+      "documentation": null,
+      "flags": 67108864
+    },
+    "m_pDamage": {
+      "type": "BioDamageType",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fDamage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fDeathDamage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bIsDeathAnimationPlaying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eEvent": {
+      "type": "EBioDeathVFXGameStateEvent",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "ITEM_IMPORTER_ITEM": {
+      "value": 0,
+      "documentation": null
+    },
+    "ITEM_IMPORTER_ITEM_EFFECT_LEVELS": {
+      "value": 1,
+      "documentation": null
+    },
+    "ITEM_IMPORTER_2DA_COUNT": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

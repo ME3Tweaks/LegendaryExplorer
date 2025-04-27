@@ -1,0 +1,16 @@
+{
+  "parent": "ParticleModuleVelocityBase",
+  "package": "Engine",
+  "variables": {
+    "ScaleRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null,
+      "flags": 4718593
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

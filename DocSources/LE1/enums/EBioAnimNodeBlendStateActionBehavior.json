@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "BSAct_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "BSAct_PawnState": {
+      "value": 1,
+      "documentation": null
+    },
+    "BSAct_PawnGesturesState": {
+      "value": 2,
+      "documentation": null
+    },
+    "BSAct_ActiveState": {
+      "value": 3,
+      "documentation": null
+    },
+    "BSAct_Posture": {
+      "value": 4,
+      "documentation": null
+    },
+    "BSAct_ArtPlaceable": {
+      "value": 5,
+      "documentation": null
+    },
+    "BSAct_IdleState": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

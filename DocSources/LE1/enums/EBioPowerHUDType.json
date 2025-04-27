@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "BIO_POWER_HUD_TYPE_STANDARD": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_POWER_HUD_TYPE_WEAPON": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_POWER_HUD_TYPE_HEALING_PRIMARY": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_POWER_HUD_TYPE_HEALING_SECONDARY": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_POWER_HUD_TYPE_ARMOR_EMITTER": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_POWER_HUD_TYPE_NOT_MAPPABLE": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

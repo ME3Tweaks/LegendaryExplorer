@@ -1,0 +1,23 @@
+{
+  "members": {
+    "NetId": {
+      "type": "UniqueNetId",
+      "documentation": null,
+      "flags": 0
+    },
+    "TeamNum": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Skill": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "OnlineRecentPlayersList",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

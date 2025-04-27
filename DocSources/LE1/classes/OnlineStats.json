@@ -1,0 +1,46 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "ViewIdMappings": {
+      "type": "StringIdToStringMapping",
+      "documentation": null,
+      "flags": 4194306
+    }
+  },
+  "functions": {
+    "GetViewName": {
+      "documentation": null,
+      "signature_members": {
+        "ViewId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Name",
+      "signature": "Name GetViewName(int ViewId)"
+    },
+    "GetViewId": {
+      "documentation": null,
+      "signature_members": {
+        "ViewName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "ViewId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetViewId(Name ViewName, out int ViewId)"
+    }
+  },
+  "states": {},
+  "classflags": 134217907,
+  "configname": "None",
+  "documentation": null
+}

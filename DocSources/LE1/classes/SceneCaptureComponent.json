@@ -1,0 +1,147 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "PostProcessProxies": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 18886658
+    },
+    "CaptureInfo": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ViewState": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "UmbraCamera": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "PostProcess": {
+      "type": "PostProcessChain",
+      "documentation": null,
+      "flags": 1
+    },
+    "ClearColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 1
+    },
+    "SceneLOD": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "FrameRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "MaxUpdateDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxViewDistanceOverride": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxStreamingUpdateDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnablePostProcess": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableFog": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableParticles": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseMainScenePostProcessSettings": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSkipUpdateIfTextureUsersOccluded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSkipUpdateIfOwnerOccluded": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSkipRenderingDepthPrepass": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNeedsSceneUpdate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ViewMode": {
+      "type": "ESceneCaptureViewMode",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "SetEnabled": {
+      "documentation": null,
+      "signature_members": {
+        "bEnable": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetEnabled(bool bEnable)"
+    },
+    "NeedsUpdate": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NeedsUpdate()"
+    },
+    "SetFrameRate": {
+      "documentation": null,
+      "signature_members": {
+        "NewFrameRate": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFrameRate(float NewFrameRate)"
+    }
+  },
+  "states": {},
+  "classflags": 134217875,
+  "configname": "None",
+  "documentation": null
+}

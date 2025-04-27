@@ -1,0 +1,16 @@
+{
+  "parent": "LevelStreaming",
+  "package": "Engine",
+  "variables": {
+    "bIsProceduralBuildingLODLevel": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 136319126,
+  "configname": "Engine",
+  "documentation": null
+}

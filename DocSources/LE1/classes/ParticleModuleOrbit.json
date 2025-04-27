@@ -1,0 +1,46 @@
+{
+  "parent": "ParticleModuleOrbitBase",
+  "package": "Engine",
+  "variables": {
+    "OffsetAmountRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "RotationAmountRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "RotationRateAmountRw": {
+      "type": "BioRawDistributionRwVector3",
+      "documentation": null,
+      "flags": 4718593
+    },
+    "OffsetOptions": {
+      "type": "OrbitOptions",
+      "documentation": null,
+      "flags": 1
+    },
+    "RotationOptions": {
+      "type": "OrbitOptions",
+      "documentation": null,
+      "flags": 1
+    },
+    "RotationRateOptions": {
+      "type": "OrbitOptions",
+      "documentation": null,
+      "flags": 1
+    },
+    "ChainMode": {
+      "type": "EOrbitChainMode",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142610578,
+  "configname": "None",
+  "documentation": null
+}

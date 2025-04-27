@@ -1,0 +1,80 @@
+{
+  "parent": "SequenceAction",
+  "package": "Engine",
+  "variables": {
+    "CameraAnim": {
+      "type": "CameraAnim",
+      "documentation": null,
+      "flags": 1
+    },
+    "UserDefinedSpaceActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "BlendInTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "BlendOutTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Rate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "IntensityScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bLoop": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bRandomStartTime": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "PlaySpace": {
+      "type": "ECameraAnimPlaySpace",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "PreVersionUpdated": {
+      "documentation": null,
+      "signature_members": {
+        "OldVersion": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewVersion": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PreVersionUpdated(int OldVersion, int NewVersion)"
+    },
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

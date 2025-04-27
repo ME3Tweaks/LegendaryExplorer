@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "LST_Eyes": {
+      "value": 0,
+      "documentation": null
+    },
+    "LST_Weapon": {
+      "value": 1,
+      "documentation": null
+    },
+    "LST_WeaponCrouch": {
+      "value": 2,
+      "documentation": null
+    },
+    "LST_LeanLeft": {
+      "value": 3,
+      "documentation": null
+    },
+    "LST_LeanRight": {
+      "value": 4,
+      "documentation": null
+    },
+    "LST_StepLeft": {
+      "value": 5,
+      "documentation": null
+    },
+    "LST_StepRight": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

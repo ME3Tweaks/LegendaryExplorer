@@ -1,0 +1,21 @@
+{
+  "parent": "BioActorType",
+  "package": "SFXGame",
+  "variables": {
+    "m_CameraList": {
+      "type": "BioStageCamera",
+      "documentation": null,
+      "flags": 4325377
+    },
+    "m_Mesh": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

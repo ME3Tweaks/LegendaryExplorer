@@ -1,0 +1,174 @@
+{
+  "parent": "BioItemEquippable",
+  "package": "SFXGame",
+  "variables": {
+    "m_slotSpecs": {
+      "type": "BioItemXModdableSlotSpec",
+      "documentation": null,
+      "flags": 71303176
+    }
+  },
+  "functions": {
+    "OnGPEvent": {
+      "documentation": null,
+      "signature_members": {
+        "eEvent": {
+          "type": "EBioGamePropertyEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "pTarget": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnGPEvent(EBioGamePropertyEvent eEvent, Object pTarget)"
+    },
+    "Load": {
+      "documentation": null,
+      "signature_members": {
+        "pData": {
+          "type": "BioItemXModdableSaveObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Load(BioItemXModdableSaveObject pData)"
+    },
+    "Save": {
+      "documentation": null,
+      "signature_members": {
+        "pData": {
+          "type": "BioItemXModdableSaveObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Save(BioItemXModdableSaveObject pData)"
+    },
+    "GetXMod": {
+      "documentation": null,
+      "signature_members": {
+        "nType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioItemXMod",
+      "signature": "BioItemXMod GetXMod(int nType, int nIndex)"
+    },
+    "FindXMod": {
+      "documentation": null,
+      "signature_members": {
+        "pXMod": {
+          "type": "BioItemXMod",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindXMod(BioItemXMod pXMod)"
+    },
+    "UninstallXMod": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioItemXMod",
+      "signature": "BioItemXMod UninstallXMod(int Type, int Index)"
+    },
+    "InstallXMod": {
+      "documentation": null,
+      "signature_members": {
+        "xMod": {
+          "type": "BioItemXMod",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "int",
+      "signature": "int InstallXMod(BioItemXMod xMod, optional int Index)"
+    },
+    "GetSaveObjectClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<BioBaseSaveObject> GetSaveObjectClass()"
+    },
+    "RetrieveXModAtVirtualSlot": {
+      "documentation": null,
+      "signature_members": {
+        "nSlot": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "strVSlot": {
+          "type": "BioItemXModVirtualSlot",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RetrieveXModAtVirtualSlot(int nSlot, out BioItemXModVirtualSlot strVSlot)"
+    },
+    "TotalVirtualXModSlots": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int TotalVirtualXModSlots()"
+    },
+    "TickItem": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TickItem(float fDeltaTime)"
+    },
+    "DescribeItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "DescribeItem()"
+    },
+    "AddPriceOfAllXMods": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float AddPriceOfAllXMods()"
+    }
+  },
+  "states": {},
+  "classflags": 144703639,
+  "configname": "Game",
+  "documentation": null
+}

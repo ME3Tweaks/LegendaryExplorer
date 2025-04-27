@@ -1,0 +1,150 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "Level1DifficultyData": {
+      "type": "DifficultySettings",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "Level2DifficultyData": {
+      "type": "DifficultySettings",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "Level3DifficultyData": {
+      "type": "DifficultySettings",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "Level4DifficultyData": {
+      "type": "DifficultySettings",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "Level5DifficultyData": {
+      "type": "DifficultySettings",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "PlayerLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "MaxLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    },
+    "CoverDamageReduction": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "HenchDamageTaken": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "PlayerDamageTaken": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "EnemyDamageTaken": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bNeedsUpdate": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurrentDifficulty": {
+      "type": "EOptionCombatDifficulty",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "Update": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Update()"
+    },
+    "GetFloatAtDifficulty": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "DifficultyCategory": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Difficulty": {
+          "type": "EOptionCombatDifficulty",
+          "documentation": null,
+          "flags": 128
+        },
+        "Score": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetFloatAtDifficulty(Name PropertyName, Name DifficultyCategory, EOptionCombatDifficulty Difficulty, float Score)"
+    },
+    "GetFloat": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "DifficultyCategory": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetFloat(Name PropertyName, Name DifficultyCategory)"
+    },
+    "GetBool": {
+      "documentation": null,
+      "signature_members": {
+        "PropertyName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "DifficultyCategory": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetBool(Name PropertyName, Name DifficultyCategory)"
+    },
+    "GetDifficultyHandler": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXDifficultyHandler",
+      "signature": "SFXDifficultyHandler GetDifficultyHandler()"
+    }
+  },
+  "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
+  "documentation": null
+}

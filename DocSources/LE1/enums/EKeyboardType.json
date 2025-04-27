@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "KT_Standard": {
+      "value": 0,
+      "documentation": null
+    },
+    "KT_Password": {
+      "value": 1,
+      "documentation": null
+    },
+    "KT_Email": {
+      "value": 2,
+      "documentation": null
+    },
+    "KT_Code": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

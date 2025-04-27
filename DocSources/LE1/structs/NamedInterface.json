@@ -1,0 +1,18 @@
+{
+  "members": {
+    "InterfaceName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "InterfaceObject": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "OnlineSubsystem",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

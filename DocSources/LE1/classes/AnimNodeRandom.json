@@ -1,0 +1,26 @@
+{
+  "parent": "AnimNodeBlendList",
+  "package": "Engine",
+  "variables": {
+    "RandomInfo": {
+      "type": "RandomAnimInfo",
+      "documentation": null,
+      "flags": 71303233
+    },
+    "PlayingSeqNode": {
+      "type": "AnimNodeSequence",
+      "documentation": null,
+      "flags": 8192
+    },
+    "PendingChildIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

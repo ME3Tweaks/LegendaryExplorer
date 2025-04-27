@@ -1,0 +1,56 @@
+{
+  "parent": "BioSeqData_ActionBase",
+  "package": "SFXGame",
+  "variables": {
+    "oTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nmTechique": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "fReqStabilityRatio": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fAbortStabilityRatio": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fTimeOut": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_bStartedFiring": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bLOS": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bInCoverAtStart": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bIgnorePerceptionCheck": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "Game",
+  "documentation": null
+}

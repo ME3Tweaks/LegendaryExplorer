@@ -1,0 +1,53 @@
+{
+  "members": {
+    "UseNoise": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "NoiseScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "NoisePercent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinHeight": {
+      "type": "FilterLimit",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxHeight": {
+      "type": "FilterLimit",
+      "documentation": null,
+      "flags": 1
+    },
+    "MinSlope": {
+      "type": "FilterLimit",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxSlope": {
+      "type": "FilterLimit",
+      "documentation": null,
+      "flags": 1
+    },
+    "Alpha": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Material": {
+      "type": "TerrainMaterial",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "TerrainLayerSetup",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

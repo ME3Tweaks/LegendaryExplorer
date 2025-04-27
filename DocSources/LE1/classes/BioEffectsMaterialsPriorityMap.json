@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "PriorityMap": {
+      "type": "EffectMaterialPriority",
+      "documentation": null,
+      "flags": 4325377
+    },
+    "m_GlobalEffectsPriorityMap": {
+      "type": "BioEffectsMaterialsPriorityMap",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,23 @@
+{
+  "members": {
+    "vOffset": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "rRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 1
+    },
+    "nmAnimSet": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioSeqAct_ActionStation",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

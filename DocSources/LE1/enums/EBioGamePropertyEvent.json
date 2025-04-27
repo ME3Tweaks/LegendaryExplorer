@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "GAMEPROP_EVENT_EQUIPMENT_CHANGE": {
+      "value": 0,
+      "documentation": null
+    },
+    "GAMEPROP_EVENT_XMOD_CHANGE": {
+      "value": 1,
+      "documentation": null
+    },
+    "GAMEPROP_EVENT_WEAPON_IMPACT": {
+      "value": 2,
+      "documentation": null
+    },
+    "GAMEPROP_EVENT_VEHICLE_EQUIPMENT_CHANGE": {
+      "value": 3,
+      "documentation": null
+    },
+    "GAMEPROP_EVENT_DEATH": {
+      "value": 4,
+      "documentation": null
+    },
+    "GAMEPROP_EVENT_WEAPON_FIRED": {
+      "value": 5,
+      "documentation": null
+    },
+    "GAMEPROP_EVENT_WEAPON_POWER_USED": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

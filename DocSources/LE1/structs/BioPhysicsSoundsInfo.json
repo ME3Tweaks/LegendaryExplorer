@@ -1,0 +1,23 @@
+{
+  "members": {
+    "oAudioComp": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "nPriority": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "fLastTimePlayed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioPhysicsSounds",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

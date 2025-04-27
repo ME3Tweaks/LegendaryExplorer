@@ -1,0 +1,50 @@
+{
+  "parent": "BioVISSimple",
+  "package": "SFXGame",
+  "variables": {
+    "vfxExplosionEffect": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "ImpactRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "ApplyGrenadeVisualImpact": {
+      "documentation": null,
+      "signature_members": {
+        "vPosition": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vDirection": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioVisualEffect",
+      "signature": "BioVisualEffect ApplyGrenadeVisualImpact(Vector vPosition, Vector vHitNormal, Vector vDirection)"
+    },
+    "PreloadEffects": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PreloadEffects()"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

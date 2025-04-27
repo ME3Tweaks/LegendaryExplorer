@@ -1,0 +1,28 @@
+{
+  "members": {
+    "Enabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Base": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "NoiseScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "NoiseAmount": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "TerrainLayerSetup",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "m_oUseingCover": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oRankOf": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nRank": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Activated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Activated()"
+    }
+  },
+  "states": {},
+  "classflags": 35651602,
+  "configname": "None",
+  "documentation": null
+}

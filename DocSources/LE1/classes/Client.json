@@ -1,0 +1,31 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "StartupResolutionX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "StartupResolutionY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "StartupFullscreen": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "UseHardwareCursor": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 268435461,
+  "configname": "Engine",
+  "documentation": null
+}

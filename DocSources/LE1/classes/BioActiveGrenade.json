@@ -1,0 +1,167 @@
+{
+  "parent": "BioActive",
+  "package": "SFXGame",
+  "variables": {
+    "m_vTarget": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vVelocity": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_stuckGrenade": {
+      "type": "BioGrenadeProjectileFrisbee",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oBallisticGrenadeTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fSwitchToBallisticGrenadeTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fBallisticGrenadeSpeed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fSwitchToBallisticGrenadeDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_fStickyGrenadeTraceDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_fBallisticGrenadeSpeedIncreaseRate": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_fBallisticGrenadeSpeedMaximum": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_fBallisticGrenadeSpeedMinimum": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_fBallisticArcTimeDelta": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_fBallisticArcFloor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_fBallisticGrenadePitchOffset": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_nBallisticArcPointsPerTrace": {
+      "type": "int",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_bCanThrowGrenade": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bStartedThrow": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bWaitingOnLeanOut": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bRequestedCoverLean": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_isBallisticGrenadeEnabled": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_isLockedActionStateRequired": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "m_state": {
+      "type": "EBioGrenadeActiveState",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eGrenadeThrowAnimationState": {
+      "type": "EBioGrenadeThrowAnimationState",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_animationPlaybackState": {
+      "type": "EBioGrenadeActiveAnimationPlaybackState",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eInitialCoverAction": {
+      "type": "ECoverAction",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GUIState": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "EBioGrenadeActiveState",
+      "signature": "EBioGrenadeActiveState GUIState()"
+    },
+    "GetEventTypeName": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetEventTypeName()"
+    },
+    "ValidSuperMode": {
+      "documentation": null,
+      "signature_members": {
+        "eMode": {
+          "type": "EBioSuperModes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ValidSuperMode(EBioSuperModes eMode)"
+    },
+    "InitializeInternal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeInternal()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

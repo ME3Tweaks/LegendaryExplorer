@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "AT_Action": {
+      "value": 0,
+      "documentation": null
+    },
+    "AT_State": {
+      "value": 1,
+      "documentation": null
+    },
+    "AT_Behavior": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

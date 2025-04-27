@@ -1,0 +1,135 @@
+{
+  "parent": "ActorComponent",
+  "package": "Engine",
+  "variables": {
+    "SpringMaxForceTimeScale": {
+      "type": "InterpCurveFloat",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "SpringData": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Component1": {
+      "type": "PrimitiveComponent",
+      "documentation": null,
+      "flags": 67633162
+    },
+    "BoneName1": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 2
+    },
+    "Component2": {
+      "type": "PrimitiveComponent",
+      "documentation": null,
+      "flags": 67633162
+    },
+    "BoneName2": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 2
+    },
+    "SceneIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "TimeSinceActivation": {
+      "type": "float",
+      "documentation": null,
+      "flags": 4098
+    },
+    "MinBodyMass": {
+      "type": "float",
+      "documentation": null,
+      "flags": 2
+    },
+    "SpringSaturateDist": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "SpringMaxForce": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "MaxForceMassRatio": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DampSaturateVel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "DampMaxForce": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bInHardware": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4098
+    },
+    "bEnableForceMassRatio": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "Clear": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Clear()"
+    },
+    "SetComponents": {
+      "documentation": null,
+      "signature_members": {
+        "InComponent1": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "InBoneName1": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Position1": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "InComponent2": {
+          "type": "PrimitiveComponent",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "InBoneName2": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Position2": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetComponents(PrimitiveComponent InComponent1, Name InBoneName1, Vector Position1, PrimitiveComponent InComponent2, Name InBoneName2, Vector Position2)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

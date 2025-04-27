@@ -1,0 +1,93 @@
+{
+  "members": {
+    "stCoverToUse": {
+      "type": "CoverRecord",
+      "documentation": null,
+      "flags": 0
+    },
+    "EscapeLocation": {
+      "type": "SLocation",
+      "documentation": null,
+      "flags": 0
+    },
+    "vMoveLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "vTarget": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "vHoldPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "SquadMember": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "oDestinationIndicator": {
+      "type": "BioTacticalMoveToIndicator",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmPower": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "oOrderedAttackTarget": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "fMoveDelayTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "bMoveOrderAssigned": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bCurrentlyMoving": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bCoverAssigned": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bActionOrderAssigned": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "eAction": {
+      "type": "EBioTacticalAction",
+      "documentation": null,
+      "flags": 0
+    },
+    "eSwitchWeapon": {
+      "type": "EBioItemWeaponRangedType",
+      "documentation": null,
+      "flags": 0
+    },
+    "eFormation": {
+      "type": "EFollowFormation",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioBaseSquad",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

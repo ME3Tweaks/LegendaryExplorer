@@ -1,0 +1,244 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "m_inventories": {
+      "type": "BioInventory",
+      "documentation": null,
+      "flags": 71311360
+    },
+    "m_resourceInfoArray": {
+      "type": "ResourceShopInfo",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_inventoryPermanent": {
+      "type": "BioInventory",
+      "documentation": null,
+      "flags": 71311368
+    },
+    "m_inventoryPremium": {
+      "type": "BioInventory",
+      "documentation": null,
+      "flags": 71311368
+    },
+    "m_inventoryLimited": {
+      "type": "BioInventory",
+      "documentation": null,
+      "flags": 71311368
+    },
+    "m_nGenerateOnceTreasureID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nGenerateAfterLevellingTreasureID": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_lastPlayerLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_priceAdjustmentFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "BIOSHOP_MINIMUM_PRICE_ADJUSTMENT": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16386
+    },
+    "BIOSHOP_MAXIMUM_PRICE_ADJUSTMENT": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_isInitialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_currentFilter": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetSaveObjectClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<BioBaseSaveObject> GetSaveObjectClass()"
+    },
+    "ComputeSupplyOfResource": {
+      "documentation": null,
+      "signature_members": {
+        "resourceType": {
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "slotType": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int ComputeSupplyOfResource(EInventoryResourceTypes resourceType, GuiEquipSlots slotType)"
+    },
+    "RemoveResource": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "positiveAmount": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RemoveResource(EInventoryResourceTypes Type, int positiveAmount)"
+    },
+    "AddResource": {
+      "documentation": null,
+      "signature_members": {
+        "Type": {
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "positiveAmount": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "AddResource(EInventoryResourceTypes Type, int positiveAmount)"
+    },
+    "AddBuybackItem": {
+      "documentation": null,
+      "signature_members": {
+        "Item": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "AddBuybackItem(BioItem Item)"
+    },
+    "ConvertMasterIndexToDoubleIndex": {
+      "documentation": null,
+      "signature_members": {
+        "masterIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "inventoryIndex": {
+          "type": "EBioShopInventory",
+          "documentation": null,
+          "flags": 384
+        },
+        "ElementIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ConvertMasterIndexToDoubleIndex(int masterIndex, out EBioShopInventory inventoryIndex, out int ElementIndex)"
+    },
+    "RemovePlotItemAtMasterIndex": {
+      "documentation": null,
+      "signature_members": {
+        "masterPlotItemIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RemovePlotItemAtMasterIndex(int masterPlotItemIndex)"
+    },
+    "GetItemPriceAtMasterIndex": {
+      "documentation": null,
+      "signature_members": {
+        "masterIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetItemPriceAtMasterIndex(int masterIndex)"
+    },
+    "RemoveAtMasterIndex": {
+      "documentation": null,
+      "signature_members": {
+        "masterIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioItem",
+      "signature": "BioItem RemoveAtMasterIndex(int masterIndex)"
+    },
+    "BuildFilteredInventory": {
+      "documentation": null,
+      "signature_members": {
+        "filteredInventory": {
+          "type": "BioInventory",
+          "documentation": null,
+          "flags": 67109248
+        },
+        "Filter": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "BuildFilteredInventory(out BioInventory filteredInventory, GuiEquipSlots Filter)"
+    },
+    "ReadyShopForOpening": {
+      "documentation": null,
+      "signature_members": {
+        "PlayerLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "priceAdjustment": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ReadyShopForOpening(int PlayerLevel, float priceAdjustment)"
+    },
+    "GetPriceAdjustmentFactor": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetPriceAdjustmentFactor()"
+    }
+  },
+  "states": {},
+  "classflags": 144736918,
+  "configname": "Game",
+  "documentation": null
+}

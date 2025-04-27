@@ -1,0 +1,539 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_aItem": {
+      "type": "BioItem",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_aPlotItem": {
+      "type": "BioPlotPseudoItem",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_oTreasureLookupTable": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oTreasureTable": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oTreasureDistribution": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oPlotItemTable": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_xModType2DA": {
+      "type": "Bio2DA",
+      "documentation": null,
+      "flags": 0
+    },
+    "srInventoryTitle": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nResourceCredits": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nResourceGrenades": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fResourceMedigel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fResourceSalvage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nMaxCredits": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_nMaxGrenades": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_fMaxMedigel": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_fMaxSalvage": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_nResourceIdOffset": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_nPlotItemOffset": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_fTreasureStdDev": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16386
+    },
+    "m_fNormalRandom2": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nMinScalingLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "m_nMaxScalingLevel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "m_bUseLast": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetMaxMedigel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetMaxMedigel()"
+    },
+    "GetMaxGrenades": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxGrenades()"
+    },
+    "Sort": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Sort()"
+    },
+    "ClearNewItemFlags": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearNewItemFlags()"
+    },
+    "IsPlotItem": {
+      "documentation": null,
+      "signature_members": {
+        "oItem": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsPlotItem(BioItem oItem)"
+    },
+    "GetSaveObjectClass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Class",
+      "signature": "Class<BioBaseSaveObject> GetSaveObjectClass()"
+    },
+    "ReadSaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "Save": {
+          "type": "BioBaseSaveObject",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReadSaveObject(BioBaseSaveObject Save)"
+    },
+    "WriteSaveObject": {
+      "documentation": null,
+      "signature_members": {
+        "InOuter": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "Save": {
+          "type": "BioBaseSaveObject",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "BioBaseSaveObject",
+      "signature": "BioBaseSaveObject WriteSaveObject(Object InOuter, optional BioBaseSaveObject Save)"
+    },
+    "GrantScaledCredits": {
+      "documentation": null,
+      "signature_members": {
+        "nSize": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "i_bTickResource": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GrantScaledCredits(int nSize, optional bool i_bTickResource)"
+    },
+    "GetInventoryResourceFloat": {
+      "documentation": null,
+      "signature_members": {
+        "eInvResType": {
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetInventoryResourceFloat(EInventoryResourceTypes eInvResType)"
+    },
+    "GetAttributeAdjustedAmountFloat": {
+      "documentation": null,
+      "signature_members": {
+        "eInvResType": {
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "fAmt": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAttributeAdjustedAmountFloat(EInventoryResourceTypes eInvResType, out float fAmt)"
+    },
+    "GetAttributeAdjustedAmountInt": {
+      "documentation": null,
+      "signature_members": {
+        "eInvResType": {
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "nAmt": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetAttributeAdjustedAmountInt(EInventoryResourceTypes eInvResType, out int nAmt)"
+    },
+    "GetInventoryResourceInt": {
+      "documentation": null,
+      "signature_members": {
+        "eInvResType": {
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int GetInventoryResourceInt(EInventoryResourceTypes eInvResType)"
+    },
+    "AdjustInventoryResourceFloat": {
+      "documentation": null,
+      "signature_members": {
+        "eInvResType": {
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "fAmt": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bUseTalentAdjustedResources": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bTickerResource": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustInventoryResourceFloat(EInventoryResourceTypes eInvResType, float fAmt, optional bool bUseTalentAdjustedResources, optional bool bTickerResource)"
+    },
+    "AdjustInventoryResourceInt": {
+      "documentation": null,
+      "signature_members": {
+        "eInvResType": {
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
+        },
+        "nAmt": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bUseTalentAdjustedResources": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bTickerResource": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "AdjustInventoryResourceInt(EInventoryResourceTypes eInvResType, int nAmt, optional bool bUseTalentAdjustedResources, optional bool bTickerResource)"
+    },
+    "Empty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Empty()"
+    },
+    "IsEmpty": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsEmpty()"
+    },
+    "TickerResources": {
+      "documentation": null,
+      "signature_members": {
+        "notifier": {
+          "type": "BioEventNotifier",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TickerResources(BioEventNotifier notifier)"
+    },
+    "TickerItems": {
+      "documentation": null,
+      "signature_members": {
+        "notifier": {
+          "type": "BioEventNotifier",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "TickerItems(BioEventNotifier notifier)"
+    },
+    "SubsumePlotItems": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "BioInventory",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "bFlagAsNew": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SubsumePlotItems(BioInventory Other, optional bool bFlagAsNew)"
+    },
+    "SubsumeResources": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "BioInventory",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "notifier": {
+          "type": "BioEventNotifier",
+          "documentation": null,
+          "flags": 128
+        },
+        "bUseTalentAdjustedResources": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bFlagAsNew": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SubsumeResources(BioInventory Other, BioEventNotifier notifier, optional bool bUseTalentAdjustedResources, optional bool bFlagAsNew)"
+    },
+    "SubsumeItems": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "BioInventory",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "bFlagAsNew": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SubsumeItems(BioInventory Other, optional bool bFlagAsNew)"
+    },
+    "Subsume": {
+      "documentation": null,
+      "signature_members": {
+        "Other": {
+          "type": "BioInventory",
+          "documentation": null,
+          "flags": 67108992
+        },
+        "bFlagAsNew": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool Subsume(BioInventory Other, optional bool bFlagAsNew)"
+    },
+    "GenerateTreasure": {
+      "documentation": null,
+      "signature_members": {
+        "treasureID": {
+          "type": "int",
+          "documentation": null,
+          "flags": 130
+        },
+        "challengeLevel": {
+          "type": "int",
+          "documentation": null,
+          "flags": 130
+        },
+        "shouldFilterItemsByConditional": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 130
+        }
+      },
+      "returntype": "None",
+      "signature": "GenerateTreasure(const int treasureID, const int challengeLevel, const bool shouldFilterItemsByConditional)"
+    },
+    "Swap": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "pItem": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "BioItem",
+      "signature": "BioItem Swap(int nIndex, BioItem pItem)"
+    },
+    "Appraise": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "eResource": {
+          "type": "EInventoryResourceTypes",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float Appraise(int nIndex, EInventoryResourceTypes eResource)"
+    },
+    "Remove": {
+      "documentation": null,
+      "signature_members": {
+        "nIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioItem",
+      "signature": "BioItem Remove(int nIndex)"
+    },
+    "Add": {
+      "documentation": null,
+      "signature_members": {
+        "Item": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "int",
+      "signature": "int Add(BioItem Item)"
+    },
+    "GetMaxSophistication": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxSophistication()"
+    },
+    "GetMinSophistication": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMinSophistication()"
+    },
+    "GetStringRepresentation": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetStringRepresentation()"
+    }
+  },
+  "states": {},
+  "classflags": 144707734,
+  "configname": "Game",
+  "documentation": null
+}

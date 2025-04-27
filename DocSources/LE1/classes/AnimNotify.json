@@ -1,0 +1,33 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "FindNextNotifyOfClass": {
+      "documentation": null,
+      "signature_members": {
+        "AnimSeqInstigator": {
+          "type": "AnimNodeSequence",
+          "documentation": null,
+          "flags": 128
+        },
+        "NotifyClass": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "OutEvent": {
+          "type": "AnimNotifyEvent",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool FindNextNotifyOfClass(AnimNodeSequence AnimSeqInstigator, Class<AnimNotify> NotifyClass, out AnimNotifyEvent OutEvent)"
+    }
+  },
+  "states": {},
+  "classflags": 134230163,
+  "configname": "None",
+  "documentation": null
+}

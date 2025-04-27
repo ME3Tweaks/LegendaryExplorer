@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "FM_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "FM_Ignore": {
+      "value": 1,
+      "documentation": null
+    },
+    "FM_Affect": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

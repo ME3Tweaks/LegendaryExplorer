@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_aForceFeedbackSpec": {
+      "type": "BioForceFeedbackPlayerSpec",
+      "documentation": null,
+      "flags": 71434251
+    },
+    "m_aWeaponSpec": {
+      "type": "BioForceFeedbackPlayerWeaponSpec",
+      "documentation": null,
+      "flags": 71434251
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144707730,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "COMBAT_STANCE_NONE": {
+      "value": 0,
+      "documentation": null
+    },
+    "COMBAT_STANCE_AGGRESSIVE": {
+      "value": 1,
+      "documentation": null
+    },
+    "COMBAT_STANCE_DEFENSIVE": {
+      "value": 2,
+      "documentation": null
+    },
+    "COMBAT_STANCE_COUNT": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

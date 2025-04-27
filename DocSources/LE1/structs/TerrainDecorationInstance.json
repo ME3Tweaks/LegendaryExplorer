@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Component": {
+      "type": "PrimitiveComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "X": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Y": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Scale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "Yaw": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Terrain",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 4
+}

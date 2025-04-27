@@ -1,0 +1,57 @@
+{
+  "parent": "GameInfo",
+  "package": "SFXGame",
+  "variables": {
+    "Teams": {
+      "type": "TeamInfo",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "TeamClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "RestartPlayer": {
+      "documentation": null,
+      "signature_members": {
+        "NewPlayer": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RestartPlayer(Controller NewPlayer)"
+    },
+    "PostLogin": {
+      "documentation": null,
+      "signature_members": {
+        "NewPlayer": {
+          "type": "PlayerController",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PostLogin(PlayerController NewPlayer)"
+    },
+    "BioBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BioBeginPlay()"
+    }
+  },
+  "states": {
+    "PendingMatch": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "classflags": 10485814,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,23 @@
+{
+  "members": {
+    "GlowInfo": {
+      "type": "DepthFieldGlowInfo",
+      "documentation": null,
+      "flags": 0
+    },
+    "bClipText": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bEnableShadow": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "Canvas",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

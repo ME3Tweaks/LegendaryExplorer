@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Pitch": {
+      "type": "FOscillator",
+      "documentation": null,
+      "flags": 1
+    },
+    "Yaw": {
+      "type": "FOscillator",
+      "documentation": null,
+      "flags": 1
+    },
+    "Roll": {
+      "type": "FOscillator",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "CameraShake",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

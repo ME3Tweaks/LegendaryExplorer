@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "POWER_ADDITIVE_PRIMARY": {
+      "value": 0,
+      "documentation": null
+    },
+    "POWER_ADDITIVE_ADD_POWER": {
+      "value": 1,
+      "documentation": null
+    },
+    "POWER_ADDITIVE_BASE_POSE": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,36 @@
+{
+  "parent": "BioAnimNodeBlendMultiAdditive",
+  "package": "SFXGame",
+  "variables": {
+    "m_aChildAnimsets": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_aChildPinData": {
+      "type": "BioChildPinData",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "m_pLangOverride": {
+      "type": "BioGestureLangOverride",
+      "documentation": null,
+      "flags": 8192
+    },
+    "m_bGesturePlaying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bTriedOverride": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

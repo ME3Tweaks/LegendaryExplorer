@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "COMBAT_DIFFICULTY_CASUAL": {
+      "value": 0,
+      "documentation": null
+    },
+    "COMBAT_DIFFICULTY_NORMAL": {
+      "value": 1,
+      "documentation": null
+    },
+    "COMBAT_DIFFICULTY_VETERAN": {
+      "value": 2,
+      "documentation": null
+    },
+    "COMBAT_DIFFICULTY_HARDCORE": {
+      "value": 3,
+      "documentation": null
+    },
+    "COMBAT_DIFFICULTY_INSANITY": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

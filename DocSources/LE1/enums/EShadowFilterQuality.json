@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "SFQ_Low": {
+      "value": 0,
+      "documentation": null
+    },
+    "SFQ_Medium": {
+      "value": 1,
+      "documentation": null
+    },
+    "SFQ_High": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

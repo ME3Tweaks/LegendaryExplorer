@@ -1,0 +1,122 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {
+    "m_ClassCache": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 12290
+    }
+  },
+  "functions": {
+    "ValidateOwnershipSemantics": {
+      "documentation": null,
+      "signature_members": {
+        "Target": {
+          "type": "Object",
+          "documentation": null,
+          "flags": 128
+        },
+        "isVerbose": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "recurrence": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ValidateOwnershipSemantics(Object Target, optional bool isVerbose, optional int recurrence)"
+    },
+    "ParseIntoArray": {
+      "documentation": null,
+      "signature_members": {
+        "aString": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        },
+        "sDelimitedStrings": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sDelimiter": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bCullEmptyStrings": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ParseIntoArray(out array<string> aString, string sDelimitedStrings, string sDelimiter, bool bCullEmptyStrings)"
+    },
+    "ParseIntoArrayWS": {
+      "documentation": null,
+      "signature_members": {
+        "whitespaceDelimitedStrings": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "Strings": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194688
+        }
+      },
+      "returntype": "None",
+      "signature": "ParseIntoArrayWS(string whitespaceDelimitedStrings, out array<string> Strings)"
+    },
+    "GetEnumValue": {
+      "documentation": null,
+      "signature_members": {
+        "clsEnumDefiner": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmEnumField": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "nmEnumValue": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "cEnumValue": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetEnumValue(Class<Object> clsEnumDefiner, Name nmEnumField, Name nmEnumValue, out byte cEnumValue)"
+    },
+    "FindClass": {
+      "documentation": null,
+      "signature_members": {
+        "nmClass": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Class",
+      "signature": "Class<Object> FindClass(Name nmClass)"
+    }
+  },
+  "states": {},
+  "classflags": 142610579,
+  "configname": "None",
+  "documentation": null
+}

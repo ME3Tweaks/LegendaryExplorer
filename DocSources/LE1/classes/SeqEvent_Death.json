@@ -1,0 +1,17 @@
+{
+  "parent": "SequenceEvent",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 2097170,
+  "configname": "None",
+  "documentation": null
+}

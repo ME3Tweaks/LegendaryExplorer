@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Data": {
+      "type": "UntypedBulkData_Mirror",
+      "documentation": null,
+      "flags": 4096
+    },
+    "SizeX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4096
+    },
+    "SizeY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4096
+    }
+  },
+  "classdef": "Texture2D",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

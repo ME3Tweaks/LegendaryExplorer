@@ -1,0 +1,13 @@
+{
+  "members": {
+    "Emitters": {
+      "type": "PhysXEmitterVerticalProperties",
+      "documentation": null,
+      "flags": 67108865
+    }
+  },
+  "classdef": "WorldInfo",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

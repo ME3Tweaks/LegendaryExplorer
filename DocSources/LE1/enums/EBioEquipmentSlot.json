@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "EQUIPMENT_SLOT_HEAD_GEAR_DEPRECATED": {
+      "value": 0,
+      "documentation": null
+    },
+    "EQUIPMENT_SLOT_ARMOR": {
+      "value": 1,
+      "documentation": null
+    },
+    "EQUIPMENT_SLOT_GRENADE": {
+      "value": 2,
+      "documentation": null
+    },
+    "EQUIPMENT_SLOT_OMNITOOL": {
+      "value": 3,
+      "documentation": null
+    },
+    "EQUIPMENT_SLOT_BIOAMP": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

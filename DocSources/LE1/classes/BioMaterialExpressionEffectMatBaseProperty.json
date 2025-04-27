@@ -1,0 +1,21 @@
+{
+  "parent": "MaterialExpression",
+  "package": "Engine",
+  "variables": {
+    "Input": {
+      "type": "MaterialExpression",
+      "documentation": null,
+      "flags": 0
+    },
+    "BaseProperty": {
+      "type": "EMaterialProperty",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134226066,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,288 @@
+{
+  "parent": "SFXModule",
+  "package": "SFXGame",
+  "variables": {
+    "LastCamLoc": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "DebugAdhesion_Final": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 8192
+    },
+    "DebugAdhesion_Combined": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 8192
+    },
+    "ZoomSnapTarget": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "CurrentAimAssistBoneLocation": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LastAdhesionTarget": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LastFrictionTarget": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 8192
+    },
+    "LastZoomSnapTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "CurrentAimAssistTarget": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 8192
+    },
+    "GlobalFrictionFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "GlobalAimCorrectionFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "GlobalAdhesionFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "GlobalSweepFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "EnemyMovementAdhesionFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "LastFrictionMultiplier": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "CurrentAimAssistSoftMargin": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "DebugDraw_ZoomSnap": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_ZoomSnap(BioHUD H)"
+    },
+    "ZoomSnap": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ZoomSnap()"
+    },
+    "DebugDraw_Adhesion": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_Adhesion(BioHUD H)"
+    },
+    "PrintQuat": {
+      "documentation": null,
+      "signature_members": {
+        "Q": {
+          "type": "Quat",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string PrintQuat(Quat Q)"
+    },
+    "ViewAdhesion": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "Weapon": {
+          "type": "BioWeaponRanged",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator ViewAdhesion(float DeltaTime, BioWeaponRanged Weapon)"
+    },
+    "StripRoll": {
+      "documentation": null,
+      "signature_members": {
+        "Q": {
+          "type": "Quat",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Quat",
+      "signature": "Quat StripRoll(Quat Q)"
+    },
+    "DebugDraw_Friction": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_Friction(BioHUD H)"
+    },
+    "ViewFriction": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "Weapon": {
+          "type": "BioWeaponRanged",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float ViewFriction(float DeltaTime, BioWeaponRanged Weapon)"
+    },
+    "GetAdjustedAimFor": {
+      "documentation": null,
+      "signature_members": {
+        "W": {
+          "type": "Weapon",
+          "documentation": null,
+          "flags": 128
+        },
+        "StartFireLoc": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator GetAdjustedAimFor(Weapon W, Vector StartFireLoc)"
+    },
+    "DebugDraw_Magnetism": {
+      "documentation": null,
+      "signature_members": {
+        "H": {
+          "type": "BioHUD",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "DebugDraw_Magnetism(BioHUD H)"
+    },
+    "GetStickRelativeDot": {
+      "documentation": null,
+      "signature_members": {
+        "ScreenAimOffset": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "float",
+      "signature": "float GetStickRelativeDot(Vector ScreenAimOffset)"
+    },
+    "GetMagneticAimCorrection": {
+      "documentation": null,
+      "signature_members": {
+        "StartFireLoc": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "BaseAimRot": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 128
+        },
+        "MaxAngle": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "Threshold": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "Range": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Rotator",
+      "signature": "Rotator GetMagneticAimCorrection(Vector StartFireLoc, Rotator BaseAimRot, float MaxAngle, float Threshold, float Range)"
+    },
+    "ProcessRotation": {
+      "documentation": null,
+      "signature_members": {
+        "DeltaTime": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "DeltaRot": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessRotation(float DeltaTime, out Rotator DeltaRot)"
+    },
+    "CacheCurrentAimAssistTarget": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CacheCurrentAimAssistTarget()"
+    }
+  },
+  "states": {},
+  "classflags": 22,
+  "configname": "Game",
+  "documentation": null
+}

@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PCOPTION_GUI_BROWSER_WHEEL": {
+      "value": 0,
+      "documentation": null
+    },
+    "PCOPTION_GUI_MAINMENU": {
+      "value": 1,
+      "documentation": null
+    },
+    "PCOPTION_GUI_CHARACTER_CREATION": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,140 @@
+{
+  "parent": "Volume",
+  "package": "Engine",
+  "variables": {
+    "ConvexMeshes": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ExclusionShapes": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ExclusionShapePoses": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "ForceField": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "LinearKernel": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 12290
+    },
+    "Constant": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "PositionMultiplierX": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "PositionMultiplierY": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "PositionMultiplierZ": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "PositionTarget": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "VelocityMultiplierX": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "VelocityMultiplierY": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "VelocityMultiplierZ": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "VelocityTarget": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "Noise": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "FalloffLinear": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "FalloffQuadratic": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "ExcludeChannel": {
+      "type": "int",
+      "documentation": null,
+      "flags": 1
+    },
+    "CollideWithChannels": {
+      "type": "RBCollisionChannelContainer",
+      "documentation": null,
+      "flags": 1
+    },
+    "TorusRadius": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "RBChannel": {
+      "type": "ERBCollisionChannel",
+      "documentation": null,
+      "flags": 3
+    },
+    "Coordinates": {
+      "type": "FFB_ForceFieldCoordinates",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "StopsProjectile": {
+      "documentation": null,
+      "signature_members": {
+        "P": {
+          "type": "Projectile",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool StopsProjectile(Projectile P)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    }
+  },
+  "states": {},
+  "classflags": 144704178,
+  "configname": "None",
+  "documentation": null
+}

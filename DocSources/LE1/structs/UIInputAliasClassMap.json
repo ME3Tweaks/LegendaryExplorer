@@ -1,0 +1,33 @@
+{
+  "members": {
+    "WidgetClassName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "WidgetStates": {
+      "type": "UIInputAliasStateMap",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "WidgetClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 0
+    },
+    "StateLookupTable": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 12290
+    },
+    "StateReverseLookupTable": {
+      "type": "Object",
+      "documentation": null,
+      "flags": 12290
+    }
+  },
+  "classdef": "UIRoot",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

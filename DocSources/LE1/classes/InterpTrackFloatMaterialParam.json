@@ -1,0 +1,21 @@
+{
+  "parent": "InterpTrackFloatBase",
+  "package": "Engine",
+  "variables": {
+    "AffectedMaterialRefs": {
+      "type": "MeshMaterialRef",
+      "documentation": null,
+      "flags": 4718594
+    },
+    "ParamName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 142614674,
+  "configname": "None",
+  "documentation": null
+}

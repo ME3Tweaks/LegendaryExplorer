@@ -1,0 +1,109 @@
+{
+  "parent": "Projectile",
+  "package": "SFXGame",
+  "variables": {
+    "m_oPhysicsCollisionContext": {
+      "type": "BioProjectilePhysicsCollisionContext",
+      "documentation": null,
+      "flags": 67108872
+    },
+    "m_pDamage": {
+      "type": "BioDamageType",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bEnablePhysicsTouch": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "ProcessPhysicsTouch": {
+      "documentation": null,
+      "signature_members": {
+        "oOther": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessPhysicsTouch(Actor oOther, Vector vHitLocation, Vector vHitNormal)"
+    },
+    "ProcessTouch": {
+      "documentation": null,
+      "signature_members": {
+        "oOther": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessTouch(Actor oOther, Vector vHitLocation, Vector vHitNormal)"
+    },
+    "Explode": {
+      "documentation": null,
+      "signature_members": {
+        "vHitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "vHitNormal": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Explode(Vector vHitLocation, Vector vHitNormal)"
+    },
+    "IsValidTarget": {
+      "documentation": null,
+      "signature_members": {
+        "oActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidTarget(Actor oActor)"
+    }
+  },
+  "states": {
+    "CollidedDueToPhysics": {
+      "functions": {},
+      "documentation": null
+    },
+    "Standard": {
+      "functions": {},
+      "documentation": null
+    }
+  },
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

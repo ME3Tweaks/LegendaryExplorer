@@ -1,0 +1,93 @@
+{
+  "parent": "Info",
+  "package": "Engine",
+  "variables": {
+    "Filename": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "ArchivePtr": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "bFlushEachWrite": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bWantsAsyncWrites": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "FileType": {
+      "type": "FWFileType",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    },
+    "Logf": {
+      "documentation": null,
+      "signature_members": {
+        "logString": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
+        }
+      },
+      "returntype": "None",
+      "signature": "Logf(coerce string logString)"
+    },
+    "CloseFile": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CloseFile()"
+    },
+    "OpenFile": {
+      "documentation": null,
+      "signature_members": {
+        "InFilename": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4196480
+        },
+        "InFileType": {
+          "type": "FWFileType",
+          "documentation": null,
+          "flags": 144
+        },
+        "InExtension": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        },
+        "bUnique": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bIncludeTimeStamp": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OpenFile(coerce string InFilename, optional FWFileType InFileType, optional string InExtension, optional bool bUnique, optional bool bIncludeTimeStamp)"
+    }
+  },
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

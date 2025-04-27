@@ -1,0 +1,18 @@
+{
+  "members": {
+    "m_pWaveform": {
+      "type": "ForceFeedbackWaveform",
+      "documentation": null,
+      "flags": 71303179
+    },
+    "m_eLabel": {
+      "type": "EBioForceFeedbackPlayer",
+      "documentation": null,
+      "flags": 131075
+    }
+  },
+  "classdef": "BioForceFeedbackPlayer",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

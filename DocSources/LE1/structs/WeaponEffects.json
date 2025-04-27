@@ -1,0 +1,38 @@
+{
+  "members": {
+    "VisualImpactSet": {
+      "type": "BioVISWeapon",
+      "documentation": null,
+      "flags": 1
+    },
+    "vfxMuzzleFlash": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "vfxMuzzleFlash2": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "vfxTracer": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "vfxCoolDown": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    },
+    "vfxSabotage": {
+      "type": "BioVFXTemplate",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "BioAppearanceItemSophisticated",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

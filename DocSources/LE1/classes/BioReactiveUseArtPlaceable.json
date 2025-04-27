@@ -1,0 +1,58 @@
+{
+  "parent": "BioReactive",
+  "package": "SFXGame",
+  "variables": {
+    "m_nmSkillToGoto": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "Active": {
+      "type": "BioActiveUseArtPlaceable",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fCostToUse": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fFullSkillTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fSkillTimeDone": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "fCount": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bTransitionIntialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bDone": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "InitializeInternal": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeInternal()"
+    }
+  },
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

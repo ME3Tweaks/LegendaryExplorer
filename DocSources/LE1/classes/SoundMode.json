@@ -1,0 +1,36 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "SoundClassEffects": {
+      "type": "SoundClassAdjuster",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "InitialDelay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FadeInTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "Duration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "FadeOutTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "members": {
+    "WorldToLight": {
+      "type": "Matrix",
+      "documentation": null,
+      "flags": 0
+    },
+    "LightToWorld": {
+      "type": "Matrix",
+      "documentation": null,
+      "flags": 0
+    },
+    "LightSpaceImportanceBounds": {
+      "type": "Box",
+      "documentation": null,
+      "flags": 0
+    },
+    "ShadowMapSizeX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ShadowMapSizeY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "EngineTypes",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

@@ -1,0 +1,36 @@
+{
+  "parent": "Keypoint",
+  "package": "Engine",
+  "variables": {
+    "AudioComponent": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67764235
+    },
+    "m_fFadeInDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fVolume": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAutoPlay": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bIsPlaying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

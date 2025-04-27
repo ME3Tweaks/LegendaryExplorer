@@ -1,0 +1,238 @@
+{
+  "parent": "UIDataStore_Remote",
+  "package": "Engine",
+  "variables": {
+    "VfTable_IUIListElementProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "VfTable_IUIListElementCellProvider": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 8392706
+    },
+    "GameSearchCfgList": {
+      "type": "GameSearchCfg",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "GameInterface": {
+      "type": "OnlineGameInterface",
+      "documentation": null,
+      "flags": 0
+    },
+    "SearchResultsName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 2
+    },
+    "OnlineSub": {
+      "type": "OnlineSubsystem",
+      "documentation": null,
+      "flags": 0
+    },
+    "SelectedIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ActiveSearchIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "ClearAllSearchResults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ClearAllSearchResults()"
+    },
+    "MoveToPrevious": {
+      "documentation": null,
+      "signature_members": {
+        "bInvalidateExistingSearchResults": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveToPrevious(optional bool bInvalidateExistingSearchResults)"
+    },
+    "MoveToNext": {
+      "documentation": null,
+      "signature_members": {
+        "bInvalidateExistingSearchResults": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "MoveToNext(optional bool bInvalidateExistingSearchResults)"
+    },
+    "SetCurrentByName": {
+      "documentation": null,
+      "signature_members": {
+        "SearchName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "bInvalidateExistingSearchResults": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentByName(Name SearchName, optional bool bInvalidateExistingSearchResults)"
+    },
+    "SetCurrentByIndex": {
+      "documentation": null,
+      "signature_members": {
+        "NewIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bInvalidateExistingSearchResults": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetCurrentByIndex(int NewIndex, optional bool bInvalidateExistingSearchResults)"
+    },
+    "FindSearchConfigurationIndex": {
+      "documentation": null,
+      "signature_members": {
+        "SearchTag": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindSearchConfigurationIndex(Name SearchTag)"
+    },
+    "GetActiveGameSearch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "OnlineGameSearch",
+      "signature": "OnlineGameSearch GetActiveGameSearch()"
+    },
+    "GetCurrentGameSearch": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "OnlineGameSearch",
+      "signature": "OnlineGameSearch GetCurrentGameSearch()"
+    },
+    "BuildSearchResults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "BuildSearchResults()"
+    },
+    "ShowHostGamercard": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerIndex": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "ListIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowHostGamercard(byte ControllerIndex, int ListIndex)"
+    },
+    "GetSearchResultFromIndex": {
+      "documentation": null,
+      "signature_members": {
+        "ListIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Result": {
+          "type": "OnlineGameSearchResult",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool GetSearchResultFromIndex(int ListIndex, out OnlineGameSearchResult Result)"
+    },
+    "OnSearchComplete": {
+      "documentation": null,
+      "signature_members": {
+        "bWasSuccessful": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSearchComplete(bool bWasSuccessful)"
+    },
+    "OverrideQuerySubmission": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "Search": {
+          "type": "OnlineGameSearch",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool OverrideQuerySubmission(byte ControllerId, OnlineGameSearch Search)"
+    },
+    "SubmitGameSearch": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerIndex": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "bInvalidateExistingSearchResults": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool SubmitGameSearch(byte ControllerIndex, optional bool bInvalidateExistingSearchResults)"
+    },
+    "InvalidateCurrentSearchResults": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InvalidateCurrentSearchResults()"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Init()"
+    }
+  },
+  "states": {},
+  "classflags": 136315035,
+  "configname": "None",
+  "documentation": null
+}

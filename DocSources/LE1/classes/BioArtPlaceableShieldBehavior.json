@@ -1,0 +1,75 @@
+{
+  "parent": "BioArtPlaceableBehavior",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "ProxyTakeDamage": {
+      "documentation": null,
+      "signature_members": {
+        "OriginalDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "CurrentDamage": {
+          "type": "float",
+          "documentation": null,
+          "flags": 384
+        },
+        "InstigatedBy": {
+          "type": "Controller",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitLocation": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        },
+        "Momentum": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 384
+        },
+        "DamageType": {
+          "type": "Class",
+          "documentation": null,
+          "flags": 128
+        },
+        "HitInfo": {
+          "type": "TraceHitInfo",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamageCausingActor": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 144
+        },
+        "pDamage": {
+          "type": "BioDamageType",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ProxyTakeDamage(float OriginalDamage, out float CurrentDamage, Controller InstigatedBy, Vector HitLocation, out Vector Momentum, Class<DamageType> DamageType, optional TraceHitInfo HitInfo, optional Actor pDamageCausingActor, optional BioDamageType pDamage)"
+    },
+    "Tick": {
+      "documentation": null,
+      "signature_members": {
+        "fTimeDelta": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Tick(float fTimeDelta)"
+    }
+  },
+  "states": {},
+  "classflags": 144740502,
+  "configname": "Game",
+  "documentation": null
+}

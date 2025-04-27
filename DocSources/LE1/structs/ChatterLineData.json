@@ -1,0 +1,18 @@
+{
+  "members": {
+    "TimeLastPlayed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "SoundSet": {
+      "type": "EBioSoundSetType",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioChatterSystem",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 0
+}

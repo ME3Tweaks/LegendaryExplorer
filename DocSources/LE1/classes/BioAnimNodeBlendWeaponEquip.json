@@ -1,0 +1,31 @@
+{
+  "parent": "BioAnimNodeBlendBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_HolsterToDrawBlendDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_noneToDrawBlendDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_noneToHolsterBlendDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_toNoneBlendDuration": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "parent": "BioBaseComponent",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "LoadGamePropertyConditional": {
+      "documentation": null,
+      "signature_members": {
+        "o2DA": {
+          "type": "Bio2DA",
+          "documentation": null,
+          "flags": 128
+        },
+        "nConditionalId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "oOwner": {
+          "type": "BioGameProperty",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "BioGamePropertyConditional",
+      "signature": "BioGamePropertyConditional LoadGamePropertyConditional(Bio2DA o2DA, int nConditionalId, BioGameProperty oOwner)"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

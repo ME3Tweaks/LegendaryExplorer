@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "CMOT_Float1": {
+      "value": 0,
+      "documentation": null
+    },
+    "CMOT_Float2": {
+      "value": 1,
+      "documentation": null
+    },
+    "CMOT_Float3": {
+      "value": 2,
+      "documentation": null
+    },
+    "CMOT_Float4": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

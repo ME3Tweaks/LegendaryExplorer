@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "BScMv_None": {
+      "value": 0,
+      "documentation": null
+    },
+    "BScMv_TurnAngle": {
+      "value": 1,
+      "documentation": null
+    },
+    "BScMv_SpeedVelocity": {
+      "value": 2,
+      "documentation": null
+    },
+    "BScMv_SpeedTacticalVelocity": {
+      "value": 3,
+      "documentation": null
+    },
+    "BScMv_AxisDirection": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

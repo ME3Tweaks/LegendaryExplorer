@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "SOUNDMODE_NORMAL": {
+      "value": 0,
+      "documentation": null
+    },
+    "SOUNDMODE_DYING": {
+      "value": 1,
+      "documentation": null
+    },
+    "SOUNDMODE_DEATH": {
+      "value": 2,
+      "documentation": null
+    },
+    "SOUNDMODE_GRENADE": {
+      "value": 3,
+      "documentation": null
+    },
+    "SOUNDMODE_COVER": {
+      "value": 4,
+      "documentation": null
+    },
+    "SOUNDMODE_ROADIE_RUN": {
+      "value": 5,
+      "documentation": null
+    },
+    "SOUNDMODE_TACCOM": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

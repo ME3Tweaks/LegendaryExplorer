@@ -1,0 +1,28 @@
+{
+  "members": {
+    "FirstName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "LastName": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 1
+    },
+    "HealthCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "ShieldCurrent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXSaveGame",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

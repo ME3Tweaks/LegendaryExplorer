@@ -1,0 +1,100 @@
+{
+  "parent": "BioVehicleBehaviorBase",
+  "package": "SFXGame",
+  "variables": {
+    "m_nVehicleCannon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nVehicleMachineGun": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "InitializeRunTimeOnlyTransients": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeRunTimeOnlyTransients()"
+    },
+    "OnWeaponInstantFire": {
+      "documentation": null,
+      "signature_members": {
+        "oFiredWeapon": {
+          "type": "BioWeaponRanged",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "OnWeaponInstantFire(optional BioWeaponRanged oFiredWeapon)"
+    },
+    "InitializeActionFramework": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitializeActionFramework()"
+    },
+    "UnEquipMachineGun": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool UnEquipMachineGun()"
+    },
+    "UnEquipCannon": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool UnEquipCannon()"
+    },
+    "EquipMachineGun": {
+      "documentation": null,
+      "signature_members": {
+        "oNewItem": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EquipMachineGun(BioItem oNewItem)"
+    },
+    "EquipCannon": {
+      "documentation": null,
+      "signature_members": {
+        "oNewItem": {
+          "type": "BioItem",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EquipCannon(BioItem oNewItem)"
+    },
+    "EquipDefaults": {
+      "documentation": null,
+      "signature_members": {
+        "oEquipment": {
+          "type": "BioEquipmentVehicle",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool EquipDefaults(BioEquipmentVehicle oEquipment)"
+    },
+    "InitializeVehicle": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool InitializeVehicle()"
+    }
+  },
+  "states": {},
+  "classflags": 144740502,
+  "configname": "Game",
+  "documentation": null
+}

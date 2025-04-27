@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "BSMoveAxisDir_X": {
+      "value": 0,
+      "documentation": null
+    },
+    "BSMoveAxisDir_Y": {
+      "value": 1,
+      "documentation": null
+    },
+    "BSMoveAxisDir_Z": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

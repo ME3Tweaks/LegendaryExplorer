@@ -1,0 +1,23 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "ApplyFemaleSkinToneOverride": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ApplyFemaleSkinToneOverride()"
+    },
+    "Deactivated": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Deactivated()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

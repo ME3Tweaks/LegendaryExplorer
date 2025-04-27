@@ -1,0 +1,33 @@
+{
+  "members": {
+    "vLastPos": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "rLastRot": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "pActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "nmStageNode": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "bSpawned": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioEvtSysTrackVOElementsInst",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

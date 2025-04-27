@@ -1,0 +1,68 @@
+{
+  "parent": "SequenceAction",
+  "package": "SFXGame",
+  "variables": {
+    "IntX": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "IntY": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "IntZ": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "FloatX": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FloatY": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "FloatZ": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "XIsFloat": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "YIsFloat": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "ZIsFloat": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "Operation": {
+      "type": "EScalarMathOps",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    }
+  },
+  "states": {},
+  "classflags": 136315026,
+  "configname": "None",
+  "documentation": null
+}

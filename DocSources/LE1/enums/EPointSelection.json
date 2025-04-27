@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "PS_Normal": {
+      "value": 0,
+      "documentation": null
+    },
+    "PS_Random": {
+      "value": 1,
+      "documentation": null
+    },
+    "PS_Reverse": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

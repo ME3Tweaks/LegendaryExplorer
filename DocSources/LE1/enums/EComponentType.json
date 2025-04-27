@@ -1,0 +1,53 @@
+{
+  "EnumValues": {
+    "COMPONENT_Unknown": {
+      "value": 0,
+      "documentation": null
+    },
+    "COMPONENT_Animation": {
+      "value": 1,
+      "documentation": null
+    },
+    "COMPONENT_AI": {
+      "value": 2,
+      "documentation": null
+    },
+    "COMPONENT_Gameplay": {
+      "value": 3,
+      "documentation": null
+    },
+    "COMPONENT_Graphics": {
+      "value": 4,
+      "documentation": null
+    },
+    "COMPONENT_Particles": {
+      "value": 5,
+      "documentation": null
+    },
+    "COMPONENT_StaticMesh": {
+      "value": 6,
+      "documentation": null
+    },
+    "COMPONENT_SkinMesh": {
+      "value": 7,
+      "documentation": null
+    },
+    "COMPONENT_Lights": {
+      "value": 8,
+      "documentation": null
+    },
+    "COMPONENT_Audio": {
+      "value": 9,
+      "documentation": null
+    },
+    "COMPONENT_Physics": {
+      "value": 10,
+      "documentation": null
+    },
+    "COMPONENT_Engine": {
+      "value": 11,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

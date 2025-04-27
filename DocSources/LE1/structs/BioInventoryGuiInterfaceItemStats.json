@@ -1,0 +1,18 @@
+{
+  "members": {
+    "lstModifiers": {
+      "type": "BioItemPropertyInfo",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "lstStats": {
+      "type": "BioInventoryGuiInterfaceItemStat",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioInventoryGuiInterface",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

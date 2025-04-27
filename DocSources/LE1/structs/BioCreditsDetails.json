@@ -1,0 +1,23 @@
+{
+  "members": {
+    "srHeading": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "srTitle": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    },
+    "srNames": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFHandler_Credits",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

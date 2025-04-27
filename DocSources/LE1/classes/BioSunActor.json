@@ -1,0 +1,191 @@
+{
+  "parent": "Actor",
+  "package": "SFXGame",
+  "variables": {
+    "IntensityCurve": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 71958537
+    },
+    "ScaleCurve": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 71958537
+    },
+    "BrightnessCurve": {
+      "type": "RawDistributionFloat",
+      "documentation": null,
+      "flags": 71958537
+    },
+    "SunTint": {
+      "type": "LinearColor",
+      "documentation": null,
+      "flags": 1
+    },
+    "SunSprite": {
+      "type": "BioSpriteTranslucentComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "HaloSprite": {
+      "type": "BioSunFlareComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "FlareSprite0": {
+      "type": "BioSunFlareComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "FlareSprite1": {
+      "type": "BioSunFlareComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "FlareSprite2": {
+      "type": "BioSunFlareComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "FlareSprite3": {
+      "type": "BioSunFlareComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "FlareSprite4": {
+      "type": "BioSunFlareComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "FlareSprite5": {
+      "type": "BioSunFlareComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "FlareSprite6": {
+      "type": "BioSunFlareComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "FlareSprite7": {
+      "type": "BioSunFlareComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "FlareSprite8": {
+      "type": "BioSunFlareComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "FlareSprite9": {
+      "type": "BioSunFlareComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "StreakSprite0": {
+      "type": "BioSunFlareStreakComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "StreakSprite1": {
+      "type": "BioSunFlareStreakComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "StreakSprite2": {
+      "type": "BioSunFlareStreakComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "StreakSprite3": {
+      "type": "BioSunFlareStreakComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "StreakSprite4": {
+      "type": "BioSunFlareStreakComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "StreakSprite5": {
+      "type": "BioSunFlareStreakComponent",
+      "documentation": null,
+      "flags": 67633161
+    },
+    "FocusDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "AutoScaleDistance": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "fIntensityCurveAccumulator": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "fScaleCurveAccumulator": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "fBrightnessCurveAccumulator": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "fDyingFadePercent": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "fFadeTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "UseBaseLightTint": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "HideAllFlaresOverride": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "ViewDependentIntensity": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAnimateIntensity": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAnimateScale": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bAnimateBrightness": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDying": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704150,
+  "configname": "Game",
+  "documentation": null
+}

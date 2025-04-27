@@ -1,0 +1,37 @@
+{
+  "EnumValues": {
+    "CONSOLE_Any": {
+      "value": 0,
+      "documentation": null
+    },
+    "CONSOLE_Xbox360": {
+      "value": 1,
+      "documentation": null
+    },
+    "CONSOLE_PS3": {
+      "value": 2,
+      "documentation": null
+    },
+    "CONSOLE_Mobile": {
+      "value": 3,
+      "documentation": null
+    },
+    "CONSOLE_IPhone": {
+      "value": 4,
+      "documentation": null
+    },
+    "CONSOLE_Tegra": {
+      "value": 5,
+      "documentation": null
+    },
+    "CONSOLE_Dingo": {
+      "value": 6,
+      "documentation": null
+    },
+    "CONSOLE_Orbis": {
+      "value": 7,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

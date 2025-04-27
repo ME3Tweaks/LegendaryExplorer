@@ -1,0 +1,94 @@
+{
+  "parent": "UIEvent",
+  "package": "Engine",
+  "variables": {
+    "ButtonPanel": {
+      "type": "UICalloutButtonPanel",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {
+    "GetObjClassVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetObjClassVersion()"
+    },
+    "IsPastingIntoUISequenceAllowed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsPastingIntoUISequenceAllowed()"
+    },
+    "IsValidUISequenceObject": {
+      "documentation": null,
+      "signature_members": {
+        "TargetObject": {
+          "type": "UIScreenObject",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool IsValidUISequenceObject(optional UIScreenObject TargetObject)"
+    },
+    "FindButtonAliasIndex": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonAliasName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "int",
+      "signature": "int FindButtonAliasIndex(Name ButtonAliasName)"
+    },
+    "ChangeButtonAlias": {
+      "documentation": null,
+      "signature_members": {
+        "CurrentAliasName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "NewAliasName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ChangeButtonAlias(Name CurrentAliasName, Name NewAliasName)"
+    },
+    "UnregisterButtonAlias": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonAliasName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UnregisterButtonAlias(Name ButtonAliasName)"
+    },
+    "RegisterButtonAlias": {
+      "documentation": null,
+      "signature_members": {
+        "ButtonAliasName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool RegisterButtonAlias(Name ButtonAliasName)"
+    }
+  },
+  "states": {},
+  "classflags": 136315570,
+  "configname": "None",
+  "documentation": null
+}

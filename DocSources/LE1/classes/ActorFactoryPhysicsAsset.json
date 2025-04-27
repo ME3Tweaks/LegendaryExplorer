@@ -1,0 +1,56 @@
+{
+  "parent": "ActorFactory",
+  "package": "Engine",
+  "variables": {
+    "InitialVelocity": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "DrawScale3D": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "PhysicsAsset": {
+      "type": "PhysicsAsset",
+      "documentation": null,
+      "flags": 1
+    },
+    "SkeletalMesh": {
+      "type": "SkeletalMesh",
+      "documentation": null,
+      "flags": 1
+    },
+    "bStartAwake": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDamageAppliesImpulse": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNotifyRigidBodyCollision": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseCompartment": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCastDynamicShadow": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134230166,
+  "configname": "Editor",
+  "documentation": null
+}

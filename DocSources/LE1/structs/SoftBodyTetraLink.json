@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Index": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Bary": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SkeletalMesh",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

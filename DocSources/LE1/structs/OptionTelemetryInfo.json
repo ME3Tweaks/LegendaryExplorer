@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Id": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Value_Initial": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "Value_ToSend": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioSFHandler_PCOptions",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

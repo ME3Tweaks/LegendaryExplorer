@@ -1,0 +1,26 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_mapSoundSetCueList": {
+      "type": "MultiMap_Mirror",
+      "documentation": null,
+      "flags": 4097
+    },
+    "m_aAllCues": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_sSoundSetName": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194305
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,45 @@
+{
+  "EnumValues": {
+    "COLLIDE_CustomDefault": {
+      "value": 0,
+      "documentation": null
+    },
+    "COLLIDE_NoCollision": {
+      "value": 1,
+      "documentation": null
+    },
+    "COLLIDE_BlockAll": {
+      "value": 2,
+      "documentation": null
+    },
+    "COLLIDE_BlockWeapons": {
+      "value": 3,
+      "documentation": null
+    },
+    "COLLIDE_TouchAll": {
+      "value": 4,
+      "documentation": null
+    },
+    "COLLIDE_TouchWeapons": {
+      "value": 5,
+      "documentation": null
+    },
+    "COLLIDE_BlockAllButWeapons": {
+      "value": 6,
+      "documentation": null
+    },
+    "COLLIDE_TouchAllButWeapons": {
+      "value": 7,
+      "documentation": null
+    },
+    "COLLIDE_WaterSurface": {
+      "value": 8,
+      "documentation": null
+    },
+    "COLLIDE_BlockWeaponsKickable": {
+      "value": 9,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

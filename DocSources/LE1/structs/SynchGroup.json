@@ -1,0 +1,33 @@
+{
+  "members": {
+    "SeqNodes": {
+      "type": "AnimNodeSequence",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "MasterNode": {
+      "type": "AnimNodeSequence",
+      "documentation": null,
+      "flags": 8192
+    },
+    "GroupName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 1
+    },
+    "RateScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bFireSlaveNotifies": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "classdef": "AnimNodeSynch",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

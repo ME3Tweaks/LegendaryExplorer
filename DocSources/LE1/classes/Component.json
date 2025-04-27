@@ -1,0 +1,21 @@
+{
+  "parent": "Object",
+  "package": "Core",
+  "variables": {
+    "TemplateOwnerClass": {
+      "type": "Class",
+      "documentation": null,
+      "flags": 4098
+    },
+    "TemplateName": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 4098
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217875,
+  "configname": "None",
+  "documentation": null
+}

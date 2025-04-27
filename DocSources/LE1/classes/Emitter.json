@@ -1,0 +1,273 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "ParticleSystemComponent": {
+      "type": "ParticleSystemComponent",
+      "documentation": null,
+      "flags": 67764235
+    },
+    "LightEnvironment": {
+      "type": "DynamicLightEnvironmentComponent",
+      "documentation": null,
+      "flags": 67764235
+    },
+    "bDestroyOnSystemFinish": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bPostUpdateTickGroup": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNoVFXSound": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bCurrentlyActive": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 4294967328
+    }
+  },
+  "functions": {
+    "HideSelf": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "HideSelf()"
+    },
+    "ApplyCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "ApplyCheckpointRecord(const out CheckpointRecord Record)"
+    },
+    "CreateCheckpointRecord": {
+      "documentation": null,
+      "signature_members": {
+        "Record": {
+          "type": "CheckpointRecord",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "CreateCheckpointRecord(out CheckpointRecord Record)"
+    },
+    "ShouldSaveForCheckpoint": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool ShouldSaveForCheckpoint()"
+    },
+    "OnSetParticleSysParam": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_SetParticleSysParam",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnSetParticleSysParam(SeqAct_SetParticleSysParam Action)"
+    },
+    "SetActorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Param": {
+          "type": "Actor",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetActorParameter(Name ParameterName, Actor Param)"
+    },
+    "SetExtColorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Red": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "Green": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "Blue": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "Alpha": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetExtColorParameter(Name ParameterName, byte Red, byte Green, byte Blue, byte Alpha)"
+    },
+    "SetColorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Param": {
+          "type": "Color",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetColorParameter(Name ParameterName, Color Param)"
+    },
+    "SetVectorParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Param": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetVectorParameter(Name ParameterName, Vector Param)"
+    },
+    "SetFloatParameter": {
+      "documentation": null,
+      "signature_members": {
+        "ParameterName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Param": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFloatParameter(Name ParameterName, float Param)"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "OnParticleEventGenerator": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_ParticleEventGenerator",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnParticleEventGenerator(SeqAct_ParticleEventGenerator Action)"
+    },
+    "OnToggle": {
+      "documentation": null,
+      "signature_members": {
+        "Action": {
+          "type": "SeqAct_Toggle",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "OnToggle(SeqAct_Toggle Action)"
+    },
+    "OnParticleSystemFinished": {
+      "documentation": null,
+      "signature_members": {
+        "FinishedComponent": {
+          "type": "ParticleSystemComponent",
+          "documentation": null,
+          "flags": 67108992
+        }
+      },
+      "returntype": "None",
+      "signature": "OnParticleSystemFinished(ParticleSystemComponent FinishedComponent)"
+    },
+    "ReplicatedEvent": {
+      "documentation": null,
+      "signature_members": {
+        "VarName": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "ReplicatedEvent(Name VarName)"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "ResetPSC": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ResetPSC()"
+    },
+    "SetTemplate": {
+      "documentation": null,
+      "signature_members": {
+        "NewTemplate": {
+          "type": "ParticleSystem",
+          "documentation": null,
+          "flags": 128
+        },
+        "bDestroyOnFinish": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "SetTemplate(ParticleSystem NewTemplate, optional bool bDestroyOnFinish)"
+    }
+  },
+  "states": {},
+  "classflags": 144704146,
+  "configname": "None",
+  "documentation": null
+}

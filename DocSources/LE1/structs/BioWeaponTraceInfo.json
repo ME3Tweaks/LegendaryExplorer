@@ -1,0 +1,38 @@
+{
+  "members": {
+    "m_hitInfo": {
+      "type": "TraceHitInfo",
+      "documentation": null,
+      "flags": 67633152
+    },
+    "m_vHitPoint": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vHitNormal": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_vTrace": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_pHitActor": {
+      "type": "Actor",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eHit": {
+      "type": "EBioWeaponHit",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioWeaponRanged",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 5
+}

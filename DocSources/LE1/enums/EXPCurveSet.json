@@ -1,0 +1,45 @@
+{
+  "EnumValues": {
+    "EXPCurve_NoReward": {
+      "value": 0,
+      "documentation": null
+    },
+    "EXPCurve_MinionKill": {
+      "value": 1,
+      "documentation": null
+    },
+    "EXPCurve_EliteKill": {
+      "value": 2,
+      "documentation": null
+    },
+    "EXPCurve_SubBossKill": {
+      "value": 3,
+      "documentation": null
+    },
+    "EXPCurve_BossKill": {
+      "value": 4,
+      "documentation": null
+    },
+    "EXPCurve_SkillUse": {
+      "value": 5,
+      "documentation": null
+    },
+    "EXPCurve_MinorQuest": {
+      "value": 6,
+      "documentation": null
+    },
+    "EXPCurve_MediumQUest": {
+      "value": 7,
+      "documentation": null
+    },
+    "EXPCurve_MajorQuest": {
+      "value": 8,
+      "documentation": null
+    },
+    "EXPCurve_MainPlot": {
+      "value": 9,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

@@ -1,0 +1,33 @@
+{
+  "EnumValues": {
+    "BIO_FORCE_FEEDBACK_PLAYER_COVER": {
+      "value": 0,
+      "documentation": null
+    },
+    "BIO_FORCE_FEEDBACK_PLAYER_DRAW": {
+      "value": 1,
+      "documentation": null
+    },
+    "BIO_FORCE_FEEDBACK_PLAYER_HOLSTERED": {
+      "value": 2,
+      "documentation": null
+    },
+    "BIO_FORCE_FEEDBACK_PLAYER_WEAPON_CLOSE": {
+      "value": 3,
+      "documentation": null
+    },
+    "BIO_FORCE_FEEDBACK_PLAYER_USE_PLACEABLE": {
+      "value": 4,
+      "documentation": null
+    },
+    "BIO_FORCE_FEEDBACK_PLAYER_VEHICLE_CANNON": {
+      "value": 5,
+      "documentation": null
+    },
+    "BIO_FORCE_FEEDBACK_PLAYER_VEHICLE_MACHINE_GUN": {
+      "value": 6,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

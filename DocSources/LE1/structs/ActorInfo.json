@@ -1,0 +1,43 @@
+{
+  "members": {
+    "myPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "myRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    },
+    "headBaseBonePosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "headBonePosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "vCameraFocusPoint": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "vProceduralCameraPosition": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "rProceduralCameraRotation": {
+      "type": "Rotator",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "BioProceduralCameraBasic",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

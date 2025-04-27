@@ -1,0 +1,16 @@
+{
+  "parent": "BioAttributesItemXModdable",
+  "package": "SFXGame",
+  "variables": {
+    "m_nEquipmentSlotID": {
+      "type": "EBioEquipmentVehicleSlot",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 8388626,
+  "configname": "None",
+  "documentation": null
+}

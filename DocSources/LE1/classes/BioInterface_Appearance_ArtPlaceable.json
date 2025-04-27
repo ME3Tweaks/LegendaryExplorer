@@ -1,0 +1,23 @@
+{
+  "parent": "BioInterface_Appearance",
+  "package": "SFXGame",
+  "variables": {},
+  "functions": {
+    "UpdateAppearance": {
+      "documentation": null,
+      "signature_members": {
+        "bForceUpdate": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool UpdateAppearance(optional bool bForceUpdate)"
+    }
+  },
+  "states": {},
+  "classflags": 142610582,
+  "configname": "Game",
+  "documentation": null
+}

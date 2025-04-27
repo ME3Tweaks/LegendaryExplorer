@@ -1,0 +1,29 @@
+{
+  "EnumValues": {
+    "TALENT_IMPORTER_2DA_TALENT_DEPRECATED": {
+      "value": 0,
+      "documentation": null
+    },
+    "TALENT_IMPORTER_2DA_TALENT_TREE_DEPRECATED": {
+      "value": 1,
+      "documentation": null
+    },
+    "TALENT_IMPORTER_2DA_TALENT_POOL_DEPRECATED": {
+      "value": 2,
+      "documentation": null
+    },
+    "TALENT_IMPORTER_2DA_TALENT_EFFECT_LEVELS": {
+      "value": 3,
+      "documentation": null
+    },
+    "TALENT_IMPORTER_2DA_TALENT_GUI": {
+      "value": 4,
+      "documentation": null
+    },
+    "TALENT_IMPORTER_2DA_BONUS_TALENTS": {
+      "value": 5,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

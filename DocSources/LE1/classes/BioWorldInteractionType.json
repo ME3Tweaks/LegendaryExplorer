@@ -1,0 +1,61 @@
+{
+  "parent": "Object",
+  "package": "SFXGame",
+  "variables": {
+    "m_oBaseMaleAnimations": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_oBaseFemaleAnimations": {
+      "type": "AnimSet",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_ActivityRecords": {
+      "type": "ActivityRecord",
+      "documentation": null,
+      "flags": 4194305
+    },
+    "m_oBaseSoundCue": {
+      "type": "SoundCue",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_oBaseSounds": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "m_oActivitySounds": {
+      "type": "AudioComponent",
+      "documentation": null,
+      "flags": 67633160
+    },
+    "m_fBaseTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_fVarianceTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "m_nCurrentActivity": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nCurrentTwitch": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

@@ -1,0 +1,26 @@
+{
+  "parent": "BioPathPoint",
+  "package": "SFXGame",
+  "variables": {
+    "m_vOffsetFromSurface": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 1
+    },
+    "ReservedFor": {
+      "type": "Pawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "bHopRequired": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144704147,
+  "configname": "None",
+  "documentation": null
+}

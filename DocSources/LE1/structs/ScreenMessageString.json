@@ -1,0 +1,33 @@
+{
+  "members": {
+    "Key": {
+      "type": "QWord",
+      "documentation": null,
+      "flags": 1056768
+    },
+    "ScreenMessage": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5251072
+    },
+    "DisplayColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 1056768
+    },
+    "TimeToDisplay": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1056768
+    },
+    "CurrentTimeDisplayed": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1056768
+    }
+  },
+  "classdef": "WorldInfo",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 9
+}

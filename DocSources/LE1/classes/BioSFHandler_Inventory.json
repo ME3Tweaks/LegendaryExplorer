@@ -1,0 +1,581 @@
+{
+  "parent": "BioSFHandler",
+  "package": "SFXGame",
+  "variables": {
+    "lstXModGuiTitles": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "m_lstSquadNicknames": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 4202496
+    },
+    "m_oLastSpawnedPawn": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "oOverrideDisplayCharacter": {
+      "type": "BioPawn",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_oInvInterface": {
+      "type": "BioInventoryGuiInterface",
+      "documentation": null,
+      "flags": 71303176
+    },
+    "m_nLastEquippedIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nShiftItemIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_nCurrentSquadMember": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fWeightBeforeGarbageCollect": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fNextEquipTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "srEmpty": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srInventoryTitle": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srEquippedItemTitle": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSelectedItemTitle": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srXferXModsMsg": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srXferXModsConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srXferXModsCancel": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srXModToInventoryXferMsg": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srXModToInventorySalvageMsg": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srXModToInventoryConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSalvageItemMsg": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSalvageItemConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSalvageItemCancel": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srSalvageAllConfirm": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nEmptyAmmoSlotIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nEmptyFieldEmitterSlotIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nEmptyFeatureSlotIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nEmptyCompanyIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_nEmptySlotIcon": {
+      "type": "int",
+      "documentation": null,
+      "flags": 16384
+    },
+    "srItemLevel": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 2
+    },
+    "srNameSort": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 2
+    },
+    "fTimeBetweenEquipActions": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "fTimeOnASlotBeforeEquipping": {
+      "type": "float",
+      "documentation": null,
+      "flags": 16384
+    },
+    "m_fRScrollValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_fLScrollValue": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxSort": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bInitialized": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_bWantToEquip": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eCurrentSlot": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 0
+    },
+    "m_eLastDisplaySlot": {
+      "type": "GuiEquipSlots",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "functions": {
+    "GetSquadMemberNames": {
+      "documentation": null,
+      "signature_members": {
+        "srCurMember": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
+        },
+        "srPrevMember": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
+        },
+        "srNextMember": {
+          "type": "stringref",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "GetSquadMemberNames(out stringref srCurMember, out stringref srPrevMember, out stringref srNextMember)"
+    },
+    "OnPanelRemoved": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelRemoved()"
+    },
+    "OnPanelAdded": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "OnPanelAdded()"
+    },
+    "NextSort": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NextSort()"
+    },
+    "MarkItemAsJunk": {
+      "documentation": null,
+      "signature_members": {
+        "Index": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "val": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "MarkItemAsJunk(int Index, bool val)"
+    },
+    "Update3DModel": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Update3DModel()"
+    },
+    "Update3DCharacter": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Update3DCharacter()"
+    },
+    "UpdateCharDetails": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateCharDetails()"
+    },
+    "ChangeTargetCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "nTargetMember": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ChangeTargetCharacter(int nTargetMember)"
+    },
+    "SalvageItemProcessDoubleCheck": {
+      "documentation": null,
+      "signature_members": {
+        "bConfirmedSalvageAttempt": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bYPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SalvageItemProcessDoubleCheck(bool bConfirmedSalvageAttempt, int nContext, bool bYPressed)"
+    },
+    "EquipItemProcessDoubleCheck": {
+      "documentation": null,
+      "signature_members": {
+        "bAcceptedXferOption": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "nContext": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "bYPressed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "EquipItemProcessDoubleCheck(bool bAcceptedXferOption, int nContext, bool bYPressed)"
+    },
+    "EquipSelectedItem": {
+      "documentation": null,
+      "signature_members": {
+        "nItemIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "nXferXMods": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "EquipSelectedItem(int nItemIndex, int nXferXMods)"
+    },
+    "ProcessModifierList": {
+      "documentation": null,
+      "signature_members": {
+        "stStatList": {
+          "type": "BioInventoryGuiInterfaceItemStats",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sMethod": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "nModifierCount": {
+          "type": "int",
+          "documentation": null,
+          "flags": 384
+        }
+      },
+      "returntype": "None",
+      "signature": "ProcessModifierList(BioInventoryGuiInterfaceItemStats stStatList, string sMethod, out int nModifierCount)"
+    },
+    "PopulateInvItems": {
+      "documentation": null,
+      "signature_members": {
+        "lstParams": {
+          "type": "ASParams",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateInvItems(array<ASParams> lstParams)"
+    },
+    "PopulateItemListEntry": {
+      "documentation": null,
+      "signature_members": {
+        "nListIndex": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateItemListEntry(int nListIndex)"
+    },
+    "GetProperSortString": {
+      "documentation": null,
+      "signature_members": {
+        "SortType": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "string",
+      "signature": "string GetProperSortString(int SortType)"
+    },
+    "PopulateItemList": {
+      "documentation": null,
+      "signature_members": {
+        "needsRefresh": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateItemList(bool needsRefresh)"
+    },
+    "PopulateEquippedItem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PopulateEquippedItem()"
+    },
+    "PopulateForCharacter": {
+      "documentation": null,
+      "signature_members": {
+        "NeedRefresh": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "PopulateForCharacter(bool NeedRefresh)"
+    },
+    "UpdateResources": {
+      "documentation": null,
+      "signature_members": {
+        "nRackupTime": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateResources(optional int nRackupTime)"
+    },
+    "UpdateInvSlotIcons": {
+      "documentation": null,
+      "signature_members": {
+        "bDeferUpdateFilterIcons": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateInvSlotIcons(optional bool bDeferUpdateFilterIcons)"
+    },
+    "ChangeSlotState": {
+      "documentation": null,
+      "signature_members": {
+        "eDisplaySlot": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        },
+        "bUpdate3DModel": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bDeferUpdateFilterIcons": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "ChangeSlotState(GuiEquipSlots eDisplaySlot, optional bool bUpdate3DModel, optional bool bDeferUpdateFilterIcons)"
+    },
+    "CheckSkipSlot": {
+      "documentation": null,
+      "signature_members": {
+        "eSourceSlot": {
+          "type": "GuiEquipSlots",
+          "documentation": null,
+          "flags": 128
+        },
+        "nSkipDirection": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "GuiEquipSlots",
+      "signature": "GuiEquipSlots CheckSkipSlot(GuiEquipSlots eSourceSlot, optional int nSkipDirection)"
+    },
+    "SetGlobalVars": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetGlobalVars()"
+    },
+    "FloatingReinit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "FloatingReinit()"
+    },
+    "Update": {
+      "documentation": null,
+      "signature_members": {
+        "fDeltaT": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "Update(float fDeltaT)"
+    },
+    "HandleInputEvent": {
+      "documentation": null,
+      "signature_members": {
+        "Event": {
+          "type": "BioGuiEvents",
+          "documentation": null,
+          "flags": 128
+        },
+        "fValue": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleInputEvent(BioGuiEvents Event, optional float fValue)"
+    },
+    "HandleEvent": {
+      "documentation": null,
+      "signature_members": {
+        "nCommand": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "lstArguments": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194690
+        }
+      },
+      "returntype": "None",
+      "signature": "HandleEvent(byte nCommand, const out array<string> lstArguments)"
+    },
+    "CheckForGarbageCollect": {
+      "documentation": null,
+      "signature_members": {
+        "Weight": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "CheckForGarbageCollect(float Weight)"
+    }
+  },
+  "states": {},
+  "classflags": 10485790,
+  "configname": "UI",
+  "documentation": null
+}

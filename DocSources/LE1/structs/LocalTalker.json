@@ -1,0 +1,38 @@
+{
+  "members": {
+    "bHasVoice": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bHasNetworkedVoice": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsRecognizingSpeech": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bWasTalking": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsTalking": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bIsRegistered": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "OnlineSubsystem",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

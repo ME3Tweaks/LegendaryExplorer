@@ -1,0 +1,43 @@
+{
+  "parent": "PlayerInput",
+  "package": "Engine",
+  "variables": {},
+  "functions": {
+    "InputKey": {
+      "documentation": null,
+      "signature_members": {
+        "ControllerId": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        },
+        "Key": {
+          "type": "Name",
+          "documentation": null,
+          "flags": 128
+        },
+        "Event": {
+          "type": "EInputEvent",
+          "documentation": null,
+          "flags": 128
+        },
+        "AmountDepressed": {
+          "type": "float",
+          "documentation": null,
+          "flags": 144
+        },
+        "bGamepad": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool InputKey(int ControllerId, Name Key, EInputEvent Event, optional float AmountDepressed, optional bool bGamepad)"
+    }
+  },
+  "states": {},
+  "classflags": 2097182,
+  "configname": "Input",
+  "documentation": null
+}

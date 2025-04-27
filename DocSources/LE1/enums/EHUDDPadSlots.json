@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "HUD_DPAD_SLOT_UNASSIGNED_0": {
+      "value": 0,
+      "documentation": null
+    },
+    "HUD_DPAD_SLOT_LEFT": {
+      "value": 1,
+      "documentation": null
+    },
+    "HUD_DPAD_SLOT_TOP": {
+      "value": 2,
+      "documentation": null
+    },
+    "HUD_DPAD_SLOT_RIGHT": {
+      "value": 3,
+      "documentation": null
+    },
+    "HUD_DPAD_SLOT_BOTTOM": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

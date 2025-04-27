@@ -1,0 +1,365 @@
+{
+  "parent": "Object",
+  "package": "Engine",
+  "variables": {
+    "OwnerComponent": {
+      "type": "PrimitiveComponent",
+      "documentation": null,
+      "flags": 67641354
+    },
+    "BodyData": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "BoneSpring": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "BoneSpringKinActor": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "Velocity": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "PreviousVelocity": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 0
+    },
+    "BodyIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 576460752303423490
+    },
+    "SceneIndex": {
+      "type": "int",
+      "documentation": null,
+      "flags": 4098
+    },
+    "BoneLinearSpring": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "BoneLinearDamping": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "BoneAngularSpring": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "BoneAngularDamping": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "OverextensionThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "CustomGravityFactor": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "LastEffectPlayedTime": {
+      "type": "float",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bEnableBoneSpringLinear": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bEnableBoneSpringAngular": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bDisableOnOverextension": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bNotifyOwnerOnOverextension": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bTeleportOnOverextension": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bUseKinActorForBoneSpring": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bMakeSpringToBaseCollisionComponent": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bOnlyCollideWithPawns": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bEnableCollisionResponse": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "bPushBody": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 3
+    },
+    "PhysMaterialOverride": {
+      "type": "PhysicalMaterial",
+      "documentation": null,
+      "flags": 576460752303423491
+    },
+    "ContactReportForceThreshold": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "InstanceMassScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "InstanceDampingScale": {
+      "type": "float",
+      "documentation": null,
+      "flags": 1
+    },
+    "bForceUnfixed": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    },
+    "bInstanceAlwaysFullAnimWeight": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 8192
+    }
+  },
+  "functions": {
+    "UpdateDampingProperties": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "UpdateDampingProperties()"
+    },
+    "UpdateMassProperties": {
+      "documentation": null,
+      "signature_members": {
+        "Setup": {
+          "type": "RB_BodySetup",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateMassProperties(RB_BodySetup Setup)"
+    },
+    "SetContactReportForceThreshold": {
+      "documentation": null,
+      "signature_members": {
+        "Threshold": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetContactReportForceThreshold(float Threshold)"
+    },
+    "EnableCollisionResponse": {
+      "documentation": null,
+      "signature_members": {
+        "bEnableResponse": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableCollisionResponse(bool bEnableResponse)"
+    },
+    "SetPhysMaterialOverride": {
+      "documentation": null,
+      "signature_members": {
+        "NewPhysMaterial": {
+          "type": "PhysicalMaterial",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetPhysMaterialOverride(PhysicalMaterial NewPhysMaterial)"
+    },
+    "SetBlockRigidBody": {
+      "documentation": null,
+      "signature_members": {
+        "bNewBlockRigidBody": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBlockRigidBody(bool bNewBlockRigidBody)"
+    },
+    "SetBoneSpringTarget": {
+      "documentation": null,
+      "signature_members": {
+        "InBoneTarget": {
+          "type": "Matrix",
+          "documentation": null,
+          "flags": 386
+        },
+        "bTeleport": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBoneSpringTarget(const out Matrix InBoneTarget, bool bTeleport)"
+    },
+    "SetBoneSpringParams": {
+      "documentation": null,
+      "signature_members": {
+        "InLinearSpring": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InLinearDamping": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InAngularSpring": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "InAngularDamping": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetBoneSpringParams(float InLinearSpring, float InLinearDamping, float InAngularSpring, float InAngularDamping)"
+    },
+    "EnableBoneSpring": {
+      "documentation": null,
+      "signature_members": {
+        "bInEnableLinear": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "bInEnableAngular": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        },
+        "InBoneTarget": {
+          "type": "Matrix",
+          "documentation": null,
+          "flags": 386
+        }
+      },
+      "returntype": "None",
+      "signature": "EnableBoneSpring(bool bInEnableLinear, bool bInEnableAngular, const out Matrix InBoneTarget)"
+    },
+    "GetUnrealWorldVelocityAtPoint": {
+      "documentation": null,
+      "signature_members": {
+        "Point": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "Vector",
+      "signature": "Vector GetUnrealWorldVelocityAtPoint(Vector Point)"
+    },
+    "GetUnrealWorldAngularVelocity": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetUnrealWorldAngularVelocity()"
+    },
+    "GetUnrealWorldVelocity": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Vector",
+      "signature": "Vector GetUnrealWorldVelocity()"
+    },
+    "GetUnrealWorldTM": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Matrix",
+      "signature": "Matrix GetUnrealWorldTM()"
+    },
+    "GetPhysicsAssetInstance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "PhysicsAssetInstance",
+      "signature": "PhysicsAssetInstance GetPhysicsAssetInstance()"
+    },
+    "IsValidBodyInstance": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsValidBodyInstance()"
+    },
+    "IsFixed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsFixed()"
+    },
+    "SetFixed": {
+      "documentation": null,
+      "signature_members": {
+        "bNewFixed": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetFixed(bool bNewFixed)"
+    },
+    "GetBodyMass": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "float",
+      "signature": "float GetBodyMass()"
+    }
+  },
+  "states": {},
+  "classflags": 142606482,
+  "configname": "None",
+  "documentation": null
+}

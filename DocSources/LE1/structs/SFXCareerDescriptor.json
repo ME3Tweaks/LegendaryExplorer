@@ -1,0 +1,23 @@
+{
+  "members": {
+    "Career": {
+      "type": "string",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "Saves": {
+      "type": "SFXSavePair",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "CorruptedSaves": {
+      "type": "SFXSaveDescriptor",
+      "documentation": null,
+      "flags": 5242880
+    }
+  },
+  "classdef": "SFXEngine",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 131073
+}

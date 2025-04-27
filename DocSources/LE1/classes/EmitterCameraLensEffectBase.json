@@ -1,0 +1,100 @@
+{
+  "parent": "Emitter",
+  "package": "Engine",
+  "variables": {
+    "PS_CameraEffect": {
+      "type": "ParticleSystem",
+      "documentation": null,
+      "flags": 0
+    },
+    "PS_CameraEffectNonExtremeContent": {
+      "type": "ParticleSystem",
+      "documentation": null,
+      "flags": 0
+    },
+    "BaseCamera": {
+      "type": "Camera",
+      "documentation": null,
+      "flags": 8192
+    },
+    "BaseFOV": {
+      "type": "float",
+      "documentation": null,
+      "flags": 0
+    },
+    "DistFromCamera": {
+      "type": "float",
+      "documentation": null,
+      "flags": 3
+    },
+    "bAllowMultipleInstances": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 549755813891
+    }
+  },
+  "functions": {
+    "UpdateLocation": {
+      "documentation": null,
+      "signature_members": {
+        "CamLoc": {
+          "type": "Vector",
+          "documentation": null,
+          "flags": 386
+        },
+        "CamRot": {
+          "type": "Rotator",
+          "documentation": null,
+          "flags": 386
+        },
+        "CamFOVDeg": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "UpdateLocation(const out Vector CamLoc, const out Rotator CamRot, float CamFOVDeg)"
+    },
+    "ActivateLensEffect": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ActivateLensEffect()"
+    },
+    "PostBeginPlay": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "PostBeginPlay()"
+    },
+    "NotifyRetriggered": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "NotifyRetriggered()"
+    },
+    "RegisterCamera": {
+      "documentation": null,
+      "signature_members": {
+        "C": {
+          "type": "Camera",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "RegisterCamera(Camera C)"
+    },
+    "Destroyed": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Destroyed()"
+    }
+  },
+  "states": {},
+  "classflags": 144704147,
+  "configname": "None",
+  "documentation": null
+}

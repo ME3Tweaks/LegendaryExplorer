@@ -1,0 +1,445 @@
+{
+  "parent": "OnlineSubsystem",
+  "package": "SFXOnlineFoundation",
+  "variables": {
+    "GameProtocolVersion": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "AchievementList": {
+      "type": "SFXOnlineAchievement",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "SuggestPersonaNameKeywords": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4194306
+    },
+    "ComponentClassList": {
+      "type": "SFXOnlineComponentDescription",
+      "documentation": null,
+      "flags": 4194304
+    },
+    "OnlineUIClass": {
+      "type": "string",
+      "documentation": null,
+      "flags": 4210688
+    },
+    "PlatformOnlineGameCallbackManager": {
+      "type": "Pointer",
+      "documentation": null,
+      "flags": 4098
+    },
+    "OnlineComponentList": {
+      "type": "ISFXOnlineComponent",
+      "documentation": null,
+      "flags": 0
+    },
+    "TickEvent": {
+      "type": "SFXOnlineEvent",
+      "documentation": null,
+      "flags": 0
+    },
+    "GameListenPort": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxPlayerCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "MaxObserverCount": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "ReserveTimeOut": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "GameNetworkTimeOutMS": {
+      "type": "int",
+      "documentation": null,
+      "flags": 2
+    },
+    "SuggestPersonaNames": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 2
+    }
+  },
+  "functions": {
+    "Exit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "Exit()"
+    },
+    "ShowConsoleRoutedKeyboardUI": {
+      "documentation": null,
+      "signature_members": {
+        "eLocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "sTitleText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sDescriptionText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bIsPassword": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bShouldValidate": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "sDefaultText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        },
+        "nMaxResultLength": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowConsoleRoutedKeyboardUI(byte eLocalUserNum, string sTitleText, string sDescriptionText, optional bool bIsPassword, optional bool bShouldValidate, optional string sDefaultText, optional int nMaxResultLength)"
+    },
+    "ShowKeyboardUI": {
+      "documentation": null,
+      "signature_members": {
+        "eLocalUserNum": {
+          "type": "byte",
+          "documentation": null,
+          "flags": 128
+        },
+        "sTitleText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sDescriptionText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "bIsPassword": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bShouldValidate": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "sDefaultText": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194448
+        },
+        "nMaxResultLength": {
+          "type": "int",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool ShowKeyboardUI(byte eLocalUserNum, string sTitleText, string sDescriptionText, optional bool bIsPassword, optional bool bShouldValidate, optional string sDefaultText, optional int nMaxResultLength)"
+    },
+    "FormatTime": {
+      "documentation": null,
+      "signature_members": {
+        "fInSeconds": {
+          "type": "float",
+          "documentation": null,
+          "flags": 128
+        },
+        "bShowHours": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        },
+        "bShowMins": {
+          "type": "bool",
+          "documentation": null,
+          "flags": 144
+        }
+      },
+      "returntype": "string",
+      "signature": "string FormatTime(float fInSeconds, optional bool bShowHours, optional bool bShowMins)"
+    },
+    "CheckEntitlement": {
+      "documentation": null,
+      "signature_members": {
+        "sGroup": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        },
+        "sTag": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "bool",
+      "signature": "bool CheckEntitlement(string sGroup, string sTag)"
+    },
+    "IsCerberusMember": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool IsCerberusMember()"
+    },
+    "GetUniqueIdFromConnection": {
+      "documentation": null,
+      "signature_members": {
+        "oPRI": {
+          "type": "PlayerReplicationInfo",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "UniqueNetId",
+      "signature": "UniqueNetId GetUniqueIdFromConnection(PlayerReplicationInfo oPRI)"
+    },
+    "MD5HashString": {
+      "documentation": null,
+      "signature_members": {
+        "InStr": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "string",
+      "signature": "string MD5HashString(string InStr)"
+    },
+    "GetProjectID": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetProjectID()"
+    },
+    "GetCDKey": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetCDKey()"
+    },
+    "GetLanguage": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetLanguage()"
+    },
+    "GetPlatform": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "Name",
+      "signature": "Name GetPlatform()"
+    },
+    "ShutDown": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "ShutDown()"
+    },
+    "NativeInit": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool NativeInit()"
+    },
+    "GetGameListenPort": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetGameListenPort()"
+    },
+    "GetReserveTimeout": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetReserveTimeout()"
+    },
+    "GetMaxObserverCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxObserverCount()"
+    },
+    "GetMaxPlayerCount": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "int",
+      "signature": "int GetMaxPlayerCount()"
+    },
+    "SetMaxPlayerCount": {
+      "documentation": null,
+      "signature_members": {
+        "nMaxPlayers": {
+          "type": "int",
+          "documentation": null,
+          "flags": 128
+        }
+      },
+      "returntype": "None",
+      "signature": "SetMaxPlayerCount(int nMaxPlayers)"
+    },
+    "GetGameProtocolVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetGameProtocolVersion()"
+    },
+    "GetComponentOrigin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentOrigin",
+      "signature": "SFXOnlineComponentOrigin GetComponentOrigin()"
+    },
+    "GetComponentUnrealPlayerEx": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentUnrealPlayerEx",
+      "signature": "SFXOnlineComponentUnrealPlayerEx GetComponentUnrealPlayerEx()"
+    },
+    "GetComponentUnrealPlayer": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentUnrealPlayer",
+      "signature": "SFXOnlineComponentUnrealPlayer GetComponentUnrealPlayer()"
+    },
+    "GetComponentUnrealSystem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentUnrealSystem",
+      "signature": "SFXOnlineComponentUnrealSystem GetComponentUnrealSystem()"
+    },
+    "GetCoordinator": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineComponentCoordinator",
+      "signature": "SFXOnlineComponentCoordinator GetCoordinator()"
+    },
+    "GetComponentTelemetry": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentTelemetry",
+      "signature": "ISFXOnlineComponentTelemetry GetComponentTelemetry()"
+    },
+    "GetComponentNotification": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentNotification",
+      "signature": "ISFXOnlineComponentNotification GetComponentNotification()"
+    },
+    "GetComponentUserInterface": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentUserInterface",
+      "signature": "ISFXOnlineComponentUserInterface GetComponentUserInterface()"
+    },
+    "GetComponentLogin": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentLogin",
+      "signature": "ISFXOnlineComponentLogin GetComponentLogin()"
+    },
+    "GetComponentAPI": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentAPI",
+      "signature": "ISFXOnlineComponentAPI GetComponentAPI()"
+    },
+    "GetComponentAchievement": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentAchievement",
+      "signature": "ISFXOnlineComponentAchievement GetComponentAchievement()"
+    },
+    "GetComponentPlatform": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "ISFXOnlineComponentPlatform",
+      "signature": "ISFXOnlineComponentPlatform GetComponentPlatform()"
+    },
+    "GetOnlineSubsystem": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineSubsystem",
+      "signature": "SFXOnlineSubsystem GetOnlineSubsystem()"
+    },
+    "StripBadPWCharacters": {
+      "documentation": null,
+      "signature_members": {
+        "sPassword": {
+          "type": "string",
+          "documentation": null,
+          "flags": 4194432
+        }
+      },
+      "returntype": "string",
+      "signature": "string StripBadPWCharacters(string sPassword)"
+    },
+    "GetURL": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "string",
+      "signature": "string GetURL()"
+    },
+    "SetUnrealInterfaces": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "SetUnrealInterfaces()"
+    },
+    "CreateComponents": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "CreateComponents()"
+    },
+    "InitGameProtocolVersion": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "None",
+      "signature": "InitGameProtocolVersion()"
+    },
+    "Init": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "bool",
+      "signature": "bool Init()"
+    },
+    "GetAchievementList": {
+      "documentation": null,
+      "signature_members": {},
+      "returntype": "SFXOnlineAchievement",
+      "signature": "array<SFXOnlineAchievement> GetAchievementList()"
+    }
+  },
+  "states": {},
+  "classflags": 136315030,
+  "configname": "Game",
+  "documentation": null
+}

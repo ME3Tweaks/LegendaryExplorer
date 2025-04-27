@@ -1,0 +1,51 @@
+{
+  "parent": "Actor",
+  "package": "Engine",
+  "variables": {
+    "Brush": {
+      "type": "Model",
+      "documentation": null,
+      "flags": 10
+    },
+    "BrushComponent": {
+      "type": "BrushComponent",
+      "documentation": null,
+      "flags": 67764234
+    },
+    "BrushColor": {
+      "type": "Color",
+      "documentation": null,
+      "flags": 1
+    },
+    "PolyFlags": {
+      "type": "int",
+      "documentation": null,
+      "flags": 0
+    },
+    "bColored": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 1
+    },
+    "bSolidWhenSelected": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "bPlaceableFromClassBrowser": {
+      "type": "bool",
+      "documentation": null,
+      "flags": 0
+    },
+    "CsgOper": {
+      "type": "ECsgOper",
+      "documentation": null,
+      "flags": 1
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 144703634,
+  "configname": "None",
+  "documentation": null
+}

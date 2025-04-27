@@ -1,0 +1,18 @@
+{
+  "members": {
+    "Key": {
+      "type": "Name",
+      "documentation": null,
+      "flags": 0
+    },
+    "Name": {
+      "type": "stringref",
+      "documentation": null,
+      "flags": 0
+    }
+  },
+  "classdef": "SFXGameModeManager",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

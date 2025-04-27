@@ -1,0 +1,21 @@
+{
+  "EnumValues": {
+    "BDA_White": {
+      "value": 0,
+      "documentation": null
+    },
+    "BDA_Yellow": {
+      "value": 1,
+      "documentation": null
+    },
+    "BDA_Blue": {
+      "value": 2,
+      "documentation": null
+    },
+    "BDA_Red": {
+      "value": 3,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

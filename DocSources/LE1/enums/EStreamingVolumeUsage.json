@@ -1,0 +1,25 @@
+{
+  "EnumValues": {
+    "SVB_Loading": {
+      "value": 0,
+      "documentation": null
+    },
+    "SVB_LoadingAndVisibility": {
+      "value": 1,
+      "documentation": null
+    },
+    "SVB_VisibilityBlockingOnLoad": {
+      "value": 2,
+      "documentation": null
+    },
+    "SVB_BlockingOnLoad": {
+      "value": 3,
+      "documentation": null
+    },
+    "SVB_LoadingNotVisible": {
+      "value": 4,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}

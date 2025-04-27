@@ -1,0 +1,16 @@
+{
+  "parent": "BioGamePropertyConditionalXModInstalled",
+  "package": "SFXGame",
+  "variables": {
+    "m_eSlot": {
+      "type": "EBioEquipmentSlot",
+      "documentation": null,
+      "flags": 3
+    }
+  },
+  "functions": {},
+  "states": {},
+  "classflags": 134217874,
+  "configname": "None",
+  "documentation": null
+}

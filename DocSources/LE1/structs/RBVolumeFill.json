@@ -1,0 +1,18 @@
+{
+  "members": {
+    "RBStates": {
+      "type": "IndexedRBState",
+      "documentation": null,
+      "flags": 5242880
+    },
+    "Positions": {
+      "type": "Vector",
+      "documentation": null,
+      "flags": 5242880
+    }
+  },
+  "classdef": "PhysXEmitterSpawnable",
+  "extends": null,
+  "documentation": null,
+  "modifiers": 1
+}

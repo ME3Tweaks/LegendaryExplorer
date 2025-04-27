@@ -1,0 +1,17 @@
+{
+  "EnumValues": {
+    "XMOD_SLOT_Emitter": {
+      "value": 0,
+      "documentation": null
+    },
+    "XMOD_SLOT_Functional": {
+      "value": 1,
+      "documentation": null
+    },
+    "XMOD_SLOT_Ammo": {
+      "value": 2,
+      "documentation": null
+    }
+  },
+  "documentation": null
+}
