@@ -2,19 +2,19 @@
 	<head>
 		<meta property="og:type" content="website" />
 		<title>ParticleSystem</title>
-		<meta name="og:title" content="ParticleSystem"/>
+		 <link rel="icon" type="image/x-icon" href="../../images/favicon.ico">
+		<meta name="og:title" content="ParticleSystem | LE3 | Legendary Explorer DocuDB"/>
 		<meta name="description" content=""/>
 		<meta name="og:description" content=""/>
-		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE3/../"/>
-		<meta name="og:image" content="https://me3tweaks.github.io/idk.png"/>
-		<link rel="stylesheet" href="../lexdoc.css">
+		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE3/classes/ParticleSystem.html"/>
+		<meta name="og:image" content="../../images/favicon.ico"/>
+		<link rel="stylesheet" href="../../lexdoc.css">
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function() {
-				document.title = document.title + " - LE3 - Legendary Explorer UnrealDoc"
+				document.title = document.title + " | LE3 | Legendary Explorer DocuDB"
 				var url = window.location.href.substring(window.location.protocol.length + 2);
 				var gameidx = url.indexOf("/LE3/");
 				var baseurl = url.substring(0, gameidx + 5);
-				console.log(baseurl);
 				var typelinks = document.querySelectorAll('[data-type]');
 				for (const element of typelinks) {
 					var type = element.dataset.type;
@@ -43,30 +43,17 @@
 <a name="navbar.top.firstrow">
 <!--   -->
 </a>
-<ul class="navList" title="Navigation">
-<li><a href="../../../overview-summary.html">Overview</a></li>
-<li><a href="package-summary.html">Package</a></li>
-<li class="navBarCell1Rev">Class</li>
-<li><a href="class-use/Constructor.html">Use</a></li>
-<li><a href="package-tree.html">Tree</a></li>
-<li><a href="../../../deprecated-list.html">Deprecated</a></li>
-<li><a href="../../../index-files/index-1.html">Index</a></li>
-<li><a href="../../../help-doc.html">Help</a></li>
+<ul class="navList">
+<li title="Back to game list"><a id="home_link" href="../../index.html">Home</a></li>
+<li title="Show all packages"><a id="package_list_link" href="../packages/index.html">Package list</a></li>
+<li id="update_page_bullet" title="Edit this documentation"><a id="update_page" href="https://github.com/ME3Tweaks/LegendaryExplorer/edit/UnrealDoc/DocSources/LE3/classes/ParticleSystem.json" target="_blank">Edit</a></li>
 </ul>
 <div class="navimages">
-	<img class="navimage" src="../images/gameicons/LE3_Icon.ico">
-	<img class="navimage" src="../images/docudb.png">
+	<img class="navimage" src="../../images/gameicons/LE3_Icon.ico">
+	<img class="navimage" src="../../images/docudb.png">
 </div>
 </div>
 <div class="subNav">
-<ul class="navList">
-<li><a href="../../../java/lang/reflect/Array.html" title="class in java.lang.reflect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../java/lang/reflect/Executable.html" title="class in java.lang.reflect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
-</ul>
-<ul class="navList">
-<li><a href="../../../index.html?java/lang/reflect/Constructor.html" target="_top">Frames</a></li>
-<li><a href="Constructor.html" target="_top">No&nbsp;Frames</a></li>
-</ul>
 <ul class="navList" id="allclasses_navbar_top">
 	<li><a href="../classes/index.html">All&nbsp;Classes</a></li>
 	<li><a href="../structs/index.html">All&nbsp;Structs</a></li>
@@ -86,27 +73,16 @@
 </div>
 <div>
 <ul class="subNavList">
-<li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
-</ul>
-<ul class="subNavList">
-<li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li><a href="#variables">Variables&nbsp;</a></li><li><a href="#functions">Functions&nbsp;</a></li>
 </ul>
 </div>
 <a name="skip.navbar.top">
-<!--   -->
 </a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
 <div>
 		<div class="header">
-<h2 class="title">Class ParticleSystem</h2>
-<ul class="inheritance">
+<h2 class="title">Class <i>ParticleSystem</i></h2>
+	<ul class="inheritance">
 <li><a href="Object.html">Core.Object</a></li>
 <li>
 <ul class="inheritance">
@@ -116,418 +92,528 @@
 </li>
 </ul>
 
+	<p>Modifiers: <code>Compiled Parsed Native HasInstancedProps HasComponents Exported</code></p>
 </div>
 <div class="contentContainer">
 <hr>
 <p></p>
 <!-- VARIABLES-->
-<h3>Variables</h3>
+<h3 id="variables">Variables</h3>
 <table class="membersummary">
 	<tr>
 		<th class="colFirst">Type</th>
 		<th class="colSecond">Name</th>
-		<th class="colLast">Description</th>
+		<th class="colSecond">Description</th>
+		<th class="colLast">Flags</th>
 	</tr>
 	<tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">BioRwBox</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">FixedRelativeBoundingBox</p>
+	<td class="colSecond">
+		<code>FixedRelativeBoundingBox</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">ParticleEmitter</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">Emitters</p>
+	<td class="colSecond">
+		<code>Emitters</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">ExportObject NeedCtorLink Component</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LODDistances</p>
+	<td class="colSecond">
+		<code>LODDistances</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable EditFixedSize NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">ParticleSystemLOD</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LODSettings</p>
+	<td class="colSecond">
+		<code>LODSettings</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">LODSoloTrack</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">SoloTracking</p>
+	<td class="colSecond">
+		<code>SoloTracking</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Box</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CustomOcclusionBounds</p>
+	<td class="colSecond">
+		<code>CustomOcclusionBounds</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Rotator</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ThumbnailAngle</p>
+	<td class="colSecond">
+		<code>ThumbnailAngle</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Vector</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MacroUVPosition</p>
+	<td class="colSecond">
+		<code>MacroUVPosition</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">ParticleSystemComponent</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">PreviewComponent</p>
+	<td class="colSecond">
+		<code>PreviewComponent</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">ExportObject Transient EditInline Component</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">InterpCurveEdSetup</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CurveEdSetup</p>
+	<td class="colSecond">
+		<code>CurveEdSetup</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">ExportObject</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>UpdateTime_FPS</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>UpdateTime_Delta</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">UpdateTime_FPS</p>
+	<td class="colSecond">
+		<code>WarmupTime</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">UpdateTime_Delta</p>
+	<td class="colSecond">
+		<code>ThumbnailDistance</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">WarmupTime</p>
+	<td class="colSecond">
+		<code>ThumbnailWarmup</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ThumbnailDistance</p>
+	<td class="colSecond">
+		<code>LODDistanceCheckTime</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ThumbnailWarmup</p>
+	<td class="colSecond">
+		<code>LODDistanceMultiplayerBias</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LODDistanceCheckTime</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LODDistanceMultiplayerBias</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">EditorLODSetting</p>
+	<td class="colSecond">
+		<code>EditorLODSetting</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">SecondsBeforeInactive</p>
+	<td class="colSecond">
+		<code>SecondsBeforeInactive</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">Delay</p>
+	<td class="colSecond">
+		<code>Delay</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">DelayLow</p>
+	<td class="colSecond">
+		<code>DelayLow</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MacroUVRadius</p>
+	<td class="colSecond">
+		<code>MacroUVRadius</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bOrientZAxisTowardCamera</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bRegenerateLODDuplicate</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bOrientZAxisTowardCamera</p>
+	<td class="colSecond">
+		<code>bUseFixedRelativeBoundingBox</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bRegenerateLODDuplicate</p>
+	<td class="colSecond">
+		<code>BioLockLowestLODToHighest</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bUseFixedRelativeBoundingBox</p>
+	<td class="colSecond">
+		<code>bShouldResetPeakCounts</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">BioLockLowestLODToHighest</p>
+	<td class="colSecond">
+		<code>bHasPhysics</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bShouldResetPeakCounts</p>
+	<td class="colSecond">
+		<code>bBioDependsOnPhysics</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bHasPhysics</p>
+	<td class="colSecond">
+		<code>bUseRealtimeThumbnail</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bBioDependsOnPhysics</p>
+	<td class="colSecond">
+		<code>ThumbnailImageOutOfDate</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bUseRealtimeThumbnail</p>
+	<td class="colSecond">
+		<code>bSkipSpawnCountCheck</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ThumbnailImageOutOfDate</p>
+	<td class="colSecond">
+		<code>bUseDelayRange</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bSkipSpawnCountCheck</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bUseDelayRange</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="enum">EParticleSystemUpdateMode</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">SystemUpdateMode</p>
+	<td class="colSecond">
+		<code>SystemUpdateMode</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="enum">ParticleSystemLODMethod</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LODMethod</p>
+	<td class="colSecond">
+		<code>LODMethod</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="enum">EParticleSystemOcclusionBoundsMethod</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">OcclusionBoundsMethod</p>
+	<td class="colSecond">
+		<code>OcclusionBoundsMethod</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 
 </table>
 <!-- FUNCTIONS-->
-<h3>Functions</h3>
+<h3 id="functions">Functions</h3>
 <table class="membersummary">
 	<tr>
 		<th class="colFirst">Return type</th>

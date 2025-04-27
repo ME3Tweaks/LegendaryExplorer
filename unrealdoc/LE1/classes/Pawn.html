@@ -1,0 +1,6126 @@
+<html>
+	<head>
+		<meta property="og:type" content="website" />
+		<title>Pawn</title>
+		 <link rel="icon" type="image/x-icon" href="../../images/favicon.ico">
+		<meta name="og:title" content="Pawn | LE1 | Legendary Explorer DocuDB"/>
+		<meta name="description" content=""/>
+		<meta name="og:description" content=""/>
+		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE1/classes/Pawn.html"/>
+		<meta name="og:image" content="../../images/favicon.ico"/>
+		<link rel="stylesheet" href="../../lexdoc.css">
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				document.title = document.title + " | LE1 | Legendary Explorer DocuDB"
+				var url = window.location.href.substring(window.location.protocol.length + 2);
+				var gameidx = url.indexOf("/LE1/");
+				var baseurl = url.substring(0, gameidx + 5);
+				var typelinks = document.querySelectorAll('[data-type]');
+				for (const element of typelinks) {
+					var type = element.dataset.type;
+					var value = element.textContent;
+					switch(type){
+						case 'class':
+							element.href = window.location.protocol + '//' + baseurl + 'classes/' + value + '.html';
+							break;
+						case 'struct':
+							element.href = window.location.protocol + '//' + baseurl + 'structs/' + value + '.html';
+							break;
+						case 'enum':
+							element.href = window.location.protocol + '//' + baseurl + 'enums/' + value + '.html';
+							break;
+					}
+				}
+			}, false);
+		</script>
+	</head>
+	<body>
+	<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a name="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList">
+<li title="Back to game list"><a id="home_link" href="../../index.html">Home</a></li>
+<li title="Show all packages"><a id="package_list_link" href="../packages/index.html">Package list</a></li>
+<li id="update_page_bullet" title="Edit this documentation"><a id="update_page" href="https://github.com/ME3Tweaks/LegendaryExplorer/edit/UnrealDoc/DocSources/LE1/classes/Pawn.json" target="_blank">Edit</a></li>
+</ul>
+<div class="navimages">
+	<img class="navimage" src="../../images/gameicons/LE1_Icon.ico">
+	<img class="navimage" src="../../images/docudb.png">
+</div>
+</div>
+<div class="subNav">
+<ul class="navList" id="allclasses_navbar_top">
+	<li><a href="../classes/index.html">All&nbsp;Classes</a></li>
+	<li><a href="../structs/index.html">All&nbsp;Structs</a></li>
+	<li><a href="../enums/index.html">All&nbsp;Enums</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li><a href="#variables">Variables&nbsp;</a></li><li><a href="#functions">Functions&nbsp;</a></li>
+</ul>
+</div>
+<a name="skip.navbar.top">
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+<div>
+		<div class="header">
+<h2 class="title">Class <i>Pawn</i></h2>
+	<ul class="inheritance">
+<li><a href="Object.html">Core.Object</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="Actor.html">Engine.Actor</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="Pawn.html">Engine.Pawn</a></li>
+</ul>
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+	<p>Modifiers: <code>Abstract Compiled Config(Game) Parsed Localized Native Placeable NativeReplication HasInstancedProps HasComponents Exported</code></p>
+</div>
+<div class="contentContainer">
+<hr>
+<p></p>
+<!-- VARIABLES-->
+<h3 id="variables">Variables</h3>
+<table class="membersummary">
+	<tr>
+		<th class="colFirst">Type</th>
+		<th class="colSecond">Name</th>
+		<th class="colSecond">Description</th>
+		<th class="colLast">Flags</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Double</a></code>
+	</td>
+	<td class="colSecond">
+		<code>TimeSpentCalculatingReachableThisFrame</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="struct">RootMotionCurve</a></code>
+	</td>
+	<td class="colSecond">
+		<code>RootMotionInterpCurve</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>string</code>
+	</td>
+	<td class="colSecond">
+		<code>MenuName</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const Localized NeedCtorLink</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="struct">CachedReachableResult</a></code>
+	</td>
+	<td class="colSecond">
+		<code>CachedReachableResults</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">AnimNodeSlot</a></code>
+	</td>
+	<td class="colSecond">
+		<code>SlotNodes</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient NeedCtorLink</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">InterpGroup</a></code>
+	</td>
+	<td class="colSecond">
+		<code>InterpGroupList</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient NeedCtorLink</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">Class</a></code>
+	</td>
+	<td class="colSecond">
+		<code>ControllerClass</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">Class</a></code>
+	</td>
+	<td class="colSecond">
+		<code>HitDamageType</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">Class</a></code>
+	</td>
+	<td class="colSecond">
+		<code>InventoryManagerClass</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">Object</a></code>
+	</td>
+	<td class="colSecond">
+		<code>mapOccupiedLevels</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Native</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>SerpentineDir</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>Floor</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>RMVelocity</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>noise1spot</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>noise2spot</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>TakeHitLocation</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>TearOffMomentum</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>m_vBioMountLocation</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Rotator</a></code>
+	</td>
+	<td class="colSecond">
+		<code>m_rBioMountRotation</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>FlashLocation</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net RepNotify</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>LastFiringFlashLocation</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>RootMotionInterpCurveLastValue</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>m_vPhysWalkingSaveLoc</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>m_vPhysWalkingSaveHitNormal</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>m_oPhysWalkingSaveActorLocation</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">Controller</a></code>
+	</td>
+	<td class="colSecond">
+		<code>Controller</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net Component RepNotify</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">Pawn</a></code>
+	</td>
+	<td class="colSecond">
+		<code>NextPawn</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">PlayerController</a></code>
+	</td>
+	<td class="colSecond">
+		<code>LastRealViewer</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">Actor</a></code>
+	</td>
+	<td class="colSecond">
+		<code>LastViewer</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">PathConstraint</a></code>
+	</td>
+	<td class="colSecond">
+		<code>PathConstraintList</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">PathGoalEvaluator</a></code>
+	</td>
+	<td class="colSecond">
+		<code>PathGoalList</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">NavigationPoint</a></code>
+	</td>
+	<td class="colSecond">
+		<code>Anchor</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">NavigationPoint</a></code>
+	</td>
+	<td class="colSecond">
+		<code>LastAnchor</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">PhysicsVolume</a></code>
+	</td>
+	<td class="colSecond">
+		<code>HeadVolume</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">Pawn</a></code>
+	</td>
+	<td class="colSecond">
+		<code>noise1other</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">Pawn</a></code>
+	</td>
+	<td class="colSecond">
+		<code>noise2other</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">PlayerReplicationInfo</a></code>
+	</td>
+	<td class="colSecond">
+		<code>PlayerReplicationInfo</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net RepNotify</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">LadderVolume</a></code>
+	</td>
+	<td class="colSecond">
+		<code>OnLadder</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>Name</code>
+	</td>
+	<td class="colSecond">
+		<code>LandMovementState</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>Name</code>
+	</td>
+	<td class="colSecond">
+		<code>WaterMovementState</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">PlayerStart</a></code>
+	</td>
+	<td class="colSecond">
+		<code>LastStartSpot</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">SkeletalMeshComponent</a></code>
+	</td>
+	<td class="colSecond">
+		<code>Mesh</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable ExportObject EditInline Component</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">CylinderComponent</a></code>
+	</td>
+	<td class="colSecond">
+		<code>CylinderComponent</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">ExportObject EditInline Component</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">Vehicle</a></code>
+	</td>
+	<td class="colSecond">
+		<code>DrivenVehicle</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net RepNotify</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">Controller</a></code>
+	</td>
+	<td class="colSecond">
+		<code>LastHitBy</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">InventoryManager</a></code>
+	</td>
+	<td class="colSecond">
+		<code>InvManager</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net RepNotify</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">Weapon</a></code>
+	</td>
+	<td class="colSecond">
+		<code>Weapon</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">PrimitiveComponent</a></code>
+	</td>
+	<td class="colSecond">
+		<code>PreRagdollCollisionComponent</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">ExportObject EditInline Component</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">RB_BodyInstance</a></code>
+	</td>
+	<td class="colSecond">
+		<code>PhysicsPushBody</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">AudioComponent</a></code>
+	</td>
+	<td class="colSecond">
+		<code>FacialAudioComp</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">ExportObject Transient EditInline Component</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">MaterialInstanceConstant</a></code>
+	</td>
+	<td class="colSecond">
+		<code>MIC_PawnMat</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">MaterialInstanceConstant</a></code>
+	</td>
+	<td class="colSecond">
+		<code>MIC_PawnHair</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">Actor</a></code>
+	</td>
+	<td class="colSecond">
+		<code>m_oPhysWalkingSaveActor</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">Object</a></code>
+	</td>
+	<td class="colSecond">
+		<code>Stats</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">ExportObject Transient NeedCtorLink Component</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>MaxStepHeight</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>MaxJumpHeight</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>WalkableFloorZ</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>LedgeCheckThreshold</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>NetRelevancyTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>UncrouchTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>CrouchHeight</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>CrouchRadius</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>int</code>
+	</td>
+	<td class="colSecond">
+		<code>FullHeight</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>NonPreferredVehiclePathMultiplier</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>DesiredSpeed</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>MaxDesiredSpeed</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>HearingThreshold</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>Alertness</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>SightRadius</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>PeripheralVision</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>AvgPhysicsTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>Mass</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>Buoyancy</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>MeleeRange</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>int</code>
+	</td>
+	<td class="colSecond">
+		<code>AnchorItem</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>FindAnchorFailedTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>LastValidAnchorTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>DestinationOffset</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>NextPathRadius</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>SerpentineDist</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>SerpentineTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>SpawnTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>int</code>
+	</td>
+	<td class="colSecond">
+		<code>MaxPitchLimit</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>GroundSpeed</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>WaterSpeed</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>AirSpeed</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>LadderSpeed</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>AccelRate</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>JumpZ</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>OutofWaterZ</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>MaxOutOfWaterStepHeight</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>AirControl</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>WalkingPct</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>CrouchedPct</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>MaxFallSpeed</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>AIMaxFallSpeedFactor</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>BaseEyeHeight</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>EyeHeight</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>SplashTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>OldZ</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>int</code>
+	</td>
+	<td class="colSecond">
+		<code>Health</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Net</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>int</code>
+	</td>
+	<td class="colSecond">
+		<code>HealthMax</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>BreathTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>UnderWaterTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>LastPainTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>noise1time</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>noise1loudness</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>noise2time</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>noise2loudness</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>SoundDampening</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>DamageScaling</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>LastStartTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>RBPushRadius</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>RBPushStrength</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>AlwaysRelevantDistanceSquared</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>VehicleCheckRadius</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>ViewPitchMin</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>ViewPitchMax</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>int</code>
+	</td>
+	<td class="colSecond">
+		<code>AllowedYawError</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fBioAttemptMountTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fBioMountTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fBioMountHeight</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fBioHesitationTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fBioWasHesitatingTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fBioMountHeightLow</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fBioMountHeightMid</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fBioMountHeightHigh</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fBioMountForwardDist</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>int</code>
+	</td>
+	<td class="colSecond">
+		<code>m_nPhysicsRollAngle</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>int</code>
+	</td>
+	<td class="colSecond">
+		<code>m_nBioInMountVolCount</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>int</code>
+	</td>
+	<td class="colSecond">
+		<code>m_nBioInFallVolCount</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fWallSlideSpeedAdj</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>TimeToRememberReachableResults</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>int</code>
+	</td>
+	<td class="colSecond">
+		<code>LastFrameCalculatedReachable</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>int</code>
+	</td>
+	<td class="colSecond">
+		<code>ShotCount</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>int</code>
+	</td>
+	<td class="colSecond">
+		<code>FailedLandingCount</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>RootMotionInterpRate</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>RootMotionInterpCurrentTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fPhysWalkingSaveHitTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>BioSoftwareSkinned</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bUpAndOut</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bIsWalking</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bWantsToCrouch</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bIsCrouched</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const Net</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bTryToUncrouch</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanCrouch</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCrawler</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bReducedSpeed</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bJumpCapable</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanJump</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanWalk</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanSwim</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanFly</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanClimbLadders</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanStrafe</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanHop</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanLand</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bGlideInExploration</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bAvoidLedges</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bStopAtLedges</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bAllowLedgeOverhang</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bSimulateGravity</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const Net</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bIgnoreForces</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanWalkOffLedges</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanBeBaseForPawns</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bSimGravityDisabled</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bDirectHitWall</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bPushesRigidBodies</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bForceFloorCheck</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bForceKeepAnchor</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanMantle</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanClimbUp</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanClimbCeilings</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanSwatTurn</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanLeap</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanCoverSlip</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bDisplayPathErrors</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config GlobalConfig</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bIsFemale</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanPickupInventory</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bAmbientCreature</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bLOSHearing</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bMuffledHearing</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bDontPossess</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bAutoFire</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bRollToDesired</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bStationary</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCachedRelevant</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bSpecialHUD</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bNoWeaponFiring</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanUse</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bModifyReachSpecCost</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bModifyNavPointDest</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bPathfindsAsVehicle</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bRunPhysicsWithNoController</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bForceMaxAccel</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bLimitFallAccel</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bReplicateHealthToAll</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bForceRMVelocity</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bForceRegularVelocity</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bPlayedDeath</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bDesiredRotationSet</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bLockDesiredRotation</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bUnlockWhenReached</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bBioCanMount</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bBioHesitating</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bBioWasHesitating</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bBioHesitationOn</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bBioMountUseRootMotion</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bMovetowardsFaceing</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bIsMounting</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bNearMountLocation</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bSuppressPhysicsRoll</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bSuppressPhysicsPitch</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bBioDebugMountFall</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bBioFarFallAvailable</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bBioFalling</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bEnableRagdollRecovery</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bIsWallSliding</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bNeedsBaseTickedFirst</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bRootMotionFromInterpCurve</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bDebugShowCameraLocation</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bPhysWalkingSaveValidData</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="enum">EPathSearchType</a></code>
+	</td>
+	<td class="colSecond">
+		<code>PathSearchType</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>byte</code>
+	</td>
+	<td class="colSecond">
+		<code>RemoteViewPitch</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const Net</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>byte</code>
+	</td>
+	<td class="colSecond">
+		<code>FlashCount</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net RepNotify</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>byte</code>
+	</td>
+	<td class="colSecond">
+		<code>FiringMode</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Net RepNotify</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="enum">EPhysics</a></code>
+	</td>
+	<td class="colSecond">
+		<code>PreStasisPhysicsState</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+
+</table>
+<!-- FUNCTIONS-->
+<h3 id="functions">Functions</h3>
+<table class="membersummary">
+	<tr>
+		<th class="colFirst">Return type</th>
+		<th class="colSecond">Signature</th>
+		<th class="colLast">Description</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnFaceFXAnimStopped()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnFaceFXAnimStarted()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="SkeletalMeshComponent.html">SkeletalMeshComponent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPrimarySkelMeshComponent()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsBioSoftwareSkinned()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SFXDoComponentAction(<a data-type="class">ActorComponent</a> pComponent)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetAdjustedMoveDirection(<a data-type="class">const</a> out <a data-type="struct">Vector</a> Dest, <a data-type="class">Actor</a> MoveTarget, out <a data-type="struct">Vector</a> Direction)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsDead()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">InPlayerParty()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetMaxSpeed()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetDesiredSpeed(optional <a data-type="enum">EGetDesiredSpeedMode</a> eMode)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetDesiredSpeed(float fDesiredSpeed, bool bForce)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetRootMotionInterpCurrentTime(float inTime, optional float DeltaTime, optional bool bUpdateSkelPose)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetCinematicMode(bool bInCinematicMode)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ZeroMovementVariables()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClearPathStep()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DrawPathStep(<a data-type="class">Canvas</a> C)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IncrementPathChild(int Cnt, <a data-type="class">Canvas</a> C)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IncrementPathStep(int Cnt, <a data-type="class">Canvas</a> C)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="PathGoalEvaluator.html">PathGoalEvaluator</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CreatePathGoalEvaluator(Class<PathGoalEvaluator> GoalEvalClass)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="PathConstraint.html">PathConstraint</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CreatePathConstraint(Class<PathConstraint> ConstraintClass)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddGoalEvaluator(<a data-type="class">PathGoalEvaluator</a> Evaluator)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddPathConstraint(<a data-type="class">PathConstraint</a> Constraint)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClearConstraints()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SoakPause()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">BecomeViewTarget(<a data-type="class">PlayerController</a> PC)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AdjustCameraScale(bool bMoveCameraIn)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MessagePlayer(coerce string msg)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EffectIsRelevant(<a data-type="struct">Vector</a> SpawnLocation, bool bForceDedicated, optional float CullDistance)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CanMount()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnTeleport(<a data-type="class">SeqAct_Teleport</a> Action)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnSetMaterial(<a data-type="class">SeqAct_SetMaterial</a> Action)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetDamageScaling()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DoKismetAttachment(<a data-type="class">Actor</a> <a data-type="struct">Attachment</a>, <a data-type="class">SeqAct_AttachToActor</a> Action)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SpawnedByKismet()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsStationary()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetCollisionExtent()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetCollisionHeight()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetCollisionRadius()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CheatFly()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CheatGhost()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CheatWalk()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayWeaponSwitch(<a data-type="class">Weapon</a> OldWeapon, <a data-type="class">Weapon</a> NewWeapon)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetActiveWeapon(<a data-type="class">Weapon</a> NewWeapon)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TossInventory(<a data-type="class">Inventory</a> Inv, optional <a data-type="struct">Vector</a> ForceVelocity)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ThrowActiveWeapon()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DrawHUD(<a data-type="class">HUD</a> H)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="Inventory.html">Inventory</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FindInventoryType(Class<Inventory> DesiredClass, optional bool bAllowSubclass)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="Inventory.html">Inventory</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CreateInventory(Class<Inventory> NewInvClass, optional bool bDoNotActivate)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddDefaultInventory()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StopDriving(<a data-type="class">Vehicle</a> V)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StartDriving(<a data-type="class">Vehicle</a> V)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CanThrowWeapon()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Suicide()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="Vehicle.html">Vehicle</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetVehicleBase()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayLanded(float ImpactVel)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CannotJumpNow()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayFootStepSound(int FootDown)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TornOff()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayDying(Class<DamageType> <a data-type="class">DamageType</a>, <a data-type="struct">Vector</a> HitLoc)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetDyingPhysics()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TurnOff()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayHit(float Damage, <a data-type="class">Controller</a> InstigatedBy, <a data-type="struct">Vector</a> HitLocation, Class<DamageType> <a data-type="class">DamageType</a>, <a data-type="struct">Vector</a> Momentum, <a data-type="struct">TraceHitInfo</a> HitInfo)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayDyingSound()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DoJump(bool bUpdating)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CheckWaterJump(out <a data-type="struct">Vector</a> WallNormal)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TakeDrowningDamage()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">BreathTimer()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsInPain()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TouchingWaterVolume()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HeadVolumeChange(<a data-type="class">PhysicsVolume</a> newHeadVolume)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Landed(<a data-type="struct">Vector</a> HitNormal, <a data-type="class">Actor</a> FloorActor)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Falling()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Died(<a data-type="class">Controller</a> Killer, Class<DamageType> <a data-type="class">DamageType</a>, <a data-type="struct">Vector</a> HitLocation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ThrowWeaponOnDeath()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsSameTeam(<a data-type="class">Pawn</a> Other)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="TeamInfo.html">TeamInfo</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetTeam()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetTeamNum()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TakeDamage(float Damage, <a data-type="class">Controller</a> InstigatedBy, <a data-type="struct">Vector</a> HitLocation, <a data-type="struct">Vector</a> Momentum, Class<DamageType> <a data-type="class">DamageType</a>, optional <a data-type="struct">TraceHitInfo</a> HitInfo, optional <a data-type="class">Actor</a> DamageCauser, optional <a data-type="class">DamageType</a> pDamage)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="Controller.html">Controller</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetKillInstigator(<a data-type="class">Controller</a> InstigatedBy, Class<DamageType> <a data-type="class">DamageType</a>)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotifyTakeHit(<a data-type="class">Controller</a> InstigatedBy, <a data-type="struct">Vector</a> HitLocation, int Damage, Class<DamageType> <a data-type="class">DamageType</a>, <a data-type="struct">Vector</a> Momentum)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TakeRadiusDamageOnBones(<a data-type="class">Controller</a> InstigatedBy, float BaseDamage, float DamageRadius, Class<DamageType> <a data-type="class">DamageType</a>, float Momentum, <a data-type="struct">Vector</a> HurtOrigin, bool bFullDamage, <a data-type="class">Actor</a> DamageCauser, array<Name> Bones)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PruneDamagedBoneList(out array<Name> Bones)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HealDamage(int Amount, <a data-type="class">Controller</a> Healer, Class<DamageType> <a data-type="class">DamageType</a>)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AdjustDamage(out int inDamage, out <a data-type="struct">Vector</a> Momentum, <a data-type="class">Controller</a> InstigatedBy, <a data-type="struct">Vector</a> HitLocation, Class<DamageType> <a data-type="class">DamageType</a>, optional <a data-type="struct">TraceHitInfo</a> HitInfo)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetMovementPhysics()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Gasp()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnGiveInventory(<a data-type="class">SeqAct_GiveInventory</a> inAction)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnAssignController(<a data-type="class">SeqAct_AssignController</a> inAction)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ReceivedNewEvent(<a data-type="class">SequenceEvent</a> Evt)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SpawnDefaultController()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PostBeginPlay()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PreBeginPlay()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Destroyed()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DetachFromController(optional bool bDestroyController)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CrushedBy(<a data-type="class">Pawn</a> OtherPawn)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CanBeBaseForPawn(<a data-type="class">Pawn</a> aPawn)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">BaseChange()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StuckOnPawn(<a data-type="class">Pawn</a> OtherPawn)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">JumpOffPawn()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">gibbedBy(<a data-type="class">Actor</a> Other)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EncroachedBy(<a data-type="class">Actor</a> Other)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EncroachingOn(<a data-type="class">Actor</a> Other)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FaceRotation(<a data-type="struct">Rotator</a> NewRotation, float DeltaTime)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">UpdatePawnRotation(<a data-type="struct">Rotator</a> NewRotation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClientSetRotation(<a data-type="struct">Rotator</a> NewRotation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClientSetLocation(<a data-type="struct">Vector</a> NewLocation, <a data-type="struct">Rotator</a> NewRotation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClientRestart()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Restart()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TakeFallingDamage()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">KilledBy(<a data-type="class">Pawn</a> EventInstigator)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddVelocity(<a data-type="struct">Vector</a> NewVelocity, <a data-type="struct">Vector</a> HitLocation, Class<DamageType> <a data-type="class">DamageType</a>, optional <a data-type="struct">TraceHitInfo</a> HitInfo)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HandleMomentum(<a data-type="struct">Vector</a> Momentum, <a data-type="struct">Vector</a> HitLocation, Class<DamageType> <a data-type="class">DamageType</a>, optional <a data-type="struct">TraceHitInfo</a> HitInfo)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RestartPlayer()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StartCrouch(float HeightAdjust)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EndCrouch(float HeightAdjust)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ShouldCrouch(bool bCrouch)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">UnCrouch()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OutsideWorldBounds()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FellOutOfWorld(Class<DamageType> dmgType)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ModifyVelocity(float DeltaTime, <a data-type="struct">Vector</a> OldVelocity)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">JumpOutOfWater(<a data-type="struct">Vector</a> jumpDir)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FinishedInterpolation()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClientMessage(coerce string S, optional Name Type)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ReceiveLocalizedMessage(Class<LocalMessage> Message, optional int Switch, optional <a data-type="class">PlayerReplicationInfo</a> RelatedPRI_1, optional <a data-type="class">PlayerReplicationInfo</a> RelatedPRI_2, optional <a data-type="class">Object</a> OptionalObject)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HandlePickup(<a data-type="class">Inventory</a> Inv)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AdjustedStrength()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LineOfSightTo(<a data-type="class">Actor</a> Other)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetMoveTarget(<a data-type="class">Actor</a> NewTarget)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="Actor.html">Actor</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetMoveTarget()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NearMoveTarget()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AffectedByHitEffects()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">InGodMode()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PawnCalcCamera(float fDeltaTime, out <a data-type="struct">Vector</a> out_CamLoc, out <a data-type="struct">Rotator</a> out_CamRot, out float out_FOV)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetViewRotation(<a data-type="struct">Rotator</a> NewRotation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetAdjustedAimFor(<a data-type="class">Weapon</a> W, <a data-type="struct">Vector</a> StartFireLoc)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">InFreeCam()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetBaseAimRotation()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetWeaponStartTraceLocation(optional <a data-type="class">Weapon</a> CurrentWeapon)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPawnViewLocation()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>Rotator</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetViewRotation()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetActorEyesViewPoint(out <a data-type="struct">Vector</a> out_Location, out <a data-type="struct">Rotator</a> out_Rotation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ProcessViewRotation(float DeltaTime, out <a data-type="struct">Rotator</a> out_ViewRotation, out <a data-type="struct">Rotator</a> out_DeltaRot)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsFirstPerson()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WasPlayerPawn()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsPlayerPawn()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsLocallyControlled(optional <a data-type="class">Controller</a> PawnController)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsHumanControlled(optional <a data-type="class">Controller</a> PawnController)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DisplayDebug(<a data-type="class">HUD</a> <a data-type="class">HUD</a>, out float out_YL, out float out_YPos)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClimbLadder(<a data-type="class">LadderVolume</a> L)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EndClimbLadder(<a data-type="class">LadderVolume</a> OldLadder)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CanSplash()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetWalking(bool bNewIsWalking)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RangedAttackTime()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RecommendLongRangedAttack()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CanGrabLadder()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">DropToGround()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Name</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetDefaultCameraMode(<a data-type="class">PlayerController</a> RequestedBy)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">UnPossessed()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">UpdateControllerOnPossess(bool bVehicleTransition)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PossessedBy(<a data-type="class">Controller</a> C, bool bVehicleTransition)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NotifyTeamChanged()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayTeleportEffect(bool bOut, bool bSound)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>string</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetHumanReadableName()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">NeedToTurn(<a data-type="struct">Vector</a> targ)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsFiring()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HasRangedAttack()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FireOnRelease()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TooCloseToAttack(<a data-type="class">Actor</a> Other)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CanAttack(<a data-type="class">Actor</a> Other)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ChooseFireMode()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">BotFire(bool bFinished)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponStoppedFiring(<a data-type="class">Weapon</a> InWeapon, bool bViaReplication)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">WeaponFired(<a data-type="class">Weapon</a> InWeapon, bool bViaReplication, optional <a data-type="struct">Vector</a> HitLocation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FlashLocationUpdated(<a data-type="class">Weapon</a> InWeapon, <a data-type="struct">Vector</a> InFlashLocation, bool bViaReplication)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Internal_ClearFlashLocation(<a data-type="class">Weapon</a> InWeapon, out <a data-type="struct">Vector</a> out_FlashLocation)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClearFlashLocation(<a data-type="class">Weapon</a> InWeapon)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Internal_SetFlashLocation(<a data-type="class">Weapon</a> InWeapon, out <a data-type="struct">Vector</a> out_FlashLocation, byte InFiringMode, <a data-type="struct">Vector</a> NewLoc)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetFlashLocation(<a data-type="class">Weapon</a> InWeapon, byte InFiringMode, <a data-type="struct">Vector</a> NewLoc)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Internal_ClearFlashCount(<a data-type="class">Weapon</a> InWeapon, out byte out_FlashCountVar)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClearFlashCount(<a data-type="class">Weapon</a> InWeapon)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FlashCountUpdated(<a data-type="class">Weapon</a> InWeapon, byte InFlashCount, bool bViaReplication)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Internal_IncrementFlashCount(<a data-type="class">Weapon</a> InWeapon, byte InFiringMode, out byte out_FlashCountVar)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IncrementFlashCount(<a data-type="class">Weapon</a> InWeapon, byte InFiringMode)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FiringModeUpdated(<a data-type="class">Weapon</a> InWeapon, byte InFiringMode, bool bViaReplication)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Internal_SetFiringMode(<a data-type="class">Weapon</a> InWeapon, byte InFiringMode, out byte out_FiringModeVar)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetFiringMode(<a data-type="class">Weapon</a> InWeapon, byte InFiringMode)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>byte</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetWeaponFiringMode(<a data-type="class">Weapon</a> InWeapon)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StopFire(byte FireModeNum)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StartFire(byte FireModeNum)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StopFiring()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Reset()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayerChangedTeam()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetBaseEyeheight()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsFriendly(<a data-type="class">Pawn</a> Other)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsHostile(<a data-type="class">Pawn</a> Other)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SpecialMoveThruEdge(<a data-type="enum">ENavMeshEdgeType</a> Type, int Dir, <a data-type="struct">Vector</a> MoveStart, <a data-type="struct">Vector</a> MoveDest, optional <a data-type="class">Actor</a> RelActor, optional int RelItem)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SpecialMoveTo(<a data-type="class">NavigationPoint</a> Start, <a data-type="class">NavigationPoint</a> End, <a data-type="class">Actor</a> Next)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnStreamingLevelLeavingStasis()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnStreamingLevelEnteringStasis()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">TermRagdoll()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">InitRagdoll()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsValidEnemy()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>int</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SpecialCostForPath(<a data-type="class">ReachSpec</a> Path)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetBoundingCylinder(out float CollisionRadius, out float CollisionHeight)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ReachedDesiredRotation()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetPushesRigidBodies(bool NewPush)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ForceCrouch()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ReachedPoint(<a data-type="struct">Vector</a> Point, <a data-type="class">Actor</a> NewAnchor)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ReachedDestination(<a data-type="class">Actor</a> Goal)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="NavigationPoint.html">NavigationPoint</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetBestAnchor(<a data-type="class">Actor</a> TestActor, <a data-type="struct">Vector</a> TestLocation, bool bStartPoint, bool bOnlyCheckVisible, out float out_Dist)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetAnchor(<a data-type="class">NavigationPoint</a> NewAnchor)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetRemoteViewPitch(int NewRemoteViewPitch)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsInvisible()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsValidEnemyTargetFor(<a data-type="class">const</a> <a data-type="class">PlayerReplicationInfo</a> PRI, bool bNoPRIisEnemy)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsValidTargetFor(<a data-type="class">const</a> <a data-type="class">Controller</a> C)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>float</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetFallDuration()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SuggestJumpVelocity(out <a data-type="struct">Vector</a> JumpVelocity, <a data-type="struct">Vector</a> Destination, <a data-type="struct">Vector</a> Start)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ValidAnchor()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>Vector</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AdjustDestination(<a data-type="class">Actor</a> GoalActor, optional <a data-type="struct">Vector</a> Dest)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsAliveAndWell()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ReplicatedEvent(Name VarName)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetSkelControlScale(Name SkelControlName, float Scale)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetMorphWeight(Name MorphNodeName, float MorphWeight)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="FaceFXAsset.html">FaceFXAsset</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetActorFaceFXAsset()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FaceFXAudioFinished(<a data-type="class">AudioComponent</a> AC)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">OnPlayFaceFXAnim(<a data-type="class">SeqAct_PlayFaceFXAnim</a> inAction)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CanActorPlayFaceFXAnim()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsActorPlayingFaceFXAnim()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="AudioComponent.html">AudioComponent</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetFaceFXAudioComponent()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayActorFaceFXAnim(<a data-type="class">FaceFXAnimSet</a> <a data-type="class">AnimSet</a>, string GroupName, string SeqName, <a data-type="class">SoundCue</a> SoundCueToPlay)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MAT_BeginAIGroup(<a data-type="struct">Vector</a> StartLoc, <a data-type="struct">Rotator</a> StartRot)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">InterpolationFinished(<a data-type="class">SeqAct_Interp</a> InterpAction)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">InterpolationStarted(<a data-type="class">SeqAct_Interp</a> InterpAction, <a data-type="class">InterpGroupInst</a> GroupInst)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MAT_SetSkelControlScale(Name SkelControlName, float Scale)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MAT_SetMorphWeight(Name MorphNodeName, float MorphWeight)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MAT_SetAnimWeights(array<AnimSlotInfo> SlotInfos)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MAT_SetAnimPosition(Name SlotName, int ChannelIndex, Name InAnimSeqName, float InPosition, bool bFireNotifies, bool bLooping)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetAnimPosition(Name SlotName, int ChannelIndex, Name InAnimSeqName, float InPosition, bool bFireNotifies, bool bLooping)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MAT_FinishAnimControl(<a data-type="class">InterpGroup</a> InInterpGroup)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">FinishAnimControl(<a data-type="class">InterpGroup</a> InInterpGroup)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">MAT_BeginAnimControl(<a data-type="class">InterpGroup</a> InInterpGroup)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">BeginAnimControl(<a data-type="class">InterpGroup</a> InInterpGroup)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RestoreAnimSetsToDefault()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AnimSetListUpdated()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddAnimSets(<a data-type="class">const</a> out array<AnimSet> CustomAnimSets)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">BuildScriptAnimSetList()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">UpdateAnimSetList()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClearAnimNodes()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CacheAnimNodes()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PostInitAnimTree(<a data-type="class">SkeletalMeshComponent</a> SkelComp)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsDesiredRotationLocked()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsDesiredRotationInUse()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CheckDesiredRotation()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ResetDesiredRotation()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">LockDesiredRotation(bool Lock, optional bool InUnlockWhenReached)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">EpicSetDesiredRotation(<a data-type="struct">Rotator</a> TargetDesiredRotation, optional bool InLockDesiredRotation, optional bool InUnlockWhenReached, optional float InterpolationTime)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+
+</table>
+</table>
+</div>
+
+</div>
+	</body>
+</html>

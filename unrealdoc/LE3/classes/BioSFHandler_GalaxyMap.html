@@ -2,19 +2,19 @@
 	<head>
 		<meta property="og:type" content="website" />
 		<title>BioSFHandler_GalaxyMap</title>
-		<meta name="og:title" content="BioSFHandler_GalaxyMap"/>
+		 <link rel="icon" type="image/x-icon" href="../../images/favicon.ico">
+		<meta name="og:title" content="BioSFHandler_GalaxyMap | LE3 | Legendary Explorer DocuDB"/>
 		<meta name="description" content=""/>
 		<meta name="og:description" content=""/>
-		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE3/../"/>
-		<meta name="og:image" content="https://me3tweaks.github.io/idk.png"/>
-		<link rel="stylesheet" href="../lexdoc.css">
+		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE3/classes/BioSFHandler_GalaxyMap.html"/>
+		<meta name="og:image" content="../../images/favicon.ico"/>
+		<link rel="stylesheet" href="../../lexdoc.css">
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function() {
-				document.title = document.title + " - LE3 - Legendary Explorer UnrealDoc"
+				document.title = document.title + " | LE3 | Legendary Explorer DocuDB"
 				var url = window.location.href.substring(window.location.protocol.length + 2);
 				var gameidx = url.indexOf("/LE3/");
 				var baseurl = url.substring(0, gameidx + 5);
-				console.log(baseurl);
 				var typelinks = document.querySelectorAll('[data-type]');
 				for (const element of typelinks) {
 					var type = element.dataset.type;
@@ -43,30 +43,17 @@
 <a name="navbar.top.firstrow">
 <!--   -->
 </a>
-<ul class="navList" title="Navigation">
-<li><a href="../../../overview-summary.html">Overview</a></li>
-<li><a href="package-summary.html">Package</a></li>
-<li class="navBarCell1Rev">Class</li>
-<li><a href="class-use/Constructor.html">Use</a></li>
-<li><a href="package-tree.html">Tree</a></li>
-<li><a href="../../../deprecated-list.html">Deprecated</a></li>
-<li><a href="../../../index-files/index-1.html">Index</a></li>
-<li><a href="../../../help-doc.html">Help</a></li>
+<ul class="navList">
+<li title="Back to game list"><a id="home_link" href="../../index.html">Home</a></li>
+<li title="Show all packages"><a id="package_list_link" href="../packages/index.html">Package list</a></li>
+<li id="update_page_bullet" title="Edit this documentation"><a id="update_page" href="https://github.com/ME3Tweaks/LegendaryExplorer/edit/UnrealDoc/DocSources/LE3/classes/BioSFHandler_GalaxyMap.json" target="_blank">Edit</a></li>
 </ul>
 <div class="navimages">
-	<img class="navimage" src="../images/gameicons/LE3_Icon.ico">
-	<img class="navimage" src="../images/docudb.png">
+	<img class="navimage" src="../../images/gameicons/LE3_Icon.ico">
+	<img class="navimage" src="../../images/docudb.png">
 </div>
 </div>
 <div class="subNav">
-<ul class="navList">
-<li><a href="../../../java/lang/reflect/Array.html" title="class in java.lang.reflect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../java/lang/reflect/Executable.html" title="class in java.lang.reflect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
-</ul>
-<ul class="navList">
-<li><a href="../../../index.html?java/lang/reflect/Constructor.html" target="_top">Frames</a></li>
-<li><a href="Constructor.html" target="_top">No&nbsp;Frames</a></li>
-</ul>
 <ul class="navList" id="allclasses_navbar_top">
 	<li><a href="../classes/index.html">All&nbsp;Classes</a></li>
 	<li><a href="../structs/index.html">All&nbsp;Structs</a></li>
@@ -86,27 +73,16 @@
 </div>
 <div>
 <ul class="subNavList">
-<li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
-</ul>
-<ul class="subNavList">
-<li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li><a href="#variables">Variables&nbsp;</a></li><li><a href="#functions">Functions&nbsp;</a></li>
 </ul>
 </div>
 <a name="skip.navbar.top">
-<!--   -->
 </a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
 <div>
 		<div class="header">
-<h2 class="title">Class BioSFHandler_GalaxyMap</h2>
-<ul class="inheritance">
+<h2 class="title">Class <i>BioSFHandler_GalaxyMap</i></h2>
+	<ul class="inheritance">
 <li><a href="Object.html">Core.Object</a></li>
 <li>
 <ul class="inheritance">
@@ -134,748 +110,948 @@
 </li>
 </ul>
 
+	<p>Modifiers: <code>Compiled Config(UI) Parsed Native HasInstancedProps Exported</code></p>
 </div>
 <div class="contentContainer">
 <hr>
 <p></p>
 <!-- VARIABLES-->
-<h3>Variables</h3>
+<h3 id="variables">Variables</h3>
 <table class="membersummary">
 	<tr>
 		<th class="colFirst">Type</th>
 		<th class="colSecond">Name</th>
-		<th class="colLast">Description</th>
+		<th class="colSecond">Description</th>
+		<th class="colLast">Flags</th>
 	</tr>
 	<tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>OnCallbackEvent</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">aUIActionCallbacks</p>
+	<td class="colSecond">
+		<code>aUIActionCallbacks</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>string</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_sDisplayedFuel</p>
+	<td class="colSecond">
+		<code>m_sDisplayedFuel</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>string</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_sDisplayedCash</p>
+	<td class="colSecond">
+		<code>m_sDisplayedCash</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>OnCallbackEvent</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">__OnCallbackEvent__Delegate</p>
+	<td class="colSecond">
+		<code>__OnCallbackEvent__Delegate</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXUIControlState</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">aActions</p>
+	<td class="colSecond">
+		<code>aActions</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXUIControlState</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">BackControlState</p>
+	<td class="colSecond">
+		<code>BackControlState</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXUIControlState</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ActionControlState</p>
+	<td class="colSecond">
+		<code>ActionControlState</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXUIControlState</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">AltActionControlState</p>
+	<td class="colSecond">
+		<code>AltActionControlState</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXUIControlState</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">AltAction2ControlState</p>
+	<td class="colSecond">
+		<code>AltAction2ControlState</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">BioCameraBehaviorGalaxy</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">oGalaxyCam</p>
+	<td class="colSecond">
+		<code>oGalaxyCam</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fScrollValue</p>
+	<td class="colSecond">
+		<code>m_fScrollValue</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fLeftStickX</p>
+	<td class="colSecond">
+		<code>m_fLeftStickX</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fLeftStickY</p>
+	<td class="colSecond">
+		<code>m_fLeftStickY</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
 	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>stringref</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">AButtonText</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>stringref</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">BButtonText</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">XButtonText</p>
+	<td class="colSecond">
+		<code>AButtonText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">YButtonText</p>
+	<td class="colSecond">
+		<code>BButtonText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TitleText</p>
+	<td class="colSecond">
+		<code>XButtonText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
+		<code>stringref</code>
+	</td>
+	<td class="colSecond">
+		<code>YButtonText</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>stringref</code>
+	</td>
+	<td class="colSecond">
+		<code>TitleText</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_nDiscoveredPercent</p>
+	<td class="colSecond">
+		<code>m_nDiscoveredPercent</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
 	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>stringref</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LTriggerText</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>stringref</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">RTriggerText</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextTravelMessage</p>
+	<td class="colSecond">
+		<code>LTriggerText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextTravelConfirm</p>
+	<td class="colSecond">
+		<code>RTriggerText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextTravelCancel</p>
+	<td class="colSecond">
+		<code>TextTravelMessage</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextPlanetEventConfirm</p>
+	<td class="colSecond">
+		<code>TextTravelConfirm</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextGalaxyTitle</p>
+	<td class="colSecond">
+		<code>TextTravelCancel</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextUnknownObj</p>
+	<td class="colSecond">
+		<code>TextPlanetEventConfirm</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextRefueling</p>
+	<td class="colSecond">
+		<code>TextGalaxyTitle</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextTravel</p>
+	<td class="colSecond">
+		<code>TextUnknownObj</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextLand</p>
+	<td class="colSecond">
+		<code>TextRefueling</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextBack</p>
+	<td class="colSecond">
+		<code>TextTravel</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextExit</p>
+	<td class="colSecond">
+		<code>TextLand</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextScan</p>
+	<td class="colSecond">
+		<code>TextBack</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextScanStart</p>
+	<td class="colSecond">
+		<code>TextExit</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextScanClose</p>
+	<td class="colSecond">
+		<code>TextScan</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextMassRelayJump</p>
+	<td class="colSecond">
+		<code>TextScanStart</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextMassRelay</p>
+	<td class="colSecond">
+		<code>TextScanClose</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextOrbit</p>
+	<td class="colSecond">
+		<code>TextMassRelayJump</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextFuelDepot</p>
+	<td class="colSecond">
+		<code>TextMassRelay</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextFuel</p>
+	<td class="colSecond">
+		<code>TextOrbit</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextProbes</p>
+	<td class="colSecond">
+		<code>TextFuelDepot</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextEmergencyFuel</p>
+	<td class="colSecond">
+		<code>TextFuel</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextLaunchProbe</p>
+	<td class="colSecond">
+		<code>TextProbes</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextCancel</p>
+	<td class="colSecond">
+		<code>TextEmergencyFuel</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TextExploredPercent</p>
+	<td class="colSecond">
+		<code>TextLaunchProbe</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">DescriptionTabText</p>
+	<td class="colSecond">
+		<code>TextCancel</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MissionTabText</p>
+	<td class="colSecond">
+		<code>TextExploredPercent</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">FuelDisplayTextTemplate</p>
+	<td class="colSecond">
+		<code>DescriptionTabText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
+		<code>stringref</code>
+	</td>
+	<td class="colSecond">
+		<code>MissionTabText</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>stringref</code>
+	</td>
+	<td class="colSecond">
+		<code>FuelDisplayTextTemplate</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">FuelAwardDisplayTime</p>
+	<td class="colSecond">
+		<code>FuelAwardDisplayTime</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fRemainingFuelAwardTime</p>
+	<td class="colSecond">
+		<code>m_fRemainingFuelAwardTime</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fFuelAwardStartValue</p>
+	<td class="colSecond">
+		<code>m_fFuelAwardStartValue</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fFuelAwardEndValue</p>
+	<td class="colSecond">
+		<code>m_fFuelAwardEndValue</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
 	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bClosingPlanet</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bClosingScan</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bWaitingForMsgBox</p>
+	<td class="colSecond">
+		<code>m_bClosingPlanet</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">AButtonEnabled</p>
+	<td class="colSecond">
+		<code>m_bClosingScan</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">BButtonEnabled</p>
+	<td class="colSecond">
+		<code>m_bWaitingForMsgBox</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">XButtonEnabled</p>
+	<td class="colSecond">
+		<code>AButtonEnabled</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">YButtonEnabled</p>
+	<td class="colSecond">
+		<code>BButtonEnabled</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bLTriggerOn</p>
+	<td class="colSecond">
+		<code>XButtonEnabled</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bRTriggerOn</p>
+	<td class="colSecond">
+		<code>YButtonEnabled</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bIsMultiLand</p>
+	<td class="colSecond">
+		<code>bLTriggerOn</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bForceControlUpdate</p>
+	<td class="colSecond">
+		<code>bRTriggerOn</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bDisplayingFuelAwardAnim</p>
+	<td class="colSecond">
+		<code>m_bIsMultiLand</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bInitialized</p>
+	<td class="colSecond">
+		<code>bForceControlUpdate</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bFullCleanupOnClose</p>
+	<td class="colSecond">
+		<code>m_bDisplayingFuelAwardAnim</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bInitialized</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bFullCleanupOnClose</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 
 </table>
 <!-- FUNCTIONS-->
-<h3>Functions</h3>
+<h3 id="functions">Functions</h3>
 <table class="membersummary">
 	<tr>
 		<th class="colFirst">Return type</th>

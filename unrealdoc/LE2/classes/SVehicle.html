@@ -2,19 +2,19 @@
 	<head>
 		<meta property="og:type" content="website" />
 		<title>SVehicle</title>
-		<meta name="og:title" content="SVehicle"/>
+		 <link rel="icon" type="image/x-icon" href="../../images/favicon.ico">
+		<meta name="og:title" content="SVehicle | LE2 | Legendary Explorer DocuDB"/>
 		<meta name="description" content=""/>
 		<meta name="og:description" content=""/>
-		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE2/../"/>
-		<meta name="og:image" content="https://me3tweaks.github.io/idk.png"/>
-		<link rel="stylesheet" href="../lexdoc.css">
+		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE2/classes/SVehicle.html"/>
+		<meta name="og:image" content="../../images/favicon.ico"/>
+		<link rel="stylesheet" href="../../lexdoc.css">
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function() {
-				document.title = document.title + " - LE2 - Legendary Explorer UnrealDoc"
+				document.title = document.title + " | LE2 | Legendary Explorer DocuDB"
 				var url = window.location.href.substring(window.location.protocol.length + 2);
 				var gameidx = url.indexOf("/LE2/");
 				var baseurl = url.substring(0, gameidx + 5);
-				console.log(baseurl);
 				var typelinks = document.querySelectorAll('[data-type]');
 				for (const element of typelinks) {
 					var type = element.dataset.type;
@@ -43,30 +43,17 @@
 <a name="navbar.top.firstrow">
 <!--   -->
 </a>
-<ul class="navList" title="Navigation">
-<li><a href="../../../overview-summary.html">Overview</a></li>
-<li><a href="package-summary.html">Package</a></li>
-<li class="navBarCell1Rev">Class</li>
-<li><a href="class-use/Constructor.html">Use</a></li>
-<li><a href="package-tree.html">Tree</a></li>
-<li><a href="../../../deprecated-list.html">Deprecated</a></li>
-<li><a href="../../../index-files/index-1.html">Index</a></li>
-<li><a href="../../../help-doc.html">Help</a></li>
+<ul class="navList">
+<li title="Back to game list"><a id="home_link" href="../../index.html">Home</a></li>
+<li title="Show all packages"><a id="package_list_link" href="../packages/index.html">Package list</a></li>
+<li id="update_page_bullet" title="Edit this documentation"><a id="update_page" href="https://github.com/ME3Tweaks/LegendaryExplorer/edit/UnrealDoc/DocSources/LE2/classes/SVehicle.json" target="_blank">Edit</a></li>
 </ul>
 <div class="navimages">
-	<img class="navimage" src="../images/gameicons/LE2_Icon.ico">
-	<img class="navimage" src="../images/docudb.png">
+	<img class="navimage" src="../../images/gameicons/LE2_Icon.ico">
+	<img class="navimage" src="../../images/docudb.png">
 </div>
 </div>
 <div class="subNav">
-<ul class="navList">
-<li><a href="../../../java/lang/reflect/Array.html" title="class in java.lang.reflect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../java/lang/reflect/Executable.html" title="class in java.lang.reflect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
-</ul>
-<ul class="navList">
-<li><a href="../../../index.html?java/lang/reflect/Constructor.html" target="_top">Frames</a></li>
-<li><a href="Constructor.html" target="_top">No&nbsp;Frames</a></li>
-</ul>
 <ul class="navList" id="allclasses_navbar_top">
 	<li><a href="../classes/index.html">All&nbsp;Classes</a></li>
 	<li><a href="../structs/index.html">All&nbsp;Structs</a></li>
@@ -86,27 +73,16 @@
 </div>
 <div>
 <ul class="subNavList">
-<li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
-</ul>
-<ul class="subNavList">
-<li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li><a href="#variables">Variables&nbsp;</a></li><li><a href="#functions">Functions&nbsp;</a></li>
 </ul>
 </div>
 <a name="skip.navbar.top">
-<!--   -->
 </a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
 <div>
 		<div class="header">
-<h2 class="title">Class SVehicle</h2>
-<ul class="inheritance">
+<h2 class="title">Class <i>SVehicle</i></h2>
+	<ul class="inheritance">
 <li><a href="Object.html">Core.Object</a></li>
 <li>
 <ul class="inheritance">
@@ -134,638 +110,808 @@
 </li>
 </ul>
 
+	<p>Modifiers: <code>Abstract Compiled Config(Game) Parsed Localized Native Placeable NativeReplication HasInstancedProps HasComponents Exported</code></p>
 </div>
 <div class="contentContainer">
 <hr>
 <p></p>
 <!-- VARIABLES-->
-<h3>Variables</h3>
+<h3 id="variables">Variables</h3>
 <table class="membersummary">
 	<tr>
 		<th class="colFirst">Type</th>
 		<th class="colSecond">Name</th>
-		<th class="colLast">Description</th>
+		<th class="colSecond">Description</th>
+		<th class="colLast">Flags</th>
 	</tr>
 	<tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">VehicleState</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">VState</p>
+	<td class="colSecond">
+		<code>VState</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const Net Native</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">SVehicleWheel</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">Wheels</p>
+	<td class="colSecond">
+		<code>Wheels</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
 	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code><a data-type="struct">Vector</a></code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">COMOffset</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code><a data-type="struct">Vector</a></code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">InertiaTensorMultiplier</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable ExportObject EditInline NeedCtorLink Component</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Vector</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">BaseOffset</p>
+	<td class="colSecond">
+		<code>COMOffset</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>InertiaTensorMultiplier</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>BaseOffset</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
 		<code><a data-type="class">SVehicleSimBase</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">SimObj</p>
+	<td class="colSecond">
+		<code>SimObj</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Const ExportObject EditInline NoClear Component</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">AudioComponent</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">EngineSound</p>
+	<td class="colSecond">
+		<code>EngineSound</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable ExportObject EditInline Component</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">AudioComponent</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">SquealSound</p>
+	<td class="colSecond">
+		<code>SquealSound</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
 	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code><a data-type="class">SoundCue</a></code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CollisionSound</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code><a data-type="class">SoundCue</a></code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">EnterVehicleSound</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable ExportObject EditInline Component</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">SoundCue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ExitVehicleSound</p>
+	<td class="colSecond">
+		<code>CollisionSound</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
+		<code><a data-type="class">SoundCue</a></code>
+	</td>
+	<td class="colSecond">
+		<code>EnterVehicleSound</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">SoundCue</a></code>
+	</td>
+	<td class="colSecond">
+		<code>ExitVehicleSound</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
 		<code><a data-type="class">RB_StayUprightSetup</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StayUprightConstraintSetup</p>
+	<td class="colSecond">
+		<code>StayUprightConstraintSetup</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">ExportObject NeedCtorLink Component</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">RB_ConstraintInstance</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StayUprightConstraintInstance</p>
+	<td class="colSecond">
+		<code>StayUprightConstraintInstance</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">ExportObject NeedCtorLink Component</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StayUprightRollResistAngle</p>
+	<td class="colSecond">
+		<code>StayUprightRollResistAngle</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>StayUprightPitchResistAngle</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>StayUprightStiffness</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>StayUprightDamping</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>HeavySuspensionShiftPercent</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StayUprightPitchResistAngle</p>
+	<td class="colSecond">
+		<code>MaxSpeed</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Net</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>MaxAngularVelocity</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>TimeOffGround</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>UprightLiftStrength</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>UprightTorqueStrength</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>UprightTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>UprightStartTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StayUprightStiffness</p>
+	<td class="colSecond">
+		<code>CollisionIntervalSecs</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>SquealThreshold</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>SquealLatThreshold</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>LatAngleVolumeMult</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>EngineStartOffsetSecs</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>EngineStopOffsetSecs</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>LastCollisionSoundTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StayUprightDamping</p>
+	<td class="colSecond">
+		<code>OutputBrake</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">HeavySuspensionShiftPercent</p>
+	<td class="colSecond">
+		<code>OutputGas</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MaxSpeed</p>
+	<td class="colSecond">
+		<code>OutputSteering</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MaxAngularVelocity</p>
+	<td class="colSecond">
+		<code>OutputRise</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TimeOffGround</p>
+	<td class="colSecond">
+		<code>ForwardVel</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">UprightLiftStrength</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">UprightTorqueStrength</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">UprightTime</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">UprightStartTime</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CollisionIntervalSecs</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">SquealThreshold</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">SquealLatThreshold</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LatAngleVolumeMult</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">EngineStartOffsetSecs</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">EngineStopOffsetSecs</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LastCollisionSoundTime</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">OutputBrake</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">OutputGas</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">OutputSteering</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">OutputRise</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ForwardVel</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">NumPoweredWheels</p>
+	<td class="colSecond">
+		<code>NumPoweredWheels</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CamDist</p>
+	<td class="colSecond">
+		<code>CamDist</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">DriverViewPitch</p>
+	<td class="colSecond">
+		<code>DriverViewPitch</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">DriverViewYaw</p>
+	<td class="colSecond">
+		<code>DriverViewYaw</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">AngErrorAccumulator</p>
+	<td class="colSecond">
+		<code>AngErrorAccumulator</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const Native</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">RadialImpulseScaling</p>
+	<td class="colSecond">
+		<code>RadialImpulseScaling</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bStayUpright</p>
+	<td class="colSecond">
+		<code>bStayUpright</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bUseSuspensionAxis</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bUpdateWheelShapes</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bUseSuspensionAxis</p>
+	<td class="colSecond">
+		<code>bVehicleOnGround</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bUpdateWheelShapes</p>
+	<td class="colSecond">
+		<code>bVehicleOnWater</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bIsInverted</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bChassisTouchingGround</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bWasChassisTouchingGroundLastTick</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCanFlip</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bVehicleOnGround</p>
+	<td class="colSecond">
+		<code>bFlipRight</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bVehicleOnWater</p>
+	<td class="colSecond">
+		<code>bIsUprighting</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bIsInverted</p>
+	<td class="colSecond">
+		<code>bOutputHandbrake</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bChassisTouchingGround</p>
+	<td class="colSecond">
+		<code>bHoldingDownHandbrake</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
 	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bWasChassisTouchingGroundLastTick</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bCanFlip</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bFlipRight</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bIsUprighting</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bOutputHandbrake</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bHoldingDownHandbrake</p>
-	</td>
-	<td  class="collast">
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 
 </table>
 <!-- FUNCTIONS-->
-<h3>Functions</h3>
+<h3 id="functions">Functions</h3>
 <table class="membersummary">
 	<tr>
 		<th class="colFirst">Return type</th>

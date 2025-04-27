@@ -1,0 +1,861 @@
+<html>
+	<head>
+		<meta property="og:type" content="website" />
+		<title>BioSFManager</title>
+		 <link rel="icon" type="image/x-icon" href="../../images/favicon.ico">
+		<meta name="og:title" content="BioSFManager | LE1 | Legendary Explorer DocuDB"/>
+		<meta name="description" content=""/>
+		<meta name="og:description" content=""/>
+		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE1/classes/BioSFManager.html"/>
+		<meta name="og:image" content="../../images/favicon.ico"/>
+		<link rel="stylesheet" href="../../lexdoc.css">
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				document.title = document.title + " | LE1 | Legendary Explorer DocuDB"
+				var url = window.location.href.substring(window.location.protocol.length + 2);
+				var gameidx = url.indexOf("/LE1/");
+				var baseurl = url.substring(0, gameidx + 5);
+				var typelinks = document.querySelectorAll('[data-type]');
+				for (const element of typelinks) {
+					var type = element.dataset.type;
+					var value = element.textContent;
+					switch(type){
+						case 'class':
+							element.href = window.location.protocol + '//' + baseurl + 'classes/' + value + '.html';
+							break;
+						case 'struct':
+							element.href = window.location.protocol + '//' + baseurl + 'structs/' + value + '.html';
+							break;
+						case 'enum':
+							element.href = window.location.protocol + '//' + baseurl + 'enums/' + value + '.html';
+							break;
+					}
+				}
+			}, false);
+		</script>
+	</head>
+	<body>
+	<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a name="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList">
+<li title="Back to game list"><a id="home_link" href="../../index.html">Home</a></li>
+<li title="Show all packages"><a id="package_list_link" href="../packages/index.html">Package list</a></li>
+<li id="update_page_bullet" title="Edit this documentation"><a id="update_page" href="https://github.com/ME3Tweaks/LegendaryExplorer/edit/UnrealDoc/DocSources/LE1/classes/BioSFManager.json" target="_blank">Edit</a></li>
+</ul>
+<div class="navimages">
+	<img class="navimage" src="../../images/gameicons/LE1_Icon.ico">
+	<img class="navimage" src="../../images/docudb.png">
+</div>
+</div>
+<div class="subNav">
+<ul class="navList" id="allclasses_navbar_top">
+	<li><a href="../classes/index.html">All&nbsp;Classes</a></li>
+	<li><a href="../structs/index.html">All&nbsp;Structs</a></li>
+	<li><a href="../enums/index.html">All&nbsp;Enums</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+<li><a href="#variables">Variables&nbsp;</a></li><li><a href="#functions">Functions&nbsp;</a></li>
+</ul>
+</div>
+<a name="skip.navbar.top">
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+<div>
+		<div class="header">
+<h2 class="title">Class <i>BioSFManager</i></h2>
+	<ul class="inheritance">
+<li><a href="Object.html">Core.Object</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="BioSFSharedBase.html">Engine.BioSFSharedBase</a></li>
+<li>
+<ul class="inheritance">
+<li><a href="BioSFManager.html">Engine.BioSFManager</a></li>
+</ul>
+
+</li>
+</ul>
+
+</li>
+</ul>
+
+	<p>Modifiers: <code>Abstract Compiled Config(UI) Transient Parsed Native HasInstancedProps HasComponents Exported</code></p>
+</div>
+<div class="contentContainer">
+<hr>
+<p></p>
+<!-- VARIABLES-->
+<h3 id="variables">Variables</h3>
+<table class="membersummary">
+	<tr>
+		<th class="colFirst">Type</th>
+		<th class="colSecond">Name</th>
+		<th class="colSecond">Description</th>
+		<th class="colLast">Flags</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Map_Mirror</a></code>
+	</td>
+	<td class="colSecond">
+		<code>m_UnrealKeyToGfxKeyMap</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Native</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">BioSFPanel</a></code>
+	</td>
+	<td class="colSecond">
+		<code>m_lstPanels</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">BioSFPanel</a></code>
+	</td>
+	<td class="colSecond">
+		<code>m_lstModalStack</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="struct">EventCooldownStruct</a></code>
+	</td>
+	<td class="colSecond">
+		<code>lstEventCooldowns</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="struct">SFHandlerTemplate</a></code>
+	</td>
+	<td class="colSecond">
+		<code>HandlerLibrary</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config NeedCtorLink</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="struct">SFSharedAssetMap</a></code>
+	</td>
+	<td class="colSecond">
+		<code>SharedAssetLibrary</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config NeedCtorLink</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>Name</code>
+	</td>
+	<td class="colSecond">
+		<code>m_aWorldSoundGroups</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config NeedCtorLink</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>Name</code>
+	</td>
+	<td class="colSecond">
+		<code>nmActiveMusic</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>Name</code>
+	</td>
+	<td class="colSecond">
+		<code>nmActiveVoice</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">AudioComponent</a></code>
+	</td>
+	<td class="colSecond">
+		<code>oFadeOutMusic</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">ExportObject EditInline Component</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">AudioComponent</a></code>
+	</td>
+	<td class="colSecond">
+		<code>oActiveMusic</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">ExportObject EditInline Component</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">AudioComponent</a></code>
+	</td>
+	<td class="colSecond">
+		<code>oActiveVoice</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">ExportObject EditInline Component</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">Bio2DA</a></code>
+	</td>
+	<td class="colSecond">
+		<code>m_pGuiSounds2DA</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">Bio2DA</a></code>
+	</td>
+	<td class="colSecond">
+		<code>m_pGuiMusic2DA</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="class">BioGuiSoundCooker</a></code>
+	</td>
+	<td class="colSecond">
+		<code>oSoundCooker</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="class">BioSFPanel</a></code>
+	</td>
+	<td class="colSecond">
+		<code>m_FocusPanel</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>UDLRInitialCooldown</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>UDLRHeldCooldown</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>fNextFadeOut</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bControlEventFromThumbstick</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="enum">BioGuiEvents</a></code>
+	</td>
+	<td class="colSecond">
+		<code>nLastUDLR</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code><a data-type="enum">BioThumbstickDir</a></code>
+	</td>
+	<td class="colSecond">
+		<code>nLStickX</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="enum">BioThumbstickDir</a></code>
+	</td>
+	<td class="colSecond">
+		<code>nLStickY</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+
+</table>
+<!-- FUNCTIONS-->
+<h3 id="functions">Functions</h3>
+<table class="membersummary">
+	<tr>
+		<th class="colFirst">Return type</th>
+		<th class="colSecond">Signature</th>
+		<th class="colLast">Description</th>
+	</tr>
+	<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsTriggerShoulderSwapped()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsTriggerSouthpaw()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsStickSouthpaw()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsEnterMenuButtonAssignmentSwapped()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsGuiVisibleAndEnabled(Name Tag)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsMovieInFocus()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="BioSFPanel.html">BioSFPanel</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetFocusMovie()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="PlayerController.html">PlayerController</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPlayerController()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">InitManager()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetMouseVisibility(<a data-type="class">Object</a> pObject, bool bShow)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GameSessionEnded()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">Update(float fDeltaT)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddEventCooldown(<a data-type="enum">BioGuiEvents</a> nEvent, float fCooldown)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SetWorldSoundPaused(bool bPause)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StopGuiVoice()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayGuiVoice(Name nmSound)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">StopGuiMusic()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayGuiMusic(Name nmMusic, optional bool bForceRestart)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PlayGuiSound(Name nmSound)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="Class.html">Class</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetHandlerClass(Name nmTag)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HandleInputEvent(<a data-type="enum">BioGuiEvents</a> Event, optional float fCooldown, optional float fValue, optional float fDeadzoneValue)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ClearAll()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">ShowAll()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HideAllModal()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HideAllMessages()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">HideAll()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="BioSFPanel.html">BioSFPanel</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PopModalPanel()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PushModalPanel(<a data-type="class">BioSFPanel</a> oPanel)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsOnTop(<a data-type="class">BioSFPanel</a> oPanel)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">IsFullScreen()</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">PanelExists(<a data-type="class">BioSFPanel</a> oPanel)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code><a href="BioSFPanel.html">BioSFPanel</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">GetPanelByTag(Name nmMovieTag)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AdjustConversationZOrder(<a data-type="class">BioSFPanel</a> convPanel, int usingGamepad)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>bool</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">RemovePanel(<a data-type="class">BioSFPanel</a> oPanel, optional bool bReportUsage)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">SwitchPanel(Name nmMovieTag, int Platform)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colfirst">
+		<code>None</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">AddPanel(<a data-type="class">BioSFPanel</a> oPanel, optional bool bModal, optional bool bAddDefaultHandler)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colfirst">
+		<code><a href="BioSFPanel.html">BioSFPanel</a></code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">CreatePanel(Name nmMovieTag, optional bool bAddPanel, optional bool bModal, optional int Platform)</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+
+</table>
+</table>
+</div>
+
+</div>
+	</body>
+</html>

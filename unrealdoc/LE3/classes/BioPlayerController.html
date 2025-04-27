@@ -2,19 +2,19 @@
 	<head>
 		<meta property="og:type" content="website" />
 		<title>BioPlayerController</title>
-		<meta name="og:title" content="BioPlayerController"/>
+		 <link rel="icon" type="image/x-icon" href="../../images/favicon.ico">
+		<meta name="og:title" content="BioPlayerController | LE3 | Legendary Explorer DocuDB"/>
 		<meta name="description" content=""/>
 		<meta name="og:description" content=""/>
-		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE3/../"/>
-		<meta name="og:image" content="https://me3tweaks.github.io/idk.png"/>
-		<link rel="stylesheet" href="../lexdoc.css">
+		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE3/classes/BioPlayerController.html"/>
+		<meta name="og:image" content="../../images/favicon.ico"/>
+		<link rel="stylesheet" href="../../lexdoc.css">
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function() {
-				document.title = document.title + " - LE3 - Legendary Explorer UnrealDoc"
+				document.title = document.title + " | LE3 | Legendary Explorer DocuDB"
 				var url = window.location.href.substring(window.location.protocol.length + 2);
 				var gameidx = url.indexOf("/LE3/");
 				var baseurl = url.substring(0, gameidx + 5);
-				console.log(baseurl);
 				var typelinks = document.querySelectorAll('[data-type]');
 				for (const element of typelinks) {
 					var type = element.dataset.type;
@@ -43,30 +43,17 @@
 <a name="navbar.top.firstrow">
 <!--   -->
 </a>
-<ul class="navList" title="Navigation">
-<li><a href="../../../overview-summary.html">Overview</a></li>
-<li><a href="package-summary.html">Package</a></li>
-<li class="navBarCell1Rev">Class</li>
-<li><a href="class-use/Constructor.html">Use</a></li>
-<li><a href="package-tree.html">Tree</a></li>
-<li><a href="../../../deprecated-list.html">Deprecated</a></li>
-<li><a href="../../../index-files/index-1.html">Index</a></li>
-<li><a href="../../../help-doc.html">Help</a></li>
+<ul class="navList">
+<li title="Back to game list"><a id="home_link" href="../../index.html">Home</a></li>
+<li title="Show all packages"><a id="package_list_link" href="../packages/index.html">Package list</a></li>
+<li id="update_page_bullet" title="Edit this documentation"><a id="update_page" href="https://github.com/ME3Tweaks/LegendaryExplorer/edit/UnrealDoc/DocSources/LE3/classes/BioPlayerController.json" target="_blank">Edit</a></li>
 </ul>
 <div class="navimages">
-	<img class="navimage" src="../images/gameicons/LE3_Icon.ico">
-	<img class="navimage" src="../images/docudb.png">
+	<img class="navimage" src="../../images/gameicons/LE3_Icon.ico">
+	<img class="navimage" src="../../images/docudb.png">
 </div>
 </div>
 <div class="subNav">
-<ul class="navList">
-<li><a href="../../../java/lang/reflect/Array.html" title="class in java.lang.reflect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../java/lang/reflect/Executable.html" title="class in java.lang.reflect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
-</ul>
-<ul class="navList">
-<li><a href="../../../index.html?java/lang/reflect/Constructor.html" target="_top">Frames</a></li>
-<li><a href="Constructor.html" target="_top">No&nbsp;Frames</a></li>
-</ul>
 <ul class="navList" id="allclasses_navbar_top">
 	<li><a href="../classes/index.html">All&nbsp;Classes</a></li>
 	<li><a href="../structs/index.html">All&nbsp;Structs</a></li>
@@ -86,27 +73,16 @@
 </div>
 <div>
 <ul class="subNavList">
-<li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
-</ul>
-<ul class="subNavList">
-<li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li><a href="#variables">Variables&nbsp;</a></li><li><a href="#functions">Functions&nbsp;</a></li>
 </ul>
 </div>
 <a name="skip.navbar.top">
-<!--   -->
 </a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
 <div>
 		<div class="header">
-<h2 class="title">Class BioPlayerController</h2>
-<ul class="inheritance">
+<h2 class="title">Class <i>BioPlayerController</i></h2>
+	<ul class="inheritance">
 <li><a href="Object.html">Core.Object</a></li>
 <li>
 <ul class="inheritance">
@@ -134,2189 +110,2782 @@
 </li>
 </ul>
 
+	<p>Modifiers: <code>Compiled Config(Game) Parsed Localized Native HasInstancedProps HasComponents Exported</code></p>
 </div>
 <div class="contentContainer">
 <hr>
 <p></p>
 <!-- VARIABLES-->
-<h3>Variables</h3>
+<h3 id="variables">Variables</h3>
 <table class="membersummary">
 	<tr>
 		<th class="colFirst">Type</th>
 		<th class="colSecond">Name</th>
-		<th class="colLast">Description</th>
+		<th class="colSecond">Description</th>
+		<th class="colLast">Flags</th>
 	</tr>
 	<tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Map_Mirror</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_RadarDataMap</p>
+	<td class="colSecond">
+		<code>m_RadarDataMap</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Native</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Map_Mirror</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_DamageIndicatorDataMap</p>
+	<td class="colSecond">
+		<code>m_DamageIndicatorDataMap</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Native</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">InterpCurveFloat</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">PhotoModeSpeedCurve</p>
+	<td class="colSecond">
+		<code>PhotoModeSpeedCurve</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>string</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MPSeamlessTravelDelayURL</p>
+	<td class="colSecond">
+		<code>MPSeamlessTravelDelayURL</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">SFXOutlineGlowActorBase</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">OutlineGlowActors</p>
+	<td class="colSecond">
+		<code>OutlineGlowActors</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">LocalEnemy</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">EnemyList</p>
+	<td class="colSecond">
+		<code>EnemyList</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>string</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StormRTPCName</p>
+	<td class="colSecond">
+		<code>StormRTPCName</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TutorialIDs</p>
+	<td class="colSecond">
+		<code>TutorialIDs</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">BioPawn</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_AccomplishmentTargets</p>
+	<td class="colSecond">
+		<code>m_AccomplishmentTargets</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">BioPawn</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_TrilogyAchievementTargets</p>
+	<td class="colSecond">
+		<code>m_TrilogyAchievementTargets</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_anRecoveredRadarIndexes</p>
+	<td class="colSecond">
+		<code>m_anRecoveredRadarIndexes</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_anDestroyedPawnIndexesToRecover</p>
+	<td class="colSecond">
+		<code>m_anDestroyedPawnIndexesToRecover</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">Actor</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_aoPotentialRadarObjects</p>
+	<td class="colSecond">
+		<code>m_aoPotentialRadarObjects</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">BioRadarMapBoundaries</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_aoMapBoundaryObjects</p>
+	<td class="colSecond">
+		<code>m_aoMapBoundaryObjects</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">Pawn</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_aoDamageCausers</p>
+	<td class="colSecond">
+		<code>m_aoDamageCausers</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">PostProcessInfo</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">PostProcessPresets</p>
+	<td class="colSecond">
+		<code>PostProcessPresets</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">BioPPSettingsCallbackData</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_aPPCallbacks</p>
+	<td class="colSecond">
+		<code>m_aPPCallbacks</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>OnResumeGameComplete</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">__OnResumeGameComplete__Delegate</p>
+	<td class="colSecond">
+		<code>__OnResumeGameComplete__Delegate</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>PauseOnExternalUIState</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">__PauseOnExternalUIState__Delegate</p>
+	<td class="colSecond">
+		<code>__PauseOnExternalUIState__Delegate</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXHotKeyDefinition</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_aHotKeyDefines</p>
+	<td class="colSecond">
+		<code>m_aHotKeyDefines</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">ScreenShakeStruct</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CoverShake</p>
+	<td class="colSecond">
+		<code>CoverShake</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">PlayerOrder</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_currentOrder</p>
+	<td class="colSecond">
+		<code>m_currentOrder</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">BoxSphereBounds</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">AimbackBounds</p>
+	<td class="colSecond">
+		<code>AimbackBounds</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">CoverAcquisitionParams</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CoverAcquireParams</p>
+	<td class="colSecond">
+		<code>CoverAcquireParams</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">CoverAcquisitionParams</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">DirectionalCoverAcquireParams</p>
+	<td class="colSecond">
+		<code>DirectionalCoverAcquireParams</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Guid</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CoverVisualizationClientEffectGuid</p>
+	<td class="colSecond">
+		<code>CoverVisualizationClientEffectGuid</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Guid</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">JumpClientEffectGuid</p>
+	<td class="colSecond">
+		<code>JumpClientEffectGuid</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Guid</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LadderUpClientEffectGuid</p>
+	<td class="colSecond">
+		<code>LadderUpClientEffectGuid</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Guid</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LadderDownClientEffectGuid</p>
+	<td class="colSecond">
+		<code>LadderDownClientEffectGuid</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Vector</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">PushOffCoverDir</p>
+	<td class="colSecond">
+		<code>PushOffCoverDir</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Rotator</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">PrePhotoModeRotation</p>
+	<td class="colSecond">
+		<code>PrePhotoModeRotation</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Vector</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_vLocationRadarArrowPointsTo</p>
+	<td class="colSecond">
+		<code>m_vLocationRadarArrowPointsTo</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Vector</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_vNavAssistPoint</p>
+	<td class="colSecond">
+		<code>m_vNavAssistPoint</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Vector</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LastReceivedLocation</p>
+	<td class="colSecond">
+		<code>LastReceivedLocation</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Vector</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LastReceivedAcceleration</p>
+	<td class="colSecond">
+		<code>LastReceivedAcceleration</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Rotator</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LastReceivedRotation</p>
+	<td class="colSecond">
+		<code>LastReceivedRotation</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
 	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code><a data-type="struct">Vector</a></code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">DesiredLocation</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code><a data-type="struct">Vector</a></code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LastExtrapolatedLocation</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Vector</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">RemoteCameraLocation</p>
+	<td class="colSecond">
+		<code>DesiredLocation</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>LastExtrapolatedLocation</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code><a data-type="struct">Vector</a></code>
+	</td>
+	<td class="colSecond">
+		<code>RemoteCameraLocation</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
 		<code><a data-type="struct">Rotator</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">RemoteCameraRotation</p>
+	<td class="colSecond">
+		<code>RemoteCameraRotation</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">SFXProfileSettings</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ProfileSettings</p>
+	<td class="colSecond">
+		<code>ProfileSettings</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">SFXTrilogyProfileSettings</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TrilogyProfileSettings</p>
+	<td class="colSecond">
+		<code>TrilogyProfileSettings</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">BioCameraZoom</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ZoomData</p>
+	<td class="colSecond">
+		<code>ZoomData</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Vector2D</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">FlinchIntervalRange</p>
+	<td class="colSecond">
+		<code>FlinchIntervalRange</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Vector2D</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">NoShieldFlinchIntervalRange</p>
+	<td class="colSecond">
+		<code>NoShieldFlinchIntervalRange</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">RvrClientEffectInterface</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CoverVisualizationClientEffect</p>
+	<td class="colSecond">
+		<code>CoverVisualizationClientEffect</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">RvrClientEffectInterface</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CE_Grab</p>
+	<td class="colSecond">
+		<code>CE_Grab</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">RvrClientEffectInterface</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CE_Mantle</p>
+	<td class="colSecond">
+		<code>CE_Mantle</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">RvrClientEffectInterface</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CE_SwatLeft</p>
+	<td class="colSecond">
+		<code>CE_SwatLeft</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">RvrClientEffectInterface</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CE_SwatRight</p>
+	<td class="colSecond">
+		<code>CE_SwatRight</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">RvrClientEffectInterface</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CE_HighSwatLeft</p>
+	<td class="colSecond">
+		<code>CE_HighSwatLeft</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">RvrClientEffectInterface</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CE_HighSwatRight</p>
+	<td class="colSecond">
+		<code>CE_HighSwatRight</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">RvrClientEffectInterface</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CE_SlipRight</p>
+	<td class="colSecond">
+		<code>CE_SlipRight</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">RvrClientEffectInterface</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CE_SlipLeft</p>
+	<td class="colSecond">
+		<code>CE_SlipLeft</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">RvrClientEffectInterface</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CE_HighSlipRight</p>
+	<td class="colSecond">
+		<code>CE_HighSlipRight</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">RvrClientEffectInterface</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CE_HighSlipLeft</p>
+	<td class="colSecond">
+		<code>CE_HighSlipLeft</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">RvrClientEffectInterface</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CE_Jump</p>
+	<td class="colSecond">
+		<code>CE_Jump</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">RvrClientEffectInterface</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CE_LadderUp</p>
+	<td class="colSecond">
+		<code>CE_LadderUp</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">RvrClientEffectInterface</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CE_LadderDown</p>
+	<td class="colSecond">
+		<code>CE_LadderDown</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">WwiseEvent</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StormStartWwiseEvent_M</p>
+	<td class="colSecond">
+		<code>StormStartWwiseEvent_M</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">WwiseEvent</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StormPeakWwiseEvent_M</p>
+	<td class="colSecond">
+		<code>StormPeakWwiseEvent_M</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">WwiseEvent</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StormStartWwiseEvent_F</p>
+	<td class="colSecond">
+		<code>StormStartWwiseEvent_F</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">WwiseEvent</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StormPeakWwiseEvent_F</p>
+	<td class="colSecond">
+		<code>StormPeakWwiseEvent_F</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">WwiseEvent</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StormEndWwiseEvent</p>
+	<td class="colSecond">
+		<code>StormEndWwiseEvent</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">CylinderComponent</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">PhotoCollision</p>
+	<td class="colSecond">
+		<code>PhotoCollision</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">ExportObject EditInline Component</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">BioRadarMapBoundaries</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_oRadarMapBoundary</p>
+	<td class="colSecond">
+		<code>m_oRadarMapBoundary</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">SFXGameModeManager</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">GameModeManager2</p>
+	<td class="colSecond">
+		<code>GameModeManager2</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">RvrComponentPCNetClientEffects</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_oRvrNetClientEffectsInterface</p>
+	<td class="colSecond">
+		<code>m_oRvrNetClientEffectsInterface</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">ExportObject Transient EditInline Component</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">BioHintSystemBase</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">HintSystem</p>
+	<td class="colSecond">
+		<code>HintSystem</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable ExportObject NeedCtorLink Component</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">BioPlayerSelection</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_oPlayerSelection</p>
+	<td class="colSecond">
+		<code>m_oPlayerSelection</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">ExportObject NeedCtorLink Component</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MPSeamlessTravelDelay</p>
+	<td class="colSecond">
+		<code>MPSeamlessTravelDelay</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>MPSeamlessTravelDelayTriggerTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>MoveStickIdleThreshold</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>MoveStickWalkThreshold</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>MoveStickRunThreshold</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>MoveWalkModifierBlendTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>DeadZoneThreshold</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>PlayerCoverTransitionTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>CoverTransitionCountHold</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>CoverBreakTimeThreshold</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>CoverBreakTimer</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>MaxCoverEnterDist</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>CoverCameraTransitionTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>CoverSnapScale</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>CoverUpdateDelay</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>StormCoverUpdateDelay</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>CoverSlipCamAlign</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>PushOffCoverDuration</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Const</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>PushOffTimeToGo</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>LastFlinchTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>FlinchInterval</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Transient</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>NoShieldFlinchInterval</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Transient</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>LadderFaceDot</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>LadderAimDot</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fClimbMantleFaceAngleThreshold</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fClimbMantleDistanceThreshold</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>RemappedJoyRight</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MPSeamlessTravelDelayTriggerTime</p>
+	<td class="colSecond">
+		<code>RemappedJoyUp</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MoveStickIdleThreshold</p>
+	<td class="colSecond">
+		<code>RotationSensitivityLow</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MoveStickWalkThreshold</p>
+	<td class="colSecond">
+		<code>RotationSensitivityMedium</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MoveStickRunThreshold</p>
+	<td class="colSecond">
+		<code>RotationSensitivityHigh</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MoveWalkModifierBlendTime</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">DeadZoneThreshold</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">PlayerCoverTransitionTime</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CoverTransitionCountHold</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CoverBreakTimeThreshold</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CoverBreakTimer</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MaxCoverEnterDist</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CoverCameraTransitionTime</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CoverSnapScale</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CoverUpdateDelay</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StormCoverUpdateDelay</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CoverSlipCamAlign</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">PushOffCoverDuration</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">PushOffTimeToGo</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LastFlinchTime</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">FlinchInterval</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">NoShieldFlinchInterval</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LadderFaceDot</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LadderAimDot</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fClimbMantleFaceAngleThreshold</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fClimbMantleDistanceThreshold</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">RemappedJoyRight</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">RemappedJoyUp</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">RotationSensitivityLow</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">RotationSensitivityMedium</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">RotationSensitivityHigh</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">OldIgnoreMoveCount</p>
+	<td class="colSecond">
+		<code>OldIgnoreMoveCount</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">NextEnemyToCheckLOS</p>
+	<td class="colSecond">
+		<code>NextEnemyToCheckLOS</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
 	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">SawEnemyTypeShoutCooldownTime</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CurrentStormStamina</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StormCooldownTime</p>
+	<td class="colSecond">
+		<code>SawEnemyTypeShoutCooldownTime</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>CurrentStormStamina</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>StormCooldownTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StormDisabledCounter</p>
+	<td class="colSecond">
+		<code>StormDisabledCounter</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
 	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">PhotoModeTetherDistance</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">PhotoModeCameraSpeed</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CurrentPhotoModeMoveSpeed</p>
+	<td class="colSecond">
+		<code>PhotoModeTetherDistance</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>PhotoModeCameraSpeed</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>CurrentPhotoModeMoveSpeed</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">KismetNoSaveReason</p>
+	<td class="colSecond">
+		<code>KismetNoSaveReason</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StorageDeviceRemovedText</p>
+	<td class="colSecond">
+		<code>StorageDeviceRemovedText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">DLCRemovedText</p>
+	<td class="colSecond">
+		<code>DLCRemovedText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">RestartGame</p>
+	<td class="colSecond">
+		<code>RestartGame</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ProfileChangedText</p>
+	<td class="colSecond">
+		<code>ProfileChangedText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ProfileChangedUnrecoverableText</p>
+	<td class="colSecond">
+		<code>ProfileChangedUnrecoverableText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ControllerRemoved</p>
+	<td class="colSecond">
+		<code>ControllerRemoved</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fLeaveConvPitch</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fMoveToDropDistance</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fMaxZDifference</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fRelativeZUpLimit</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fRelativeZDownLimit</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fLastRadarPassTime</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fLeaveConvPitch</p>
+	<td class="colSecond">
+		<code>m_fLastRadarRange</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fMoveToDropDistance</p>
+	<td class="colSecond">
+		<code>m_fRadarRange</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fMaxZDifference</p>
+	<td class="colSecond">
+		<code>m_fRadarFOV</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fRelativeZUpLimit</p>
+	<td class="colSecond">
+		<code>m_fLastRadarFOV</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fRelativeZDownLimit</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fLastRadarPassTime</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fLastRadarRange</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fRadarRange</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fRadarFOV</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fLastRadarFOV</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_nMaxRadarIndex</p>
+	<td class="colSecond">
+		<code>m_nMaxRadarIndex</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_nNavAssistMaxNodeLimit</p>
+	<td class="colSecond">
+		<code>m_nNavAssistMaxNodeLimit</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fBumpCheckTimer</p>
+	<td class="colSecond">
+		<code>m_fBumpCheckTimer</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fDamageIndicatorDisplayTime</p>
+	<td class="colSecond">
+		<code>m_fDamageIndicatorDisplayTime</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srVehicleExitFailureMsg</p>
+	<td class="colSecond">
+		<code>m_srVehicleExitFailureMsg</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srVehicleExitAButtonMsg</p>
+	<td class="colSecond">
+		<code>m_srVehicleExitAButtonMsg</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
 	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fAttackOrderFarAngle</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fAttackOrderCloseAngle</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fAttackOrderCloseDistance</p>
+	<td class="colSecond">
+		<code>m_fAttackOrderFarAngle</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fAttackOrderCloseAngle</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>m_fAttackOrderCloseDistance</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">InvalidServerMovesReceived</p>
+	<td class="colSecond">
+		<code>InvalidServerMovesReceived</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
 	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>int</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">NUM_SERVERMOVE_BEFORE_RESET</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>int</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MOVEREP_DELAY_FRAME</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">NumberOfFrameSinceLastMoveRep</p>
+	<td class="colSecond">
+		<code>NUM_SERVERMOVE_BEFORE_RESET</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">RemotePlayerPendingCustomAction</p>
+	<td class="colSecond">
+		<code>MOVEREP_DELAY_FRAME</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">RemotePlayerPendingPowerCustomAction</p>
+	<td class="colSecond">
+		<code>NumberOfFrameSinceLastMoveRep</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
+		<code>int</code>
+	</td>
+	<td class="colSecond">
+		<code>RemotePlayerPendingCustomAction</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>int</code>
+	</td>
+	<td class="colSecond">
+		<code>RemotePlayerPendingPowerCustomAction</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">RemotePlayersRotationInterpolationSpeed</p>
+	<td class="colSecond">
+		<code>RemotePlayersRotationInterpolationSpeed</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">BIO_RESET_MAX_POSITION_ERROR_SQUARED</p>
+	<td class="colSecond">
+		<code>BIO_RESET_MAX_POSITION_ERROR_SQUARED</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">BIO_WARNING_MAX_POSITION_ERROR_SQUARED</p>
+	<td class="colSecond">
+		<code>BIO_WARNING_MAX_POSITION_ERROR_SQUARED</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MAX_CONSECUTIVE_POSITION_ERROR</p>
+	<td class="colSecond">
+		<code>MAX_CONSECUTIVE_POSITION_ERROR</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
 	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ClientTimeoutForPendingCustomActionReset</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>float</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">AutonomousProxyLocationInterpSpeed</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">EdgeCoverSlotSnapRange</p>
+	<td class="colSecond">
+		<code>ClientTimeoutForPendingCustomActionReset</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>AutonomousProxyLocationInterpSpeed</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>float</code>
+	</td>
+	<td class="colSecond">
+		<code>EdgeCoverSlotSnapRange</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">NumClientPositionError</p>
+	<td class="colSecond">
+		<code>NumClientPositionError</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">srOK</p>
+	<td class="colSecond">
+		<code>srOK</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">srNuiDisconnectError</p>
+	<td class="colSecond">
+		<code>srNuiDisconnectError</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bUsePackedMoves</p>
+	<td class="colSecond">
+		<code>bUsePackedMoves</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bDisableSquadCommandExit</p>
+	<td class="colSecond">
+		<code>m_bDisableSquadCommandExit</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bDebugCover</p>
+	<td class="colSecond">
+		<code>bDebugCover</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bBreakFromCover</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bPreferLeanOverPopup</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bNoCoverFromStorm</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCancelStorm</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bNoLeaveCover</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bReticleHidden</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bLockPosition</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>CoverRespectsRotation</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bCoverGUIShowing</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bJumpGUIShowing</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bLadderGUIShowing</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bShowActionIcons</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bCanMantleOutsideOfCover</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>HasSeenFirstEnemy</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bTiredStorming</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bStormCoolingDown</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bPhotoModeCameraUnlocked</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bProfileSettingsUpdated</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>bKismetNoSave</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Editable</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bIsStoppedForConv</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bEnableCineModeWarning</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bDEBUGFlyUpPressed</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bDEBUGFlyDownPressed</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bRadarArrow</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bBreakFromCover</p>
+	<td class="colSecond">
+		<code>m_bRadarIsJammed</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bPreferLeanOverPopup</p>
+	<td class="colSecond">
+		<code>m_bPermanentWalk</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bNoCoverFromStorm</p>
+	<td class="colSecond">
+		<code>m_bToggledWalk</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bCancelStorm</p>
+	<td class="colSecond">
+		<code>bSkipPhysicsForOneFrame</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bNoLeaveCover</p>
+	<td class="colSecond">
+		<code>bMultiplayerCommandMode</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bReticleHidden</p>
+	<td class="colSecond">
+		<code>bExtrapolationActive</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bLockPosition</p>
+	<td class="colSecond">
+		<code>bExtrapolationWasActive</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CoverRespectsRotation</p>
+	<td class="colSecond">
+		<code>bReceivedNewLocation</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bCoverGUIShowing</p>
+	<td class="colSecond">
+		<code>bEnableMultiplayerMotionBlur</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bJumpGUIShowing</p>
+	<td class="colSecond">
+		<code>RemoteAimAssistActive</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bLadderGUIShowing</p>
+	<td class="colSecond">
+		<code>bClientStorming</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bShowActionIcons</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bCanMantleOutsideOfCover</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">HasSeenFirstEnemy</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bTiredStorming</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bStormCoolingDown</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bPhotoModeCameraUnlocked</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bProfileSettingsUpdated</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bKismetNoSave</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bIsStoppedForConv</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bEnableCineModeWarning</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bDEBUGFlyUpPressed</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bDEBUGFlyDownPressed</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bRadarArrow</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bRadarIsJammed</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bPermanentWalk</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bToggledWalk</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bSkipPhysicsForOneFrame</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bMultiplayerCommandMode</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bExtrapolationActive</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bExtrapolationWasActive</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bReceivedNewLocation</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bEnableMultiplayerMotionBlur</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">RemoteAimAssistActive</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bClientStorming</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>byte</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bWantsToStorm</p>
+	<td class="colSecond">
+		<code>bWantsToStorm</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Input Transient</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="enum">ECoverVisualizations</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CurrentVisualization</p>
+	<td class="colSecond">
+		<code>CurrentVisualization</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>byte</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bBoost</p>
+	<td class="colSecond">
+		<code>bBoost</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Input</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>byte</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bJump</p>
+	<td class="colSecond">
+		<code>bJump</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Input</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>byte</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bAlternateCamera</p>
+	<td class="colSecond">
+		<code>bAlternateCamera</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Input</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>byte</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bMine</p>
+	<td class="colSecond">
+		<code>bMine</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Input</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="enum">ESFXHUDActionIcon</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_eCurrentActionIcon</p>
+	<td class="colSecond">
+		<code>m_eCurrentActionIcon</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 
 </table>
 <!-- FUNCTIONS-->
-<h3>Functions</h3>
+<h3 id="functions">Functions</h3>
 <table class="membersummary">
 	<tr>
 		<th class="colFirst">Return type</th>

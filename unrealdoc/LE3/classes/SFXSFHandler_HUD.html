@@ -2,19 +2,19 @@
 	<head>
 		<meta property="og:type" content="website" />
 		<title>SFXSFHandler_HUD</title>
-		<meta name="og:title" content="SFXSFHandler_HUD"/>
+		 <link rel="icon" type="image/x-icon" href="../../images/favicon.ico">
+		<meta name="og:title" content="SFXSFHandler_HUD | LE3 | Legendary Explorer DocuDB"/>
 		<meta name="description" content=""/>
 		<meta name="og:description" content=""/>
-		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE3/../"/>
-		<meta name="og:image" content="https://me3tweaks.github.io/idk.png"/>
-		<link rel="stylesheet" href="../lexdoc.css">
+		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE3/classes/SFXSFHandler_HUD.html"/>
+		<meta name="og:image" content="../../images/favicon.ico"/>
+		<link rel="stylesheet" href="../../lexdoc.css">
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function() {
-				document.title = document.title + " - LE3 - Legendary Explorer UnrealDoc"
+				document.title = document.title + " | LE3 | Legendary Explorer DocuDB"
 				var url = window.location.href.substring(window.location.protocol.length + 2);
 				var gameidx = url.indexOf("/LE3/");
 				var baseurl = url.substring(0, gameidx + 5);
-				console.log(baseurl);
 				var typelinks = document.querySelectorAll('[data-type]');
 				for (const element of typelinks) {
 					var type = element.dataset.type;
@@ -43,30 +43,17 @@
 <a name="navbar.top.firstrow">
 <!--   -->
 </a>
-<ul class="navList" title="Navigation">
-<li><a href="../../../overview-summary.html">Overview</a></li>
-<li><a href="package-summary.html">Package</a></li>
-<li class="navBarCell1Rev">Class</li>
-<li><a href="class-use/Constructor.html">Use</a></li>
-<li><a href="package-tree.html">Tree</a></li>
-<li><a href="../../../deprecated-list.html">Deprecated</a></li>
-<li><a href="../../../index-files/index-1.html">Index</a></li>
-<li><a href="../../../help-doc.html">Help</a></li>
+<ul class="navList">
+<li title="Back to game list"><a id="home_link" href="../../index.html">Home</a></li>
+<li title="Show all packages"><a id="package_list_link" href="../packages/index.html">Package list</a></li>
+<li id="update_page_bullet" title="Edit this documentation"><a id="update_page" href="https://github.com/ME3Tweaks/LegendaryExplorer/edit/UnrealDoc/DocSources/LE3/classes/SFXSFHandler_HUD.json" target="_blank">Edit</a></li>
 </ul>
 <div class="navimages">
-	<img class="navimage" src="../images/gameicons/LE3_Icon.ico">
-	<img class="navimage" src="../images/docudb.png">
+	<img class="navimage" src="../../images/gameicons/LE3_Icon.ico">
+	<img class="navimage" src="../../images/docudb.png">
 </div>
 </div>
 <div class="subNav">
-<ul class="navList">
-<li><a href="../../../java/lang/reflect/Array.html" title="class in java.lang.reflect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../java/lang/reflect/Executable.html" title="class in java.lang.reflect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
-</ul>
-<ul class="navList">
-<li><a href="../../../index.html?java/lang/reflect/Constructor.html" target="_top">Frames</a></li>
-<li><a href="Constructor.html" target="_top">No&nbsp;Frames</a></li>
-</ul>
 <ul class="navList" id="allclasses_navbar_top">
 	<li><a href="../classes/index.html">All&nbsp;Classes</a></li>
 	<li><a href="../structs/index.html">All&nbsp;Structs</a></li>
@@ -86,27 +73,16 @@
 </div>
 <div>
 <ul class="subNavList">
-<li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
-</ul>
-<ul class="subNavList">
-<li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li><a href="#variables">Variables&nbsp;</a></li><li><a href="#functions">Functions&nbsp;</a></li>
 </ul>
 </div>
 <a name="skip.navbar.top">
-<!--   -->
 </a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
 <div>
 		<div class="header">
-<h2 class="title">Class SFXSFHandler_HUD</h2>
-<ul class="inheritance">
+<h2 class="title">Class <i>SFXSFHandler_HUD</i></h2>
+	<ul class="inheritance">
 <li><a href="Object.html">Core.Object</a></li>
 <li>
 <ul class="inheritance">
@@ -134,1331 +110,1690 @@
 </li>
 </ul>
 
+	<p>Modifiers: <code>Compiled Config(UI) Transient Parsed Native HasInstancedProps Exported</code></p>
 </div>
 <div class="contentContainer">
 <hr>
 <p></p>
 <!-- VARIABLES-->
-<h3>Variables</h3>
+<h3 id="variables">Variables</h3>
 <table class="membersummary">
 	<tr>
 		<th class="colFirst">Type</th>
 		<th class="colSecond">Name</th>
-		<th class="colLast">Description</th>
+		<th class="colSecond">Description</th>
+		<th class="colLast">Flags</th>
 	</tr>
 	<tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXHUDSquadMemberInfo</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_oShepardInfo</p>
+	<td class="colSecond">
+		<code>m_oShepardInfo</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXHUDSquadMemberInfo</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_oHench1Info</p>
+	<td class="colSecond">
+		<code>m_oHench1Info</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXHUDSquadMemberInfo</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_oHench2Info</p>
+	<td class="colSecond">
+		<code>m_oHench2Info</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXMPTargetUIState</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MPTargetUIState</p>
+	<td class="colSecond">
+		<code>MPTargetUIState</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>string</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_sStatusText</p>
+	<td class="colSecond">
+		<code>m_sStatusText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>string</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_sResistanceText</p>
+	<td class="colSecond">
+		<code>m_sResistanceText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXHudDmgIndicatorPaths</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_aDamageIndicatorPaths</p>
+	<td class="colSecond">
+		<code>m_aDamageIndicatorPaths</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_aDamageIndicatorAlphas</p>
+	<td class="colSecond">
+		<code>m_aDamageIndicatorAlphas</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>string</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_nCurrentWeaponResource</p>
+	<td class="colSecond">
+		<code>m_nCurrentWeaponResource</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="enum">ESFXHUDPOIIconState</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_lstQueuedPOIStates</p>
+	<td class="colSecond">
+		<code>m_lstQueuedPOIStates</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXHUDMiniNotification</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MiniNotifications</p>
+	<td class="colSecond">
+		<code>MiniNotifications</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>string</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_sShields</p>
+	<td class="colSecond">
+		<code>m_sShields</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>string</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_sArmour</p>
+	<td class="colSecond">
+		<code>m_sArmour</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>string</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_sBarrier</p>
+	<td class="colSecond">
+		<code>m_sBarrier</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>string</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_sHealth</p>
+	<td class="colSecond">
+		<code>m_sHealth</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>string</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_sOverheat</p>
+	<td class="colSecond">
+		<code>m_sOverheat</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>string</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_sNoAmmo</p>
+	<td class="colSecond">
+		<code>m_sNoAmmo</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>OnNotificationCompleted</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">__OnNotificationCompleted__Delegate</p>
+	<td class="colSecond">
+		<code>__OnNotificationCompleted__Delegate</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXHUDResistances</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_CurrentResistances</p>
+	<td class="colSecond">
+		<code>m_CurrentResistances</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXHUDResistances</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_ResistanceBarDisplayValues</p>
+	<td class="colSecond">
+		<code>m_ResistanceBarDisplayValues</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXHUDNotification</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">Notification</p>
+	<td class="colSecond">
+		<code>Notification</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">Actor</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_pCurrentTarget</p>
+	<td class="colSecond">
+		<code>m_pCurrentTarget</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">BioPlayerController</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_pPlayerController</p>
+	<td class="colSecond">
+		<code>m_pPlayerController</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">BioBaseSquad</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_pPlayerSquad</p>
+	<td class="colSecond">
+		<code>m_pPlayerSquad</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">Actor</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_pCurrentDisplayTarget</p>
+	<td class="colSecond">
+		<code>m_pCurrentDisplayTarget</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">WeaponIcon</p>
+	<td class="colSecond">
+		<code>WeaponIcon</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">WeaponAmmo</p>
+	<td class="colSecond">
+		<code>WeaponAmmo</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">WeaponClip</p>
+	<td class="colSecond">
+		<code>WeaponClip</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">GrenadeAmmo</p>
+	<td class="colSecond">
+		<code>GrenadeAmmo</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TargetName</p>
+	<td class="colSecond">
+		<code>TargetName</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TargetStatus</p>
+	<td class="colSecond">
+		<code>TargetStatus</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ButtonA</p>
+	<td class="colSecond">
+		<code>ButtonA</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">TargetBackground</p>
+	<td class="colSecond">
+		<code>TargetBackground</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">HealthBar</p>
+	<td class="colSecond">
+		<code>HealthBar</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ArmourBar</p>
+	<td class="colSecond">
+		<code>ArmourBar</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">BioticBar</p>
+	<td class="colSecond">
+		<code>BioticBar</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ShieldBar</p>
+	<td class="colSecond">
+		<code>ShieldBar</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ResistanceText</p>
+	<td class="colSecond">
+		<code>ResistanceText</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ResistanceBar</p>
+	<td class="colSecond">
+		<code>ResistanceBar</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CenterStatus</p>
+	<td class="colSecond">
+		<code>CenterStatus</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">CenterStatusText</p>
+	<td class="colSecond">
+		<code>CenterStatusText</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">OverheatIndicator</p>
+	<td class="colSecond">
+		<code>OverheatIndicator</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">OverheatIndicatorTextAnim</p>
+	<td class="colSecond">
+		<code>OverheatIndicatorTextAnim</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">OverheatIndicatorTextAnimText</p>
+	<td class="colSecond">
+		<code>OverheatIndicatorTextAnimText</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">PlayerPowerLeft</p>
+	<td class="colSecond">
+		<code>PlayerPowerLeft</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">PlayerPowerRight</p>
+	<td class="colSecond">
+		<code>PlayerPowerRight</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">AmmoFull</p>
+	<td class="colSecond">
+		<code>AmmoFull</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ActionIcon</p>
+	<td class="colSecond">
+		<code>ActionIcon</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">POI</p>
+	<td class="colSecond">
+		<code>POI</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MPTargetBarMain</p>
+	<td class="colSecond">
+		<code>MPTargetBarMain</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">GFxValue</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MPTargetHitDisplay</p>
+	<td class="colSecond">
+		<code>MPTargetHitDisplay</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">LastAmmoPulseTime</p>
+	<td class="colSecond">
+		<code>LastAmmoPulseTime</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_nCurrentBarCount</p>
+	<td class="colSecond">
+		<code>m_nCurrentBarCount</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fCurrentBarBackgroundX</p>
+	<td class="colSecond">
+		<code>m_fCurrentBarBackgroundX</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_nNumMiniNotifications</p>
+	<td class="colSecond">
+		<code>m_nNumMiniNotifications</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fEffectivelyZero</p>
+	<td class="colSecond">
+		<code>m_fEffectivelyZero</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_nCurrentWeaponIcon</p>
+	<td class="colSecond">
+		<code>m_nCurrentWeaponIcon</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_nCurrentWeaponSpareAmmo</p>
+	<td class="colSecond">
+		<code>m_nCurrentWeaponSpareAmmo</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_nCurrentClipAmmo</p>
+	<td class="colSecond">
+		<code>m_nCurrentClipAmmo</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fTimeSinceLastWeaponUpdate</p>
+	<td class="colSecond">
+		<code>m_fTimeSinceLastWeaponUpdate</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fCurrentOverheatValue</p>
+	<td class="colSecond">
+		<code>m_fCurrentOverheatValue</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fMiniClipHeight</p>
+	<td class="colSecond">
+		<code>m_fMiniClipHeight</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fMiniClipBaselineY</p>
+	<td class="colSecond">
+		<code>m_fMiniClipBaselineY</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_nCurrentGrenadeCount</p>
+	<td class="colSecond">
+		<code>m_nCurrentGrenadeCount</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fSuperRegenThreshold</p>
+	<td class="colSecond">
+		<code>m_fSuperRegenThreshold</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fHealthShieldUpdateDelta</p>
+	<td class="colSecond">
+		<code>m_fHealthShieldUpdateDelta</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fDamageIndicatorAlphaUpdateDelta</p>
+	<td class="colSecond">
+		<code>m_fDamageIndicatorAlphaUpdateDelta</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fLowHealthWarning</p>
+	<td class="colSecond">
+		<code>m_fLowHealthWarning</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fWeaponUpdateInterval</p>
+	<td class="colSecond">
+		<code>m_fWeaponUpdateInterval</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fBarAnimRate</p>
+	<td class="colSecond">
+		<code>m_fBarAnimRate</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fFullStatFadeTime</p>
+	<td class="colSecond">
+		<code>m_fFullStatFadeTime</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fMiniNotificationAnimTime</p>
+	<td class="colSecond">
+		<code>m_fMiniNotificationAnimTime</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>float</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_fMiniNotificationPadding</p>
+	<td class="colSecond">
+		<code>m_fMiniNotificationPadding</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
 	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
-		<code>stringref</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srStatusBarrierText</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>stringref</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srStatusBleedoutText</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srStatusHardenedShieldsText</p>
+	<td class="colSecond">
+		<code>m_srStatusBarrierText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srStatusHeavyArmourText</p>
+	<td class="colSecond">
+		<code>m_srStatusBleedoutText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srStatusMinimalDamageText</p>
+	<td class="colSecond">
+		<code>m_srStatusHardenedShieldsText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srStatusSuperRegenText</p>
+	<td class="colSecond">
+		<code>m_srStatusHeavyArmourText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srShields</p>
+	<td class="colSecond">
+		<code>m_srStatusMinimalDamageText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srArmour</p>
+	<td class="colSecond">
+		<code>m_srStatusSuperRegenText</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srBarrier</p>
+	<td class="colSecond">
+		<code>m_srShields</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srHealth</p>
+	<td class="colSecond">
+		<code>m_srArmour</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srOverheat</p>
+	<td class="colSecond">
+		<code>m_srBarrier</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srNoAmmo</p>
+	<td class="colSecond">
+		<code>m_srHealth</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srAmmoFull</p>
+	<td class="colSecond">
+		<code>m_srOverheat</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srCoverEnterAction</p>
+	<td class="colSecond">
+		<code>m_srNoAmmo</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srCoverClimbAction</p>
+	<td class="colSecond">
+		<code>m_srAmmoFull</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srCoverMantleAction</p>
+	<td class="colSecond">
+		<code>m_srCoverEnterAction</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srCover90RightAction</p>
+	<td class="colSecond">
+		<code>m_srCoverClimbAction</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srCover90LeftAction</p>
+	<td class="colSecond">
+		<code>m_srCoverMantleAction</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srCoverSlipRightAction</p>
+	<td class="colSecond">
+		<code>m_srCover90RightAction</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srCoverSlipLeftAction</p>
+	<td class="colSecond">
+		<code>m_srCover90LeftAction</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srCoverSwatRightAction</p>
+	<td class="colSecond">
+		<code>m_srCoverSlipRightAction</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srCoverSwatLeftAction</p>
+	<td class="colSecond">
+		<code>m_srCoverSlipLeftAction</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srCoverGrabAction</p>
+	<td class="colSecond">
+		<code>m_srCoverSwatRightAction</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srLadderUpAction</p>
+	<td class="colSecond">
+		<code>m_srCoverSwatLeftAction</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srLadderDownAction</p>
+	<td class="colSecond">
+		<code>m_srCoverGrabAction</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srGapJumpAction</p>
+	<td class="colSecond">
+		<code>m_srLadderUpAction</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>stringref</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_srAtlasSuitAction</p>
+	<td class="colSecond">
+		<code>m_srLadderDownAction</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
+		<code>stringref</code>
+	</td>
+	<td class="colSecond">
+		<code>m_srGapJumpAction</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>stringref</code>
+	</td>
+	<td class="colSecond">
+		<code>m_srAtlasSuitAction</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_nNotificationBodyLength</p>
+	<td class="colSecond">
+		<code>m_nNotificationBodyLength</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bInteractive</p>
+	<td class="colSecond">
+		<code>m_bInteractive</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bInRange</p>
+	<td class="colSecond">
+		<code>m_bInRange</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bTargetStatusVisible</p>
+	<td class="colSecond">
+		<code>m_bTargetStatusVisible</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bProcessSquadHenchmen</p>
+	<td class="colSecond">
+		<code>m_bProcessSquadHenchmen</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bInSquadCommandMode</p>
+	<td class="colSecond">
+		<code>m_bInSquadCommandMode</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bInitializedPlayerResistance</p>
+	<td class="colSecond">
+		<code>m_bInitializedPlayerResistance</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bWeaponVisible</p>
+	<td class="colSecond">
+		<code>m_bWeaponVisible</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bWeaponOverheatBarVisible</p>
+	<td class="colSecond">
+		<code>m_bWeaponOverheatBarVisible</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bHealthDisplayVisible</p>
+	<td class="colSecond">
+		<code>m_bHealthDisplayVisible</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bForceUpdateDisplayNextTick</p>
+	<td class="colSecond">
+		<code>m_bForceUpdateDisplayNextTick</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bHadNoAmmo</p>
+	<td class="colSecond">
+		<code>m_bHadNoAmmo</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
+	</td>
+</tr>
+<tr class="rowColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bGrenadesVisible</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc"></p>
+	</td>
+</tr>
+<tr class="altColor">
+	<td class="colFirst">
+		<code>bool</code>
+	</td>
+	<td class="colSecond">
+		<code>m_bDisplayWeaponOverride</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bGrenadesVisible</p>
+	<td class="colSecond">
+		<code>m_bHideShieldBarWhenFull</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bDisplayWeaponOverride</p>
+	<td class="colSecond">
+		<code>m_bDisablePlayerHealth</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bHideShieldBarWhenFull</p>
+	<td class="colSecond">
+		<code>m_bUseMPHealthDisplay</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bDisablePlayerHealth</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="rowColor">
-	<td class="colfirst">
-		<code>bool</code>
-	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bUseMPHealthDisplay</p>
-	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
-	</td>
-</tr>
-<tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="enum">ESFXHUDActionIcon</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_eCurrentActionIcon</p>
+	<td class="colSecond">
+		<code>m_eCurrentActionIcon</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="enum">ESFXHUDPOIIconState</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_eCurrentPOIState</p>
+	<td class="colSecond">
+		<code>m_eCurrentPOIState</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 
 </table>
 <!-- FUNCTIONS-->
-<h3>Functions</h3>
+<h3 id="functions">Functions</h3>
 <table class="membersummary">
 	<tr>
 		<th class="colFirst">Return type</th>

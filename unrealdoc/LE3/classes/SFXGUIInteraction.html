@@ -2,19 +2,19 @@
 	<head>
 		<meta property="og:type" content="website" />
 		<title>SFXGUIInteraction</title>
-		<meta name="og:title" content="SFXGUIInteraction"/>
+		 <link rel="icon" type="image/x-icon" href="../../images/favicon.ico">
+		<meta name="og:title" content="SFXGUIInteraction | LE3 | Legendary Explorer DocuDB"/>
 		<meta name="description" content=""/>
 		<meta name="og:description" content=""/>
-		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE3/../"/>
-		<meta name="og:image" content="https://me3tweaks.github.io/idk.png"/>
-		<link rel="stylesheet" href="../lexdoc.css">
+		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/LE3/classes/SFXGUIInteraction.html"/>
+		<meta name="og:image" content="../../images/favicon.ico"/>
+		<link rel="stylesheet" href="../../lexdoc.css">
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function() {
-				document.title = document.title + " - LE3 - Legendary Explorer UnrealDoc"
+				document.title = document.title + " | LE3 | Legendary Explorer DocuDB"
 				var url = window.location.href.substring(window.location.protocol.length + 2);
 				var gameidx = url.indexOf("/LE3/");
 				var baseurl = url.substring(0, gameidx + 5);
-				console.log(baseurl);
 				var typelinks = document.querySelectorAll('[data-type]');
 				for (const element of typelinks) {
 					var type = element.dataset.type;
@@ -43,30 +43,17 @@
 <a name="navbar.top.firstrow">
 <!--   -->
 </a>
-<ul class="navList" title="Navigation">
-<li><a href="../../../overview-summary.html">Overview</a></li>
-<li><a href="package-summary.html">Package</a></li>
-<li class="navBarCell1Rev">Class</li>
-<li><a href="class-use/Constructor.html">Use</a></li>
-<li><a href="package-tree.html">Tree</a></li>
-<li><a href="../../../deprecated-list.html">Deprecated</a></li>
-<li><a href="../../../index-files/index-1.html">Index</a></li>
-<li><a href="../../../help-doc.html">Help</a></li>
+<ul class="navList">
+<li title="Back to game list"><a id="home_link" href="../../index.html">Home</a></li>
+<li title="Show all packages"><a id="package_list_link" href="../packages/index.html">Package list</a></li>
+<li id="update_page_bullet" title="Edit this documentation"><a id="update_page" href="https://github.com/ME3Tweaks/LegendaryExplorer/edit/UnrealDoc/DocSources/LE3/classes/SFXGUIInteraction.json" target="_blank">Edit</a></li>
 </ul>
 <div class="navimages">
-	<img class="navimage" src="../images/gameicons/LE3_Icon.ico">
-	<img class="navimage" src="../images/docudb.png">
+	<img class="navimage" src="../../images/gameicons/LE3_Icon.ico">
+	<img class="navimage" src="../../images/docudb.png">
 </div>
 </div>
 <div class="subNav">
-<ul class="navList">
-<li><a href="../../../java/lang/reflect/Array.html" title="class in java.lang.reflect"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
-<li><a href="../../../java/lang/reflect/Executable.html" title="class in java.lang.reflect"><span class="typeNameLink">Next&nbsp;Class</span></a></li>
-</ul>
-<ul class="navList">
-<li><a href="../../../index.html?java/lang/reflect/Constructor.html" target="_top">Frames</a></li>
-<li><a href="Constructor.html" target="_top">No&nbsp;Frames</a></li>
-</ul>
 <ul class="navList" id="allclasses_navbar_top">
 	<li><a href="../classes/index.html">All&nbsp;Classes</a></li>
 	<li><a href="../structs/index.html">All&nbsp;Structs</a></li>
@@ -86,27 +73,16 @@
 </div>
 <div>
 <ul class="subNavList">
-<li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.summary">Method</a></li>
-</ul>
-<ul class="subNavList">
-<li>Detail:&nbsp;</li>
-<li>Field&nbsp;|&nbsp;</li>
-<li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li><a href="#variables">Variables&nbsp;</a></li><li><a href="#functions">Functions&nbsp;</a></li>
 </ul>
 </div>
 <a name="skip.navbar.top">
-<!--   -->
 </a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
 <div>
 		<div class="header">
-<h2 class="title">Class SFXGUIInteraction</h2>
-<ul class="inheritance">
+<h2 class="title">Class <i>SFXGUIInteraction</i></h2>
+	<ul class="inheritance">
 <li><a href="Object.html">Core.Object</a></li>
 <li>
 <ul class="inheritance">
@@ -134,1122 +110,1424 @@
 </li>
 </ul>
 
+	<p>Modifiers: <code>Compiled Config(UI) Transient Parsed Native HasInstancedProps HasComponents Exported</code></p>
 </div>
 <div class="contentContainer">
 <hr>
 <p></p>
 <!-- VARIABLES-->
-<h3>Variables</h3>
+<h3 id="variables">Variables</h3>
 <table class="membersummary">
 	<tr>
 		<th class="colFirst">Type</th>
 		<th class="colSecond">Name</th>
-		<th class="colLast">Description</th>
+		<th class="colSecond">Description</th>
+		<th class="colLast">Flags</th>
 	</tr>
 	<tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Map_Mirror</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_PlayerData</p>
+	<td class="colSecond">
+		<code>m_PlayerData</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Native</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">Map_Mirror</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_UnrealKeyToGfxKeyMap</p>
+	<td class="colSecond">
+		<code>m_UnrealKeyToGfxKeyMap</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Native</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>string</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">AdditionalResourcesLibrary</p>
+	<td class="colSecond">
+		<code>AdditionalResourcesLibrary</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXGUIMovieData</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieLibrary</p>
+	<td class="colSecond">
+		<code>MovieLibrary</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXSharedAssetMap</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">SharedAssetLibrary</p>
+	<td class="colSecond">
+		<code>SharedAssetLibrary</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXFontMap</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">FontMap</p>
+	<td class="colSecond">
+		<code>FontMap</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXSFControlToken</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ControlTokens</p>
+	<td class="colSecond">
+		<code>ControlTokens</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXControlTokenAlias</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ControlTokenAliases</p>
+	<td class="colSecond">
+		<code>ControlTokenAliases</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXStringMap</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">StringMappings</p>
+	<td class="colSecond">
+		<code>StringMappings</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">SFXKeyNameControlToken</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">SFXKeyNameControlTokens</p>
+	<td class="colSecond">
+		<code>SFXKeyNameControlTokens</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="struct">GUIDependency</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">GUIDependencies</p>
+	<td class="colSecond">
+		<code>GUIDependencies</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">BioSFHandler_MessageBox</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_aHintStack</p>
+	<td class="colSecond">
+		<code>m_aHintStack</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>OnCloseCallback</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">__OnCloseCallback__Delegate</p>
+	<td class="colSecond">
+		<code>__OnCloseCallback__Delegate</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>OnDependencyEvent</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">__OnDependencyEvent__Delegate</p>
+	<td class="colSecond">
+		<code>__OnDependencyEvent__Delegate</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">NeedCtorLink</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Reticle</p>
+	<td class="colSecond">
+		<code>MovieTag_Reticle</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_PowerWheel</p>
+	<td class="colSecond">
+		<code>MovieTag_PowerWheel</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_HUD</p>
+	<td class="colSecond">
+		<code>MovieTag_HUD</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Conversation</p>
+	<td class="colSecond">
+		<code>MovieTag_Conversation</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_BlackScreen</p>
+	<td class="colSecond">
+		<code>MovieTag_BlackScreen</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_SkillGameDecryption</p>
+	<td class="colSecond">
+		<code>MovieTag_SkillGameDecryption</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_SkillGameBypass</p>
+	<td class="colSecond">
+		<code>MovieTag_SkillGameBypass</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_IntroText</p>
+	<td class="colSecond">
+		<code>MovieTag_IntroText</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_LoadMovieDefault</p>
+	<td class="colSecond">
+		<code>MovieTag_LoadMovieDefault</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_SniperOverlay</p>
+	<td class="colSecond">
+		<code>MovieTag_SniperOverlay</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MenuBrowser</p>
+	<td class="colSecond">
+		<code>MovieTag_MenuBrowser</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MainMenu</p>
+	<td class="colSecond">
+		<code>MovieTag_MainMenu</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MissionCompletion</p>
+	<td class="colSecond">
+		<code>MovieTag_MissionCompletion</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_PRCStore</p>
+	<td class="colSecond">
+		<code>MovieTag_PRCStore</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Store</p>
+	<td class="colSecond">
+		<code>MovieTag_Store</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Terminal</p>
+	<td class="colSecond">
+		<code>MovieTag_Terminal</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Training</p>
+	<td class="colSecond">
+		<code>MovieTag_Training</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Elevator</p>
+	<td class="colSecond">
+		<code>MovieTag_Elevator</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Mail</p>
+	<td class="colSecond">
+		<code>MovieTag_Mail</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Splash</p>
+	<td class="colSecond">
+		<code>MovieTag_Splash</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_GalaxyMap</p>
+	<td class="colSecond">
+		<code>MovieTag_GalaxyMap</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_ChoiceGUI</p>
+	<td class="colSecond">
+		<code>MovieTag_ChoiceGUI</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_PartySelect</p>
+	<td class="colSecond">
+		<code>MovieTag_PartySelect</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Personalization</p>
+	<td class="colSecond">
+		<code>MovieTag_Personalization</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_NewCharacter</p>
+	<td class="colSecond">
+		<code>MovieTag_NewCharacter</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Options</p>
+	<td class="colSecond">
+		<code>MovieTag_Options</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Journal</p>
+	<td class="colSecond">
+		<code>MovieTag_Journal</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Codex</p>
+	<td class="colSecond">
+		<code>MovieTag_Codex</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Manual</p>
+	<td class="colSecond">
+		<code>MovieTag_Manual</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Accomplishments</p>
+	<td class="colSecond">
+		<code>MovieTag_Accomplishments</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_NetworkRegistration</p>
+	<td class="colSecond">
+		<code>MovieTag_NetworkRegistration</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_GameOver</p>
+	<td class="colSecond">
+		<code>MovieTag_GameOver</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_SquadRecord</p>
+	<td class="colSecond">
+		<code>MovieTag_SquadRecord</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Credits</p>
+	<td class="colSecond">
+		<code>MovieTag_Credits</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_DesignerUI</p>
+	<td class="colSecond">
+		<code>MovieTag_DesignerUI</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Specialization</p>
+	<td class="colSecond">
+		<code>MovieTag_Specialization</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Save</p>
+	<td class="colSecond">
+		<code>MovieTag_Save</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Load</p>
+	<td class="colSecond">
+		<code>MovieTag_Load</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_AreaMap</p>
+	<td class="colSecond">
+		<code>MovieTag_AreaMap</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MessageBox</p>
+	<td class="colSecond">
+		<code>MovieTag_MessageBox</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_QueuedMessageBox</p>
+	<td class="colSecond">
+		<code>MovieTag_QueuedMessageBox</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_HintBox</p>
+	<td class="colSecond">
+		<code>MovieTag_HintBox</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Slideshow</p>
+	<td class="colSecond">
+		<code>MovieTag_Slideshow</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Markers</p>
+	<td class="colSecond">
+		<code>MovieTag_Markers</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_ObjectiveText</p>
+	<td class="colSecond">
+		<code>MovieTag_ObjectiveText</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_WeaponSelect</p>
+	<td class="colSecond">
+		<code>MovieTag_WeaponSelect</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_PlayerCountdown</p>
+	<td class="colSecond">
+		<code>MovieTag_PlayerCountdown</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_GalaxyAtWar</p>
+	<td class="colSecond">
+		<code>MovieTag_GalaxyAtWar</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_WarAssets</p>
+	<td class="colSecond">
+		<code>MovieTag_WarAssets</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_OpeningTitles</p>
+	<td class="colSecond">
+		<code>MovieTag_OpeningTitles</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_SaveIndicatorMessage</p>
+	<td class="colSecond">
+		<code>MovieTag_SaveIndicatorMessage</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_AtlasHUD</p>
+	<td class="colSecond">
+		<code>MovieTag_AtlasHUD</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_PhotoMode</p>
+	<td class="colSecond">
+		<code>MovieTag_PhotoMode</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MPEndOfMatch</p>
+	<td class="colSecond">
+		<code>MovieTag_MPEndOfMatch</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MPLobby</p>
+	<td class="colSecond">
+		<code>MovieTag_MPLobby</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MPAppearance</p>
+	<td class="colSecond">
+		<code>MovieTag_MPAppearance</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MPMatchResults</p>
+	<td class="colSecond">
+		<code>MovieTag_MPMatchResults</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MPSelectKit</p>
+	<td class="colSecond">
+		<code>MovieTag_MPSelectKit</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_Leaderboard</p>
+	<td class="colSecond">
+		<code>MovieTag_Leaderboard</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MPScoretags</p>
+	<td class="colSecond">
+		<code>MovieTag_MPScoretags</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MPPauseMenu</p>
+	<td class="colSecond">
+		<code>MovieTag_MPPauseMenu</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MPOptions</p>
+	<td class="colSecond">
+		<code>MovieTag_MPOptions</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MPMatchConsumables</p>
+	<td class="colSecond">
+		<code>MovieTag_MPMatchConsumables</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MPStore</p>
+	<td class="colSecond">
+		<code>MovieTag_MPStore</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MPReinforcementsReveal</p>
+	<td class="colSecond">
+		<code>MovieTag_MPReinforcementsReveal</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MPHUD</p>
+	<td class="colSecond">
+		<code>MovieTag_MPHUD</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MPNewLobby</p>
+	<td class="colSecond">
+		<code>MovieTag_MPNewLobby</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MPLobbyStatusBars</p>
+	<td class="colSecond">
+		<code>MovieTag_MPLobbyStatusBars</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MPPromotion</p>
+	<td class="colSecond">
+		<code>MovieTag_MPPromotion</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">MovieTag_MPWeaponSelect</p>
+	<td class="colSecond">
+		<code>MovieTag_MPWeaponSelect</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">BioSFResources</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_oSFResources</p>
+	<td class="colSecond">
+		<code>m_oSFResources</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">SFXGUIInputHandler</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">InputHandler</p>
+	<td class="colSecond">
+		<code>InputHandler</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">WwiseAudioComponent</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_wwiseComponent</p>
+	<td class="colSecond">
+		<code>m_wwiseComponent</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">ExportObject EditInline Component</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_nmCurrentVoice</p>
+	<td class="colSecond">
+		<code>m_nmCurrentVoice</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>Name</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_nmCurrentMusic</p>
+	<td class="colSecond">
+		<code>m_nmCurrentMusic</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">SFXPawn_Player</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ImportedTemplatePawn</p>
+	<td class="colSecond">
+		<code>ImportedTemplatePawn</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">SFXSaveLoadWidgetProxy</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_oSavingLoadingDisplayProxy</p>
+	<td class="colSecond">
+		<code>m_oSavingLoadingDisplayProxy</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">SFXAreaMapData</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_CurrentAreaMap</p>
+	<td class="colSecond">
+		<code>m_CurrentAreaMap</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Transient</p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="class">BioSFHandler_MessageBox</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_oPreloadedHint</p>
+	<td class="colSecond">
+		<code>m_oPreloadedHint</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>int</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_nMaxHintStackHeight</p>
+	<td class="colSecond">
+		<code>m_nMaxHintStackHeight</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">ReplaceRegisteredTMWithFullHeightChar</p>
+	<td class="colSecond">
+		<code>ReplaceRegisteredTMWithFullHeightChar</code>
 	</td>
-	<td  class="collast">
-		<p class="ld_memberdoc"></p>
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">Config</p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bDesiredMouseVisibility</p>
+	<td class="colSecond">
+		<code>m_bDesiredMouseVisibility</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">bFullGuiSoundLogging</p>
+	<td class="colSecond">
+		<code>bFullGuiSoundLogging</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_bGameWasPaused</p>
+	<td class="colSecond">
+		<code>m_bGameWasPaused</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="rowColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code>bool</code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">HACK_IgnoreTurnBlackScreenOffForMP</p>
+	<td class="colSecond">
+		<code>HACK_IgnoreTurnBlackScreenOffForMP</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 <tr class="altColor">
-	<td class="colfirst">
+	<td class="colFirst">
 		<code><a data-type="enum">MEBrowserWheelSubPages</a></code>
 	</td>
-	<td class="colsecond">
-		<p class="ld_membername">m_eLastBrowserWheelSubPage</p>
+	<td class="colSecond">
+		<code>m_eLastBrowserWheelSubPage</code>
 	</td>
-	<td  class="collast">
+	<td class="colSecond">
+		<p class="ld_membername"></p>
+	</td>
+	<td  class="colLast">
 		<p class="ld_memberdoc"></p>
 	</td>
 </tr>
 
 </table>
 <!-- FUNCTIONS-->
-<h3>Functions</h3>
+<h3 id="functions">Functions</h3>
 <table class="membersummary">
 	<tr>
 		<th class="colFirst">Return type</th>
