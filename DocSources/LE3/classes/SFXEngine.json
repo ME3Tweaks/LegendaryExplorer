@@ -1759,7 +1759,7 @@
       "signature": "Object GetSeekFreeObjectByName(Name ObjectName, Class<Object> ObjectClass)"
     },
     "GetSFXEngine": {
-      "documentation": null,
+      "documentation": "Returns the SFXEngine singleton.",
       "signature_members": {},
       "returntype": "SFXEngine",
       "signature": "SFXEngine GetSFXEngine()"
