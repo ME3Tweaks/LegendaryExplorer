@@ -9,7 +9,7 @@
     },
     "SupportedReachSpecs": {
       "type": "Class",
-      "documentation": null,
+      "documentation": "A list of supported reachspec classes that a pawn must use to traverse to the playable area (such as boosting down from above). If a pawn doesn't support at least one spec, this spawn point cannot be used. If empty, there are no requirements.",
       "flags": 4194305
     },
     "Weight": {
@@ -22,5 +22,5 @@
   "states": {},
   "classflags": 10486290,
   "configname": "None",
-  "documentation": null
+  "documentation": "Used to define an enemy spawn point in Mass Effect 3 Multiplayer."
 }
