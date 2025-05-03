@@ -826,12 +826,15 @@ var annotated_dup =
           [ "UnconditionalJump", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_unconditional_jump.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_decompiling_1_1_unconditional_jump" ]
         ] ],
         [ "Documentation", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_documentation.html", [
+          [ "BinaryDocuDB", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_binary_docu_d_b.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_binary_docu_d_b" ],
           [ "DocuClassEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_class_entry.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_class_entry" ],
           [ "DocuDB", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_d_b.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_d_b" ],
+          [ "DocuEnumEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_enum_entry.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_enum_entry" ],
+          [ "DocuEnumValueEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_enum_value_entry.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_enum_value_entry" ],
           [ "DocuFunctionEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_function_entry.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_function_entry" ],
           [ "DocuMemberEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_member_entry.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_member_entry" ],
           [ "DocuStateEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_state_entry.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_state_entry" ],
-          [ "DocuTypeEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_type_entry.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_type_entry" ]
+          [ "DocuStructEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_struct_entry.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_struct_entry" ]
         ] ],
         [ "Language", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_language.html", [
           [ "Tree", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree.html", [

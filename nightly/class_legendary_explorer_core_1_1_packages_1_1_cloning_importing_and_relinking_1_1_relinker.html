@@ -115,6 +115,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a93bf7b6e52abc283ee7827fbcb9129f8"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker.html#a93bf7b6e52abc283ee7827fbcb9129f8">RelinkSamePackage</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_listenable_dictionary.html">ListenableDictionary</a>&lt; <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> &gt; relinkMap)</td></tr>
 <tr class="memdesc:a93bf7b6e52abc283ee7827fbcb9129f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Relinks objects to different ones within the same package. Will not generate new exports or imports.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker.html#a93bf7b6e52abc283ee7827fbcb9129f8">More...</a><br /></td></tr>
 <tr class="separator:a93bf7b6e52abc283ee7827fbcb9129f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef4e9d494becefd41bfebb8662b0cfa8"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker.html#aef4e9d494becefd41bfebb8662b0cfa8">RepointObject</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> source, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> dest)</td></tr>
+<tr class="memdesc:aef4e9d494becefd41bfebb8662b0cfa8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Redirects a single object to another one.   <a href="class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker.html#aef4e9d494becefd41bfebb8662b0cfa8">More...</a><br /></td></tr>
+<tr class="separator:aef4e9d494becefd41bfebb8662b0cfa8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a3c40cf2f46354f9f3b1ca09d6bd5ef54" name="a3c40cf2f46354f9f3b1ca09d6bd5ef54"></a>
@@ -301,6 +304,51 @@ Static Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">package</td><td>Package to operate on</td></tr>
     <tr><td class="paramname">relinkMap</td><td>List of entries that you are repointing to different objects. The remaining objects will have a relink performed to update references automatically.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aef4e9d494becefd41bfebb8662b0cfa8" name="aef4e9d494becefd41bfebb8662b0cfa8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef4e9d494becefd41bfebb8662b0cfa8">&#9670;&#160;</a></span>RepointObject()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.Packages.CloningImportingAndRelinking.Relinker.RepointObject </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td>
+          <td class="paramname"><em>source</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td>
+          <td class="paramname"><em>dest</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Redirects a single object to another one.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source</td><td>Source object</td></tr>
+    <tr><td class="paramname">dest</td><td>Dest object</td></tr>
   </table>
   </dd>
 </dl>

@@ -31,6 +31,7 @@ var hierarchy =
       [ "SoundEventSoundTracksFour", "class_sound_event_sound_tracks_four.html", null ],
       [ "TitleBankChunk", "class_title_bank_chunk.html", null ]
     ] ],
+    [ "LegendaryExplorerCore.UnrealScript.Documentation.BinaryDocuDB", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_binary_docu_d_b.html", null ],
     [ "LegendaryExplorerCore.Coalesced.BinaryExtensions", "class_legendary_explorer_core_1_1_coalesced_1_1_binary_extensions.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Collections.Generic.BinaryHeap< T >", "class_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_generic_1_1_binary_heap.html", null ],
     [ "BinaryReader", null, [
@@ -186,10 +187,12 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.DLCPackage", "class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Documentation.DocuClassEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_class_entry.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Documentation.DocuDB", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_d_b.html", null ],
+    [ "LegendaryExplorerCore.UnrealScript.Documentation.DocuEnumEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_enum_entry.html", null ],
+    [ "LegendaryExplorerCore.UnrealScript.Documentation.DocuEnumValueEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_enum_value_entry.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Documentation.DocuFunctionEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_function_entry.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Documentation.DocuMemberEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_member_entry.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Documentation.DocuStateEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_state_entry.html", null ],
-    [ "LegendaryExplorerCore.UnrealScript.Documentation.DocuTypeEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_type_entry.html", null ],
+    [ "LegendaryExplorerCore.UnrealScript.Documentation.DocuStructEntry", "class_legendary_explorer_core_1_1_unreal_script_1_1_documentation_1_1_docu_struct_entry.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.DoubleExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_double_extensions.html", null ],
     [ "LegendaryExplorerCore.Misc.DuplicatingIni", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Dynamic.DynamicExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_dynamic_1_1_dynamic_extensions.html", null ],
