@@ -104,8 +104,11 @@ steps:
       }
 
       Copy-item -Force -Recurse -Verbose $binaryOutputDir -Destination $lexDocuDbPath
-      
-      # Debugging.
-      git diff
+     
+      # Commit the databases
+      Write-Host "Committing databases..."
+      git add "$lexDocuDbPath\*"
+      git commit -m "Update Binary DocuDBs [pipeline build]"
+      git push origin Beta
 
       Write-Host "Done."
