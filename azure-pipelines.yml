@@ -34,6 +34,7 @@ steps:
       $unrealDocProj = "$(Build.SourcesDirectory)\LegendaryExplorer\LegendaryExplorerUnrealDoc\LegendaryExplorerUnrealDoc.csproj"
       $inputDir = "$(Build.SourcesDirectory)\DocSources" # .json files
       $outputDir = "$(Build.SourcesDirectory)\BuiltDocs" # Where docs get built
+      $binaryOutputDir = "$(Build.SourcesDirectory)\BinaryDBs" # Where binary databases get placed on build
 
       # Build UnrealDoc so we can run it to build the docs.
       Write-Host Switching to $(docToolBranch) branch...
@@ -46,9 +47,20 @@ steps:
       git fetch --depth 1 origin UnrealDoc
       git switch UnrealDoc
       
-      # Build docs
-      & $buildDir\LegendaryExplorerUnrealDoc.exe -i $inputDir -o $outputDir
+      # Build docs and binary db
+      & $buildDir\LegendaryExplorerUnrealDoc.exe -i $inputDir -o $outputDir -b $binaryOutputDir
 
+- task: PowerShell@2
+  displayName: "Commit UnrealDoc"
+  condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'UnrealDoc'))
+  inputs:
+    targetType: 'inline'
+    script: |
+      # Variables
+      $outputDir = "$(Build.SourcesDirectory)\BuiltDocs" # Where docs get built
+      $binaryOutputDir = "$(Build.SourcesDirectory)\BinaryDBs" # Where binary databases get placed on build
+      $lexDocuDbPath = ".\LegendaryExplorer\LegendaryExplorer\Resources\exec\BinaryDocuDB"
+      
       # Commit docs
       Write-Host Changing to Github pages branch for publishing.
       git fetch --depth 1 origin gh-pages
@@ -77,5 +89,23 @@ steps:
 
       Write-Host "Pushing new documentation to public repo..."
       git push origin gh-pages
+
+      # Commit binary DB to Beta
+      Write-Host Changing to Beta branch to publish Binary DBs.
+      git fetch --depth 1 origin Beta
+      git checkout Beta
+
+      Write-Host Cleaning out existing documentation...
+      if(Test-Path .\LegendaryExplorer\LegendaryExplorer\Resources\exec\BinaryDocuDB)
+      {
+          Remove-Item "$lexDocuDbPath\*" -Recurse
+      } else {
+          New-Item $lexDocuDbPath -ItemType Directory
+      }
+
+      Copy-item -Force -Recurse -Verbose $binaryOutputDir -Destination $lexDocuDbPath
+      
+      # Debugging.
+      git diff
 
       Write-Host "Done."
