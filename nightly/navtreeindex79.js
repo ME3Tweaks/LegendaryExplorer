@@ -1,5 +1,11 @@
 var NAVTREEINDEX79 =
 {
+"namespacemembers_enum_r.html":[0,6,2,16],
+"namespacemembers_enum_s.html":[0,6,2,17],
+"namespacemembers_enum_t.html":[0,6,2,18],
+"namespacemembers_enum_u.html":[0,6,2,19],
+"namespacemembers_enum_v.html":[0,6,2,20],
+"namespacemembers_enum_w.html":[0,6,2,21],
 "namespacemembers_f.html":[0,6,0,5],
 "namespacemembers_func.html":[0,6,1],
 "namespacemembers_g.html":[0,6,0,6],
@@ -243,11 +249,5 @@ var NAVTREEINDEX79 =
 "struct_f_vertex_light_map_policy_1_1_vertex_parameters_type.html":[1,0,140,0],
 "struct_f_vertex_light_map_policy_1_1_vertex_parameters_type.html#a0f7d3f27a744ca6260fa561481ccc289":[1,0,140,0,1],
 "struct_f_vertex_light_map_policy_1_1_vertex_parameters_type.html#aa835452593da97ed9ee61e29cbc18315":[1,0,140,0,0],
-"struct_fixed1.html":[1,0,67],
-"struct_fixed1.html#a9a8f9c261a419d30caede964c76a247b":[1,0,67,0],
-"struct_fixed10.html":[1,0,68],
-"struct_fixed10.html#a1d4cbec5818c6ec45c802775b7d4425a":[1,0,68,0],
-"struct_fixed2.html":[1,0,69],
-"struct_fixed2.html#a7f53f99853f21728774b375421afe42a":[1,0,69,0],
-"struct_fixed3.html":[1,0,70]
+"struct_fixed1.html":[1,0,67]
 };

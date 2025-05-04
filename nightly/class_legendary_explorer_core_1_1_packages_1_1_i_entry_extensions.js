@@ -13,5 +13,9 @@ var class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions =
     [ "ReplaceAllReferencesToThisOne", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a8e7f2bbbdfeb829e38c47d17436a041f", null ],
     [ "CondenseArchetypes", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#aa58aa7e674caee8c5b364cec4db1b767", null ],
     [ "GetBinaryData< T >", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#acc4083c94065c8bdfe55da0ca5ba53a7", null ],
-    [ "GetBinaryData< T >", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#ae34e2f561ae96f0f32ec352eaef23662", null ]
+    [ "GetBinaryData< T >", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#ae34e2f561ae96f0f32ec352eaef23662", null ],
+    [ "CreateObjectReferencer", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a6f67f0cc6e5286d475b950d6636e6c1c", null ],
+    [ "AddToObjectReferencer", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#ab6046da45c0ce8323c1148cfbfd19239", null ],
+    [ "AddObjectsToReferencer", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#ab2fba0c6c9550ce71cbe797f51d669ef", null ],
+    [ "AddObjectsToReferencer", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#afc9bbe5fdb5d5686f3bd03a599b7b0e8", null ]
 ];
