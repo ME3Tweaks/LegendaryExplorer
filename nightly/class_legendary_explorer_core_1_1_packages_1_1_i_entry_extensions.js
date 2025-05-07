@@ -15,7 +15,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions =
     [ "GetBinaryData< T >", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#acc4083c94065c8bdfe55da0ca5ba53a7", null ],
     [ "GetBinaryData< T >", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#ae34e2f561ae96f0f32ec352eaef23662", null ],
     [ "CreateObjectReferencer", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a6f67f0cc6e5286d475b950d6636e6c1c", null ],
-    [ "AddToObjectReferencer", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#ab6046da45c0ce8323c1148cfbfd19239", null ],
+    [ "AddToObjectReferencer", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a8d263f5379502db26b40f05a2da21754", null ],
     [ "AddObjectsToReferencer", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#ab2fba0c6c9550ce71cbe797f51d669ef", null ],
     [ "AddObjectsToReferencer", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#afc9bbe5fdb5d5686f3bd03a599b7b0e8", null ]
 ];
