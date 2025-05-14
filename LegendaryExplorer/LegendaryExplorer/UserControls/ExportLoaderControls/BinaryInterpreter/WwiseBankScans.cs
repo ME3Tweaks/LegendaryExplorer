@@ -71,6 +71,11 @@ public partial class BinaryInterpreterWPF
         var node = new BinInterpNode(bin.Position, $"{name}: ") { Length = 4 };
         Span<byte> span = stackalloc byte[4];
         var read = bin.BaseStream.Read(span);
+        if (read != 4)
+        {
+            node.Header += "Error reading data. Expected 4 bytes.";
+            return node;
+        }
         uint value = BitConverter.ToUInt32(span);
         if (value > 0x10000000)
         {
@@ -112,6 +117,20 @@ public partial class BinaryInterpreterWPF
         var parsedValue = Enum.GetName(typeof(T), value);
         if (string.IsNullOrEmpty(parsedValue)) parsedValue = "None";
         return new BinInterpNode(bin.Position - 1, $"{name}: {parsedValue}") { Length = 1 };
+    }
+    
+    private static BinInterpNode MakeArrayNodeWwiseVarCount(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false,
+        BinInterpNode.ArrayPropertyChildAddAlgorithm arrayAddAlgo = BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
+    {
+        var pos = bin.Position;
+        uint count;
+        return new BinInterpNode(bin.Position, $"{name} ({count = VarCount.ReadResizingUint(bin.BaseStream)})")
+        {
+            IsExpanded = IsExpanded,
+            Items = ReadList((int)count, selector),
+            ArrayAddAlgorithm = arrayAddAlgo,
+            Length = (int)(bin.Position - pos)
+        };
     }
 
     private List<ITreeItem> Scan_WwiseBank(byte[] data)
@@ -260,15 +279,8 @@ public partial class BinaryInterpreterWPF
         var root = new BinInterpNode(bin.Position, $"{index}: ");
 
         var type = HircSmartType.DeserializeStatic(bin.BaseStream, version);
-
-        if(version <= 48)
-        {
-            root.Items.Add(new BinInterpNode(bin.Position - 4, $"Type: {type}") { Length = 4 });
-        }
-        else
-        {
-            root.Items.Add(new BinInterpNode(bin.Position - 1, $"Type: {type}") { Length = 1 });
-        }
+        var typeLen = (version <= 48) ? 4 : 1;
+        root.Items.Add(new BinInterpNode(bin.Position - typeLen, $"Type: {type}") { Length = typeLen });
 
         var fullSize = bin.ReadInt32() + (version <= 48 ? 8 : 5);
 
@@ -294,10 +306,11 @@ public partial class BinaryInterpreterWPF
                 break;
             case HircType.Action:
                 var (actionType, actionFlags) = ActionType.DeserializeStatic(bin.BaseStream, version);
+                root.Header += $" ({actionType.ToString()})";
                 var typeLength = version <= 56 ? 4 : 2;
                 root.Items.Add(new BinInterpNode(bin.Position - typeLength,
                     $"ActionType: {actionType.ToString()}, Flags: {actionFlags.ToString()}") { Length = typeLength });
-                root.Items.Add(MakeWwiseIdNode(bin, "Target", "Target ID"));
+                root.Items.Add(MakeWwiseIdRefNode(bin, "Target ID"));
                 if (version <= 56)
                 {
                     root.Items.Add(MakeInt32Node(bin, "Delay"));
@@ -326,17 +339,17 @@ public partial class BinaryInterpreterWPF
                             Scan_HIRC_ActionSpecificParams(root, bin, version, actionType);
                             Scan_HIRC_ActionExceptParams(root, bin, version);
                         }
-                        root.Items.Add(MakeWwiseIdNode(bin, "BankId"));
+                        root.Items.Add(MakeWwiseIdRefNode(bin, "BankId"));
                         break;
                     case ActionTypeValue.SetState:
                     case ActionTypeValue.SetSwitch:
                         if (version <= 56) root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
-                        root.Items.Add(MakeWwiseIdNode(bin, "GroupId"));
-                        root.Items.Add(MakeWwiseIdNode(bin, "TargetStateId"));
+                        root.Items.Add(MakeWwiseIdRefNode(bin, "GroupId"));
+                        root.Items.Add(MakeWwiseIdRefNode(bin, "TargetStateId"));
                         break;
                     case ActionTypeValue.SetRTPC:
                         if (version <= 56) root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
-                        root.Items.Add(MakeWwiseIdNode(bin, "RTPCId"));
+                        root.Items.Add(MakeWwiseIdRefNode(bin, "RTPCId"));
                         root.Items.Add(MakeFloatNode(bin, "RTPCValue"));
                         break;
                     case ActionTypeValue.SetFX1:
@@ -405,7 +418,7 @@ public partial class BinaryInterpreterWPF
                 }
                 break;
             case HircType.Event:
-                root.Items.Add(MakeArrayNode(bin, "Actions", i => MakeWwiseIdRefNode(bin, i.ToString()), IsExpanded:true));
+                root.Items.Add(MakeArrayNodeWwiseVarCount(bin, "Actions", i => MakeWwiseIdRefNode(bin, i.ToString())));
                 break;
             case HircType.RandomSequenceContainer:
                 Scan_HIRC_NodeBaseParams(root, bin, version, useFeedback);
@@ -435,7 +448,7 @@ public partial class BinaryInterpreterWPF
                 root.Items.Add(MakeArrayNodeInt16Count(bin, "Playlist", i =>
                 {
                     var n = new BinInterpNode(bin.Position, $"Item {i}");
-                    n.Items.Add(MakeWwiseIdNode(bin, "PlaylistItemId"));
+                    n.Items.Add(MakeWwiseIdRefNode(bin, "PlaylistItemId"));
                     if (version <= 56) n.Items.Add(MakeByteNode(bin, "Weight"));
                     else n.Items.Add(MakeInt32Node(bin, "Weight"));
                     return n;
@@ -562,28 +575,16 @@ public partial class BinaryInterpreterWPF
 
     private void Scan_HIRC_ActionExceptParams(BinInterpNode root, EndianReader bin, uint version)
     {
-        var countPos = bin.Position;
-        var propsCount = VarCount.ReadResizingUint(bin.BaseStream);
-        bin.JumpTo(countPos);
-        root.Items.Add(MakeWwiseVarCountNode(bin, "ExceptionCount"));
-
-        if(propsCount > 0)
+        root.Items.Add(MakeArrayNodeWwiseVarCount(bin, "Exceptions", i =>
         {
-            var props = new BinInterpNode(bin.Position, "Exceptions") { IsExpanded = true };
-            for (var i = 0;i < propsCount; i++)
+            var item = MakeWwiseIdNode(bin, $"Exception {i}", $"{i}: ID");
+            if (version > 65)
             {
-                var item = MakeWwiseIdNode(bin, $"Exception {i}", $"{i}: ID");
-
-                if (version > 65)
-                {
-                    item.Items.Add(MakeBoolByteNode(bin, "IsBus"));
-                }
-
-                props.Items.Add(item);
+                item.Items.Add(MakeBoolByteNode(bin, "IsBus"));
             }
 
-            root.Items.Add(props);
-        }
+            return item;
+        }));
     }
 
     private void Scan_HIRC_ActionSpecificParams(BinInterpNode root, EndianReader bin, uint version, ActionTypeValue actionType)
@@ -649,8 +650,8 @@ public partial class BinaryInterpreterWPF
 
     private void Scan_HIRC_BankSourceData(BinInterpNode root, EndianReader bin, uint version)
     {
-        var pluginExists = bin.ReadUInt32();
-        bin.Skip(-4);
+        //var pluginExists = bin.ReadUInt32();
+        //bin.Skip(-4);
         root.Items.Add(MakeUInt32Node(bin, "PluginID"));
 
         var streamTypeNode = new BinInterpNode(bin.Position, "");
@@ -761,7 +762,7 @@ public partial class BinaryInterpreterWPF
         Scan_HIRC_AdvSettingsParams(root, bin, version);
         Scan_HIRC_State(root, bin, version);
         Scan_HIRC_RTPCParameterNodeBase(root, bin, version);
-        if(version < 126 && useFeedback) Scan_HIRC_FeedbackInfo(root, bin, version);
+        if(version < 126 && useFeedback) Scan_HIRC_FeedbackInfo(root, bin);
     }
 
     private void Scan_HIRC_InitialParams(BinInterpNode root, EndianReader bin, uint version)
@@ -987,7 +988,7 @@ public partial class BinaryInterpreterWPF
     {
         var aNode = new BinInterpNode(bin.Position, "AuxParams");
 
-        bool hasAux = false;
+        bool hasAux;
 
         if(version <= 89)
         {
@@ -1078,49 +1079,28 @@ public partial class BinaryInterpreterWPF
         }
         else
         {
-            var countPos = bin.Position;
-            var propsCount = VarCount.ReadResizingUint(bin.BaseStream);
-            bin.JumpTo(countPos);
-            sNode.Items.Add(MakeWwiseVarCountNode(bin, "StatePropsCount"));
-
-            if(propsCount > 0)
+            sNode.Items.Add(MakeArrayNodeWwiseVarCount(bin, "StateProperties", i =>
             {
-                var props = new BinInterpNode(bin.Position, "PropertyInfo") { IsExpanded = true };
-                for (var i = 0;i < propsCount; i++)
-                {
-                    var item = new BinInterpNode(bin.Position, i.ToString());
+                var item = new BinInterpNode(bin.Position, i.ToString());
 
-                    item.Items.Add(MakeWwiseVarCountNode(bin, "PropertyId"));
-                    var accumType = (AccumTypeInner)bin.ReadByte();
-                    if (version <= 125) accumType += 1;
-                    item.Items.Add(new BinInterpNode(bin.Position - 1, $"AccumType: {Enum.GetName(accumType)}"));
-                    if (version > 126) item.Items.Add(MakeBoolByteNode(bin, "InDb"));
-
-                    props.Items.Add(item);
-                }
-
-                sNode.Items.Add(props);
-            }
-
-            countPos = bin.Position;
-            var groupsCount = VarCount.ReadResizingUint(bin.BaseStream);
-            bin.JumpTo(countPos);
-            sNode.Items.Add(MakeWwiseVarCountNode(bin, "StateGroupsCount"));
-
-            if(groupsCount > 0)
+                item.Items.Add(MakeWwiseVarCountNode(bin, "PropertyId"));
+                var accumType = (AccumTypeInner)bin.ReadByte();
+                if (version <= 125) accumType += 1;
+                item.Items.Add(new BinInterpNode(bin.Position - 1, $"AccumType: {Enum.GetName(accumType)}"));
+                if (version > 126) item.Items.Add(MakeBoolByteNode(bin, "InDb"));
+                
+                return item;
+            }));
+            
+            sNode.Items.Add(MakeArrayNodeWwiseVarCount(bin, "StateGroups", i =>
             {
-                var groups = new BinInterpNode(bin.Position, "GroupChunks") { IsExpanded = true };
-                for (var i = 0; i < propsCount; i++)
-                {
-                    var item = new BinInterpNode(bin.Position, i.ToString());
+                var item = new BinInterpNode(bin.Position, i.ToString());
 
-                    item.Items.Add(MakeWwiseIdNode(bin, "StateGroup"));
-                    ReadStateGroup(item);
-                    groups.Items.Add(item);
-                }
-
-                sNode.Items.Add(groups);
-            }
+                item.Items.Add(MakeWwiseIdNode(bin, "StateGroup"));
+                ReadStateGroup(item);
+                
+                return item;
+            }));
         }
 
         root.Items.Add(sNode);
@@ -1172,8 +1152,11 @@ public partial class BinaryInterpreterWPF
         {
             var rtpc = new BinInterpNode(bin.Position, $"RTPC {i}");
 
-            rtpc.Items.Add(MakeWwiseIdRefNode(bin, "PluginId"));
-            rtpc.Items.Add(MakeBoolByteNode(bin, "IsRendered"));
+            if (version <= 48)
+            {
+                rtpc.Items.Add(MakeWwiseIdRefNode(bin, "PluginId"));
+                rtpc.Items.Add(MakeBoolByteNode(bin, "IsRendered"));
+            }
             rtpc.Items.Add(MakeWwiseIdRefNode(bin, "RTPCId"));
             var rtpcType = bin.ReadByte();
             if (version <= 140 && rtpcType == 0x02) rtpcType = 0x04;
@@ -1207,7 +1190,7 @@ public partial class BinaryInterpreterWPF
         }));
     }
 
-    private void Scan_HIRC_FeedbackInfo(BinInterpNode root, EndianReader bin, uint version)
+    private void Scan_HIRC_FeedbackInfo(BinInterpNode root, EndianReader bin)
     {
         root.Items.Add(MakeWwiseIdRefNode(bin, "BusId"));
         bin.Skip(-4);
@@ -1486,14 +1469,14 @@ public partial class BinaryInterpreterWPF
                             case WwiseBankParsed.EventActionType.Play_LE:
                                 node.Items.Add(MakeByteNode(bin, "Unknown1"));
                                 bool playHasFadeIn;
-                                node.Items.Add(new BinInterpNode(bin.Position, $"Has Fade In: {playHasFadeIn = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
+                                node.Items.Add(new BinInterpNode(bin.Position, $"Has Fade In: {playHasFadeIn = bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
                                 if (playHasFadeIn)
                                 {
                                     node.Items.Add(MakeByteNode(bin, "Unknown byte"));
                                     node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
                                 }
                                 bool RandomFade;
-                                node.Items.Add(new BinInterpNode(bin.Position, $"Unknown 2: {RandomFade = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
+                                node.Items.Add(new BinInterpNode(bin.Position, $"Unknown 2: {RandomFade = bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
                                 if (RandomFade)
                                 {
                                     node.Items.Add(MakeByteNode(bin, "Enabled?"));
@@ -1506,7 +1489,7 @@ public partial class BinaryInterpreterWPF
                             case WwiseBankParsed.EventActionType.Stop_LE:
                                 node.Items.Add(MakeByteNode(bin, "Unknown1"));
                                 bool stopHasFadeOut;
-                                node.Items.Add(new BinInterpNode(bin.Position, $"Has Fade In: {stopHasFadeOut = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
+                                node.Items.Add(new BinInterpNode(bin.Position, $"Has Fade In: {stopHasFadeOut = bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
                                 if (stopHasFadeOut)
                                 {
                                     node.Items.Add(MakeByteNode(bin, "Unknown byte"));
@@ -1523,7 +1506,7 @@ public partial class BinaryInterpreterWPF
                             case WwiseBankParsed.EventActionType.ResetVolume_LE:
                                 node.Items.Add(MakeByteNode(bin, "Unknown1"));
                                 bool HasFade;
-                                node.Items.Add(new BinInterpNode(bin.Position, $"Has Fade In: {HasFade = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
+                                node.Items.Add(new BinInterpNode(bin.Position, $"Has Fade In: {HasFade = bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
                                 if (HasFade)
                                 {
                                     node.Items.Add(MakeByteNode(bin, "Unknown byte"));
