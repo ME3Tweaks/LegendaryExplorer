@@ -42,11 +42,9 @@ public partial class BinaryInterpreterWPF
 
     private BinInterpNode MakeWwiseIdNode(EndianReader bin, string refName, string nodeName = "ID")
     {
-        var id = bin.ReadUInt32();
-        bin.Skip(-4);
+        var node = MakeUInt32Node(bin, nodeName, out var id);
         var item = new WwiseItem(id, refName, bin.Position);
         WwiseIdMap.Add(id, item);
-        var node = MakeUInt32Node(bin, nodeName);
         return node;
     }
 
@@ -203,11 +201,10 @@ public partial class BinaryInterpreterWPF
 
     private (uint, bool) Scan_WwiseBank_BKHD(BinInterpNode root, EndianReader bin, int size)
     {
-        var version = bin.ReadUInt32();
         bool useFeedback = false;
-        bin.Skip(-4);
-
-        root.Items.Add(MakeUInt32Node(bin, "WwiseVersion"));
+        uint version;
+        
+        root.Items.Add(MakeUInt32Node(bin, "WwiseVersion", out version));
         root.Items.Add(MakeWwiseIdNode(bin, "SoundBank", "SoundBankId"));
 
         if(version <= 122)
@@ -219,11 +216,9 @@ public partial class BinaryInterpreterWPF
             root.Items.Add(MakeUInt32Node(bin, "LanguageIDStringHash"));
         }
 
-        if(version > 27 && version < 126)
+        if(version is > 27 and < 126)
         {
-            useFeedback = bin.ReadBoolByte();
-            bin.Skip(-1);
-            root.Items.Add(MakeBoolByteNode(bin, "UseFeedback"));
+            root.Items.Add(MakeBoolByteNode(bin, "UseFeedback", out useFeedback));
         }
 
         if(version > 126)
@@ -281,16 +276,15 @@ public partial class BinaryInterpreterWPF
         var type = HircSmartType.DeserializeStatic(bin.BaseStream, version);
         var typeLen = (version <= 48) ? 4 : 1;
         root.Items.Add(new BinInterpNode(bin.Position - typeLen, $"Type: {type}") { Length = typeLen });
-
-        var fullSize = bin.ReadInt32() + (version <= 48 ? 8 : 5);
-
-        bin.Skip(-4);
-        root.Items.Add(MakeUInt32Node(bin, "Size"));
+        
+        
+        root.Items.Add(MakeUInt32Node(bin, "Size", out var fullSize));
+        fullSize += (uint)(version <= 48 ? 8 : 5);
 
         root.Items.Add(MakeWwiseIdNode(bin, type.ToString()));
 
         root.Header += $"{type}";
-        root.Length = fullSize;
+        root.Length = (int)fullSize;
 
         switch(type)
         {
@@ -449,8 +443,7 @@ public partial class BinaryInterpreterWPF
                 {
                     var n = new BinInterpNode(bin.Position, $"Item {i}");
                     n.Items.Add(MakeWwiseIdRefNode(bin, "PlaylistItemId"));
-                    if (version <= 56) n.Items.Add(MakeByteNode(bin, "Weight"));
-                    else n.Items.Add(MakeInt32Node(bin, "Weight"));
+                    n.Items.Add(version <= 56 ? MakeByteNode(bin, "Weight") : MakeInt32Node(bin, "Weight"));
                     return n;
                 }));
                 break;
@@ -532,9 +525,7 @@ public partial class BinaryInterpreterWPF
                 break;
             case HircType.Attenuation:
                 if (version > 136) root.Items.Add(MakeBoolByteNode(bin, "IsHeightSpreadEnabled"));
-                var isConeEnabled = bin.ReadBoolByte();
-                bin.Skip(-1);
-                root.Items.Add(MakeBoolByteNode(bin, "IsConeEnabled"));
+                root.Items.Add(MakeBoolByteNode(bin, "IsConeEnabled", out var isConeEnabled));
                 if (isConeEnabled)
                 {
                     root.Items.Add(MakeFloatNode(bin, "InsideDegrees"));
@@ -565,6 +556,36 @@ public partial class BinaryInterpreterWPF
                     return c;
                 }, true));
                 Scan_HIRC_RTPCParameterNodeBase(root, bin, version);
+                break;
+            case HircType.FxShareSet:
+            case HircType.FxCustom:
+                root.Items.Add(MakeUInt32Node(bin, "PluginID"));
+                root.Items.Add(MakeUInt32Node(bin, "PluginParametersSize", out var paramLength));
+                root.Items.Add(new BinInterpNode(bin.Position, "PluginParameters") { Length = (int)paramLength });
+                bin.Skip(paramLength);
+                
+                root.Items.Add(MakeArrayNodeByteCount(bin, "Media", i =>
+                {
+                    var item = new BinInterpNode(bin.Position, i.ToString());
+                    item.Items.Add(MakeByteNode(bin, "Index"));
+                    item.Items.Add(MakeWwiseIdRefNode(bin, "SourceID"));
+                    return item;
+                }));
+                
+                Scan_HIRC_RTPCParameterNodeBase(root, bin, version);
+                
+                if(version is > 123 and < 126) root.Items.Add(MakeUInt16Node(bin, "Unk1"));
+                
+                if(version > 126) Scan_HIRC_State(root, bin, version);
+                
+                if(version > 90) root.Items.Add(MakeArrayNodeInt16Count(bin, "RTPCInitValues", i =>
+                {
+                    var item = new BinInterpNode(bin.Position, i.ToString());
+                    item.Items.Add(MakeWwiseIdRefNode(bin, "ParameterID"));
+                    if(version > 126) item.Items.Add(MakeByteNode(bin, "RTPCAccum"));
+                    item.Items.Add(MakeFloatNode(bin, "InitValue"));
+                    return item;
+                }));
                 break;
         }
 
@@ -695,9 +716,7 @@ public partial class BinaryInterpreterWPF
     private void Scan_HIRC_NodeBaseParams(BinInterpNode root, EndianReader bin, uint version, bool useFeedback)
     {
         root.Items.Add(MakeBoolByteNode(bin, "IsOverrideParentFX"));
-        var fxCount = bin.ReadByte();
-        bin.Skip(-1);
-        root.Items.Add(MakeByteNode(bin, "FXCount"));
+        root.Items.Add(MakeByteNode(bin, "FXCount", out var fxCount));
         if (fxCount > 0)
         {
             root.Items.Add(MakeByteNode(bin, "BitsFXBypass"));
@@ -787,9 +806,7 @@ public partial class BinaryInterpreterWPF
         else
         {
             ipNode.IsExpanded = true;
-            var paramLength = bin.ReadByte();
-            bin.Skip(-1);
-            ipNode.Items.Add(MakeByteNode(bin, "ParamsLength"));
+            ipNode.Items.Add(MakeByteNode(bin, "ParamsLength", out var paramLength));
 
             if(paramLength > 0)
             {
@@ -816,10 +833,8 @@ public partial class BinaryInterpreterWPF
                     }
                 }
             }
-
-            var rangeLength = bin.ReadByte();
-            bin.Skip(-1);
-            ipNode.Items.Add(MakeByteNode(bin, "RangesLength"));
+            
+            ipNode.Items.Add(MakeByteNode(bin, "RangesLength", out var rangeLength));
 
             if(rangeLength > 0)
             {
@@ -892,14 +907,10 @@ public partial class BinaryInterpreterWPF
             {
                 if(version < 72)
                 {
-                    pNode.Items.Add(MakeBoolByteNode(bin, "Has2DPositioning"));
-                    bin.Skip(-1);
-                    has2dPositioning = bin.ReadBoolByte();
+                    pNode.Items.Add(MakeBoolByteNode(bin, "Has2DPositioning", out has2dPositioning));
                 }
 
-                pNode.Items.Add(MakeBoolByteNode(bin, "Has3DPositioning"));
-                bin.Skip(-1);
-                has3dPositioning = bin.ReadBoolByte();
+                pNode.Items.Add(MakeBoolByteNode(bin, "Has3DPositioning", out has3dPositioning));
                 if ((!has3dPositioning && version <= 72) || has2dPositioning)
                 {
                     pNode.Items.Add(MakeBoolByteNode(bin, "HasPanner"));
@@ -995,9 +1006,7 @@ public partial class BinaryInterpreterWPF
             aNode.Items.Add(MakeBoolByteNode(bin, "OverrideGameAuxSends"));
             aNode.Items.Add(MakeBoolByteNode(bin, "UseGameAuxSends"));
             aNode.Items.Add(MakeBoolByteNode(bin, "OverrideUserAuxSends"));
-            hasAux = bin.ReadBoolByte();
-            bin.Skip(-1);
-            aNode.Items.Add(MakeBoolByteNode(bin, "HasAux"));
+            aNode.Items.Add(MakeBoolByteNode(bin, "HasAux", out hasAux));
         }
         else
         {
