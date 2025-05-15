@@ -1,4 +1,8 @@
-﻿using LegendaryExplorer.SharedUI.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
@@ -6,17 +10,13 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using ME3Tweaks.Wwiser.Formats;
 using ME3Tweaks.Wwiser.Model;
+using ME3Tweaks.Wwiser.Model.Action;
+using ME3Tweaks.Wwiser.Model.Action.Specific;
 using ME3Tweaks.Wwiser.Model.Hierarchy;
 using ME3Tweaks.Wwiser.Model.Hierarchy.Enums;
 using ME3Tweaks.Wwiser.Model.ParameterNode;
 using ME3Tweaks.Wwiser.Model.ParameterNode.Positioning;
 using ME3Tweaks.Wwiser.Model.RTPC;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using ME3Tweaks.Wwiser.Model.Action;
-using ME3Tweaks.Wwiser.Model.Action.Specific;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.AccumType;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.CurveScaling;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.GroupType;
@@ -96,22 +96,6 @@ public partial class BinaryInterpreterWPF
         return node;
     }
 
-    private BinInterpNode MakeUInt32EnumNode<T>(EndianReader bin, string name) where T : Enum
-    {
-        var value = bin.ReadUInt32();
-        var parsedValue = Enum.GetName(typeof(T), value);
-        if (string.IsNullOrEmpty(parsedValue)) parsedValue = "None";
-        return new BinInterpNode(bin.Position - 4, $"{name}: {parsedValue}") { Length = 4 };
-    }
-
-    private BinInterpNode MakeByteEnumNode<T>(EndianReader bin, string name) where T : Enum
-    {
-        var value = bin.ReadByte();
-        var parsedValue = Enum.GetName(typeof(T), value);
-        if (string.IsNullOrEmpty(parsedValue)) parsedValue = "None";
-        return new BinInterpNode(bin.Position - 1, $"{name}: {parsedValue}") { Length = 1 };
-    }
-    
     private static BinInterpNode MakeArrayNodeWwiseVarCount(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false,
         BinInterpNode.ArrayPropertyChildAddAlgorithm arrayAddAlgo = BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
     {

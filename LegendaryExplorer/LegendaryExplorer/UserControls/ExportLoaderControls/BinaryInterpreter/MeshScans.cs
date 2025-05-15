@@ -6,6 +6,7 @@ using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.Classes;
 
 
@@ -461,5 +462,252 @@ public partial class BinaryInterpreterWPF
                     })
                 }
         };
+    }
+
+    private List<ITreeItem> StartSkeletalMeshScan(byte[] data, ref int binarystart)
+    {
+        var subnodes = new List<ITreeItem>();
+        var game = CurrentLoadedExport.FileRef.Game;
+        try
+        {
+            PackageCache cache = new PackageCache();
+            var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+            bin.JumpTo(binarystart);
+
+            subnodes.Add(MakeBoxSphereBoundsNode(bin, "Bounds"));
+            subnodes.Add(MakeArrayNode(bin, "Materials", i =>
+            {
+                var matNode = MakeEntryNode(bin, $"{i}");
+                try
+                {
+                    var value = bin.Skip(-4).ReadInt32();
+                    if (value != 0 && Pcc.GetEntry(value) is ExportEntry matExport)
+                    {
+                        foreach (IEntry texture in MaterialInstanceConstant.GetTextures(matExport, cache))
+                        {
+                            matNode.Items.Add(new BinInterpNode(-1, $"#{texture.UIndex} {texture.FileRef.GetEntryString(texture.UIndex)}", NodeType.StructLeafObject) { UIndexValue = texture.UIndex });
+                        }
+                    }
+                }
+                catch
+                {
+                    matNode.Items.Add(new BinInterpNode("Error reading Material!"));
+                }
+
+                return matNode;
+            }, true, BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes));
+            subnodes.Add(MakeVectorNode(bin, "Origin"));
+            subnodes.Add(MakeRotatorNode(bin, "Rotation Origin"));
+            subnodes.Add(MakeArrayNode(bin, "RefSkeleton", i => new BinInterpNode(bin.Position, $"{i}: {bin.ReadNameReference(Pcc).Instanced}")
+            {
+                Items =
+                {
+                    MakeUInt32Node(bin, "Flags"),
+                    MakeQuatNode(bin, "Bone Orientation (quaternion)"),
+                    MakeVectorNode(bin, "Bone Position"),
+                    MakeInt32Node(bin, "NumChildren"),
+                    MakeInt32Node(bin, "ParentIndex"),
+                    ListInitHelper.ConditionalAddOne<ITreeItem>( Pcc.Game >= MEGame.ME3, () => MakeColorNode(bin, "BoneColor")),
+                }
+            }));
+            subnodes.Add(MakeInt32Node(bin, "SkeletalDepth"));
+            int rawPointIndicesCount;
+            bool useFullPrecisionUVs = true;
+            int numTexCoords = 1;
+            subnodes.Add(MakeArrayNode(bin, "LODModels", i =>
+            {
+                BinInterpNode node = new BinInterpNode(bin.Position, $"{i}");
+                try
+                {
+                    node.Items.Add(MakeArrayNode(bin, "Sections", j => new BinInterpNode(bin.Position, $"{j}")
+                    {
+                        Items =
+                        {
+                            MakeUInt16Node(bin, "MaterialIndex"),
+                            MakeUInt16Node(bin, "ChunkIndex"),
+                            MakeUInt32Node(bin, "BaseIndex"),
+                            ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game >= MEGame.ME3,
+                                () => MakeUInt32Node(bin, "NumTriangles"),
+                                () => MakeUInt16Node(bin, "NumTriangles")),
+                            ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK, () => MakeByteNode(bin, "TriangleSorting"))
+                        }
+                    }));
+                    node.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.UDK, () => new ITreeItem[]
+                    {
+                        MakeBoolIntNode(bin, "NeedsCPUAccess"),
+                        MakeByteNode(bin, "Datatype size"),
+                    }));
+                    node.Items.Add(MakeInt32Node(bin, "Index size?"));
+                    if (Pcc.Game == MEGame.UDK && bin.Skip(-4).ReadInt32() == 4)
+                    {
+                        node.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt32Node(bin, $"{j}")));
+                    }
+                    else
+                    {
+                        node.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt16Node(bin, $"{j}")));
+                    }
+                    node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeArrayNode(bin, "ShadowIndices", j => MakeUInt16Node(bin, $"{j}"))));
+                    node.Items.Add(MakeArrayNode(bin, "ActiveBoneIndices", j => MakeUInt16Node(bin, $"{j}")));
+                    node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeArrayNode(bin, "ShadowTriangleDoubleSided", j => MakeByteNode(bin, $"{j}"))));
+                    node.Items.Add(MakeArrayNode(bin, "Chunks", j => new BinInterpNode(bin.Position, $"{j}")
+                    {
+                        Items =
+                        {
+                            MakeUInt32Node(bin, "BaseVertexIndex"),
+                            MakeArrayNode(bin, "RigidVertices", k => new BinInterpNode(bin.Position, $"{k}")
+                            {
+                                Items =
+                                {
+                                    MakeVectorNode(bin, "Position"),
+                                    MakePackedNormalNode(bin, "TangentX"),
+                                    MakePackedNormalNode(bin, "TangentY"),
+                                    MakePackedNormalNode(bin, "TangentZ"),
+                                    MakeVector2DNode(bin, "UV"),
+                                    ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.UDK, () => new ITreeItem[]
+                                    {
+                                        MakeVector2DNode(bin, "UV2"),
+                                        MakeVector2DNode(bin, "UV3"),
+                                        MakeVector2DNode(bin, "UV4"),
+                                        MakeColorNode(bin, "BoneColor"),
+                                    }),
+                                    MakeByteNode(bin, "Bone")
+                                }
+                            }),
+                            MakeArrayNode(bin, "SoftVertices", k => new BinInterpNode(bin.Position, $"{k}")
+                            {
+                                Items =
+                                {
+                                    MakeVectorNode(bin, "Position"),
+                                    MakePackedNormalNode(bin, "TangentX"),
+                                    MakePackedNormalNode(bin, "TangentY"),
+                                    MakePackedNormalNode(bin, "TangentZ"),
+                                    MakeVector2DNode(bin, "UV"),
+                                    ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.UDK, () => new ITreeItem[]
+                                    {
+                                        MakeVector2DNode(bin, "UV2"),
+                                        MakeVector2DNode(bin, "UV3"),
+                                        MakeVector2DNode(bin, "UV4"),
+                                        MakeColorNode(bin, "BoneColor"),
+                                    }),
+                                    new ListInitHelper.InitCollection<ITreeItem>(ReadList(4, l => MakeByteNode(bin, $"InfluenceBones[{l}]"))),
+                                    new ListInitHelper.InitCollection<ITreeItem>(ReadList(4, l => MakeByteNode(bin, $"InfluenceWeights[{l}]")))
+                                }
+                            }),
+                            MakeArrayNode(bin, "BoneMap", k => MakeUInt16Node(bin, $"{k}")),
+                            MakeInt32Node(bin, "NumRigidVertices"),
+                            MakeInt32Node(bin, "NumSoftVertices"),
+                            MakeInt32Node(bin, "MaxBoneInfluences"),
+                        }
+                    }));
+                    node.Items.Add(MakeUInt32Node(bin, "Size"));
+                    node.Items.Add(MakeUInt32Node(bin, "NumVertices"));
+                    node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeArrayNode(bin, "Edges", j => new BinInterpNode(bin.Position, $"{j}")
+                    {
+                        Items =
+                        {
+                            MakeInt32Node(bin, "Vertices[0]"),
+                            MakeInt32Node(bin, "Vertices[1]"),
+                            MakeInt32Node(bin, "Faces[0]"),
+                            MakeInt32Node(bin, "Faces[1]"),
+                        }
+                    })));
+                    node.Items.Add(MakeArrayNode(bin, "RequiredBones", j => MakeByteNode(bin, $"{j}")));
+                    node.Items.Add(MakeUInt32Node(bin, "RawPointIndices BulkDataFlags"));
+                    node.Items.Add(new BinInterpNode(bin.Position, $"RawPointIndices Count: {rawPointIndicesCount = bin.ReadInt32()}"));
+                    node.Items.Add(MakeUInt32Node(bin, "RawPointIndices size"));
+                    node.Items.Add(MakeUInt32Node(bin, "RawPointIndices file offset"));
+                    node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK,
+                        () => MakeArrayNode(rawPointIndicesCount, bin, "RawPointIndices", k => MakeInt32Node(bin, $"{k}")),
+                        () => MakeArrayNode(rawPointIndicesCount, bin, "RawPointIndices", k => MakeUInt16Node(bin, $"{k}"))));
+                    node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK, () => MakeInt32Node(bin, "NumTexCoords")));
+                    BinInterpNode item = new BinInterpNode(bin.Position, "VertexBufferGPUSkin")
+                    {
+                        IsExpanded = true
+                    };
+                    node.Items.Add(item);
+                    item.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME1, () => new List<ITreeItem>
+                    {
+                        ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK, () => MakeInt32Node(bin, "NumTexCoords", out numTexCoords)),
+                        MakeBoolIntNode(bin, "bUseFullPrecisionUVs", out useFullPrecisionUVs),
+                        ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new ITreeItem[]
+                        {
+                            MakeBoolIntNode(bin, "bUsePackedPosition"),
+                            MakeVectorNode(bin, "MeshExtension"),
+                            MakeVectorNode(bin, "MeshOrigin"),
+                        }),
+                    }));
+                    item.Items.Add(MakeInt32Node(bin, "vertex size"));
+                    item.Items.Add(MakeArrayNode(bin, "VertexData", k => new BinInterpNode(bin.Position, $"{k}")
+                    {
+                        Items =
+                        {
+                            ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game <= MEGame.ME2, () => MakeVectorNode(bin, "Position")),
+                            MakePackedNormalNode(bin, "TangentX"),
+                            ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.ME1, () =>  MakePackedNormalNode(bin, "TangentY")),
+                            MakePackedNormalNode(bin, "TangentZ"),
+                            ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.ME1, () =>  MakeVector2DNode(bin, "UV")),
+                            new ListInitHelper.InitCollection<ITreeItem>(ReadList(4, l => MakeByteNode(bin, $"InfluenceBones[{l}]"))),
+                            new ListInitHelper.InitCollection<ITreeItem>(ReadList(4, l => MakeByteNode(bin, $"InfluenceWeights[{l}]"))),
+                            ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game >= MEGame.ME3, () => MakeVectorNode(bin, "Position")),
+                            ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME1,
+                                () => ListInitHelper.ConditionalAddOne<ITreeItem>(useFullPrecisionUVs,
+                                    () => MakeVector2DNode(bin, "UV"),
+                                    () => MakeVector2DHalfNode(bin, "UV"))),
+                            ListInitHelper.ConditionalAddOne<ITreeItem>(numTexCoords > 1, () => MakeArrayNode(numTexCoords - 1, bin, "Additional UVs",
+                                i => useFullPrecisionUVs ? MakeVector2DNode(bin, "UV") : MakeVector2DHalfNode(bin, "UV")))
+                        }
+                    }));
+                    int vertexInfluenceSize;
+                    node.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new List<ITreeItem>
+                    {
+                        new BinInterpNode(bin.Position, $"VertexInfluence size: {vertexInfluenceSize = bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 },
+                        ListInitHelper.ConditionalAdd<ITreeItem>(vertexInfluenceSize > 0, () => new ITreeItem[]
+                        {
+                            MakeArrayNode(bin, "VertexInfluences", i => MakeInt32Node(bin, $"{i}")),
+                            MakeInt32Node(bin, "Unknown")
+                        })
+                    }));
+                    if (Pcc.Game is MEGame.UDK)
+                    {
+                        node.Items.Add(MakeBoolIntNode(bin, "NeedsCPUAccess"));
+                        node.Items.Add(MakeByteNode(bin, "Datatype size"));
+                        node.Items.Add(MakeInt32Node(bin, "index size", out int indexSize));
+                        if (indexSize == 4)
+                        {
+                            node.Items.Add(MakeArrayNode(bin, "Second IndexBuffer?", j => MakeUInt32Node(bin, $"{j}")));
+                        }
+                        else
+                        {
+                            node.Items.Add(MakeArrayNode(bin, "Second IndexBuffer?", j => MakeUInt16Node(bin, $"{j}")));
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    node.Items.Add(new BinInterpNode { Header = $"Error reading binary data: {e}" });
+                }
+                return node;
+            }, true));
+            subnodes.Add(MakeArrayNode(bin, "NameIndexMap", i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc).Instanced} => {bin.ReadInt32()}")));
+            subnodes.Add(MakeArrayNode(bin, "PerPolyBoneKDOPs", i => new BinInterpNode(bin.Position, $"{i}")
+            {
+                Items =
+                {
+                    MakekDOPTreeNode(bin),
+                    MakeArrayNode(bin, "CollisionVerts", j => MakeVectorNode(bin, $"{j}"))
+                }
+            }));
+            if (Pcc.Game >= MEGame.ME3)
+            {
+                subnodes.Add(MakeArrayNode(bin, "BoneBreakNames", i => new BinInterpNode(bin.Position, $"{i}: {bin.ReadUnrealString()}")));
+                subnodes.Add(MakeArrayNode(bin, "ClothingAssets", i => MakeEntryNode(bin, $"{i}")));
+            }
+        }
+        catch (Exception ex)
+        {
+            subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+        }
+
+        return subnodes;
     }
 }
