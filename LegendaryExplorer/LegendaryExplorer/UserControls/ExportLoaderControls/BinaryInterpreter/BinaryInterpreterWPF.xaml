@@ -233,6 +233,7 @@
                                 </MenuItem>
                                 <MenuItem Header="Attempt to find definition of import" ToolTip="Attempts to find the likely source of this import. Due to how Unreal handles memory this may not be the actual one used." Command="{Binding FindDefinitionOfImportCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
                                 <MenuItem Header="Copy GUID" ToolTip="Copies the GUID value to the clipboard." Command="{Binding CopyGuidCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
+                                <MenuItem Header="Go to referenced offset" ToolTip="Attempt to navigate to this referenced offset in the binary." Command="{Binding GoToReferencedOffsetCommand}" sharedUi:Bindings.VisibilityToEnabled="True"/>
                             </ContextMenu>
                         </TreeView.ContextMenu>
                         

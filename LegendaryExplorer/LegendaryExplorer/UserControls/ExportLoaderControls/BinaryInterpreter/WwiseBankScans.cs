@@ -40,10 +40,12 @@ public partial class BinaryInterpreterWPF
 
     private Dictionary<uint, WwiseItem> WwiseIdMap = new();
 
+    private List<(BinInterpNodeOffsetReference, uint)> WwiseRefs = new();
+
     private BinInterpNode MakeWwiseIdNode(EndianReader bin, string refName, string nodeName = "ID")
     {
         var node = MakeUInt32Node(bin, nodeName, out var id);
-        var item = new WwiseItem(id, refName, bin.Position);
+        var item = new WwiseItem(id, refName, bin.Position - 4);
         WwiseIdMap.Add(id, item);
         return node;
     }
@@ -52,15 +54,8 @@ public partial class BinaryInterpreterWPF
     {
         var pos = bin.Position;
         var id = bin.ReadUInt32();
-        var node = new BinInterpNode(pos, $"{name}: {id}") { Length = 4 };
-        if (WwiseIdMap.TryGetValue(id, out var item))
-        {
-            node.Header += $" (Ref to {item.Name})";
-        }
-        else
-        {
-            node.Header += $" (Ref)";
-        }
+        var node = new BinInterpNodeOffsetReference(pos, $"{name}: {id}") { Length = 4 };
+        WwiseRefs.Add((node, id));
         return node;
     }
 
@@ -195,6 +190,20 @@ public partial class BinaryInterpreterWPF
 
             // Just in case we don't parse chunk in full - jump to next chunk
             bin.JumpTo(start + size + 8);
+        }
+        
+        // At the end of the file, fill in all the reference details
+        foreach(var (refNode, refId) in WwiseRefs)
+        {
+            if (WwiseIdMap.TryGetValue(refId, out var item))
+            {
+                refNode.Header += $" (Ref to {item.Name})";
+                refNode.OffsetTarget = (int)item.Position;
+            }
+            else
+            {
+                refNode.Header += $" (Ref to unknown)";
+            }
         }
         return subnodes;
     }
@@ -514,10 +523,11 @@ public partial class BinaryInterpreterWPF
                     if (version <= 56) l.Items.Add(MakeFloatNode(bin, "CrossfadingRtpcDefaultValue"));
                     root.Items.Add(MakeArrayNode(bin, "AssociatedChildren", j => MakeArrayNode(bin, $"Child {j} Curves", k =>
                     {
-                        var gItem = new BinInterpNode(bin.Position, $"Graph Item {k}");
-                        gItem.Items.Add(MakeFloatNode(bin, "From"));
-                        gItem.Items.Add(MakeFloatNode(bin, "To"));
+                        var gItem = new BinInterpNode(bin.Position, "");
+                        gItem.Items.Add(MakeFloatNode(bin, "From", out float from));
+                        gItem.Items.Add(MakeFloatNode(bin, "To", out float to));
                         gItem.Items.Add(MakeUInt32EnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
+                        gItem.Header += $"{k}: {from} to {to}";
                         return gItem;
                     })));
                     return l;

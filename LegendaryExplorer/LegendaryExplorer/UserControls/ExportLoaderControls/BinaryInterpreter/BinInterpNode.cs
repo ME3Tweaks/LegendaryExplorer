@@ -234,4 +234,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
     }
+
+    public class BinInterpNodeOffsetReference : BinInterpNode
+    {
+        public int OffsetTarget { get; set; } = -1;
+
+        public BinInterpNodeOffsetReference(long pos, string text,
+            BinaryInterpreterWPF.NodeType nodeType = BinaryInterpreterWPF.NodeType.ReferenceToOffset) : base(pos, text,
+            nodeType)
+        {
+            
+        }
+    }
 }
