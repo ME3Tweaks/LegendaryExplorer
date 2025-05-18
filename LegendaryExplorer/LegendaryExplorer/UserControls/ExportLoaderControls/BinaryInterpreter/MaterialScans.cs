@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using static LegendaryExplorer.UserControls.ExportLoaderControls.BinaryNodeFactory;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -180,14 +178,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             List<ITreeItem> nodes = node.Items;
             try
             {
-                nodes.Add(MakeArrayNode(bin, "Compile Errors", i => MakeStringNode(bin, $"{i}")));
-                nodes.Add(MakeArrayNode(bin, "TextureDependencyLengthMap", i => new BinInterpNode(bin.Position, $"{entryRefString(bin)}: {bin.ReadInt32()}")));
+                nodes.Add(MakeArrayNode(bin, "Compile Errors", i => MakeStringNode(bin, $"{i}", Pcc.Game)));
+                nodes.Add(MakeArrayNode(bin, "TextureDependencyLengthMap", i => new BinInterpNode(bin.Position, $"{MakeEntryNodeString(bin, Pcc)}: {bin.ReadInt32()}")));
                 nodes.Add(MakeInt32Node(bin, "MaxTextureDependencyLength"));
                 nodes.Add(MakeMaterialGuidNode(bin, "ID", materialGuidMap));
                 nodes.Add(MakeUInt32Node(bin, "NumUserTexCoords"));
                 if (Pcc.Game >= MEGame.ME3)
                 {
-                    nodes.Add(MakeArrayNode(bin, "UniformExpressionTextures", i => MakeEntryNode(bin, $"{i}")));
+                    nodes.Add(MakeArrayNode(bin, "UniformExpressionTextures", i => MakeEntryNode(bin, $"{i}", Pcc)));
                 }
                 else
                 {
@@ -344,12 +342,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                     else
                     {
-                        node.Items.Add(MakeEntryNode(bin, "TextureIndex"));
+                        node.Items.Add(MakeEntryNode(bin, "TextureIndex", Pcc));
                     }
                     break;
                 case "FMaterialUniformExpressionFlipbookParameter":
                     node.Items.Add(MakeInt32Node(bin, "Index:"));
-                    node.Items.Add(MakeEntryNode(bin, "TextureIndex"));
+                    node.Items.Add(MakeEntryNode(bin, "TextureIndex", Pcc));
                     break;
                 case "FMaterialUniformExpressionTextureParameter":
                     node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}"));

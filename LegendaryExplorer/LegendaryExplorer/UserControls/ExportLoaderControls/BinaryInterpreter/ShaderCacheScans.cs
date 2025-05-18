@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.Primitives;
 using System.Diagnostics;
-using System.IO;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using static LegendaryExplorer.UserControls.ExportLoaderControls.BinaryNodeFactory;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls;
 
@@ -262,7 +261,7 @@ public partial class BinaryInterpreterWPF
 
                 nodes.Add(new BinInterpNode(bin.Position, $"MaterialId: {bin.ReadGuid()}") { Length = 16 });
 
-                nodes.Add(MakeStringNode(bin, "Friendly Name"));
+                nodes.Add(MakeStringNode(bin, "Friendly Name", Pcc.Game));
 
                 nodes.Add(ReadFStaticParameterSet(bin));
 
@@ -311,7 +310,7 @@ public partial class BinaryInterpreterWPF
                 subnodes.Add(shaderCachePayloads);
                 for (int i = 0; i < numShaderCachePayloads; i++)
                 {
-                    shaderCachePayloads.Items.Add(MakeEntryNode(bin, $"Payload {i}"));
+                    shaderCachePayloads.Items.Add(MakeEntryNode(bin, $"Payload {i}", Pcc));
                 }
             }
             else if (CurrentLoadedExport.Game == MEGame.ME1 && CurrentLoadedExport.FileRef.Platform != MEPackage.GamePlatform.PS3)
@@ -322,7 +321,7 @@ public partial class BinaryInterpreterWPF
                 for (int i = 0; i < numSomething; i++)
                 {
                     var node = new BinInterpNode(bin.Position, $"Something {i}");
-                    node.Items.Add(MakeNameNode(bin, "SomethingName?"));
+                    node.Items.Add(MakeNameNode(bin, "SomethingName?", Pcc));
                     node.Items.Add(MakeGuidNode(bin, "SomethingGuid?"));
                     somethings.Items.Add(node);
                 }
@@ -1599,7 +1598,7 @@ public partial class BinaryInterpreterWPF
             {
                 Items =
                 {
-                    MakeNameNode(bin, "VertexFactoryType", out var vertexFactoryName),
+                    MakeNameNode(bin, "VertexFactoryType", Pcc, out var vertexFactoryName),
                     MakeUInt32HexNode(bin, "File offset to end of FVertexFactoryParameterRef (may be inaccurate in modded files)")
                 },
                 IsExpanded = true

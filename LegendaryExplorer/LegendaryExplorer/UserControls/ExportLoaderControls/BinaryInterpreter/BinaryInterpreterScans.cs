@@ -9,6 +9,7 @@ using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Helpers;
+using static LegendaryExplorer.UserControls.ExportLoaderControls.BinaryNodeFactory;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -206,7 +207,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     Items =
                     {
                         MakeVectorNode(bin, "Offset"),
-                        MakeNameNode(bin, "Bone")
+                        MakeNameNode(bin, "Bone", Pcc)
                     }
                 }));
 
@@ -258,7 +259,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int polysCount = bin.ReadInt32();
                 subnodes.Add(new BinInterpNode(bin.Position - 4, $"Count: {polysCount}"));
                 subnodes.Add(MakeInt32Node(bin, "Max"));
-                subnodes.Add(MakeEntryNode(bin, "Owner (self)"));
+                subnodes.Add(MakeEntryNode(bin, "Owner (self)", Pcc));
                 if (polysCount > 0)
                 {
                     subnodes.Add(new BinInterpNode(bin.Position, $"Elements ({polysCount})")
@@ -277,9 +278,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                                          new BinInterpNode(bin.Position, $"{j}: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()})"))
                                 },
                                 MakeInt32Node(bin, "PolyFlags"),
-                                MakeEntryNode(bin, "Actor"),
+                                MakeEntryNode(bin, "Actor", Pcc),
                                 new BinInterpNode(bin.Position, $"ItemName: {bin.ReadNameReference(Pcc)}"),
-                                MakeEntryNode(bin, "Material"),
+                                MakeEntryNode(bin, "Material", Pcc),
                                 MakeInt32Node(bin, "iLink"),
                                 MakeInt32Node(bin, "iBrushPoly"),
                                 MakeFloatNode(bin, "ShadowMapScale"),
@@ -295,7 +296,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                     MakeFloatNode(bin, "EmissiveBoost"),
                                     MakeFloatNode(bin, "DiffuseBoost"),
                                     MakeFloatNode(bin, "SpecularBoost"),
-                                    MakeNameNode(bin, "RulesetVariation")
+                                    MakeNameNode(bin, "RulesetVariation", Pcc)
                                 }),
                             }
                         })
@@ -366,7 +367,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     })
                 });
 
-                subnodes.Add(MakeEntryNode(bin, "Owner (self)"));
+                subnodes.Add(MakeEntryNode(bin, "Owner (self)", Pcc));
                 int surfsCount = bin.ReadInt32();
                 subnodes.Add(new BinInterpNode(bin.Position - 4, $"Surfaces ({surfsCount})")
                 {
@@ -374,14 +375,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         Items = new List<ITreeItem>
                         {
-                            MakeEntryNode(bin, "Material"),
+                            MakeEntryNode(bin, "Material", Pcc),
                             MakeInt32Node(bin, "PolyFlags"),
                             MakeInt32Node(bin, "pBase"),
                             MakeInt32Node(bin, "vNormal"),
                             MakeInt32Node(bin, "vTextureU"),
                             MakeInt32Node(bin, "vTextureV"),
                             MakeInt32Node(bin, "iBrushPoly"),
-                            MakeEntryNode(bin, "Actor"),
+                            MakeEntryNode(bin, "Actor", Pcc),
                             new BinInterpNode(bin.Position, $"Plane: (X: {bin.ReadSingle()}, Y: {bin.ReadSingle()}, Z: {bin.ReadSingle()}, W: {bin.ReadSingle()})"),
                             MakeFloatNode(bin, "ShadowMapScale"),
                             MakeInt32Node(bin, "LightingChannels(Bitfield)"),
@@ -415,7 +416,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         Items = new List<ITreeItem>
                         {
-                            MakeEntryNode(bin, "ZoneActor"),
+                            MakeEntryNode(bin, "ZoneActor", Pcc),
                             MakeFloatNode(bin, "LastRenderTime"),
                             new BinInterpNode(bin.Position, $"Connectivity: {Convert.ToString(bin.ReadInt64(), 2).PadLeft(64, '0')}"),
                             new BinInterpNode(bin.Position, $"Visibility: {Convert.ToString(bin.ReadInt64(), 2).PadLeft(64, '0')}"),
@@ -423,7 +424,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     })
                 });
 
-                subnodes.Add(MakeEntryNode(bin, "Polys"));
+                subnodes.Add(MakeEntryNode(bin, "Polys", Pcc));
                 subnodes.Add(MakeInt32Node(bin, "integer Size"));
                 int leafHullsCount = bin.ReadInt32();
                 subnodes.Add(new BinInterpNode(bin.Position - 4, $"LeafHulls ({leafHullsCount})")
@@ -528,10 +529,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
-                subnodes.Add(MakeEntryNode(bin, "PersistentLevel"));
+                subnodes.Add(MakeEntryNode(bin, "PersistentLevel", Pcc));
                 if (Pcc.Game == MEGame.ME3 || Pcc.Game.IsLEGame())
                 {
-                    subnodes.Add(MakeEntryNode(bin, "PersistentFaceFXAnimSet"));
+                    subnodes.Add(MakeEntryNode(bin, "PersistentFaceFXAnimSet", Pcc));
                 }
                 subnodes.AddRange(ReadList(4, i => new BinInterpNode(bin.Position, $"EditorView {i}")
                 {
@@ -546,17 +547,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     subnodes.Add(MakeFloatNode(bin, "unkFloat"));
                 }
-                subnodes.Add(MakeEntryNode(bin, "Null"));
+                subnodes.Add(MakeEntryNode(bin, "Null", Pcc));
                 if (Pcc.Game is MEGame.ME1 or MEGame.LE1)
                 {
-                    subnodes.Add(MakeEntryNode(bin, "DecalManager"));
+                    subnodes.Add(MakeEntryNode(bin, "DecalManager", Pcc));
                 }
 
                 int extraObjsCount;
                 subnodes.Add(new BinInterpNode(bin.Position, $"ExtraReferencedObjects: {extraObjsCount = bin.ReadInt32()}")
                 {
                     ArrayAddAlgorithm = BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes,
-                    Items = ReadList(extraObjsCount, i => new BinInterpNode(bin.Position, $"{entryRefString(bin)}", NodeType.ArrayLeafObject))
+                    Items = ReadList(extraObjsCount, i => new BinInterpNode(bin.Position, $"{MakeEntryNodeString(bin, Pcc)}", NodeType.ArrayLeafObject))
                 });
 
                 binarystart = (int)bin.Position;
@@ -582,10 +583,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     IsExpanded = true
                 };
                 List<ITreeItem> items = item.Items;
-                items.Add(MakeEntryNode(bin, "Node", out int uIndex));
+                items.Add(MakeEntryNode(bin, "Node", Pcc, out int uIndex));
                 if (Pcc.Game is not MEGame.UDK)
                 {
-                    items.Add(MakeEntryNode(bin, "StateNode"));
+                    items.Add(MakeEntryNode(bin, "StateNode", Pcc));
                 }
                 items.Add(new BinInterpNode(bin.Position, $"ProbeMask: {bin.ReadUInt64():X16}"));
                 if (Pcc.Game >= MEGame.ME3 || Pcc.Platform is MEPackage.GamePlatform.PS3)
@@ -600,8 +601,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     Items =
                     {
-                        MakeEntryNode(bin, "State"),
-                        MakeEntryNode(bin, "Node"),
+                        MakeEntryNode(bin, "State", Pcc),
+                        MakeEntryNode(bin, "Node", Pcc),
                         MakeInt32Node(bin, "Offset")
                     }
                 }));
@@ -629,13 +630,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 bin.JumpTo(binarystart);
                 subnodes.Add(MakeArrayNode(bin, "Object to Metadata Map", i =>
                 {
-                    var node = Pcc.Game is MEGame.UDK ? MakeEntryNode(bin, "Object") : MakeStringNode(bin, "Object");
+                    var node = Pcc.Game is MEGame.UDK ? MakeEntryNode(bin, "Object", Pcc) : MakeStringNode(bin, "Object", Pcc.Game);
                     node.IsExpanded = true;
                     int count = bin.ReadInt32();
                     while (count-- > 0)
                     {
                         var metadataType = bin.ReadNameReference(Pcc);
-                        node.Items.Add(MakeStringNode(bin, metadataType.Instanced));
+                        node.Items.Add(MakeStringNode(bin, metadataType.Instanced, Pcc.Game));
                     }
                     return node;
                 }, true));
@@ -656,7 +657,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 bin.JumpTo(binarystart);
                 subnodes.Add(MakeInt32Node(bin, "Position"));
                 subnodes.Add(MakeInt32Node(bin, "Top"));
-                subnodes.Add(MakeStringNode(bin, "Text"));
+                subnodes.Add(MakeStringNode(bin, "Text", Pcc.Game));
             }
             catch (Exception ex)
             {
@@ -1044,7 +1045,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             var subnodes = new List<ITreeItem>();
             var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
             bin.Skip(binaryStart);
-            subnodes.Add(MakeEntryNode(bin, "Redirect references to this export to"));
+            subnodes.Add(MakeEntryNode(bin, "Redirect references to this export to", Pcc));
             return subnodes;
         }
 
@@ -1100,7 +1101,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
                 bin.JumpTo(binarystart);
 
-                subnodes.Add(MakeEntryNode(bin, "Self"));
+                subnodes.Add(MakeEntryNode(bin, "Self", Pcc));
                 int actorsCount;
                 BinInterpNode levelActorsNode;
                 subnodes.Add(levelActorsNode = new BinInterpNode(bin.Position, $"Level Actors: ({actorsCount = bin.ReadInt32()})", NodeType.StructLeafInt)
@@ -1108,7 +1109,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     ArrayAddAlgorithm = BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes,
                     IsExpanded = true
                 });
-                levelActorsNode.Items = ReadList(actorsCount, i => new BinInterpNode(bin.Position, $"{i}: {entryRefString(bin)}", NodeType.ArrayLeafObject)
+                levelActorsNode.Items = ReadList(actorsCount, i => new BinInterpNode(bin.Position, $"{i}: {MakeEntryNodeString(bin, Pcc)}", NodeType.ArrayLeafObject)
                 {
                     ArrayAddAlgorithm = BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes,
                     Parent = levelActorsNode,
@@ -1118,35 +1119,35 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     Items =
                     {
-                        MakeStringNode(bin, "Protocol"),
-                        MakeStringNode(bin, "Host"),
-                        MakeStringNode(bin, "Map"),
-                        MakeStringNode(bin, "Portal"),
+                        MakeStringNode(bin, "Protocol", Pcc.Game),
+                        MakeStringNode(bin, "Host", Pcc.Game),
+                        MakeStringNode(bin, "Map", Pcc.Game),
+                        MakeStringNode(bin, "Portal", Pcc.Game),
                         new BinInterpNode(bin.Position, $"Op: ({bin.ReadInt32()} items)")
                         {
-                            Items = ReadList(bin.Skip(-4).ReadInt32(), i => MakeStringNode(bin, $"{i}"))
+                            Items = ReadList(bin.Skip(-4).ReadInt32(), i => MakeStringNode(bin, $"{i}", Pcc.Game))
                         },
                         MakeInt32Node(bin, "Port"),
                         new BinInterpNode(bin.Position, $"Valid: {bin.ReadInt32()}")
                     }
                 });
-                subnodes.Add(MakeEntryNode(bin, "Model"));
+                subnodes.Add(MakeEntryNode(bin, "Model", Pcc));
                 int modelcomponentsCount;
                 subnodes.Add(new BinInterpNode(bin.Position, $"ModelComponents: ({modelcomponentsCount = bin.ReadInt32()})")
                 {
-                    Items = ReadList(modelcomponentsCount, i => MakeEntryNode(bin, $"{i}"))
+                    Items = ReadList(modelcomponentsCount, i => MakeEntryNode(bin, $"{i}", Pcc))
                 });
                 int sequencesCount;
                 subnodes.Add(new BinInterpNode(bin.Position, $"GameSequences: ({sequencesCount = bin.ReadInt32()})")
                 {
-                    Items = ReadList(sequencesCount, i => MakeEntryNode(bin, $"{i}"))
+                    Items = ReadList(sequencesCount, i => MakeEntryNode(bin, $"{i}", Pcc))
                 });
                 int texToInstCount;
                 int streamableTexInstCount;
                 subnodes.Add(new BinInterpNode(bin.Position, $"TextureToInstancesMap: ({texToInstCount = bin.ReadInt32()})")
                 {
                     Items = ReadList(texToInstCount, i =>
-                                         new BinInterpNode(bin.Position, $"{entryRefString(bin)}: ({streamableTexInstCount = bin.ReadInt32()} StreamableTextureInstances)")
+                                         new BinInterpNode(bin.Position, $"{MakeEntryNodeString(bin, Pcc)}: ({streamableTexInstCount = bin.ReadInt32()} StreamableTextureInstances)")
                                          {
                                              Items = ReadList(streamableTexInstCount, j => new BinInterpNode(bin.Position, $"{j}")
                                              {
@@ -1170,7 +1171,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 if (Pcc.Game == MEGame.UDK)
                 {
                     subnodes.Add(MakeArrayNode(bin, "MeshesComponentsWithDynamicLighting?",
-                                               i => new BinInterpNode(bin.Position, $"{i}: {entryRefString(bin)}, {bin.ReadInt32()}")));
+                                               i => new BinInterpNode(bin.Position, $"{i}: {MakeEntryNodeString(bin, Pcc)}, {bin.ReadInt32()}")));
                 }
 
                 if (Pcc.Game >= MEGame.ME3)
@@ -1197,7 +1198,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int cachedPhysSMDataMapCount;
                 subnodes.Add(new BinInterpNode(bin.Position, $"CachedPhysSMDataMap: ({cachedPhysSMDataMapCount = bin.ReadInt32()})")
                 {
-                    Items = ReadList(cachedPhysSMDataMapCount, i => new BinInterpNode(bin.Position, $"{entryRefString(bin)}")
+                    Items = ReadList(cachedPhysSMDataMapCount, i => new BinInterpNode(bin.Position, $"{MakeEntryNodeString(bin, Pcc)}")
                     {
                         Items =
                         {
@@ -1229,7 +1230,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int cachedPhysPerTriSMDataMapCount;
                 subnodes.Add(new BinInterpNode(bin.Position, $"CachedPhysPerTriSMDataMap: ({cachedPhysPerTriSMDataMapCount = bin.ReadInt32()})")
                 {
-                    Items = ReadList(cachedPhysPerTriSMDataMapCount, i => new BinInterpNode(bin.Position, $"{entryRefString(bin)}")
+                    Items = ReadList(cachedPhysPerTriSMDataMapCount, i => new BinInterpNode(bin.Position, $"{MakeEntryNodeString(bin, Pcc)}")
                     {
                         Items =
                         {
@@ -1260,7 +1261,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int forceStreamTexturesCount;
                 subnodes.Add(new BinInterpNode(bin.Position, $"ForceStreamTextures: ({forceStreamTexturesCount = bin.ReadInt32()})")
                 {
-                    Items = ReadList(forceStreamTexturesCount, i => MakeBoolIntNode(bin, $"Texture: {entryRefString(bin)} | ForceStream"))
+                    Items = ReadList(forceStreamTexturesCount, i => MakeBoolIntNode(bin, $"Texture: {MakeEntryNodeString(bin, Pcc)} | ForceStream"))
                 });
 
                 if (Pcc.Game == MEGame.UDK)
@@ -1287,14 +1288,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     subnodes.Add(MakeInt32Node(bin, "CachedPhysConvexBSPVersion"));
                 }
 
-                subnodes.Add(MakeEntryNode(bin, "NavListStart"));
-                subnodes.Add(MakeEntryNode(bin, "NavListEnd"));
-                subnodes.Add(MakeEntryNode(bin, "CoverListStart"));
-                subnodes.Add(MakeEntryNode(bin, "CoverListEnd"));
+                subnodes.Add(MakeEntryNode(bin, "NavListStart", Pcc));
+                subnodes.Add(MakeEntryNode(bin, "NavListEnd", Pcc));
+                subnodes.Add(MakeEntryNode(bin, "CoverListStart", Pcc));
+                subnodes.Add(MakeEntryNode(bin, "CoverListEnd", Pcc));
                 if (Pcc.Game >= MEGame.ME3)
                 {
-                    subnodes.Add(MakeEntryNode(bin, "PylonListStart"));
-                    subnodes.Add(MakeEntryNode(bin, "PylonListEnd"));
+                    subnodes.Add(MakeEntryNode(bin, "PylonListStart", Pcc));
+                    subnodes.Add(MakeEntryNode(bin, "PylonListEnd", Pcc));
                 }
                 if (Pcc.Game is MEGame.ME3 or MEGame.LE3 or MEGame.UDK)
                 {
@@ -1307,7 +1308,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     int coverListCount;
                     subnodes.Add(new BinInterpNode(bin.Position, $"CoverLinkRefs: ({coverListCount = bin.ReadInt32()})")
                     {
-                        Items = ReadList(coverListCount, i => MakeEntryNode(bin, $"{i}"))
+                        Items = ReadList(coverListCount, i => MakeEntryNode(bin, $"{i}", Pcc))
                     });
 
                     int intToByteMapCount;
@@ -1329,7 +1330,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         int navListCount;
                         subnodes.Add(new BinInterpNode(bin.Position, $"NavRefs: ({navListCount = bin.ReadInt32()})")
                         {
-                            Items = ReadList(navListCount, i => MakeEntryNode(bin, $"{i}"))
+                            Items = ReadList(navListCount, i => MakeEntryNode(bin, $"{i}", Pcc))
                         });
 
                         int numbersCount;
@@ -1344,13 +1345,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 int crossLevelActorsCount;
                 subnodes.Add(new BinInterpNode(bin.Position, $"CrossLevelActors?: ({crossLevelActorsCount = bin.ReadInt32()})")
                 {
-                    Items = ReadList(crossLevelActorsCount, i => MakeEntryNode(bin, $"{i}"))
+                    Items = ReadList(crossLevelActorsCount, i => MakeEntryNode(bin, $"{i}", Pcc))
                 });
 
                 if (Pcc.Game is MEGame.ME1 or MEGame.LE1)
                 {
-                    subnodes.Add(MakeEntryNode(bin, "BioArtPlaceable 1?"));
-                    subnodes.Add(MakeEntryNode(bin, "BioArtPlaceable 2?"));
+                    subnodes.Add(MakeEntryNode(bin, "BioArtPlaceable 1?", Pcc));
+                    subnodes.Add(MakeEntryNode(bin, "BioArtPlaceable 2?", Pcc));
                 }
 
                 if (Pcc.Game >= MEGame.ME3)
@@ -1461,8 +1462,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     IsExpanded = true,
                     Items =
                     {
-                        MakeEntryNode(bin, "Archetype"),
-                        MakeEntryNode(bin, "Instance")
+                        MakeEntryNode(bin, "Archetype", Pcc),
+                        MakeEntryNode(bin, "Instance", Pcc)
                     }
                 }, true));
                 subnodes.Add(MakeArrayNode(bin, "PrefabInstance_ObjectMap", i => new BinInterpNode(bin.Position, $"{i}")
@@ -1470,7 +1471,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     IsExpanded = true,
                     Items =
                     {
-                        MakeEntryNode(bin, "Object:"),
+                        MakeEntryNode(bin, "Object:", Pcc),
                         MakeInt32Node(bin, "int")
                     }
                 }, true));

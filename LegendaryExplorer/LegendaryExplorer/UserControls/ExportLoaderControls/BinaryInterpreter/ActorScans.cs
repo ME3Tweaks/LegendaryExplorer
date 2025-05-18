@@ -7,6 +7,7 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using Newtonsoft.Json;
+using static LegendaryExplorer.UserControls.ExportLoaderControls.BinaryNodeFactory;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls;
 
@@ -197,14 +198,14 @@ public partial class BinaryInterpreterWPF
             subnodes.Add(MakeArrayNode(bin, "Heights", i => MakeUInt16Node(bin, $"{i}")));
             subnodes.Add(MakeArrayNode(bin, "InfoData", i => new BinInterpNode(bin.Position, $"{i}: {(EInfoFlags)bin.ReadByte()}")));
             subnodes.Add(MakeArrayNode(bin, "AlphaMaps", i => MakeArrayNode(bin, $"{i}: Data", j => new BinInterpNode(bin.Position, $"{j}: {bin.ReadByte()}"))));
-            subnodes.Add(MakeArrayNode(bin, "WeightedTextureMaps", i => MakeEntryNode(bin, $"{i}")));
+            subnodes.Add(MakeArrayNode(bin, "WeightedTextureMaps", i => MakeEntryNode(bin, $"{i}", Pcc)));
             for (int k = Pcc.Game is MEGame.ME1 or MEGame.UDK ? 1 : 2; k > 0; k--)
             {
                 subnodes.Add(MakeArrayNode(bin, "CachedTerrainMaterials", i =>
                 {
                     var node = MakeMaterialResourceNode(bin, $"{i}", materialGuidMap);
 
-                    node.Items.Add(MakeEntryNode(bin, "Terrain"));
+                    node.Items.Add(MakeEntryNode(bin, "Terrain", Pcc));
                     node.Items.Add(new BinInterpNode(bin.Position, "Mask")
                     {
                         IsExpanded = true,

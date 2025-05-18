@@ -6,6 +6,7 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using static LegendaryExplorer.UserControls.ExportLoaderControls.BinaryNodeFactory;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls;
 
@@ -32,11 +33,11 @@ public partial class BinaryInterpreterWPF
                 };
                 node.Items.Add(new BinInterpNode(bin.Position, $"ShadowMaps ({bin.ReadInt32()})")
                 {
-                    Items = ReadList(bin.Skip(-4).ReadInt32(), j => MakeEntryNode(bin, $"{j}"))
+                    Items = ReadList(bin.Skip(-4).ReadInt32(), j => MakeEntryNode(bin, $"{j}", Pcc))
                 });
                 node.Items.Add(new BinInterpNode(bin.Position, $"ShadowVertexBuffers ({bin.ReadInt32()})")
                 {
-                    Items = ReadList(bin.Skip(-4).ReadInt32(), j => MakeEntryNode(bin, $"{j}"))
+                    Items = ReadList(bin.Skip(-4).ReadInt32(), j => MakeEntryNode(bin, $"{j}", Pcc))
                 });
                 node.Items.Add(MakeLightMapNode(bin));
                 node.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new List<ITreeItem>
@@ -205,7 +206,7 @@ public partial class BinaryInterpreterWPF
         {
             int count;
             bin.JumpTo(binarystart);
-            subnodes.Add(MakeEntryNode(bin, "Model"));
+            subnodes.Add(MakeEntryNode(bin, "Model", Pcc));
             subnodes.Add(MakeInt32Node(bin, "ZoneIndex"));
             subnodes.Add(new BinInterpNode(bin.Position, $"Elements ({count = bin.ReadInt32()})")
             {
@@ -214,15 +215,15 @@ public partial class BinaryInterpreterWPF
                     Items =
                     {
                         MakeLightMapNode(bin),
-                        MakeEntryNode(bin, "Component"),
-                        MakeEntryNode(bin, "Material"),
+                        MakeEntryNode(bin, "Component", Pcc),
+                        MakeEntryNode(bin, "Material", Pcc),
                         new BinInterpNode(bin.Position, $"Nodes ({count = bin.ReadInt32()})")
                         {
                             Items = ReadList(count, j => new BinInterpNode(bin.Position, $"{j}: {bin.ReadUInt16()}"))
                         },
                         new BinInterpNode(bin.Position, $"ShadowMaps ({count = bin.ReadInt32()})")
                         {
-                            Items = ReadList(count, j => MakeEntryNode(bin, $"{j}"))
+                            Items = ReadList(count, j => MakeEntryNode(bin, $"{j}", Pcc))
                         },
                         new BinInterpNode(bin.Position, $"IrrelevantLights ({count = bin.ReadInt32()})")
                         {
@@ -311,7 +312,7 @@ public partial class BinaryInterpreterWPF
                 var node = new BinInterpNode(bin.Position, $"{i}");
                 try
                 {
-                    node.Items.Add(MakeEntryNode(bin, "Component"));
+                    node.Items.Add(MakeEntryNode(bin, "Component", Pcc));
                     node.Items.Add(new BinInterpNode(bin.Position, $"FDecalVertex Size: {fDecalVertexSize = bin.ReadInt32()}"));
                     BinInterpNode interpNode = new BinInterpNode(bin.Position, $"Vertices ({count = bin.ReadInt32()})")
                     {
@@ -351,7 +352,7 @@ public partial class BinaryInterpreterWPF
                         node.Items.Add(new BinInterpNode(bin.Position, $"ShadowMap1D ({count = bin.ReadInt32()})")
                         {
                             Length = 4 + count * 4,
-                            Items = ReadList(count, j => new BinInterpNode(bin.Position, $"{j}: {entryRefString(bin)}") { Length = 4 })
+                            Items = ReadList(count, j => new BinInterpNode(bin.Position, $"{j}: {MakeEntryNodeString(bin, Pcc)}") { Length = 4 })
                         });
                         node.Items.Add(MakeInt32Node(bin, "Data"));
                         node.Items.Add(MakeInt32Node(bin, "InstanceIndex"));
@@ -399,7 +400,7 @@ public partial class BinaryInterpreterWPF
                         },
                         ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_1D, () => new ITreeItem[]
                         {
-                            MakeEntryNode(bin, "Owner"),
+                            MakeEntryNode(bin, "Owner", Pcc),
                             MakeUInt32Node(bin, "BulkDataFlags:"),
                             new BinInterpNode(bin.Position, $"ElementCount: {bulkSerializeElementCount = bin.ReadInt32()}"),
                             new BinInterpNode(bin.Position, $"BulkDataSizeOnDisk: {bulkSerializeDataSize = bin.ReadInt32()}"),
@@ -431,15 +432,15 @@ public partial class BinaryInterpreterWPF
                         }.NonNull()),
                         ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_2D, () => new List<ITreeItem>
                         {
-                            MakeEntryNode(bin, "Texture 1"),
+                            MakeEntryNode(bin, "Texture 1", Pcc),
                             MakeVectorNodeEditable(bin, "ScaleVector 1", true),
-                            MakeEntryNode(bin, "Texture 2"),
+                            MakeEntryNode(bin, "Texture 2", Pcc),
                             MakeVectorNodeEditable(bin, "ScaleVector 2", true),
-                            MakeEntryNode(bin, "Texture 3"),
+                            MakeEntryNode(bin, "Texture 3", Pcc),
                             MakeVectorNodeEditable(bin, "ScaleVector 3", true),
                             ListInitHelper.ConditionalAdd(Pcc.Game < MEGame.ME3, () => new ITreeItem[]
                             {
-                                MakeEntryNode(bin, "Texture 4"),
+                                MakeEntryNode(bin, "Texture 4", Pcc),
                                 MakeVectorNodeEditable(bin, "ScaleVector 4", true),
                             }),
                             MakeVector2DNodeEditable(bin, "CoordinateScale", true),
@@ -465,11 +466,11 @@ public partial class BinaryInterpreterWPF
                         }),
                         ListInitHelper.ConditionalAdd(lightMapType == ELightMapType.LMT_4 || lightMapType == ELightMapType.LMT_6, () => new List<ITreeItem>
                         {
-                            MakeEntryNode(bin, "Texture 1"),
+                            MakeEntryNode(bin, "Texture 1", Pcc),
                             new ListInitHelper.InitCollection<ITreeItem>(ReadList(8, j => MakeFloatNode(bin, "Unknown float"))),
-                            MakeEntryNode(bin, "Texture 2"),
+                            MakeEntryNode(bin, "Texture 2", Pcc),
                             new ListInitHelper.InitCollection<ITreeItem>(ReadList(8, j => MakeFloatNode(bin, "Unknown float"))),
-                            MakeEntryNode(bin, "Texture 3"),
+                            MakeEntryNode(bin, "Texture 3", Pcc),
                             new ListInitHelper.InitCollection<ITreeItem>(ReadList(8, j => MakeFloatNode(bin, "Unknown float"))),
                             new ListInitHelper.InitCollection<ITreeItem>(ReadList(4, j => MakeFloatNode(bin, "Unknown float"))),
                         }),
