@@ -12,6 +12,7 @@ using ME3Tweaks.Wwiser.Formats;
 using ME3Tweaks.Wwiser.Model;
 using ME3Tweaks.Wwiser.Model.Action;
 using ME3Tweaks.Wwiser.Model.Action.Specific;
+using ME3Tweaks.Wwiser.Model.GlobalSettings;
 using ME3Tweaks.Wwiser.Model.Hierarchy;
 using ME3Tweaks.Wwiser.Model.Hierarchy.Enums;
 using ME3Tweaks.Wwiser.Model.ParameterNode;
@@ -20,7 +21,6 @@ using ME3Tweaks.Wwiser.Model.RTPC;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.AccumType;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.CurveScaling;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.GroupType;
-using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.ParameterId;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.PriorityOverrideFlags;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.MediaInformation;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.RanSeqFlags;
@@ -170,6 +170,9 @@ public partial class BinaryInterpreterWPF
                 case "INIT":
                     Scan_WwiseBank_INIT(chunkNode, bin);
                     break;
+                case "STMG":
+                    Scan_WwiseBank_STMG(chunkNode, bin, version);
+                    break;
             }
 
             // Just in case we don't parse chunk in full - jump to next chunk
@@ -281,6 +284,41 @@ public partial class BinaryInterpreterWPF
 
         switch(type)
         {
+            case HircType.State:
+                if (version <= 56)
+                {
+                    root.Items.Add(MakeFloatNode(bin, "Volume"));
+                    root.Items.Add(MakeFloatNode(bin, "LFEVolume"));
+                    root.Items.Add(MakeFloatNode(bin, "Pitch"));
+                    root.Items.Add(MakeFloatNode(bin, "LPF"));
+                    if(version <= 52)
+                    {
+                        root.Items.Add(MakeByteEnumNode<VolumeMeaning>(bin, "VolumeValueMeaning"));
+                        root.Items.Add(MakeByteEnumNode<VolumeMeaning>(bin, "LFEValueMeaning"));
+                        root.Items.Add(MakeByteEnumNode<VolumeMeaning>(bin, "PitchValueMeaning"));
+                        root.Items.Add(MakeByteEnumNode<VolumeMeaning>(bin, "LPFValueMeaning"));
+                    }
+                }
+                else if (version <= 126)
+                {
+                    var propBPos = bin.Position;
+                    var propCount = bin.ReadByte();
+                    root.Items.Add(new BinInterpNode(propBPos, $"Prop Count: {propCount}") { Length = (int)(bin.Position - propBPos) });
+                    root.Items.Add(MakeArrayNode(propCount, bin, "ParameterIds", i =>
+                    {
+                        var pidPos = bin.Position;
+                        var (paramId, modParamId) = ParameterId.DeserializeStatic(bin.BaseStream, version, false); // TODO: use modulator not handles on high versions!
+                        return paramId.HasValue
+                            ? new BinInterpNode(pidPos, $"ParameterId {i}: {Enum.GetName(paramId.Value)}")
+                                { Length = (int)(bin.Position - pidPos) }
+                            : new BinInterpNode(pidPos, $"ModulatorParameterId {i}: {Enum.GetName(modParamId.Value)}")
+                                { Length = (int)(bin.Position - pidPos) };
+
+                    }, true));
+                    root.Items.Add(MakeArrayNode(propCount, bin, "Values", i => MakeFloatNode(bin, $"{i}")));
+                }
+
+                break;
             case HircType.Sound:
                 Scan_HIRC_BankSourceData(root, bin, version);
                 Scan_HIRC_NodeBaseParams(root, bin, version, useFeedback);
@@ -539,14 +577,7 @@ public partial class BinaryInterpreterWPF
                 {
                     var c = new BinInterpNode(bin.Position, $"Item {i}");
                     c.Items.Add(MakeByteEnumNode<CurveScalingInner>(bin, "CurveScaling"));
-                    c.Items.Add(MakeArrayNodeInt16Count(bin, $"Graph", k =>
-                    {
-                        var gItem = new BinInterpNode(bin.Position, $"Graph Item {k}");
-                        gItem.Items.Add(MakeFloatNode(bin, "From"));
-                        gItem.Items.Add(MakeFloatNode(bin, "To"));
-                        gItem.Items.Add(MakeUInt32EnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
-                        return gItem;
-                    }, true));
+                    c.Items.Add(MakeArrayNodeInt16Count(bin, $"Graph", k => MakeWwiseGraphItem(bin, k), true));
                     return c;
                 }, true));
                 Scan_HIRC_RTPCParameterNodeBase(root, bin, version);
@@ -586,6 +617,15 @@ public partial class BinaryInterpreterWPF
         // Just in case we don't parse item in full - jump to next item
         bin.JumpTo(start + fullSize);
         return root;
+    }
+
+    private BinInterpNode MakeWwiseGraphItem(EndianReader bin, int k)
+    {
+        var gItem = new BinInterpNode(bin.Position, $"Graph Item {k}");
+        gItem.Items.Add(MakeFloatNode(bin, "From"));
+        gItem.Items.Add(MakeFloatNode(bin, "To"));
+        gItem.Items.Add(MakeUInt32EnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
+        return gItem;
     }
 
     private void Scan_HIRC_ActionExceptParams(BinInterpNode root, EndianReader bin, uint version)
@@ -1167,17 +1207,15 @@ public partial class BinaryInterpreterWPF
             var accumType = (AccumTypeInner)bin.ReadByte();
             if (version <= 125) accumType += 1;
             rtpc.Items.Add(new BinInterpNode(bin.Position - 1, $"AccumType: {Enum.GetName(accumType)}"));
-            if(version <= 89) rtpc.Items.Add(MakeUInt32EnumNode<RtpcParameterId>(bin, "ParameterId"));
-            else if(version <= 113) rtpc.Items.Add(MakeByteEnumNode<RtpcParameterId>(bin, "ParameterId"));
-            else
-            {
-                var pos = bin.Position;
-                var parameterId = (RtpcParameterId)VarCount.ReadResizingUint(bin.BaseStream);
-                bin.JumpTo(pos);
-                var node = MakeWwiseVarCountNode(bin, $"ParameterId");
-                node.Header += $" ({Enum.GetName(parameterId)})";
-                rtpc.Items.Add(node);
-            }
+            
+            var pidPos = bin.Position;
+            var (paramId, modParamId) = ParameterId.DeserializeStatic(bin.BaseStream, version, false); // TODO: use modulator not handles on high versions!
+            rtpc.Items.Add(paramId.HasValue
+                ? new BinInterpNode(pidPos, $"ParameterId: {Enum.GetName(paramId.Value)}")
+                    { Length = (int)(bin.Position - pidPos) }
+                : new BinInterpNode(pidPos, $"ModulatorParameterId: {Enum.GetName(modParamId.Value)}")
+                    { Length = (int)(bin.Position - pidPos) });
+            
             rtpc.Items.Add(MakeWwiseIdRefNode(bin, "RtpcCurveId"));
             rtpc.Items.Add(MakeByteEnumNode<CurveScalingInner>(bin, "CurveScaling"));
             rtpc.Items.Add(MakeArrayNodeInt16Count(bin, "Graph", j =>
@@ -1240,6 +1278,75 @@ public partial class BinaryInterpreterWPF
             plugin.Items.Add(MakeUInt32Node(bin, "PluginID"));
             plugin.Items.Add(MakeStringUTF8Node(bin, "DLLName"));
             return plugin;
+        }));
+    }
+
+    private void Scan_WwiseBank_STMG(BinInterpNode root, EndianReader bin, uint version)
+    {
+        root.Items.Add(MakeFloatNode(bin, "VolumeThreshold"));
+        if (version > 53) root.Items.Add(MakeUInt16Node(bin, "MaxNumVoicesLimitInternal"));
+        if (version > 126) root.Items.Add(MakeUInt16Node(bin, "MaxNumDangerousVirtVoicesLimitInternal"));
+        
+        root.Items.Add(MakeArrayNode(bin, "StateGroups", i =>
+        {
+            var sg = new BinInterpNode(bin.Position, $"Group {i}");
+            sg.Items.Add(MakeWwiseIdNode(bin, "StateId"));
+            sg.Items.Add(MakeUInt32Node(bin, "DefaultTransitionTime"));
+            if(version <= 52) sg.Items.Add(MakeArrayNode(bin, "CustomStates", j =>  MakeHIRCNode(j, bin, version, false)));
+            sg.Items.Add(MakeArrayNode(bin, "StateTransitions", j =>
+            {
+                var st = new BinInterpNode(bin.Position, $"{j}");
+                st.Items.Add(MakeWwiseIdRefNode(bin, "FromStateId"));
+                st.Items.Add(MakeWwiseIdRefNode(bin, "ToStateId"));
+                st.Items.Add(MakeUInt32Node(bin, "TransitionTime"));
+                return st;
+            }));
+                
+            return sg;
+        }));
+        
+        root.Items.Add(MakeArrayNode(bin, "SwitchGroups", i =>
+        {
+            var sg = new BinInterpNode(bin.Position, $"Group {i}");
+            sg.Items.Add(MakeWwiseIdNode(bin, "GroupId"));
+            sg.Items.Add(MakeWwiseIdRefNode(bin, "RtpcId?"));
+            if (version > 89)
+            {
+                var rtpcType = bin.ReadByte();
+                if (version <= 140 && rtpcType == 0x02)
+                {
+                    rtpcType = 0x04;
+                }
+                sg.Items.Add(new BinInterpNode(bin.Position - 1, $"RtpcType: {Enum.GetName((RtpcTypeInner)rtpcType)}") { Length = 1 });
+            }
+            sg.Items.Add(MakeArrayNode(bin, "Graph", j => MakeWwiseGraphItem(bin, j)));
+            return sg;
+        }));
+        
+        root.Items.Add(MakeArrayNode(bin, "Params", i =>
+        {
+            var p = new BinInterpNode(bin.Position, $"Param {i}");
+            p.Items.Add(MakeWwiseIdRefNode(bin, "RtpcParamId"));
+            p.Items.Add(MakeFloatNode(bin, "Value"));
+            if (version > 89)
+            {
+                p.Items.Add(MakeUInt32EnumNode<TransitionRampingType>(bin, "RampingType"));
+                p.Items.Add(MakeFloatNode(bin, "RampUp"));
+                p.Items.Add(MakeFloatNode(bin, "RampDown"));
+                p.Items.Add(MakeByteEnumNode<BuiltInParam>(bin, "BuiltInParam"));
+            }
+            return p;
+        }));
+
+        if (version > 118) root.Items.Add(MakeArrayNode(bin, "AcousticTextures", i =>
+        {
+            var at = new BinInterpNode(bin.Position, $"Acoustic Texture {i}");
+            at.Items.Add(MakeWwiseIdNode(bin, "AcousticTexture"));
+            foreach(var p in (string[])["AbsorptionOffset", "AbsorptionLow", "AbsorptionMidLow", "AbsorptionMidHigh", "AbsorptionHigh", "Scattering"])
+            {
+                at.Items.Add(MakeFloatNode(bin, p));
+            }
+            return at;
         }));
     }
 
