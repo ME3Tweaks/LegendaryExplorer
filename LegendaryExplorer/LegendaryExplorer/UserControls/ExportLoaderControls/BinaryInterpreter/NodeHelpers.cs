@@ -362,7 +362,7 @@ public partial class BinaryInterpreterWPF
         }
         catch (Exception ex)
         {
-            new BinInterpNode { Header = $"Error reading binary data: {ex}" };
+            list.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
         }
 
         return list;

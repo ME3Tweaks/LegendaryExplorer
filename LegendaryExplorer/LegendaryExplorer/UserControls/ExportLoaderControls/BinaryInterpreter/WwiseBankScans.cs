@@ -299,15 +299,16 @@ public partial class BinaryInterpreterWPF
                         root.Items.Add(MakeByteEnumNode<VolumeMeaning>(bin, "LPFValueMeaning"));
                     }
                 }
-                else if (version <= 126)
+                else
                 {
                     var propBPos = bin.Position;
-                    var propCount = bin.ReadByte();
+                    var propCount = (version <= 126) ? bin.ReadByte() : (byte)bin.ReadUInt16();
                     root.Items.Add(new BinInterpNode(propBPos, $"Prop Count: {propCount}") { Length = (int)(bin.Position - propBPos) });
                     root.Items.Add(MakeArrayNode(propCount, bin, "ParameterIds", i =>
                     {
                         var pidPos = bin.Position;
-                        var (paramId, modParamId) = ParameterId.DeserializeStatic(bin.BaseStream, version, false); // TODO: use modulator not handles on high versions!
+                        // TODO: Does this ever use modulator? prolly not
+                        var (paramId, modParamId) = ParameterId.DeserializeStatic(bin.BaseStream, version, false, isState: true);
                         return paramId.HasValue
                             ? new BinInterpNode(pidPos, $"ParameterId {i}: {Enum.GetName(paramId.Value)}")
                                 { Length = (int)(bin.Position - pidPos) }
@@ -315,7 +316,7 @@ public partial class BinaryInterpreterWPF
                                 { Length = (int)(bin.Position - pidPos) };
 
                     }, true));
-                    root.Items.Add(MakeArrayNode(propCount, bin, "Values", i => MakeFloatNode(bin, $"{i}")));
+                    root.Items.Add(MakeArrayNode(propCount, bin, "Values", i => MakeFloatNode(bin, $"{i}"), true));
                 }
 
                 break;
