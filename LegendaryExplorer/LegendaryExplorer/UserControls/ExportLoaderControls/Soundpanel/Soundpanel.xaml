@@ -184,8 +184,7 @@
                         </Grid.RowDefinitions>
 
                         <ListBox ItemsSource="{Binding HIRCObjects}" 
-                             Name="HIRC_ListBox" SelectionChanged="HIRC_ListBox_SelectionChanged" 
-                                SelectedItem="{Binding SelectedHIRCObject, Mode=TwoWay}"
+                             Name="HIRC_ListBox" SelectedItem="{Binding SelectedHIRCObject, Mode=TwoWay}"
                              HorizontalContentAlignment="Stretch"
                              Grid.Row="0" Grid.ColumnSpan="3">
                             <ListBox.Resources>

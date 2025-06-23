@@ -147,32 +147,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 
         private void SaveHIRCHex()
         {
-            SelectedHIRCItem.SaveData(hircHexProvider.Span.ToArray());
-            SelectedHIRCItem.DataChanged = true;
+            SelectedHIRCItem.CommitHex(hircHexProvider.Span.ToArray());
             HIRCHexChanged = false;
-            /*int idx = HIRC_ListBox.SelectedIndex;
-            if (idx != -1)
-            {
-                //var dataBefore = hircHexProvider.Bytes.ToArray();
-                HIRCObjects[idx] = new HIRCDisplayObject(idx, CreateHircObjectFromHex(hircHexProvider.Span.ToArray()), Pcc.Game)
-                {
-                    DataChanged = true
-                };
-                HIRCHexChanged = false;
-                OnPropertyChanged(nameof(HIRCHexChanged));
-                //var dataAfter = HIRCObjects[idx].Data;
-                //if (dataBefore.Length == dataAfter.Length)
-                //{
-                //    for (int i = 0; i < dataAfter.Length; i++)
-                //    {
-                //        if (dataAfter[i] != dataBefore[i])
-                //        {
-                //            MessageBox.Show($@"Committed data has changed! Change starts at 0x{i:X8}");
-                //            break;
-                //        }
-                //    }
-                //}
-            }*/
         }
         
         private void SoundpanelHIRC_Hexbox_BytesChanged(object sender, EventArgs e)
@@ -198,13 +174,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
         
         private void HIRCNotableItems_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SoundpanelHIRC_Hexbox.UnhighlightAll();
+            /*SoundpanelHIRC_Hexbox.UnhighlightAll();
             if (HIRCNotableItems_ListBox.SelectedItem is Soundpanel.HIRCNotableItem h)
             {
                 SoundpanelHIRC_Hexbox.Highlight(h.Offset, h.Length);
                 SoundpanelHIRC_Hexbox.SelectionStart = h.Offset;
                 SoundpanelHIRC_Hexbox.SelectionLength = 1;
-            }
+            }*/
         }
         
         private void Soundpanel_HIRCHexbox_SelectionChanged(object sender, EventArgs e)

@@ -4,8 +4,6 @@ using System.Linq;
 using BinarySerialization;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
 using ME3Tweaks.Wwiser;
 using ME3Tweaks.Wwiser.Model.Hierarchy;
 using WwiseBank = ME3Tweaks.Wwiser.WwiseBank;
@@ -14,6 +12,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 {
     public class HIRCDisplayObject : NotifyPropertyChangedBase
     {
+        public HIRCDisplayObject(int i, HircItemContainer item, byte[] data, BankSerializationContext context)
+        {
+            Index = i;
+            Item = item;
+            Data = data;
+            _context = context;
+        }
+        
+        public int Index { get; set; }
+        
         private HircItemContainer _item;
 
         public HircItemContainer Item
@@ -21,41 +29,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
             get => _item;
             set => SetProperty(ref _item, value);
         }
-        
-        private BankSerializationContext _context;
-        
-        public int Index { get; set; }
-
-        public byte ObjType { get; set; }
-
-        public uint ID { get; set; }
-
-        public byte SoundType { get; set; }
-
-        public uint State { get; set; }
-
-        //typeinfo
-        public uint unk1, AudioID, SourceID;//scope,atype;
-        public List<uint> EventIDs { get; set; }
 
         private byte[] _data;
         public byte[] Data
         {
             get => _data;
-            internal set
-            {
-                if (_data != null && value != null && _data.SequenceEqual(value))
-                {
-                    return; //if the data is the same don't write it and trigger the side effects
-                }
-
-                bool isFirstLoad = _data == null;
-                _data = value;
-                if (!isFirstLoad)
-                {
-                    DataChanged = true;
-                }
-            }
+            internal set => _data = value;
         }
 
         private bool _dataChanged;
@@ -65,58 +44,52 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
             get => _dataChanged;
             internal set => SetProperty(ref _dataChanged, value);
         }
+        
+        private BankSerializationContext _context;
 
         public HIRCDisplayObject Clone()
         {
-            HIRCDisplayObject clone = (HIRCDisplayObject)MemberwiseClone();
-            clone.EventIDs = EventIDs?.Clone();
-            clone.Data = Data?.ArrayClone();
+            var clone = new HIRCDisplayObject(Index, Item, Data?.ArrayClone(), _context);
+
+            if (Data != null)
+            {
+                // Effectively a deep clone of the Item
+                var serializer = new BinarySerializer();
+                using var stream = new MemoryStream(clone.Data);
+                clone.Item = serializer.Deserialize<HircItemContainer>(stream, _context);
+                
+                // Increment the ID to ensure uniqueness
+                clone.Item.Item.Id++;
+                
+                // Serialize the data back - this is literally just for the updated ID lmao
+                stream.SetLength(0);
+                serializer.Serialize(stream, clone.Item, clone._context);
+                clone.Data = stream.ToArray();
+                clone.DataChanged = true;
+            }
             return clone;
         }
 
-        /*public HIRCDisplayObject(int i, WwiseBankParsed.HIRCObject src, MEGame game)
+        /// <summary>
+        /// Commit the hex data back to the HircItemContainer
+        /// </summary>
+        public void CommitHex(byte[] data)
         {
-            Data = src.ToBytes(game);
-            Index = i;
-            ObjType = (byte)src.Type;
-            ID = src.ID;
-            switch (src)
+            if(data is null || data.Length == 0)
             {
-                case WwiseBankParsed.SoundSFXVoice sfxVoice:
-                    unk1 = sfxVoice.Unk1;
-                    SourceID = sfxVoice.SourceID;
-                    AudioID = sfxVoice.AudioID;
-                    SoundType = (byte)sfxVoice.SoundType;
-                    break;
-                case WwiseBankParsed.Event eventHIRC:
-                    EventIDs = eventHIRC.EventActions.Clone();
-                    break;
+                return;
             }
-        }*/
-
-        public HIRCDisplayObject(int i, HircItemContainer item, byte[] data, BankSerializationContext context)
-        {
-            Index = i;
-            Item = item;
+            
+            if (_data != null && _data.SequenceEqual(data))
+            {
+                return; //if the data is the same don't write it and trigger the side effects
+            }
+            
             Data = data;
-            _context = context;
-        }
-
-        public void SaveData(byte[] toArray)
-        {
-            Data = toArray;
+            var serializer = new BinarySerializer();
+            using var stream = new MemoryStream(Data);
+            Item = serializer.Deserialize<HircItemContainer>(stream, _context);
             DataChanged = true;
-        }
-
-        public void Commit()
-        {
-            if (DataChanged)
-            {
-                var serializer = new BinarySerializer();
-                using var stream = new MemoryStream(Data);
-                Item = serializer.Deserialize<HircItemContainer>(stream, _context);
-                DataChanged = false;
-            }
         }
 
         public static IEnumerable<HIRCDisplayObject> CreateFromBank(WwiseBank bank)
