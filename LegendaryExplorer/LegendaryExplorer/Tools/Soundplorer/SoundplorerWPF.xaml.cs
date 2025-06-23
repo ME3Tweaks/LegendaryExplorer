@@ -32,6 +32,7 @@ using LegendaryExplorerCore.Audio;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Sound.ISACT;
+using ME3Tweaks.Wwiser;
 using AudioStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
 using WwiseStream = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream;
 
@@ -501,39 +502,37 @@ namespace LegendaryExplorer.Tools.Soundplorer
         {
             if (spExport != null && spExport.Export.ClassName == "WwiseBank")
             {
-                var bank = spExport.Export.GetBinaryData<WwiseBankParsed>();
-                if (bank.EmbeddedFiles.Count > 0)
+                var bank = spExport.Export.GetBinaryData<WwiseBankWwiser>().Bank;
+                if (bank.EmbeddedFiles.Count == 0) return;
+                
+                if (location == null)
                 {
-                    if (location == null)
+                    var dlg = new CommonOpenFileDialog("Select output folder")
                     {
-                        var dlg = new CommonOpenFileDialog("Select output folder")
-                        {
-                            IsFolderPicker = true
-                        };
+                        IsFolderPicker = true
+                    };
 
-                        if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
-                        {
-                            return;
-                        }
-                        location = dlg.FileName;
+                    if (dlg.ShowDialog(this) != CommonFileDialogResult.Ok)
+                    {
+                        return;
                     }
+                    location = dlg.FileName;
+                }
 
-                    foreach ((uint wemID, byte[] wemData) in bank.EmbeddedFiles)
+                foreach (var file in bank.EmbeddedFiles)
+                {
+                    string wemHeader = System.Text.Encoding.ASCII.GetString(file.Data[..4]);
+                    string wemName = $"{spExport.Export.ObjectName}_0x{file.Id:X8}";
+                    if (wemHeader is "RIFF" or "RIFX")
                     {
-                        string wemHeader = "" + (char)wemData[0] + (char)wemData[1] + (char)wemData[2] + (char)wemData[3];
-                        string wemName = $"{spExport.Export.ObjectName}_0x{wemID:X8}";
-                        if (wemHeader == "RIFF" || wemHeader == "RIFX")
+                        var wemFile = new EmbeddedWEMFile(file.Data, wemName, spExport.Export); //will correct truncated stuff
+                        var waveStream = soundPanel.GetPCMStream(forcedWemFile: wemFile);
+                        if (waveStream is { Length: > 0 })
                         {
-                            var wem = new EmbeddedWEMFile(wemData, wemName, spExport.Export); //will correct truncated stuff
-                            Stream waveStream = soundPanel.GetPCMStream(forcedWemFile: wem);
-                            if (waveStream != null && waveStream.Length > 0)
-                            {
-                                string outputname = wemName + ".wav";
-                                string outpath = Path.Combine(location, outputname);
-                                waveStream.SeekBegin();
-                                using var fileStream = File.Create(outpath);
-                                waveStream.CopyTo(fileStream);
-                            }
+                            var outputPath = Path.Combine(location, $"{wemName}.wav");
+                            waveStream.SeekBegin();
+                            using var fileStream = File.Create(outputPath);
+                            waveStream.CopyTo(fileStream);
                         }
                     }
                 }
@@ -1037,22 +1036,21 @@ namespace LegendaryExplorer.Tools.Soundplorer
             {
                 if (spExport.Export.ClassName == "WwiseBank")
                 {
-                    var bank = spExport.Export.GetBinaryData<WwiseBankParsed>();
+                    var bank = spExport.Export.GetBinaryData<WwiseBankWwiser>().Bank;
                     if (bank.EmbeddedFiles.Count > 0)
                     {
                         int i = 0;
                         var AllWems = new List<EmbeddedWEMFile>();
-                        foreach ((uint wemID, byte[] wemData) in bank.EmbeddedFiles)
+                        foreach (var file in bank.EmbeddedFiles)
                         {
-                            string wemId = wemID.ToString("X8");
+                            string wemId = file.Id.ToString("X8");
                             string wemName = "Embedded WEM 0x" + wemId;// + "(" + singleWemMetadata.Item1 + ")";
 
-                            var wem = new EmbeddedWEMFile(wemData, $"{i}: {wemName}", spExport.Export, wemID);
+                            var wem = new EmbeddedWEMFile(file.Data, $"{i}: {wemName}", spExport.Export, file.Id);
                             AllWems.Add(wem);
                             i++;
                         }
-                        bank.EmbeddedFiles.Empty(AllWems.Count);
-                        bank.EmbeddedFiles.AddRange(AllWems.Select(wem => new KeyValuePair<uint, byte[]>(wem.Id, wem.HasBeenFixed ? wem.OriginalWemData : wem.WemData)));
+                        //bank.EmbeddedFiles = AllWems.Select(wem => new EmbeddedFile{ Id = wem.Id, Data = wem.HasBeenFixed ? wem.WemData : wem.OriginalWemData }).ToList();
                         ExportBank(spExport);
                     }
                 }

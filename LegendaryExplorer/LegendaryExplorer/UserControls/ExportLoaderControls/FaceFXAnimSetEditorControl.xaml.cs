@@ -25,6 +25,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml.Linq;
+using LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel;
 using Point = System.Windows.Point;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls

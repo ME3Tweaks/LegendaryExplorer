@@ -17,6 +17,8 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Windows;
+using ME3Tweaks.Wwiser.Model.Action;
+using WwiseParserLib.Parsers;
 using static LegendaryExplorer.Misc.ExperimentsTools.PackageAutomations;
 using static LegendaryExplorer.Misc.ExperimentsTools.SequenceAutomations;
 using static LegendaryExplorer.Misc.ExperimentsTools.SharedMethods;
@@ -1931,30 +1933,32 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             (uint oldBankID, uint newBankID) = UpdateID_EXPERIMENTAL(wwiseBankEntry, null, newWwiseBankName);
 
-            WwiseBankParsed wwiseBank = wwiseBankEntry.GetBinaryData<WwiseBankParsed>();
+            var wwiserBinary = wwiseBankEntry.GetBinaryData<WwiseBankWwiser>();
+            var wwiseBank = wwiserBinary.Bank;
             // Update the bank id
-            wwiseBank.ID = newBankID;
+            wwiseBank.BKHD.SoundBankId = newBankID;
 
             idPairs.Add(oldBankID, newBankID);
 
             // Update referenced banks kvp that reference the old bank name
-            IEnumerable<KeyValuePair<uint, string>> updatedBanks = wwiseBank.ReferencedBanks
-                .Select(referencedBank =>
+            if (wwiseBank.STID != null)
+                foreach (var refBank in wwiseBank.STID.BankIdToFilename)
                 {
-                    if (referencedBank.Value.Equals(oldBankName, StringComparison.OrdinalIgnoreCase))
+                    if (refBank.FileName.Equals(oldBankName, StringComparison.OrdinalIgnoreCase))
                     {
-                        return new KeyValuePair<uint, string>(newBankID, newWwiseBankName);
+                        refBank.BankId = newBankID;
                     }
-                    return referencedBank;
-                });
-            wwiseBank.ReferencedBanks = new(updatedBanks);
+                }
 
             // Gather all the IDs we don't know about yet
-            foreach (WwiseBankParsed.HIRCObject hirc in wwiseBank.HIRCObjects.Values)
+            if (wwiseBank.HIRC != null)
             {
-                if (hirc.ID != 0 && !idPairs.ContainsKey(hirc.ID))
+                foreach (var hirc in wwiseBank.HIRC.Items)
                 {
-                    idPairs.Add(hirc.ID, GenerateRandomID(random));
+                    if (hirc.Item.Id != 0 && !idPairs.ContainsKey(hirc.Item.Id))
+                    {
+                        idPairs.Add(hirc.Item.Id, GenerateRandomID(random));
+                    }
                 }
             }
 
@@ -1998,6 +2002,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             //        }
             //    }
             //}
+            
+            wwiseBankEntry.WriteBinary(wwiserBinary);
 
             string bankBinaryAsString = Convert.ToHexString(wwiseBankEntry.GetBinaryData());
 
@@ -2028,21 +2034,21 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             (uint oldBankID, uint newBankID) = UpdateID_LEGACY(wwiseBankEntry, newWwiseBankName);
 
-            var wwiseBank = wwiseBankEntry.GetBinaryData<WwiseBankParsed>();
+            var wwiseBankBin = wwiseBankEntry.GetBinaryData<WwiseBankWwiser>();
+            var wwiseBank = wwiseBankBin.Bank;
+            
             // Update the bank id
-            wwiseBank.ID = newBankID;
+            wwiseBank.BKHD.SoundBankId = newBankID;
 
             // Update referenced banks kvp that reference the old bank name
-            IEnumerable<KeyValuePair<uint, string>> updatedBanks = wwiseBank.ReferencedBanks
-                .Select(referencedBank =>
+            if (wwiseBank.STID != null)
+                foreach (var refBank in wwiseBank.STID.BankIdToFilename)
                 {
-                    if (referencedBank.Value.Equals(oldBankName, StringComparison.OrdinalIgnoreCase))
+                    if (refBank.FileName.Equals(oldBankName, StringComparison.OrdinalIgnoreCase))
                     {
-                        return new KeyValuePair<uint, string>(newBankID, newWwiseBankName);
+                        refBank.BankId = newBankID;
                     }
-                    return referencedBank;
-                });
-            wwiseBank.ReferencedBanks = new(updatedBanks);
+                }
 
             // DISABLED: Update references to old wwiseEvents' hashes, which are the ID of Event HIRCs.
             // DISABLED: Update references to old wwiseStreams' hashes, which are in the unknown bytes of Sound HIRCs.
@@ -2050,40 +2056,40 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             // but we check in all of them just in case.
             byte[] bankIDArr = BitConverter.GetBytes(oldBankID);
             byte[] newBankIDArr = BitConverter.GetBytes(newBankID);
-            foreach (WwiseBankParsed.HIRCObject hirc in wwiseBank.HIRCObjects.Values)
-            {
-                //if (hirc.Type == HIRCType.Event) // References a WwiseEvent
-                //{
-                //    if (wwiseEventIDs.TryGetValue(hirc.ID, out uint newEventID))
-                //    {
-                //        hirc.ID = newEventID;
-                //    }
-                //}
-                //else if (hirc.Type == HIRCType.SoundSXFSoundVoice) // References a WwiseStream
-                //{
-                //    // 4 bytes ID is located at the start after 14 bytes
-                //    Span<byte> streamIDSpan = hirc.unparsed.AsSpan(5..9);
-                //    uint streamIDUInt = BitConverter.ToUInt32(streamIDSpan);
-                //    if (wwiseStreamIDs.TryGetValue(streamIDUInt, out uint newStreamIDUInt))
-                //    {
-                //        byte[] newStreamIDArr = BitConverter.GetBytes(newStreamIDUInt);
-                //        newStreamIDArr.CopyTo(streamIDSpan);
-                //    }
-                //}
-
-                // Check for bank ID in all HIRCs, even though I'm almost certain it only appears
-                // in Event Actions
-                if (hirc.unparsed != null && hirc.unparsed.Length >= 4) // Only replace if not null and at least width of hash
+            if(wwiseBank.HIRC != null)
+                foreach (var hircC in wwiseBank.HIRC.Items)
                 {
-                    Span<byte> bankIDSpan = hirc.unparsed.AsSpan(^4..);
-                    if (bankIDSpan.SequenceEqual(bankIDArr))
+                    //if (hirc.Type == HIRCType.Event) // References a WwiseEvent
+                    //{
+                    //    if (wwiseEventIDs.TryGetValue(hirc.ID, out uint newEventID))
+                    //    {
+                    //        hirc.ID = newEventID;
+                    //    }
+                    //}
+                    //else if (hirc.Type == HIRCType.SoundSXFSoundVoice) // References a WwiseStream
+                    //{
+                    //    // 4 bytes ID is located at the start after 14 bytes
+                    //    Span<byte> streamIDSpan = hirc.unparsed.AsSpan(5..9);
+                    //    uint streamIDUInt = BitConverter.ToUInt32(streamIDSpan);
+                    //    if (wwiseStreamIDs.TryGetValue(streamIDUInt, out uint newStreamIDUInt))
+                    //    {
+                    //        byte[] newStreamIDArr = BitConverter.GetBytes(newStreamIDUInt);
+                    //        newStreamIDArr.CopyTo(streamIDSpan);
+                    //    }
+                    //}
+
+                    // Check for bank ID in all HIRCs, even though I'm almost certain it only appears
+                    // in Event Actions - Updated 6/19/25 by HenBagle to just update Play action?
+                    if (hircC.Item is ME3Tweaks.Wwiser.Model.Hierarchy.Action { ActionParams: Play playAction })
                     {
-                        newBankIDArr.CopyTo(bankIDSpan);
+                        if(playAction.BankId == oldBankID)
+                        {
+                            playAction.BankId = newBankID;
+                        }
                     }
                 }
-            }
 
-            wwiseBankEntry.WriteBinary(wwiseBank);
+            wwiseBankEntry.WriteBinary(wwiseBankBin);
         }
 
         /// <summary>

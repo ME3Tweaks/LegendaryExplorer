@@ -8,11 +8,13 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.Collections;
+using ME3Tweaks.Wwiser;
+using Wwiser = ME3Tweaks.Wwiser.WwiseBank;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     /// <summary>
-    /// Basic BulkData WwiseBank class. If you need the ability to parse the contents, use <see cref="WwiseBankParsed"/> instead.
+    /// Basic BulkData WwiseBank class. If you need the ability to parse the contents, use <see cref="WwiseBankWwiser"/> instead.
     /// </summary>
     public class WwiseBank : ObjectBinary
     {
@@ -100,7 +102,51 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         //{
         //    sc.SerializeBulkData();
         //}
-    
+
+    public class WwiseBankWwiser : WwiseBank
+    {
+        public uint Id => Bank.BKHD.SoundBankId;
+        public uint Version => Bank.BKHD.BankGeneratorVersion;
+        
+        public Wwiser Bank { get; set; }
+
+        protected override void Serialize(SerializingContainer sc)
+        {
+            if (!sc.Game.IsGame2() && !sc.Game.IsGame3())
+            {
+                throw new Exception($"WwiseBank is not a valid class for {sc.Game}!");
+            }
+
+            if (sc.Game.IsGame2())
+            {
+                sc.Serialize(ref Unk1);
+                sc.Serialize(ref Unk2);
+                if (Unk1 == 0 && Unk2 == 0)
+                {
+                    return; //not sure what's going on here
+                }
+            }
+            
+            sc.SerializeConstInt(0); // bulk data flags
+            var dataSizePos = sc.ms.Position; // come back to write size at the end
+            sc.ms.BaseStream.Position += sizeof(int) * 3;
+            var dataStartPos = sc.ms.Position;
+            if (sc.IsLoading)
+            {
+                Bank = WwiseBankParser.Deserialize(sc.ms.BaseStream);
+            }
+            if (sc.IsSaving)
+            {
+                if(Bank is null) throw new Exception("WwiseBank is null, cannot serialize!");
+                WwiseBankParser.Serialize(Bank, sc.ms.BaseStream);
+                var size = sc.ms.Position - dataStartPos;
+                sc.ms.JumpTo(dataSizePos);
+                sc.ms.Writer.WriteInt32((int)size);
+                sc.ms.Writer.WriteInt32((int)size);
+                sc.SerializeFileOffset();
+            }
+        }
+    }
 
     public class WwiseBankParsed : WwiseBank
     {

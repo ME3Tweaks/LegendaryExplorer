@@ -1,11 +1,10 @@
-﻿using NAudio.Wave;
-using System;
+﻿using System;
 using System.IO;
 using LegendaryExplorerCore.Audio;
 using NAudio.Vorbis;
-using NVorbis;
+using NAudio.Wave;
 
-namespace LegendaryExplorer.UserControls.ExportLoaderControls
+namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 {
     public class SoundpanelAudioPlayer
     {

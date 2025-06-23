@@ -14,6 +14,7 @@
         xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
         xmlns:assetDbFilters="clr-namespace:LegendaryExplorer.Tools.AssetDatabase.Filters"
         xmlns:materialEditor="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor"
+        xmlns:soundpanel="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel"
         Loaded="AssetDB_Loaded"
         Closing="AssetDB_Closing"
         AllowDrop="True"
@@ -1068,7 +1069,7 @@
                                     </TabControl>
                                 </StackPanel>
                                 <ToggleButton x:Name="btn_LinePlaybackToggle" Content="Toggle Line Playback" Margin="5" Click="btn_LinePlaybackToggle_Click" IsChecked="False" MaxHeight="30" ClickMode="Release" DockPanel.Dock="Bottom"/>
-                                <exportLoaderControls:Soundpanel x:Name="SoundpanelWPF_ADB" PlayBackOnlyMode="True" />
+                                <soundpanel:Soundpanel x:Name="SoundpanelWPF_ADB" PlayBackOnlyMode="True" />
                             </DockPanel>
                         </Grid>
                     </TabItem>

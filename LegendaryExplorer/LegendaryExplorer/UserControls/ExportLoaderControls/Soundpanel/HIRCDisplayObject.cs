@@ -1,14 +1,29 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using BinarySerialization;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using ME3Tweaks.Wwiser;
+using ME3Tweaks.Wwiser.Model.Hierarchy;
+using WwiseBank = ME3Tweaks.Wwiser.WwiseBank;
 
-namespace LegendaryExplorer.UserControls.ExportLoaderControls
+namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 {
     public class HIRCDisplayObject : NotifyPropertyChangedBase
     {
+        private HircItemContainer _item;
+
+        public HircItemContainer Item
+        {
+            get => _item;
+            set => SetProperty(ref _item, value);
+        }
+        
+        private BankSerializationContext _context;
+        
         public int Index { get; set; }
 
         public byte ObjType { get; set; }
@@ -59,7 +74,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return clone;
         }
 
-        public HIRCDisplayObject(int i, WwiseBankParsed.HIRCObject src, MEGame game)
+        /*public HIRCDisplayObject(int i, WwiseBankParsed.HIRCObject src, MEGame game)
         {
             Data = src.ToBytes(game);
             Index = i;
@@ -69,7 +84,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 case WwiseBankParsed.SoundSFXVoice sfxVoice:
                     unk1 = sfxVoice.Unk1;
-                    State = (uint)sfxVoice.State;
                     SourceID = sfxVoice.SourceID;
                     AudioID = sfxVoice.AudioID;
                     SoundType = (byte)sfxVoice.SoundType;
@@ -77,6 +91,47 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 case WwiseBankParsed.Event eventHIRC:
                     EventIDs = eventHIRC.EventActions.Clone();
                     break;
+            }
+        }*/
+
+        public HIRCDisplayObject(int i, HircItemContainer item, byte[] data, BankSerializationContext context)
+        {
+            Index = i;
+            Item = item;
+            Data = data;
+            _context = context;
+        }
+
+        public void SaveData(byte[] toArray)
+        {
+            Data = toArray;
+            DataChanged = true;
+        }
+
+        public void Commit()
+        {
+            if (DataChanged)
+            {
+                var serializer = new BinarySerializer();
+                using var stream = new MemoryStream(Data);
+                Item = serializer.Deserialize<HircItemContainer>(stream, _context);
+                DataChanged = false;
+            }
+        }
+
+        public static IEnumerable<HIRCDisplayObject> CreateFromBank(WwiseBank bank)
+        {
+            if (bank.HIRC is null || !bank.HIRC.Items.Any()) yield break;
+            
+            var context = new BankSerializationContext(bank.BKHD.BankGeneratorVersion, false, bank.BKHD.FeedbackInBank);
+            var serializer = new BinarySerializer();
+            using var stream = new MemoryStream();
+            for (int i = 0; i < bank.HIRC.Items.Count; i++)
+            {
+                var item = bank.HIRC.Items[i];
+                serializer.Serialize(stream, item, context);
+                yield return new HIRCDisplayObject(i, item, stream.ToArray(), context);
+                stream.SetLength(0); // Reset the stream for the next item
             }
         }
     }

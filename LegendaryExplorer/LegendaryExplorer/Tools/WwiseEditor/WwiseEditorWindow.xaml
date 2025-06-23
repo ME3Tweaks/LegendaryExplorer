@@ -15,6 +15,7 @@
         xmlns:settings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:packages="clr-namespace:LegendaryExplorerCore.Packages;assembly=LegendaryExplorerCore"
+        xmlns:soundpanel="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel"
         mc:Ignorable="d"
         Loaded="WwiseEditorWPF_OnLoaded"
         Closing="WwiseEditorWPF_OnClosing"
@@ -91,7 +92,7 @@
                     <ColumnDefinition Width="5" />
                     <ColumnDefinition Width="Auto" Name="soundPanelColumn"/>
                 </Grid.ColumnDefinitions>
-                <exportLoaderControls:Soundpanel x:Name="soundPanel" Grid.Column="2" Grid.RowSpan="3" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                <soundpanel:Soundpanel x:Name="soundPanel" Grid.Column="2" Grid.RowSpan="3" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                                         Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}"/>
                 <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" Grid.Column="0" />
                 <GridSplitter Grid.Row="0" Grid.RowSpan="3" Width="5" HorizontalAlignment="Stretch" Grid.Column="1" />

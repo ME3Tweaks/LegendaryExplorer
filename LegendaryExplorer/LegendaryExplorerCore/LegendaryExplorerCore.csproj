@@ -139,4 +139,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\submodules\Wwiser.NET\ME3Tweaks.Wwiser\ME3Tweaks.Wwiser.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,67 @@
+﻿<misc:NotifyPropertyChangedControlBase
+    x:Class="LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel.HIRCItemEditor"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+    xmlns:forms="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
+    xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+    mc:Ignorable="d"
+    d:DesignHeight="300" d:DesignWidth="300"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    Loaded="OnControlLoaded">
+    <DockPanel>
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="{Binding HexBoxMinWidth}" MaxWidth="{Binding HexBoxMaxWidth}"
+                                  Width="{Binding HexBoxMinWidth, Mode=OneWay}" Name="HexboxColumnDefinition" />
+                <ColumnDefinition Width="3" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition MaxHeight="27" MinHeight="27" Height="27" />
+                <RowDefinition MinHeight="200" />
+            </Grid.RowDefinitions>
+            <ToolBar ToolBarTray.IsLocked="True" Grid.Row="0" Grid.ColumnSpan="4">
+                <Button Name="SaveHexChange_Button"
+                        ToolTip="Commit hex changes to the HIRC object. This does not commit the changes to the export."
+                        Content="Save Hex Changes" Command="{Binding SaveHIRCHexCommand}">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Style.Triggers>
+                                <Trigger Property="IsEnabled" Value="True">
+                                    <Setter Property="Foreground" Value="Red" />
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Button Name="ToggleHexboxWidth_Button" Content="Toggle Hexbox Width"
+                        ToolTip="Toggle between 4 and 16 byte widths" Click="HIRC_ToggleHexboxWidth_Click" />
+                <Separator Name="SaveToggle_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+            </ToolBar>
+            <sharedUi:WindowsFormsHostEx x:Name="HIRC_Hexbox_Host" Grid.Row="1" Grid.Column="0"
+                                         VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <forms:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True"
+                              Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True"
+                              SelectionStartChanged="Soundpanel_HIRCHexbox_SelectionChanged" VScrollBarVisible="True">
+                </forms:HexBox>
+            </sharedUi:WindowsFormsHostEx>
+            <GridSplitter Grid.Column="1"
+                          Grid.Row="1" HorizontalAlignment="Stretch"
+                          Margin="-5,0"
+                          BorderThickness="5,0"
+                          BorderBrush="Transparent"
+                          Panel.ZIndex="60" />
+            <ListBox Name="HIRCNotableItems_ListBox" Grid.Column="2" Grid.Row="1"
+                     Width="Auto" /><!--ItemsSource="{Binding HIRCNotableItems}"
+                     SelectionChanged="HIRCNotableItems_ListBox_SelectionChanged" -->
+        </Grid>
+        <StatusBar Height="23" DockPanel.Dock="Bottom" Width="Auto">
+            <StatusBarItem>
+                <TextBlock Name="HIRCStatusBar_LeftMostText" Text="Nothing selected" />
+            </StatusBarItem>
+        </StatusBar>
+    </DockPanel>
+</misc:NotifyPropertyChangedControlBase>

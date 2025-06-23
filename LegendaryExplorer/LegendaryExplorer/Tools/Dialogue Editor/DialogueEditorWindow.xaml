@@ -14,6 +14,7 @@
         xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
         xmlns:dialogueEditor="clr-namespace:LegendaryExplorer.DialogueEditor"
         xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
+        xmlns:soundpanel="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel"
         mc:Ignorable="d"
         Loaded="DialogueEditorWPF_Loaded"
         Closing="DialogueEditorWPF_Closing"
@@ -1383,11 +1384,11 @@
                                 </Grid.RowDefinitions>
                                 <StackPanel Grid.Row="0" x:Name="SoundpanelFemaleControl" Margin="4,0">
                                     <TextBlock>Female</TextBlock>
-                                    <exportLoaderControls:Soundpanel x:Name="SoundpanelWPF_F" MiniPlayerMode="True" />
+                                    <soundpanel:Soundpanel x:Name="SoundpanelWPF_F" MiniPlayerMode="True" />
                                 </StackPanel>
                                 <StackPanel Grid.Row="1" x:Name="SoundpanelMaleControl" Margin="4,0">
                                     <TextBlock>Male</TextBlock>
-                                    <exportLoaderControls:Soundpanel x:Name="SoundpanelWPF_M" MiniPlayerMode="True" />
+                                    <soundpanel:Soundpanel x:Name="SoundpanelWPF_M" MiniPlayerMode="True" />
                                 </StackPanel>
                             </Grid>
                         </TabItem>

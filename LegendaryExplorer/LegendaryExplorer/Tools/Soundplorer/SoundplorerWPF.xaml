@@ -13,6 +13,7 @@
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
         xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
         xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+        xmlns:soundpanel="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel"
         Closing="Soundplorer_Closing"
         Drop="Window_Drop"
         AllowDrop="True"
@@ -207,7 +208,7 @@
                   BorderThickness="3,0"
                   BorderBrush="Transparent"
                   HorizontalAlignment="Stretch" />
-                <exportLoaderControls:Soundpanel x:Name="soundPanel" Grid.Column="2" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+                <soundpanel:Soundpanel x:Name="soundPanel" Grid.Column="2" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
             </Grid>
         </DockPanel>
     </xctk:BusyIndicator>
