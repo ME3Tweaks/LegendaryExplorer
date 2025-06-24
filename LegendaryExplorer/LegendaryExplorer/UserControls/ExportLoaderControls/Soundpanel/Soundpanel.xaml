@@ -238,7 +238,9 @@
                       BorderThickness="0,5"
                       BorderBrush="Transparent"
                       Panel.ZIndex="60"/>
-                        <soundpanel:HIRCItemEditor x:Name="HIRCItemEditor" SelectedHIRCItem="{Binding SelectedHIRCObject, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type soundpanel:Soundpanel}}}" Grid.Row="2" />
+                        <soundpanel:HIRCItemEditor x:Name="HIRCItemEditor" Grid.Row="2"
+                                                   SelectedHIRCItem="{Binding SelectedHIRCObject, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type soundpanel:Soundpanel}}}" 
+                                                   WwiseBinaryScanner="{Binding WwiseBankScans, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type soundpanel:Soundpanel}}}" />
                     </Grid>
                 </DockPanel>
             </TabItem>

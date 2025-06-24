@@ -657,7 +657,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             subNodes.AddRange(Scan_WwiseStream(data));
                             break;
                         case "WwiseBank":
-                            subNodes.AddRange(Scan_WwiseBank(data));
+                            subNodes.AddRange(new WwiseBankScans().Scan_WwiseBank(data, CurrentLoadedExport));
                             break;
                         case "WwiseEvent":
                             subNodes.AddRange(Scan_WwiseEvent(data, ref binarystart));

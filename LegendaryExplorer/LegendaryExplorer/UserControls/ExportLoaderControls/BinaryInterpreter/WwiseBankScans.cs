@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using LegendaryExplorer.SharedUI.Interfaces;
-using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
 using ME3Tweaks.Wwiser.Formats;
 using ME3Tweaks.Wwiser.Model;
 using ME3Tweaks.Wwiser.Model.Action;
@@ -35,7 +33,7 @@ using static LegendaryExplorer.UserControls.ExportLoaderControls.BinaryNodeFacto
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls;
 
-public partial class BinaryInterpreterWPF
+public class WwiseBankScans
 {
     private record WwiseItem(uint Id, string Name, long Position);
 
@@ -47,7 +45,7 @@ public partial class BinaryInterpreterWPF
     {
         var node = MakeUInt32Node(bin, nodeName, out var id);
         var item = new WwiseItem(id, refName, bin.Position - 4);
-        WwiseIdMap.Add(id, item);
+        WwiseIdMap[id] = item;
         return node;
     }
 
@@ -111,14 +109,14 @@ public partial class BinaryInterpreterWPF
         };
     }
 
-    private List<ITreeItem> Scan_WwiseBank(byte[] data)
+    public List<ITreeItem> Scan_WwiseBank(byte[] data, ExportEntry export)
     {
         var subnodes = new List<ITreeItem>();
         WwiseIdMap.Clear();
-        var bin = new EndianReader(new MemoryStream(data)) { Endian = Pcc.Endian };
-        bin.JumpTo(CurrentLoadedExport.propsEnd());
+        var bin = new EndianReader(new MemoryStream(data)) { Endian = export.FileRef.Endian };
+        bin.JumpTo(export.propsEnd());
 
-        if (Pcc.Game is MEGame.ME2 or MEGame.LE2)
+        if (export.Game is MEGame.ME2 or MEGame.LE2)
         {
             subnodes.Add(MakeUInt32Node(bin, "Unk1"));
             subnodes.Add(MakeUInt32Node(bin, "Unk2"));
@@ -127,7 +125,7 @@ public partial class BinaryInterpreterWPF
                 return subnodes;
             }
         }
-        subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
+        subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(BinaryInterpreterWPF.EBulkDataFlags)bin.ReadUInt32()}"));
         subnodes.Add(MakeInt32Node(bin, "Element Count", out int dataSize));
         subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
         subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
@@ -181,6 +179,12 @@ public partial class BinaryInterpreterWPF
         }
         
         // At the end of the file, fill in all the reference details
+        AddNodeReferences();
+        return subnodes;
+    }
+
+    public void AddNodeReferences()
+    {
         foreach(var (refNode, refId) in WwiseRefs)
         {
             if (WwiseIdMap.TryGetValue(refId, out var item))
@@ -193,7 +197,7 @@ public partial class BinaryInterpreterWPF
                 refNode.Header += $" (Ref to unknown)";
             }
         }
-        return subnodes;
+        WwiseRefs = new List<(BinInterpNodeOffsetReference, uint)>();
     }
 
     private (uint, bool) Scan_WwiseBank_BKHD(BinInterpNode root, EndianReader bin, int size)
@@ -265,7 +269,7 @@ public partial class BinaryInterpreterWPF
         root.Items.Add(MakeArrayNode(bin, "Items", i => MakeHIRCNode(i, bin, version, useFeedback), isExpanded: true));
     }
 
-    private BinInterpNode MakeHIRCNode(int index, EndianReader bin, uint version, bool useFeedback)
+    public BinInterpNode MakeHIRCNode(int index, EndianReader bin, uint version, bool useFeedback)
     {
         var start = bin.Position;
         var root = new BinInterpNode(bin.Position, $"{index}: ");

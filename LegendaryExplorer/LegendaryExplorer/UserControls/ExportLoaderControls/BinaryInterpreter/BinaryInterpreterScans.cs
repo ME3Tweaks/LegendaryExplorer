@@ -1484,7 +1484,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         [Flags]
-        enum EBulkDataFlags
+        public enum EBulkDataFlags
         {
             BULKDATA_None = 0,
             BULKDATA_StoreInSeparateFile = 1 << 0,

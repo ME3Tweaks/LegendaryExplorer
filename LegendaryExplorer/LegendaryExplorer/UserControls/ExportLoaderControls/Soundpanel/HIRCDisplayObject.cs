@@ -17,7 +17,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
             Index = i;
             Item = item;
             Data = data;
-            _context = context;
+            Context = context;
         }
         
         public int Index { get; set; }
@@ -45,25 +45,25 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
             internal set => SetProperty(ref _dataChanged, value);
         }
         
-        private BankSerializationContext _context;
+        internal BankSerializationContext Context { get; set; }
 
         public HIRCDisplayObject Clone()
         {
-            var clone = new HIRCDisplayObject(Index, Item, Data?.ArrayClone(), _context);
+            var clone = new HIRCDisplayObject(Index, Item, Data?.ArrayClone(), Context);
 
             if (Data != null)
             {
                 // Effectively a deep clone of the Item
                 var serializer = new BinarySerializer();
                 using var stream = new MemoryStream(clone.Data);
-                clone.Item = serializer.Deserialize<HircItemContainer>(stream, _context);
+                clone.Item = serializer.Deserialize<HircItemContainer>(stream, Context);
                 
                 // Increment the ID to ensure uniqueness
                 clone.Item.Item.Id++;
                 
                 // Serialize the data back - this is literally just for the updated ID lmao
                 stream.SetLength(0);
-                serializer.Serialize(stream, clone.Item, clone._context);
+                serializer.Serialize(stream, clone.Item, clone.Context);
                 clone.Data = stream.ToArray();
                 clone.DataChanged = true;
             }
@@ -88,7 +88,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
             Data = data;
             var serializer = new BinarySerializer();
             using var stream = new MemoryStream(Data);
-            Item = serializer.Deserialize<HircItemContainer>(stream, _context);
+            Item = serializer.Deserialize<HircItemContainer>(stream, Context);
             DataChanged = true;
         }
 

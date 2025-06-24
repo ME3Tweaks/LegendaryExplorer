@@ -282,6 +282,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
             }
         }
 
+        private WwiseBankScans _wwiseBankScans;
+        
+        public WwiseBankScans WwiseBankScans
+        {
+            get => _wwiseBankScans;
+            set => SetProperty(ref _wwiseBankScans, value);
+        }
+
         #endregion
 
         #region Commands
@@ -482,6 +490,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 
                     CurrentLoadedExport = exportEntry;
                     HIRCItemEditor.FixBuggyHexBox();
+                    
+                    WwiseBankScans = new WwiseBankScans();
+                    WwiseBankScans.Scan_WwiseBank(exportEntry.Data, exportEntry); // this is to populate wwise id references for use later
+                }
+                else
+                {
+                    WwiseBankScans = null;
                 }
 
                 if (exportEntry.ClassName == "SoundNodeWave")

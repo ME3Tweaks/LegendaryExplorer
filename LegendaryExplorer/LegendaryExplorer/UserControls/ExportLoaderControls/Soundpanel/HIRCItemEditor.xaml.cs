@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Be.Windows.Forms;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.SharedUI.Interfaces;
+using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
@@ -71,6 +72,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
         public static readonly DependencyProperty SelectedHIRCItemProperty = DependencyProperty.Register(
             nameof(SelectedHIRCItem), typeof(HIRCDisplayObject), typeof(HIRCItemEditor), new PropertyMetadata(null, OnSelectedHIRCItemChanged));
 
+        public WwiseBankScans WwiseBinaryScanner
+        {
+            get => (WwiseBankScans)GetValue(WwiseBinaryScannerProperty);
+            set => SetValue(WwiseBinaryScannerProperty, value);
+        }
+        
+        public static readonly DependencyProperty WwiseBinaryScannerProperty = DependencyProperty.Register(
+            nameof(WwiseBinaryScanner), typeof(WwiseBankScans), typeof(HIRCItemEditor), new PropertyMetadata(default(WwiseBankScans)));
+
+
         
         private static void OnSelectedHIRCItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -84,12 +95,33 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
                 c._originalHIRCHex = (byte[])newItem.Data.Clone();
                 c.hircHexProvider.ReplaceBytes(c._originalHIRCHex);
                 c.SoundpanelHIRC_Hexbox.Refresh();
+                c.RefreshTreeView();
             }
             else
             {
                 c._originalHIRCHex = null;
                 c.hircHexProvider.Clear();
                 c.SoundpanelHIRC_Hexbox.Refresh();
+                c.HIRCTreeViewItems.ClearEx();
+            }
+        }
+
+        private void RefreshTreeView()
+        {
+            if(SelectedHIRCItem is null || hircHexProvider is null || hircHexProvider.Span.Length == 0)
+            {
+                return;
+            }
+
+            var reader = new EndianReader(hircHexProvider.Span.ToArray());
+            var hircNode = WwiseBinaryScanner.MakeHIRCNode(SelectedHIRCItem.Index, reader, SelectedHIRCItem.Context.Version, SelectedHIRCItem.Context.UseFeedback);
+            WwiseBinaryScanner.AddNodeReferences();
+            HIRCTreeViewItems.ClearEx();
+            if (hircNode != null)
+            {
+                hircNode.IsSelected = true;
+                hircNode.IsExpanded = true;
+                HIRCTreeViewItems.Add(hircNode);
             }
         }
         
@@ -109,9 +141,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
         }
         
         public ICommand SaveHIRCHexCommand { get; private set; }
-        public ObservableCollectionExtended<TreeViewItem> HIRCTreeViewItems { get; set; } = new();
-
-        public Dictionary<uint, string> WwiseBankIdLookup { get; set; } = new();
+        public ObservableCollectionExtended<ITreeItem> HIRCTreeViewItems { get; set; } = new();
 
         public void FixBuggyHexBox()
         {
@@ -161,6 +191,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 
         private void SaveHIRCHex()
         {
+            if(SelectedHIRCItem is null || hircHexProvider is null || hircHexProvider.Span.Length == 0)
+            {
+                return;
+            }
+            
             SelectedHIRCItem.CommitHex(hircHexProvider.Span.ToArray());
             HIRCHexChanged = false;
         }
@@ -195,6 +230,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
                 SoundpanelHIRC_Hexbox.SelectionStart = h.Offset;
                 SoundpanelHIRC_Hexbox.SelectionLength = 1;
             }*/
+        }
+        
+        private void HIRCBinary_TreeView_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            SoundpanelHIRC_Hexbox.UnhighlightAll();
+            if (HIRCBinary_TreeView.SelectedItem is BinInterpNode b)
+            {
+                SoundpanelHIRC_Hexbox.Highlight(b.Offset, b.Length);
+                SoundpanelHIRC_Hexbox.SelectionStart = b.Offset;
+                SoundpanelHIRC_Hexbox.SelectionLength = b.Length;
+            }
         }
         
         private void Soundpanel_HIRCHexbox_SelectionChanged(object sender, EventArgs e)
@@ -260,11 +306,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 
                 SoundpanelHIRC_Hexbox.Refresh();
             }
-        }
-
-        private void HIRCBinary_TreeView_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            throw new NotImplementedException();
         }
     }
 }
