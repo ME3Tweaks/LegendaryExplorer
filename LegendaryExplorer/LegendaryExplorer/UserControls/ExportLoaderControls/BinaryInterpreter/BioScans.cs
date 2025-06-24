@@ -9,6 +9,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.Classes;
+using static LegendaryExplorer.UserControls.ExportLoaderControls.BinaryNodeFactory;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls;
 
@@ -25,7 +26,7 @@ public partial class BinaryInterpreterWPF
             int count;
             subnodes.Add(new BinInterpNode(bin.Position, $"AnimationMap? ({count = bin.ReadInt32()})")
             {
-                Items = ReadList(count, i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)}: {entryRefString(bin)}", NodeType.StructLeafObject) { Length = 4 })
+                Items = ReadList(count, i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc)}: {MakeEntryNodeString(bin, Pcc)}", NodeType.StructLeafObject) { Length = 4 })
             });
 
             binarystart = (int)bin.Position;
@@ -51,7 +52,7 @@ public partial class BinaryInterpreterWPF
                 IsExpanded = true,
                 Items =
                 {
-                    MakeStringNode(bin, "Name"),
+                    MakeStringNode(bin, "Name", Pcc.Game),
                     MakeInt32Node(bin, "Index")
                 }
             }, true));
@@ -1629,15 +1630,15 @@ public partial class BinaryInterpreterWPF
                         IsExpanded = true,
                         Items =
                         {
-                            MakeNameNode(bin, "nm_Female"),
-                            MakeNameNode(bin, "nm_Asari"),
-                            MakeNameNode(bin, "nm_Turian"),
-                            MakeNameNode(bin, "nm_Salarian"),
-                            MakeNameNode(bin, "nm_Quarian"),
-                            MakeNameNode(bin, "nm_Other"),
-                            MakeNameNode(bin, "nm_Krogan"),
-                            MakeNameNode(bin, "nm_Geth"),
-                            MakeNameNode(bin, "nm_Other_Artificial")
+                            MakeNameNode(bin, "nm_Female", Pcc),
+                            MakeNameNode(bin, "nm_Asari", Pcc),
+                            MakeNameNode(bin, "nm_Turian", Pcc),
+                            MakeNameNode(bin, "nm_Salarian", Pcc),
+                            MakeNameNode(bin, "nm_Quarian", Pcc),
+                            MakeNameNode(bin, "nm_Other", Pcc),
+                            MakeNameNode(bin, "nm_Krogan", Pcc),
+                            MakeNameNode(bin, "nm_Geth", Pcc),
+                            MakeNameNode(bin, "nm_Other_Artificial", Pcc)
                         }
                     });
                 }
@@ -1653,9 +1654,9 @@ public partial class BinaryInterpreterWPF
                         Length = 8
                     };
                     propDataNode.Items.Add(node);
-                    node.Items.Add(MakeNameNode(bin, "nmPropName"));
-                    node.Items.Add(MakeStringNode(bin, "sMesh"));
-                    node.Items.Add(MakeNameNode(bin, "nmAttachTo"));
+                    node.Items.Add(MakeNameNode(bin, "nmPropName", Pcc));
+                    node.Items.Add(MakeStringNode(bin, "sMesh", Pcc.Game));
+                    node.Items.Add(MakeNameNode(bin, "nmAttachTo", Pcc));
                     node.Items.Add(MakeVectorNode(bin, "vOffsetLocation"));
                     node.Items.Add(MakeRotatorNode(bin, "rOffsetRotation"));
                     node.Items.Add(MakeVectorNode(bin, "vOffsetScale"));
@@ -1672,21 +1673,21 @@ public partial class BinaryInterpreterWPF
                             Length = 8
                         };
                         propActionsNode.Items.Add(node2);
-                        node2.Items.Add(MakeNameNode(bin, "nmActionName"));
+                        node2.Items.Add(MakeNameNode(bin, "nmActionName", Pcc));
                         if (CurrentLoadedExport.Game.IsGame2())
                         {
-                            node2.Items.Add(MakeStringNode(bin, "sEffect"));
+                            node2.Items.Add(MakeStringNode(bin, "sEffect", Pcc.Game));
                         }
 
                         node2.Items.Add(MakeBoolIntNode(bin, "bActivate"));
-                        node2.Items.Add(MakeNameNode(bin, "nmAttachTo"));
+                        node2.Items.Add(MakeNameNode(bin, "nmAttachTo", Pcc));
                         node2.Items.Add(MakeVectorNode(bin, "vOffsetLocation"));
                         node2.Items.Add(MakeRotatorNode(bin, "rOffsetRotation"));
                         node2.Items.Add(MakeVectorNode(bin, "vOffsetScale"));
                         if (CurrentLoadedExport.Game.IsGame3())
                         {
-                            node2.Items.Add(MakeStringNode(bin, "sParticleSys"));
-                            node2.Items.Add(MakeStringNode(bin, "sClientEffect"));
+                            node2.Items.Add(MakeStringNode(bin, "sParticleSys", Pcc.Game));
+                            node2.Items.Add(MakeStringNode(bin, "sClientEffect", Pcc.Game));
                             node2.Items.Add(MakeBoolIntNode(bin, "bCooldown"));
                             node2.Items.Add(new BinInterpNode(bin.Position, "tSpawnParams")
                             {
@@ -1696,7 +1697,7 @@ public partial class BinaryInterpreterWPF
                                 {
                                     MakeVectorNode(bin, "vHitLocation"),
                                     MakeVectorNode(bin, "vHitNormal"),
-                                    MakeNameNode(bin, "nmHitBone"),
+                                    MakeNameNode(bin, "nmHitBone", Pcc),
                                     MakeVectorNode(bin, "vRayDir"),
                                     MakeVectorNode(bin, "vSpawnValue")
                                 }
@@ -1742,7 +1743,7 @@ public partial class BinaryInterpreterWPF
                         type switch
                         {
                             Bio2DACell.Bio2DADataType.TYPE_INT => MakeInt32Node(bin, "Value"),
-                            Bio2DACell.Bio2DADataType.TYPE_NAME => MakeNameNode(bin, "Value"),
+                            Bio2DACell.Bio2DADataType.TYPE_NAME => MakeNameNode(bin, "Value", Pcc),
                             Bio2DACell.Bio2DADataType.TYPE_FLOAT => MakeFloatNode(bin, "Value"),
                             Bio2DACell.Bio2DADataType.TYPE_NULL => new BinInterpNode("Value: NULL"),
                             _ => throw new ArgumentOutOfRangeException()
@@ -1968,7 +1969,7 @@ public partial class BinaryInterpreterWPF
                 var node = new BinInterpNode(bin.Position, $"Rule {i}");
                 subnodes.Add(node);
 
-                node.Items.Add(MakeNameNode(bin, "Name"));
+                node.Items.Add(MakeNameNode(bin, "Name", Pcc));
 
                 var subcount = bin.ReadInt32();
                 var subnode = new BinInterpNode(bin.Position - 4, $"Num somethings: {subcount}");
@@ -1977,7 +1978,7 @@ public partial class BinaryInterpreterWPF
                 for (int j = 0; j < subcount; j++)
                 {
                     // Read name, some integer
-                    subnode.Items.Add(MakeNameNode(bin, "SomeName"));
+                    subnode.Items.Add(MakeNameNode(bin, "SomeName", Pcc));
                     subnode.Items.Add(MakeInt32Node(bin, "SomeNum"));
                 }
             }

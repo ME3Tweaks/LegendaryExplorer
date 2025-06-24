@@ -9,87 +9,87 @@ using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls;
 
-public partial class BinaryInterpreterWPF
+public static class BinaryNodeFactory
 {
-    private static BinInterpNode MakeBoolIntNode(EndianReader bin, string name) =>
+    public static BinInterpNode MakeBoolIntNode(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolInt()}", NodeType.StructLeafBool) { Length = 4 };
 
-    private static BinInterpNode MakeReverseBoolIntNode(EndianReader bin, string name) =>
+    public static BinInterpNode MakeReverseBoolIntNode(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32() != 1}", NodeType.StructLeafBool) { Length = 4 };
 
-    private static BinInterpNode MakeBoolIntNode(EndianReader bin, string name, out bool boolVal)
+    public static BinInterpNode MakeBoolIntNode(EndianReader bin, string name, out bool boolVal)
     {
         return new BinInterpNode(bin.Position, $"{name}: {boolVal = bin.ReadBoolInt()}", NodeType.StructLeafBool)
             { Length = 4 };
     }
 
-    private static BinInterpNode MakeBoolByteNode(EndianReader bin, string name) =>
+    public static BinInterpNode MakeBoolByteNode(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolByte()}") { Length = 1 };
 
-    private static BinInterpNode MakeBoolByteNode(EndianReader bin, string name, out bool value) =>
+    public static BinInterpNode MakeBoolByteNode(EndianReader bin, string name, out bool value) =>
         new BinInterpNode(bin.Position, $"{name}: {value = bin.ReadBoolByte()}") { Length = 1 };
     
-    private static BinInterpNode MakeByteNode(EndianReader bin, string name) =>
+    public static BinInterpNode MakeByteNode(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, $"{name}: {bin.ReadByte()}") { Length = 1 };
 
-    private static BinInterpNode MakeByteNode(EndianReader bin, string name, out byte value) =>
+    public static BinInterpNode MakeByteNode(EndianReader bin, string name, out byte value) =>
         new BinInterpNode(bin.Position, $"{name}: {value = bin.ReadByte()}") { Length = 1 };
 
-    private static BinInterpNode MakeSByteNode(EndianReader bin, string name) =>
+    public static BinInterpNode MakeSByteNode(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, $"{name}: {bin.ReadSByte()}") { Length = 1 };
 
-    private static BinInterpNode MakeSByteNode(EndianReader bin, string name, out sbyte value) =>
+    public static BinInterpNode MakeSByteNode(EndianReader bin, string name, out sbyte value) =>
         new BinInterpNode(bin.Position, $"{name}: {value = bin.ReadSByte()}") { Length = 1 };
 
-    private static BinInterpNode MakeInt16Node(EndianReader bin, string name) =>
+    public static BinInterpNode MakeInt16Node(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt16()}") { Length = 2 };
 
-    private static BinInterpNode MakeInt16Node(EndianReader bin, string name, out short value) =>
+    public static BinInterpNode MakeInt16Node(EndianReader bin, string name, out short value) =>
         new BinInterpNode(bin.Position, $"{name}: {value = bin.ReadInt16()}") { Length = 2 };
 
-    private static BinInterpNode MakeUInt16Node(EndianReader bin, string name) =>
+    public static BinInterpNode MakeUInt16Node(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt16()}") { Length = 2 };
 
-    private static BinInterpNode MakeUInt16Node(EndianReader bin, string name, out ushort value) =>
+    public static BinInterpNode MakeUInt16Node(EndianReader bin, string name, out ushort value) =>
         new BinInterpNode(bin.Position, $"{name}: {value = bin.ReadUInt16()}") { Length = 2 };
 
-    private static BinInterpNode MakeInt32Node(EndianReader bin, string name) =>
+    public static BinInterpNode MakeInt32Node(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 };
 
-    private static BinInterpNode MakeInt32Node(EndianReader bin, string name, out int value) =>
+    public static BinInterpNode MakeInt32Node(EndianReader bin, string name, out int value) =>
         new BinInterpNode(bin.Position, $"{name}: {value = bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 };
 
-    private static BinInterpNode MakeUInt32Node(EndianReader bin, string name) =>
+    public static BinInterpNode MakeUInt32Node(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32()}") { Length = 4 };
 
-    private static BinInterpNode MakeUInt32Node(EndianReader bin, string name, out uint value) =>
+    public static BinInterpNode MakeUInt32Node(EndianReader bin, string name, out uint value) =>
         new BinInterpNode(bin.Position, $"{name}: {value = bin.ReadUInt32()}") { Length = 4 };
 
-    private static BinInterpNode MakeUInt32HexNode(EndianReader bin, string name) =>
+    public static BinInterpNode MakeUInt32HexNode(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32():X8}") { Length = 4 };
 
-    private static BinInterpNode MakeInt64Node(EndianReader bin, string name) =>
+    public static BinInterpNode MakeInt64Node(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt64()}") { Length = 8 };
 
-    private static BinInterpNode MakeInt64Node(EndianReader bin, string name, out long value) =>
+    public static BinInterpNode MakeInt64Node(EndianReader bin, string name, out long value) =>
         new BinInterpNode(bin.Position, $"{name}: {value = bin.ReadInt64()}") { Length = 8 };
 
-    private static BinInterpNode MakeUInt64Node(EndianReader bin, string name) =>
+    public static BinInterpNode MakeUInt64Node(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt64()}") { Length = 8 };
 
-    private static BinInterpNode MakeUInt64Node(EndianReader bin, string name, out ulong value) =>
+    public static BinInterpNode MakeUInt64Node(EndianReader bin, string name, out ulong value) =>
         new BinInterpNode(bin.Position, $"{name}: {value = bin.ReadUInt64()}") { Length = 8 };
     
-    private static BinInterpNode MakeFloatNode(EndianReader bin, string name) =>
+    public static BinInterpNode MakeFloatNode(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, $"{name}: {bin.ReadFloat()}", NodeType.StructLeafFloat) { Length = 4 };
 
-    private static BinInterpNode MakeFloatNode(EndianReader bin, string name, out float value)
+    public static BinInterpNode MakeFloatNode(EndianReader bin, string name, out float value)
     {
         return new BinInterpNode(bin.Position, $"{name}: {value = bin.ReadFloat()}", NodeType.StructLeafFloat)
             { Length = 4 };
     }
 
-    private static BinInterpNode MakeFloatNodeConditional(EndianReader bin, string name, bool create)
+    public static BinInterpNode MakeFloatNodeConditional(EndianReader bin, string name, bool create)
     {
         if (create)
         {
@@ -100,73 +100,85 @@ public partial class BinaryInterpreterWPF
         return null;
     }
 
-    private BinInterpNode MakeNameNode(EndianReader bin, string name) => new BinInterpNode(bin.Position,
-        $"{name}: {bin.ReadNameReference(Pcc).Instanced}", NodeType.StructLeafName) { Length = 8 };
+    public static BinInterpNode MakeNameNode(EndianReader bin, string name, IMEPackage pcc) => new BinInterpNode(bin.Position,
+        $"{name}: {bin.ReadNameReference(pcc).Instanced}", NodeType.StructLeafName) { Length = 8 };
 
-    private BinInterpNode MakeNameNode(EndianReader bin, string name, out NameReference nameRef) =>
-        new BinInterpNode(bin.Position, $"{name}: {nameRef = bin.ReadNameReference(Pcc).Instanced}",
+    public static BinInterpNode MakeNameNode(EndianReader bin, string name, IMEPackage pcc, out NameReference nameRef) =>
+        new BinInterpNode(bin.Position, $"{name}: {nameRef = bin.ReadNameReference(pcc).Instanced}",
             NodeType.StructLeafName) { Length = 8 };
 
-    private BinInterpNode MakeEntryNode(EndianReader bin, string name) =>
-        new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin)}", NodeType.StructLeafObject) { Length = 4 };
-
-    private BinInterpNode MakeEntryNode(EndianReader bin, string name, out int uIndex)
+    public static BinInterpNode MakeEntryNode(EndianReader bin, string name, IMEPackage pcc)
     {
-        long binPosition = bin.Position;
-        uIndex = bin.ReadInt32();
-        string refString = $"#{uIndex} {CurrentLoadedExport.FileRef.GetEntryString(uIndex)}";
-        return new BinInterpNode(binPosition, $"{name}: {refString}", NodeType.StructLeafObject) { Length = 4 };
+        return new BinInterpNode(bin.Position, $"{name}: {MakeEntryNodeString(bin, pcc)}", NodeType.StructLeafObject)
+            { Length = 4 };
+    }
+
+    public static BinInterpNode MakeEntryNode(EndianReader bin, string name, IMEPackage pcc, out int uIndex)
+    {
+        return new BinInterpNode(bin.Position, $"{name}: {MakeEntryNodeString(bin, pcc, out uIndex)}", NodeType.StructLeafObject) { Length = 4 };
     }
     
-        private static BinInterpNode MakeArrayNode(int count, EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false)
+    public static string MakeEntryNodeString(EndianReader bin, IMEPackage pcc)
+    {
+        var uIndex = bin.ReadInt32();
+        return $"#{uIndex} {pcc.GetEntryString(uIndex)}";
+    }
+    
+    public static string MakeEntryNodeString(EndianReader bin, IMEPackage pcc, out int uIndex)
+    {
+        uIndex = bin.ReadInt32();
+        return $"#{uIndex} {pcc.GetEntryString(uIndex)}";
+    }
+
+    public static BinInterpNode MakeArrayNode(int count, EndianReader bin, string name, Func<int, BinInterpNode> selector, bool isExpanded = false)
     {
         return new BinInterpNode(bin.Position, $"{name} ({count})")
         {
-            IsExpanded = IsExpanded,
+            IsExpanded = isExpanded,
             Items = ReadList(count, selector)
         };
     }
     
-    private static BinInterpNode MakeArrayNode(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false,
+    public static BinInterpNode MakeArrayNode(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool isExpanded = false,
         BinInterpNode.ArrayPropertyChildAddAlgorithm arrayAddAlgo = BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
     {
         int count;
         return new BinInterpNode(bin.Position, $"{name} ({count = bin.ReadInt32()})")
         {
-            IsExpanded = IsExpanded,
+            IsExpanded = isExpanded,
             Items = ReadList(count, selector),
             ArrayAddAlgorithm = arrayAddAlgo,
             Length = 4
         };
     }
 
-    private static BinInterpNode MakeArrayNodeByteCount(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false,
+    public static BinInterpNode MakeArrayNodeByteCount(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool isExpanded = false,
         BinInterpNode.ArrayPropertyChildAddAlgorithm arrayAddAlgo = BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
     {
         int count;
         return new BinInterpNode(bin.Position, $"{name} ({count = bin.ReadByte()})")
         {
-            IsExpanded = IsExpanded,
+            IsExpanded = isExpanded,
             Items = ReadList(count, selector),
             ArrayAddAlgorithm = arrayAddAlgo,
             Length = 1
         };
     }
 
-    private static BinInterpNode MakeArrayNodeInt16Count(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false,
+    public static BinInterpNode MakeArrayNodeInt16Count(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool isExpanded = false,
         BinInterpNode.ArrayPropertyChildAddAlgorithm arrayAddAlgo = BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
     {
         int count;
         return new BinInterpNode(bin.Position, $"{name} ({count = bin.ReadInt16()})")
         {
-            IsExpanded = IsExpanded,
+            IsExpanded = isExpanded,
             Items = ReadList(count, selector),
             ArrayAddAlgorithm = arrayAddAlgo,
             Length = 2
         };
     }
     
-    private static BinInterpNode MakeByteArrayNode(EndianReader bin, string name)
+    public static BinInterpNode MakeByteArrayNode(EndianReader bin, string name)
     {
         int pos = (int)bin.Position;
         int count = bin.ReadInt32();
@@ -174,14 +186,14 @@ public partial class BinaryInterpreterWPF
         return new BinInterpNode(pos, $"{name} ({count} bytes)");
     }
 
-    private static BinInterpNode MakePackedNormalNode(EndianReader bin, string name) =>
+    public static BinInterpNode MakePackedNormalNode(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position,
             $"{name}: (X: {bin.ReadByte() / 127.5f - 1}, Y: {bin.ReadByte() / 127.5f - 1}, Z: {bin.ReadByte() / 127.5f - 1}, W: {bin.ReadByte() / 127.5f - 1})")
         {
             Length = 4
         };
 
-    private static BinInterpNode MakeVectorNodeEditable(EndianReader bin, string name, bool expanded = false)
+    public static BinInterpNode MakeVectorNodeEditable(EndianReader bin, string name, bool expanded = false)
     {
         var node = new BinInterpNode(bin.Position,
             $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 12 };
@@ -193,7 +205,7 @@ public partial class BinaryInterpreterWPF
         return node;
     }
 
-    private static BinInterpNode MakeVector2DNodeEditable(EndianReader bin, string name, bool expanded = false)
+    public static BinInterpNode MakeVector2DNodeEditable(EndianReader bin, string name, bool expanded = false)
     {
         var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()})")
             { Length = 8 };
@@ -204,7 +216,7 @@ public partial class BinaryInterpreterWPF
         return node;
     }
 
-    private static BinInterpNode MakeVectorNode(EndianReader bin, string name)
+    public static BinInterpNode MakeVectorNode(EndianReader bin, string name)
     {
         var node = new BinInterpNode(bin.Position,
             $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 12 };
@@ -215,7 +227,7 @@ public partial class BinaryInterpreterWPF
         return node;
     }
 
-    private static BinInterpNode MakeQuatNode(EndianReader bin, string name)
+    public static BinInterpNode MakeQuatNode(EndianReader bin, string name)
     {
         var node = new BinInterpNode(bin.Position,
                 $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()}, W: {bin.ReadFloat()})")
@@ -228,7 +240,7 @@ public partial class BinaryInterpreterWPF
         return node;
     }
 
-    private static BinInterpNode MakeRotatorNode(EndianReader bin, string name)
+    public static BinInterpNode MakeRotatorNode(EndianReader bin, string name)
     {
         var node = new BinInterpNode(bin.Position,
             $"{name}: (Pitch: {bin.ReadInt32()}, Yaw: {bin.ReadInt32()}, Roll: {bin.ReadInt32()})") { Length = 12 };
@@ -239,7 +251,7 @@ public partial class BinaryInterpreterWPF
         return node;
     }
 
-    private static BinInterpNode MakeBoxNode(EndianReader bin, string name) =>
+    public static BinInterpNode MakeBoxNode(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, name)
         {
             IsExpanded = true,
@@ -252,13 +264,13 @@ public partial class BinaryInterpreterWPF
             Length = 25
         };
 
-    private static BinInterpNode MakeVector2DNode(EndianReader bin, string name) =>
+    public static BinInterpNode MakeVector2DNode(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()})") { Length = 8 };
 
-    private static BinInterpNode MakeVector2DHalfNode(EndianReader bin, string name) =>
+    public static BinInterpNode MakeVector2DHalfNode(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat16()}, Y: {bin.ReadFloat16()})") { Length = 4 };
 
-    private static BinInterpNode MakeColorNode(EndianReader bin, string name)
+    public static BinInterpNode MakeColorNode(EndianReader bin, string name)
     {
         return new BinInterpNode(bin.Position, $"{name}")
         {
@@ -273,7 +285,7 @@ public partial class BinaryInterpreterWPF
         };
     }
 
-    private static BinInterpNode MakeBoxSphereBoundsNode(EndianReader bin, string name)
+    public static BinInterpNode MakeBoxSphereBoundsNode(EndianReader bin, string name)
     {
         return new BinInterpNode(bin.Position, $"{name}")
         {
@@ -286,10 +298,10 @@ public partial class BinaryInterpreterWPF
         };
     }
 
-    private static BinInterpNode MakeGuidNode(EndianReader bin, string name) =>
+    public static BinInterpNode MakeGuidNode(EndianReader bin, string name) =>
         new BinInterpNode(bin.Position, $"{name}: {bin.ReadGuid()}", NodeType.Guid) { Length = 16 };
 
-    private static BinInterpNode MakeMaterialGuidNode(EndianReader bin, string name,
+    public static BinInterpNode MakeMaterialGuidNode(EndianReader bin, string name,
         Dictionary<Guid, string> materialGuidMap = null)
     {
         var guid = bin.ReadGuid();
@@ -306,12 +318,12 @@ public partial class BinaryInterpreterWPF
         return node;
     }
 
-    private BinInterpNode MakeStringNode(EndianReader bin, string nodeName)
+    public static BinInterpNode MakeStringNode(EndianReader bin, string nodeName, MEGame game)
     {
         int pos = (int)bin.Position;
         int strLen = bin.ReadInt32();
         string str;
-        if (Pcc.Game is MEGame.ME3 or MEGame.LE3)
+        if (game is MEGame.ME3 or MEGame.LE3)
         {
             strLen *= -2;
             str = bin.BaseStream.ReadStringUnicodeNull(strLen);
@@ -324,7 +336,7 @@ public partial class BinaryInterpreterWPF
         return new BinInterpNode(pos, $"{nodeName}: {str}", NodeType.StructLeafStr) { Length = strLen + 4 };
     }
 
-    private static BinInterpNode MakeStringUTF8Node(EndianReader bin, string nodeName)
+    public static BinInterpNode MakeStringUTF8Node(EndianReader bin, string nodeName)
     {
         int pos = (int)bin.Position;
         int strLen = bin.ReadInt32();
@@ -332,7 +344,7 @@ public partial class BinaryInterpreterWPF
         return new BinInterpNode(pos, $"{nodeName}: {str}", NodeType.StructLeafStr) { Length = strLen + 4 };
     }
 
-    private static BinInterpNode MakeSHANode(EndianReader bin, string name, out string sha)
+    public static BinInterpNode MakeSHANode(EndianReader bin, string name, out string sha)
     {
         var shaBytes = bin.ReadBytes(20);
         StringBuilder sb = new StringBuilder();
@@ -345,7 +357,7 @@ public partial class BinaryInterpreterWPF
         return new BinInterpNode(bin.Position, $"{name}: {sha}") { Length = 20 };
     }
 
-    private static List<ITreeItem> ReadList(int count, Func<int, ITreeItem> selector)
+    public static List<ITreeItem> ReadList(int count, Func<int, ITreeItem> selector)
     {
         //sanity check. if this number is too small, feel free to increase
         if (count > 5097152)
@@ -367,14 +379,8 @@ public partial class BinaryInterpreterWPF
 
         return list;
     }
-
-    private string entryRefString(EndianReader bin)
-    {
-        int n = bin.ReadInt32();
-        return $"#{n} {CurrentLoadedExport.FileRef.GetEntryString(n)}";
-    }
     
-    private BinInterpNode MakeByteEnumNode<T>(EndianReader bin, string name) where T : Enum
+    public static BinInterpNode MakeByteEnumNode<T>(EndianReader bin, string name) where T : Enum
     {
         var value = bin.ReadByte();
         var parsedValue = Enum.GetName(typeof(T), value);
@@ -382,7 +388,7 @@ public partial class BinaryInterpreterWPF
         return new BinInterpNode(bin.Position - 1, $"{name}: {parsedValue}") { Length = 1 };
     }
 
-    private BinInterpNode MakeUInt32EnumNode<T>(EndianReader bin, string name) where T : Enum
+    public static BinInterpNode MakeUInt32EnumNode<T>(EndianReader bin, string name) where T : Enum
     {
         var value = bin.ReadUInt32();
         var parsedValue = Enum.GetName(typeof(T), value);

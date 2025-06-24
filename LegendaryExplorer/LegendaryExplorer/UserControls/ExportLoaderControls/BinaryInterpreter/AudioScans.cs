@@ -8,6 +8,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Sound.ISACT;
 using LegendaryExplorerCore.Unreal;
+using static LegendaryExplorer.UserControls.ExportLoaderControls.BinaryNodeFactory;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls;
 
@@ -129,7 +130,7 @@ public partial class BinaryInterpreterWPF
                 IsExpanded = true,
                 Items =
                 {
-                    MakeEntryNode(bin, "SoundNode"),
+                    MakeEntryNode(bin, "SoundNode", Pcc),
                     MakeInt32Node(bin, "NodePosX"),
                     MakeInt32Node(bin, "NodePosY")
                 }

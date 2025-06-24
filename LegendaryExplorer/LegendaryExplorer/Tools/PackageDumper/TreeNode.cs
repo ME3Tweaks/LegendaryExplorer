@@ -12,7 +12,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
 {
     public class TreeNode
     {
-        public BinaryInterpreterWPF.NodeType Tag { get; set; }
+        public NodeType Tag { get; set; }
         public string Text { get; set; }
         public string Name { get; set; }
 
@@ -80,25 +80,25 @@ namespace LegendaryExplorer.Tools.PackageDumper
                 indent += "| ";
             }
             str.Write(Text);
-            if (Children.Count > 1000 && Tag == BinaryInterpreterWPF.NodeType.ArrayProperty)
+            if (Children.Count > 1000 && Tag == NodeType.ArrayProperty)
             {
                 str.Write($" > 1000, ({Children.Count}) suppressed.");
                 return;
             }
 
-            if (Tag == BinaryInterpreterWPF.NodeType.ArrayProperty && (Text.Contains("LookupTable") || Text.Contains("CompressedTrackOffsets")))
+            if (Tag == NodeType.ArrayProperty && (Text.Contains("LookupTable") || Text.Contains("CompressedTrackOffsets")))
             {
                 str.Write(" - suppressed by data dumper.");
                 return;
             }
             for (int i = 0; i < Children.Count; i++)
             {
-                if (Children[i].Tag == BinaryInterpreterWPF.NodeType.None)
+                if (Children[i].Tag == NodeType.None)
                 {
                     continue;
                 }
                 str.Write("\n");
-                Children[i].PrintPretty(indent, str, i == Children.Count - 1 || (i == Children.Count - 2 && Children[Children.Count - 1].Tag == BinaryInterpreterWPF.NodeType.None));
+                Children[i].PrintPretty(indent, str, i == Children.Count - 1 || (i == Children.Count - 2 && Children[Children.Count - 1].Tag == NodeType.None));
             }
         }
     }

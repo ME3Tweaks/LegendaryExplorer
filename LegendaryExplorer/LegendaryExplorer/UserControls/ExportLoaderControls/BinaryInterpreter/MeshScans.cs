@@ -6,8 +6,8 @@ using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.Classes;
+using static LegendaryExplorer.UserControls.ExportLoaderControls.BinaryNodeFactory;
 
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls;
@@ -24,7 +24,7 @@ public partial class BinaryInterpreterWPF
             bin.JumpTo(binarystart);
 
             subnodes.Add(MakeBoxSphereBoundsNode(bin, "Bounds"));
-            subnodes.Add(MakeEntryNode(bin, "BodySetup"));
+            subnodes.Add(MakeEntryNode(bin, "BodySetup", Pcc));
             subnodes.Add(MakekDOPTreeNode(bin));
 
             subnodes.Add(MakeInt32Node(bin, "InternalVersion"));
@@ -111,7 +111,7 @@ public partial class BinaryInterpreterWPF
                     {
                         matOffsets.Add(bin.Position);
                         BinInterpNode node = new BinInterpNode(bin.Position, $"{j}");
-                        node.Items.Add(MakeEntryNode(bin, "Material"));
+                        node.Items.Add(MakeEntryNode(bin, "Material", Pcc));
                         node.Items.Add(MakeBoolIntNode(bin, "EnableCollision"));
                         node.Items.Add(MakeBoolIntNode(bin, "OldEnableCollision"));
                         node.Items.Add(MakeBoolIntNode(bin, "bEnableShadowCasting"));
@@ -271,7 +271,7 @@ public partial class BinaryInterpreterWPF
                 }
                 if (Pcc.Game >= MEGame.ME3)
                 {
-                    subnodes.Add(MakeStringNode(bin, "HighResSourceMeshName"));
+                    subnodes.Add(MakeStringNode(bin, "HighResSourceMeshName", Pcc.Game));
                     subnodes.Add(MakeUInt32Node(bin, "HighResSourceMeshCRC"));
                     subnodes.Add(MakeGuidNode(bin, "LightingGuid"));
                 }
@@ -292,7 +292,7 @@ public partial class BinaryInterpreterWPF
                 Items = ReadList(matOffsets.Count, i =>
                 {
                     bin.JumpTo(matOffsets[i]);
-                    var matNode = MakeEntryNode(bin, $"Material[{i}]");
+                    var matNode = MakeEntryNode(bin, $"Material[{i}]", Pcc);
                     try
                     {
                         if (Pcc.GetEntry(bin.Skip(-4).ReadInt32()) is ExportEntry matExport)
@@ -328,7 +328,7 @@ public partial class BinaryInterpreterWPF
             var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
             bin.JumpTo(binarystart);
 
-            subnodes.Add(MakeEntryNode(bin, "SourceStaticMesh"));
+            subnodes.Add(MakeEntryNode(bin, "SourceStaticMesh", Pcc));
             subnodes.Add(MakeArrayNode(bin, "Fragments", i => new BinInterpNode(bin.Position, $"{i}")
             {
                 Items =
@@ -477,7 +477,7 @@ public partial class BinaryInterpreterWPF
             subnodes.Add(MakeBoxSphereBoundsNode(bin, "Bounds"));
             subnodes.Add(MakeArrayNode(bin, "Materials", i =>
             {
-                var matNode = MakeEntryNode(bin, $"{i}");
+                var matNode = MakeEntryNode(bin, $"{i}", Pcc);
                 try
                 {
                     var value = bin.Skip(-4).ReadInt32();
@@ -700,7 +700,7 @@ public partial class BinaryInterpreterWPF
             if (Pcc.Game >= MEGame.ME3)
             {
                 subnodes.Add(MakeArrayNode(bin, "BoneBreakNames", i => new BinInterpNode(bin.Position, $"{i}: {bin.ReadUnrealString()}")));
-                subnodes.Add(MakeArrayNode(bin, "ClothingAssets", i => MakeEntryNode(bin, $"{i}")));
+                subnodes.Add(MakeArrayNode(bin, "ClothingAssets", i => MakeEntryNode(bin, $"{i}", Pcc)));
             }
         }
         catch (Exception ex)

@@ -31,6 +31,7 @@ using static ME3Tweaks.Wwiser.Model.ParameterNode.Positioning.PositioningChunk;
 using static ME3Tweaks.Wwiser.Model.RTPC.RtpcType;
 using static ME3Tweaks.Wwiser.Model.State.SyncType;
 using LanguageId = ME3Tweaks.Wwiser.Model.LanguageId;
+using static LegendaryExplorer.UserControls.ExportLoaderControls.BinaryNodeFactory;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls;
 
@@ -261,7 +262,7 @@ public partial class BinaryInterpreterWPF
 
     private void Scan_WwiseBank_HIRC(BinInterpNode root, EndianReader bin, uint version, bool useFeedback)
     {
-        root.Items.Add(MakeArrayNode(bin, "Items", i => MakeHIRCNode(i, bin, version, useFeedback), IsExpanded: true));
+        root.Items.Add(MakeArrayNode(bin, "Items", i => MakeHIRCNode(i, bin, version, useFeedback), isExpanded: true));
     }
 
     private BinInterpNode MakeHIRCNode(int index, EndianReader bin, uint version, bool useFeedback)
