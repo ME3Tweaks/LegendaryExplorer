@@ -7,6 +7,9 @@
     xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
     xmlns:forms="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
     xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+    xmlns:peregrineTreeView="clr-namespace:LegendaryExplorer.SharedUI.PeregrineTreeView"
+    xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     mc:Ignorable="d"
     d:DesignHeight="300" d:DesignWidth="300"
     DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -54,9 +57,31 @@
                           BorderThickness="5,0"
                           BorderBrush="Transparent"
                           Panel.ZIndex="60" />
-            <ListBox Name="HIRCNotableItems_ListBox" Grid.Column="2" Grid.Row="1"
-                     Width="Auto" /><!--ItemsSource="{Binding HIRCNotableItems}"
-                     SelectionChanged="HIRCNotableItems_ListBox_SelectionChanged" -->
+            <TreeView Name="HIRCBinary_TreeView" Grid.Column="2" Grid.Row="1" Width="Auto" 
+                      ItemsSource="{Binding HIRCTreeViewItems}"
+                      SelectedItemChanged = "HIRCBinary_TreeView_SelectionChanged">
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type exportLoaderControls:BinInterpNode}" ItemsSource="{Binding Items}">
+                        <TextBlock Text="{Binding Path=Header}" >
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                    <b:ChangePropertyAction PropertyName="IsSelected" Value="true" TargetObject="{Binding}"/>
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </TextBlock>
+
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <!--<Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />-->
+                        <Setter Property="IsExpanded" Value="{Binding Path=IsExpanded, Mode=TwoWay}" />
+                        <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}" />
+                        <Setter Property="peregrineTreeView:TreeViewItemHelper.BringSelectedItemIntoView" Value="True" />
+                        <Setter Property="peregrineTreeView:TreeViewItemHelper.BringExpandedChildrenIntoView" Value="True" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+            </TreeView>
         </Grid>
         <StatusBar Height="23" DockPanel.Dock="Bottom" Width="Auto">
             <StatusBarItem>

@@ -12,8 +12,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Be.Windows.Forms;
-using BinarySerialization;
 using FontAwesome5;
 using LegendaryExplorer.Audio;
 using LegendaryExplorer.Dialogs;
@@ -48,7 +46,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
     /// <summary>
     /// Interaction logic for Soundpanel.xaml
     /// </summary>
-    public partial class Soundpanel : ExportLoaderControl
+    public partial class Soundpanel
     {
         public ObservableCollectionExtended<object> ExportInformationList { get; } = new();
         private readonly List<EmbeddedWEMFile> AllWems = new(); //used only for rebuilding soundbank
@@ -151,7 +149,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 
         private static void GenerateWaveFormChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is Soundpanel sp)
+            if (d is Soundpanel)
             {
             }
         }
@@ -165,14 +163,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
                     // MiniPlayerMode enabled
                     sp.ExportInfoListBox.Visibility = Visibility.Collapsed;
                     foreach (var item in sp.SoundPanel_TabsControl.Items)
-                        (item as TabItem).Visibility = Visibility.Collapsed;
+                        ((TabItem)item).Visibility = Visibility.Collapsed;
                 }
                 else
                 {
                     // MiniPlayerMode disabled
                     sp.ExportInfoListBox.Visibility = Visibility.Visible;
                     foreach (var item in sp.SoundPanel_TabsControl.Items)
-                        (item as TabItem).Visibility = Visibility.Visible;
+                        ((TabItem)item).Visibility = Visibility.Visible;
                 }
             }
         }
@@ -260,7 +258,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
                 //Debug.WriteLine("trackpos: " + value);
                 _currentTrackPosition = value;
                 SeekUpdatingDueToTimer = true;
-                OnPropertyChanged(nameof(CurrentTrackPosition));
+                OnPropertyChanged();
                 SeekUpdatingDueToTimer = false;
             }
         }
@@ -517,7 +515,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
                         if (bsd.ResolveToEntry(exportEntry.FileRef) is ExportEntry streamingData)
                         {
                             // Remove the ISB: prefix
-                            var indexEntryName = exportEntry.ObjectName.Instanced.Substring(exportEntry.ObjectName.Instanced.IndexOf(":") + 1);
+                            var indexEntryName = exportEntry.ObjectName.Instanced.Substring(exportEntry.ObjectName.Instanced.IndexOf(':') + 1);
                             ISACTBankPair ibp = ISACTHelper.GetPairedBanks(streamingData.GetBinaryData().Skip(4).ToArray());
                             IndexEntry foundICBInfo = null;
                             if (ibp.ICBBank.GetAllBankChunks().FirstOrDefault(x => x.ChunkName == ContentIndexBankChunk.FixedChunkTitle) is ContentIndexBankChunk contentIndex)
@@ -635,7 +633,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
                     using (FileStream fs = new FileStream(aEntry.AFCPath, FileMode.Open))
                     {
                         fs.Seek(aEntry.Offset, SeekOrigin.Begin);
-                        fs.Read(headerbytes, 0, 0x56);
+                        fs.ReadExactly(headerbytes, 0, 0x56);
                         bytesread = true;
                     }
                 }
@@ -722,6 +720,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
         /// <summary>
         /// Gets a PCM stream of data (WAV) from either the currently loaded export or selected WEM
         /// </summary>
+        /// <param name="forcedWwiseStreamExport">WwiseStream export we will force</param>
         /// <param name="forcedWemFile">WEM that we will force to get a stream for</param>
         /// <returns></returns>
         public Stream GetPCMStream(ExportEntry forcedWwiseStreamExport = null, EmbeddedWEMFile forcedWemFile = null)
@@ -756,7 +755,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
                         try
                         {
                             // This is to prevent error if malformed names
-                            isbName = localCurrentExport.ObjectName.Instanced.Substring(0, localCurrentExport.ObjectName.Instanced.IndexOf(":"));
+                            isbName = localCurrentExport.ObjectName.Instanced.Substring(0, localCurrentExport.ObjectName.Instanced.IndexOf(':'));
                         }
                         catch
                         {
@@ -764,7 +763,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
                         return AudioStreamHelper.GetWaveStreamFromISBEntry(bankEntry, isbName: isbName, game: localCurrentExport.Game);
                     }
                 }
-                else if (forcedWemFile != null || (localCurrentExport?.ClassName == "WwiseBank"))
+                else if (forcedWemFile != null || (localCurrentExport.ClassName == "WwiseBank"))
                 {
                     object currentWEMItem = forcedWemFile ?? ExportInfoListBox.SelectedItem;
                     if (currentWEMItem == null || currentWEMItem is string)
@@ -880,7 +879,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
                         _audioPlayer.PlaybackResumed += _audioPlayer_PlaybackResumed;
                         _audioPlayer.PlaybackStopped += _audioPlayer_PlaybackStopped;
                         CurrentTrackLength = _audioPlayer.GetLengthInSeconds();
-                        playToggle = true;
 
                         // Start the timer.  Note that this call can be made from any thread.
                         seekbarUpdateTimer.Start();
@@ -1172,7 +1170,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
                     }
                 }
 
-                if (CurrentLoadedExport.ClassName == "SoundNodeWave" && ExportInfoListBox.SelectedItem is ISACTListBankChunk bankEntry)
+                if (CurrentLoadedExport.ClassName == "SoundNodeWave" && ExportInfoListBox.SelectedItem is ISACTListBankChunk)
                 {
                     var pcmStream = GetPCMStream();
                     if (pcmStream == null)
@@ -1376,22 +1374,26 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 
                 listChunk.GetChunk(DataBankChunk.FixedChunkTitle).RawData = oggData; // Update ogg data.
 
-                var c2Chunk = listChunk.GetChunk(CompressionInfoBankChunk.FixedChunkTitle) as CompressionInfoBankChunk;
-                c2Chunk.TotalSize = oggData.Length;
-                c2Chunk.CurrentFormat = CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS;
-                c2Chunk.TargetFormat = CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS;
-                c2Chunk.CompressionQuality = quality;
+                if (listChunk.GetChunk(CompressionInfoBankChunk.FixedChunkTitle) is CompressionInfoBankChunk c2Chunk)
+                {
+                    c2Chunk.TotalSize = oggData.Length;
+                    c2Chunk.CurrentFormat = CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS;
+                    c2Chunk.TargetFormat = CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS;
+                    c2Chunk.CompressionQuality = quality;
+                }
 
-                var sinfChunk = listChunk.GetChunk(SampleInfoBankChunk.FixedChunkTitle) as SampleInfoBankChunk;
-                sinfChunk.TimeLength = (int)wfr.TotalTime.TotalMilliseconds;
-                sinfChunk.ByteLength = (int)wfr.Length; // Appears to be the size of the original WAV data segment, maybe this is the size of the buffer
-                // it will need to allocate for decompressed sample data
-                sinfChunk.BufferOffset = 0; // Pretty sure this is always zero
-                sinfChunk.BitsPerSample = (ushort)wfr.WaveFormat.BitsPerSample;
-                sinfChunk.SamplesPerSecond = wfr.WaveFormat.SampleRate;
+                if (listChunk.GetChunk(SampleInfoBankChunk.FixedChunkTitle) is SampleInfoBankChunk sinfChunk)
+                {
+                    sinfChunk.TimeLength = (int)wfr.TotalTime.TotalMilliseconds;
+                    sinfChunk.ByteLength =
+                        (int)wfr.Length; // Appears to be the size of the original WAV data segment, maybe this is the size of the buffer
+                    // it will need to allocate for decompressed sample data
+                    sinfChunk.BufferOffset = 0; // Pretty sure this is always zero
+                    sinfChunk.BitsPerSample = (ushort)wfr.WaveFormat.BitsPerSample;
+                    sinfChunk.SamplesPerSecond = wfr.WaveFormat.SampleRate;
+                }
 
-                var channelChunk = listChunk.GetChunk(ChannelBankChunk.FixedChunkTitle) as ChannelBankChunk;
-                channelChunk.ChannelCount = wfr.WaveFormat.Channels;
+                if (listChunk.GetChunk(ChannelBankChunk.FixedChunkTitle) is ChannelBankChunk channelChunk) channelChunk.ChannelCount = wfr.WaveFormat.Channels;
                 // Not sure if other data needs to be updated here.
 
             }
@@ -1541,7 +1543,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
             {
                 var conversion = await WwiseCliHandler.RunWwiseConversion(Pcc.Game, sourceFile, conversionSettings);
                 ReplaceAudioFromWwiseEncodedFile(conversion, forcedExport, conversionSettings?.UpdateReferencedEvents ?? false, conversionSettings?.DestinationAFCFile);
-            }).ContinueWithOnUIThread((a) =>
+            }).ContinueWithOnUIThread(_ =>
             {
                 UpdateAudioStream();
                 if (HostingControl != null)
@@ -1554,8 +1556,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
         /// <summary>
         /// Replaces the audio in the current loaded export, or the forced export. Will prompt user for a Wwise Encoded Audio file. (.ogg for ME3, .wem otherwise)
         /// </summary>
+        /// <param name="filePath">Default file path for audio file. If null, the user will be prompted to select a file</param>
         /// <param name="forcedExport">Export to update. If null, the currently loaded one is used instead.</param>
         /// <param name="updateReferencedEvents">If true will find all WwiseEvents referencing this export and update their Duration property</param>
+        /// <param name="destAFCBasename">Base file name of destination AFC</param>
         public void ReplaceAudioFromWwiseEncodedFile(string filePath = null, ExportEntry forcedExport = null, bool updateReferencedEvents = false, string destAFCBasename = null)
         {
             StopPlaying();
@@ -1598,7 +1602,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 
         private void WEMItem_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e is KeyEventArgs ke)
+            if (e is { } ke)
             {
                 switch (ke.Key)
                 {
@@ -1700,16 +1704,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
                 buff[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
             }
 
-            int count = HIRCObjects.Count;
-            int hexboxIndex = 0;//(int)SoundpanelHIRC_Hexbox.SelectionStart + 1;
-            for (int i = 0; i < count; i++)
+            var count = HIRCObjects.Count;
+            var hexboxIndex = (int)HIRCItemEditor.GetSelectedHex() + 1;
+            for (var i = 0; i < count; i++)
             {
                 byte[] hirc = HIRCObjects[(i + currentSelectedHIRCIndex) % count].Data; //search from selected index, and loop back around
                 int indexIn = hirc.IndexOfArray(buff, hexboxIndex);
                 if (indexIn > -1)
                 {
                     HIRC_ListBox.SelectedIndex = (i + currentSelectedHIRCIndex) % count;
-                    HIRCItemEditor.GoToHexAddress(indexIn, buff.Length);
+                    HIRCItemEditor.SelectHex(indexIn, buff.Length);
                     //searchHexStatus.Text = "";
                     return;
                 }

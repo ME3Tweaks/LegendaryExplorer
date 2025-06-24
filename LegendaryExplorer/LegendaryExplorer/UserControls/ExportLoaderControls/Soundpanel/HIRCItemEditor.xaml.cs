@@ -1,22 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Be.Windows.Forms;
-using LegendaryExplorer.Audio;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
-using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 {
-    public partial class HIRCItemEditor : NotifyPropertyChangedControlBase, IDisposable
+    public partial class HIRCItemEditor : IDisposable
     {
         public HIRCItemEditor()
         {
-            InitializeComponent();
             LoadCommands();
+            InitializeComponent();
         }
         
         private HexBox SoundpanelHIRC_Hexbox;
@@ -54,23 +53,24 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
             get => (int)GetValue(HexBoxMinWidthProperty);
             set => SetValue(HexBoxMinWidthProperty, value);
         }
-        public static readonly DependencyProperty HexBoxMinWidthProperty = DependencyProperty.Register(nameof(HexBoxMinWidth), typeof( int ), typeof( Soundpanel ), new PropertyMetadata(0));
+        public static readonly DependencyProperty HexBoxMinWidthProperty = DependencyProperty.Register(nameof(HexBoxMinWidth), typeof( int ), typeof( HIRCItemEditor ), new PropertyMetadata(0));
 
         public int HexBoxMaxWidth
         {
             get => (int)GetValue(HexBoxMaxWidthProperty);
             set => SetValue(HexBoxMaxWidthProperty, value);
         }
-        public static readonly DependencyProperty HexBoxMaxWidthProperty = DependencyProperty.Register(nameof(HexBoxMaxWidth), typeof( int ), typeof( Soundpanel ), new PropertyMetadata(0));
-
-        public static readonly DependencyProperty SelectedHIRCItemProperty = DependencyProperty.Register(
-            nameof(SelectedHIRCItem), typeof(HIRCDisplayObject), typeof(HIRCItemEditor), new PropertyMetadata(null, OnSelectedHIRCItemChanged));
+        public static readonly DependencyProperty HexBoxMaxWidthProperty = DependencyProperty.Register(nameof(HexBoxMaxWidth), typeof( int ), typeof( HIRCItemEditor ), new PropertyMetadata(0));
 
         public HIRCDisplayObject SelectedHIRCItem
         {
             get => (HIRCDisplayObject)GetValue(SelectedHIRCItemProperty);
             set => SetValue(SelectedHIRCItemProperty, value);
         }
+        
+        public static readonly DependencyProperty SelectedHIRCItemProperty = DependencyProperty.Register(
+            nameof(SelectedHIRCItem), typeof(HIRCDisplayObject), typeof(HIRCItemEditor), new PropertyMetadata(null, OnSelectedHIRCItemChanged));
+
         
         private static void OnSelectedHIRCItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -96,10 +96,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
         private byte[] _originalHIRCHex;
         
         private bool _hircHexChanged;
-        public bool HIRCHexChanged
+
+        private bool HIRCHexChanged
         {
             get => _hircHexChanged;
-            private set => SetProperty(ref _hircHexChanged, value);
+            set => SetProperty(ref _hircHexChanged, value);
         }
         
         private void LoadCommands()
@@ -108,6 +109,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
         }
         
         public ICommand SaveHIRCHexCommand { get; private set; }
+        public ObservableCollectionExtended<TreeViewItem> HIRCTreeViewItems { get; set; } = new();
+
+        public Dictionary<uint, string> WwiseBankIdLookup { get; set; } = new();
 
         public void FixBuggyHexBox()
         {
@@ -133,7 +137,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
             SoundpanelHIRC_Hexbox.ScrollByteIntoView();
         }
 
-        public void GoToHexAddress(int index, int length)
+        public void SelectHex(int index, int length)
         {
             if (SoundpanelHIRC_Hexbox != null && hircHexProvider != null && hircHexProvider.Span.Length > 0)
             {
@@ -141,6 +145,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
                 SoundpanelHIRC_Hexbox.SelectionLength = length;
                 SoundpanelHIRC_Hexbox.ScrollByteIntoView(index);
             }
+        }
+        
+        public long GetSelectedHex()
+        {
+            if (SoundpanelHIRC_Hexbox != null)
+            {
+                return SoundpanelHIRC_Hexbox.SelectionStart;
+            }
+
+            return -1;
         }
         
         private bool CanSaveHIRCHex() => HIRCHexChanged;
@@ -246,6 +260,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 
                 SoundpanelHIRC_Hexbox.Refresh();
             }
+        }
+
+        private void HIRCBinary_TreeView_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            throw new NotImplementedException();
         }
     }
 }
