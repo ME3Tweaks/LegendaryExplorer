@@ -1,6 +1,6 @@
 var class_legendary_explorer_core_1_1_shaders_1_1_ref_shader_cache_reader =
 [
-    [ "GlobalShaderFileName", "class_legendary_explorer_core_1_1_shaders_1_1_ref_shader_cache_reader.html#a94e0598c20c49d520fb60cd6ca024787", null ],
+    [ "ShaderCacheName", "class_legendary_explorer_core_1_1_shaders_1_1_ref_shader_cache_reader.html#a83a95382076a03100c2059baab84ddff", null ],
     [ "ShaderFilePath", "class_legendary_explorer_core_1_1_shaders_1_1_ref_shader_cache_reader.html#acb740a8b6970c6707e8c5fb1005a7555", null ],
     [ "IsShaderOffsetsDictInitialized", "class_legendary_explorer_core_1_1_shaders_1_1_ref_shader_cache_reader.html#aa7f9c85ca1df861195f806689acb9e33", null ],
     [ "PopulateOffsets", "class_legendary_explorer_core_1_1_shaders_1_1_ref_shader_cache_reader.html#a912b147234a37f6ced1209d015eed41c", null ],

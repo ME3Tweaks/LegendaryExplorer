@@ -2,6 +2,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_bi
 [
     [ "From< T >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#a772e1611273ffeb7c048c802120c10ce", null ],
     [ "From", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#a07560be851b3fd5945b0d7b9d1cc58ec", null ],
+    [ "EditBinary< T >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#a5f8ed017b5fa1fa969ba49ff83315bc2", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#aa4c46718ee911d19e5dacb9ca6605bbd", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#aa7c77c9c70fe3913b4ae6348122fb4c6", null ],
     [ "GetUIndexes", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#a45ec2f5055533833b0732be2eb564c47", null ],

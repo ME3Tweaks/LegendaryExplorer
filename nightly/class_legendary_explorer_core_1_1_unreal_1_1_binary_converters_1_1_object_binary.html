@@ -190,6 +190,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a772e1611273ffeb7c048c802120c10ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07560be851b3fd5945b0d7b9d1cc58ec"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">ObjectBinary</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#a07560be851b3fd5945b0d7b9d1cc58ec">From</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null, int? dataOffsetOverride=null)</td></tr>
 <tr class="separator:a07560be851b3fd5945b0d7b9d1cc58ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5f8ed017b5fa1fa969ba49ff83315bc2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#a5f8ed017b5fa1fa969ba49ff83315bc2">EditBinary&lt; T &gt;</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, Action&lt; T &gt; changeDelegate)</td></tr>
+<tr class="memdesc:a5f8ed017b5fa1fa969ba49ff83315bc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes writing binary edit code a bit easier if you need to just quickly edit it.   <a href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#a5f8ed017b5fa1fa969ba49ff83315bc2">More...</a><br /></td></tr>
+<tr class="separator:a5f8ed017b5fa1fa969ba49ff83315bc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4c46718ee911d19e5dacb9ca6605bbd"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html">ObjectBinary</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#aa4c46718ee911d19e5dacb9ca6605bbd">Create</a> (string className, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html">PropertyCollection</a> props=null)</td></tr>
 <tr class="separator:aa4c46718ee911d19e5dacb9ca6605bbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afcb41a1405be2fe62af57d8ec9e88efe"><td class="memItemLeft" align="right" valign="top">static implicit&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_object_binary.html#afcb41a1405be2fe62af57d8ec9e88efe">operator ObjectBinary</a> (byte[] buff)</td></tr>
@@ -296,6 +299,66 @@ Properties</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a5f8ed017b5fa1fa969ba49ff83315bc2" name="a5f8ed017b5fa1fa969ba49ff83315bc2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f8ed017b5fa1fa969ba49ff83315bc2">&#9670;&#160;</a></span>EditBinary&lt; T &gt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.Unreal.BinaryConverters.ObjectBinary.EditBinary&lt; T &gt; </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>export</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Action&lt; T &gt;&#160;</td>
+          <td class="paramname"><em>changeDelegate</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Makes writing binary edit code a bit easier if you need to just quickly edit it.  </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td></td></tr>
+    <tr><td class="paramname">changeDelegate</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<div class="typeconstraint">
+<dl><dt><b>Type Constraints</b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>T</em></td><td>&#160;:</td><td valign="top"><em>ObjectBinary</em></td><td>&#160;</td></tr>
+<tr><td valign="top"><em>T</em></td><td>&#160;:</td><td valign="top"><em>new()</em></td><td>&#160;</td></tr>
+</table>
+</dd>
+</dl>
+</div>
 
 </div>
 </div>
