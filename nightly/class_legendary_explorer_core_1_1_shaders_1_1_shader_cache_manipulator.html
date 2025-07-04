@@ -105,8 +105,13 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_shad
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a19a7171e5532528470960da47e7601d9"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#a19a7171e5532528470960da47e7601d9">CompactSeekFreeShaderCaches</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, string gamePathOverride=null)</td></tr>
 <tr class="separator:a19a7171e5532528470960da47e7601d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5696fb2b077399587a952a2567c684a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html">ShaderCache</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#ad5696fb2b077399587a952a2567c684a">GetAllShadersForMaterials</a> (List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; materials, string gamePathOverride=null)</td></tr>
+<tr class="separator:ad5696fb2b077399587a952a2567c684a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab10b82d914396069ecf9102ece4fb0f"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html">ShaderCache</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#aab10b82d914396069ecf9102ece4fb0f">GetLocalShadersForMaterials</a> (List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; materials, string gamePathOverride=null)</td></tr>
 <tr class="separator:aab10b82d914396069ecf9102ece4fb0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa61bd8efd23268a4fd18910ad3c44eb3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html">ShaderCache</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#aa61bd8efd23268a4fd18910ad3c44eb3">GetRefShaders</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, HashSet&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_parameter_set.html">StaticParameterSet</a> &gt; staticParamSets, string gamePathOverride=null)</td></tr>
+<tr class="memdesc:aa61bd8efd23268a4fd18910ad3c44eb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fetches a shader cache containing only the parameter sets, from the ref shader cache.   <a href="class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#aa61bd8efd23268a4fd18910ad3c44eb3">More...</a><br /></td></tr>
+<tr class="separator:aa61bd8efd23268a4fd18910ad3c44eb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aec366d0e43d02fd9844885d89a8ddf4a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html">ShaderCache</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#aec366d0e43d02fd9844885d89a8ddf4a">GetLocalShaders</a> (HashSet&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_parameter_set.html">StaticParameterSet</a> &gt; staticParamSets, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> seekFreeShaderCacheExport)</td></tr>
 <tr class="separator:aec366d0e43d02fd9844885d89a8ddf4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa26b2c04b84ea1aecef479c10980a561"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#aa26b2c04b84ea1aecef479c10980a561">AddShadersToFile</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> destFile, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html">ShaderCache</a> shadersToAdd)</td></tr>
@@ -163,6 +168,42 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="ad5696fb2b077399587a952a2567c684a" name="ad5696fb2b077399587a952a2567c684a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5696fb2b077399587a952a2567c684a">&#9670;&#160;</a></span>GetAllShadersForMaterials()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html">ShaderCache</a> LegendaryExplorerCore.Shaders.ShaderCacheManipulator.GetAllShadersForMaterials </td>
+          <td>(</td>
+          <td class="paramtype">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt;&#160;</td>
+          <td class="paramname"><em>materials</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>gamePathOverride</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="aab10b82d914396069ecf9102ece4fb0f" name="aab10b82d914396069ecf9102ece4fb0f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aab10b82d914396069ecf9102ece4fb0f">&#9670;&#160;</a></span>GetLocalShadersForMaterials()</h2>
 
@@ -196,6 +237,57 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa61bd8efd23268a4fd18910ad3c44eb3" name="aa61bd8efd23268a4fd18910ad3c44eb3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa61bd8efd23268a4fd18910ad3c44eb3">&#9670;&#160;</a></span>GetRefShaders()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html">ShaderCache</a> LegendaryExplorerCore.Shaders.ShaderCacheManipulator.GetRefShaders </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td>
+          <td class="paramname"><em>game</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">HashSet&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_parameter_set.html">StaticParameterSet</a> &gt;&#160;</td>
+          <td class="paramname"><em>staticParamSets</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>gamePathOverride</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Fetches a shader cache containing only the parameter sets, from the ref shader cache.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">staticParamSets</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>
