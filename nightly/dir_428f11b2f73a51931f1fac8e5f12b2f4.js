@@ -41,6 +41,7 @@ var dir_428f11b2f73a51931f1fac8e5f12b2f4 =
     [ "MorphTarget.cs", "_morph_target_8cs.html", "_morph_target_8cs" ],
     [ "ObjectBinary.cs", "_object_binary_8cs.html", "_object_binary_8cs" ],
     [ "ObjectRedirector.cs", "_object_redirector_8cs.html", "_object_redirector_8cs" ],
+    [ "PackagelessSerializingContainer.cs", "_packageless_serializing_container_8cs.html", "_packageless_serializing_container_8cs" ],
     [ "PhysicsAssetInstance.cs", "_physics_asset_instance_8cs.html", "_physics_asset_instance_8cs" ],
     [ "Polys.cs", "_polys_8cs.html", "_polys_8cs" ],
     [ "PrefabInstance.cs", "_prefab_instance_8cs.html", "_prefab_instance_8cs" ],

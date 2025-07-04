@@ -1,17 +1,18 @@
 var _shader_parameters_8cs =
 [
-    [ "FShaderParameter", "struct_f_shader_parameter.html", "struct_f_shader_parameter" ],
-    [ "FShaderResourceParameter", "struct_f_shader_resource_parameter.html", "struct_f_shader_resource_parameter" ],
-    [ "TUniformParameter< TParam >", "struct_t_uniform_parameter.html", "struct_t_uniform_parameter" ],
-    [ "FSceneTextureShaderParameters", "struct_f_scene_texture_shader_parameters.html", "struct_f_scene_texture_shader_parameters" ],
-    [ "FMotionBlurShaderParameters", "struct_f_motion_blur_shader_parameters.html", "struct_f_motion_blur_shader_parameters" ],
-    [ "FColorRemapShaderParameters", "struct_f_color_remap_shader_parameters.html", "struct_f_color_remap_shader_parameters" ],
-    [ "FGammaShaderParameters", "struct_f_gamma_shader_parameters.html", "struct_f_gamma_shader_parameters" ],
-    [ "FAmbientOcclusionParams", "struct_f_ambient_occlusion_params.html", "struct_f_ambient_occlusion_params" ],
-    [ "FLightShaftPixelShaderParameters", "struct_f_light_shaft_pixel_shader_parameters.html", "struct_f_light_shaft_pixel_shader_parameters" ],
-    [ "FHeightFogVertexShaderParameters", "struct_f_height_fog_vertex_shader_parameters.html", "struct_f_height_fog_vertex_shader_parameters" ],
-    [ "FDOFShaderParameters", "struct_f_d_o_f_shader_parameters.html", "struct_f_d_o_f_shader_parameters" ],
-    [ "FHBAOShaderParameters", "struct_f_h_b_a_o_shader_parameters.html", "struct_f_h_b_a_o_shader_parameters" ],
-    [ "FMaterialVertexShaderParameters", "struct_f_material_vertex_shader_parameters.html", "struct_f_material_vertex_shader_parameters" ],
-    [ "FMaterialPixelShaderParameters", "struct_f_material_pixel_shader_parameters.html", "struct_f_material_pixel_shader_parameters" ]
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FShaderParameter", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_shader_parameter.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_shader_parameter" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FShaderResourceParameter", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_shader_resource_parameter.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_shader_resource_parameter" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.TUniformParameter< TParam >", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_uniform_parameter.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_uniform_parameter" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FSceneTextureShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_scene_texture_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_scene_texture_shader_parameters" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FMotionBlurShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_motion_blur_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_motion_blur_shader_parameters" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FColorRemapShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_color_remap_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_color_remap_shader_parameters" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FGammaShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_gamma_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_gamma_shader_parameters" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FAmbientOcclusionParams", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_ambient_occlusion_params.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_ambient_occlusion_params" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FLightShaftPixelShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FHeightFogVertexShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_height_fog_vertex_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_height_fog_vertex_shader_parameters" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FDOFShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_d_o_f_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_d_o_f_shader_parameters" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FHBAOShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_h_b_a_o_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_h_b_a_o_shader_parameters" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FMaterialVertexShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FMaterialPixelShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.SerializingContainer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container" ]
 ];

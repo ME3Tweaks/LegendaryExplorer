@@ -1,0 +1,16 @@
+var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters =
+[
+    [ "TextureSpaceBlurOrigin", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html#a7bab3b8b78e717d09213c1ff33931cf6", null ],
+    [ "WorldSpaceBlurOriginAndRadius", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html#afa6defb5282928aab0ba939aa1f7c4f5", null ],
+    [ "SpotAngles", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html#ad73012cdae2811e39474c77abd24b41c", null ],
+    [ "WorldSpaceSpotDirection", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html#a00498cba4fcee6d9cd7baf2e6c9d8003", null ],
+    [ "WorldSpaceCameraPosition", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html#a3bf5405381e0d41c6db8230daa7192c7", null ],
+    [ "UVMinMax", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html#ac342796d63f7ab673b21f2c0cdf3f0c0", null ],
+    [ "AspectRatioAndInvAspectRatio", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html#a216681e07dfdcf29ca5ff12a363c1c4b", null ],
+    [ "LightShaftParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html#aedc44ea9645380f00d4a64fe5516c912", null ],
+    [ "BloomTintAndThreshold", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html#aa89bf1fa5c08f0e8278d0ffbdc0fd281", null ],
+    [ "BloomScreenBlendThreshold", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html#aabac5c0cb3f4a513702400eabde88d93", null ],
+    [ "DistanceFade", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html#ab12e15f8bc25d899c3960060cc5f1c1b", null ],
+    [ "SourceTexture", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html#a6a0d6f57a879989c3999eff3091e2527", null ],
+    [ "OcclusionValueLimit", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html#a5dc5a9cae15b1704b0674ebd88bea70e", null ]
+];

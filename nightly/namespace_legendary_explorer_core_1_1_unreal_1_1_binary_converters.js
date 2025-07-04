@@ -1,5 +1,6 @@
 var namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters =
 [
+    [ "Shaders", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders.html", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders" ],
     [ "AlphaMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_alpha_map.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_alpha_map" ],
     [ "AnimSequence", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence" ],
     [ "AnimTrack", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_track.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_track" ],

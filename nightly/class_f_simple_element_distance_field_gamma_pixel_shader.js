@@ -1,5 +1,10 @@
 var class_f_simple_element_distance_field_gamma_pixel_shader =
 [
+    [ "Texture", "class_f_simple_element_distance_field_gamma_pixel_shader.html#a02f1a0e17fa6c0d285a60478225c8acd", null ],
+    [ "TextureComponentReplicate", "class_f_simple_element_distance_field_gamma_pixel_shader.html#ac388e9ee2ff86e822bc20544ac1185c4", null ],
+    [ "TextureComponentReplicateAlpha", "class_f_simple_element_distance_field_gamma_pixel_shader.html#ab073b23b63510d137264d8ec28a23839", null ],
+    [ "Gamma", "class_f_simple_element_distance_field_gamma_pixel_shader.html#a185998fceaadf38e2db0ab7c87abed71", null ],
+    [ "ClipRef", "class_f_simple_element_distance_field_gamma_pixel_shader.html#a53c3307ecf3bc8ad879aaae12b926c49", null ],
     [ "SmoothWidth", "class_f_simple_element_distance_field_gamma_pixel_shader.html#a7baf6539ce76bfc8339a53eb261693a2", null ],
     [ "EnableShadow", "class_f_simple_element_distance_field_gamma_pixel_shader.html#aff8381aae5a1ea720d3c73d97614e196", null ],
     [ "ShadowDirection", "class_f_simple_element_distance_field_gamma_pixel_shader.html#a001409eb06d9e6cdd553200225a72cbe", null ],

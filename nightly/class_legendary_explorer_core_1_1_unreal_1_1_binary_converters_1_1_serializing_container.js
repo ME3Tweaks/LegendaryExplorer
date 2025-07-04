@@ -114,6 +114,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializi
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#ac7fe6c5936a4133e641e5e886590bbcc", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a52d6efea9fa0d41230c4bc9b9556e949", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#aea3a75b7c2d04bcb5204774bc584f1f4", null ],
+    [ "SerializeUniformParameters< TParam >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#af8645acabf09e3e9f3b89ca8a7a9752c", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a903661fccbfdb6d513f4329c72704af9", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#ae0244d4a82a7338a2f52e12d8f3a1e23", null ],
     [ "SerializeUnmanaged< T >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a2f9d51fafe9f85b716f16ac642f715bd", null ],

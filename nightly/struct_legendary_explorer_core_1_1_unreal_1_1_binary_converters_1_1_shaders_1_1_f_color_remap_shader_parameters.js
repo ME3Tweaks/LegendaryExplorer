@@ -1,0 +1,7 @@
+var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_color_remap_shader_parameters =
+[
+    [ "SceneShadowsAndDesaturation", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_color_remap_shader_parameters.html#a5bb9c82ab1a43df697743389e2de3ec8", null ],
+    [ "SceneInverseHighLights", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_color_remap_shader_parameters.html#a9e2a3c9f4b9036811f1eb438f50685d2", null ],
+    [ "SceneMidTones", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_color_remap_shader_parameters.html#a764232ab899b421c217a4f26cc8eecb9", null ],
+    [ "SceneScaledLuminanceWeights", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_color_remap_shader_parameters.html#a628d3b2318835c60345d0d3f4c7b5fdf", null ]
+];

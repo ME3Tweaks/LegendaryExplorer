@@ -56,7 +56,7 @@ var searchData=
   ['reflection_53',['Reflection',['../namespace_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_reflection.html',1,'LegendaryExplorerCore::Gammtek::Extensions']]],
   ['save_54',['Save',['../namespace_legendary_explorer_core_1_1_save.html',1,'LegendaryExplorerCore']]],
   ['serialization_55',['Serialization',['../namespace_legendary_explorer_core_1_1_plot_database_1_1_serialization.html',1,'LegendaryExplorerCore::PlotDatabase']]],
-  ['shaders_56',['Shaders',['../namespace_legendary_explorer_core_1_1_shaders.html',1,'LegendaryExplorerCore']]],
+  ['shaders_56',['Shaders',['../namespace_legendary_explorer_core_1_1_shaders.html',1,'LegendaryExplorerCore.Shaders'],['../namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders.html',1,'LegendaryExplorerCore.Unreal.BinaryConverters.Shaders']]],
   ['sharpdx_57',['SharpDX',['../namespace_legendary_explorer_core_1_1_sharp_d_x.html',1,'LegendaryExplorerCore']]],
   ['sound_58',['Sound',['../namespace_legendary_explorer_core_1_1_sound.html',1,'LegendaryExplorerCore']]],
   ['specialized_59',['Specialized',['../namespace_legendary_explorer_core_1_1_gammtek_1_1_collections_1_1_specialized.html',1,'LegendaryExplorerCore::Gammtek::Collections']]],

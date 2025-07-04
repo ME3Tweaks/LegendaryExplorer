@@ -1,0 +1,9 @@
+var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_height_fog_vertex_shader_parameters =
+[
+    [ "FogDistanceScale", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_height_fog_vertex_shader_parameters.html#a83c5730545e728ee8f6d823aa2820ace", null ],
+    [ "FogExtinctionDistance", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_height_fog_vertex_shader_parameters.html#a0ed84ddae64dd2ce9393ea70f40dac3f", null ],
+    [ "FogMinHeight", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_height_fog_vertex_shader_parameters.html#ac628755a7f50da839ab84443f6199658", null ],
+    [ "FogMaxHeight", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_height_fog_vertex_shader_parameters.html#ad8acb19f5c674dd735fbefa954857f82", null ],
+    [ "FogInScattering", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_height_fog_vertex_shader_parameters.html#a6db02d3f083ff520f108c258d95a9d93", null ],
+    [ "FogStartDistance", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_height_fog_vertex_shader_parameters.html#a1bce8807e771728ffa13ea74d60d20b5", null ]
+];

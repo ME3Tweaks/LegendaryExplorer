@@ -33,6 +33,7 @@ var _shader_8cs =
     [ "FReconstructHDRPixelShader", "class_f_reconstruct_h_d_r_pixel_shader.html", "class_f_reconstruct_h_d_r_pixel_shader" ],
     [ "FSimpleElementPixelShader", "class_f_simple_element_pixel_shader.html", "class_f_simple_element_pixel_shader" ],
     [ "TFilterPixelShader", "class_t_filter_pixel_shader.html", "class_t_filter_pixel_shader" ],
+    [ "TFilterPixelShaderDepthInAlpha", "class_t_filter_pixel_shader_depth_in_alpha.html", "class_t_filter_pixel_shader_depth_in_alpha" ],
     [ "FShadowVolumeVertexShader", "class_f_shadow_volume_vertex_shader.html", "class_f_shadow_volume_vertex_shader" ],
     [ "FSFXUberPostProcessBlendPixelShader", "class_f_s_f_x_uber_post_process_blend_pixel_shader.html", "class_f_s_f_x_uber_post_process_blend_pixel_shader" ],
     [ "FUberPostProcessVertexShader", "class_f_uber_post_process_vertex_shader.html", "class_f_uber_post_process_vertex_shader" ],
@@ -109,5 +110,8 @@ var _shader_8cs =
     [ "FHitMaskPixelShader", "class_f_hit_mask_pixel_shader.html", "class_f_hit_mask_pixel_shader" ],
     [ "FHitMaskVertexShader", "class_f_hit_mask_vertex_shader.html", "class_f_hit_mask_vertex_shader" ],
     [ "TAOMeshVertexShader", "class_t_a_o_mesh_vertex_shader.html", "class_t_a_o_mesh_vertex_shader" ],
-    [ "FLightFunctionPixelShader", "class_f_light_function_pixel_shader.html", "class_f_light_function_pixel_shader" ]
+    [ "FLightFunctionPixelShader", "class_f_light_function_pixel_shader.html", "class_f_light_function_pixel_shader" ],
+    [ "VisualizeTexturePixelShader", "class_visualize_texture_pixel_shader.html", "class_visualize_texture_pixel_shader" ],
+    [ "FMLAAComputeLineLengthPixelShader", "class_f_m_l_a_a_compute_line_length_pixel_shader.html", "class_f_m_l_a_a_compute_line_length_pixel_shader" ],
+    [ "FFilterVSMPixelShader", "class_f_filter_v_s_m_pixel_shader.html", "class_f_filter_v_s_m_pixel_shader" ]
 ];
