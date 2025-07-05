@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using Be.Windows.Forms;
 using LegendaryExplorer.Misc;
@@ -115,6 +116,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 
             var reader = new EndianReader(hircHexProvider.Span.ToArray());
             var hircNode = WwiseBinaryScanner.MakeHIRCNode(SelectedHIRCItem.Index, reader, SelectedHIRCItem.Context.Version, SelectedHIRCItem.Context.UseFeedback);
+            ChopTreeViewItemNames([hircNode]);
             WwiseBinaryScanner.AddNodeReferences();
             HIRCTreeViewItems.ClearEx();
             if (hircNode != null)
@@ -122,6 +124,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
                 hircNode.IsSelected = true;
                 hircNode.IsExpanded = true;
                 HIRCTreeViewItems.Add(hircNode);
+            }
+        }
+
+        private void ChopTreeViewItemNames(IEnumerable<BinInterpNode> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                node.Header = "0x" + node.Header.Substring(6); // cut out so many digits from hex offset - this is dumb
+                ChopTreeViewItemNames(node.Items.OfType<BinInterpNode>());
             }
         }
         
@@ -146,7 +157,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
         public void FixBuggyHexBox()
         {
             //This makes the hexbox widen by 1 and then shrink by 1
-            //For some rason it won't calculate the scrollbar again unless you do this
+            //For some reason it won't calculate the scrollbar again unless you do this
             //which is very annoying.
             var currentWidth = HIRC_Hexbox_Host.Width;
             if (currentWidth > 500)
@@ -197,6 +208,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
             }
             
             SelectedHIRCItem.CommitHex(hircHexProvider.Span.ToArray());
+            RefreshTreeView();
             HIRCHexChanged = false;
         }
         
@@ -220,18 +232,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
                 HexboxColumnDefinition.Width = new GridLength(HexboxColumnDefinition.MinWidth);
             }
         }
-        
-        private void HIRCNotableItems_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            /*SoundpanelHIRC_Hexbox.UnhighlightAll();
-            if (HIRCNotableItems_ListBox.SelectedItem is Soundpanel.HIRCNotableItem h)
-            {
-                SoundpanelHIRC_Hexbox.Highlight(h.Offset, h.Length);
-                SoundpanelHIRC_Hexbox.SelectionStart = h.Offset;
-                SoundpanelHIRC_Hexbox.SelectionLength = 1;
-            }*/
-        }
-        
+
         private void HIRCBinary_TreeView_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             SoundpanelHIRC_Hexbox.UnhighlightAll();
@@ -240,71 +241,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
                 SoundpanelHIRC_Hexbox.Highlight(b.Offset, b.Length);
                 SoundpanelHIRC_Hexbox.SelectionStart = b.Offset;
                 SoundpanelHIRC_Hexbox.SelectionLength = b.Length;
-            }
-        }
-        
-        private void Soundpanel_HIRCHexbox_SelectionChanged(object sender, EventArgs e)
-        {
-            if (SelectedHIRCItem != null)
-            {
-                ReadOptimizedByteProvider hbp = (ReadOptimizedByteProvider)SoundpanelHIRC_Hexbox.ByteProvider;
-                var memory = hbp.Span;
-                int start = (int)SoundpanelHIRC_Hexbox.SelectionStart;
-                int len = (int)SoundpanelHIRC_Hexbox.SelectionLength;
-                int size = (int)SoundpanelHIRC_Hexbox.ByteProvider.Length;
-                try
-                {
-                    if (memory.Length > 0 && start != -1 && start < size)
-                    {
-                        string s = $"Byte: {memory[start]}"; //if selection is same as size this will crash.
-                        if (start <= memory.Length - 4)
-                        {
-                            /*int val = EndianReader.ToInt32(memory, start, Pcc.Endian);
-                            float fval = EndianReader.ToSingle(memory, start, Pcc.Endian);
-                            s += $", Int: {val} (0x{val:X8}) Float: {fval}";
-                            var referencedHIRCbyID = HIRCObjects.FirstOrDefault(x => x.ID == val);
-
-                            if (referencedHIRCbyID != null)
-                            {
-                                s += $", HIRC Object (by ID) Index: {referencedHIRCbyID.Index}";
-                            }
-
-                            EmbeddedWEMFile referencedWEMbyID = AllWems.FirstOrDefault(x => x.Id == val);
-
-                            if (referencedWEMbyID != null)
-                            {
-                                s += $", Embedded WEM Object (by ID): {referencedWEMbyID.DisplayString}";
-                            }*/
-
-                            //if (CurrentLoadedExport.FileRef.getEntry(val) is ExportEntry exp)
-                            //{
-                            //    s += $", Export: {exp.ObjectName}";
-                            //}
-                            //else if (CurrentLoadedExport.FileRef.getEntry(val) is ImportEntry imp)
-                            //{
-                            //    s += $", Import: {imp.ObjectName}";
-                            //}
-                        }
-
-                        s += $" | Start=0x{start:X8} ";
-                        if (len > 0)
-                        {
-                            s += $"Length=0x{len:X8} ";
-                            s += $"End=0x{(start + len - 1):X8}";
-                        }
-
-                        HIRCStatusBar_LeftMostText.Text = s;
-                    }
-                    else
-                    {
-                        HIRCStatusBar_LeftMostText.Text = "Nothing Selected";
-                    }
-                }
-                catch (Exception)
-                {
-                }
-
-                SoundpanelHIRC_Hexbox.Refresh();
             }
         }
     }

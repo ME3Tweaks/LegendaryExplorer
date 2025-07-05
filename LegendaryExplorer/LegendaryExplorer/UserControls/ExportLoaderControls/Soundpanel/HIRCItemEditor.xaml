@@ -47,8 +47,7 @@
             <sharedUi:WindowsFormsHostEx x:Name="HIRC_Hexbox_Host" Grid.Row="1" Grid.Column="0"
                                          VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                 <forms:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True"
-                              Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True"
-                              SelectionStartChanged="Soundpanel_HIRCHexbox_SelectionChanged" VScrollBarVisible="True">
+                              Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" VScrollBarVisible="True">
                 </forms:HexBox>
             </sharedUi:WindowsFormsHostEx>
             <GridSplitter Grid.Column="1"
@@ -57,7 +56,7 @@
                           BorderThickness="5,0"
                           BorderBrush="Transparent"
                           Panel.ZIndex="60" />
-            <TreeView Name="HIRCBinary_TreeView" Grid.Column="2" Grid.Row="1" Width="Auto" 
+            <TreeView Name="HIRCBinary_TreeView" Grid.Column="2" Grid.Row="1" Width="Auto" FontFamily="Consolas"
                       ItemsSource="{Binding HIRCTreeViewItems}"
                       SelectedItemChanged = "HIRCBinary_TreeView_SelectionChanged">
                 <TreeView.Resources>
@@ -83,10 +82,5 @@
                 </TreeView.ItemContainerStyle>
             </TreeView>
         </Grid>
-        <StatusBar Height="23" DockPanel.Dock="Bottom" Width="Auto">
-            <StatusBarItem>
-                <TextBlock Name="HIRCStatusBar_LeftMostText" Text="Nothing selected" />
-            </StatusBarItem>
-        </StatusBar>
     </DockPanel>
 </misc:NotifyPropertyChangedControlBase>

@@ -277,7 +277,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
             get => _selectedHIRCObject;
             set
             {
-                HIRCObjectSelected?.Invoke((uint)value.Index);
+                if(value is not null) HIRCObjectSelected?.Invoke((uint)value.Index);
                 SetProperty( ref _selectedHIRCObject, value);
             }
         }
