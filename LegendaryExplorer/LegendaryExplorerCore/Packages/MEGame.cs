@@ -27,6 +27,8 @@ namespace LegendaryExplorerCore.Packages
         LE3 = 6,
         /// <summary>Unreal Development Kit</summary>
         UDK = 7,
+        /// <summary>Mass Effect Legendary Edition Multiplayer</summary>
+        LMP = 8,
 
         /// <summary>Mass Effect Legendary Edition Launcher</summary>
         /// <remarks>
