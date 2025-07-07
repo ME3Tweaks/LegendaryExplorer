@@ -120,6 +120,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a5a17a09610595137749ce899b1ca6fd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7fa300eb50e77a36ae1b99518181f12b"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#a7fa300eb50e77a36ae1b99518181f12b">IsMaterialBroken</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, string gamePathOverride=null)</td></tr>
 <tr class="separator:a7fa300eb50e77a36ae1b99518181f12b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7bf39375cebc6d96a5bfac0b8a826ee"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#ae7bf39375cebc6d96a5bfac0b8a826ee">CreateShaderCache</a> (this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
+<tr class="memdesc:ae7bf39375cebc6d96a5bfac0b8a826ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an empty SeekFreeShaderCache export in the package if it does not exist.   <a href="class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#ae7bf39375cebc6d96a5bfac0b8a826ee">More...</a><br /></td></tr>
+<tr class="separator:ae7bf39375cebc6d96a5bfac0b8a826ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc78f414092cf49b940f3336a43abce6"><td class="memItemLeft" align="right" valign="top">static ? <a class="el" href="_convert_extensions_8cs.html#add5aeb4d12283fa0452cb03a86feb9a3">Guid</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#adc78f414092cf49b940f3336a43abce6">CopyRefShadersToLocal</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> material, bool cloneIfLocal=false)</td></tr>
 <tr class="memdesc:adc78f414092cf49b940f3336a43abce6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies the shader map used by this material, and its referenced shader files, to local cache and updates the material to use them with a new guid. The material should be renamed to ensure memory collisions do not occur.   <a href="class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#adc78f414092cf49b940f3336a43abce6">More...</a><br /></td></tr>
 <tr class="separator:adc78f414092cf49b940f3336a43abce6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -432,6 +435,41 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae7bf39375cebc6d96a5bfac0b8a826ee" name="ae7bf39375cebc6d96a5bfac0b8a826ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae7bf39375cebc6d96a5bfac0b8a826ee">&#9670;&#160;</a></span>CreateShaderCache()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Shaders.ShaderCacheManipulator.CreateShaderCache </td>
+          <td>(</td>
+          <td class="paramtype">this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>package</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates an empty SeekFreeShaderCache export in the package if it does not exist.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">package</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>
 </div>
