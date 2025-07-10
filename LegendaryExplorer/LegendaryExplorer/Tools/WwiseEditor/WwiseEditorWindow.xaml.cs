@@ -135,7 +135,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             }
         }
 
-        private WwiseBankWwiser CurrentWwiseBank;
+        private WwiseBank CurrentWwiseBank;
 
         public ICommand OpenCommand { get; set; }
         public ICommand SaveCommand { get; set; }
@@ -263,7 +263,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             graphEditor.Enabled = false;
             graphEditor.UseWaitCursor = true;
 
-            CurrentWwiseBank = export.GetBinaryData<WwiseBankWwiser>();
+            CurrentWwiseBank = export.GetBinaryData<WwiseBank>();
             SetupJSON(export);
             Properties_InterpreterWPF.LoadExport(export);
             binaryInterpreter.LoadExport(export);
@@ -309,7 +309,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             }
         }
 
-        private void GetObjects(WwiseBankWwiser bank)
+        private void GetObjects(WwiseBank bank)
         {
             var newObjs = new List<WwiseHircObjNode>();
             CurrentObjects.Clear();

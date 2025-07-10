@@ -34,6 +34,7 @@ using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Sound.ISACT;
 using ME3Tweaks.Wwiser;
 using AudioStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
+using WwiseBank = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseBank;
 using WwiseStream = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream;
 
 namespace LegendaryExplorer.Tools.Soundplorer
@@ -502,7 +503,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
         {
             if (spExport != null && spExport.Export.ClassName == "WwiseBank")
             {
-                var bank = spExport.Export.GetBinaryData<WwiseBankWwiser>().Bank;
+                var bank = spExport.Export.GetBinaryData<WwiseBank>().Bank;
                 if (bank.EmbeddedFiles.Count == 0) return;
                 
                 if (location == null)
@@ -1036,7 +1037,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
             {
                 if (spExport.Export.ClassName == "WwiseBank")
                 {
-                    var bank = spExport.Export.GetBinaryData<WwiseBankWwiser>().Bank;
+                    var bank = spExport.Export.GetBinaryData<WwiseBank>().Bank;
                     if (bank.EmbeddedFiles.Count > 0)
                     {
                         int i = 0;

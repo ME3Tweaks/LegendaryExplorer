@@ -40,6 +40,7 @@ using AudioStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
 using WwiseStream = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream;
 using Color = System.Drawing.Color;
 using IValueConverter = System.Windows.Data.IValueConverter;
+using WwiseBank = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseBank;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 {
@@ -64,7 +65,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 
         public ISACTListBankChunk CurrentLoadedISACTEntry { get; private set; }
         public AFCFileEntry CurrentLoadedAFCFileEntry { get; private set; }
-        public WwiseBankWwiser CurrentLoadedWwisebank { get; private set; }
+        public WwiseBank CurrentLoadedWwisebank { get; private set; }
 
         /// <summary>
         /// The cached stream source is used to determine if we should unload the current vorbis stream
@@ -445,7 +446,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 
                 if (exportEntry.ClassName == "WwiseBank")
                 {
-                    var wb = CurrentLoadedWwisebank = exportEntry.GetBinaryData<WwiseBankWwiser>();
+                    var wb = CurrentLoadedWwisebank = exportEntry.GetBinaryData<WwiseBank>();
                     ExportInformationList.Add($"#{exportEntry.UIndex} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced} (Bank ID 0x{wb.Bank.BKHD.SoundBankId:X8})");
 
                     HIRCObjects.Clear();

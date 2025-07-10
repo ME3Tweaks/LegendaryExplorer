@@ -416,7 +416,7 @@ namespace LegendaryExplorer.Tools.Soundplorer
                     }
                 case "WwiseBank":
                     {
-                        var bank = Export.GetBinaryData<WwiseBankWwiser>().Bank;
+                        var bank = Export.GetBinaryData<WwiseBank>().Bank;
                         var embeddedFileCount = bank.EmbeddedFiles.Count;
                         SubText = $"{embeddedFileCount} embedded WEM{(embeddedFileCount != 1 ? "s" : "")}";
                         NeedsLoading = false;

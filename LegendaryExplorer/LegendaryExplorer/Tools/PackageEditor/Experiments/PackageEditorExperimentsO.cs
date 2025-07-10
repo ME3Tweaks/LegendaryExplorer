@@ -1933,7 +1933,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             (uint oldBankID, uint newBankID) = UpdateID_EXPERIMENTAL(wwiseBankEntry, null, newWwiseBankName);
 
-            var wwiserBinary = wwiseBankEntry.GetBinaryData<WwiseBankWwiser>();
+            var wwiserBinary = wwiseBankEntry.GetBinaryData<WwiseBank>();
             var wwiseBank = wwiserBinary.Bank;
             // Update the bank id
             wwiseBank.BKHD.SoundBankId = newBankID;
@@ -2034,7 +2034,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
             (uint oldBankID, uint newBankID) = UpdateID_LEGACY(wwiseBankEntry, newWwiseBankName);
 
-            var wwiseBankBin = wwiseBankEntry.GetBinaryData<WwiseBankWwiser>();
+            var wwiseBankBin = wwiseBankEntry.GetBinaryData<WwiseBank>();
             var wwiseBank = wwiseBankBin.Bank;
             
             // Update the bank id
