@@ -9,9 +9,14 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Helpers;
+using ME3Tweaks.Wwiser.Model.Hierarchy;
+using ME3Tweaks.Wwiser.Model.Hierarchy.Enums;
 using Piccolo;
 using Piccolo.Event;
-using Piccolo.Nodes;
+using Piccolo.Nodes; 
+using Action = ME3Tweaks.Wwiser.Model.Hierarchy.Action;
+using Event = ME3Tweaks.Wwiser.Model.Hierarchy.Event;
+using Sound = ME3Tweaks.Wwiser.Model.Hierarchy.Sound;
 using SText = LegendaryExplorer.Tools.SequenceObjects.SText;
 using WwiseStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
 
@@ -59,17 +64,17 @@ namespace LegendaryExplorer.Tools.WwiseEditor
         //public float Height { get { return shape.Height; } }
         public virtual bool IsSelected { get; set; }
 
-        protected WwiseBankParsed.HIRCObject hircObject;
+        protected HircItem hircItem;
         protected Pen outlinePen;
         protected SText comment;
 
-        public virtual uint ID => hircObject?.ID ?? 0;
+        public virtual uint ID => hircItem?.Id ?? 0;
 
         public string Comment => comment.Text;
 
-        protected WwiseHircObjNode(WwiseBankParsed.HIRCObject hircObj, WwiseGraphEditor grapheditor)
+        protected WwiseHircObjNode(HircItem item, WwiseGraphEditor grapheditor)
         {
-            hircObject = hircObj;
+            hircItem = item;
             g = grapheditor;
             comment = new SText(GetComment(), commentColor, false)
             {
@@ -94,32 +99,17 @@ namespace LegendaryExplorer.Tools.WwiseEditor
                 id = id.Swap();
             }
 
-            return $"{id:X8}";
+            return $"{id}";
         }
 
-        protected Color GetColor(HIRCType t)
+        protected Color GetColor(HircType t)
         {
             return t switch
             {
-                HIRCType.SoundSXFSoundVoice => intColor,
-                HIRCType.EventAction => interpDataColor,
-                HIRCType.Event => boolColor,
-                HIRCType.ActorMixer => stringColor,
-                //HIRCType.Settings => expr,
-                //HIRCType.RandomOrSequenceContainer => expr,
-                //HIRCType.SwitchContainer => expr,
-                //HIRCType.AudioBus => expr,
-                //HIRCType.BlendContainer => expr,
-                //HIRCType.MusicSegment => expr,
-                //HIRCType.MusicTrack => expr,
-                //HIRCType.MusicSwitchContainer => expr,
-                //HIRCType.MusicPlaylistContainer => expr,
-                //HIRCType.Attenuation => expr,
-                //HIRCType.DialogueEvent => expr,
-                //HIRCType.MotionBus => expr,
-                //HIRCType.MotionFX => expr,
-                //HIRCType.Effect => expr,
-                //HIRCType.AuxiliaryBus => expr,
+                HircType.Sound => intColor,
+                HircType.Action => interpDataColor,
+                HircType.Event => boolColor,
+                HircType.ActorMixer => stringColor,
                 _ => Color.Black
             };
         }
@@ -348,9 +338,9 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
     public sealed class WEvent : WwiseHircObjNode
     {
-        public WwiseBankParsed.Event Event => (WwiseBankParsed.Event)hircObject;
+        public Event Event => (Event)hircItem;
 
-        public WEvent(WwiseBankParsed.Event hircEvent, float x, float y, WwiseGraphEditor grapheditor)
+        public WEvent(Event hircEvent, float x, float y, WwiseGraphEditor grapheditor)
             : base(hircEvent, grapheditor)
         {
             outlinePen = new Pen(EventColor);
@@ -455,12 +445,12 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
         protected override void GetLinks()
         {
-            if (Event.EventActions.Any())
+            if (Event.ActionIds.Any())
             {
                 var l = new OutputLink
                 {
                     Desc = "Event Actions",
-                    Links = Event.EventActions.Clone(),
+                    Links = Event.ActionIds.Clone(),
                     Edges = new List<ActionEdge>(),
                     node = CreateActionLinkBox()
                 };
@@ -497,8 +487,8 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
         protected InputDragHandler inputDragHandler = new ();
 
-        public WGeneric(WwiseBankParsed.HIRCObject hircO, float x, float y, WwiseGraphEditor grapheditor)
-            : base(hircO, grapheditor)
+        public WGeneric(HircItem item, float x, float y, WwiseGraphEditor grapheditor)
+            : base(item, grapheditor)
         {
             originalX = x;
             originalY = y;
@@ -621,10 +611,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             SetOffset(x, y);
         }
 
-        protected virtual string GetTitle()
-        {
-            return WwiseStreamHelper.GetHircObjTypeString(hircObject.Type);
-        }
+        protected virtual string GetTitle() => hircItem.HircType.ToString();
 
         public class InputDragHandler : PDragEventHandler
         {
@@ -676,26 +663,65 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
     public sealed class WEventAction : WGeneric
     {
-        public WwiseBankParsed.EventAction  EventAction => (WwiseBankParsed.EventAction)hircObject;
+        public Action EventAction => (Action)hircItem;
 
-        public WEventAction(WwiseBankParsed.EventAction evtAct, float x, float y, WwiseGraphEditor grapheditor) : base(evtAct, x, y, grapheditor)
+        public WEventAction(Action evtAct, float x, float y, WwiseGraphEditor grapheditor) : base(evtAct, x, y, grapheditor)
         {
             GetLinks();
         }
 
         protected override string GetTitle()
         {
-            return $"{base.GetTitle()}: {WwiseStreamHelper.GetEventActionTypeString(EventAction.ActionType)}";
+            return $"{base.GetTitle()}: {EventAction.Type.Value.ToString()}";
         }
 
         protected override void GetLinks()
         {
-            if (EventAction.ReferencedObjectID != 0)
+            if (EventAction.TargetId != 0)
             {
                 var l = new OutputLink
                 {
                     Desc = "Referenced object",
-                    Links = new List<uint>{EventAction.ReferencedObjectID},
+                    Links = new List<uint>{EventAction.TargetId},
+                    Edges = new List<ActionEdge>(),
+                    node = CreateActionLinkBox()
+                };
+                l.node.Brush = outputBrush;
+                l.node.Pickable = false;
+                // PPath dragger = CreateActionLinkBox();
+                // dragger.Brush = mostlyTransparentBrush;
+                // dragger.X = l.node.X;
+                // dragger.Y = l.node.Y;
+                // dragger.AddInputEventListener(outputDragHandler);
+                //l.node.AddChild(dragger);
+                Outlinks.Add(l);
+            }
+        }
+    }
+    
+    public sealed class WRandomSequenceAction : WGeneric
+    {
+        public RandSeqContainer RandSeqAction => (RandSeqContainer)hircItem;
+
+        public WRandomSequenceAction(RandSeqContainer evtAct, float x, float y, WwiseGraphEditor grapheditor) : base(evtAct, x, y, grapheditor)
+        {
+            GetLinks();
+        }
+
+        protected override string GetTitle()
+        {
+            return $"{RandSeqAction.Mode.ToString()} Container";
+        }
+
+        protected override void GetLinks()
+        {
+            for(var i = 0; i < RandSeqAction.Playlist.Items.Count; i++)
+            {
+                var item = RandSeqAction.Playlist.Items[i];
+                var l = new OutputLink
+                {
+                    Desc = $"Item {i}, Weight {item.Weight}",
+                    Links = new List<uint>{item.Id},
                     Edges = new List<ActionEdge>(),
                     node = CreateActionLinkBox()
                 };
@@ -714,26 +740,26 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
     public sealed class WSoundSFXVoice : WGeneric
     {
-        public WwiseBankParsed.SoundSFXVoice SoundSFXVoice => (WwiseBankParsed.SoundSFXVoice)hircObject;
+        public Sound SoundItem => (Sound)hircItem;
 
-        public WSoundSFXVoice(WwiseBankParsed.SoundSFXVoice ssfxv, float x, float y, WwiseGraphEditor grapheditor) : base(ssfxv, x, y, grapheditor)
+        public WSoundSFXVoice(Sound ssfxv, float x, float y, WwiseGraphEditor grapheditor) : base(ssfxv, x, y, grapheditor)
         {
             GetLinks();
         }
 
         protected override string GetTitle()
         {
-            return $"{base.GetTitle()}: {SoundSFXVoice.State}, {SoundSFXVoice.SoundType}";
+            return $"{base.GetTitle()}: {SoundItem.BankSourceData.StreamType.Value}, {SoundItem.BankSourceData.MediaInformation.Flags}";
         }
 
         protected override void GetLinks()
         {
-            if (SoundSFXVoice.AudioID != 0)
+            if (SoundItem.BankSourceData.MediaInformation.SourceId != 0 && SoundItem.BankSourceData.StreamType.Value != StreamType.StreamTypeInner.DataBnk)
             {
                 var l = new VarLink
                 {
                     Desc = "Referenced object",
-                    Links = new List<uint> { SoundSFXVoice.AudioID },
+                    Links = new List<uint> { SoundItem.BankSourceData.MediaInformation.SourceId },
                     Edges = new List<VarEdge>(),
                     node = CreateVarLinkBox()
                 };
