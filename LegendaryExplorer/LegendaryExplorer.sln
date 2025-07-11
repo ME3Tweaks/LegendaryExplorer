@@ -36,8 +36,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WaveFormRendererLib", "Wave
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WwiseTools_DotNet6", "submodules\WwiseTools\WwiseTools_DotNet6\WwiseTools_DotNet6.csproj", "{BF251A45-7189-4E2C-AA08-0308F0E309A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WwiseParserLib", "submodules\WwiseParser\WwiseParserLib\WwiseParserLib.csproj", "{DA7BCC8E-034B-4AA6-BBB4-BAA6CB4F6FB2}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "submodules", "submodules", "{947C0083-A3FF-4CEC-912C-BB65A11C6EEC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Wwiser.NET", "Wwiser.NET", "{1F845EFA-0145-46AD-86FE-84C7DAAA5842}"
