@@ -7,6 +7,7 @@ var class_f_d_o_f_and_bloom_blend_pixel_shader =
     [ "DOFBlurredFar", "class_f_d_o_f_and_bloom_blend_pixel_shader.html#a8833efbf24fddbdd430927a46b3c2f8c", null ],
     [ "BlurredImageSeperateBloom", "class_f_d_o_f_and_bloom_blend_pixel_shader.html#a29cd2a1f230a3dc7418ada88730860fc", null ],
     [ "BloomTintAndScreenBlendThreshold", "class_f_d_o_f_and_bloom_blend_pixel_shader.html#ae2735a3269aaff7746ebeb8cad008319", null ],
+    [ "SeparateTranslucencyTexture", "class_f_d_o_f_and_bloom_blend_pixel_shader.html#a2c83bb696670085f9ff041cc7ab01e57", null ],
     [ "InputTextureSize", "class_f_d_o_f_and_bloom_blend_pixel_shader.html#aaf33ca6df02d043f7ea5a31bce1cbd5f", null ],
     [ "DOFKernelParams", "class_f_d_o_f_and_bloom_blend_pixel_shader.html#ae97b3a07c9006243d464865f53397b68", null ]
 ];

@@ -56,6 +56,7 @@ var namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters =
     [ "FxNode", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_node.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_node" ],
     [ "FxNodeParameter", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_node_parameter.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_node_parameter" ],
     [ "FxNodeParentLink", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_node_parent_link.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_node_parent_link" ],
+    [ "GlobalShaderCache", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_global_shader_cache.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_global_shader_cache" ],
     [ "GPUSkinVertex", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_g_p_u_skin_vertex.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_g_p_u_skin_vertex" ],
     [ "GuidCache", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_guid_cache.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_guid_cache" ],
     [ "GuidIndexPair", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_guid_index_pair.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_guid_index_pair" ],

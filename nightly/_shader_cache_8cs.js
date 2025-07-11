@@ -1,6 +1,7 @@
 var _shader_cache_8cs =
 [
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ShaderCache", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.GlobalShaderCache", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_global_shader_cache.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_global_shader_cache" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialShaderMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_shader_map.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_shader_map" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ShaderReference", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_reference.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_reference" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.MeshShaderMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_mesh_shader_map.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_mesh_shader_map" ],

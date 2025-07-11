@@ -919,7 +919,9 @@ var hierarchy =
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.PrefabInstance", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_prefab_instance.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.RB_BodySetup", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_r_b___body_setup.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.SFXMorphFaceFrontEndDataSource", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_s_f_x_morph_face_front_end_data_source.html", null ],
-      [ "LegendaryExplorerCore.Unreal.BinaryConverters.ShaderCache", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.ShaderCache", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html", [
+        [ "LegendaryExplorerCore.Unreal.BinaryConverters.GlobalShaderCache", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_global_shader_cache.html", null ]
+      ] ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.ShadowMap1D", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shadow_map1_d.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.SkeletalMesh", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.SoundCue", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_sound_cue.html", null ],

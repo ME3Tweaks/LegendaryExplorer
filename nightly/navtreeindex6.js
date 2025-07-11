@@ -172,14 +172,15 @@ var NAVTREEINDEX6 =
 "class_f_custom_light_map_texture_policy.html":[1,0,23],
 "class_f_d_o_f_and_bloom_blend_pixel_shader.html":[1,0,28],
 "class_f_d_o_f_and_bloom_blend_pixel_shader.html#a29cd2a1f230a3dc7418ada88730860fc":[1,0,28,5],
+"class_f_d_o_f_and_bloom_blend_pixel_shader.html#a2c83bb696670085f9ff041cc7ab01e57":[1,0,28,7],
 "class_f_d_o_f_and_bloom_blend_pixel_shader.html#a34404dd6b23313675e94ef339b10e4cd":[1,0,28,1],
 "class_f_d_o_f_and_bloom_blend_pixel_shader.html#a8833efbf24fddbdd430927a46b3c2f8c":[1,0,28,4],
-"class_f_d_o_f_and_bloom_blend_pixel_shader.html#aaf33ca6df02d043f7ea5a31bce1cbd5f":[1,0,28,7],
+"class_f_d_o_f_and_bloom_blend_pixel_shader.html#aaf33ca6df02d043f7ea5a31bce1cbd5f":[1,0,28,8],
 "class_f_d_o_f_and_bloom_blend_pixel_shader.html#adb3700de4f5bc74613ca939ed861574d":[1,0,28,2],
 "class_f_d_o_f_and_bloom_blend_pixel_shader.html#adfe247cae4460c4ea3cc394460c307ed":[1,0,28,3],
 "class_f_d_o_f_and_bloom_blend_pixel_shader.html#ae2735a3269aaff7746ebeb8cad008319":[1,0,28,6],
 "class_f_d_o_f_and_bloom_blend_pixel_shader.html#ae723b3a9abd6d0dbe7d334482da2e222":[1,0,28,0],
-"class_f_d_o_f_and_bloom_blend_pixel_shader.html#ae97b3a07c9006243d464865f53397b68":[1,0,28,8],
+"class_f_d_o_f_and_bloom_blend_pixel_shader.html#ae97b3a07c9006243d464865f53397b68":[1,0,28,9],
 "class_f_d_o_f_and_bloom_blend_vertex_shader.html":[1,0,29],
 "class_f_d_o_f_and_bloom_blend_vertex_shader.html#a3c7970e969584d7bd5a2538d4cd4542d":[1,0,29,0],
 "class_f_directional_light_light_map_policy.html":[1,0,24],
@@ -248,6 +249,5 @@ var NAVTREEINDEX6 =
 "class_f_fluid_simulate_pixel_shader.html#a5a166bc92edffc4aef51d4d2a3786395":[1,0,38,4],
 "class_f_fluid_simulate_pixel_shader.html#aae92ffea7d8b645e920ebc2cca80cd6a":[1,0,38,3],
 "class_f_fluid_simulate_pixel_shader.html#adfc4fc78d86d4afe98b60ef120a0202d":[1,0,38,6],
-"class_f_fluid_simulate_pixel_shader.html#ae32741633e2515b5fc62f2e443e8b4ce":[1,0,38,2],
-"class_f_fluid_simulate_pixel_shader.html#af634d9c3adb543d59e18d028e4592d01":[1,0,38,1]
+"class_f_fluid_simulate_pixel_shader.html#ae32741633e2515b5fc62f2e443e8b4ce":[1,0,38,2]
 };
