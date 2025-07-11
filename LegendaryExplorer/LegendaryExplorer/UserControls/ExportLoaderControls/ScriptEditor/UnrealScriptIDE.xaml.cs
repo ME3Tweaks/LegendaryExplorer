@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Threading;
-using ICSharpCode.AvalonEdit;
+﻿using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
@@ -30,6 +20,18 @@ using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Parsing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.Composition.Primitives;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 {
@@ -110,6 +112,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 UnloadExport();
             }
 
+            var lineStore = new ClassLineStore();
             UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
             CurrentLoadedExport = export;
             if (Pcc != CurrentFileLib?.Pcc)
@@ -142,11 +145,43 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             if (!IsBusy)
             {
                 Decompile();
+                var line = lineStore.GetLine(export.FileRef.FileNameNoExtension, export.ObjectNameString);
+                
+                if ((line.HasValue))
+                {
+                    Debug.WriteLine("get line: ", line.Value);
+                    textEditor.ScrollToLine(line.Value);
+                }
             }
         }
 
         public override void UnloadExport()
         {
+            var lineStore = new ClassLineStore();
+            var center = new System.Windows.Point(
+                textEditor.ActualWidth / 2,
+                textEditor.ActualHeight / 2
+                );
+            var pos = textEditor.GetPositionFromPoint(center);
+
+            if (pos.HasValue)
+            {
+                int middleLine = pos.Value.Line;
+
+                if (CurrentLoadedExport != null)
+                {
+                    Debug.WriteLine($"Export objectName: {CurrentLoadedExport.ObjectNameString}");
+                    Debug.WriteLine($"Export fileNameNoExtension: {CurrentLoadedExport.FileRef.FileNameNoExtension}");
+                    Debug.WriteLine($"textEditor line:          {middleLine}");
+                    lineStore.Set(CurrentLoadedExport.FileRef.FileNameNoExtension, CurrentLoadedExport.ObjectNameString, pos.Value.Line);
+                    lineStore.Save();
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No text position at the exact center point.");
+            }
+
             CurrentLoadedExport = null;
             AST = null;
             ScriptText = string.Empty;

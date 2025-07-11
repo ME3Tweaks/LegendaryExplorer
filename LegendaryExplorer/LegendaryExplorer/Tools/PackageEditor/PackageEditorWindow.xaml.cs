@@ -4493,6 +4493,36 @@ namespace LegendaryExplorer.Tools.PackageEditor
             }
         }
 
+        private void PopoutScriptEditor_Click(object sender, RoutedEventArgs e)
+        {
+            var scriptControl = ScriptTab_UnrealScriptIDE;
+            //scriptControl.PopOut() // TODO OM: they already started implementing this within IDE.xaml.cs
+            //Script_Tab.
+            //var inheritedContext = (scriptControl as FrameworkElement).DataContext;
+
+            Script_Tab.Content = null;
+
+
+            var popup = new Window
+            {
+                Title = "Script Editor",
+                Content = scriptControl,
+                Width = 800,
+                Height = 600,
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+
+            // when it closes, put it back in the tab
+            popup.Closed += (s2, e2) =>
+            {
+                Script_Tab.Content = scriptControl;
+                // scriptControl.DataContext = this.DataContext; 
+            };
+
+            popup.Show();
+        }
+
         private void Window_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton.Equals(MouseButton.XButton1))
