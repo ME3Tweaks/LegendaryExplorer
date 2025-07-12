@@ -542,20 +542,7 @@
                     </TabItem>
                     <TabItem Name="Script_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="Script Editor"
-					   VerticalAlignment="Center"
-					   ToolTip="Edit decompiled UnrealScript"/>
-
-                                <Button Width="20" Height="16" Padding="0" Margin="4,1,0,0"
-					ToolTip="Pop out Script Editor"
-					Click="PopoutScriptEditor_Click"
-					>
-                                    <fa5:FontAwesome Icon="Solid_ExternalLinkAlt" Height="14" 
-                                      Width="16"/>
-                                </Button>
-                            </StackPanel>
-
+                            <TextBlock Text="Script Editor" VerticalAlignment="Center" ToolTip="Edit decompiled UnrealScript"/>
                         </TabItem.Header>
                         <scriptEditor:UnrealScriptIDE x:Name="ScriptTab_UnrealScriptIDE"/>
                     </TabItem>

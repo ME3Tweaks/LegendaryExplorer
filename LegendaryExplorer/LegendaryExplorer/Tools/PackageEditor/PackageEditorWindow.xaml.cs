@@ -1,4 +1,43 @@
-﻿using System;
+﻿using GongSolutions.Wpf.DragDrop;
+using GongSolutions.Wpf.DragDrop;
+using ICSharpCode.AvalonEdit;
+using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.DialogueEditor;
+using LegendaryExplorer.GameInterop;
+using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.Packages;
+using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.SharedUI.Bases;
+using LegendaryExplorer.SharedUI.Interfaces;
+using LegendaryExplorer.Tools.AssetViewer;
+using LegendaryExplorer.Tools.Meshplorer;
+using LegendaryExplorer.Tools.ObjectReferenceViewer;
+using LegendaryExplorer.UserControls.ExportLoaderControls;
+using LegendaryExplorer.UserControls.SharedToolControls;
+using LegendaryExplorerCore.Audio;
+using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Gammtek.IO;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Localization;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Misc.ME3Tweaks;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Shaders;
+using LegendaryExplorerCore.Sound.ISACT;
+using LegendaryExplorerCore.TLK.ME1;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
+using LegendaryExplorerCore.UnrealScript;
+using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
+using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Utilities;
+using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -13,44 +52,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using GongSolutions.Wpf.DragDrop;
-using LegendaryExplorer.Dialogs;
-using LegendaryExplorer.DialogueEditor;
-using LegendaryExplorer.Misc;
-using LegendaryExplorer.Misc.AppSettings;
-using LegendaryExplorerCore.Misc.ME3Tweaks;
-using LegendaryExplorer.SharedUI;
-using LegendaryExplorer.SharedUI.Bases;
-using LegendaryExplorer.SharedUI.Interfaces;
-using LegendaryExplorer.Tools.Meshplorer;
-using LegendaryExplorer.UserControls.ExportLoaderControls;
-using LegendaryExplorer.UserControls.SharedToolControls;
-using LegendaryExplorerCore.GameFilesystem;
-using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
-using LegendaryExplorerCore.Gammtek.IO;
-using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Misc;
-using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
-using LegendaryExplorerCore.Shaders;
-using LegendaryExplorerCore.Sound.ISACT;
-using LegendaryExplorerCore.TLK.ME1;
-using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
-using LegendaryExplorerCore.Unreal.ObjectInfo;
-using LegendaryExplorerCore.UnrealScript;
-using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
-using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using LegendaryExplorerCore.Audio;
-using LegendaryExplorer.Packages;
-using LegendaryExplorerCore.Localization;
-using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using GongSolutions.Wpf.DragDrop;
-using LegendaryExplorer.Tools.AssetViewer;
-using LegendaryExplorer.GameInterop;
-using LegendaryExplorer.Tools.ObjectReferenceViewer;
-using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorer.Tools.PackageEditor
 {
@@ -3042,9 +3043,16 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         public void LoadFile(string s, int goToIndex = 0, string goToEntry = null)
         {
-            // Todo: Maybe prompt if there are pending changes to the current package
+            // Todo: Maybe prompt if there are pending changes to the current 
             try
             {
+                //Unload Script Editor explicitly to serialize the selected export IDE position
+                if (_selectedItem != null && _selectedItem.Entry.ClassName == "Class")
+                { 
+                    var el = ExportLoaders.FirstOrDefault(kvp => kvp.Value.IsVisible).Key;
+                    el.UnloadExport();
+                }
+
                 preloadPackage(Path.GetFileName(s), new FileInfo(s).Length);
                 LoadMEPackage(s);
                 _selectedItem = null; // We change the backing data so we don't fire off a tree event since it checks if Pcc is null.
@@ -3056,12 +3064,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                 RecentsController.AddRecent(s, false, Pcc?.Game);
                 RecentsController.SaveRecentList(true);
-
-                if (Pcc != null)
-                {
-                    var clLineStore = ClassLineStore.GetStore(Pcc.Game);
-                    clLineStore.Save();
-                }
             }
             catch (Exception e) when (!App.IsDebug)
             {
@@ -4329,9 +4331,6 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             if (!e.Cancel)
             {
-                var clLineStore = ClassLineStore.GetStore(Pcc.Game);
-                clLineStore.Save();
-
                 SoundTab_Soundpanel.FreeAudioResources();
                 foreach (ExportLoaderControl el in ExportLoaders.Keys)
                 {

@@ -32,9 +32,6 @@ namespace LegendaryExplorerCore.UnrealScript.Utilities
             Directory.CreateDirectory(baseDir);
 
             _mapFile = Path.Combine(baseDir, game + "_IDELineMap.json");
-            Debug.WriteLine($"mapfile: {_mapFile}");
-            Debug.WriteLineIf(_mapFile != null, $"_mapFile split: {_mapFile.Split("_")[0]} ${_mapFile.Split("_")[1]}");
-            Debug.WriteLine($"game: {game}");
             LoadFromFile();
         }
 
@@ -50,9 +47,9 @@ namespace LegendaryExplorerCore.UnrealScript.Utilities
             }
         }
 
-        public int? GetLine(string file, string className)
+        public int? GetLine(string pccFile, string className)
         {
-            if(map.TryGetValue(file, out var classDic) && classDic.TryGetValue(className, out var line))
+            if(map.TryGetValue(pccFile, out var classDic) && classDic.TryGetValue(className, out var line))
             {
                 return line;
             }

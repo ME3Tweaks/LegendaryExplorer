@@ -46,86 +46,91 @@
                 <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                 <Button Content="Theme" Click="ThemePicker_OnClick"/>
             </ToolBar>
-            <ide:UnrealScriptTextEditor x:Name="textEditor" Grid.Row="1" Document="{Binding Document}" SyntaxHighlighting="Unrealscript"
+            <Canvas Grid.Row="1" x:Name="EditorCanvas">
+                <ide:UnrealScriptTextEditor x:Name="textEditor" Document="{Binding Document}" SyntaxHighlighting="Unrealscript"
                                         Background="#1E1E1E" Foreground="#DBDBDB" LineNumbersForeground ="#2B90AE"
                                         FontFamily="Consolas" ContextMenuOpening="TextEditor_OnContextMenuOpening" ContextMenuClosing="TextEditor_OnContextMenuClosing"
-                                        MouseHover="TextEditor_OnMouseHover" MouseHoverStopped="TextEditor_OnMouseHoverStopped">
-                <avalonedit:TextEditor.InputBindings>
-                    <!-- OemQuestion is the forward slash key -->
-                    <KeyBinding Key="OemQuestion" Modifiers="Control" Command="{Binding ToggleCommentCommand}"/>
-                </avalonedit:TextEditor.InputBindings>
-                <avalonedit:TextEditor.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Command="Find"/>
-                        <Separator/>
-                        <MenuItem Command="Undo"/>
-                        <MenuItem Command="Redo"/>
-                        <Separator/>
-                        <MenuItem Command="Cut"/>
-                        <MenuItem Command="Copy"/>
-                        <MenuItem Command="Paste"/>
-                        <Separator/>
-                        <MenuItem Header="Find Usages In File" Command="{Binding FindUsagesInFileCommand}"/>
-                        <MenuItem Header="Go To Definition" Command="{Binding GoToDefinitionCommand}" InputGestureText="Ctrl+Click"/>
-                    </ContextMenu>
-                </avalonedit:TextEditor.ContextMenu>
-                <avalonedit:TextEditor.Resources>
-                    <Style TargetType="{x:Type avalonedit:TextEditor}">
-                        <Setter Property="FlowDirection" Value="LeftToRight" />
-                        <Setter Property="Background" Value="#1E1E1E"/>
-                        <Setter Property="Foreground" Value="#DBDBDB"/>
-                        <Setter Property="LineNumbersForeground" Value="Black"/>
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type avalonedit:TextEditor}">
-                                    <ControlTemplate.Resources>
-                                        <Style TargetType="{x:Type avalonedit:TextView}">
-                                            <Setter Property="NonPrintableCharacterBrush" Value="#3F8080FF" />
-                                            <Setter Property="LinkTextForegroundBrush" Value="#FF4040FF" />
-                                            <!--  Style hyperlink displayed within text in text editor  -->
-                                            <Setter Property="LinkTextBackgroundBrush" Value="White" />
-                                        </Style>
+                                        MouseHover="TextEditor_OnMouseHover" MouseHoverStopped="TextEditor_OnMouseHoverStopped"
+                                        Canvas.Left="0"
+                                        Canvas.Top="0"
+                                        Width="{Binding ActualWidth, ElementName=EditorCanvas}"
+                                        Height="{Binding ActualHeight, ElementName=EditorCanvas}">
+                    <avalonedit:TextEditor.InputBindings>
+                        <!-- OemQuestion is the forward slash key -->
+                        <KeyBinding Key="OemQuestion" Modifiers="Control" Command="{Binding ToggleCommentCommand}"/>
+                    </avalonedit:TextEditor.InputBindings>
+                    <avalonedit:TextEditor.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="Find"/>
+                            <Separator/>
+                            <MenuItem Command="Undo"/>
+                            <MenuItem Command="Redo"/>
+                            <Separator/>
+                            <MenuItem Command="Cut"/>
+                            <MenuItem Command="Copy"/>
+                            <MenuItem Command="Paste"/>
+                            <Separator/>
+                            <MenuItem Header="Find Usages In File" Command="{Binding FindUsagesInFileCommand}"/>
+                            <MenuItem Header="Go To Definition" Command="{Binding GoToDefinitionCommand}" InputGestureText="Ctrl+Click"/>
+                        </ContextMenu>
+                    </avalonedit:TextEditor.ContextMenu>
+                    <avalonedit:TextEditor.Resources>
+                        <Style TargetType="{x:Type avalonedit:TextEditor}">
+                            <Setter Property="FlowDirection" Value="LeftToRight" />
+                            <Setter Property="Background" Value="#1E1E1E"/>
+                            <Setter Property="Foreground" Value="#DBDBDB"/>
+                            <Setter Property="LineNumbersForeground" Value="Black"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type avalonedit:TextEditor}">
+                                        <ControlTemplate.Resources>
+                                            <Style TargetType="{x:Type avalonedit:TextView}">
+                                                <Setter Property="NonPrintableCharacterBrush" Value="#3F8080FF" />
+                                                <Setter Property="LinkTextForegroundBrush" Value="#FF4040FF" />
+                                                <!--  Style hyperlink displayed within text in text editor  -->
+                                                <Setter Property="LinkTextBackgroundBrush" Value="White" />
+                                            </Style>
 
-                                        <Style TargetType="{x:Type avalonedit:TextArea}">
-                                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                                            <Setter Property="SelectionBrush" Value="#1ba1e2" />
-                                            <Setter Property="SelectionBorder">
-                                                <Setter.Value>
-                                                    <Pen Brush="#1ba1e2" Thickness="1" />
-                                                </Setter.Value>
-                                            </Setter>
-                                            <Setter Property="SelectionCornerRadius" Value="0" />
-                                            <Setter Property="SelectionForeground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
-                                            <Setter Property="Template">
-                                                <Setter.Value>
-                                                    <ControlTemplate TargetType="{x:Type avalonedit:TextArea}">
-                                                        <DockPanel Focusable="False">
-                                                            <ItemsControl
+                                            <Style TargetType="{x:Type avalonedit:TextArea}">
+                                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                                <Setter Property="SelectionBrush" Value="#1ba1e2" />
+                                                <Setter Property="SelectionBorder">
+                                                    <Setter.Value>
+                                                        <Pen Brush="#1ba1e2" Thickness="1" />
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter Property="SelectionCornerRadius" Value="0" />
+                                                <Setter Property="SelectionForeground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type avalonedit:TextArea}">
+                                                            <DockPanel Focusable="False">
+                                                                <ItemsControl
                                                         DockPanel.Dock="Left"
                                                         Focusable="False"
                                                         ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=LeftMargins}">
-                                                                <ItemsControl.ItemsPanel>
-                                                                    <ItemsPanelTemplate>
-                                                                        <StackPanel Orientation="Horizontal" />
-                                                                    </ItemsPanelTemplate>
-                                                                </ItemsControl.ItemsPanel>
-                                                            </ItemsControl>
-                                                            <ContentPresenter
+                                                                    <ItemsControl.ItemsPanel>
+                                                                        <ItemsPanelTemplate>
+                                                                            <StackPanel Orientation="Horizontal" />
+                                                                        </ItemsPanelTemplate>
+                                                                    </ItemsControl.ItemsPanel>
+                                                                </ItemsControl>
+                                                                <ContentPresenter
                                                         Panel.ZIndex="-1"
                                                         Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TextView}"
                                                         Focusable="False" />
-                                                        </DockPanel>
-                                                    </ControlTemplate>
-                                                </Setter.Value>
-                                            </Setter>
-                                        </Style>
-                                    </ControlTemplate.Resources>
-                                    <Border Background="{TemplateBinding Background}"
+                                                            </DockPanel>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </ControlTemplate.Resources>
+                                        <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
-                                        <ScrollViewer
+                                            <ScrollViewer
                                 Focusable="False"
-						        Name="PART_ScrollViewer"
+                                Name="PART_ScrollViewer"
 						        CanContentScroll="True"
 						        VerticalScrollBarVisibility="{TemplateBinding VerticalScrollBarVisibility}"
 						        HorizontalScrollBarVisibility="{TemplateBinding HorizontalScrollBarVisibility}"
@@ -136,82 +141,126 @@
 						        Padding="{TemplateBinding Padding}"
 						        BorderBrush="{TemplateBinding BorderBrush}"
 					            BorderThickness="{TemplateBinding BorderThickness}">
-                                            <ScrollViewer.Template>
-                                                <ControlTemplate TargetType="{x:Type ScrollViewer}">
-                                                    <Border BorderBrush="{TemplateBinding BorderBrush}"
+                                                <ScrollViewer.Template>
+                                                    <ControlTemplate TargetType="{x:Type ScrollViewer}">
+                                                        <Border BorderBrush="{TemplateBinding BorderBrush}"
                                             BorderThickness="{TemplateBinding BorderThickness}"
                                             HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
                                             VerticalAlignment="{TemplateBinding VerticalAlignment}">
-                                                        <Grid Background="{TemplateBinding Background}"
+                                                            <Grid Background="{TemplateBinding Background}"
                                               HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
                                               VerticalAlignment="{TemplateBinding VerticalAlignment}">
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="*"/>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                            </Grid.ColumnDefinitions>
-                                                            <Grid.RowDefinitions>
-                                                                <RowDefinition Height="*"/>
-                                                                <RowDefinition Height="Auto"/>
-                                                            </Grid.RowDefinitions>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="*"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                </Grid.RowDefinitions>
 
-                                                            <!-- Display TextEditor content in upper left corner -->
-                                                            <ScrollContentPresenter Grid.Column="0" Grid.Row="0"
+                                                                <!-- Display TextEditor content in upper left corner -->
+                                                                <ScrollContentPresenter Grid.Column="0" Grid.Row="0"
                                                                     KeyboardNavigation.DirectionalNavigation="Local"
                                                                     CanContentScroll="True"
                                                                     CanHorizontallyScroll="True"
                                                                     CanVerticallyScroll="True"
                                                                     Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type avalonedit:TextEditor}}, Path=TextArea}"/>
-                                                            <!-- Display Vertical Scrollbar to the right -->
-                                                            <ScrollBar Name="PART_VerticalScrollBar"
+                                                                <!-- Display Vertical Scrollbar to the right -->
+                                                                <ScrollBar Name="PART_VerticalScrollBar"
                                                        Grid.Column="1"
                                                        Value="{TemplateBinding VerticalOffset}"
                                                        Maximum="{TemplateBinding ScrollableHeight}"
                                                        ViewportSize="{TemplateBinding ViewportHeight}"
                                                        Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
 
-                                                            <!-- Display mini-toolbar and Horizontal scrollbar at the bottom of the view -->
-                                                            <!-- Using DialogBackgroundBrush since Editor can use a WPF Theme independent background color -->
-                                                            <!-- TODO XXX Background="{DynamicResource DialogBackgroundBrush}" -->
-                                                            <Grid Grid.Column="0" Grid.Row="1">
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="*" />
-                                                                </Grid.ColumnDefinitions>
+                                                                <!-- Display mini-toolbar and Horizontal scrollbar at the bottom of the view -->
+                                                                <!-- Using DialogBackgroundBrush since Editor can use a WPF Theme independent background color -->
+                                                                <!-- TODO XXX Background="{DynamicResource DialogBackgroundBrush}" -->
+                                                                <Grid Grid.Column="0" Grid.Row="1">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="*" />
+                                                                    </Grid.ColumnDefinitions>
 
-                                                                <ScrollBar Name="PART_HorizontalScrollBar"
+                                                                    <ScrollBar Name="PART_HorizontalScrollBar"
                                                            Orientation="Horizontal"
                                                            Grid.Column="0"
                                                            Value="{TemplateBinding HorizontalOffset}"
                                                            Maximum="{TemplateBinding ScrollableWidth}"
                                                            ViewportSize="{TemplateBinding ViewportWidth}"
                                                            Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"/>
-                                                            </Grid>
-                                                            <!-- Using DialogBackgroundBrush since Editor can use a WPF Theme independent background color -->
-                                                            <DockPanel Grid.Column="1" Grid.Row="1"
+                                                                </Grid>
+                                                                <!-- Using DialogBackgroundBrush since Editor can use a WPF Theme independent background color -->
+                                                                <DockPanel Grid.Column="1" Grid.Row="1"
                                                        LastChildFill="false"
                                                        Background="White">
-                                                                <Rectangle Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Width="1" Fill="White" DockPanel.Dock="Left" />
-                                                                <Rectangle Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Height="1" Fill="White" DockPanel.Dock="Top" />
-                                                            </DockPanel>
-                                                        </Grid>
-                                                    </Border>
-                                                </ControlTemplate>
-                                            </ScrollViewer.Template>
-                                        </ScrollViewer>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="WordWrap" Value="True">
-                                            <Setter TargetName="PART_ScrollViewer" Property="HorizontalScrollBarVisibility" Value="Disabled" />
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                    <Style TargetType="avalonedit:SearchPanel">
-                        <Setter Property="MarkerBrush" Value="#653306"/>
-                    </Style>
-                </avalonedit:TextEditor.Resources>
-            </ide:UnrealScriptTextEditor>
+                                                                    <Rectangle Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Width="1" Fill="White" DockPanel.Dock="Left" />
+                                                                    <Rectangle Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Height="1" Fill="White" DockPanel.Dock="Top" />
+                                                                </DockPanel>
+                                                            </Grid>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </ScrollViewer.Template>
+                                            </ScrollViewer>
+                                        </Border>
+
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="WordWrap" Value="True">
+                                                <Setter TargetName="PART_ScrollViewer" Property="HorizontalScrollBarVisibility" Value="Disabled" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                        <Style TargetType="avalonedit:SearchPanel">
+                            <Setter Property="MarkerBrush" Value="#653306"/>
+                        </Style>
+                    </avalonedit:TextEditor.Resources>
+                </ide:UnrealScriptTextEditor>
+                <!--Arrow Button-->
+                <Button Cursor="Hand"
+                    Width="32"
+                    Height="32"
+                    Canvas.Right="24"
+                    Canvas.Bottom="24"
+                    Click="ButtonScroll_Click"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Padding="0">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Bd_AutoScroll"
+                              Width="{TemplateBinding Width}"
+                              Height="{TemplateBinding Height}"
+                              Background="{TemplateBinding Background}"
+                              CornerRadius="16"                          
+                                SnapsToDevicePixels="True">
+                                <ContentPresenter HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          SnapsToDevicePixels="True"/>
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd_AutoScroll" Property="Background" Value="#333333"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Bd_AutoScroll" Property="Background" Value="#555555"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+
+                    <Viewbox Width="32" Height="32">
+                        <Canvas Width="24" Height="24">
+                            <Path Stroke="White" StrokeThickness="2.2"
+            StrokeLineJoin="Round" StrokeEndLineCap="Round"
+            Data="M12,18 L12,8  M12,8 L8,12  M12,8 L16,12"/>
+                        </Canvas>
+                    </Viewbox>
+                </Button>
+            </Canvas>
             <GridSplitter Grid.Row="2" Height="5"  HorizontalAlignment="Stretch"/>
             <Grid Grid.Row="3"  HorizontalAlignment="Stretch" >
                 <Grid.ColumnDefinitions>
@@ -227,7 +276,8 @@
                     <ListBox.Resources>
                         <DataTemplate DataType="errors:LogMessage">
                             <Grid>
-                                <TextBlock Text="{Binding}" TextWrapping="Wrap" /></Grid>
+                                <TextBlock Text="{Binding}" TextWrapping="Wrap" />
+                            </Grid>
                         </DataTemplate>
                     </ListBox.Resources>
                 </ListBox>

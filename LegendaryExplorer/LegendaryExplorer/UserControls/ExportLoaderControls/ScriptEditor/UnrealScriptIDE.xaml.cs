@@ -112,7 +112,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 UnloadExport();
             }
 
-            var lineStore = ClassLineStore.GetStore(export.Game);
             UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
             CurrentLoadedExport = export;
             if (Pcc != CurrentFileLib?.Pcc)
@@ -145,13 +144,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             if (!IsBusy)
             {
                 Decompile();
-
-                var line = lineStore.GetLine(export.FileRef.FileNameNoExtension, export.ObjectNameString);
-                if ((line.HasValue))
-                {
-                    Debug.WriteLine($"get line: ${line.Value}");
-                    textEditor.ScrollToLine(line.Value);
-                }
             }
         }
 
@@ -170,11 +162,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 if (pos.HasValue)
                 {
                     int middleLine = pos.Value.Line;
-                    if (CurrentLoadedExport != null)
-                    {
-                        lineStore.Set(CurrentLoadedExport.FileRef.FileNameNoExtension, CurrentLoadedExport.ObjectNameString, middleLine);
-                        //lineStore is serialized when closing or loading another file
-                    }
+                    lineStore.Set(CurrentLoadedExport.FileRef.FileNameNoExtension, CurrentLoadedExport.ObjectNameString, middleLine);
                 }
             }
 
@@ -204,6 +192,29 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
         public override void Dispose()
         {
+            //Set & Serialize scrolled pos before dispose
+            var clLineStore = ClassLineStore.GetStore(Pcc.Game);
+            if (CurrentLoadedExport != null && CurrentLoadedExport.ClassName == "Class")
+            {
+                var center = new System.Windows.Point(
+                    textEditor.ActualWidth / 2,
+                    textEditor.ActualHeight / 2
+                    );
+                var pos = textEditor.GetPositionFromPoint(center);
+
+                if (pos.HasValue)
+                {
+                    int middleLine = pos.Value.Line;
+                    clLineStore.Set(
+                        CurrentLoadedExport.FileRef.FileNameNoExtension,
+                        CurrentLoadedExport.ObjectNameString,
+                        middleLine
+                    );
+                }
+
+            }
+            clLineStore.Save();
+
             AST = null;
             if (progressBarTimer is not null)
             {
@@ -483,6 +494,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             {
                 try
                 {
+                    var lineStore = ClassLineStore.GetStore(CurrentLoadedExport.Game);
+                    var line = lineStore.GetLine(CurrentLoadedExport.FileRef.FileNameNoExtension, CurrentLoadedExport.ObjectNameString);
                     ASTNode ast = UnrealScriptCompiler.ExportToAstNode(CurrentLoadedExport, CurrentFileLib, new UnrealScriptOptionsPackage());
                     if (ast is null)
                     {
@@ -506,6 +519,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         (string text, SyntaxInfo syntaxInfo) = codeBuilder.GetOutput();
                         ScriptText = text;
                         textEditor.SyntaxHighlighting = syntaxInfo;
+                    }
+                    if ((line.HasValue))
+                    {
+                        Debug.WriteLine($"init get line: {line.Value}");
+                        //System.InvalidOperationException: 'The calling thread cannot access this object because a different thread owns it
+                        textEditor.ScrollToLine(line.Value);
                     }
 
                 }
@@ -1192,6 +1211,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         private void ThemePicker_OnClick(object sender, RoutedEventArgs e)
         {
             new IdeThemePicker(Window.GetWindow(this)).Show();
+        }
+
+        private void ButtonScroll_Click(object sender, RoutedEventArgs e)
+        {
+            // TODO OM: Acceleration curve + smooth scroll like JS scrollTo
+            textEditor.ScrollToHome();
         }
     }
 }
