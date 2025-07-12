@@ -50,6 +50,7 @@ using GongSolutions.Wpf.DragDrop;
 using LegendaryExplorer.Tools.AssetViewer;
 using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.Tools.ObjectReferenceViewer;
+using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorer.Tools.PackageEditor
 {
@@ -3041,7 +3042,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         public void LoadFile(string s, int goToIndex = 0, string goToEntry = null)
         {
-            // Todo: Maybe prompt if there are pending changes to the current package?
+            // Todo: Maybe prompt if there are pending changes to the current package
             try
             {
                 preloadPackage(Path.GetFileName(s), new FileInfo(s).Length);
@@ -3055,6 +3056,12 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
                 RecentsController.AddRecent(s, false, Pcc?.Game);
                 RecentsController.SaveRecentList(true);
+
+                if (Pcc != null)
+                {
+                    var clLineStore = ClassLineStore.GetStore(Pcc.Game);
+                    clLineStore.Save();
+                }
             }
             catch (Exception e) when (!App.IsDebug)
             {
@@ -4322,6 +4329,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             if (!e.Cancel)
             {
+                var clLineStore = ClassLineStore.GetStore(Pcc.Game);
+                clLineStore.Save();
+
                 SoundTab_Soundpanel.FreeAudioResources();
                 foreach (ExportLoaderControl el in ExportLoaders.Keys)
                 {

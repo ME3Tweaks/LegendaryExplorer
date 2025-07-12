@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using LegendaryExplorerCore.Packages;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,18 +11,30 @@ using System.Threading.Tasks;
 
 namespace LegendaryExplorerCore.UnrealScript.Utilities
 {
+    // TODO: figure out how to maybe store line data in an export metadata somehow instead of json file?
     public class ClassLineStore
     {
-        // TODO: figure out how to store this data in an export somehow
+        //Multiton
+        private static readonly ConcurrentDictionary<MEGame, ClassLineStore> _stores = new();
+
+        public static ClassLineStore GetStore(MEGame game) =>
+        _stores.GetOrAdd(game, g => new ClassLineStore(g));
+
         private readonly string _mapFile;
         private Dictionary<string, Dictionary<string, int>> map;
 
-        //AppData folder
-        public ClassLineStore() 
+        public ClassLineStore(MEGame game) 
         {
-            
-            var baseDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\LegendaryExplorer\\PackageEditor";
-            _mapFile = Path.Combine(baseDir, "ScriptLineMap.json");
+            //Save in AppData folder   
+            var baseDir = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "LegendaryExplorer", "PackageEditor");
+            Directory.CreateDirectory(baseDir);
+
+            _mapFile = Path.Combine(baseDir, game + "_IDELineMap.json");
+            Debug.WriteLine($"mapfile: {_mapFile}");
+            Debug.WriteLineIf(_mapFile != null, $"_mapFile split: {_mapFile.Split("_")[0]} ${_mapFile.Split("_")[1]}");
+            Debug.WriteLine($"game: {game}");
             LoadFromFile();
         }
 
@@ -63,7 +77,24 @@ namespace LegendaryExplorerCore.UnrealScript.Utilities
 
         public void Save()
         {
-            var json = JsonConvert.SerializeObject(map, Formatting.Indented);
+
+            //Don't bother saving classes with line numbers beyond a scroll
+            var filteredMap = map
+                .Where(kv => kv.Value != null && kv.Value.Count > 0)
+                .ToDictionary(
+                    pkg=>pkg.Key, 
+                    kv => kv.Value
+                        .Where(clDic=>clDic.Value > 70)
+                        .ToDictionary(clDic=>clDic.Key, clDic=>clDic.Value)
+                );
+
+            if (filteredMap.Values.Count == 0)
+            {
+                // No items found, keep this avoid overwriting/saving?
+                return;
+            }
+
+            var json = JsonConvert.SerializeObject(filteredMap, Formatting.Indented);
             File.WriteAllText(_mapFile, json);
         }
     }

@@ -112,7 +112,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 UnloadExport();
             }
 
-            var lineStore = new ClassLineStore();
+            var lineStore = ClassLineStore.GetStore(export.Game);
             UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
             CurrentLoadedExport = export;
             if (Pcc != CurrentFileLib?.Pcc)
@@ -145,11 +145,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             if (!IsBusy)
             {
                 Decompile();
+
                 var line = lineStore.GetLine(export.FileRef.FileNameNoExtension, export.ObjectNameString);
-                
                 if ((line.HasValue))
                 {
-                    Debug.WriteLine("get line: ", line.Value);
+                    Debug.WriteLine($"get line: ${line.Value}");
                     textEditor.ScrollToLine(line.Value);
                 }
             }
@@ -157,29 +157,25 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
         public override void UnloadExport()
         {
-            var lineStore = new ClassLineStore();
-            var center = new System.Windows.Point(
-                textEditor.ActualWidth / 2,
-                textEditor.ActualHeight / 2
-                );
-            var pos = textEditor.GetPositionFromPoint(center);
-
-            if (pos.HasValue)
+            //Set the current position in the Script Editor for this export
+            if(CurrentLoadedExport != null)
             {
-                int middleLine = pos.Value.Line;
+                var lineStore = ClassLineStore.GetStore(CurrentLoadedExport.Game);
+                var center = new System.Windows.Point(
+                    textEditor.ActualWidth / 2,
+                    textEditor.ActualHeight / 2
+                    );
+                var pos = textEditor.GetPositionFromPoint(center);
 
-                if (CurrentLoadedExport != null)
+                if (pos.HasValue)
                 {
-                    Debug.WriteLine($"Export objectName: {CurrentLoadedExport.ObjectNameString}");
-                    Debug.WriteLine($"Export fileNameNoExtension: {CurrentLoadedExport.FileRef.FileNameNoExtension}");
-                    Debug.WriteLine($"textEditor line:          {middleLine}");
-                    lineStore.Set(CurrentLoadedExport.FileRef.FileNameNoExtension, CurrentLoadedExport.ObjectNameString, pos.Value.Line);
-                    lineStore.Save();
+                    int middleLine = pos.Value.Line;
+                    if (CurrentLoadedExport != null)
+                    {
+                        lineStore.Set(CurrentLoadedExport.FileRef.FileNameNoExtension, CurrentLoadedExport.ObjectNameString, middleLine);
+                        //lineStore is serialized when closing or loading another file
+                    }
                 }
-            }
-            else
-            {
-                Debug.WriteLine("No text position at the exact center point.");
             }
 
             CurrentLoadedExport = null;
