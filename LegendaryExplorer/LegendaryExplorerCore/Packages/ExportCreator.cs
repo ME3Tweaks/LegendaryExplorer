@@ -18,17 +18,29 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="packageName"></param>
         /// <param name="parent"></param>
         /// <returns></returns>
-        public static ImportEntry CreatePackageImport(this IMEPackage pcc, NameReference packageName, IEntry parent = null)
+        public static IEntry CreatePackageImport(this IMEPackage pcc, NameReference packageName, IEntry parent = null)
         {
-            var testName = parent != null ? NameReference.FromInstancedString($"{parent.InstancedFullPath}.{packageName.Instanced}") : packageName;
-            var testEntry = pcc.FindImport(testName, "Package");
+            return CreateImport(pcc, "Package", packageName, parent);
+        }
+
+        /// <summary>
+        /// Creates an import with the specified class and name, if it doesn't already exist as an object in the package.
+        /// </summary>
+        /// <param name="pcc"></param>
+        /// <param name="packageName"></param>
+        /// <param name="parent"></param>
+        /// <returns></returns>
+        public static IEntry CreateImport(this IMEPackage pcc, string className, NameReference objectName, IEntry parent = null)
+        {
+            var testName = parent != null ? NameReference.FromInstancedString($"{parent.InstancedFullPath}.{objectName.Instanced}") : objectName;
+            var testEntry = pcc.FindEntry(testName, className);
             if (testEntry != null)
                 return testEntry;
 
-            var imp = new ImportEntry(pcc, parent, packageName)
+            var imp = new ImportEntry(pcc, parent, objectName)
             {
-                ClassName = "Package",
-                PackageFile = "Core",
+                ClassName = className,
+                PackageFile = ImportEntry.GetPackageFile(pcc.Game, className),
             };
 
             pcc.AddImport(imp);

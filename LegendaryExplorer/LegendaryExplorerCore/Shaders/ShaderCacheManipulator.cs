@@ -360,6 +360,31 @@ namespace LegendaryExplorerCore.Shaders
         }
 
         /// <summary>
+        /// Creates an empty SeekFreeShaderCache export in the package if it does not exist.
+        /// </summary>
+        /// <param name="package"></param>
+        /// <returns></returns>
+        public static ExportEntry CreateShaderCache(this IMEPackage package)
+        {
+            if (package.FindExport("SeekFreeShaderCache") is { } seekFreeShaderCacheExport)
+            {
+                // Already exists
+                return seekFreeShaderCacheExport;
+            }
+
+            var newCache = ShaderCache.Create();
+            RefShaderCacheReader.PopulateCRCMaps(package.Game, newCache);
+            seekFreeShaderCacheExport = new ExportEntry(package, 0, "SeekFreeShaderCache", BitConverter.GetBytes(-1), binary: newCache)
+            {
+                Class = package.GetEntryOrAddImport("Engine.ShaderCache", "Class"),
+                ObjectFlags = UnrealFlags.EObjectFlags.LoadForClient | UnrealFlags.EObjectFlags.LoadForEdit |
+                  UnrealFlags.EObjectFlags.LoadForServer | UnrealFlags.EObjectFlags.Standalone
+            };
+            package.AddExport(seekFreeShaderCacheExport);
+            return seekFreeShaderCacheExport;
+        }
+
+        /// <summary>
         /// Copies the shader map used by this material, and its referenced shader files, to local cache and updates the material to use them with a new guid. The material should be renamed to ensure memory collisions do not occur.
         /// </summary>
         /// <param name="material">Material to move shaders to</param>

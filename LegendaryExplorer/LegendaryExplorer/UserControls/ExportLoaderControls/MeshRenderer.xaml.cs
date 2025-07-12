@@ -566,7 +566,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             alreadyLoadedImportMaterials.Clear();
             CurrentLoadedExport = exportEntry;
             CurrentLOD = 0;
-            CanUseGameShaders = exportEntry.Game is MEGame.LE3 or MEGame.LE1;
+            CanUseGameShaders = exportEntry.Game.IsLEGame();
 
             Func<PreloadedModelData> loadMesh;
             var assetCache = new PackageCache();

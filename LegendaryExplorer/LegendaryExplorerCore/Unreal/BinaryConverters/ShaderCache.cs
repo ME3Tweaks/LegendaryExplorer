@@ -16,31 +16,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         /// If true, names are serialized as strings and objects cannot be serialized. Used by GlobalShaderCache.
         /// </summary>
         public bool Packageless;
+
+        /// <summary>
+        /// Do not set directly; use <see cref="GlobalShaderCache"/> instead. Changes serialization of the vertex factory map.
+        /// </summary>
+        public bool IsGlobalShaderCache; 
+
         public UMultiMap<NameReference, uint> ShaderTypeCRCMap; //TODO: Make this a UMap
         public UMultiMap<Guid, Shader> Shaders; //TODO: Make this a UMap
         public UMultiMap<NameReference, uint> VertexFactoryTypeCRCMap; //TODO: Make this a UMap
         public UMultiMap<NameReference, Guid> VertexFactoryTypeGuidMap; // GlobalShaderCache
         public UMultiMap<StaticParameterSet, MaterialShaderMap> MaterialShaderMaps; //TODO: Make this a UMap
-
-        /// <summary>
-        /// GlobalShaderCache is not in a package, it serializes names as strings
-        /// </summary>
-        /// <param name="fs"></param>
-        /// <param name="game"></param>
-        /// <returns></returns>
-        public static ShaderCache ReadGlobalShaderCache(Stream fs, MEGame game)
-        {
-            ShaderCache sc = new ShaderCache
-            {
-                Packageless = true,
-            };
-            var container = new PackagelessSerializingContainer(fs, null, true)
-            {
-                Game = game
-            };
-            sc.Serialize(container);
-            return sc;
-        }
 
         protected override void Serialize(SerializingContainer sc)
         {
@@ -48,24 +34,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 if (sc.Pcc.Platform != MEPackage.GamePlatform.PC) return; //We do not support non-PC shader cache
             }
-            else
-            {
-                // Global Shader Cache parsing.
-                // Requires special container as it does not have a package.
-                if (sc.IsLoading)
-                {
-                    sc.ms.ReadStringASCII(4); // BMSG
-                }
-                else
-                {
-                    sc.ms.Writer.WriteStringASCII("BMSG");
-                }
 
-                int version = UnrealPackageFile.UnrealVersion(sc.Game);
-                sc.Serialize(ref version);
-                int licensee = UnrealPackageFile.LicenseeVersion(sc.Game);
-                sc.Serialize(ref licensee);
-            }
             if (sc.Game == MEGame.UDK)
             {
                 // Just default to 0, we aren't going to use this in ME
@@ -114,7 +83,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             if (sc.Game == MEGame.ME1)
             {
-                if (Packageless)
+                if (IsGlobalShaderCache)
                 {
                     sc.Serialize(ref VertexFactoryTypeGuidMap, sc.Serialize, sc.Serialize);
                 }
@@ -133,7 +102,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 {
                     Shader shader = null;
                     sc.Serialize(ref shader);
-                    //Debug.WriteLine($"Shader stopped serializing at {sc.ms.Position:X8}");
                     Shaders.Add(shader.Guid, shader);
                 }
             }
@@ -150,7 +118,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             // VertexFactoryType to CRC maps
             if (sc.Game != MEGame.ME1 && sc.Game != MEGame.UDK)
             {
-                if (Packageless)
+                if (IsGlobalShaderCache)
                 {
                     NameReference prevNameRef = default;
                     sc.Serialize(ref VertexFactoryTypeGuidMap, (ref NameReference nameRef) =>
@@ -170,7 +138,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
             }
 
-            if (!Packageless)
+            if (!IsGlobalShaderCache)
             {
                 // Shader maps (maps material guids to a map of diff shader types located in the embedded shaders block)
                 sc.Serialize(ref MaterialShaderMaps, sc.Serialize, sc.Serialize);
@@ -290,6 +258,63 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             var newShaderList = Shaders.Where(x => guidsToKeep.Contains(x.Key));
             Shaders = new(newShaderList);
             return oldCount - Shaders.Count;
+        }
+
+        /// <summary>
+        /// Allows access to Serialize() from outside the class.
+        /// </summary>
+        /// <param name="sc"></param>
+        public void PublicSerialize(SerializingContainer sc)
+        {
+            Serialize(sc);
+        }
+    }
+
+
+    public class GlobalShaderCache : ShaderCache
+    {
+        public GlobalShaderCache() : base()
+        {
+            IsGlobalShaderCache = true;
+            Packageless = true;
+        }
+
+        /// <summary>
+        /// GlobalShaderCache has different serialization than ShaderCache.
+        /// </summary>
+        /// <param name="fs"></param>
+        /// <param name="game"></param>
+        /// <returns></returns>
+        public static GlobalShaderCache ReadGlobalShaderCache(Stream fs, MEGame game)
+        {
+            GlobalShaderCache sc = new GlobalShaderCache();
+            var container = new PackagelessSerializingContainer(fs, null, true)
+            {
+                Game = game
+            };
+            sc.Serialize(container);
+            return sc;
+        }
+
+        protected override void Serialize(SerializingContainer sc)
+        {
+            // Global Shader Cache parsing.
+            // GlobalShaderCache has a special header on it, BMSG, and then the licensee and version numbers.
+            if (sc.IsLoading)
+            {
+                sc.ms.ReadStringASCII(4); // BMSG
+            }
+            else
+            {
+                sc.ms.Writer.WriteStringASCII("BMSG");
+            }
+
+            int version = UnrealPackageFile.UnrealVersion(sc.Game);
+            sc.Serialize(ref version);
+            int licensee = UnrealPackageFile.LicenseeVersion(sc.Game);
+            sc.Serialize(ref licensee);
+
+            base.Serialize(sc);
         }
     }
 

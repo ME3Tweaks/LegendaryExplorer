@@ -1196,6 +1196,12 @@ import java.util.*;"
 #if !DEBUG
             throw new Exception("Experiment has been disabled");
 #endif
+
+            //var le1msm = RefShaderCacheReader.GetMaterialShaderMap(MEGame.LE1, (StaticParameterSet)Guid.Parse("69e67fce-5524-46d1-9218-cd8d066040e8"), out _);
+            //var le3msm = RefShaderCacheReader.GetMaterialShaderMap(MEGame.LE3, (StaticParameterSet)Guid.Parse("aba571c7-abe5-42ea-925b-edabcc0a3e28"), out _);
+
+            //new ListDialog(le1msm.Diff(le3msm, "LE1", "LE3"), $" ", "", pewpf).Show();
+            //return;
             ////test pcc deserialization time
             //string pccPath = MELoadedFiles.GetFilesLoadedInGame(MEGame.LE3)["SFXGame.pcc"];
             //for (int i = 0; i < 200; i++)
@@ -1224,7 +1230,7 @@ import java.util.*;"
             pewpf.BusyText = "Scanning";
             Task.Run(() =>
             {
-                foreach (MEGame game in new[] { MEGame.LE3, /*MEGame.LE2,*/ MEGame.LE1, /*MEGame.ME3, MEGame.ME2, MEGame.ME1*/ })
+                foreach (MEGame game in new[] { MEGame.LE3, MEGame.LE2, MEGame.LE1, /*MEGame.ME3, MEGame.ME2, MEGame.ME1*/ })
                 {
                     //preload base files for faster scanning
                     using (DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)

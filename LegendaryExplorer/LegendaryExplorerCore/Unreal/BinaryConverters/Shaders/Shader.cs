@@ -233,7 +233,6 @@ public class FGFxPixelShader : Shader
     public FShaderParameter ColorScale;
     public FShaderParameter ColorBias;
     public FShaderParameter InverseGamma;
-    public FShaderParameter HDRBrightnessScale; // LE2
     internal override DefferedFileOffsetWriter Serialize(SerializingContainer sc)
     {
         var defferedOffsetWriter = base.Serialize(sc);
@@ -243,11 +242,6 @@ public class FGFxPixelShader : Shader
         sc.SerializeUnmanaged(ref ColorScale);
         sc.SerializeUnmanaged(ref ColorBias);
         sc.SerializeUnmanaged(ref InverseGamma);
-
-        if (sc.Game == MEGame.LE2)
-        {
-            sc.SerializeUnmanaged(ref HDRBrightnessScale);
-        }
 
         return defferedOffsetWriter;
     }
@@ -1483,6 +1477,7 @@ public class FDOFAndBloomBlendPixelShader : Shader
     public FShaderResourceParameter DOFBlurredFar;
     public FShaderResourceParameter BlurredImageSeperateBloom;
     public FShaderParameter BloomTintAndScreenBlendThreshold;
+    public FShaderResourceParameter SeparateTranslucencyTexture;
     public FShaderParameter InputTextureSize;
     public FShaderParameter DOFKernelParams;
 
@@ -1496,6 +1491,10 @@ public class FDOFAndBloomBlendPixelShader : Shader
         sc.SerializeUnmanaged(ref DOFBlurredFar);
         sc.SerializeUnmanaged(ref BlurredImageSeperateBloom);
         sc.SerializeUnmanaged(ref BloomTintAndScreenBlendThreshold);
+        if (sc.Game is MEGame.LE2)
+        {
+            sc.SerializeUnmanaged(ref SeparateTranslucencyTexture);
+        }
         sc.SerializeUnmanaged(ref InputTextureSize);
         sc.SerializeUnmanaged(ref DOFKernelParams);
         return defferedOffsetWriter;
