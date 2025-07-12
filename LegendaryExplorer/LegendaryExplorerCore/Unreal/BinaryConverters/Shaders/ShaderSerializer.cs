@@ -23,7 +23,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             Serialize(ref shaderType);
             Serialize(ref id);
             
-            if (Game is not (MEGame.LE3 or MEGame.LE1))
+            if (!Game.IsLEGame())
             {
                 shader = new UnparsedShader
                 {
@@ -1109,24 +1109,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        //Ignores Endianness! Only use for Shader serialization
         public void SerializeUnmanaged<T>(ref T val) where T : unmanaged
         {
-            if (IsLoading)
-            {
-                ms.Read(val.AsBytes());
-            }
-            else
-            {
-                ms.Writer.Write(val.AsBytes());
-            }
-        }
-
-        //Ignores Endianness! Only use for Shader serialization
-        public void SerializeUnmanaged<T>(ref T val, string logging) where T : unmanaged
-        {
-//#if DEBUG
-//            Debug.WriteLine($"Serializing {logging} at {ms.Position:X8}");
-//#endif
             if (IsLoading)
             {
                 ms.Read(val.AsBytes());

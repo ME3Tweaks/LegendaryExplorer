@@ -154,7 +154,7 @@ namespace LegendaryExplorerCore.Unreal
 
                         //This is a sfar - code ported from M3
                         var fi = new FileInfo(sfar);
-                        if (tocTarget.EndsWith(".sfar") ||
+                        if (tocTarget.EndsWith(".sfar") || // ends with .sfar will detect Patch_001.sfar
                             (fi.Exists &&
                              fi.Length != 32)) //endswith .sfar is for TESTPATCH as it doesn't follow other naming system
                         {
@@ -169,9 +169,11 @@ namespace LegendaryExplorerCore.Unreal
                                 var tocFileLocation = Path.Combine(tocTarget, "PCConsoleTOC.bin");
                                 CreateDLCTOCForDirectory(tocTarget, game).WriteToFile(tocFileLocation);
                             }
-                            // Don't do next check; we have performed it already
+                        }
+                        else
+                        {
+                            // Perform the next code branch as we didn't do the above one
                             doSfarCheck = false;
-
                         }
                     }
 

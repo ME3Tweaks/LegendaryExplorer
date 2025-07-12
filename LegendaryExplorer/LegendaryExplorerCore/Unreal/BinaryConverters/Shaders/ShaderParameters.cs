@@ -222,23 +222,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters.Shaders
                 ref UniformPixelCubeShaderResourceParameters, FShaderResourceParameter.PixelCubeId);
         
             // PixelShaderParameters
-            sc.SerializeUnmanaged(ref LocalToWorld, "LocalToWorld");
-            sc.SerializeUnmanaged(ref WorldToLocal, "WorldToLocal");
-            sc.SerializeUnmanaged(ref WorldToView, "WorldToView");
-            sc.SerializeUnmanaged(ref InvViewProjection, "InvViewProjection");
-            sc.SerializeUnmanaged(ref ViewProjection, "ViewProjection");
-            sc.SerializeUnmanaged(ref SceneTextureParameters, "SceneTextureParameters");
-            sc.SerializeUnmanaged(ref TwoSidedSign, "TwoSidedSign");
-            sc.SerializeUnmanaged(ref InvGamma, "InvGamma");
-            sc.SerializeUnmanaged(ref DecalFarPlaneDistance, "DecalFarPlaneDistance");
-            sc.SerializeUnmanaged(ref ObjectPostProjectionPosition, "ObjectPostProjectionPosition");
-            sc.SerializeUnmanaged(ref ObjectMacroUVScales, "ObjectMacroUVScales");
-            sc.SerializeUnmanaged(ref ObjectNDCPosition, "ObjectNDCPosition");
-            sc.SerializeUnmanaged(ref OcclusionPercentage, "OcclusionPercentage");
-            sc.SerializeUnmanaged(ref EnableScreenDoorFade, "EnableScreenDoorFade");
-            sc.SerializeUnmanaged(ref ScreenDoorFadeSettings, "ScreenDoorFadeSettings");
-            sc.SerializeUnmanaged(ref ScreenDoorFadeSettings2, "ScreenDoorFadeSettings2");
-            sc.SerializeUnmanaged(ref ScreenDoorNoiseTexture, "ScreenDoorNoiseTexture");
+            sc.SerializeUnmanaged(ref LocalToWorld);
+            sc.SerializeUnmanaged(ref WorldToLocal);
+            sc.SerializeUnmanaged(ref WorldToView);
+            sc.SerializeUnmanaged(ref InvViewProjection);
+            sc.SerializeUnmanaged(ref ViewProjection);
+            sc.SerializeUnmanaged(ref SceneTextureParameters);
+            sc.SerializeUnmanaged(ref TwoSidedSign);
+            sc.SerializeUnmanaged(ref InvGamma);
+            sc.SerializeUnmanaged(ref DecalFarPlaneDistance);
+            sc.SerializeUnmanaged(ref ObjectPostProjectionPosition);
+            sc.SerializeUnmanaged(ref ObjectMacroUVScales);
+            sc.SerializeUnmanaged(ref ObjectNDCPosition);
+            sc.SerializeUnmanaged(ref OcclusionPercentage);
+            sc.SerializeUnmanaged(ref EnableScreenDoorFade);
+            sc.SerializeUnmanaged(ref ScreenDoorFadeSettings);
+            sc.SerializeUnmanaged(ref ScreenDoorFadeSettings2);
+            sc.SerializeUnmanaged(ref ScreenDoorNoiseTexture);
             sc.Serialize(ref UniformPixelScalarShaderParameters_IsValid);
             sc.Serialize(ref UniformPixelVectorShaderParameters_IsValid);
             if (sc.Game is MEGame.LE1 or MEGame.LE2)
@@ -246,7 +246,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters.Shaders
                 //Todo: figure out how to compute this if coming from LE3
                 sc.Serialize(ref LE1LE2unkInt);
             }
-            sc.SerializeUnmanaged(ref WrapLightingParameters, "WrapLightingParameters");
+            sc.SerializeUnmanaged(ref WrapLightingParameters);
         }
     }
 }
