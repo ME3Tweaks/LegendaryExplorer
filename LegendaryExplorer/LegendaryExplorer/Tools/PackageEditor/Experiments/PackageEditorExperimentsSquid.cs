@@ -212,6 +212,8 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 if (GetSelectedItem(pew, "SkeletalMesh", out var selectedMesh))
                 {
                     var oldSocketsProp = selectedMesh.GetProperty<ArrayProperty<ObjectProperty>>("Sockets");
+                    if (oldSocketsProp != null)
+                    {
                     var newSocketsProp = new ArrayProperty<ObjectProperty>("Sockets");
                     foreach (var socket in oldSocketsProp)
                     {
@@ -221,6 +223,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     }
                     meshExport.WriteProperty(newSocketsProp);
                 }
+            }
             }
 
             static void SetupSkeleton(PSK psk, SkeletalMesh meshBin)
@@ -307,6 +310,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     var entry = pew.Pcc.FindEntry(psk.Materials[i].Name);
                     // a good enough heuristic for now
                     entry ??= pew.Pcc.Exports.FirstOrDefault(x => x.ObjectName == psk.Materials[i].Name && x.ClassName.Contains("Material"));
+                    entry ??= pew.Pcc.Imports.FirstOrDefault(x => x.ObjectName == psk.Materials[i].Name && x.ClassName.Contains("Material"));
                     if (entry != null)
                     {
                         meshBin.Materials[i] = entry.UIndex;
@@ -657,7 +661,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 case "BioDynamicAnimSet":
                     ExportAnimSet(pew);
                     return;
-                case "animSequence":
+                case "AnimSequence":
                     ExportAnimSequence(pew);
                     return;
                 //case "StaticMesh":
