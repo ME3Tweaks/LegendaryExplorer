@@ -13,6 +13,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using Microsoft.Win32;
+using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,6 +23,7 @@ using System.Text;
 using System.Windows;
 using static LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter;
 using static LegendaryExplorerCore.Unreal.PSA;
+using Texture2D = LegendaryExplorerCore.Unreal.Classes.Texture2D;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
@@ -214,16 +216,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     var oldSocketsProp = selectedMesh.GetProperty<ArrayProperty<ObjectProperty>>("Sockets");
                     if (oldSocketsProp != null)
                     {
-                    var newSocketsProp = new ArrayProperty<ObjectProperty>("Sockets");
-                    foreach (var socket in oldSocketsProp)
-                    {
-                        var newEntry = EntryCloner.CloneEntry(socket.ResolveToEntry(pew.Pcc), incrementIndex: false);
-                        newEntry.Parent = meshExport;
-                        newSocketsProp.Add(new ObjectProperty(newEntry));
+                        var newSocketsProp = new ArrayProperty<ObjectProperty>("Sockets");
+                        foreach (var socket in oldSocketsProp)
+                        {
+                            var newEntry = EntryCloner.CloneEntry(socket.ResolveToEntry(pew.Pcc), incrementIndex: false);
+                            newEntry.Parent = meshExport;
+                            newSocketsProp.Add(new ObjectProperty(newEntry));
+                        }
+                        meshExport.WriteProperty(newSocketsProp);
                     }
-                    meshExport.WriteProperty(newSocketsProp);
                 }
-            }
             }
 
             static void SetupSkeleton(PSK psk, SkeletalMesh meshBin)
@@ -1519,6 +1521,15 @@ defaultproperties
             return null;
         }
 
+        private static ExportEntry ChooseTexture(PackageEditorWindow pew, string prompt)
+        {
+            if (EntrySelector.GetEntry<ExportEntry>(pew, pew.Pcc, prompt, exp => exp.ClassName == "Texture2D") is ExportEntry textureExport)
+            {
+                return textureExport;
+            }
+            return null;
+        }
+
         private static void SetNumMaterialSlots(SkeletalMesh meshBinary, int numMaterials)
         {
             if (meshBinary.Materials.Length == numMaterials)
@@ -1693,55 +1704,225 @@ defaultproperties
             if (sourceScalars != null) { targetExport.WriteProperty(targetScalars); }
         }
 
+        public static void FixMisallignedSkeleton(PackageEditorWindow pew)
+        {
+            // pick two meshes
+            var sourceMesh = ChooseSkeletalMesh(pew, "Choose source mesh to copy bone position from");
+            if (sourceMesh != null)
+            {
+                var targetMesh = ChooseSkeletalMesh(pew, "Choose Target mesh to copy skeleton positions to.");
+
+                if (targetMesh != null && sourceMesh != targetMesh)
+                {
+                    var sourceBin = sourceMesh.GetBinaryData<SkeletalMesh>();
+                    var targetBin = targetMesh.GetBinaryData<SkeletalMesh>();
+
+                    var bonesToTouch = new string[] { "God", "Root", "LowerBack", "Chest", "Chest1", "Chest2" };
+                    foreach (var bone in sourceBin.RefSkeleton)
+                    {
+                        if (!bonesToTouch.Contains(bone.Name.ToString()))
+                        {
+                            continue;
+                        }
+
+                        var targetIndex = targetBin.RefSkeleton.FindIndex(X => X.Name == bone.Name);
+                        if (targetIndex == -1)
+                        {
+                            continue;
+                        }
+
+                        targetBin.RefSkeleton[targetIndex].Position = bone.Position;
+                        targetBin.RefSkeleton[targetIndex].Orientation = bone.Orientation;
+                    }
+
+                    targetMesh.WriteBinary(targetBin);
+                }
+            }
+        }
+
         // seems promising, but needs more work
         public static void SmoothMeshSeams(PackageEditorWindow pew)
         {
             // pick two meshes
             var sourceMesh = ChooseSkeletalMesh(pew, "Choose source mesh (usually a head mesh) which will not be modified in this operation, just used as the source for vertex normals");
-            var targetMesh = ChooseSkeletalMesh(pew, "Choose Target mesh (usually a body with a neck seam or a hair mesh that needs to be seamless with the scalp) which will have its vertex normals updated to match those on the source mesh as part of the operation.");
-
-            if (sourceMesh != null && targetMesh != null)
+            if (sourceMesh != null)
             {
-                var sourceBin = sourceMesh.GetBinaryData<SkeletalMesh>();
-                var targetBin = targetMesh.GetBinaryData<SkeletalMesh>();
+                var targetMesh = ChooseSkeletalMesh(pew, "Choose Target mesh (usually a body with a neck seam or a hair mesh that needs to be seamless with the scalp) which will have its vertex normals updated to match those on the source mesh as part of the operation.");
 
-                var sourceVerts = new List<(int vertIndex, GPUSkinVertex vert)>();
-                var targetVerts = new List<(int vertIndex, GPUSkinVertex vert)>();
-
-                for (var i = 0; i < sourceBin.LODModels[0].VertexBufferGPUSkin.VertexData.Length; i++)
+                if (targetMesh != null && sourceMesh != targetMesh)
                 {
-                    sourceVerts.Add((i, sourceBin.LODModels[0].VertexBufferGPUSkin.VertexData[i]));
+                    var sourceBin = sourceMesh.GetBinaryData<SkeletalMesh>();
+                    var targetBin = targetMesh.GetBinaryData<SkeletalMesh>();
+
+                    var sourceNormalMapExport = ChooseTexture(pew, "choose the normal map of the source mesh");
+                    SixLabors.ImageSharp.Image<Rgba32> sourceNormalMapImage = null;
+                    if (sourceNormalMapExport != null)
+                    {
+                        sourceNormalMapImage = ToIsImage(new Texture2D(sourceNormalMapExport));
+                    }
+                    var targetNormalMapExport = ChooseTexture(pew, "choose the normal map of the target mesh");
+                    SixLabors.ImageSharp.Image<Rgba32> targetNormalMapImage = null;
+                    if (targetNormalMapExport != null)
+                    {
+                        targetNormalMapImage = ToIsImage(new Texture2D(targetNormalMapExport));
+                    }
+
+                    var sourceVerts = new List<(int vertIndex, GPUSkinVertex vert)>();
+                    var targetVerts = new List<(int vertIndex, GPUSkinVertex vert)>();
+
+                    for (var i = 0; i < sourceBin.LODModels[0].VertexBufferGPUSkin.VertexData.Length; i++)
+                    {
+                        sourceVerts.Add((i, sourceBin.LODModels[0].VertexBufferGPUSkin.VertexData[i]));
+                    }
+
+                    for (var i = 0; i < targetBin.LODModels[0].VertexBufferGPUSkin.VertexData.Length; i++)
+                    {
+                        targetVerts.Add((i, targetBin.LODModels[0].VertexBufferGPUSkin.VertexData[i]));
+                    }
+
+                    var overlap = targetVerts.Join(sourceVerts, first => first.vert, second => second.vert, (first, second) => (first.vertIndex, second.vert), new VertComparer()).ToList();
+
+                    foreach (var (targetIndex, sourceVert) in overlap)
+                    {
+                        // copy the position and tanZ from the source to the target to make the seam match up better.
+                        targetBin.LODModels[0].VertexBufferGPUSkin.VertexData[targetIndex].Position = sourceVert.Position;
+                        // save the bitangent sign (which is stored in TangentZ W component) and use it in the new tangent
+                        var originalBitangentSign = targetBin.LODModels[0].VertexBufferGPUSkin.VertexData[targetIndex].TangentZ.W;
+
+                        // now, calculate the "actual" tangent at the source point taking into account the normal map at that point
+                        Vector3 vectorToMatch;
+                        if (sourceNormalMapImage != null)
+                        {
+                            // get the tangent space normal at the UV coordinate
+                            var pixelNorm = ToNormalVector(GetPixel(sourceNormalMapImage, sourceVert.UV.X, sourceVert.UV.Y));
+
+                            // get the tangent sapce vectors for the source
+                            var sourceTangent = (Vector3)sourceVert.TangentX;
+                            var sourceNormal = (Vector3)sourceVert.TangentZ;
+                            var sourceBitangent = Vector3.Cross(sourceNormal, sourceTangent) * (originalBitangentSign > 0 ? 1 : -1);
+
+                            // get the "actual" normal at this point from the source, taking into account the normal map
+                            vectorToMatch = ToWorldSpace(new Vector3(0, 0, 1), sourceTangent, sourceBitangent, sourceNormal);
+                        }
+                        else
+                        {
+                            vectorToMatch = (Vector3)sourceVert.TangentZ;
+                        }
+
+                        if (targetNormalMapImage != null)
+                        {
+                            var targetVert = targetBin.LODModels[0].VertexBufferGPUSkin.VertexData[targetIndex];
+                            // get the tangent space normal at the UV coordinate
+                            var pixelNorm = ToNormalVector(GetPixel(targetNormalMapImage, targetVert.UV.X, targetVert.UV.Y));
+
+                            // get the tangent sapce vectors for the source
+                            var sourceTangent = (Vector3)targetVert.TangentX * (originalBitangentSign > 0 ? 1 : -1);
+
+                            vectorToMatch = GetWorldSpaceVertexNormalAccountingForTargetNormalMap(pixelNorm, sourceTangent, vectorToMatch);
+                        }
+                        var targetVector = (PackedNormal)vectorToMatch;
+                        targetBin.LODModels[0].VertexBufferGPUSkin.VertexData[targetIndex].TangentZ = new PackedNormal(targetVector.X, targetVector.Y, targetVector.Z, originalBitangentSign);
+                    }
+
+                    targetMesh.WriteBinary(targetBin);
+
+                    if (false)
+                    {
+                        // experiment to try to fix the skeleton discrepancy up through Chest1 without messing up the other stuff???
+                        var bonesToTouch = new string[] { "God", "Root", "LowerBack", "Chest", "Chest1", "Chest2" };
+                        foreach (var bone in sourceBin.RefSkeleton)
+                        {
+                            if (!bonesToTouch.Contains(bone.Name.ToString()))
+                            {
+                                continue;
+                            }
+
+                            var targetIndex = targetBin.RefSkeleton.FindIndex(X => X.Name == bone.Name);
+                            if (targetIndex == -1)
+                            {
+                                continue;
+                            }
+
+                            targetBin.RefSkeleton[targetIndex].Position = bone.Position;
+                            targetBin.RefSkeleton[targetIndex].Orientation = bone.Orientation;
+                        }
+
+                        targetMesh.WriteBinary(targetBin);
+                    }
                 }
-
-                for (var i = 0; i < targetBin.LODModels[0].VertexBufferGPUSkin.VertexData.Length; i++)
-                {
-                    targetVerts.Add((i, targetBin.LODModels[0].VertexBufferGPUSkin.VertexData[i]));
-                }
-
-                var overlap = targetVerts.Join(sourceVerts, first => first.vert.Position, second => second.vert.Position, (first, second) => (first.vertIndex, second.vert), new VertComparer()).ToList();
-                // now find which verts are in both sequences comparing by position, returning the ones from 
-                //var intersect = targetVerts.Intersect(sourceVerts, new VertComparer()).ToArray();
-
-                foreach (var (targetIndex, sourceVert) in overlap)
-                {
-                    // copy the position, tanX and tanZ from the source to the target to make the seam match up better.
-                    targetBin.LODModels[0].VertexBufferGPUSkin.VertexData[targetIndex].Position = sourceVert.Position;
-                    //targetBin.LODModels[0].VertexBufferGPUSkin.VertexData[targetIndex].TangentX = sourceVert.TangentX;
-                    targetBin.LODModels[0].VertexBufferGPUSkin.VertexData[targetIndex].TangentZ = sourceVert.TangentZ;
-                }
-
-                targetMesh.WriteBinary(targetBin);
             }
         }
 
-        private class VertComparer : IEqualityComparer<Vector3>
+        private static Rgba32 GetPixel(SixLabors.ImageSharp.Image<Rgba32> img, float x, float y)
         {
-            public bool Equals(Vector3 x, Vector3 y)
+            // clamp values between 0 and 1 by taking the modulo and adding 1 if needed to account for negative inputs
+            x = ((x % 1) + 1) % 1;
+            y = ((y % 1) + 1) % 1;
+            return img[(int)(img.Width * x), (int)(img.Height * y)];
+        }
+
+        private static SixLabors.ImageSharp.Image<Rgba32> ToIsImage(Texture2D tex)
+        {
+            var rawPng = tex.GetPNG(tex.GetTopMip());
+            return SixLabors.ImageSharp.Image.Load<Rgba32>(rawPng);
+        }
+
+        private static Vector3 ToNormalVector(Rgba32 pixelValue)
+        {
+            return Vector3.Normalize(new Vector3(pixelValue.R / 127.5f - 1, pixelValue.G  / 127.5f - 1, pixelValue.B / 127.5f - 1));
+        }
+
+        private static Vector3 ToWorldSpace(Vector3 v, Vector3 tangent, Vector3 bitangent, Vector3 normal)
+        {
+            return Vector3.Normalize(new Vector3(
+                v.X * tangent.X + v.Y * bitangent.X + v.Z * normal.X,
+                v.X * tangent.Y + v.Y * bitangent.Y + v.Z * normal.Y,
+                v.X * tangent.Z + v.Y * bitangent.Z + v.Z * normal.Z
+            ));
+        }
+
+        private static Vector3 GetWorldSpaceVertexNormalAccountingForTargetNormalMap(Vector3 v, Vector3 t, Vector3 w)
+        {
+            // I derived this from a bunch of math solving multiple equations simultaneously. I could almost certainly simplify it more
+            // I'm sorry
+
+            var A = (w.X - (v.X * t.X)) / v.Z;
+            var B = -1 * v.Y * t.Z / v.Z;
+            var C = v.Y * t.Y / v.Z;
+            var D = (w.Y - (v.X * t.Y)) / v.Z;
+            var E = -1 * v.Y * t.X / v.Z;
+            var F = v.Y * t.Z / v.Z;
+            var G = (w.Z - (v.X * t.Z)) / v.Z;
+            var H = -1 * v.Y * t.Y / v.Z;
+            var I = v.Y * t.X / v.Z;
+            var J = (H * B + I) / (1 - (F * B));
+            var K = (E + (F * C)) / (1 - (H * C));
+            
+            var Y = (D + (F * A) + (K * G) + (K * H * A)) / (1 - (F * B) - (K * H * B) - (K * I));
+            var Z = (G + (H * A) + (J * D) + (J * F * A)) / (1 - (H * C) - (J * E) - (J * F * C));
+            var X = A + (B*Y)+C * Z;
+            return Vector3.Normalize(new Vector3(X, Y, Z));
+        }
+
+        //private static Vector3 ToTangentSpace(Vector3 v, Vector3 tangent, Vector3 bitangent, Vector3 normal)
+        //{
+        //    return Vector3.Normalize(new Vector3(
+        //        v.X * tangent.X + v.Y * tangent.X + v.Z * tangent.Z,
+        //        v.X * bitangent.X + v.Y * bitangent.Y + v.Z * bitangent.Z,
+        //        v.X * normal.X + v.Y * normal.Y + v.Z * normal.Z
+        //    ));
+        //}
+
+        private class VertComparer : IEqualityComparer<GPUSkinVertex>
+        {
+            public bool Equals(GPUSkinVertex x, GPUSkinVertex y)
             {
-                return (x - y).Length() < 0.1;
+                var positionClose = (x.Position - y.Position).Length() < 0.1;
+                var normalsClose = Math.Acos(Vector3.Dot((Vector3)x.TangentZ, (Vector3)y.TangentZ) / (((Vector3)x.TangentZ).Length() * ((Vector3)y.TangentZ).Length())) < Math.PI / 6;
+                return positionClose && normalsClose;
             }
 
-            public int GetHashCode(Vector3 obj)
+            public int GetHashCode(GPUSkinVertex obj)
             {
                 return 0;
             }

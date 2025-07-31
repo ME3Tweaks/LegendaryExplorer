@@ -1397,6 +1397,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsSquid.SmoothMeshSeams(GetPEWindow());
         }
 
+        private void FixMisalignedSkeleton_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.FixMisallignedSkeleton(GetPEWindow());
+        }
+
         #endregion
 
         // EXPERIMENTS: OTHER PEOPLE ------------------------------------------------------------

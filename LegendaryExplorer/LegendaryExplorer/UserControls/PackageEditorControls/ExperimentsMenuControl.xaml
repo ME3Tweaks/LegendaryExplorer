@@ -194,6 +194,10 @@
             <MenuItem Header="Get Mesh Material paths" Click="GetMeshMaterials_Click" ToolTip="Copies all the material memory paths to clipboard; useful for making AMM LE1 configs."/>
             <MenuItem Header="Make Custom Morph Target Set" Click="MakeCustomMorphTargetSet_Click" ToolTip="Makes a new CustomMorphTargetSet and BioMorphFace for use in mods that dynamically change appearance from MorphTargetSet or SkeletalMesh. currently only for AMM LE3. "/>
         </MenuItem>
+        <MenuItem Header="Even more experimental than usual">
+            <MenuItem Header="Smooth Mesh Seams" Click="SmoothMeshSeams_Click" ToolTip="Attempts to reduce seams between meshes."/>
+            <MenuItem Header="Fix misaligned skeleton" Click="FixMisalignedSkeleton_Click" ToolTip="Attempts to fix a misaligned skeleton. This issue will pop up when the vertices on the neck seam match at rest, but there is a gap when animations are applied."/>
+        </MenuItem>
     </MenuItem>
     <MenuItem Header="Other people's box of Legos">
         <MenuItem Header="Export level to T3D" Click="ExportLevelToT3D_Click"/>
