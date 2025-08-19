@@ -9,6 +9,7 @@ using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using static LegendaryExplorer.UserControls.ExportLoaderControls.BinaryNodeFactory;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
