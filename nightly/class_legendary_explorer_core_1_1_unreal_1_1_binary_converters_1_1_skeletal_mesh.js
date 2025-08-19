@@ -4,6 +4,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#a80d5284ebda5e15e8b4dd8e6c27b29c9", null ],
     [ "GetNames", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#a02a5762e441a1267a36f3dc21a547aa4", null ],
     [ "ForEachUIndex< TAction >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#a5008f4eead34122cc4ae722e2c4f3f87", null ],
+    [ "SetMaterials", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#a1c21e2d943e7d826e5a888f934ba6c16", null ],
     [ "Bounds", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#a6ff64ad9ae717cbce102b1f7213cdb94", null ],
     [ "Materials", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#ac8ade694d39d8206fb7011662527167f", null ],
     [ "Origin", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#a20a82af6df9f91e623070699838b74e6", null ],

@@ -1,0 +1,9 @@
+var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_shader_parameters =
+[
+    [ "CameraWorldPosition", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_shader_parameters.html#ae52d1bc4326f9d6f776bc8e671df8e06", null ],
+    [ "ObjectWorldPositionAndRadius", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_shader_parameters.html#a16a90e019b74e76d7a31226a201cb5e7", null ],
+    [ "ObjectOrientation", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_shader_parameters.html#aaa799fb3d9c278916b153f52885ddf95", null ],
+    [ "WindDirectionAndSpeed", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_shader_parameters.html#afe1ee7b580bf9a2d04a53c02ee411d9d", null ],
+    [ "FoliageImpulseDirection", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_shader_parameters.html#a04037515203727ac573e30e33c96f0d5", null ],
+    [ "FoliageNormalizedRotationAxisAndAngle", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_shader_parameters.html#a3d58844a8f4bc0ec1316358f2a95d13e", null ]
+];
