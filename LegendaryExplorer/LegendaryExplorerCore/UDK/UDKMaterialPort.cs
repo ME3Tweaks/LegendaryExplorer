@@ -126,7 +126,7 @@ namespace LegendaryExplorerCore.UDK
                                 if (!canPort)
                                     continue; // Skip it.
                             }
-                            else if (mat.ClassName.CaseInsensitiveEquals("MaterialInstanceConstant"))
+                            else if (mat.IsA("MaterialInstance"))
                             {
                                 mat.RemoveProperty("bHasStaticPermutationResource");
                                 mat.WriteBinary([]); // Remove binary.

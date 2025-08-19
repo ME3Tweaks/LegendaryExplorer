@@ -5,12 +5,14 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using TerraFX.Interop.Windows;
 
 namespace LegendaryExplorer.Dialogs
 {
@@ -106,6 +108,15 @@ namespace LegendaryExplorer.Dialogs
         /// </summary>
         private readonly Dictionary<string, List<AddPropertyItem>> classToClassPropertyMap;
 
+
+
+        private string _documentationText;
+
+        /// <summary>
+        /// The documentation for the property being added
+        /// </summary>
+        public string DocumentationText { get => _documentationText; set => SetProperty(ref _documentationText, value); }
+
         #region Binding properties
         // The selected class
         private string _selectedClassName;
@@ -138,7 +149,17 @@ namespace LegendaryExplorer.Dialogs
         public AddPropertyItem SelectedProperty
         {
             get => _selectedProperty;
-            set => SetProperty(ref _selectedProperty, value);
+            set
+            {
+                if (SetProperty(ref _selectedProperty, value) && value != null)
+                {
+                    DocumentationText = LEXDocuDB.GetDocumentationForClassMember(Game, SelectedClassName, value.PropertyName);
+                }
+                else
+                {
+                    DocumentationText = "";
+                }
+            }
         }
 
         // The current filter text
@@ -264,6 +285,7 @@ namespace LegendaryExplorer.Dialogs
             classes.Reverse();
             var prompt = new AddPropertyDialog(classes, _existingProperties)
             {
+                Game = game,
                 Owner = callingWindow
             };
             //prompt.ClassesListView.ItemsSource = classes;
@@ -277,6 +299,8 @@ namespace LegendaryExplorer.Dialogs
             }
             return null;
         }
+
+        public MEGame Game { get; set; }
 
         private void PropertiesListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {

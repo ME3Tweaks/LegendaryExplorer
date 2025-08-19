@@ -34,14 +34,15 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                 else
                 {
                     var mSets = GetMaterialSettings(e, db);
-                    string parent;
-                    if (e.Export.Game == MEGame.ME1 && e.FileName.EndsWith(".upk"))
+
+                    // 05/05/2025 - Use GetLinker() instead since it is more useful to know which original package this was part of. It also works better in BIOGs.
+                    string parent = e.Export.GetLinker();
+                    if (e.Export.Parent != null && parent != e.Export.Parent.ObjectName.Instanced)
                     {
-                        parent = Path.GetFileNameWithoutExtension(e.FileName);
-                    }
-                    else
-                    {
-                        parent = GetTopParentPackage(e.Export);
+                        // It's nested.
+                        // For visualization purposes we will include the direct parent as well in the name.
+                        // since there will likely be dupes.
+                        parent += $"/{e.Export.Parent.ObjectName.Instanced}";
                     }
 
                     var objectNameInstanced = e.ObjectNameInstanced;
@@ -61,6 +62,49 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                         }
                     }
                 }
+            }
+       
+            // Don't inventory BMICs or actor-specific MICs.
+            if (e.Export.IsA("MaterialInstance") && e.ClassName != "BioMaterialInstanceConstant" && e.Export.GetRootName() != "TheWorld")
+            {
+                if (e.Export.ObjectName == e.Export.ClassName)
+                    return; // Not unique. We do not use instancing here.
+
+                var matUsage = new MatUsage(e.FileKey, e.Export.UIndex, e.IsDlc);
+                if (db.GeneratedMats.TryGetValue(e.AssetKey, out MaterialRecord eMat))
+                {
+                    lock (eMat)
+                    {
+                        eMat.Usages.Add(matUsage);
+                    }
+                }
+                else
+                {
+                    var mSets = GetMaterialSettings(e, db);
+                    string parent;
+                    if (e.Export.Game == MEGame.ME1 && e.FileName.EndsWith(".upk"))
+                    {
+                        parent = Path.GetFileNameWithoutExtension(e.FileName);
+                    }
+                    else
+                    {
+                        parent = GetTopParentPackage(e.Export);
+                    }
+
+                    var objectNameInstanced = e.ObjectNameInstanced;
+
+                    var NewMat = new MaterialRecord(objectNameInstanced, parent, e.IsDlc, mSets);
+                    NewMat.Usages.Add(matUsage);
+                    if (!db.GeneratedMats.TryAdd(e.AssetKey, NewMat))
+                    {
+                        var mat = db.GeneratedMats[e.AssetKey];
+                        lock (mat)
+                        {
+                            mat.Usages.Add(matUsage);
+                        }
+                    }
+                }
+
             }
         }
 
@@ -137,6 +181,18 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                         mSets.Add(pSet);
                     }
                 }
+            }
+
+            if (e.Export.IsA("MaterialInstance"))
+            {
+                // Get the parent mat.
+                var parent = e.Export.GetProperty<ObjectProperty>("Parent");
+                if (parent != null && e.Export.FileRef.TryGetEntry(parent.Value, out var entry))
+                {
+                    mSets.Add(new MatSetting("Parent", parent.Name, null));
+                }
+
+                mSets.Add(new MatSetting("IsInstance", "true", null));
             }
 
             return mSets;

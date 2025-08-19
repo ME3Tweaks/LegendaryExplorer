@@ -185,17 +185,32 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             //Port Shaders
             //var portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(sourceExports); // CrossGen Disabled
-            var portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList(), rop.GamePathOverride);
+            bool allowedToPortShaders = destPcc.Game == sourcePcc.Game;
+            bool isCrossGame = destPcc.Game != sourcePcc.Game;
+            ShaderCache portingCache = null;
+
+            // Allow LE1 <-> LE3 for now
+            if ((destPcc.Game == MEGame.LE1 && sourcePcc.Game == MEGame.LE3) ||
+                (destPcc.Game == MEGame.LE3 && sourcePcc.Game == MEGame.LE1))
+            {
+                portingCache = ShaderCacheManipulator.GetAllShadersForMaterials(rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList(), rop.GamePathOverride);
+                allowedToPortShaders = true;
+            }
+
+            if (portingCache == null && !isCrossGame)
+            {
+                portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList(), rop.GamePathOverride);
+            }
+
+            if (!allowedToPortShaders)
+            {   
+                rop.ErrorOccurredCallback?.Invoke($"You cannot port Materials from {sourcePcc.Game} into {destPcc.Game}");
+            }
+
+
             if (portingCache is not null)
             {
-                if (destPcc.Game != sourcePcc.Game)
-                {
-                    rop.ErrorOccurredCallback?.Invoke($"You cannot port Materials from {sourcePcc.Game} into {destPcc.Game}");
-                }
-                else
-                {
-                    ShaderCacheManipulator.AddShadersToFile(destPcc, portingCache);
-                }
+                ShaderCacheManipulator.AddShadersToFile(destPcc, portingCache);
             }
 
             // Reindex - disabled for now as it causes issues
@@ -1841,18 +1856,23 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             //This saves us retrieving and comparing the ClassName string for each import.
             //Export can use IsClass because that's just a simple int comparison
             int classNameIdx = pcc.findName("Class");
-            foreach (ImportEntry import in pcc.Imports)
+            if (classNameIdx > -1) // if package doesn't contain 'Class' it doesn't contain any classes, so skip this
             {
-                if (import.idxClassName == classNameIdx && import.ObjectName == className)
+                foreach (ImportEntry import in pcc.Imports)
                 {
-                    return import;
+                    if (import.idxClassName == classNameIdx && import.ObjectName == className)
+                    {
+                        return import;
+                    }
                 }
-            }
-            foreach (ExportEntry export in pcc.Exports)
-            {
-                if (export.IsClass && export.ObjectName == className)
+                foreach (ExportEntry export in pcc.Exports)
                 {
-                    return export;
+                    // 05/12/2025 - Change comparison to .Instanced because some vanilla material names
+                    // are 'Material' and it is causing relink issues when class has not been resolved yet.
+                    if (export.IsClass && export.ObjectName.Instanced == className)
+                    {
+                        return export;
+                    }
                 }
             }
 
@@ -2220,26 +2240,21 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             };
             export.FileRef.AddImport((ImportEntry)convertedItem);
 
-            // Update all references
-            var referencingEntries = export.GetEntriesThatReferenceThisOne();
-            foreach (var f in referencingEntries)
+            // Repoint the object.
+            Relinker.RepointObject(export, convertedItem);
+
+            // Move any children to the new import
+            var children = export.FileRef.Exports.Where(x => x.idxLink == export.UIndex).OfType<IEntry>().Concat(export.FileRef.Imports.Where(x => x.idxLink == export.UIndex)).ToList();
+            foreach(var child in children)
             {
-                // Make a new map for every iteration since this technically could add some items... somehow...
-                var objectMap = new ListenableDictionary<IEntry, IEntry>
-                {
-                    { export, convertedItem }, // Convert references to import
-                    { f.Key, f.Key } // Force this to relink on itself.
-                };
-                RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
-                {
-                    CrossPackageMap = objectMap
-                };
-                Relinker.RelinkAll(rop);
+                child.idxLink = convertedItem.UIndex;
             }
 
             // Cleanup temporary stuff
             convertedItem.ObjectName = export.ObjectName;
             EntryPruner.TrashEntries(export.FileRef, new[] { export });
+
+
 
             return convertedItem;
         }

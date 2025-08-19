@@ -795,7 +795,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                             float x = (formatFlags & 1) != 0 ? (bin.ReadUInt16() - unkConst) / scale : 0,
                                                   y = (formatFlags & 2) != 0 ? (bin.ReadUInt16() - unkConst) / scale : 0,
                                                   z = (formatFlags & 4) != 0 ? (bin.ReadUInt16() - unkConst) / scale : 0;
-                                            boneNode.Items.Add(new BinInterpNode(binPosition, $"RotKey {j}: (X: {x}, Y: {y}, Z: {z}, W: {getW(x, y, z)})")
+                                            boneNode.Items.Add(new BinInterpNode(binPosition, $"RotKey {j}: (X: {x}, Y: {y}, Z: {z}, W: {AnimSequence.ReconstructQuaternionComponent(x, y, z)})")
                                             {
                                                 Length = keyLength
                                             });
@@ -807,7 +807,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                         float x, y, z;
                                         for (int j = 0; j < numKeys; j++)
                                         {
-                                            boneNode.Items.Add(new BinInterpNode(bin.Position, $"RotKey {j}: (X: {x = bin.ReadFloat()}, Y: {y = bin.ReadFloat()}, Z: {z = bin.ReadFloat()}, W: {getW(x, y, z)})")
+                                            boneNode.Items.Add(new BinInterpNode(bin.Position, $"RotKey {j}: (X: {x = bin.ReadFloat()}, Y: {y = bin.ReadFloat()}, Z: {z = bin.ReadFloat()}, W: {AnimSequence.ReconstructQuaternionComponent(x, y, z)})")
                                             {
                                                 Length = 12
                                             });
@@ -965,7 +965,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 case AnimationCompressionFormat.ACF_Float96NoW:
                                     {
                                         float x, y, z;
-                                        rotKeyNode = new BinInterpNode(bin.Position, $"RotKey {j}: (X: {x = bin.ReadFloat()}, Y: {y = bin.ReadFloat()}, Z: {z = bin.ReadFloat()}, W: {getW(x, y, z)})")
+                                        rotKeyNode = new BinInterpNode(bin.Position, $"RotKey {j}: (X: {x = bin.ReadFloat()}, Y: {y = bin.ReadFloat()}, Z: {z = bin.ReadFloat()}, W: {AnimSequence.ReconstructQuaternionComponent(x, y, z)})")
                                         {
                                             Length = 12
                                         };
@@ -973,25 +973,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                     }
                                 case AnimationCompressionFormat.ACF_BioFixed48:
                                     {
-                                        const float shift = 0.70710678118f;
-                                        const float scale = 1.41421356237f;
-                                        const float precisionMult = 32767.0f;
                                         var pos = bin.Position;
                                         ushort a = bin.ReadUInt16();
                                         ushort b = bin.ReadUInt16();
                                         ushort c = bin.ReadUInt16();
-                                        float x = (a & 0x7FFF) / precisionMult * scale - shift;
-                                        float y = (b & 0x7FFF) / precisionMult * scale - shift;
-                                        float z = (c & 0x7FFF) / precisionMult * scale - shift;
-                                        float w = getW(x, y, z);
-                                        int wPos = ((a >> 14) & 2) | ((b >> 15) & 1);
-                                        var rot = wPos switch
-                                        {
-                                            0 => new Quaternion(w, x, y, z),
-                                            1 => new Quaternion(x, w, y, z),
-                                            2 => new Quaternion(x, y, w, z),
-                                            _ => new Quaternion(x, y, z, w)
-                                        };
+                                        var rot = AnimSequence.DecompressBioFixed48(a, b, c);
                                         rotKeyNode = new BinInterpNode(pos, $"RotKey {j}: (X: {rot.X}, Y: {rot.Y}, Z: {rot.Z}, W: {rot.W})")
                                         {
                                             Length = 6
@@ -999,6 +985,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                         break;
                                     }
                                 case AnimationCompressionFormat.ACF_Fixed48NoW:
+                                    {
+                                        var pos = bin.Position;
+                                        var a = bin.ReadUInt16();
+                                        var b = bin.ReadUInt16();
+                                        var c = bin.ReadUInt16();
+                                        var rot = AnimSequence.DecompressFixed48NoW(a, b, c);
+                                        rotKeyNode = new BinInterpNode(pos, $"RotKey {j}: (X: {rot.X}, Y: {rot.Y}, Z: {rot.Z}, W: {rot.W})")
+                                        {
+                                            Length = 6
+                                        };
+                                        break;
+                                    }
                                 case AnimationCompressionFormat.ACF_IntervalFixed32NoW:
                                 case AnimationCompressionFormat.ACF_Fixed32NoW:
                                 case AnimationCompressionFormat.ACF_Float32NoW:
@@ -1032,12 +1030,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
             return subnodes;
-
-            static float getW(float x, float y, float z)
-            {
-                float wSquared = 1.0f - (x * x + y * y + z * z);
-                return (float)(wSquared > 0 ? Math.Sqrt(wSquared) : 0);
-            }
         }
 
         private List<ITreeItem> StartObjectRedirectorScan(byte[] data, ref int binaryStart)

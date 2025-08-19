@@ -1,0 +1,11 @@
+﻿<div class="header">
+	<h2>Content in package <i>%LD_PACKAGENAME%</i></h2>
+	<p>%LD_DESCRIPTION%</p>
+</div>
+<div class="contentContainer">
+	<hr>
+		<h3 id="classes">Classes</h3>
+		%LD_CLASSESLIST%
+		<h3 id="structs">Structs</h3>
+		%LD_STRUCTSLIST%
+	</div>

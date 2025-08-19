@@ -1,0 +1,5 @@
+﻿<div class="header">
+<h2>All %LD_LISTTYPE%</h2>
+</div>
+
+%LD_LIST%

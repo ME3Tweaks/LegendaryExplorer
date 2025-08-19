@@ -1,10 +1,6 @@
 ﻿#if DEBUG
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LegendaryExplorerCore.DebugTools
 {
@@ -13,6 +9,7 @@ namespace LegendaryExplorerCore.DebugTools
         [Conditional("DEBUG")]
         public static void CompareByteArrays(byte[] arr1, byte[] arr2)
         {
+            int amountAllowedLeftToWrite = 20;
             Debug.WriteLine($"Lengths: {arr1.Length} vs {arr2.Length}");
             int maxCount = Math.Min(arr1.Length, arr2.Length);
             for (int i = 0; i < maxCount; i++)
@@ -20,6 +17,11 @@ namespace LegendaryExplorerCore.DebugTools
                 if (arr1[i] != arr2[i])
                 {
                     Debug.WriteLine($"Difference at 0x{i:X6}: {arr1[i]:X2} vs {arr2[i]:X2}");
+                    if (amountAllowedLeftToWrite-- <= 0)
+                    {
+                        // Don't print a billion things.
+                        break;
+                    }
                 }
             }
         }

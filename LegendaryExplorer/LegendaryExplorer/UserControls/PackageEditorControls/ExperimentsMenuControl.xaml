@@ -173,22 +173,27 @@
         <MenuItem Header="Replace all wems" Click="ReplaceAllWems_Click"/>
     </MenuItem>
     <MenuItem Header="Squid's new and exciting ways to break stuff">
+        <MenuItem Header="Export Selected Item as PSKX/PSA" Click="ExportSelectedToPsx_Click" ToolTip="Exports the selected item as a pskx and/or psa and config file. Works for SkeletalMesh, BioMorphFace, MorphTargetSet, AnimSet, BioDynamicAnimSet, and AnimSequence"/>
+        <MenuItem Header="Ron File tools">
+            <MenuItem Header="Export RON file as PSKX/PSA" Click="ExportRonToPsx_Click" ToolTip="Converts a ron file into a pskx and psa file that can be imported into blender to edit your Shepard's head."/>
+            <MenuItem Header="import ron to BioMorphFace" Click="ImportRonToBmf_Click" ToolTip="Imports a Ron file as a BioMorphFace; assets will be linked if they are in the file. "/>
+            <MenuItem Header="export BioMorphFace to ron" Click="ExportBmfToRon_Click" ToolTip="Export a BioMorphFace to a ron file"/>
+            <MenuItem Header="replace ron vertex + bone data from psk + psa" Click="UpdateRonFromPskAndPsa_Click" ToolTip="Updates the vertex positions in a ron file with those from a psk"/>
+        </MenuItem>
+        <MenuItem Header="Import Mesh/Animation">
+            <MenuItem Header="Import PSK/PSKX as new mesh" Click="ImportPskAsNewMesh_Click" ToolTip="Directly imports a psk/pskx file as a new skeletal mesh. Select an existing one to copy the sockets from it to the new one."/>
+            <MenuItem Header="Add/Update a new MorphTarget from a psk + psa" Click="AddNewMorphTargetFromPskAndPsa_Click" ToolTip="Converts a psk to a morph target as a delta to the base mesh. select a morphTargetSet to use this. "/>
+            <MenuItem Header="import psk + psa to BioMorphFace" Click="ImportPskAndPsaToBmf_Click" ToolTip="Applies the vetex positions from a psk file onto a BioMorphFace. "/>
+            <MenuItem Header="Import AnimSet" Click="ImportAnimSet_Click" ToolTip="bulk import an entire animSet from a PSA; select an existing animSet when running this to copy notifies from that animSet to the newly created one. "/>
+        </MenuItem>
+        <MenuItem Header="Convert stuff">
+            <MenuItem Header="Convert BioMorphFace to a unique mesh" Click="MorphFaceToMesh_Click" ToolTip="Converts a BioMoprhFace to a new mesh with the vertices and materials applied, which can then be edited in external programs"/>
+            <MenuItem Header="Convert Head Mesh to Have Separate Eye Materials" Click="MakeHeterochromia_Click" ToolTip="Converts a head mesh to have separate eye materials while maintaining vertex count and order. This will affect all LODs. Make sure the materials are properly mapped and show up correctly in preview."/>
+        </MenuItem>
         <MenuItem Header="AMM stuff">
             <MenuItem Header="Get Mesh Material paths" Click="GetMeshMaterials_Click" ToolTip="Copies all the material memory paths to clipboard; useful for making AMM LE1 configs."/>
             <MenuItem Header="Make Custom Morph Target Set" Click="MakeCustomMorphTargetSet_Click" ToolTip="Makes a new CustomMorphTargetSet and BioMorphFace for use in mods that dynamically change appearance from MorphTargetSet or SkeletalMesh. currently only for AMM LE3. "/>
         </MenuItem>
-        <MenuItem Header="Export SkeletalMesh to psk" Click="ExportMeshToPsk_Click" ToolTip="Exports a skeletal mesh to psk while maintaining vertex count and order, which is important for meshes that can be manipulated with morph targets. Nearly Identical to the Mesh Explorer Experimental psk export, but also outputs vertex normals. Does not use UModel, and so might be more reliable, but if you don't need it, you should probably use the normal export."/>
-        <MenuItem Header="Convert BioMorphFace to a unique mesh" Click="MorphFaceToMesh_Click" ToolTip="Converts a BioMoprhFace to a new mesh with the vertices and materials applied, which can then be edited in external programs"/>
-        <MenuItem Header="Convert Head Mesh to Have Separate Eye Materials" Click="MakeHeterochromia_Click" ToolTip="Converts a head mesh to have separate eye materials while maintaining vertex count and order. This will affect all LODs. Make sure the materials are properly mapped and show up correctly in preview."/>
-        <MenuItem Header="Replace mesh data from psk" Click="ReplaceMeshFromPSK_Click" ToolTip="Replaces some of the mesh data from a psk to avoid needing to go through UModel, which  messes up vertex count and order. only use if you need it."/>
-        <MenuItem Header="Add a new MorphTarget from a psk + psa" Click="AddNewMorphTargetFromPskAndPsa_Click" ToolTip="Converts a psk to a morph target as a delta to the base mesh. select a morphTargetSet to use this. "/>
-        <MenuItem Header="Export MorphTargetSet to psk + psa" Click="ExportMorphTargetSetToBlender_Click" ToolTip="Exports a MorphTargetSet to a psk+psa that can be imported to Blender as the base mesh with shape keys. select a morphTargetSet to use this. "/>
-        <MenuItem Header="Export BioMorphFace to psk + PSA" Click="ExportBmfToPskAndPsa_Click" ToolTip="Exports a BioMorphFace into a psk and a psa for import into 3D modeling programs."/>
-        <MenuItem Header="import psk + psa to BioMorphFace" Click="ImportPskAndPsaToBmf_Click" ToolTip="Applies the vetex positions from a psk file onto a BioMorphFace. "/>
-        <MenuItem Header="import ron to BioMorphFace" Click="ImportRonToBmf_Click" ToolTip="Imports a Ron file as a BioMorphFace; assets will be linked if they are in the file. "/>
-        <MenuItem Header="export BioMorphFace to ron" Click="ExportBmfToRon_Click" ToolTip="Export a BioMorphFace to a ron file"/>
-        <MenuItem Header="replace ron vertex + bone data from psk + psa" Click="UpdateRonFromPskAndPsa_Click" ToolTip="Updates the vertex positions in a ron file with those from a psk"/>
-        <!-- <MenuItem Header="Smooth Mesh Seams" Click="SmoothMeshSeams_Click" ToolTip="Attempts to smooth seams between two meshes by copying the vertex normals from one mesh to the other where vertices are in the same positions. "/> -->
     </MenuItem>
     <MenuItem Header="Other people's box of Legos">
         <MenuItem Header="Export level to T3D" Click="ExportLevelToT3D_Click"/>
@@ -228,5 +233,8 @@
         <MenuItem Header="Build LE2 Object Database" Click="ChonkyDB_BuildLE2GameDB"/>
         <MenuItem Header="Build ME3 Object Database" Click="ChonkyDB_BuildME3GameDB"/>
         <MenuItem Header="Build LE3 Object Database" Click="ChonkyDB_BuildLE3GameDB"/>
+        <Separator/>
+        <MenuItem Header="Search for object instances" Click="ObjectInstanceDBSearch_Click"/>
+
     </MenuItem>
 </MenuItem>

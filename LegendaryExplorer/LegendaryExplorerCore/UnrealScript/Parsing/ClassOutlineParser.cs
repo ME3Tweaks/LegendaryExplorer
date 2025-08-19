@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing;
+using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
@@ -597,9 +599,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         {
             Tokens.PushSnapshot();
             var start = CurrentPosition;
-            ParseFunctionSpecifiers(out int nativeIndex, out EFunctionFlags flags);
+            (int nativeIndex, byte operatorPrecedence, bool isPostfixOperator) = ParseFunctionSpecifiers(out EFunctionFlags flags);
 
-            if (!Matches(FUNCTION, EF.Keyword))
+            bool hasFunctionKeyword = Matches(FUNCTION, EF.Keyword);
+            if (!flags.Has(EFunctionFlags.Operator) && !hasFunctionKeyword)
             {
                 Tokens.PopSnapshot();
                 return null;
@@ -609,21 +612,57 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             bool coerceReturn = Matches("coerce", EF.Keyword);
             Tokens.PushSnapshot();
             var returnType = ParseTypeRef();
-            if (returnType == null) throw ParseError("Expected function name or return type!", CurrentPosition);
-
-            ScriptToken name = Consume(TokenType.Word);
-            if (name == null)
+            ScriptToken nameToken;
+            if (flags.Has(EFunctionFlags.Operator))
             {
-                Tokens.PopSnapshot();
-                name = Consume(TokenType.Word);
-                returnType = null;
+                Tokens.DiscardSnapshot();
+                if (returnType == null) throw ParseError("Expected return type!", CurrentPosition);
+
+                nameToken = Consume(TokenType.Word);
+                if (nameToken is null)
+                {
+                    if (CurrentToken.Type is TokenType.LeftParenth)
+                    {
+                        throw ParseError("Expected operator name!", CurrentPosition);
+                    }
+                    if (!IsOperator(out bool isRightShift, out TokenType opType))
+                    {
+                        throw ParseError($"{CurrentToken.Value} is not a valid operator!", CurrentPosition);
+                    }
+                    CurrentToken.SyntaxType = EF.Operator;
+                    nameToken = Consume(CurrentTokenType);
+                    nameToken.SyntaxType = EF.Operator;
+                    if (isRightShift)
+                    {
+                        CurrentToken.SyntaxType = EF.Operator;
+                        Consume(TokenType.RightArrow);
+                        nameToken = new ScriptToken(TokenType.RightShift, ">>", nameToken.StartPos, nameToken.EndPos);
+                    }
+                }
+                if (nameToken.Value.CaseInsensitiveEquals("None"))
+                {
+                    TypeError("'None' is not a valid operator name!", nameToken);
+                }
             }
             else
             {
-                Tokens.DiscardSnapshot();
-            }
+                if (returnType == null) throw ParseError("Expected function name or return type!", CurrentPosition);
 
-            name.SyntaxType = EF.Function;
+                nameToken = Consume(TokenType.Word);
+                if (nameToken == null)
+                {
+                    Tokens.PopSnapshot();
+                    nameToken = Consume(TokenType.Word);
+                    returnType = null;
+                }
+                else
+                {
+                    Tokens.DiscardSnapshot();
+                }
+                nameToken.SyntaxType = EF.Function;
+            }
+            string functionName = nameToken.Value;
+            string friendlyName = functionName;
 
             if (coerceReturn && returnType == null)
             {
@@ -652,6 +691,70 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 parameters.Add(param);
                 if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth) throw ParseError("Unexpected parameter content!", CurrentPosition);
+            }
+
+            if (flags.Has(EFunctionFlags.Operator))
+            {
+                if (parameters.Count is 0 or > 2)
+                {
+                    throw ParseError($"An operator cannot have {parameters.Count} parameters!");
+                }
+                if (isPostfixOperator is true || flags.Has(EFunctionFlags.PreOperator))
+                {
+                    if (parameters.Count > 1)
+                    {
+                        throw ParseError($"A {(isPostfixOperator ? "post" : "pre")}fix operator must have 1 parameter!", nameToken);
+                    }
+                    if (operatorPrecedence > 0)
+                    {
+                        TypeError($"A {(isPostfixOperator ? "post" : "pre")}fix operator cannot have a precedence!", nameToken);
+                    }
+                }
+
+                if (nameToken.Type is TokenType.Word && nameToken.Value.Contains('_'))
+                {
+                    string[] parts = nameToken.Value.Split('_');
+                    if (parts.Length is not (2 or 3) || 
+                        nameToken.Value != ConstructOperatorFunctionName(new ScriptToken(TokenType.Word, parts[0], nameToken.StartPos, nameToken.StartPos + parts[0].Length), 
+                                                                         parameters, flags.Has(EFunctionFlags.PreOperator), operatorPrecedence))
+                    {
+                        TypeError("An operator name cannot have an '_' in it (unless it is the full verbose form)");
+                    }
+                    if (OperatorHelper.VerboseNameToOperatorType.TryGetValue(parts[0], out TokenType operatorType))
+                    {
+                        friendlyName = OperatorHelper.OperatorTypeToString(operatorType);
+                    }
+                    else
+                    {
+                        friendlyName = parts[0];
+                    }
+                }
+                else
+                {
+                    if (parameters.Count is 1)
+                    {
+                        if (flags.Has(EFunctionFlags.PreOperator))
+                        {
+                            if (nameToken.Type is not (TokenType.ExclamationMark or TokenType.MinusSign or TokenType.Complement or TokenType.Increment or TokenType.Decrement))
+                            {
+                                TypeError($"prefix operators can only be '!', '-', '~', '--' or '++' ", nameToken);
+                            }
+                        }
+                        else
+                        {
+
+                            if (nameToken.Type is not (TokenType.Increment or TokenType.Decrement))
+                            {
+                                TypeError($"postfix operators can only be '--' or '++' ", nameToken);
+                            }
+                        }
+                    }
+                    else if (operatorPrecedence is 0)
+                    {
+                        operatorPrecedence = OperatorHelper.DefaultPrecedence(nameToken.Type);
+                    }
+                    functionName = ConstructOperatorFunctionName(nameToken, parameters, flags.Has(EFunctionFlags.PreOperator), operatorPrecedence);
+                }
             }
 
             if (Game >= MEGame.ME3 && hasOptionalParams)
@@ -691,15 +794,84 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 returnDeclaration = new VariableDeclaration(returnType, returnFlags, "ReturnValue");
             }
-            var function = new Function(name.Value, flags, returnDeclaration, body, parameters, start, PrevToken.EndPos)
+            var function = new Function(functionName, flags, returnDeclaration, body, parameters, start, PrevToken.EndPos)
             {
                 NativeIndex = nativeIndex,
                 Tokens = Tokens
             };
+            if (flags.Has(EFunctionFlags.Operator))
+            {
+                function.FriendlyName = friendlyName;
+                function.OperatorPrecedence = operatorPrecedence;
+            }
 
-            Tokens.AddDefinitionLink(function, name);
+            Tokens.AddDefinitionLink(function, nameToken);
 
             return function;
+        }
+
+        private string ConstructOperatorFunctionName(ScriptToken nameToken, List<FunctionParameter> parameters, bool isPreOperator, byte precedence)
+        {
+            string funcName;
+            if (nameToken.Type is TokenType.Word)
+            {
+                funcName = nameToken.Value;
+            }
+            else if (OperatorHelper.OperatorTypeToVerboseName.TryGetValue(nameToken.Type, out string name))
+            {
+                funcName = name;
+            }
+            else
+            {
+                throw ParseError($"Unrecognized operator type: {nameToken.Value}!", nameToken);
+            }
+
+            funcName += '_';
+            if (isPreOperator)
+            {
+                funcName += "Pre";
+            }
+            foreach (FunctionParameter param in parameters)
+            {
+                if (param.VarType is DelegateType)
+                {
+                    throw ParseError("Cannot define an operator on a delegate!", param);
+                }
+                funcName += GetTypeName(param.VarType);
+            }
+            if (parameters.Count is 2 && precedence > 0)
+            {
+                funcName += $"_{precedence}";
+            }
+            return funcName;
+
+            string GetTypeName(VariableType varType)
+            {
+                switch (varType)
+                {
+                    case DynamicArrayType dynArrType:
+                        return $"ArrayOf{GetTypeName(dynArrType.ElementType)}";
+                    case ClassType classType:
+                        if (classType.ClassLimiter.Name is OBJECT)
+                        {
+                            return "Class";
+                        }
+                        return $"Class{classType.ClassLimiter.Name}";
+                    default:
+                        return varType.Name switch
+                        {
+                            INT => "Int",
+                            FLOAT => "Float",
+                            BOOL => "Bool",
+                            BYTE => "Byte",
+                            BIOMASK4 => "BioMask4",
+                            STRING => "Str",
+                            STRINGREF => "StringRef",
+                            NAME => "Name",
+                            _ => varType.Name,
+                        };
+                }
+            }
         }
 
         private bool IsStartOfStateDeclaration()
@@ -958,6 +1130,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     flags |= EPropertyFlags.GlobalConfig | EPropertyFlags.Config;
                 }
+                else if (Matches("instanced", EF.Specifier))
+                {
+                    flags |= EPropertyFlags.EditInline | EPropertyFlags.ExportObject;
+                }
                 else if (Matches(nameof(EPropertyFlags.EditInline), EF.Specifier))
                 {
                     flags |= EPropertyFlags.EditInline;
@@ -1142,9 +1318,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
         }
 
-        private void ParseFunctionSpecifiers(out int nativeIndex, out EFunctionFlags flags)
+        private (int nativeIndex, byte operatorPrecedence, bool isPostfixOperator) ParseFunctionSpecifiers(out EFunctionFlags flags)
         {
-            nativeIndex = 0;
+            int nativeIndex = 0;
+            byte operatorPrecedence = 0;
+            bool isPostfixOperator = false;
             flags = default;
             bool unreliable = false;
             while (CurrentTokenType == TokenType.Word)
@@ -1160,10 +1338,24 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 else if (Matches("operator", EF.Keyword))
                 {
                     flags |= EFunctionFlags.Operator;
+                    operatorPrecedence = GetOperatorPrecedence();
+                }
+                else if (Matches("postoperator", EF.Keyword))
+                {
+                    flags |= EFunctionFlags.Operator;
+                    isPostfixOperator = true;
+                    if (Matches(TokenType.LeftParenth))
+                    {
+                        throw ParseError("Postfix operators do not have a precedence");
+                    }
                 }
                 else if (Matches("preoperator", EF.Keyword))
                 {
                     flags |= EFunctionFlags.PreOperator | EFunctionFlags.Operator;
+                    if (Matches(TokenType.LeftParenth))
+                    {
+                        throw ParseError("Prefix operators do not have a precedence");
+                    }
                 }
                 else if (Matches("native", EF.Keyword))
                 {
@@ -1172,18 +1364,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         if (Consume(TokenType.IntegerNumber) == null)
                         {
-                            {
-                                throw ParseError("Expected native index!", CurrentPosition);
-                            }
+                            throw ParseError("Expected native index!", CurrentPosition);
                         }
 
                         nativeIndex = int.Parse(Tokens.Prev().Value);
 
                         if (Consume(TokenType.RightParenth) == null)
                         {
-                            {
-                                throw ParseError("Expected ')' after native index!", CurrentPosition);
-                            }
+                            throw ParseError("Expected ')' after native index!", CurrentPosition);
                         }
                     }
                 }
@@ -1313,6 +1501,48 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     TypeError("'reliable' specified without 'client' or 'server'!", CurrentPosition);
                 }
+            }
+
+            if (flags.Has(EFunctionFlags.Operator))
+            {
+                if (!flags.Has(EFunctionFlags.Static))
+                {
+                    TypeError("operators must be static.", CurrentPosition);
+                }
+                if (!flags.Has(EFunctionFlags.Final))
+                {
+                    TypeError("operators must be final.", CurrentPosition);
+                }
+            }
+            return (nativeIndex, operatorPrecedence, isPostfixOperator);
+
+            byte GetOperatorPrecedence()
+            {
+                byte b = 0;
+                if (Consume(TokenType.LeftParenth) != null)
+                {
+                    if (Consume(TokenType.IntegerNumber) == null)
+                    {
+                        throw ParseError($"Expected operator precedence!", CurrentPosition);
+                    }
+
+                    int i = int.Parse(Tokens.Prev().Value);
+                    if (i is < byte.MinValue or > byte.MaxValue)
+                    {
+                        TypeError("Operator precedence cannot be negative or greater than 255!", CurrentPosition);
+                    }
+                    else
+                    {
+                        b = (byte)i;
+                    }
+
+                    if (Consume(TokenType.RightParenth) == null)
+                    {
+                        throw ParseError("Expected ')' after operator precedence!", CurrentPosition);
+                    }
+                }
+
+                return b;
             }
         }
 

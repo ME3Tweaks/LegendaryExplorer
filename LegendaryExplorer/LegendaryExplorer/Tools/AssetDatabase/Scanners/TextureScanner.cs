@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition.Primitives;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.Classes;
-using Microsoft.AppCenter.Utils.Files;
 
 namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
 {
@@ -21,7 +14,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
         public override void ScanExport(ExportScanInfo e, ConcurrentAssetDB db, AssetDBScanOptions options)
         {
             if (e.IsDefault) return;
-            if (e.ClassName == "Texture2D" || e.ClassName == "TextureCube" || e.ClassName == "TextureMovie")
+            
+            // 05/02/2025 - Change to .IsTexture() to cover other types like TextureFlipbooks.
+            if (e.Export.IsTexture())
             {
                 var objectNameInstanced = e.ObjectNameInstanced;
                 var textureUsage = new TextureUsage(e.FileKey, e.Export.UIndex, e.IsDlc, e.IsMod);

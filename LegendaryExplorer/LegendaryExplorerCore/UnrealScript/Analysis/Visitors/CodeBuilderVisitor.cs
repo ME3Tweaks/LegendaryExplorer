@@ -530,14 +530,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 specs.Add("event");
             }
-            if (flags.Has(EFunctionFlags.PreOperator))
-            {
-                specs.Add("preoperator");
-            }
-            else if (flags.Has(EFunctionFlags.Operator))
-            {
-                specs.Add("operator");
-            }
             if (flags.Has(EFunctionFlags.Iterator))
             {
                 specs.Add("iterator");
@@ -591,8 +583,32 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 }
                 Space();
             }
+            if (flags.Has(EFunctionFlags.PreOperator))
+            {
+                Append("preoperator", EF.Specifier);
+            }
+            else if (flags.Has(EFunctionFlags.Operator))
+            {
+                if (node.Parameters.Count is 1)
+                {
+                    Append("postoperator", EF.Specifier);
+                }
+                else
+                {
+                    Append("operator", EF.Specifier);
+                    if (node.Parameters.Count is 2 && node.OperatorPrecedence > 0)
+                    {
+                        Append("(");
+                        Append(node.OperatorPrecedence.ToString(), EF.Number);
+                        Append(")");
+                    }
+                }
+            }
+            else
+            {
+                Append(FUNCTION, EF.Keyword);
+            }
 
-            Append(FUNCTION, EF.Keyword);
             Space();
             AppendReturnTypeAndParameters(node);
 
@@ -636,7 +652,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 AppendTypeName(node.ReturnType);
                 Space();
             }
-            Append(node.Name, EF.Function);
+            if (node.IsOperator && node.FriendlyName is not null)
+            {
+                Append(node.FriendlyName, EF.Operator);
+                Space();
+            }
+            else
+            {
+                Append(node.Name, EF.Function);
+            }
             Append("(");
             if (node.Parameters.Any())
             {
@@ -1180,7 +1204,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             ExpressionPrescedence.Pop();
             Space();
-            Append(OperatorHelper.OperatorTypeToString(node.Operator.OperatorType), EF.Operator);
+            Append(node.Operator.FriendlyName, EF.Operator);
             Space();
             ExpressionPrescedence.Push(node.Operator.Precedence);
             if (node.Operator.OperatorType is TokenType.AtSign or TokenType.DollarSign or TokenType.StrConcAssSpace or TokenType.StrConcatAssign && node.RightOperand is PrimitiveCast { CastType.Name: "string" } rpc)
@@ -1201,7 +1225,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             ExpressionPrescedence.Push(1);
             // operatorkeywordExpression
-            Append(OperatorHelper.OperatorTypeToString(node.Operator.OperatorType), EF.Operator);
+            Append(node.Operator.FriendlyName, EF.Operator);
             node.Operand.AcceptVisitor(this);
 
             ExpressionPrescedence.Pop();
@@ -1213,7 +1237,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             ExpressionPrescedence.Push(NOPRESCEDENCE);
             // ExpressionOperatorkeyword
             node.Operand.AcceptVisitor(this);
-            Append(OperatorHelper.OperatorTypeToString(node.Operator.OperatorType), EF.Operator);
+            Append(node.Operator.FriendlyName, EF.Operator);
 
             ExpressionPrescedence.Pop();
             return true;
@@ -1784,11 +1808,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 specs.Add("config");
             }
 
-            if (flags.Has(EPropertyFlags.EditInline))
-            {
-                specs.Add(nameof(EPropertyFlags.EditInline).ToLowerInvariant());
-            }
-
             if (flags.Has(EPropertyFlags.Localized))
             {
                 specs.Add("localized");
@@ -1855,9 +1874,20 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 specs.Add("out");
             }
 
-            if (flags.Has(EPropertyFlags.ExportObject))
+            if (flags.Has(EPropertyFlags.EditInline | EPropertyFlags.ExportObject))
             {
-                specs.Add("export");
+                specs.Add("instanced");
+            }
+            else
+            {
+                if (flags.Has(EPropertyFlags.EditInline))
+                {
+                    specs.Add("editinline");
+                }
+                if (flags.Has(EPropertyFlags.ExportObject))
+                {
+                    specs.Add("export");
+                }
             }
 
             if (flags.Has(EPropertyFlags.EditInlineUse))

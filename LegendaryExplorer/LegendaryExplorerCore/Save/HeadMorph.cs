@@ -1,5 +1,6 @@
 ﻿using LegendaryExplorerCore.Unreal.BinaryConverters;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Numerics;
 using System.Text;
@@ -153,7 +154,7 @@ namespace LegendaryExplorerCore.Save
         private static KeyValuePair<string, float> GetKeyedScalar(string[] keyValSplit)
         {
             var fn = keyValSplit[0].Trim().Trim('"');
-            var off = float.Parse(keyValSplit[1].Trim().Trim(','));
+            var off = float.Parse(keyValSplit[1].Trim().Trim(','), CultureInfo.InvariantCulture);
             return new KeyValuePair<string, float>(fn, off);
         }
 
@@ -163,10 +164,10 @@ namespace LegendaryExplorerCore.Save
             var vectStr = keyValSplit[1].Trim().Trim('(', ')', ',').Split(',');
             return new KeyValuePair<string, LinearColor>(fn, new LinearColor()
             {
-                R = float.Parse(vectStr[0]),
-                G = float.Parse(vectStr[1]),
-                B = float.Parse(vectStr[2]),
-                A = float.Parse(vectStr[3]),
+                R = float.Parse(vectStr[0], CultureInfo.InvariantCulture),
+                G = float.Parse(vectStr[1], CultureInfo.InvariantCulture),
+                B = float.Parse(vectStr[2], CultureInfo.InvariantCulture),
+                A = float.Parse(vectStr[3], CultureInfo.InvariantCulture),
             });
         }
 

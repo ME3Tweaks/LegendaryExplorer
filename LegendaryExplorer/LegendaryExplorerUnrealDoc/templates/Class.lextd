@@ -1,0 +1,12 @@
+﻿<div class="header">
+<h2 class="title">Class <i>%LD_CLASSNAME%</i></h2>
+	%LD_INHERITANCETREE%
+	<p>Modifiers: <code>%LD_MODIFIERS%</code></p>
+</div>
+<div class="contentContainer">
+<hr>
+<p>%LD_DESCRIPTION%</p>
+%LD_VARIABLECONTAINER%
+%LD_FUNCTIONCONTAINER%
+</table>
+</div>

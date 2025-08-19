@@ -1221,6 +1221,12 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 baseClass = "Object",
                 pccPath = enginePath
             };
+            classes["ShaderCache"] = new ClassInfo
+            {
+                baseClass = "Object",
+                pccPath = enginePath
+            };
+
 
             void AddCore(string className, string baseClass)
             {

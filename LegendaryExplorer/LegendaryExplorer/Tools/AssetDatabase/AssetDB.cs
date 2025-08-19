@@ -264,6 +264,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     {
         public string MaterialName { get; set; }
 
+        /// <summary>
+        /// Containing memory package
+        /// </summary>
         public string ParentPackage { get; set; }
 
         public bool IsDLCOnly { get; set; }

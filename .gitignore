@@ -227,3 +227,6 @@ Release_x64/
 /Documentation/Output
 /Documentation/Doxygen
 /LegendaryExplorer/TexConverter/TexConverter/WinRelease/TexConverter.vcxproj.FileListAbsolute.txt
+
+# Ignore UnrealDoc generated files
+/BuiltDocs

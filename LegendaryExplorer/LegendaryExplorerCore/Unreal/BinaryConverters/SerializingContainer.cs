@@ -16,7 +16,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public readonly EndianReader ms = new(stream) { Endian = pcc?.Endian ?? Endian.Little };
         public readonly bool IsLoading = isLoading;
-        public readonly MEGame Game = pcc?.Game ?? MEGame.Unknown;
+        public MEGame Game { get; init; } = pcc?.Game ?? MEGame.Unknown;
         public readonly PackageCache PackageCache = packageCache;
         public readonly IMEPackage Pcc = pcc;
         public readonly int startOffset = offset;
@@ -66,12 +66,33 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return offset;
         }
 
+        public void Serialize(ref int val, string logging)
+        {
+#if DEBUG
+            Debug.WriteLine($"Serializing {logging} at {ms.Position:X8}");
+#endif
+            if (IsLoading)
+                val = ms.ReadInt32();
+            else
+                ms.Writer.WriteInt32(val);
+        }
+
         public void Serialize(ref int val)
         {
             if (IsLoading)
                 val = ms.ReadInt32();
             else
                 ms.Writer.WriteInt32(val);
+        }
+
+        /// <summary>
+        /// This method can be overriden to change how object references are serialized.
+        /// By default, it just serializes as integer.
+        /// </summary>
+        /// <param name="val"></param>
+        public virtual void SerializeObjectRef(ref int val)
+        {
+            Serialize(ref val);
         }
 
         public void SerializeConstInt(int val)
@@ -437,6 +458,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             else
             {
                 ms.Writer.WriteNameReference(name, Pcc);
+            }
+        }
+
+        public virtual void Serialize(ref NameReference? name)
+        {
+            if (IsLoading)
+            {
+                name = ms.ReadNameReference(Pcc);
+            }
+            else if (name.HasValue)
+            {
+                ms.Writer.WriteNameReference(name.Value, Pcc);
+            }
+            else
+            {
+                // You can't write a null name.
+                Debugger.Break();
             }
         }
 

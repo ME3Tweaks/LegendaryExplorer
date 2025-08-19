@@ -25,7 +25,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         public string FilterName { get => _filterName; set => SetProperty(ref _filterName, value); }
         private string _description;
         public string Description { get => _description; set => SetProperty(ref _description, value); }
-        private bool _isSelected;
+        protected bool _isSelected;
         public virtual bool IsSelected { get => _isSelected; set => SetProperty(ref _isSelected, value); }
 
         /// <summary>

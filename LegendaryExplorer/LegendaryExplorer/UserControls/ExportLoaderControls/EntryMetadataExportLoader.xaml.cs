@@ -17,6 +17,7 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.UnrealScript.Documentation;
 using Xceed.Wpf.Toolkit.Primitives;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -45,7 +46,31 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private const int HEADER_OFFSET_IMP_IDXOBJECTNAME = 0x14;
         private const int HEADER_OFFSET_IMP_IDXPACKAGEFILE = 0x0;
         private IEntry _currentLoadedEntry;
-        public IEntry CurrentLoadedEntry { get => _currentLoadedEntry; private set => SetProperty(ref _currentLoadedEntry, value); }
+        public IEntry CurrentLoadedEntry
+        {
+            get => _currentLoadedEntry;
+            private set
+            {
+                if (SetProperty(ref _currentLoadedEntry, value))
+                {
+                    OnCurrentLoadedEntryChanged();
+                }
+            }
+        }
+
+        public void OnCurrentLoadedEntryChanged()
+        {
+            if (CurrentLoadedEntry != null)
+            {
+                var db = LEXDocuDB.LoadDocuDB(CurrentLoadedEntry.Game);
+                DocumentationString = db?.GetDocumentation(CurrentLoadedEntry) ?? "No documentation on this class";
+            }
+            else
+            {
+                DocumentationString = "No entry selected";
+            }
+        }
+
         private byte[] OriginalHeader;
 
         public ObservableCollectionExtended<object> AllEntriesList { get; } = new();
@@ -134,6 +159,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     break;
             }
         }
+
+        public string DocumentationString { get; set; } = "No entry loaded!";
 
         public override bool CanParse(ExportEntry exportEntry) => true;
 

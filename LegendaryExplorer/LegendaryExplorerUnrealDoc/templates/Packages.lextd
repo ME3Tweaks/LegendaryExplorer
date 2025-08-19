@@ -1,0 +1,8 @@
+﻿<div class="header">
+<h2 class="title">Package %LD_PACKAGENAME%</h2>
+</div>
+<div class="contentContainer">
+<hr>
+<p>%LD_DESCRIPTION%</p>
+%LD_LIST%
+</div>

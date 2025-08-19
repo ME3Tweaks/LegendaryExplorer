@@ -36,10 +36,9 @@ using LegendaryExplorer.Tools.AssetDatabase.Filters;
 using LegendaryExplorer.Tools.AssetViewer;
 using LegendaryExplorer.Tools.LiveLevelEditor;
 using LegendaryExplorer.Tools.PlotDatabase;
-using LegendaryExplorer.UserControls.ExportLoaderControls;
-using LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.PlotDatabase;
+using TerraFX.Interop.Windows;
 
 namespace LegendaryExplorer.Tools.AssetDatabase
 {
@@ -49,8 +48,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
     public partial class AssetDatabaseWindow : TrackingNotifyPropertyChangedWindowBase
     {
         #region Declarations
+        // v9.0: Textures now use .IsTexture() to get more texture class types. Add MaterialInstances to Materials.
+        public const string dbCurrentBuild = "9.0"; //If changes are made that invalidate old databases edit this.
 
-        public const string dbCurrentBuild = "8.0"; //If changes are made that invalidate old databases edit this.
         private int previousView { get; set; }
         private int _currentView;
         public int currentView
@@ -988,7 +988,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 return;
             }
 
-            OpenInToolkit(tool, GetFilePath(usagepkg, contentdir), usageUID, strRef, usagepkg);
+            OpenInToolkit(tool, GetFilePath(usagepkg, contentdir), usageUID, strRef, realFileName: usagepkg);
         }
 
         private void OpenSourcePkg(object obj)
@@ -1043,7 +1043,40 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             return filePath;
         }
 
-        private void OpenInToolkit(string tool, string filePath, int uindex = 0, int strRef = 0, string realFilename = null)
+        /// <summary>
+        /// Fetches a package from disk or SFAR. When done from disk, a reference is created, so you must dispose of it when done to decrement the reference.
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="fileIndex"></param>
+        /// <returns></returns>
+        private IMEPackage fetchPackage(string filePath, int? fileIndex, string realFilename)
+        {
+            if (Path.GetFileName(filePath) == "Default.sfar" && (fileIndex != null || realFilename != null))
+            {
+                // Must open sfar
+                if (fileIndex != null)
+                {
+                    // Get name of package in SFAR.
+                    (string filename, string contentdir, int mount) = FileListExtended[fileIndex.Value];
+                    realFilename = filename;
+                }
+
+                DLCPackage dlp = new DLCPackage(filePath);
+                var dlpFile = dlp.FindFileEntry(realFilename);
+                if (dlpFile != -1)
+                {
+                    return MEPackageHandler.OpenMEPackageFromStream(dlp.DecompressEntry(dlpFile), realFilename);
+                }
+
+                return null; // File not found.
+            }
+            else
+            {
+                return MEPackageHandler.OpenMEPackage(filePath);
+            }
+        }
+
+        private void OpenInToolkit(string tool, string filePath, int uindex = 0, int strRef = 0, int? fileIndex = null, string realFileName = null)
         {
             if (filePath == null)
                 return; // Do nothing.
@@ -1051,23 +1084,22 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
             IMEPackage package = null;
             ExportEntry exportEntry = null;
-            if(tool != "CndEd") // don't try to OpenMEPackage on a .cnd file
+            if (tool != "CndEd") // don't try to OpenMEPackage on a .cnd file
             {
-                if (Path.GetFileName(filePath) == "Default.sfar")
+                package = fetchPackage(filePath, fileIndex, realFileName);
+
+                if (package == null)
                 {
-                    // Must open sfar
-                    DLCPackage dlp = new DLCPackage(filePath);
-                    var dlpFile = dlp.FindFileEntry(realFilename);
-                    if (dlpFile != -1)
+                    if (fileIndex != null)
                     {
-                        package = MEPackageHandler.OpenMEPackageFromStream(dlp.DecompressEntry(dlpFile), realFilename);
+                        var (name, dir, mount) = FileListExtended[fileIndex.Value];
+                        filePath = name;
                     }
+                    MessageBox.Show($"Could not locate file: {filePath}");
+                    return;
                 }
-                else
-                {
-                    package = MEPackageHandler.OpenMEPackage(filePath);
-                }
-                if(package.TryGetUExport(uindex, out var goodExport)) exportEntry = goodExport;
+
+                if (package.TryGetUExport(uindex, out var goodExport)) exportEntry = goodExport;
             }
 
             switch (tool)
@@ -2181,6 +2213,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         #region Scan
 
+        // 05/02/2025 - Add .sfar
+        private static List<string> SupportedFileExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc", ".cnd", ".sfar" };
+
         private async void ScanGame()
         {
             string rootPath = MEDirectories.GetDefaultGamePath(CurrentGame);
@@ -2192,13 +2227,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             }
 
             rootPath = Path.GetFullPath(rootPath);
-            var supportedExtensions = new List<string> { ".u", ".upk", ".sfm", ".pcc", ".cnd" };
-            string ShaderCacheName = CurrentGame.IsLEGame() ? "RefShaderCache-PC-D3D-SM5.upk" : "RefShaderCache-PC-D3D-SM3.upk";
-            List<string> files = Directory.GetFiles(rootPath, "*.*", SearchOption.AllDirectories).Where(s => supportedExtensions.Contains(Path.GetExtension(s.ToLower())) && !s.EndsWith(ShaderCacheName)).ToList();
 
-            //MemoryManager.SetUsePooledMemory(true, blockSize: (int)FileSize.MebiByte, maxBufferSizeMB: 128);
+            string ShaderCacheName = CurrentGame.IsLEGame() ? "RefShaderCache-PC-D3D-SM5.upk" : "RefShaderCache-PC-D3D-SM3.upk";
+            List<string> files = Directory.GetFiles(rootPath, "*.*", SearchOption.AllDirectories).Where(s => SupportedFileExtensions.Contains(Path.GetExtension(s.ToLower())) && !s.EndsWith(ShaderCacheName)).ToList();
+
             await dumpPackages(files, CurrentGame);
-            MemoryManager.SetUsePooledMemory(false);
         }
 
         private async Task dumpPackages(List<string> files, MEGame game)
@@ -2225,20 +2258,49 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             files = files.OrderBy(Path.GetFileName, StringComparer.InvariantCultureIgnoreCase).ToList();
             foreach (var f in files)
             {
-                var contdir = GetContentPath(new DirectoryInfo(f));
-                if (contdir == null)
+                var ext = Path.GetExtension(f);
+                if (ext != ".sfar")
                 {
-                    continue;
+                    // File on disk.
+                    var contdir = GetContentPath(new DirectoryInfo(f));
+                    if (contdir == null)
+                    {
+                        continue;
+                    }
+                    var dirkey = CurrentDataBase.ContentDir.IndexOf(contdir.Name);
+                    if (dirkey < 0)
+                    {
+                        dirkey = CurrentDataBase.ContentDir.Count;
+                        CurrentDataBase.ContentDir.Add(contdir.Name);
+                    }
+                    var filekey = CurrentDataBase.FileList.Count;
+                    CurrentDataBase.FileList.Add(new(Path.GetFileName(f), dirkey));
+                    fileKeys.Add((filekey, f));
                 }
-                var dirkey = CurrentDataBase.ContentDir.IndexOf(contdir.Name);
-                if (dirkey < 0)
+                else
                 {
-                    dirkey = CurrentDataBase.ContentDir.Count;
-                    CurrentDataBase.ContentDir.Add(contdir.Name);
+                    // ME3 DLC package.
+                    var contdir = GetContentPath(new DirectoryInfo(f));
+                    if (contdir == null)
+                    {
+                        continue;
+                    }
+                    var dirkey = CurrentDataBase.ContentDir.IndexOf(contdir.Name);
+                    if (dirkey < 0)
+                    {
+                        dirkey = CurrentDataBase.ContentDir.Count;
+                        CurrentDataBase.ContentDir.Add(contdir.Name);
+                    }
+
+                    DLCPackage dlc = new DLCPackage(f);
+                    foreach (var entry in dlc.Files.Where(s => SupportedFileExtensions.Contains(Path.GetExtension(s.FileName.ToLower()))))
+                    {
+                        var filekey = CurrentDataBase.FileList.Count;
+                        CurrentDataBase.FileList.Add(new(Path.GetFileName(entry.FileName), dirkey));
+                        fileKeys.Add((filekey, entry.FileName));
+                        OverallProgressMaximum++;
+                    }
                 }
-                var filekey = CurrentDataBase.FileList.Count;
-                CurrentDataBase.FileList.Add(new(Path.GetFileName(f), dirkey));
-                fileKeys.Add((filekey, f));
             }
 
             //Shuffle filekeys randomly to avoid localizations concurrently accessing
@@ -2482,29 +2544,14 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 {
                     var (fileListIndex, expUIndex, _) = usage;
                     string filePath = GetFilePath(fileListIndex);
-                    if (File.Exists(filePath))
+                    using var pcc = fetchPackage(filePath, fileListIndex, null);
+                    if (pcc != null)
                     {
-                        if (Path.GetFileName(filePath) == "Default.sfar")
+                        if (pcc.IsUExport(expUIndex) && pcc.GetUExport(expUIndex) is ExportEntry exp && MaterialEditorExportLoader_Control.CanParse(exp))
                         {
-                            (string filename, string contentdir, int mount) = FileListExtended[fileListIndex];
-                            DLCPackage dlp = new DLCPackage(filePath);
-                            var index = dlp.FindFileEntry(filename);
-                            var pcc = MEPackageHandler.OpenMEPackageFromStream(dlp.DecompressEntry(index), filename);
-                            if (pcc.IsUExport(expUIndex) && pcc.GetUExport(expUIndex) is ExportEntry exp &&
-                                MaterialEditorExportLoader_Control.CanParse(exp))
-                            {
-                                MaterialEditorExportLoader_Control.LoadExport(exp);
-                            }
+                            MaterialEditorExportLoader_Control.LoadExport(exp);
                         }
-                        else
-                        {
-                            using IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath);
-                            if (pcc.IsUExport(expUIndex) && pcc.GetUExport(expUIndex) is ExportEntry exp &&
-                                MaterialEditorExportLoader_Control.CanParse(exp))
-                            {
-                                MaterialEditorExportLoader_Control.LoadExport(exp);
-                            }
-                        }
+
                     }
                     else
                     {

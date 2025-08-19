@@ -132,9 +132,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     continue;
                 }
 
-                if (exp.Game == MEGame.UDK && exp.Parent is ImportEntry)
+                // UDK-specific checks.
+                if (exp.Game == MEGame.UDK)
                 {
-                    item.AddBlockingError($"UDK does not support exports under imports in non-cooked packages - UDK will crash loading this package file!  Entry: {exp.InstancedFullPath}", exp);
+                    if (exp.Parent is ImportEntry)
+                    {
+                        item.AddBlockingError($"UDK does not support exports under imports in non-cooked packages - UDK will crash loading this package file!  Entry: {exp.InstancedFullPath}", exp);
+                    }
                 }
 
                 var prefix = localizationDelegate(LECLocalizationShim.string_interp_warningGenericExportPrefix, relativePath ?? fName, exp.UIndex, exp.ObjectName.Name, exp.ClassName);
@@ -253,6 +257,15 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             foreach (ImportEntry imp in package.Imports)
             {
+                // UDK specific checks.
+                if (imp.Game == MEGame.UDK)
+                {
+                    if (imp.ObjectName == "SFXGame" && imp.Parent == null)
+                    {
+                        item.AddBlockingError("UDK does not work with SFXGame imports!");
+                    }
+                }
+
                 if (imp.idxLink != 0 && !package.TryGetEntry(imp.idxLink, out _))
                 {
                     item.AddSignificantIssue(localizationDelegate(LECLocalizationShim.string_interp_warningImportLinkOutideOfTables, relativePath ?? fName, imp.UIndex, imp.idxLink), imp);

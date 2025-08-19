@@ -150,6 +150,7 @@
                         <MenuItem Header="Filter Animations" ItemsSource="{Binding AssetFilters.AnimationFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                         <MenuItem Header="Filter Classes" ItemsSource="{Binding AssetFilters.ClassFilter.Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                         <MenuItem Header="Filter Materials">
+                            <MenuItem Header="Class Filters" DataContext="{Binding AssetFilters.MaterialFilter}" ItemsSource="{Binding Types}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                             <MenuItem Header="Generic Filters" DataContext="{Binding AssetFilters.MaterialFilter}" ItemsSource="{Binding Filters}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                             <MenuItem Header="Blend Mode" DataContext="{Binding AssetFilters.MaterialFilter}" ItemsSource="{Binding BlendModes}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
                             <MenuItem Header="BoolProperty Filters" DataContext="{Binding AssetFilters.MaterialFilter}" ItemsSource="{Binding GeneratedOptions}" ItemContainerStyle="{DynamicResource CustomFilterMenuItem}"/>
@@ -431,8 +432,10 @@
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition MinWidth="400" Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*" MinWidth="200"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*" MinWidth="200"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="Material Records" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Material Records (Grey shows DLC only materials that require a shadercache)" Grid.Row="0" Grid.Column="0"/>
                             <controls:ListBoxScroll x:Name="lstbx_Materials" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Materials}" Grid.Row="1" Grid.Column="0" SelectionChanged="SelectedMaterial_Changed">
@@ -460,7 +463,8 @@
                                     </Style>
                                 </controls:ListBoxScroll.ItemContainerStyle>
                             </controls:ListBoxScroll>
-                            <TextBlock Text="Material Info" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="The default properties of the material" Grid.Row="0"  Grid.Column="1"/>
+                            <TextBlock Text="Material Info" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="The default properties of the material" Grid.Row="0"  Grid.Column="2"/>
+                            <!-- Todo: Make this a toggleable switch -->
                             <!--
                             <controls:ListBoxScroll x:Name="lstbx_MatProps" MinWidth="200" ItemsSource="{Binding SelectedItem.MatSettings, ElementName=lstbx_Materials }" Grid.Row="1" Grid.Column="1">
                                 <controls:ListBoxScroll.ItemTemplate>
@@ -475,12 +479,14 @@
                                     </DataTemplate>
                                 </controls:ListBoxScroll.ItemTemplate>
                             </controls:ListBoxScroll>-->
-                            <materialEditor:MaterialEditorExportLoader x:Name="MaterialEditorExportLoader_Control" Grid.Row="1" Grid.Column="1" IsReadOnly="True" ShowSaveBar="False" AlwaysLoadData="True"/>
-                            <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the files that use the material (grey is official DLC with shadercache)&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
-                            <Button ToolTip="Copies the list of usages to the clipboard as text" Name="CopyUsagesMaterials_Button" Click="CopyUsages_Click" VerticalAlignment="Center" Padding="3" HorizontalAlignment="Right" Width="26" Grid.Row="0" Grid.Column="2">
+                            <GridSplitter Grid.RowSpan="2" Grid.Column="1" Width="5" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+                            <materialEditor:MaterialEditorExportLoader x:Name="MaterialEditorExportLoader_Control" Grid.Row="1" Grid.Column="2" IsReadOnly="True" ShowSaveBar="False" AlwaysLoadData="True" MinWidth="200"/>
+                            <GridSplitter Grid.RowSpan="2" Grid.Column="3" Width="5" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
+                            <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the files that use the material (grey is official DLC with shadercache)&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="4"/>
+                            <Button ToolTip="Copies the list of usages to the clipboard as text" Name="CopyUsagesMaterials_Button" Click="CopyUsages_Click" VerticalAlignment="Center" Padding="3" HorizontalAlignment="Right" Width="26" Grid.Row="0" Grid.Column="4">
                                 <fa:ImageAwesome Icon="Solid_Copy" Foreground="CornflowerBlue"/>
                             </Button>
-                            <controls:ListBoxScroll x:Name="lstbx_MatUsages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.Usages, ElementName=lstbx_Materials}" Grid.Row="1" Grid.Column="2">
+                            <controls:ListBoxScroll x:Name="lstbx_MatUsages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.Usages, ElementName=lstbx_Materials}" Grid.Row="1" Grid.Column="4">
                                 <controls:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock>

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript;
@@ -291,11 +289,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
             }
         }
 
-        public void ScanCndFile(string file, int fileKey, ConcurrentAssetDB db, AssetDBScanOptions options)
+        public void ScanCndFile(string file, int fileKey, ConcurrentAssetDB db, AssetDBScanOptions options, MemoryStream sfarFileStream = null)
         {
             if (!file.EndsWith(".cnd", StringComparison.InvariantCultureIgnoreCase)) return;
             this.db = db;
-            var cndFile = CNDFile.FromFile(file);
+            var cndFile = sfarFileStream != null ? CNDFile.FromStream(sfarFileStream, file) : CNDFile.FromFile(file);
             bool isMod = file.Contains("DLC_MOD");
             foreach (var cnd in cndFile.ConditionalEntries)
             {

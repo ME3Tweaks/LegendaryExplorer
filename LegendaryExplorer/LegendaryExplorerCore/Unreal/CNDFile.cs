@@ -131,6 +131,22 @@ namespace LegendaryExplorerCore.Unreal
         }
 
         /// <summary>
+        /// Factory method to load a <see cref="CNDFile"/> from a stream
+        /// </summary>
+        /// <param name="stream">The input stream</param>
+        /// <param name="fileName">The associated name</param>
+        /// <returns>Created CNDFile</returns>
+        public static CNDFile FromStream(Stream stream, string fileName)
+        {
+            var cnd = new CNDFile
+            {
+                FilePath = fileName
+            };
+            cnd.Read(stream);
+            return cnd;
+        }
+
+        /// <summary>
         /// Represents a conditional in a Game 3 .cnd file
         /// </summary>
         [DebuggerDisplay("ID: {" + nameof(ID) + ("}, Offset: {" + nameof(Offset) + "}"))]

@@ -230,40 +230,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                                 float x = ms.ReadFloat();
                                 float y = ms.ReadFloat();
                                 float z = ms.ReadFloat();
-                                track.Rotations.Add(new Quaternion(x, y, z, getW(x, y, z)));
+                                track.Rotations.Add(new Quaternion(x, y, z, ReconstructQuaternionComponent(x, y, z)));
                                 break;
                             }
                             case AnimationCompressionFormat.ACF_BioFixed48:
                             {
-                                const float shift = 0.70710678118f;
-                                const float scale = 1.41421356237f;
-                                const float precisionMult = 32767.0f;
                                 ushort a = ms.ReadUInt16();
                                 ushort b = ms.ReadUInt16();
                                 ushort c = ms.ReadUInt16();
-                                float x = (a & 0x7FFF) / precisionMult * scale - shift;
-                                float y = (b & 0x7FFF) / precisionMult * scale - shift;
-                                float z = (c & 0x7FFF) / precisionMult * scale - shift;
-                                float w = getW(x, y, z);
-                                int wPos = ((a >> 14) & 2) | ((b >> 15) & 1);
-                                track.Rotations.Add(wPos switch
-                                {
-                                    0 => new Quaternion(w, x, y, z),
-                                    1 => new Quaternion(x, w, y, z),
-                                    2 => new Quaternion(x, y, w, z),
-                                    _ => new Quaternion(x, y, z, w)
-                                });
-                                
+                                track.Rotations.Add(DecompressBioFixed48(a, b, c));
                                 break;
                             }
                             case AnimationCompressionFormat.ACF_Fixed48NoW:
                             {
-                                const float scale = 32767.0f;
-                                const ushort shift = 32767;
-                                float x = (ms.ReadUInt16() - shift) / scale;
-                                float y = (ms.ReadUInt16() - shift) / scale;
-                                float z = (ms.ReadUInt16() - shift) / scale;
-                                track.Rotations.Add(new Quaternion(x, y, z, getW(x, y, z)));
+                                ushort a = ms.ReadUInt16();
+                                ushort b = ms.ReadUInt16();
+                                ushort c = ms.ReadUInt16();
+                                track.Rotations.Add(DecompressFixed48NoW(a,b,c));
                                 break;
                             }
                             case AnimationCompressionFormat.ACF_IntervalFixed32NoW:
@@ -316,11 +299,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
 
                 RawAnimationData.Add(track);
-            }
-            static float getW(float x, float y, float z)
-            {
-                float wSquared = 1.0f - (x * x + y * y + z * z);
-                return (float)(wSquared > 0f ? Math.Sqrt(wSquared) : 0f);
             }
         }
 
@@ -411,6 +389,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     for (int j = 0; j < numRotKeys; j++)
                     {
                         Quaternion rot = track.Rotations[j];
+                        // ensure that the quaternion is normalized before we compress it. reconstructing the uncompressed version depends on
+                        // the quaternion being normalized
+                        rot = Quaternion.Normalize(rot);
                         switch (compressionFormat)
                         {
                             case AnimationCompressionFormat.ACF_None:
@@ -420,61 +401,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                                 ms.WriteFloat(rot.W);
                                 break;
                             case AnimationCompressionFormat.ACF_Float96NoW:
+                                // reverse this so when we reconstruct w on decompression, the signs are correct
+                                if (rot.W < 0)
+                                {
+                                    rot = -rot;
+                                }
                                 ms.WriteFloat(rot.X);
                                 ms.WriteFloat(rot.Y);
                                 ms.WriteFloat(rot.Z);
                                 break;
                             case AnimationCompressionFormat.ACF_BioFixed48:
                             {
-                                const float shift = 0.70710678118f;
-                                const float scale = 1.41421356237f;
-                                const float precisionMult = 32767.0f;
-                                //smallest three compression: https://gafferongames.com/post/snapshot_compression/
-                                //omit the largest component, and store its index
-                                int wPos = 0;
-                                float max = 0f; 
-                                float[] rotArr = {rot.X, rot.Y, rot.Z, rot.W};
-                                for (int k = 0; k < 4; k++)
-                                {
-                                    if (Math.Abs(rotArr[k]) > max)
-                                    {
-                                        max = Math.Abs(rotArr[k]);
-                                        wPos = k;
-                                    }
-                                }
-                                //remap the smallest three components to the lower 15 bits of a ushort
-                                ushort a, b, c;
-
-                                static ushort compress(float f) => (ushort)((f + shift) / scale * precisionMult).Clamp(0, 0x7FFF);
-
-                                switch (wPos)
-                                {
-                                    case 0:
-                                        a = compress(rot.Y);
-                                        b = compress(rot.Z);
-                                        c = compress(rot.W);
-                                        break;
-                                    case 1:
-                                        a = compress(rot.X);
-                                        b = compress(rot.Z);
-                                        c = compress(rot.W);
-                                        break;
-                                    case 2:
-                                        a = compress(rot.X);
-                                        b = compress(rot.Y);
-                                        c = compress(rot.W);
-                                        break;
-                                    default:
-                                        a = compress(rot.X);
-                                        b = compress(rot.Y);
-                                        c = compress(rot.Z);
-                                        break;
-                                }
-
-                                //stuff the 2 bit index of the omitted component into the high bits of a and b
-                                a |= (ushort)((wPos & 2) << 14);
-                                b |= (ushort)((wPos & 1) << 15);
-
+                                CompressBioFixed48(rot, out var a, out var b, out var c);
                                 ms.WriteUInt16(a);
                                 ms.WriteUInt16(b);
                                 ms.WriteUInt16(c);
@@ -482,11 +420,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                                 break;
                             case AnimationCompressionFormat.ACF_Fixed48NoW:
                             {
-                                const float scale = 32767.0f;
-                                const ushort shift = 32767;
-                                ms.WriteUInt16((ushort)(rot.X * scale + shift).Clamp(0, ushort.MaxValue));
-                                ms.WriteUInt16((ushort)(rot.Y * scale + shift).Clamp(0, ushort.MaxValue));
-                                ms.WriteUInt16((ushort)(rot.Z * scale + shift).Clamp(0, ushort.MaxValue));
+                                CompressFixed48NoW(rot, out var a, out var b, out var c);
+                                ms.WriteUInt16(a);
+                                ms.WriteUInt16(b);
+                                ms.WriteUInt16(c);
                                 break;
                             }
                             case AnimationCompressionFormat.ACF_IntervalFixed32NoW:
@@ -513,11 +450,120 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        public static Quaternion DecompressFixed48NoW(ushort a, ushort b, ushort c)
+        {
+            const float scale = 32767.0f;
+            const ushort shift = 32767;
+            float x = (a - shift) / scale;
+            float y = (b - shift) / scale;
+            float z = (c - shift) / scale;
+            return new Quaternion(x, y, z, ReconstructQuaternionComponent(x, y, z));
+        }
+
+        private static void CompressFixed48NoW(Quaternion rot, out ushort a, out ushort b, out ushort c)
+        {
+            // we need to make sure W is positive before we compress so that when we decompress and get a positive w, our value is correct
+            if (rot.W < 0)
+            {
+                rot = -rot;
+            }
+            const float scale = 32767.0f;
+            const ushort shift = 32767;
+            a = (ushort)(rot.X * scale + shift).Clamp(0, ushort.MaxValue);
+            b = (ushort)(rot.Y * scale + shift).Clamp(0, ushort.MaxValue);
+            c = (ushort)(rot.Z * scale + shift).Clamp(0, ushort.MaxValue);
+        }
+
+        public static Quaternion DecompressBioFixed48(ushort a, ushort b, ushort c)
+        {
+            const float shift = 0.70710678118f;
+            const float scale = 1.41421356237f;
+            const float precisionMult = 32767.0f;
+            float x = (a & 0x7FFF) / precisionMult * scale - shift;
+            float y = (b & 0x7FFF) / precisionMult * scale - shift;
+            float z = (c & 0x7FFF) / precisionMult * scale - shift;
+            float w = ReconstructQuaternionComponent(x, y, z);
+            int wPos = ((a >> 14) & 2) | ((b >> 15) & 1);
+            return wPos switch
+            {
+                0 => new Quaternion(w, x, y, z),
+                1 => new Quaternion(x, w, y, z),
+                2 => new Quaternion(x, y, w, z),
+                _ => new Quaternion(x, y, z, w)
+            };
+        }
+
+        private static void CompressBioFixed48(Quaternion rot, out ushort a, out ushort b, out ushort c)
+        {
+            const float shift = 0.70710678118f;
+            const float scale = 1.41421356237f;
+            const float precisionMult = 32767.0f;
+            //smallest three compression: https://gafferongames.com/post/snapshot_compression/
+            //omit the largest component, and store its index
+            int wPos = 0;
+            float max = 0f;
+            float[] rotArr = { rot.X, rot.Y, rot.Z, rot.W };
+            for (int k = 0; k < 4; k++)
+            {
+                if (Math.Abs(rotArr[k]) > max)
+                {
+                    max = Math.Abs(rotArr[k]);
+                    wPos = k;
+                }
+            }
+            // if the largest component is negative, we need to flip the signs of all four (which is an equivalent quaternion)
+            // so that when we reconstruct a positive fourth component, it is correct
+            if (rotArr[wPos] < 0)
+            {
+                rot = -rot;
+            }
+
+            //remap the smallest three components to the lower 15 bits of a ushort
+            static ushort compress(float f) => (ushort)((f + shift) / scale * precisionMult).Clamp(0, 0x7FFF);
+
+            switch (wPos)
+            {
+                case 0:
+                    a = compress(rot.Y);
+                    b = compress(rot.Z);
+                    c = compress(rot.W);
+                    break;
+                case 1:
+                    a = compress(rot.X);
+                    b = compress(rot.Z);
+                    c = compress(rot.W);
+                    break;
+                case 2:
+                    a = compress(rot.X);
+                    b = compress(rot.Y);
+                    c = compress(rot.W);
+                    break;
+                default:
+                    a = compress(rot.X);
+                    b = compress(rot.Y);
+                    c = compress(rot.Z);
+                    break;
+            }
+
+            //stuff the 2 bit index of the omitted component into the high bits of a and b
+            a |= (ushort)((wPos & 2) << 14);
+            b |= (ushort)((wPos & 1) << 15);
+        }
+
         public PropertyCollection CompressAnimationDataAndUpdateProperties()
         {
             var props = Export.GetProperties();
             UpdateProps(props, Export.Game, rotCompression, true);
             return props;
+        }
+
+        // there are various ways to compress a quaternion; they all involve reconstructing one of the four components while decompressing
+        // this will always return a value >= 0, so make sure the component you drop before compressing is not negative
+        // you can do this by negating the entire quaternion, which gives an equivalent quaternion
+        public static float ReconstructQuaternionComponent(float x, float y, float z)
+        {
+            float wSquared = 1.0f - (x * x + y * y + z * z);
+            return (float)(wSquared > 0f ? Math.Sqrt(wSquared) : 0f);
         }
     }
 

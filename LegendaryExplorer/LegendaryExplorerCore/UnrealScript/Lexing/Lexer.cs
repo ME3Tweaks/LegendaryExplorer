@@ -196,7 +196,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                 {
                     '=' => MakeSymbolToken(TokenType.GreaterOrEquals, ">="),
                     // >> is matched manually in the parser, as it conflicts with arrays of delegates: array<delegate<somefunc>>
-                    '>' when LookAhead(2) == '>' => MakeSymbolToken(TokenType.VectorTransform, ">>>"),
+                    '>' when LookAhead(2) == '>' => MakeSymbolToken(TokenType.TripleRightShift, ">>>"),
                     _ => MakeSymbolToken(TokenType.RightArrow, ">")
                 },
                 _ => MatchWord(peek)

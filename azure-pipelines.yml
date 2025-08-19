@@ -24,12 +24,15 @@ variables:
   doxygenUrl: "https://www.doxygen.nl/files/doxygen-1.9.5.windows.x64.bin.zip"
   doxygenWorkingDir: '$(Pipeline.Workspace)\Documentation\Doxygen'
   doxygenOutputDir: '$(Pipeline.Workspace)\Documentation\Output'
+  unrealDocOutputDir: '$(Pipeline.Workspace)\UnrealDoc\Output'
 
 steps:
 - checkout: self
   clean: true
   persistCredentials: true
-  submodules: recursive 
+  submodules: recursive
+  fetchDepth: 1
+  fetchTags: false
 # DEBUG for Find Text Transform
 #- task: CmdLine@2
 #  inputs:
@@ -248,6 +251,7 @@ steps:
       git config user.name "ME3Tweaks-LEC-Documentation"
       $(doxygenWorkingDir)\doxygen.exe $(Build.SourcesDirectory)\Documentation\DoxygenConfigAzurePipelines
       git restore $(Build.SourcesDirectory)\LegendaryExplorer\LegendaryExplorerCore\Libraries\Windows\TexConverter.dll
+      git fetch --depth 1 origin gh-pages
       git checkout gh-pages
       if(Test-Path .\nightly\)
       {

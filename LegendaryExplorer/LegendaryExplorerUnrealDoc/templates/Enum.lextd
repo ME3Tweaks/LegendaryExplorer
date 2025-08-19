@@ -1,0 +1,17 @@
+﻿<div class="header">
+	<h2 class="title">Enum <i>%LD_ENUMNAME%</i></h2>
+</div>
+<div class="contentContainer">
+	<hr>
+		<p>%LD_DESCRIPTION%</p>
+		<!-- VARIABLES-->
+		<h3 id="values">Values</h3>
+		<table class="membersummary">
+			<tr>
+				<th>Value</th>
+				<th>Name</th>
+				<th>Description</th>
+			</tr>
+			%LD_MEMBERLIST%
+		</table>
+	</div>

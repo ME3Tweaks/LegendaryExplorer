@@ -86,44 +86,61 @@ namespace LegendaryExplorerCore.Unreal
             sc.Serialize(ref weightsHeader);
             sc.Serialize(ref Weights, weightsHeader.DataCount, sc.Serialize);
 
-            // some programs support slightly nonstandard data like vertex norms, which we will emit if present
-            if (VertexNormals != null && VertexNormals.Count > 0)
+            // if we are reading this from a file, some extra bits may or may not be present in any order
+            if (sc.IsLoading)
             {
-                var VertexNormalsHeader = new PSA.ChunkHeader
+                if (sc.TryReadString(out var chunkHeader) && chunkHeader == "VTXNORMS")
                 {
-                    ChunkID = "VTXNORMS",
-                    Version = version,
-                    DataSize = 0xc,
-                    DataCount = VertexNormals.Count
-                };
-                sc.Serialize(ref VertexNormalsHeader);
-                sc.Serialize(ref VertexNormals, VertexNormalsHeader.DataCount, sc.Serialize);
+                    SerializeVertexNormals(sc);
+                }
             }
-
-            // some programs (including Blender 4.2+ PSK plugin) can understand slightly nonstandard data such as the vertex offsets of morph targets, or shape keys in Blender's terminology. 
-            // If the code does not put this in explicitly, it will emit a standard psk. 
-            if (Morphs != null && Morphs.Count != 0)
+            // if we are writing, just emit how we expect
+            else
             {
-                var morphsHeader = new PSA.ChunkHeader
+                // some programs support slightly nonstandard data like vertex norms, which we will emit/read if present
+                if (VertexNormals != null && VertexNormals.Count > 0)
                 {
-                    ChunkID = "MRPHINFO",
-                    Version = version,
-                    DataSize = 0x44,
-                    DataCount = Morphs.Count
-                };
-                sc.Serialize(ref morphsHeader);
-                sc.Serialize(ref Morphs, morphsHeader.DataCount, sc.Serialize);
+                    SerializeVertexNormals(sc);
+                }
 
-                var morphDataHeader = new PSA.ChunkHeader
+                // some programs (including Blender 4.2+ PSK plugin) can understand slightly nonstandard data such as the vertex offsets of morph targets, or shape keys in Blender's terminology. 
+                // If the code does not put this in explicitly, it will emit a standard psk. 
+                if (Morphs != null && Morphs.Count != 0)
                 {
-                    ChunkID = "MRPHDATA",
-                    Version = version,
-                    DataSize = 0x1c,
-                    DataCount = MorphData.Count
-                };
-                sc.Serialize(ref morphDataHeader);
-                sc.Serialize(ref MorphData, morphDataHeader.DataCount, sc.Serialize);
+                    var morphsHeader = new PSA.ChunkHeader
+                    {
+                        ChunkID = "MRPHINFO",
+                        Version = version,
+                        DataSize = 0x44,
+                        DataCount = Morphs.Count
+                    };
+                    sc.Serialize(ref morphsHeader);
+                    sc.Serialize(ref Morphs, morphsHeader.DataCount, sc.Serialize);
+
+                    var morphDataHeader = new PSA.ChunkHeader
+                    {
+                        ChunkID = "MRPHDATA",
+                        Version = version,
+                        DataSize = 0x1c,
+                        DataCount = MorphData.Count
+                    };
+                    sc.Serialize(ref morphDataHeader);
+                    sc.Serialize(ref MorphData, morphDataHeader.DataCount, sc.Serialize);
+                }
             }
+        }
+
+        private void SerializeVertexNormals(SerializingContainer sc)
+        {
+            var VertexNormalsHeader = new PSA.ChunkHeader
+            {
+                ChunkID = "VTXNORMS",
+                Version = version,
+                DataSize = 0xc,
+                DataCount = VertexNormals?.Count ?? 0
+            };
+            sc.Serialize(ref VertexNormalsHeader);
+            sc.Serialize(ref VertexNormals, VertexNormalsHeader.DataCount, sc.Serialize);
         }
 
         public void ToFile(string filePath)
@@ -254,7 +271,6 @@ namespace LegendaryExplorerCore.Unreal
 
                         // first, we need to find the chunk containing this vertex:
                         var chunk = lod.Chunks.Last(x => x.BaseVertexIndex <= i);
-
 
                         psk.Weights.Add(new PSKWeight
                         {

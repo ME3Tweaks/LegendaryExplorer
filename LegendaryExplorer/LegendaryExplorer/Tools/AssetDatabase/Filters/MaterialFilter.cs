@@ -8,6 +8,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
 {
     public class MaterialFilter : GenericAssetFilter<MaterialRecord>
     {
+        public List<IAssetSpecification<MaterialRecord>> Types { get; private set; } = new();
         public List<IAssetSpecification<MaterialRecord>> BlendModes { get; private set; } = new();
         public ObservableCollection<IAssetSpecification<MaterialRecord>> GeneratedOptions { get; } = new();
 
@@ -29,8 +30,15 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
             ///////////////////////////////////////
             // Add new custom Material Filters here
             ///////////////////////////////////////
+            
+            // Options HIDE things.
+            Types = new()
+            {
+                new MaterialClassSpec("Hide materials (+subclasses)", true),
+                new MaterialClassSpec("Hide material instances (+subclasses)", false)
+            };
 
-            Filters = new ()
+            Filters = new()
             {
                 fileList,
                 new PredicateSpecification<MaterialRecord>("Hide DLC only Materials", mr => !mr.IsDLCOnly),
@@ -48,7 +56,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
                     setting => setting.Parm1.Contains("talk", StringComparison.OrdinalIgnoreCase))
             };
 
-            BlendModes = new ()
+            BlendModes = new()
             {
                 new MaterialSettingSpec("Translucent or Additive (Opaque)", "BlendMode", (s => s.Parm2 == "BLEND_Translucent" || s.Parm2 == "BLEND_Additive"))
                 {
@@ -67,7 +75,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         protected override IEnumerable<IAssetSpecification<MaterialRecord>> GetAdditionalSpecifications()
         {
             var blendModeOr = new OrSpecification<MaterialRecord>(BlendModes); // Matches spec if any of the selected BlendModes are true
-            return GeneratedOptions.Append(blendModeOr);
+            return GeneratedOptions.Concat(Types).Append(blendModeOr);
         }
 
         private bool MaterialSearch((string, MaterialRecord) t)

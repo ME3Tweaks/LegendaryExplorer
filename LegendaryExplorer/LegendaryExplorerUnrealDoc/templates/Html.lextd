@@ -1,0 +1,86 @@
+﻿<html>
+	<head>
+		<meta property="og:type" content="website" />
+		<title>%LD_TITLE%</title>
+		 <link rel="icon" type="image/x-icon" href="%LD_RELPATH%../images/favicon.ico">
+		<meta name="og:title" content="%LD_TITLE% | %LD_GAME% | Legendary Explorer DocuDB"/>
+		<meta name="description" content="%LD_DESCRIPTION%"/>
+		<meta name="og:description" content="%LD_DESCRIPTION%"/>
+		<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/%LD_GAME%/%LD_SUBPATH%"/>
+		<meta name="og:image" content="%LD_RELPATH%../images/favicon.ico"/>
+		<link rel="stylesheet" href="%LD_RELPATH%../lexdoc.css">
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+				document.title = document.title + " | %LD_GAME% | Legendary Explorer DocuDB"
+				var url = window.location.href.substring(window.location.protocol.length + 2);
+				var gameidx = url.indexOf("/%LD_GAME%/");
+				var baseurl = url.substring(0, gameidx + 5);
+				var typelinks = document.querySelectorAll('[data-type]');
+				for (const element of typelinks) {
+					var type = element.dataset.type;
+					var value = element.textContent;
+					switch(type){
+						case 'class':
+							element.href = window.location.protocol + '//' + baseurl + 'classes/' + value + '.html';
+							break;
+						case 'struct':
+							element.href = window.location.protocol + '//' + baseurl + 'structs/' + value + '.html';
+							break;
+						case 'enum':
+							element.href = window.location.protocol + '//' + baseurl + 'enums/' + value + '.html';
+							break;
+					}
+				}
+			}, false);
+		</script>
+	</head>
+	<body>
+	<!-- ========= START OF TOP NAVBAR ======= -->
+<div class="topNav"><a name="navbar.top">
+<!--   -->
+</a>
+<div class="skipNav"><a href="#skip.navbar.top" title="Skip navigation links">Skip navigation links</a></div>
+<a name="navbar.top.firstrow">
+<!--   -->
+</a>
+<ul class="navList">
+<li title="Back to game list"><a id="home_link" href="%LD_RELPATH%../index.html">Home</a></li>
+<li title="Show all packages"><a id="package_list_link" href="%LD_RELPATH%packages/index.html">Package list</a></li>
+%LD_EDIT_BULLET%
+</ul>
+<div class="navimages">
+	<img class="navimage" src="%LD_RELPATH%../images/gameicons/%LD_GAME%_Icon.ico">
+	<img class="navimage" src="%LD_RELPATH%../images/docudb.png">
+</div>
+</div>
+<div class="subNav">
+<ul class="navList" id="allclasses_navbar_top">
+	<li><a href="%LD_RELPATH%classes/index.html">All&nbsp;Classes</a></li>
+	<li><a href="%LD_RELPATH%structs/index.html">All&nbsp;Structs</a></li>
+	<li><a href="%LD_RELPATH%enums/index.html">All&nbsp;Enums</a></li>
+</ul>
+<div>
+<script type="text/javascript"><!--
+  allClassesLink = document.getElementById("allclasses_navbar_top");
+  if(window==top) {
+    allClassesLink.style.display = "block";
+  }
+  else {
+    allClassesLink.style.display = "none";
+  }
+  //-->
+</script>
+</div>
+<div>
+<ul class="subNavList">
+%LD_NAV_ITEMS%
+</ul>
+</div>
+<a name="skip.navbar.top">
+</a></div>
+<!-- ========= END OF TOP NAVBAR ========= -->
+<div>
+		%LD_CONTENT%
+</div>
+	</body>
+</html>

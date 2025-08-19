@@ -1,0 +1,11 @@
+﻿<tr class="%LD_ROWCLASS%">
+	<td class="colFirst">
+		<code>%LD_ENUMINDEX%</code>
+	</td>
+	<td class="colSecond">
+		<code>%LD_MEMBERNAME%</code>
+	</td>
+	<td class="colLast">
+		<p class="ld_membername">%LD_MEMBERDOC%</p>
+	</td>
+</tr>

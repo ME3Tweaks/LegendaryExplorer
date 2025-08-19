@@ -9,6 +9,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -567,7 +568,32 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             if (!obj.Export.Game.IsGame3())
             {
                 func.OperatorPrecedence = obj.OperatorPrecedence;
-                func.FriendlyName = obj.FriendlyName;
+                func.FriendlyName = obj.FriendlyName.Name;
+            }
+            else if (func.IsOperator)
+            {
+                string[] parts = func.Name.Split('_');
+                if (parts.Length is 3 && byte.TryParse(parts[2], out byte precedence))
+                {
+                    func.OperatorPrecedence = precedence;
+                }
+                if (OperatorHelper.VerboseNameToOperatorType.TryGetValue(parts[0], out TokenType operatorType))
+                {
+                    func.FriendlyName = OperatorHelper.OperatorTypeToString(operatorType);
+                    //handle built-in operators in ME3/LE3, which does not store precedence
+                    if (func.OperatorPrecedence is 0)
+                    {
+                        func.OperatorPrecedence = OperatorHelper.DefaultPrecedence(operatorType);
+                        if (func.Name is "SubtractEqual_StrStr")
+                        {
+                            func.OperatorPrecedence = 45;
+                        }
+                    }
+                }
+                else if (parts.Length is > 1)
+                {
+                    func.FriendlyName = parts[0];
+                }
             }
 
             foreach (var local in locals)

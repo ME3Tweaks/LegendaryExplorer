@@ -19,7 +19,7 @@ namespace LegendaryExplorer.SharedUI.Controls
         {
             if (DataContext is TreeViewEntry { Entry: not null } tve)
             {
-                var db = DocuDB.LoadDocuDB(tve.Entry.Game, Path.Combine(AppDirectories.DocuDBsFolder, tve.Entry.Game + ".json"));
+                var db = LEXDocuDB.LoadDocuDB(tve.Entry.Game);
                 if (db != null)
                 {
                     var documentation = db.GetDocumentation(tve.Entry);

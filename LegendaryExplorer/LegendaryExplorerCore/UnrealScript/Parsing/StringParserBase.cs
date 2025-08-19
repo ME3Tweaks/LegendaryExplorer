@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Parsing
@@ -633,6 +635,37 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
 
             return literal;
+        }
+
+        protected bool IsInfixOperator(out bool isRightShift, out TokenType opType)
+        {
+            //Lexer can't recognize >> as the right-shift operator, because of the conflicting array<delegate<delName>> syntax, so do it manually here
+            isRightShift = false;
+            if (CurrentTokenType == TokenType.RightArrow && Tokens.LookAhead(1).Type == TokenType.RightArrow)
+            {
+                //check to see if there is any whitespace between them. Otherwise > > would be recognized as the right shift operator! 
+                isRightShift = Tokens.LookAhead(1).StartPos == CurrentToken.StartPos + 1;
+                if (isRightShift)
+                {
+                    opType = TokenType.RightShift;
+                    return true;
+                }
+            }
+            if (Symbols is null)
+            {
+                opType = CurrentTokenType;
+                return OperatorHelper.IsOperatorToken(opType);
+            }
+            return Symbols.IsInfixOperator(CurrentToken, out opType);
+        }
+
+        protected bool IsOperator(out bool isRightShift, out TokenType opType)
+        {
+            if (IsInfixOperator(out isRightShift, out opType))
+            {
+                return true;
+            }
+            return opType is TokenType.Increment or TokenType.Decrement or TokenType.Complement or TokenType.MinusSign or TokenType.ExclamationMark;
         }
     }
 

@@ -46,6 +46,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BinarySerializer", "submodu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ME3Tweaks.Wwiser", "submodules\Wwiser.NET\ME3Tweaks.Wwiser\ME3Tweaks.Wwiser.csproj", "{591473D5-22A7-48E8-ADAC-921332DAC7C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegendaryExplorerUnrealDoc", "LegendaryExplorerUnrealDoc\LegendaryExplorerUnrealDoc.csproj", "{FE6D8103-56EC-4638-89E0-B191BFC82AB4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -159,17 +161,25 @@ Global
 		{591473D5-22A7-48E8-ADAC-921332DAC7C8}.WinAzureRelease|x64.Build.0 = Debug|Any CPU
 		{591473D5-22A7-48E8-ADAC-921332DAC7C8}.WinAzureTest|x64.ActiveCfg = Debug|Any CPU
 		{591473D5-22A7-48E8-ADAC-921332DAC7C8}.WinAzureTest|x64.Build.0 = Debug|Any CPU
+		{FE6D8103-56EC-4638-89E0-B191BFC82AB4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FE6D8103-56EC-4638-89E0-B191BFC82AB4}.Debug|x64.Build.0 = Debug|Any CPU
+		{FE6D8103-56EC-4638-89E0-B191BFC82AB4}.Release|x64.ActiveCfg = Release|Any CPU
+		{FE6D8103-56EC-4638-89E0-B191BFC82AB4}.Release|x64.Build.0 = Release|Any CPU
+		{FE6D8103-56EC-4638-89E0-B191BFC82AB4}.WinAzureRelease|x64.ActiveCfg = Release|Any CPU
+		{FE6D8103-56EC-4638-89E0-B191BFC82AB4}.WinAzureRelease|x64.Build.0 = Release|Any CPU
+		{FE6D8103-56EC-4638-89E0-B191BFC82AB4}.WinAzureTest|x64.ActiveCfg = Release|Any CPU
+		{FE6D8103-56EC-4638-89E0-B191BFC82AB4}.WinAzureTest|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {9CF2BAC3-D8BD-40B2-91B2-883CB1B869E6}
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1F845EFA-0145-46AD-86FE-84C7DAAA5842} = {947C0083-A3FF-4CEC-912C-BB65A11C6EEC}
 		{A261A72E-2BED-47D4-8401-0238526543AB} = {1F845EFA-0145-46AD-86FE-84C7DAAA5842}
 		{222CFF83-9ECD-4198-89F3-977A7B53924C} = {A261A72E-2BED-47D4-8401-0238526543AB}
 		{591473D5-22A7-48E8-ADAC-921332DAC7C8} = {1F845EFA-0145-46AD-86FE-84C7DAAA5842}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9CF2BAC3-D8BD-40B2-91B2-883CB1B869E6}
 	EndGlobalSection
 EndGlobal

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Unreal
@@ -119,6 +120,13 @@ namespace LegendaryExplorerCore.Unreal
                 Keys = []
             };
 
+            var data = animSeqs.Select(x => x.Export.GetProperty<ObjectProperty>("m_pBioAnimSetData").Value);
+            var first = data.First();
+            if (!data.All(x => x == first))
+            {
+                throw new ArgumentException("AnimSequences do not all have matching animSet data!", nameof(animSeqs));
+            }
+
             int numBones = animSeqs[0].Bones.Count;
             for (int i = 0; i < numBones; i++)
             {
@@ -159,7 +167,7 @@ namespace LegendaryExplorerCore.Unreal
                         AnimTrack animTrack = animSeq.RawAnimationData[boneIdx];
                         Vector3 posVec = animTrack.Positions.Count > frameIdx ? animTrack.Positions[frameIdx] : animTrack.Positions[^1];
                         Quaternion rotQuat = animTrack.Rotations.Count > frameIdx ? animTrack.Rotations[frameIdx] : animTrack.Rotations[^1];
-                        rotQuat = new Quaternion(rotQuat.X * -1, rotQuat.Y, rotQuat.Z * -1, rotQuat.W);
+                        rotQuat = Quaternion.Normalize(new Quaternion(rotQuat.X * -1, rotQuat.Y, rotQuat.Z * -1, rotQuat.W));
                         posVec = posVec with { Y = posVec.Y * -1 };
                         psa.Keys.Add(new PSAAnimKeys
                         {
@@ -205,9 +213,11 @@ namespace LegendaryExplorerCore.Unreal
                     {
                         int srcIdx = ((info.FirstRawFrame + frameIdx) * boneCount) + boneIdx;
                         Vector3 posVec = Keys[srcIdx].Position;
-                        Quaternion rotQuat = Keys[srcIdx].Rotation;
+                        // you must normalize both before and after flipping the bits, or you can get nasty bugs
+                        // the normalization before is probably overkill, as most systems exporting PSA files should normalize
+                        Quaternion rotQuat = Quaternion.Normalize(Keys[srcIdx].Rotation);
                         track.Positions.Add(posVec with { Y = posVec.Y * -1 });
-                        track.Rotations.Add(new Quaternion(rotQuat.X * -1, rotQuat.Y, rotQuat.Z * -1, rotQuat.W));
+                        track.Rotations.Add(Quaternion.Normalize(new Quaternion(rotQuat.X * -1, rotQuat.Y, rotQuat.Z * -1, rotQuat.W)));
                     }
 
                     //if all keys are identical, replace with a single key
@@ -339,6 +349,34 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     else
                         ms.Writer.WriteByte(0);
                 }
+            }
+        }
+
+        // read the next string without advancing the stream; allows you to essentially look ahead a bit to tell what you should read next
+        public bool TryReadString(out string s)
+        {
+            if (!IsLoading)
+            {
+                s = string.Empty;
+                return false;
+            }
+
+            var pos = ms.Position;
+
+            try
+            {
+                s = ms.ReadStringASCIINull();
+                return true;
+            }
+            
+            catch (EndOfStreamException)
+            {
+                s = string.Empty;
+                return false;
+            }
+            finally
+            {
+                ms.JumpTo(pos);
             }
         }
     }

@@ -1,23 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using LegendaryExplorer.Tools.AssetDatabase.Scanners;
 using LegendaryExplorerCore.GameFilesystem;
-using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.ME1;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
-using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.UnrealScript;
 
 namespace LegendaryExplorer.Tools.AssetDatabase
 {
-    public sealed record AssetDBScanOptions (bool ScanCRC, MELocalization Localization = MELocalization.INT);
+    public sealed record AssetDBScanOptions(bool ScanCRC, MELocalization Localization = MELocalization.INT);
 
     /// <summary>
     /// Caches info about the export being scanned, containing expensive calls such as GetProperties, IsDefault, etc
@@ -101,20 +95,73 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             _options = options;
         }
 
+        private static object syncObj = new object();
+
         /// <summary>
         /// Dumps Property data to concurrent dictionary
         /// </summary>
         public void DumpPackageFile(MEGame gameBeingDumped, ConcurrentAssetDB dbScanner)
         {
+            IMEPackage pcc = null;
             try
             {
+                // cnd files are not parsed from SFAR.
+                // ME3 scene is pretty dead anyways...
+                if (gameBeingDumped == MEGame.ME3 && !File.Exists(_file))
+                {
+                    // Might be in SFAR.
+                    // We single thread the decompression of the file.
+                    var testF = _file.TrimStart('/'); // Might start with /... that breaks path combine
+                    var sfar = Path.Combine(Directory.GetParent(ME3Directory.DefaultGamePath + testF).FullName, "Default.sfar");
+                    if (File.Exists(sfar))
+                    {
+                        MemoryStream decompStream = null;
+                        lock (syncObj)
+                        {
+                            DLCPackage dlp = new DLCPackage(sfar);
+                            var dlpFile = dlp.FindFileEntry(Path.GetFileName(_file));
+                            if (dlpFile != -1)
+                            {
+                                // File found.
+                                decompStream = dlp.DecompressEntry(dlpFile);
+                            }
+                        }
+
+                        if (decompStream == null)
+                        {
+                            // File not on disk or in SFAR
+                            // Not much we can do here...
+                            return;
+                        }
+
+                        // Cnd has special condition
+                        if (_file.EndsWith(".cnd", StringComparison.OrdinalIgnoreCase))
+                        {
+                            new PlotUsageScanner().ScanCndFile(_file, _fileKey, dbScanner, _options, decompStream);
+                            return;
+                        }
+
+                        // Package
+                        pcc = MEPackageHandler.OpenMEPackageFromStream(decompStream, _file);
+                    }
+                    else
+                    {
+                        // File was not in SFAR either...
+                        // Not much we can do here.
+                        return;
+                    }
+                }
+
+                // @todo: ME3 SFAR fetch for this.
                 if (_file.EndsWith(".cnd", StringComparison.OrdinalIgnoreCase))
                 {
                     new PlotUsageScanner().ScanCndFile(_file, _fileKey, dbScanner, _options);
                     return;
                 }
 
-                using IMEPackage pcc = MEPackageHandler.OpenMEPackage(_file);
+
+                // Open from disk if we didn't before.
+                pcc ??= MEPackageHandler.OpenMEPackage(_file);
                 if (pcc.Game != gameBeingDumped)
                 {
                     return; //rogue file from other game or UDK
@@ -153,7 +200,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     }
                     catch (Exception e) //when (!App.IsDebug)
                     {
-                        Application.Current.Dispatcher.Invoke(() => 
+                        Application.Current.Dispatcher.Invoke(() =>
                             MessageBox.Show($"Error while scanning {export.FileRef.FilePath} #{export.UIndex} {export.InstancedFullPath}\n\n{e.FlattenException()}"));
                     }
                 }
@@ -161,6 +208,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             catch (Exception e) //when (!App.IsDebug)
             {
                 throw new Exception($"Error dumping package file {_file}. See the inner exception for details.", e);
+            }
+            finally
+            {
+                // Lose package reference.
+                pcc?.Dispose();
             }
         }
     }

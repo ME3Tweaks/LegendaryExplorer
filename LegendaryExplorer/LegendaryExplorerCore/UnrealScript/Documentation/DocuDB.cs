@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Unreal.ObjectInfo;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using Newtonsoft.Json;
+using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Documentation
 {
@@ -32,6 +32,12 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
         [JsonProperty("classes")]
         public CaseInsensitiveDictionary<DocuClassEntry> ClassDocumentation { get; set; } = new();
 
+        [JsonProperty("enums")]
+        public CaseInsensitiveDictionary<DocuEnumEntry> EnumDocumentation { get; set; } = new();
+
+        [JsonProperty("structs")]
+        public CaseInsensitiveDictionary<DocuStructEntry> StructDocumentation { get; set; } = new();
+
         /// <summary>
         /// The time at which this documentation database was last updated.
         /// </summary>
@@ -39,6 +45,23 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
         public DateTime UpdateTime { get; set; }
 
         public DocuDB() { }
+
+        public static DocuDB GetEmptyDB(MEGame game)
+        {
+            return new DocuDB()
+            {
+                ClassDocumentation = new(),
+                EnumDocumentation = new(),
+                StructDocumentation = new(),
+                Game = game
+            };
+        }
+
+        public static DocuDB GetLoadedDB(MEGame game)
+        {
+            if (LoadedDBs.TryGetValue(game, out var db)) return db;
+            return null;
+        }
 
         /// <summary>
         /// Fetches a documentation database, loading it if it isn't already loaded.
@@ -52,7 +75,35 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
                 return loaded;
             }
 
-            if (File.Exists(filePath))
+            if (Directory.Exists(filePath))
+            {
+                // Loading loose DB
+                loaded = new DocuDB() { Game = game };
+
+                // Loose load classes
+                loaded.ClassDocumentation = new();
+                foreach (var f in Directory.GetFiles(Path.Combine(filePath, "classes"), "*.json"))
+                {
+                    var fname = Path.GetFileNameWithoutExtension(f);
+                    loaded.ClassDocumentation[fname] = JsonConvert.DeserializeObject<DocuClassEntry>(File.ReadAllText(f));
+                }
+
+                loaded.EnumDocumentation = new();
+                foreach (var f in Directory.GetFiles(Path.Combine(filePath, "enums"), "*.json"))
+                {
+                    var fname = Path.GetFileNameWithoutExtension(f);
+                    loaded.EnumDocumentation[fname] = JsonConvert.DeserializeObject<DocuEnumEntry>(File.ReadAllText(f));
+                }
+
+                loaded.StructDocumentation = new();
+                foreach (var f in Directory.GetFiles(Path.Combine(filePath, "structs"), "*.json"))
+                {
+                    var fname = Path.GetFileNameWithoutExtension(f);
+                    loaded.StructDocumentation[fname] = JsonConvert.DeserializeObject<DocuStructEntry>(File.ReadAllText(f));
+                }
+
+            }
+            else if (File.Exists(filePath))
             {
                 try
                 {
@@ -66,17 +117,21 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
                 }
             }
 
+            LoadedDBs[game] = loaded;
             return loaded;
         }
+
+        [JsonProperty("game")]
+        public MEGame Game { get; set; }
 
 #if DEBUG
 
         /// <summary>
-        /// Generates a blank database based on classes found in the game.
+        /// Generates a documentation-less database based on classes found in the game.
         /// </summary>
         /// <param name="game"></param>
         /// <returns></returns>
-        public static DocuDB GetEmptyDB(MEGame game)
+        public static DocuDB GenerateInitialDB(MEGame game)
         {
             DocuDB db = new DocuDB();
 
@@ -114,8 +169,7 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
                         if (db.ClassDocumentation.ContainsKey(fx.Name))
                             continue;
 
-                        Debug.WriteLine($"{fx.Name}: {fx.Type}");
-                        var classD = GenerateDocuClass(fx);
+                        var classD = GenerateDocuClass(db, fx);
                         db.ClassDocumentation[fx.Name] = classD;
                     }
 
@@ -129,21 +183,27 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
             return db;
         }
 
-        private static DocuClassEntry GenerateDocuClass(VariableType classDef)
+        private static DocuClassEntry GenerateDocuClass(DocuDB db, VariableType classDef)
         {
             DocuClassEntry dce = new DocuClassEntry();
             dce.Variables = new CaseInsensitiveDictionary<DocuMemberEntry>();
             dce.Functions = new CaseInsensitiveDictionary<DocuFunctionEntry>();
-            dce.Types = new CaseInsensitiveDictionary<DocuTypeEntry>();
             dce.States = new CaseInsensitiveDictionary<DocuStateEntry>();
-
 
             if (classDef is Class cls)
             {
+                dce.ClassFlags = cls.Flags;
+                dce.ConfigName = cls.ConfigName;
+                dce.ParentClass = cls.Parent?.Name;
+                dce.Package = cls.Package; // is this right?
                 // Variables
                 foreach (var v in cls.VariableDeclarations)
                 {
-                    dce.Variables.Add(v.Name, new DocuMemberEntry() { MemberClass = v.VarType.Name });
+                    dce.Variables.Add(v.Name, new DocuMemberEntry()
+                    {
+                        MemberType = v.VarType.Name,
+                        Flags = (long)v.Flags
+                    });
                 }
 
 
@@ -152,9 +212,15 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
                 {
                     var func = new DocuFunctionEntry();
                     func.FunctionMembers = new();
+                    func.ReturnType = v.ReturnType?.Name ?? "None";
+                    func.FunctionSignature = CodeBuilderVisitor.GetFunctionSignature(v);
                     foreach (var param in v.Parameters)
                     {
-                        func.FunctionMembers.Add(param.Name, new DocuMemberEntry() { MemberClass = param.VarType.Name });
+                        func.FunctionMembers.Add(param.Name, new DocuMemberEntry()
+                        {
+                            MemberType = param.VarType.Name,
+                            Flags = (long)param.Flags
+                        });
                     }
                     dce.Functions.Add(v.Name, func);
                 }
@@ -162,32 +228,21 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
                 // Structs, Consts, Enums
                 foreach (var type in cls.TypeDeclarations)
                 {
-                    var dType = new DocuTypeEntry();
-
+                    // If class has been inventoried, it should not have a dup existing entry...
                     if (type is Struct tStruct)
                     {
-                        dType.Members = new();
-                        foreach (var eValue in tStruct.VariableDeclarations)
-                        {
-                            dType.Members[eValue.Name] = new DocuMemberEntry();
-                        }
-
-                        // Type declarations?
+                        var structEntry = GenerateDocuStruct(db, tStruct);
+                        db.StructDocumentation[type.Name] = structEntry;
                     }
                     else if (type is Const tConst)
                     {
-                        // Nothing here
+                        // Nothing here. Are consts even used??
                     }
                     else if (type is Enumeration tEnum)
                     {
-                        dType.Members = new();
-                        foreach (var eValue in tEnum.Values)
-                        {
-                            dType.Members[eValue.Name] = new DocuMemberEntry();
-                        }
+                        var structEntry = GenerateDocuEnum(tEnum);
+                        db.EnumDocumentation[type.Name] = structEntry;
                     }
-                    dce.Types[type.Name] = dType;
-
                 }
 
                 // States
@@ -201,7 +256,11 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
                         func.FunctionMembers = new();
                         foreach (var param in v.Parameters)
                         {
-                            func.FunctionMembers.Add(param.Name, new DocuMemberEntry() { MemberClass = param.VarType.Name });
+                            func.FunctionMembers.Add(param.Name, new DocuMemberEntry()
+                            {
+                                MemberType = param.VarType.Name,
+                                Flags = (long) param.Flags
+                            });
                         }
                         dState.Functions.Add(v.Name, func);
                     }
@@ -210,8 +269,44 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
             }
             return dce;
         }
+
+        private static DocuEnumEntry GenerateDocuEnum(Enumeration tEnum)
+        {
+            DocuEnumEntry dType = new();
+            dType.EnumValues = new();
+            foreach (var eValue in tEnum.Values)
+            {
+                dType.EnumValues.Add(eValue.Name, new DocuEnumValueEntry() { EnumValue = eValue.IntVal });
+            }
+
+            return dType;
+        }
+
+        private static DocuStructEntry GenerateDocuStruct(DocuDB db, Struct tStruct)
+        {
+            DocuStructEntry dType = new();
+            dType.DefinedInClass = (tStruct.Outer as Class)?.Name; // This should always be not-null...
+            dType.Modifiers = tStruct.Flags;
+            if (tStruct.Parent != null)
+            {
+                dType.Extends = tStruct.Parent.Name;
+            }
+            dType.Members = new();
+            foreach (var eValue in tStruct.VariableDeclarations)
+            {
+                dType.Members[eValue.Name] = new DocuMemberEntry()
+                {
+                    MemberType = eValue.VarType.Name,
+                    Flags = (long)eValue.Flags,
+                };
+            }
+
+            // Need to enumerate type entries.
+
+            return dType;
+        }
 #endif
-        public string GetDocumentation(string className, string memberName, string subMemberName = null)
+        public virtual string GetDocumentation(string className, string memberName, string subMemberName = null)
         {
             if (ClassDocumentation.TryGetValue(className, out var cls))
             {
@@ -234,14 +329,6 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
                     return function.MemberDocumentation;
                 }
 
-                // Enum, Structs, Consts
-                if (cls.Types.TryGetValue(memberName, out var type))
-                {
-
-
-                }
-
-
                 // States
                 if (cls.Functions.TryGetValue(memberName, out var state))
                 {
@@ -258,8 +345,16 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
             return null;
         }
 
-        public string GetDocumentation(IEntry obj)
+        public virtual string GetDocumentation(IEntry obj)
         {
+            // Determine: Are we under a class or struct (including state)?
+            // If so, we should return the member documentation.
+
+            // otherwise we should return the class documentation or struct documentation for the type
+            // passed in.
+
+
+
             // This is really poor and definitely needs improved
 
             var classObj = obj;
@@ -271,22 +366,67 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
                 classObj = classObj.Parent;
             }
 
-            if (!classObj.IsClass)
+            if (classObj.IsClass)
             {
-                // Couldn't find class...
-                return null;
+                // We found containing class
+                if (ClassDocumentation.TryGetValue(classObj.ObjectName, out var classInfo))
+                {
+                    if (obj == classObj)
+                    {
+                        // It's the class itself.
+                        return classInfo.ClassDocumentation;
+                    }
+
+                    if (classInfo.Variables.TryGetValue(obj.ObjectName.Instanced, out var member))
+                    {
+                        // it's a member on the class
+                        return member.MemberDocumentation;
+                    }
+                }
+
+
             }
 
-            if (ClassDocumentation.TryGetValue(classObj.ObjectName, out var classInfo))
-            {
-                if (obj == classObj)
-                {
-                    // It's the class itself.
-                    return classInfo.ClassDocumentation;
-                }
-            }
+
+
+
+
+            //if (obj.ClassName == "StructProperty")
+            //{
+            //    // Struct
+            //    if (db.ClassDocumentation.TryGetValue(CurrentLoadedEntry.ClassName, out var cls))
+            //    {
+            //        return cls.ClassDocumentation;
+            //    }
+            //}
+            //else if (CurrentLoadedEntry.ClassName == "ByteProperty" && db.ClassDocumentation.TryGetValue(CurrentLoadedEntry.ClassName, out var enumV))
+            //{
+            //    // ByteProperty might just be member of class...
+            //    DocumentationString = enumV.ClassDocumentation;
+            //    return;
+            //}
+            //else if (CurrentLoadedEntry.IsClass)
+            //{
+            //    // Class
+            //    if (db.ClassDocumentation.TryGetValue(CurrentLoadedEntry.ClassName, out var cls))
+            //    {
+            //        DocumentationString = cls.ClassDocumentation;
+            //        return;
+            //    }
+            //}
+            //else
+            //{
+
+            //}
+
+
 
             return null;
+        }
+
+        public static void AddLoadedDb(MEGame game, DocuDB loadedDb)
+        {
+            LoadedDBs[game] = loadedDb;
         }
     }
 
@@ -302,6 +442,12 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
         public string ParentClass { get; set; }
 
         /// <summary>
+        /// Package this class is part of
+        /// </summary>
+        [JsonProperty("package")]
+        public string Package { get; set; }
+
+        /// <summary>
         /// Variable members of this class
         /// </summary>
         [JsonProperty("variables")]
@@ -314,16 +460,22 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
         public CaseInsensitiveDictionary<DocuFunctionEntry> Functions { get; set; }
 
         /// <summary>
-        /// Function members of this class
-        /// </summary>
-        [JsonProperty("types")]
-        public CaseInsensitiveDictionary<DocuTypeEntry> Types { get; set; }
-
-        /// <summary>
-        /// Function members of this class
+        /// State members of this class
         /// </summary>
         [JsonProperty("states")]
         public CaseInsensitiveDictionary<DocuStateEntry> States { get; set; }
+
+        /// <summary>
+        /// Contains the text description of this class.
+        /// </summary>
+        [JsonProperty("classflags")]
+        public EClassFlags ClassFlags { get; set; }
+
+        /// <summary>
+        /// If class is marked config, it reads from this file
+        /// </summary>
+        [JsonProperty("configname")]
+        public string ConfigName { get; set; }
 
         /// <summary>
         /// Contains the text description of this class.
@@ -347,12 +499,46 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
         public string MemberDocumentation { get; set; }
     }
 
-    public class DocuTypeEntry
+    public class DocuStructEntry
     {
-        // Structs, Enums
+        // Does this keep order? It matters for immutable structs
+        [JsonProperty("members")]
         public CaseInsensitiveDictionary<DocuMemberEntry> Members { get; set; } = new();
 
+        /// <summary>
+        /// Which class this struct is defined in
+        /// </summary>
+        [JsonProperty("classdef")]
+        public string DefinedInClass { get; set; }
+
+        /// <summary>
+        /// Which struct this one extends, if any
+        /// </summary>
+        [JsonProperty("extends")]
+        public string Extends { get; set; }
+
         // Const doesn't have any members
+        /// <summary>
+        /// Contains the text description of this object.
+        /// </summary>
+        [JsonProperty("documentation")]
+        public string MemberDocumentation { get; set; }
+
+        /// <summary>
+        /// Struct modifiers
+        /// </summary>
+        [JsonProperty("modifiers")]
+        public UnrealFlags.ScriptStructFlags Modifiers { get; set; }
+    }
+
+
+    public class DocuEnumEntry
+    {
+        /// <summary>
+        /// Values of the enum
+        /// </summary>
+        public CaseInsensitiveDictionary<DocuEnumValueEntry> EnumValues { get; set; } = new();
+
         /// <summary>
         /// Contains the text description of this object.
         /// </summary>
@@ -362,12 +548,6 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
 
     public class DocuFunctionEntry
     {
-#if DEBUG
-        // This is debug only because we don't need this except when debugging.
-        [JsonIgnore]
-        public string FunctionName { get; set; }
-#endif
-
         /// <summary>
         /// Contains the text description of this object.
         /// </summary>
@@ -380,15 +560,43 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
         /// </summary>
         [JsonProperty("signature_members")]
         public CaseInsensitiveDictionary<DocuMemberEntry> FunctionMembers { get; set; }
+
+        /// <summary>
+        /// The return type for the function. Can technically be found in members...
+        /// </summary>
+        [JsonProperty("returntype")]
+        public string ReturnType { get; set; }
+
+
+        [JsonProperty("signature")]
+        public string FunctionSignature { get; set; }
+    }
+
+    public class DocuEnumValueEntry
+    {
+        [JsonProperty("value")]
+        public int EnumValue { get; set; }
+
+        /// <summary>
+        /// Contains the text description of this object.
+        /// </summary>
+        [JsonProperty("documentation")]
+        public string MemberDocumentation { get; set; }
     }
 
     public class DocuMemberEntry
     {
-#if DEBUG
-        // This is debug only because we don't need this except when debugging.
-        [JsonIgnore]
+        /// <summary>
+        /// Name of the documentation - can be null if not used.
+        /// </summary>
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string MemberName { get; set; }
-#endif
+
+        /// <summary>
+        /// Type of this member
+        /// </summary>
+        [JsonProperty("type")]
+        public string MemberType { get; set; }
 
         /// <summary>
         /// Contains the text description of this object.
@@ -396,13 +604,10 @@ namespace LegendaryExplorerCore.UnrealScript.Documentation
         [JsonProperty("documentation")]
         public string MemberDocumentation { get; set; }
 
-
         /// <summary>
-        /// Class of the member
+        /// Flags on this member, stored as a long.
         /// </summary>
-        [JsonProperty("class")]
-        public string MemberClass { get; set; }
-
-        // Todo: Maybe useful links or something...?
+        [JsonProperty("flags")]
+        public long Flags { get; set; }
     }
 }

@@ -62,8 +62,9 @@
 
   <!-- AssetDB specific settings-->
   <setting name="AssetDB_DefaultGame" type="string" defaultvalue=""/>
-  <setting name="AssetDBGame" type="string" defaultvalue="ME3"/>
+  <setting name="AssetDBGame" type="string" defaultvalue="LE3"/>
   <setting name="AssetDBPath" type="string" defaultvalue=""/>
+  <setting name="AssetDB_HideMICs" type="bool" defaultvalue="false"/>
 
   <!-- Coalesced Editor specific settings -->
   <setting name="CoalescedEditor_SourcePath" type="string" defaultvalue=""/>

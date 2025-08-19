@@ -395,6 +395,14 @@ namespace LegendaryExplorerCore.Helpers
             return val;
         }
 
+        public static int ReadInt32(this BinaryReader reader)
+        {
+            Unsafe.SkipInit(out int val);
+            if (reader.Read(val.AsBytes()) != sizeof(int))
+                ThrowEndOfStreamException();
+            return val;
+        }
+
         public static void WriteInt32(this Stream stream, int data)
         {
             Span<byte> buffer = stackalloc byte[sizeof(int)];

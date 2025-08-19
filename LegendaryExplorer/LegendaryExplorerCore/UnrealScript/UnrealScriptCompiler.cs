@@ -978,6 +978,10 @@ namespace LegendaryExplorerCore.UnrealScript
             }
             else
             {
+                if (func.IsOperator)
+                {
+                    symbols.RemoveOperator(stateOrClass.Functions[funcIdx]);
+                }
                 symbols.ReplaceSymbol(func.Name, func, true);
                 stateOrClass.Functions[funcIdx] = func;
             }

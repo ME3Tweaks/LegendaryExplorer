@@ -292,6 +292,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
                 MessageBox.Show(GetPEWindow(), $"Done. Took {sw.Elapsed.TotalSeconds} seconds");
             });
         }
+
+        private void ObjectInstanceDBSearch_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.SearchObjectDB(GetPEWindow());
+        }
+
         private void ObjectInfosSearch_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.SearchObjectInfos(GetPEWindow());
@@ -1316,24 +1322,44 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         #endregion
 
         // EXPERIMENTS: DropTheSquid
+        #region DropTheSquid's Experiments
+        private void ImportAnimSet_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.ImportAnimSet(GetPEWindow());
+        }
+
+        // AMM specific things:
         private void MakeCustomMorphTargetSet_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsSquid.MakeCustomMorphTargetSet(GetPEWindow());
         }
-
-        private void MakeHeterochromia_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsSquid.MakeHeterochromiaMesh(GetPEWindow());
-        }
-
         private void GetMeshMaterials_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsSquid.GetMeshMaterials(GetPEWindow());
         }
 
-        private void ExportMeshToPsk_Click(object sender, RoutedEventArgs e)
+        // export mesh
+
+        private void ExportSelectedToPsx_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsSquid.MeshToPsk(GetPEWindow());
+            PackageEditorExperimentsSquid.ExportSelectedToPsx(GetPEWindow());
+        }
+
+        private void ExportRonToPsx_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.RonFileToPskx(GetPEWindow());
+        }
+
+        // import a mesh like object
+        private void ImportPskAsNewMesh_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.ImportPskAsNewMesh(GetPEWindow());
+        }
+
+
+        private void MakeHeterochromia_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.MakeHeterochromiaMesh(GetPEWindow());
         }
 
         private void ImportRonToBmf_Click(object sender, RoutedEventArgs e)
@@ -1348,27 +1374,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
 
         private void MorphFaceToMesh_Click(object sender, RoutedEventArgs e)
         {
-            PackageEditorExperimentsSquid.BioMorphFaceToMesh(GetPEWindow());
-        }
-
-        private void ReplaceMeshFromPSK_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsSquid.ReplaceMeshDataFromPsk(GetPEWindow());
+            PackageEditorExperimentsSquid.BioMorphFaceToUniqueSkeletalMesh(GetPEWindow());
         }
 
         private void AddNewMorphTargetFromPskAndPsa_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsSquid.ImportPskAndPsaAsMorphTarget(GetPEWindow());
-        }
-
-        private void ExportMorphTargetSetToBlender_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsSquid.ExportMorphTargetSet(GetPEWindow());
-        }
-
-        private void ExportBmfToPskAndPsa_Click(object sender, RoutedEventArgs e)
-        {
-            PackageEditorExperimentsSquid.BioMorphFaceToPskAndPsa(GetPEWindow());
         }
 
         private void ImportPskAndPsaToBmf_Click(object sender, RoutedEventArgs e)
@@ -1385,6 +1396,8 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsSquid.SmoothMeshSeams(GetPEWindow());
         }
+
+        #endregion
 
         // EXPERIMENTS: OTHER PEOPLE ------------------------------------------------------------
         #region Other people's experiments

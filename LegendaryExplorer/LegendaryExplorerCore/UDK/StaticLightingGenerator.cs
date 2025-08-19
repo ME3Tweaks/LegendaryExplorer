@@ -16,6 +16,7 @@ using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Localization;
+using LegendaryExplorerCore.DebugTools;
 
 namespace LegendaryExplorerCore.UDK
 {
@@ -77,8 +78,17 @@ namespace LegendaryExplorerCore.UDK
 
     public static class ConvertToUDK
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pcc"></param>
+        /// <param name="mapOutputPath"></param>
+        /// <param name="assetsOutputPath"></param>
+        /// <param name="decookedMaterialsFolder"></param>
+        /// <param name="delegatesROP">Only the delegates on this are used in the inner methods, such as for custom resolving of assets</param>
+        /// <returns></returns>
         public static string GenerateUDKFileForLevel(IMEPackage pcc, string mapOutputPath = null,
-            string assetsOutputPath = null, string decookedMaterialsFolder = null)
+            string assetsOutputPath = null, string decookedMaterialsFolder = null, RelinkerOptionsPackage delegatesROP = null)
         {
             decookedMaterialsFolder ??= Path.Combine(UDKDirectory.SharedPath, $"{pcc.Game}MaterialPort");
             var assetInfo = GenerateAssetsPackage(pcc, assetsOutputPath, decookedMaterialsFolder);
@@ -90,9 +100,8 @@ namespace LegendaryExplorerCore.UDK
             var terrains = new List<ExportEntry>();
             assetInfo.TempPackage = MEPackageHandler.OpenMEPackageFromStream(MEPackageHandler.CreateEmptyLevelStream(Path.GetFileNameWithoutExtension(pcc.FilePath), MEGame.UDK), pcc.FileNameNoExtension + ".udk");
             {
-                assetInfo.LevelExport = assetInfo.TempPackage.Exports.First(exp => exp.ClassName == "Level");
-                assetInfo.ActorsInLevel = ObjectBinary.From<Level>(pcc.Exports.First(exp => exp.ClassName == "Level"))
-                    .Actors.ToList();
+                assetInfo.LevelExport = assetInfo.TempPackage.GetLevel();
+                assetInfo.ActorsInLevel = pcc.GetLevelBinary().Actors;
                 foreach (int uIndex in assetInfo.ActorsInLevel)
                 {
                     if (pcc.GetEntry(uIndex) is ExportEntry stcExp)
@@ -118,7 +127,7 @@ namespace LegendaryExplorerCore.UDK
                     }
                 }
 
-                PortStaticMeshActors(assetInfo, packageCache);
+                PortStaticMeshActors(assetInfo, packageCache, delegatesROP);
 
 
                 #region Terrain
@@ -151,7 +160,7 @@ namespace LegendaryExplorerCore.UDK
             MEPackageHandler.CreateEmptyLevel(resultFilePath, MEGame.UDK);
             using (IMEPackage udkPackage2 = MEPackageHandler.OpenUDKPackage(resultFilePath))
             {
-                var finalLevelExport = udkPackage2.Exports.First(exp => exp.ClassName == "Level");
+                var finalLevelExport = udkPackage2.GetLevel();
                 var levelBin = ObjectBinary.From<Level>(finalLevelExport);
 
                 udkPackage2.Save();
@@ -194,7 +203,12 @@ namespace LegendaryExplorerCore.UDK
                 // Overwrite it
                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, meModel,
                     udkPackage2, udkModel, true,
-                    new RelinkerOptionsPackage() { PortExportsAsImportsWhenPossible = true }, out _);
+                    new RelinkerOptionsPackage()
+                    {
+                        PortExportsAsImportsWhenPossible = true,
+                        CustomImportDependency = delegatesROP?.CustomImportDependency,
+                        CustomRelinkUIndex = delegatesROP?.CustomRelinkUIndex
+                    }, out _);
 
                 List<int> newModelComps = new List<int>();
                 foreach (var mc in meLevelBin.ModelComponents)
@@ -205,7 +219,12 @@ namespace LegendaryExplorerCore.UDK
                     {
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
                             sourceExp, udkPackage2, udkModel, true,
-                            new RelinkerOptionsPackage() { PortExportsAsImportsWhenPossible = true }, out var portedmc);
+                            new RelinkerOptionsPackage()
+                            {
+                                PortExportsAsImportsWhenPossible = true,
+                                CustomImportDependency = delegatesROP?.CustomImportDependency,
+                                CustomRelinkUIndex = delegatesROP?.CustomRelinkUIndex
+                            }, out var portedmc);
                         udkModelComp = portedmc as ExportEntry;
                     }
 
@@ -487,7 +506,7 @@ namespace LegendaryExplorerCore.UDK
             }
         }
 
-        private static void PortStaticMeshActors(UDKAssetInfo assetInfo, PackageCache cache)
+        private static void PortStaticMeshActors(UDKAssetInfo assetInfo, PackageCache cache, RelinkerOptionsPackage delegatesROP)
         {
             var emptySMCBin = new StaticMeshComponent();
             IEntry staticMeshActorClass = assetInfo.TempPackage.GetEntryOrAddImport("Engine.StaticMeshActor", "Class");
@@ -498,7 +517,9 @@ namespace LegendaryExplorerCore.UDK
             int smcIndex = 2;
             foreach (ExportEntry smc in assetInfo.SourcePackage.Exports.Where(exp => exp.ClassName == "StaticMeshComponent"))
             {
-                if (smc.Parent is ExportEntry parent && assetInfo.ActorsInLevel.Contains(parent.UIndex) && (parent.IsA("StaticMeshActorBase") || parent.IsA("BioInert") || parent.IsA("BioUseable")))
+                if (smc.Parent is ExportEntry parent && assetInfo.ActorsInLevel.Contains(parent.UIndex) && (parent.IsA("StaticMeshActorBase")
+                    || parent.IsA("BioInert") /* LE1 */
+                    || parent.IsA("BioUseable") /* LE1 */))
                 {
                     var originalIFP = smc.InstancedFullPath;
 
@@ -506,16 +527,36 @@ namespace LegendaryExplorerCore.UDK
                         continue; // Don't do static lighting on archetype objects as they aren't actually in a level
 
                     // List of things to not port
-                    if (parent.IsA("BioLedgeMeshActor"))
+                    if (parent.IsA("BioLedgeMeshActor")) /* LE1 (maybe others?) */
                         continue; // Don't port these, they are not really useful in UDK for lighting
 
                     StructProperty locationProp;
                     StructProperty rotationProp;
                     StructProperty scaleProp = null;
                     smc.CondenseArchetypes();
-                    if (smc.GetProperty<ObjectProperty>("StaticMesh") is not { } meshProp || !assetInfo.SourcePackage.IsUExport(meshProp.Value))
+
+                    if (smc.GetProperty<ObjectProperty>("StaticMesh") is not { } meshProp)
                     {
+                        // No StaticMesh property.
                         continue;
+                    }
+
+                    // 05/01/2025 - Meshes can be imports if they resolve.
+                    if (!assetInfo.SourcePackage.IsUExport(meshProp.Value))
+                    {
+                        if (!assetInfo.SourcePackage.TryGetImport(meshProp.Value, out var meshImport))
+                        {
+                            // This is 0 or an invalid value.
+                            continue;
+                        }
+
+                        // It's an import. We should test resolving it...
+                        var canResolve = EntryImporter.CanResolveImport(meshImport, cache);
+                        if (!canResolve)
+                        {
+                            LECLog.Warning($"Skipping actor {parent.InstancedFullPath} SMC {smc.ObjectName.Instanced} - it's an import but we could not resolve it.");
+                            continue;
+                        }
                     }
 
                     smc.WriteBinary(emptySMCBin);
@@ -530,9 +571,12 @@ namespace LegendaryExplorerCore.UDK
                     props.RemoveNamedProperty("IrrelevantLights");
                     props.RemoveNamedProperty("PhysMaterialOverride");
                     props.RemoveNamedProperty("LightEnvironment"); // May want to add this manually so it doesn't pull in the parent?
-                    props.RemoveNamedProperty("Materials"); //should make use of this?
                     smc.WriteProperties(props);
-                    
+
+                    // 04/30/2025 - Materials need some properties stripped off of them
+                    // Todo: Go through each material and remove PhysMaterial. It will often contain SFXGame and Wwise references.
+
+
                     smc.ObjectName = new NameReference("StaticMeshComponent", smcIndex++);
                     if (parent.ClassName == "StaticMeshCollectionActor")
                     {
@@ -562,6 +606,8 @@ namespace LegendaryExplorerCore.UDK
                         }
                     }
 
+                    // LECLog.Information($"Porting Static Mesh (C) Actor: {smc.InstancedFullPath}");
+
                     var sma = new ExportEntry(assetInfo.TempPackage, assetInfo.LevelExport, new NameReference("StaticMeshActor", smaIndex++), EntryImporter.CreateStack(MEGame.UDK, staticMeshActorClass.UIndex))
                     {
                         Class = staticMeshActorClass,
@@ -571,7 +617,13 @@ namespace LegendaryExplorerCore.UDK
                     var debugprops = smc.GetProperties();
                     var sm = debugprops.GetProp<ObjectProperty>("StaticMesh")?.ResolveToEntry(assetInfo.SourcePackage);
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, smc, assetInfo.TempPackage,
-                                                         sma, true, new RelinkerOptionsPackage(cache) { PortExportsAsImportsWhenPossible = true }, out IEntry result);
+                                                         sma, true, new RelinkerOptionsPackage(cache)
+                                                         {
+                                                             PortExportsAsImportsWhenPossible = true,
+                                                             CustomDonorImporter = delegatesROP?.CustomDonorImporter,
+                                                             CustomImportDependency = delegatesROP?.CustomImportDependency,
+                                                             CustomRelinkUIndex = delegatesROP?.CustomRelinkUIndex,
+                                                         }, out IEntry result);
                     ((ExportEntry)result).Archetype = staticMeshComponentArchetype;
                     props = new PropertyCollection
                             {
@@ -618,7 +670,6 @@ namespace LegendaryExplorerCore.UDK
             assetInfo.MeshAssetPackageName = $"{Path.GetFileNameWithoutExtension(pcc.FilePath)}Meshes";
             assetInfo.SourcePackage = pcc;
 
-
             var originalName = pcc.FilePath;
             pcc.SetInternalFilepath($"ForceExportsResolver_{pcc.FileNameNoExtension}.pcc");
 
@@ -637,14 +688,10 @@ namespace LegendaryExplorerCore.UDK
             List<ExportEntry> staticMeshes = pcc.Exports.Where(exp => exp.ClassName.CaseInsensitiveEquals("StaticMesh")).ToList();
             foreach (ExportEntry mesh in staticMeshes)
             {
-                if (mesh.ObjectName == "Rock_Bunch_01")
-                {
-
-                }
                 if (pcc.Game.IsLEGame() && mesh.IsForcedExport)
                 {
                     // Attempt to link up to ported content.
-                    var meshPath = Path.Combine(decookedMaterialsFolder, mesh.GetRootName() + ".upk");
+                    var meshPath = Path.Combine(decookedMaterialsFolder, mesh.GetLinker() + ".upk");
                     if (File.Exists(meshPath))
                     {
                         // Quickload; test if it exists
@@ -665,6 +712,7 @@ namespace LegendaryExplorerCore.UDK
 
                 }
 
+                // We're going to port it over
                 var mats = new Queue<int>();
                 var stm = ObjectBinary.From<StaticMesh>(mesh);
                 foreach (StaticMeshRenderData lodModel in stm.LODModels)
@@ -777,13 +825,13 @@ namespace LegendaryExplorerCore.UDK
                         if (pcc.Game.IsLEGame() && matExp.IsForcedExport)
                         {
                             // Attempt to link up to ported content.
-                            var matPath = Path.Combine(decookedMaterialsFolder, matExp.GetRootName() + ".upk");
+                            var matPath = Path.Combine(decookedMaterialsFolder, matExp.GetLinker() + ".upk");
                             if (File.Exists(matPath))
                             {
                                 // Quickload; test if it exists
                                 var upk = MEPackageHandler.UnsafePartialLoad(matPath, x => false);
                                 // This is ugly hack but it's fast.
-                                var foundRef = upk.FindExport(matExp.InstancedFullPath.Substring(matExp.GetRootName().Length + 1), matExp.ClassName);
+                                var foundRef = upk.FindExport(matExp.InstancedFullPath.Substring(matExp.GetLinker().Length + 1), matExp.ClassName);
                                 if (foundRef != null)
                                 {
                                     // Debug.WriteLine("Using repointed material from ME1 materials port");
@@ -1083,6 +1131,7 @@ namespace LegendaryExplorerCore.UDK
         {
             var package = MEPackageHandler.CreateMemoryEmptyPackage(meshPackage.FilePath, MEGame.UDK);
             var cache = new PackageCache();
+
             foreach (var exp in meshPackage.Exports.Where(IsAsset))
             {
                 EntryExporter.ExportExportToPackage(exp, package, out _, cache, new RelinkerOptionsPackage() { ImportExportDependencies = true, Cache = cache, PortExportsAsImportsWhenPossible = true });

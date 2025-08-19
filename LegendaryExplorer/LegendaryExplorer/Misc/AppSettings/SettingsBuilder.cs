@@ -185,7 +185,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             get => _assetdb_defaultgame; 
             set => SetProperty(ref _assetdb_defaultgame, value);
         }
-        private static string _assetdbgame = "ME3"; 
+        private static string _assetdbgame = "LE3"; 
         public static string AssetDBGame {
             get => _assetdbgame; 
             set => SetProperty(ref _assetdbgame, value);
@@ -194,6 +194,11 @@ namespace LegendaryExplorer.Misc.AppSettings
         public static string AssetDBPath {
             get => _assetdbpath; 
             set => SetProperty(ref _assetdbpath, value);
+        }
+        private static bool _assetdb_hidemics = false; 
+        public static bool AssetDB_HideMICs {
+            get => _assetdb_hidemics; 
+            set => SetProperty(ref _assetdb_hidemics, value);
         }
         private static string _coalescededitor_sourcepath = ""; 
         public static string CoalescedEditor_SourcePath {
@@ -310,10 +315,10 @@ namespace LegendaryExplorer.Misc.AppSettings
             get => _customstartupfiles; 
             set => SetProperty(ref _customstartupfiles, value);
         }
-        private static List<string> _customclassdirectories = new List<string>(); 
+        private static List<string> _customassetdirectories = new List<string>(); 
         public static List<string> CustomAssetDirectories {
-            get => _customclassdirectories; 
-            set => SetProperty(ref _customclassdirectories, value);
+            get => _customassetdirectories; 
+            set => SetProperty(ref _customassetdirectories, value);
         }
 
         public static string Get_SequenceEditor_Favorites (MEGame game) => game switch
@@ -361,6 +366,7 @@ namespace LegendaryExplorer.Misc.AppSettings
         public static bool TryGetSetting(Dictionary<string, object> settings, string key, bool defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue && bool.TryParse(svalue, out var bvalue) ? bvalue : defaultValue;
         public static string TryGetSetting(Dictionary<string, object> settings, string key, string defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue ? svalue : defaultValue;
         public static List<string> TryGetSetting(Dictionary<string, object> settings, string key, List<string> defaultValue) => settings.TryGetValue(key, out var value) && value is JArray listValue ? listValue.ToObject<List<string>>() : defaultValue;
+
 
         private static string AppSettingsFile => Path.Combine(AppDirectories.AppDataFolder, "appsettings.json");
         /// <summary>
@@ -412,8 +418,9 @@ namespace LegendaryExplorer.Misc.AppSettings
             PathfindingEditor_ShowSplinesLayer = TryGetSetting(settingsJson, "pathfindingeditor_showsplineslayer", false);
             PathfindingEditor_ShowEverythingElseLayer = TryGetSetting(settingsJson, "pathfindingeditor_showeverythingelselayer", false);
             AssetDB_DefaultGame = TryGetSetting(settingsJson, "assetdb_defaultgame", "");
-            AssetDBGame = TryGetSetting(settingsJson, "assetdbgame", "ME3");
+            AssetDBGame = TryGetSetting(settingsJson, "assetdbgame", "LE3");
             AssetDBPath = TryGetSetting(settingsJson, "assetdbpath", "");
+            AssetDB_HideMICs = TryGetSetting(settingsJson, "assetdb_hidemics", false);
             CoalescedEditor_SourcePath = TryGetSetting(settingsJson, "coalescededitor_sourcepath", "");
             CoalescedEditor_DestinationPath = TryGetSetting(settingsJson, "coalescededitor_destinationpath", "");
             WwiseGraphEditor_AutoSaveView = TryGetSetting(settingsJson, "wwisegrapheditor_autosaveview", false);
@@ -437,7 +444,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             Global_TLK_Language = TryGetSetting(settingsJson, "global_tlk_language", "INT");
             Global_TLK_IsMale = TryGetSetting(settingsJson, "global_tlk_ismale", true);
             CustomStartupFiles = TryGetSetting(settingsJson, "customstartupfiles", new List<string>());
-            CustomAssetDirectories = TryGetSetting(settingsJson, "customclassdirectories", new List<string>());
+            CustomAssetDirectories = TryGetSetting(settingsJson, "customassetdirectories", new List<string>());
 
             // Settings Bridge Init
             LegendaryExplorerCoreLibSettings.Instance.ParseUnknownArrayTypesAsObject = Global_PropertyParsing_ParseUnknownArrayTypeAsObject;
@@ -494,6 +501,7 @@ namespace LegendaryExplorer.Misc.AppSettings
                     settingsJson["assetdb_defaultgame"] = AssetDB_DefaultGame.ToString();
                     settingsJson["assetdbgame"] = AssetDBGame.ToString();
                     settingsJson["assetdbpath"] = AssetDBPath.ToString();
+                    settingsJson["assetdb_hidemics"] = AssetDB_HideMICs.ToString();
                     settingsJson["coalescededitor_sourcepath"] = CoalescedEditor_SourcePath.ToString();
                     settingsJson["coalescededitor_destinationpath"] = CoalescedEditor_DestinationPath.ToString();
                     settingsJson["wwisegrapheditor_autosaveview"] = WwiseGraphEditor_AutoSaveView.ToString();
@@ -517,7 +525,7 @@ namespace LegendaryExplorer.Misc.AppSettings
                     settingsJson["global_tlk_language"] = Global_TLK_Language.ToString();
                     settingsJson["global_tlk_ismale"] = Global_TLK_IsMale.ToString();
                     settingsJson["customstartupfiles"] = CustomStartupFiles;
-                    settingsJson["customclassdirectories"] = CustomAssetDirectories;
+                    settingsJson["customassetdirectories"] = CustomAssetDirectories;
 
             var settingsText = JsonConvert.SerializeObject(settingsJson, Formatting.Indented);
             try

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "LegendaryExplorerUnrealDoc": {
+      "commandName": "Project",
+      "commandLineArgs": "-i \"C:\\Users\\mgame\\AppData\\Roaming\\LegendaryExplorer\\DocuDBs\" -o \"C:\\users\\mgame\\lexunrealdoc\""
+    }
+  }
+}

@@ -1,0 +1,14 @@
+﻿<tr class="%LD_ROWCLASS%">
+	<td class="colFirst">
+		<code>%LD_MEMBERTYPE%</code>
+	</td>
+	<td class="colSecond">
+		<code>%LD_MEMBERNAME%</code>
+	</td>
+	<td class="colSecond">
+		<p class="ld_membername">%LD_MEMBERDOC%</p>
+	</td>
+	<td  class="colLast">
+		<p class="ld_memberdoc">%LD_MEMBERMODIFIER%</p>
+	</td>
+</tr>

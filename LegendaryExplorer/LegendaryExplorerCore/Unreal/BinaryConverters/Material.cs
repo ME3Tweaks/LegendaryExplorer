@@ -11,6 +11,7 @@ using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.Collections;
+using static LegendaryExplorerCore.Unreal.BinaryConverters.ShaderCache;
 using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -204,7 +205,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int unkInt2;
         public (int, float, int)[] unkList;
 
-        
+
         //end ME1
 
         public static MaterialResource Create()
@@ -746,9 +747,22 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public static MaterialUniformExpression Create(SerializingContainer sc)
         {
-            NameReference expressionType = sc.ms.ReadNameReference(sc.Pcc);
-            sc.ms.Skip(-8);//ExpressionType will be read again during serialization, so back the stream up.
-            return expressionType.Name switch
+            string expressionTypeName = null;
+            //ExpressionType will be read again during serialization, so back the stream up.
+            if (sc is PackagelessSerializingContainer)
+            {
+                var pos = sc.ms.Position;
+                sc.Serialize(ref expressionTypeName);
+                sc.ms.Position = pos;
+            }
+            else
+            {
+                NameReference expressionType = new();
+                sc.Serialize(ref expressionType);
+                sc.ms.Skip(-8);
+                expressionTypeName = expressionType.Name;
+            }
+            return expressionTypeName switch
             {
                 "FMaterialUniformExpressionAbs" => new MaterialUniformExpressionAbs(),
                 "FMaterialUniformExpressionCeil" => new MaterialUniformExpressionCeil(),
@@ -773,7 +787,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 "FMaterialUniformExpressionTextureParameter" => new MaterialUniformExpressionTextureParameter(),
                 "FMaterialUniformExpressionVectorParameter" => new MaterialUniformExpressionVectorParameter(),
                 "FMaterialUniformExpressionFlipbookParameter" => new MaterialUniformExpressionFlipbookParameter(),
-                _ => throw new ArgumentException(expressionType.Instanced)
+                _ => throw new ArgumentException(expressionTypeName)
             };
         }
     }
@@ -1249,7 +1263,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             Serialize(ref mres.NumUserTexCoords);
             if (Game >= MEGame.ME3)
             {
-                Serialize(ref mres.UniformExpressionTextures, Serialize);
+                Serialize(ref mres.UniformExpressionTextures, SerializeObjectRef);
             }
             else
             {

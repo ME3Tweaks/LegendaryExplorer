@@ -1539,6 +1539,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         
         private static readonly Dictionary<string, InOpDeclaration> NonNativeOperators = new()
         {
+            ["ClockwiseFrom_IntInt"] = new InOpDeclaration(TokenType.ClockwiseFrom, 24, 0, null, null, null),
             ["EqualEqual_InterfaceInterface"] = new InOpDeclaration(TokenType.Equals, 24, 0, null, null, null),
             ["NotEqual_InterfaceInterface"] = new InOpDeclaration(TokenType.NotEquals, 26, 0, null, null, null),
             ["Multiply_MatrixMatrix"] = new InOpDeclaration(TokenType.StarSign, 34, 0, null, null, null), //ME3 only

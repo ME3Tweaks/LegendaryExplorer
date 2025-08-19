@@ -1,0 +1,11 @@
+﻿<!-- VARIABLES-->
+<h3 id="variables">Variables</h3>
+<table class="membersummary">
+	<tr>
+		<th class="colFirst">Type</th>
+		<th class="colSecond">Name</th>
+		<th class="colSecond">Description</th>
+		<th class="colLast">Flags</th>
+	</tr>
+	%LD_MEMBERLIST%
+</table>

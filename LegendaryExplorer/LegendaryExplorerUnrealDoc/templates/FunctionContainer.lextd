@@ -1,0 +1,10 @@
+﻿<!-- FUNCTIONS-->
+<h3 id="functions">Functions</h3>
+<table class="membersummary">
+	<tr>
+		<th class="colFirst">Return type</th>
+		<th class="colSecond">Signature</th>
+		<th class="colLast">Description</th>
+	</tr>
+	%LD_FUNCTIONLIST%
+</table>

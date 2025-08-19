@@ -730,13 +730,54 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 if (Success == false)
                     return Error("Error in function parameters.", node.StartPos, node.EndPos);
 
-                if (node.FriendlyName is not null //true in ME1, ME2, LE1, LE2, and UDK
-                 && node.IsOperator)
+                if (node.IsOperator && node.FriendlyName is not null)
                 {
+                    if (node.Outer is State state)
+                    {
+                        return Error("Cannot define an operator in a State", node.StartPos, node.EndPos);
+                    }
                     TokenType operatorType = OperatorHelper.FriendlyNameToTokenType(node.FriendlyName);
                     if (operatorType is TokenType.INVALID)
                     {
-                        return Error($"{node.FriendlyName} is not one of the allowed operator symbols!", node.StartPos, node.EndPos);
+                        if (!OperatorHelper.IsValidWordOperator(node.FriendlyName))
+                        {
+                            return Error($"{node.FriendlyName} is not one of the allowed operator symbols!", node.StartPos, node.EndPos);
+                        }
+                        operatorType = TokenType.Word;
+                    }
+                    if (node.Parameters.Count is 0)
+                    {
+                        return Error($"{node.Name} is declared as an operator, so it must have either 1 or 2 parameters!", node.StartPos, node.EndPos);
+                    }
+                    switch (operatorType)
+                    {
+                        case TokenType.AddAssign:
+                        case TokenType.SubAssign:
+                        case TokenType.MulAssign:
+                        case TokenType.DivAssign:
+                        case TokenType.StrConcatAssign:
+                        case TokenType.StrConcAssSpace:
+                        case TokenType.Increment:
+                        case TokenType.Decrement:
+                            if (!node.Parameters[0].IsOut)
+                            {
+                                return Error($"The first parameter of a '{node.FriendlyName}' operator must be an out parameter.", node.StartPos, node.EndPos);
+                            }
+                            break;
+                        case TokenType.And:
+                        case TokenType.Or:
+                            Log.LogWarning($"User implemented '{node.FriendlyName}' operators will not short-circuit like the built-in bool version.", node.StartPos, node.EndPos);
+                            goto default;
+                        default:
+                            if (node.Parameters[0].IsOut)
+                            {
+                                return Error($"The first parameter of a '{node.FriendlyName}' operator cannot be an out parameter.", node.StartPos, node.EndPos);
+                            }
+                            break;
+                    }
+                    if (node.Parameters.Count is 2 && node.Parameters[1].IsOut)
+                    {
+                        return Error($"The second parameter of a '{node.FriendlyName}' operator cannot be an out parameter.", node.StartPos, node.EndPos);
                     }
                     if (node.Flags.Has(EFunctionFlags.PreOperator))
                     {
@@ -744,21 +785,43 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             return Error($"{node.Name} is declared as a prefix operator, so it must have exactly one parameter!", node.StartPos, node.EndPos);
                         }
-                        Symbols.AddOperator(new PreOpDeclaration(operatorType, node.ReturnType, node.NativeIndex, node.Parameters[0]) { Implementer = node });
+                        var opDecl = new PreOpDeclaration(operatorType, node.ReturnType, node.NativeIndex, node.Parameters[0])
+                        {
+                            Implementer = node
+                        };
+                        if (!Symbols.TryAddOperator(opDecl))
+                        {
+                            return Error($"A '{node.FriendlyName}' preoperator with parameter of type '{node.Parameters[0].VarType.DisplayName()}' already exists.", node.StartPos, node.EndPos);
+                        }
                     }
                     else
                     {
                         switch (node.Parameters.Count)
                         {
                             case 1:
-                                Symbols.AddOperator(new PostOpDeclaration(operatorType, node.ReturnType, node.NativeIndex, node.Parameters[0]) { Implementer = node });
-                                break;
-                            case 2:
-                                Symbols.AddOperator(new InOpDeclaration(operatorType, node.OperatorPrecedence, node.NativeIndex, node.ReturnType, node.Parameters[0], node.Parameters[1])
+                                var postOpDecl = new PostOpDeclaration(operatorType, node.ReturnType, node.NativeIndex, node.Parameters[0])
                                 {
                                     Implementer = node
-                                });
-                                Symbols.InFixOperatorSymbols.Add(operatorType);
+                                };
+                                if (!Symbols.TryAddOperator(postOpDecl))
+                                {
+                                    return Error($"A '{node.FriendlyName}' postoperator with parameter of type '{node.Parameters[0].VarType.DisplayName()}' already exists.", node.StartPos, node.EndPos);
+                                }
+                                break;
+                            case 2:
+                                if (operatorType is TokenType.Equals or TokenType.NotEquals 
+                                    && node.Parameters[0].VarType is Struct structA && node.Parameters[0].VarType == structA && structA.Name is not ("Rotator" or "Vector"))
+                                {
+                                    return Error("Cannot overload built-in struct equality operator!");
+                                }
+                                var inOpDecl = new InOpDeclaration(operatorType, node.OperatorPrecedence, node.NativeIndex, node.ReturnType, node.Parameters[0], node.Parameters[1])
+                                {
+                                    Implementer = node
+                                };
+                                if (!Symbols.TryAddOperator(inOpDecl))
+                                {
+                                    return Error($"A '{node.FriendlyName}' operator with parameters of type '{node.Parameters[0].VarType.DisplayName()}' and '{node.Parameters[1].VarType.DisplayName()}' already exists.", node.StartPos, node.EndPos);
+                                }
                                 break;
                             default:
                                 return Error($"{node.Name} is declared as an operator, so it must have either 1 or 2 parameters!", node.StartPos, node.EndPos);

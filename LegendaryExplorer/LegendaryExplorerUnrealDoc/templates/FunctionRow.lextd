@@ -1,0 +1,11 @@
+﻿<tr class="%LD_ROWCLASS%">
+	<td class="colfirst">
+		<code>%LD_FUNCTIONRETURNTYPE%</code>
+	</td>
+	<td class="colsecond">
+		<p class="ld_membername">%LD_FUNCTIONSIGNATURE%</p>
+	</td>
+	<td  class="collast">
+		<p class="ld_memberdoc">%LD_FUNCTIONDOC%</p>
+	</td>
+</tr>

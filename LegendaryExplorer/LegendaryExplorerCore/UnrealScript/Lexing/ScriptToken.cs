@@ -72,7 +72,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         RightShift,     // >>  also vector reverse rotate   //is matched manually in the parser. conflicts with arrays of delegates: array<delegate<somefunc>>
         LeftShift,      // <<  also vector rotate
         ExclamationMark,// !
-        VectorTransform,// >>>
+        TripleRightShift,// >>>
         DotProduct,     //Dot
         CrossProduct,   //Cross
         ClockwiseFrom,  //ClockwiseFrom

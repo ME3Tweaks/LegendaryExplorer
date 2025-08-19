@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.Tools.AssetDatabase.Filters
@@ -26,6 +27,53 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Filters
         {
             var anyTrue = mr.MatSettings.Any(s => s.Name == PropertyName && s.Parm2 == "True");
             return anyTrue ^ Inverted;
+        }
+    }
+
+    /// <summary>
+    /// Specification to filter materials on class
+    /// </summary>
+    public class MaterialClassSpec : AssetSpecification<MaterialRecord>
+    {
+        /// <summary>
+        /// If this filters Materials or MaterialInstances.
+        /// </summary>
+        public bool IsMaterial { get; set; }
+
+        public override bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                if (SetProperty(ref _isSelected, value) && !IsMaterial)
+                {
+                    Settings.AssetDB_HideMICs = value;
+                } 
+            }
+        }
+
+        public MaterialClassSpec(string filterName, bool isMaterial)
+        {
+            FilterName = filterName;
+            IsMaterial = isMaterial;
+
+            if (!IsMaterial)
+            {
+                IsSelected = Settings.AssetDB_HideMICs;
+            }
+            else
+            {
+                // Materials are always shown by default
+                IsSelected = false; // true = hide
+            }
+        }
+
+        public override bool MatchesSpecification(MaterialRecord item)
+        {
+            var isInstance = item.MatSettings.Any(x => x.Name == "IsInstance" && x.Parm1 == "true");
+            // If this filter is for materials, and we have are looking at an instance, we return TRUE because we want it to show up, because
+            // this filter is for hiding things. So we invert the result
+            return !(IsMaterial ^ isInstance);
         }
     }
 

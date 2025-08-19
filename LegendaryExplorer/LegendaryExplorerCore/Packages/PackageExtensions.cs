@@ -5,9 +5,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using CommunityToolkit.HighPerformance;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
@@ -93,7 +95,7 @@ namespace LegendaryExplorerCore.Packages
                     //matching ifp, but wrong class. fall back to linear search
                     foreach (IEntry ent in pcc.Exports.Concat<IEntry>(pcc.Imports))
                     {
-                        if (ent.ObjectName == name && ent.InstancedFullPath.CaseInsensitiveEquals(instancedFullPath) 
+                        if (ent.ObjectName == name && ent.InstancedFullPath.CaseInsensitiveEquals(instancedFullPath)
                                                    && ent.ClassName.CaseInsensitiveEquals(className))
                         {
                             return ent;
@@ -539,7 +541,7 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
         }
-        
+
         private readonly struct ReferenceFinder : IUIndexAction
         {
             private readonly int CurrentExportUIndex;
@@ -912,6 +914,7 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
+        [Obsolete("Use Relinker.RepointObject() instead, it has much more reliable code.")]
         public static int ReplaceAllReferencesToThisOne(this IEntry baseEntry, IEntry replacementEntry)
         {
             int rcount = 0;
@@ -1031,7 +1034,7 @@ namespace LegendaryExplorerCore.Packages
         {
             private readonly int UIndexToReplace;
             private readonly int ReplacementUIndex;
-            
+
             //this is the c# version of a pointer to an int
             public readonly Box<int> ReplacementCount;
 
@@ -1077,5 +1080,97 @@ namespace LegendaryExplorerCore.Packages
         public static T GetBinaryData<T>(this ExportEntry export) where T : ObjectBinary, new() => ObjectBinary.From<T>(export);
 
         public static T GetBinaryData<T>(this ExportEntry export, PackageCache packageCache) where T : ObjectBinary, new() => ObjectBinary.From<T>(export, packageCache);
+
+
+
+        // ObjectReference tools are ported from M3/M3C/LE2R
+
+        /// <summary>
+        /// Creates an empty ObjectReferencer if none exists - if one exists, it returns that instead
+        /// </summary>
+        /// <param name="package">Package to operate on</param>
+        /// <returns>Export of an export referencer</returns>
+        public static ExportEntry CreateObjectReferencer(this IMEPackage package, bool isStartupPackage = false, string objectReferencerName = null)
+        {
+            var referencer = package.Exports.FirstOrDefault(x => x.ClassName == @"ObjectReferencer" && (objectReferencerName == null || x.ObjectName == objectReferencerName));
+            if (referencer != null) return referencer;
+
+            var rop = new RelinkerOptionsPackage() { Cache = new PackageCache() };
+            var referencerName = (package.Game.IsGame2() || !isStartupPackage)
+                ? @"ObjectReferencer"
+                : @"CombinedStartupReferencer";
+            if (objectReferencerName != null)
+            {
+                referencerName += "_" + objectReferencerName;
+            }
+
+            if (package.Game.IsGame2())
+            {
+                // 2 just uses objectreferencer
+                referencer = new ExportEntry(package, 0, package.GetNextIndexedName(referencerName), properties: new PropertyCollection() { new ArrayProperty<ObjectProperty>(@"ReferencedObjects") })
+                {
+                    Class = EntryImporter.EnsureClassIsInFile(package, @"ObjectReferencer", rop)
+                };
+            }
+            else
+            {
+                // 3 uses both ObjectReferencer for normal packages and CombinedStartupReferencer for startup files
+                // Startup files do not work if they use ObjectReferencer
+                referencer = new ExportEntry(package, 0, package.GetNextIndexedName(referencerName), properties: new PropertyCollection() { new ArrayProperty<ObjectProperty>(@"ReferencedObjects") })
+                {
+                    Class = EntryImporter.EnsureClassIsInFile(package, @"ObjectReferencer", rop)
+                };
+                if (isStartupPackage)
+                {
+                    referencer.indexValue = 0;
+                }
+            }
+
+            referencer.WriteProperty(new ArrayProperty<ObjectProperty>(@"ReferencedObjects"));
+            package.AddExport(referencer);
+            return referencer;
+        }
+
+        /// <summary>
+        /// Adds the specified export to the object referencer in the package.
+        /// </summary>
+        /// <param name="entry">The export to add</param>
+        public static void AddToObjectReferencer(this ExportEntry entry)
+        {
+            var referencer = entry.FileRef.CreateObjectReferencer();
+            AddObjectsToReferencer(referencer, [entry]);
+        }
+
+        /// <summary>
+        /// Adds the specified entries to the specified object referencer.
+        /// </summary>
+        /// <param name="referencer">Object referencer object to add references to</param>
+        /// <param name="entries">Entries to add</param>
+        // Not marked as an extension method because this is pretty specific to the export type.
+        // This has uses outside of LEC where different object referencers are used to pull content around
+        // so do not remove this.
+        public static void AddObjectsToReferencer(ExportEntry referencer, List<ExportEntry> entries)
+        {
+            var refs = referencer.GetProperty<ArrayProperty<ObjectProperty>>(@"ReferencedObjects") ?? new ArrayProperty<ObjectProperty>(@"ReferencedObjects");
+            refs.AddRange(entries.Select(x => new ObjectProperty(x)));
+            refs.Values = refs.Values.Distinct().ToList(); // Make sure we don't add duplicates
+            referencer.WriteProperty(refs);
+        }
+
+        /// <summary>
+        /// Adds the specified entries to the package's object referencer. If there is no object referencer, one is created.
+        /// </summary>
+        /// <param name="package">Package to add a reference to</param>
+        /// <param name="entries">Entries to add</param>
+        /// <exception cref="Exception">If this package is marked as Map in its flags</exception>
+        public static void AddObjectsToReferencer(this IMEPackage package, List<ExportEntry> entries)
+        {
+            if ((package.Flags & UnrealFlags.EPackageFlags.Map) != 0)
+            {
+                throw new Exception("You cannot add objects to an ObjectReferencer if the package is marked as Map.");
+            }
+            var referencer = package.CreateObjectReferencer();
+            AddObjectsToReferencer(referencer, entries);
+        }
     }
 }

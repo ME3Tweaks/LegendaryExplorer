@@ -1,0 +1,20 @@
+﻿<div class="header">
+	<h2 class="title">Struct <i>%LD_STRUCTNAME%</i></h2>
+	%LD_STRUCTEXTENSIONINFO%
+	<p>Defined in %LD_STRUCTCLASSDEF%</p>
+</div>
+<div class="contentContainer">
+	<hr>
+	<p>%LD_DESCRIPTION%</p>
+		<!-- VARIABLES-->
+		<h3>Variables</h3>
+		<table class="membersummary">
+		<tr>
+			<th class="colFirst">Type</th>
+			<th class="colSecond">Name</th>
+			<th class="colSecond">Description</th>
+			<th class="colLast">Flags</th>
+		</tr>
+		%LD_MEMBERLIST%
+	</table>
+</div>

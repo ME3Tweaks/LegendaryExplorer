@@ -1,0 +1,13 @@
+﻿<div class="header">
+	<h2>%LD_GAME% DocuDB</h2>
+	<p>This is the homepage for the community documentation of UnrealScript that is contained within the vanilla files of %LD_GAME%.</p>
+</div>
+<div class="contentContainer">
+	<hr>
+		<ul>
+			<li><a href="packages/index.html">Packages</a></li>
+			<li><a href="classes/index.html">Classes</a></li>
+			<li><a href="structs/index.html">Structs</a></li>
+			<li><a href="enums/index.html">Enums</a></li>
+		</ul>
+	</div>

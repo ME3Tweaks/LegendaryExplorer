@@ -131,9 +131,7 @@ public class FGPUSkinVertexFactoryShaderParameters : FVertexFactoryShaderParamet
         sc.SerializeUnmanaged(ref MeshOrigin);
         sc.SerializeUnmanaged(ref MeshExtension);
 
-        // TODO: Verify this.
-        // Not in LE2 - Serialization of Decal subclass at 0x7ff7c627a160 does not show this
-        if (sc.Game != MEGame.LE2)
+        if (sc.Game is MEGame.LE3)
         {
             sc.SerializeUnmanaged(ref WoundEllipse0);
             sc.SerializeUnmanaged(ref WoundEllipse1);

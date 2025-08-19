@@ -338,7 +338,7 @@ public partial class BinaryInterpreterWPF
     private BinInterpNode ReadShaderParameters(EndianReader bin, string shaderType, out Exception exception)
     {
         exception = null;
-        if (CurrentLoadedExport.Game is not MEGame.LE3 or MEGame.UDK)
+        if (!CurrentLoadedExport.Game.IsLEGame())
         {
             return null;
         }
@@ -365,19 +365,7 @@ public partial class BinaryInterpreterWPF
                 case "FGFxPixelShaderSDRGFx_PS_CxformTextureMultiply": // Verified LE2
                 case "FGFxPixelShaderSDRGFx_PS_CxformTexture": // Verified LE2
                 case "FGFxPixelShaderSDRGFx_PS_SolidColor": // Verified LE2
-                    for (int i = 0; i < 4; i++)
-                    {
-                        node.Items.Add(FShaderResourceParameter($"TextureParams[{i}]"));
-                    }
-                    node.Items.Add(FShaderParameter("ConstantColor"));
-                    node.Items.Add(FShaderParameter("ColorScale"));
-                    node.Items.Add(FShaderParameter("ColorBias"));
-                    node.Items.Add(FShaderParameter("InverseGamma"));
-                    if (CurrentLoadedExport.Game == MEGame.LE2)
-                    {
-                        // Constructor at 7ff7c696ddb0
-                        node.Items.Add(FShaderParameter("HDRBrightnessScale"));
-                    }
+                    FGFxPixelShader();
                     break;
                 case "THeightFogPixelShader<4>": // Verified LE2
                 case "THeightFogPixelShader<1>": // Verified LE2
@@ -492,22 +480,7 @@ public partial class BinaryInterpreterWPF
                 case "FGFxPixelShaderHDRGFx_PS_TextTextureColor": // Verified LE2
                 case "FGFxPixelShaderHDRGFx_PS_TextTexture": // Verified LE2
                 case "FGFxPixelShaderHDRGFx_PS_SolidColor": // Verified LE2
-                    for (int i = 0; i < 4; i++)
-                    {
-                        if (CurrentLoadedExport.Game == MEGame.LE2)
-                        {
-                            node.Items.Add(FShaderResourceParameterIndexed($"TextureImage", i));
-                        }
-                        else if (CurrentLoadedExport.Game == MEGame.LE3)
-                        {
-                            // Todo: Review this parameter name
-                            node.Items.Add(FShaderResourceParameter($"TextureParams[{i}]"));
-                        }
-                    }
-                    node.Items.Add(FShaderParameter("ConstantColor"));
-                    node.Items.Add(FShaderParameter("ColorScale"));
-                    node.Items.Add(FShaderParameter("ColorBias"));
-                    node.Items.Add(FShaderParameter("InverseGamma"));
+                    FGFxPixelShader();
                     node.Items.Add(FShaderParameter("HDRBrightnessScale"));
                     break;
                 case "FDownsampleSceneDepthPixelShader":
@@ -629,7 +602,10 @@ public partial class BinaryInterpreterWPF
                 case "TFilterPixelShader<1>":
                     node.Items.Add(FShaderResourceParameter("FilterTexture"));
                     node.Items.Add(FShaderParameter("SampleWeights"));
-                    node.Items.Add(FShaderParameter("SampleMaskRect"));
+                    if (Pcc.Game is MEGame.LE3)
+                    {
+                        node.Items.Add(FShaderParameter("SampleMaskRect"));
+                    }
                     break;
                 case "FShadowVolumeVertexShader":
                     node.Items.Add(FShaderParameter("LightPosition"));
@@ -780,8 +756,11 @@ public partial class BinaryInterpreterWPF
                     break;
                 case "FUberPostProcessVertexShader":
                     node.Items.Add(FShaderParameter("SceneCoordinate1ScaleBias"));
-                    node.Items.Add(FShaderParameter("SceneCoordinate2ScaleBias"));
-                    node.Items.Add(FShaderParameter("SceneCoordinate3ScaleBias"));
+                    if (Pcc.Game is MEGame.LE3)
+                    {
+                        node.Items.Add(FShaderParameter("SceneCoordinate2ScaleBias"));
+                        node.Items.Add(FShaderParameter("SceneCoordinate3ScaleBias"));
+                    }
                     break;
                 case "TModShadowVolumePixelShaderFSpotLightPolicy":
                     FModShadowVolumePixelShader_Maybe();
@@ -1640,12 +1619,26 @@ public partial class BinaryInterpreterWPF
         BinInterpNode FMaterialPixelShaderParameters(string name)
         {
             var super = FMaterialShaderParameters(name, "FMaterialPixelShaderParameters");
+            if (Pcc.Game is MEGame.LE3)
+            {
+                super.Items.AddRange(
+                [
+                    MakeArrayNode(bin, "UniformPixelScalarShaderParameters", _ => TUniformParameter(FShaderParameter)),
+                    MakeArrayNode(bin, "UniformPixelVectorShaderParameters", _ => TUniformParameter(FShaderParameter)),
+                    MakeArrayNode(bin, "UniformPixel2DShaderResourceParameters", _ => TUniformParameter(FShaderResourceParameter)),
+                    MakeArrayNode(bin, "UniformPixelCubeShaderResourceParameters", _ => TUniformParameter(FShaderResourceParameter)),
+                ]);
+            }
+            else
+            {
+                super.Items.AddRange(
+                [
+                    MakeArrayNode(bin, "UniformPixelShaderParameters", _ => TUniformParameter(FShaderParameter)),
+                    MakeArrayNode(bin, "UniformPixelShaderResourceParameters", _ => TUniformParameter(FShaderResourceParameter)),
+                ]);
+            }
             super.Items.AddRange(
             [
-                MakeArrayNode(bin, "UniformPixelScalarShaderParameters", _ => TUniformParameter(FShaderParameter)),
-                MakeArrayNode(bin, "UniformPixelVectorShaderParameters", _ => TUniformParameter(FShaderParameter)),
-                MakeArrayNode(bin, "UniformPixel2DShaderResourceParameters", _ => TUniformParameter(FShaderResourceParameter)),
-                MakeArrayNode(bin, "UniformPixelCubeShaderResourceParameters", _ => TUniformParameter(FShaderResourceParameter)),
                 FShaderParameter("LocalToWorld"),
                 FShaderParameter("WorldToLocal"),
                 FShaderParameter("WorldToView"),
@@ -1663,30 +1656,59 @@ public partial class BinaryInterpreterWPF
                 FShaderParameter("ScreenDoorFadeSettings"),
                 FShaderParameter("ScreenDoorFadeSettings2"),
                 FShaderResourceParameter("ScreenDoorNoiseTexture"),
-                //false if any params in the related arrays have NumBytes != 16,
-                //or have differing BufferIndex values, or have Index values not in sequence,
-                //or have a BaseIndex value that is not the sum of the previous params BaseIndex and NumBytes values
-                MakeBoolIntNode(bin, "UniformPixelScalarShaderParameters is well formed?"),
-                MakeBoolIntNode(bin, "UniformPixelVectorShaderParameters is well formed?"),
-                FShaderParameter("WrapLightingParameters")
             ]);
+            if (Pcc.Game is MEGame.LE3)
+            {
+                super.Items.AddRange(
+                [
+                    //false if any params in the related arrays have NumBytes != 16,
+                    //or have differing BufferIndex values, or have Index values not in sequence,
+                    //or have a BaseIndex value that is not the sum of the previous params BaseIndex and NumBytes values
+                    MakeBoolIntNode(bin, "UniformPixelScalarShaderParameters is well formed?"),
+                    MakeBoolIntNode(bin, "UniformPixelVectorShaderParameters is well formed?"),
+                ]);
+            }
+            else
+            {
+                super.Items.AddRange(
+                [
+                    MakeInt32Node(bin, "unk int 1"),
+                    MakeBoolIntNode(bin, "UniformPixelShaderParameters is well formed?"),
+                    MakeInt32Node(bin, "unk int 2")
+                ]);
+            }
+            super.Items.Add(FShaderParameter("WrapLightingParameters"));
             return super;
         }
 
         BinInterpNode FMaterialVertexShaderParameters(string name)
         {
             var super = FMaterialShaderParameters(name, "FMaterialVertexShaderParameters");
-            super.Items.AddRange(
-            [
-                MakeArrayNode(bin, "UniformVertexScalarShaderParameters", _ => TUniformParameter(FShaderParameter)),
-                MakeArrayNode(bin, "UniformVertexVectorShaderParameters", _ => TUniformParameter(FShaderParameter)),
-            ]);
+            if (Pcc.Game is MEGame.LE3)
+            {
+                super.Items.AddRange(
+                [
+                    MakeArrayNode(bin, "UniformVertexScalarShaderParameters", _ => TUniformParameter(FShaderParameter)),
+                    MakeArrayNode(bin, "UniformVertexVectorShaderParameters", _ => TUniformParameter(FShaderParameter)),
+                ]);
+            }
+            else
+            {
+                super.Items.Add(MakeArrayNode(bin, "UniformVertexShaderParameters", _ => TUniformParameter(FShaderParameter)));
+            }
             return super;
         }
 
         BinInterpNode TUniformParameter(Func<string, BinInterpNode> parameter)
         {
-            return parameter($"[{bin.ReadInt32()}]");
+            if (Pcc.Game is MEGame.LE3)
+            {
+                return parameter($"[{bin.ReadInt32()}]");
+            }
+            else
+            {
+                return parameter($"(Type {bin.ReadByte()}) [{bin.ReadInt32()}]");
+            }
         }
 
         IEnumerable<ITreeItem> FVertexFactoryShaderParameters(string vertexFactor)
@@ -1730,7 +1752,7 @@ public partial class BinaryInterpreterWPF
                     ];
                 case "FGPUSkinVertexFactory":
                 case "FGPUSkinMorphVertexFactory":
-                    return
+                    List<BinInterpNode> gpuSkinParams = 
                     [
                         FShaderParameter("LocalToWorld"),
                         FShaderParameter("WorldToLocal"),
@@ -1738,9 +1760,16 @@ public partial class BinaryInterpreterWPF
                         FShaderParameter("MaxBoneInfluences"),
                         FShaderParameter("MeshOrigin"),
                         FShaderParameter("MeshExtension"),
-                        FShaderParameter("WoundEllipse0"),
-                        FShaderParameter("WoundEllipse1"),
                     ];
+                    if (Pcc.Game is MEGame.LE3)
+                    {
+                        gpuSkinParams.AddRange(
+                        [
+                            FShaderParameter("WoundEllipse0"),
+                            FShaderParameter("WoundEllipse1")
+                        ]);
+                    }
+                    return gpuSkinParams;
                 case "FInstancedStaticMeshVertexFactory":
                     return
                     [
@@ -2163,8 +2192,11 @@ public partial class BinaryInterpreterWPF
             FDOFAndBloomBlendPixelShader();
             node.Items.Add(FColorRemapShaderParameters("MaterialParameters"));
             node.Items.Add(FGammaShaderParameters("GammaParameters"));
-            node.Items.Add(FShaderResourceParameter("LowResSceneBuffer"));
-            node.Items.Add(FShaderParameter("HalfResMaskRec"));
+            if (Pcc.Game is MEGame.LE3)
+            {
+                node.Items.Add(FShaderResourceParameter("LowResSceneBuffer"));
+                node.Items.Add(FShaderParameter("HalfResMaskRect"));
+            }
             node.Items.Add(FMotionBlurShaderParameters("MotionBlurParameters"));
         }
 
@@ -2294,6 +2326,18 @@ public partial class BinaryInterpreterWPF
         void FConstantDensityPolicy_VertexShaderParametersType()
         {
             node.Items.Add(FFogVolumeVertexShaderParameters());
+        }
+
+        void FGFxPixelShader()
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                node.Items.Add(FShaderResourceParameter($"TextureParams[{i}]"));
+            }
+            node.Items.Add(FShaderParameter("ConstantColor"));
+            node.Items.Add(FShaderParameter("ColorScale"));
+            node.Items.Add(FShaderParameter("ColorBias"));
+            node.Items.Add(FShaderParameter("InverseGamma"));
         }
     }
 

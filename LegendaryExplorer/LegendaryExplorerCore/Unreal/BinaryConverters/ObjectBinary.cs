@@ -236,6 +236,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
+        /// <summary>
+        /// Makes writing binary edit code a bit easier if you need to just quickly edit it.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="export"></param>
+        /// <param name="changeDelegate"></param>
+        public static void EditBinary<T>(ExportEntry export, Action<T> changeDelegate) where T : ObjectBinary, new()
+        {
+            var bin = From<T>(export);
+            changeDelegate(bin);
+            export.WriteBinary(bin);
+        }
+
         //special purpose version of IsA used to avoid multiple lookups
         private static bool IsEither(string className, MEGame game, string baseClass1, string baseClass2)
         {

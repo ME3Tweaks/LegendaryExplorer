@@ -1,0 +1,91 @@
+﻿<html>
+	<head>
+		<!-- Font -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+				<link href="https://fonts.googleapis.com/css2?family=Cal+Sans&family=Montserrat:wght@200&display=swap" rel="stylesheet">
+
+					<!-- Metadata-->
+					<meta property="og:type" content="website" />
+					<title>Legendary Explorer DocuDB</title>
+					<link rel="icon" type="image/x-icon" href="images/favicon.ico">
+						<meta name="og:title" content="Legendary Explorer DocuDB"/>
+						<meta name="description" content="Homepage for community documentation for Mass Effect Legendary Edition UnrealScript"/>
+						<meta name="og:description" content="Homepage for community documentation for Mass Effect Legendary Edition UnrealScript"/>
+						<meta name="og:url" content="https://me3tweaks.github.io/LegendaryExplorer/unrealdoc/index.html"/>
+						<meta name="og:image" content="images/favicon.ico"/>
+
+						<!-- Stylesheet-->
+						<style>
+
+							.center {
+							margin: auto;
+							display: flex;
+							justify-content: center;
+							align-items: center;
+							}
+
+							p {
+							color: white;
+							text-align: center;
+							max-width: 500px;
+							font-family: "Cal Sans", sans-serif;
+							font-weight: 400;
+							font-style: normal;
+							font-size: 1.25em;
+							text-shadow: 1px 1px 1px black;
+							}
+
+							.docudb {
+							margin-top: 100px;
+							margin-bottom: 25px;
+							max-width: 600px;
+							}
+
+							.db {
+							max-width: 128px;
+							}
+
+							.middledb {
+							margin-left: 10px;
+							margin-right: 10px;
+							}
+
+							body {
+							background: url('images/home.jpg') fixed no-repeat center;
+							background-size: cover;
+							}
+
+							.dblist {
+							margin: auto;
+							display: flex;
+							justify-content: center;
+							align-items: center;
+							max-width: 600px;
+							}
+
+							.selectgame {
+							margin-top: 15px;
+							margin-bottom: 15px;
+							}
+						</style>
+					</head>
+	<body>
+		<div>
+			<img class="docudb center" src="images/docudb.png">
+				<p class="center">This site contains community-made documentation for UnrealScript content in Mass Effect Legendary Edition.</p>
+				<p class="center selectgame">Select a game:</p>
+				<div class="dblist">
+					<a class="centerinline" href="LE1/index.html">
+						<img class="db" src="images/gameicons/LE1_Icon.ico">
+					</a>
+					<a class="centerinline" href="LE2/index.html">
+						<img class="db middledb" src="images/gameicons/LE2_Icon.ico">
+					</a>
+					<a class="centerinline" href="LE3/index.html">
+						<img class="db" src="images/gameicons/LE3_Icon.ico">
+					</a>
+				</div>
+			</div>
+	</body>
+</html>
