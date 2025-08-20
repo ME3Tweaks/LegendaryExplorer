@@ -25,7 +25,7 @@ var namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters =
     [ "BioStateEventMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map" ],
     [ "BioTlkFileSet", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_tlk_file_set.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_tlk_file_set" ],
     [ "Box", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box" ],
-    [ "BoxSphereBounds", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds" ],
+    [ "BoxSphereBounds", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds" ],
     [ "BrushComponent", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_brush_component.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_brush_component" ],
     [ "BspNode", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_node.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_node" ],
     [ "BspSurf", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_surf.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_surf" ],

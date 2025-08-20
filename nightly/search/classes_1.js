@@ -68,7 +68,7 @@ var searchData=
   ['boolproperty_65',['BoolProperty',['../class_legendary_explorer_core_1_1_unreal_1_1_bool_property.html',1,'LegendaryExplorerCore::Unreal']]],
   ['box_66',['Box',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
   ['box_3c_20int_20_3e_67',['Box&lt; int &gt;',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
-  ['boxspherebounds_68',['BoxSphereBounds',['../struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
+  ['boxspherebounds_68',['BoxSphereBounds',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
   ['breakstatement_69',['BreakStatement',['../class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_break_statement.html',1,'LegendaryExplorerCore::UnrealScript::Language::Tree']]],
   ['brushcomponent_70',['BrushComponent',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_brush_component.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
   ['bspnode_71',['BspNode',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_node.html',1,'LegendaryExplorerCore::Unreal::BinaryConverters']]],
