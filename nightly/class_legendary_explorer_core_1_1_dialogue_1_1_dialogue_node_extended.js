@@ -16,7 +16,7 @@ var class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended =
     [ "TransitionParam", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html#a2567fac3d1ac25980ec609099baa1c76", null ],
     [ "TransitionPlotPath", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html#a94feb33d32a61027c0ea2f8343c0cef3", null ],
     [ "SpeakerTag", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html#a49930ee318c92017cdfb2a0bc8e6cbcd", null ],
-    [ "Interpdata", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html#ae561f2279bf664ba583862baa38704c7", null ],
+    [ "InterpData", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html#a3029c7f1adda52572396ee0ee9b74a5b", null ],
     [ "InterpLength", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html#a2e17189515836a442f8e089f253e318f", null ],
     [ "WwiseStream_Male", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html#afeef9237fd4e4ebc2ab4f0372a611c50", null ],
     [ "WwiseStream_Female", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html#a6bd7debdc5f6d4a60d415ebeec82b070", null ],

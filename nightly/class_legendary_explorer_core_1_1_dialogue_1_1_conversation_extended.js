@@ -19,7 +19,7 @@ var class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended =
     [ "GetFaceFX", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a7c81a649d91e6d5e678a3a528a6def25", null ],
     [ "SerializeNodes", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a5339b0251908731f2187e5dde2f348d1", null ],
     [ "AutoGenerateSpeakerArrays", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a2f9719ae1260878c026aaacf1148c79b", null ],
-    [ "ExportUID", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aae9805fc67078b934cc83975f3e16422", null ],
+    [ "UIndex", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#abb85f91f2cea0983bcb33639bf7c6400", null ],
     [ "BioConvo", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#af0e31b32880967da37936f56e81ea636", null ],
     [ "Export", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#a86340273f644e2e9ed8adbc0559508ec", null ],
     [ "ConvName", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html#aad69671d02d18c6f56201f3d17e88519", null ],

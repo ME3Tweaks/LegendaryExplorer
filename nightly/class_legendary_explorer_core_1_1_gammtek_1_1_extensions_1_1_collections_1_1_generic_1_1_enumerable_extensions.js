@@ -15,6 +15,9 @@ var class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1
     [ "TakeLastWhile< TSource >", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_enumerable_extensions.html#aa20a1a585a1a94b9c25d5bdf84fc6037", null ],
     [ "TakeLastWhileTest< TSource >", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_enumerable_extensions.html#ad678b52b6160630e38485ac851c1f31b", null ],
     [ "TakeLastWhile< TSource >", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_enumerable_extensions.html#a2399c875ce6f42fb443a9dee7b0854e2", null ],
-    [ "Split< T >", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_enumerable_extensions.html#ad62e451c530593f01c0017947b0ccf21", null ],
+    [ "Split< T >", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_enumerable_extensions.html#a0aea9869e2e9362db13b48e6f292c3f6", null ],
+    [ "Flatten< T >", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_enumerable_extensions.html#a2bfac4bbaa9eaae057886d90f54d7954", null ],
+    [ "Flatten< T >", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_enumerable_extensions.html#a894ff3adf1bcf43bbde24fb61dd41217", null ],
+    [ "Flatten< T >", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_enumerable_extensions.html#a37a2185781f8df1a3b7434814d23182d", null ],
     [ "List< T >", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_generic_1_1_enumerable_extensions.html#af85fd6314103cc60e3934a45d87fac91", null ]
 ];
