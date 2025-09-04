@@ -85,6 +85,12 @@
                     <Button Command="{Binding DumpGameCommand}" Content="Dump Game" Width="79" Margin="2,5,0,5" HorizontalAlignment="Right"/>
                 </StackPanel>
             </DockPanel>
+            <DockPanel Margin="0,0,0,10">
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Command="{Binding DumpSpecificAudioFilesCommand}" Content="Dump specific audio files" Width="159" Margin="2,5,0,5"/>
+                    <Button Command="{Binding DumpGameAudioCommand}" Content="Dump Game Audio" Width="122" Height="19"/>
+                </StackPanel>
+            </DockPanel>
         </StackPanel>
     </StackPanel>
 </bases:TrackingNotifyPropertyChangedWindowBase>
