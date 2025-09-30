@@ -14,7 +14,6 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.IO;
