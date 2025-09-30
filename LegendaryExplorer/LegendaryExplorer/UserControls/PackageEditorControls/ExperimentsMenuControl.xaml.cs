@@ -1550,6 +1550,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsO.StreamFileExperiment(GetPEWindow());
         }
+        private void CreateConversation_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CreateConversationExperiment(GetPEWindow());
+        }
         #endregion
 
         // EXPERIMENTS: CHONKY DB---------------------------------------------------------

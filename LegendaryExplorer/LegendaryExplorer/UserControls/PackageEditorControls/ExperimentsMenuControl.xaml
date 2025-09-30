@@ -225,6 +225,7 @@
         <MenuItem Header="Add Prefab to Level" Click="AddPrefabToLevel_Click" ToolTip="Creates instances of all the prefab archetypes of a Prefab into the file's persistent level."/>
         <MenuItem Header="Add Streaming Kismet" Click="AddStreamingKismet_Click" ToolTip="Adds a level streaming kismet to either TheWorld or PersistentLevel."/>
         <MenuItem Header="Stream File" Click="StreamFile_Click" ToolTip="Set the loading and streaming of the given file name in all the BioTriggerStreams where the conditional file is present."/>
+        <MenuItem Header="Add all stringrefs to BioConversation" Click="CreateConversation_Click" ToolTip="Adds all the stringrefs found in a BioTlkfile and will ask if each line is a reply or entry, and will create all nodes. "/>
     </MenuItem>
     <MenuItem Header="Object Database">
         <MenuItem Header="Build ME1 Object Database" Click="ChonkyDB_BuildME1GameDB"/>
