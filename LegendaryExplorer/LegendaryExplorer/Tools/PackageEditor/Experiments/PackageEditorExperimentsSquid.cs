@@ -13,6 +13,9 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Tga;
 using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
@@ -29,9 +32,12 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 {
     static internal class PackageEditorExperimentsSquid
     {
+        // the Mass Effect binary mesh format enforces there be a maximum of 4 bone influences per vertex
+        const int MaxBoneInfluences = 4;
+
         public static void ImportAnimSet(PackageEditorWindow pew)
         {
-            if(GetPsaFromFile(pew, out var psa, out var filePath))
+            if (GetPsaFromFile(pew, out var psa, out var filePath))
             {
                 var name = Path.GetFileNameWithoutExtension(filePath).Replace(" ", "_");
 
@@ -172,24 +178,18 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         newVert.TangentX = packedTangent;
 
                         // add in the bone influences
-                        var newBoneInfluenceIndices = new byte[4];
-                        var newBoneInfluenceWeights = new byte[4];
-                        var influences = tempVert.Weights.OrderByDescending(x => x.Weight).ToArray();
-                        // sum up all the influences so we can normalize them on import
-                        var sum = influences.Select(x => x.Weight).Sum();
-                        for (int j = 0; j < 4 && j < influences.Length; j++)
+                        byte GetMappedBoneIndex(PSK.PSKWeight influence)
                         {
                             var influence = influences[j];
 
                             var boneName = psk.Bones[influence.Bone].Name;
                             var meshBoneIndex = meshBin.RefSkeleton.FindIndex(x => x.Name == boneName);
-                            var mappedBoneIndex = LODChunk.BoneMap.IndexOf((ushort)meshBoneIndex);
-                            newBoneInfluenceIndices[j] = (byte)mappedBoneIndex;
-                            // normalize, convert to a byte with 0 being none and 255 being full
-                            newBoneInfluenceWeights[j] = (byte)Math.Round(influence.Weight * 255f / sum);
+                            return (byte)LODChunk.BoneMap.IndexOf((ushort)meshBoneIndex);
                         }
                         newVert.InfluenceBones = new Influences(newBoneInfluenceIndices[0], newBoneInfluenceIndices[1], newBoneInfluenceIndices[2], newBoneInfluenceIndices[3]);
                         newVert.InfluenceWeights = new Influences(newBoneInfluenceWeights[0], newBoneInfluenceWeights[1], newBoneInfluenceWeights[2], newBoneInfluenceWeights[3]);
+
+                        (newVert.InfluenceBones, newVert.InfluenceWeights) = DistributeWeights(tempVert.Weights.Select(x => (GetMappedBoneIndex(x), x.Weight)));
 
                         LOD.VertexBufferGPUSkin.VertexData[i] = newVert;
                     }
@@ -226,6 +226,64 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         meshExport.WriteProperty(newSocketsProp);
                     }
                 }
+            }
+
+            static (Influences bones, Influences influences) DistributeWeights(IEnumerable<(byte bone, float weight)> weights)
+            {
+                const byte totalInfluence = 255;
+                // we have some number of bone weights as floats
+                // we need to convert to 4 or fewer byte weights adding to exactly 255
+
+                // sort by influence descending
+                // drop any after the first 4
+                var contributingWeights = weights.OrderByDescending(x => x.weight).Take(MaxBoneInfluences).ToArray();
+                var sum = contributingWeights.Select(x => x.weight).Sum();
+                // normalize remaining to sum to 255 (float)
+                var floatWeights = contributingWeights.Select(x => (x.bone, floatWeight: x.weight * totalInfluence / sum)).ToArray();
+                // start with an empty array of exactly 4 full of byte zeros
+                var byteWeights = new byte[MaxBoneInfluences];
+                var boneIndices = new byte[MaxBoneInfluences];
+                // fill in the integer portions of each one
+                byte remaining = totalInfluence;
+                for (int i = 0; i < floatWeights.Length; i++)
+                {
+                    // copy the bone index
+                    boneIndices[i] = floatWeights[i].bone;
+                    // copy the integer portion of the float weight
+                    byteWeights[i] = (byte)floatWeights[i].floatWeight;
+                    // save the remainder of each weight
+                    floatWeights[i].floatWeight -= byteWeights[i];
+                    // change this to the index within the array; we will need it later
+                    floatWeights[i].bone = (byte)i;
+                    // keep track of the remaining amount to be distributed
+                    remaining -= byteWeights[i];
+                }
+
+                // apportion any remaining by greatest remaining non integer portion
+                if (remaining > 0)
+                {
+                    foreach (var (bone, floatWeight) in floatWeights.OrderByDescending(x => x.floatWeight))
+                    {
+                        if (remaining > 0)
+                        {
+                            byteWeights[bone] += 1;
+                            remaining--;
+                        }
+                    }
+                }
+
+                // if any of the influences fell to 0 in this process, clean up the bone index
+                for (int i = 0; i < MaxBoneInfluences; i++)
+                {
+                    if (byteWeights[i] == 0)
+                    {
+                        boneIndices[i] = 0;
+                    }
+                }
+
+                return (
+                    new Influences(boneIndices[0], boneIndices[1], boneIndices[2], boneIndices[3]),
+                    new Influences(byteWeights[0], byteWeights[1], byteWeights[2], byteWeights[3]));
             }
 
             static void SetupSkeleton(PSK psk, SkeletalMesh meshBin)
@@ -593,6 +651,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         {
                             chunk.maxBoneInfluences = weights.Count;
                         }
+                        // TODO limit this to the 4 influences highest influences?
                         foreach (var weight in weights)
                         {
                             chunk.InfluenceBones.Add((ushort)weight.Bone);
@@ -622,7 +681,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 LOD.Chunks = [..chunks.Select(x => new SkelMeshChunk
                 {
                     BaseVertexIndex = (uint)x.VertIndexStart,
-                    MaxBoneInfluences = x.maxBoneInfluences,
+                    MaxBoneInfluences = Math.Min(x.maxBoneInfluences, 4),
                     NumRigidVertices = x.RigidVerts,
                     NumSoftVertices = x.SoftVerts,
                     BoneMap = [.. x.InfluenceBones.Select(GetMeshBoneIndex).Order()]
