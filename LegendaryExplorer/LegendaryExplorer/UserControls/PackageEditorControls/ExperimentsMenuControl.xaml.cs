@@ -1397,6 +1397,26 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsSquid.SmoothMeshSeams(GetPEWindow());
         }
 
+        private void CalculateNormalBlue_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.CalculateNormalMapBlueChannel(GetPEWindow());
+        }
+
+        private void InvertGreenChannel_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.InvertGreenChannel(GetPEWindow());
+        }
+
+        private void MakeTransparent_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.MakeTransparent(GetPEWindow());
+        }
+
+        private void RemoveTranparency_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.RemoveTransparency(GetPEWindow());
+        }
+
         private void FixMisalignedSkeleton_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsSquid.FixMisallignedSkeleton(GetPEWindow());

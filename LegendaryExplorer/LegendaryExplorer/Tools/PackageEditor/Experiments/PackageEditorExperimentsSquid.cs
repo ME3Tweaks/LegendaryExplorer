@@ -180,21 +180,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         // add in the bone influences
                         byte GetMappedBoneIndex(PSK.PSKWeight influence)
                         {
-                            var influence = influences[j];
-
                             var boneName = psk.Bones[influence.Bone].Name;
                             var meshBoneIndex = meshBin.RefSkeleton.FindIndex(x => x.Name == boneName);
                             return (byte)LODChunk.BoneMap.IndexOf((ushort)meshBoneIndex);
                         }
-                        newVert.InfluenceBones = new Influences(newBoneInfluenceIndices[0], newBoneInfluenceIndices[1], newBoneInfluenceIndices[2], newBoneInfluenceIndices[3]);
-                        newVert.InfluenceWeights = new Influences(newBoneInfluenceWeights[0], newBoneInfluenceWeights[1], newBoneInfluenceWeights[2], newBoneInfluenceWeights[3]);
 
                         (newVert.InfluenceBones, newVert.InfluenceWeights) = DistributeWeights(tempVert.Weights.Select(x => (GetMappedBoneIndex(x), x.Weight)));
 
                         LOD.VertexBufferGPUSkin.VertexData[i] = newVert;
                     }
                 }
-
                 #endregion
 
                 /* things I have not implemented: 
@@ -1763,6 +1758,106 @@ defaultproperties
             if (sourceScalars != null) { targetExport.WriteProperty(targetScalars); }
         }
 
+        public static void CalculateNormalMapBlueChannel(PackageEditorWindow pew)
+        {
+            if (!GetSelectedItem(pew, "Texture2D", out var texExport))
+            {
+                ShowError("you must select a Texture2D export for this experiment");
+                return;
+            }
+
+            var tex = new Texture2D(texExport);
+            Image<Rgba32> normalMapImage = ToIsImage(tex);
+
+            for (var i = 0; i < normalMapImage.Width; i++)
+            {
+                for (var j = 0; j < normalMapImage.Height; j++)
+                {
+                    var pix = normalMapImage[i, j];
+
+                    var x = pix.R / 127.5f - 1;
+                    var y = pix.G / 127.5f - 1;
+                    var z = Math.Sqrt(1 - (x * x + y * y));
+
+                    normalMapImage[i, j] = new Rgba32(pix.R, pix.G, (byte)((z + 1) * 127.5), pix.A);
+                }
+            }
+
+            ReplaceTexture(texExport, normalMapImage);
+        }
+
+        public static void InvertGreenChannel(PackageEditorWindow pew)
+        {
+            if (!GetSelectedItem(pew, "Texture2D", out var texExport))
+            {
+                ShowError("you must select a Texture2D export for this experiment");
+                return;
+            }
+
+            var tex = new Texture2D(texExport);
+            Image<Rgba32> normalMapImage = ToIsImage(tex);
+
+            for (var i = 0; i < normalMapImage.Width; i++)
+            {
+                for (var j = 0; j < normalMapImage.Height; j++)
+                {
+                    var pix = normalMapImage[i, j];
+
+                    normalMapImage[i, j] = new Rgba32(pix.R, (byte)(255 - pix.G), pix.B, pix.A);
+                }
+            }
+
+            ReplaceTexture(texExport, normalMapImage);
+        }
+
+        public static void RemoveTransparency(PackageEditorWindow pew)
+        {
+            if (!GetSelectedItem(pew, "Texture2D", out var texExport))
+            {
+                ShowError("you must select a Texture2D export for this experiment");
+                return;
+            }
+
+            var tex = new Texture2D(texExport);
+            Image<Rgba32> normalMapImage = ToIsImage(tex);
+
+            for (var i = 0; i < normalMapImage.Width; i++)
+            {
+                for (var j = 0; j < normalMapImage.Height; j++)
+                {
+                    var pix = normalMapImage[i, j];
+
+                    normalMapImage[i, j] = new Rgba32(pix.R, pix.G, pix.B, (byte)255);
+                }
+            }
+
+            ReplaceTexture(texExport, normalMapImage);
+        }
+
+        public static void MakeTransparent(PackageEditorWindow pew)
+        {
+            if (!GetSelectedItem(pew, "Texture2D", out var texExport))
+            {
+                ShowError("you must select a Texture2D export for this experiment");
+                return;
+            }
+
+            var tex = new Texture2D(texExport);
+            Image<Rgba32> normalMapImage = ToIsImage(tex);
+
+            for (var i = 0; i < normalMapImage.Width; i++)
+            {
+                for (var j = 0; j < normalMapImage.Height; j++)
+                {
+                    var pix = normalMapImage[i, j];
+
+                    normalMapImage[i, j] = new Rgba32(pix.R, pix.G, pix.B, (byte)0);
+                }
+            }
+
+            ReplaceTexture(texExport, normalMapImage);
+        }
+
         public static void FixMisallignedSkeleton(PackageEditorWindow pew)
         {
             // pick two meshes
@@ -1855,13 +1950,13 @@ defaultproperties
                             // get the tangent space normal at the UV coordinate
                             var pixelNorm = ToNormalVector(GetPixel(sourceNormalMapImage, sourceVert.UV.X, sourceVert.UV.Y));
 
-                            // get the tangent sapce vectors for the source
+                            // get the tangent space vectors for the source
                             var sourceTangent = (Vector3)sourceVert.TangentX;
                             var sourceNormal = (Vector3)sourceVert.TangentZ;
-                            var sourceBitangent = Vector3.Cross(sourceNormal, sourceTangent) * (originalBitangentSign > 0 ? 1 : -1);
+                            var sourceBitangentSign = sourceVert.TangentZ.W > 0 ? 1 : -1;
 
                             // get the "actual" normal at this point from the source, taking into account the normal map
-                            vectorToMatch = ToWorldSpace(new Vector3(0, 0, 1), sourceTangent, sourceBitangent, sourceNormal);
+                            vectorToMatch = ToWorldSpace(pixelNorm, sourceTangent, sourceNormal, sourceBitangentSign);
                         }
                         else
                         {
@@ -1875,11 +1970,15 @@ defaultproperties
                             var pixelNorm = ToNormalVector(GetPixel(targetNormalMapImage, targetVert.UV.X, targetVert.UV.Y));
 
                             // get the tangent sapce vectors for the source
-                            var sourceTangent = (Vector3)targetVert.TangentX * (originalBitangentSign > 0 ? 1 : -1);
+                            var targetBitangentSign = targetVert.TangentZ.W > 0 ? 1 : -1;
+                            var sourceTangent = (Vector3)targetVert.TangentX * targetBitangentSign;
 
                             vectorToMatch = GetWorldSpaceVertexNormalAccountingForTargetNormalMap(pixelNorm, sourceTangent, vectorToMatch);
+
+                            // sanity checking. If this is correct, then we should be able to translate back from world space into tangent space for each
                         }
                         var targetVector = (PackedNormal)vectorToMatch;
+                        var originalBitangentSign = targetBin.LODModels[0].VertexBufferGPUSkin.VertexData[targetIndex].TangentZ.W;
                         targetBin.LODModels[0].VertexBufferGPUSkin.VertexData[targetIndex].TangentZ = new PackedNormal(targetVector.X, targetVector.Y, targetVector.Z, originalBitangentSign);
                     }
 
@@ -1912,7 +2011,7 @@ defaultproperties
             }
         }
 
-        private static Rgba32 GetPixel(SixLabors.ImageSharp.Image<Rgba32> img, float x, float y)
+        private static Rgba32 GetPixel(Image<Rgba32> img, float x, float y)
         {
             // clamp values between 0 and 1 by taking the modulo and adding 1 if needed to account for negative inputs
             x = ((x % 1) + 1) % 1;
@@ -1920,19 +2019,20 @@ defaultproperties
             return img[(int)(img.Width * x), (int)(img.Height * y)];
         }
 
-        private static SixLabors.ImageSharp.Image<Rgba32> ToIsImage(Texture2D tex)
+        private static Image<Rgba32> ToIsImage(Texture2D tex)
         {
             var rawPng = tex.GetPNG(tex.GetTopMip());
-            return SixLabors.ImageSharp.Image.Load<Rgba32>(rawPng);
+            return Image.Load<Rgba32>(rawPng);
         }
 
         private static Vector3 ToNormalVector(Rgba32 pixelValue)
         {
-            return Vector3.Normalize(new Vector3(pixelValue.R / 127.5f - 1, pixelValue.G  / 127.5f - 1, pixelValue.B / 127.5f - 1));
+            return Vector3.Normalize(new Vector3(pixelValue.R / 127.5f - 1, pixelValue.G / 127.5f - 1, pixelValue.B / 127.5f - 1));
         }
 
-        private static Vector3 ToWorldSpace(Vector3 v, Vector3 tangent, Vector3 bitangent, Vector3 normal)
+        private static Vector3 ToWorldSpace(Vector3 v, Vector3 tangent, Vector3 normal, int bitangentSign)
         {
+            var bitangent = Vector3.Cross(normal, tangent) * bitangentSign;
             return Vector3.Normalize(new Vector3(
                 v.X * tangent.X + v.Y * bitangent.X + v.Z * normal.X,
                 v.X * tangent.Y + v.Y * bitangent.Y + v.Z * normal.Y,
@@ -1959,18 +2059,18 @@ defaultproperties
             
             var Y = (D + (F * A) + (K * G) + (K * H * A)) / (1 - (F * B) - (K * H * B) - (K * I));
             var Z = (G + (H * A) + (J * D) + (J * F * A)) / (1 - (H * C) - (J * E) - (J * F * C));
-            var X = A + (B*Y)+C * Z;
+            var X = A + (B * Y) + C * Z;
             return Vector3.Normalize(new Vector3(X, Y, Z));
         }
 
-        //private static Vector3 ToTangentSpace(Vector3 v, Vector3 tangent, Vector3 bitangent, Vector3 normal)
-        //{
-        //    return Vector3.Normalize(new Vector3(
-        //        v.X * tangent.X + v.Y * tangent.X + v.Z * tangent.Z,
-        //        v.X * bitangent.X + v.Y * bitangent.Y + v.Z * bitangent.Z,
-        //        v.X * normal.X + v.Y * normal.Y + v.Z * normal.Z
-        //    ));
-        //}
+        private static Vector3 ToTangentSpace(Vector3 v, Vector3 tangent, Vector3 bitangent, Vector3 normal)
+        {
+            return Vector3.Normalize(new Vector3(
+                v.X * tangent.X + v.Y * tangent.X + v.Z * tangent.Z,
+                v.X * bitangent.X + v.Y * bitangent.Y + v.Z * bitangent.Z,
+                v.X * normal.X + v.Y * normal.Y + v.Z * normal.Z
+            ));
+        }
 
         private class VertComparer : IEqualityComparer<GPUSkinVertex>
         {
@@ -2042,6 +2142,16 @@ defaultproperties
             headmorph = null;
             filePath = null;
             return false;
+        }
+
+        private static void ReplaceTexture(ExportEntry texExport, Image<Rgba32> newImage, string? tfcName = null)
+        {
+            using var s = new MemoryStream();
+            var tex = new Texture2D(texExport);
+            //newImage.SaveAsTga(s);
+            newImage.Save(s, new TgaEncoder { BitsPerPixel = TgaBitsPerPixel.Pixel32 });
+            s.Position = 0;
+            tex.Replace(new LegendaryExplorerCore.Textures.Image(s, ".tga"), texExport.GetProperties(), forcedTFCName: tfcName);
         }
 
         private class MeshSection
