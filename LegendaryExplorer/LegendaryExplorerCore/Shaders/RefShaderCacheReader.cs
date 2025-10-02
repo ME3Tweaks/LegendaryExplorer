@@ -297,8 +297,42 @@ namespace LegendaryExplorerCore.Shaders
             shaderCachePackage.restoreNames(names);
         }
 
+        /// <summary>
+        /// Popules the CRC maps of a shader cache. These should always be identical across the shipped game, as the game will try to recompile
+        /// shaders if they aren't.
+        /// </summary>
+        /// <param name="game"></param>
+        /// <param name="cache"></param>
+        public static void PopulateCRCMaps(MEGame game, ShaderCache cache)
+        {
+            UMultiMap<NameReference, uint> shaderTypeCRCMap = new();
+            UMultiMap<NameReference, uint> vertexFactoryTypeCRCMap = new();
+
+            PopulateOffsets(game);
+
+            string filePath = ShaderFilePath(game);
+            if (File.Exists(filePath))
+            {
+                using FileStream fs = File.OpenRead(filePath);
+                //read just the header of the package, then read the name list
+                using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad: true);
+                ReadNames(fs, shaderCachePackage);
+                var sc = new SerializingContainer(fs, shaderCachePackage, true);
+
+                sc.ms.JumpTo(OffsetOfShaderTypeCRCMap[(int)game]);
+                sc.Serialize(ref shaderTypeCRCMap, sc.Serialize, sc.Serialize);
+                
+                sc.ms.JumpTo(OffsetOfVertexFactoryTypeCRCMap[(int)game]);
+                sc.Serialize(ref vertexFactoryTypeCRCMap, sc.Serialize, sc.Serialize);
+            }
+
+            cache.ShaderTypeCRCMap = shaderTypeCRCMap;
+            cache.VertexFactoryTypeCRCMap = vertexFactoryTypeCRCMap;
+        }
+
+
         [CanBeNull]
-        public static Shader[] GetShaders(MEGame game, ICollection<Guid> shaderGuids, 
+        public static Shader[] GetShaders(MEGame game, ICollection<Guid> shaderGuids,
             out UMultiMap<NameReference, uint> shaderTypeCRCMap, out UMultiMap<NameReference, uint> vertexFactoryTypeCRCMap)
         {
             shaderTypeCRCMap = null;

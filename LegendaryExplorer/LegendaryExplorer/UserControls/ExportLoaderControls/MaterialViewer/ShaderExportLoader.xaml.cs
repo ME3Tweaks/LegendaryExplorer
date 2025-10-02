@@ -788,7 +788,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
 
             fs.Position = 0;
-            GlobalShaderCache = ShaderCache.ReadGlobalShaderCache(fs, MEGame.LE3); // Todo: Determine this. Might not need to as it is in the header, technically.
+            GlobalShaderCache = LegendaryExplorerCore.Unreal.BinaryConverters.GlobalShaderCache.ReadGlobalShaderCache(fs, MEGame.LE3); // Todo: Determine this. Might not need to as it is in the header, technically.
             LoadedFile = filepath;
             LoadShaders();
         }

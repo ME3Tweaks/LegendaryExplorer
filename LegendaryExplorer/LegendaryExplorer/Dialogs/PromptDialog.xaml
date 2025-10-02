@@ -6,12 +6,14 @@
     MinWidth="300"
     MinHeight="100"
     WindowStyle="SingleBorderWindow"
-    ResizeMode="CanMinimize">
+    ResizeMode="CanMinimize"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <StackPanel Margin="5">
         <TextBlock Name="txtQuestion" Margin="5" TextWrapping="Wrap"/>
-        <TextBox Name="txtResponse" Margin="5"/>
+        <TextBox Name="txtResponse" Margin="5" TextChanged="OnTextChanged"/>
+        <TextBlock Name="txtValidation" Margin="5" TextWrapping="Wrap" Visibility="Collapsed"/>
         <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Right">
-            <Button Content="_OK" IsDefault="True" Margin="5" Width="40" Height="25" Name="btnOk" Click="btnOk_Click" />
+            <Button Content="_OK" IsDefault="True" Margin="5" Width="40" Height="25" Name="btnOk" Command="{Binding OkCommand, Mode=OneTime}" />
             <Button Content="_Cancel" IsCancel="True" Margin="5" Width="50" Height="25" Name="btnCancel" Click="btnCancel_Click" />
         </StackPanel>
     </StackPanel>

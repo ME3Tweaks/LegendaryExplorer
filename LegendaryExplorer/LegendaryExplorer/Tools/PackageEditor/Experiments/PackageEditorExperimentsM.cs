@@ -1442,11 +1442,16 @@ return;
             if (pe.Pcc != null && pe.TryGetSelectedExport(out var matExp) &&
                 (matExp.ClassName == "Material" || matExp.ClassName == "MaterialInstanceConstant"))
             {
+                GenerateMaterialInstanceConstantFromMaterial(matExp);
+            }
+        }
+
+        public static ExportEntry GenerateMaterialInstanceConstantFromMaterial(ExportEntry matExp, string suffix = "_matInst")
+        {
                 var matExpProps = matExp.GetProperties();
 
                 // Create the export
-                var matInstConst = ExportCreator.CreateExport(pe.Pcc, matExp.ObjectName.Name + "_matInst",
-                    "MaterialInstanceConstant", matExp.Parent);
+            var matInstConst = ExportCreator.CreateExport(matExp.FileRef, matExp.ObjectName.Name + suffix, "MaterialInstanceConstant", matExp.Parent);
                 matInstConst.indexValue--; // Decrement it by one so it starts at 0
 
                 var matInstConstProps = matInstConst.GetProperties();
@@ -1458,8 +1463,7 @@ return;
                 }
 
                 matInstConstProps.AddOrReplaceProp(new ObjectProperty(matExp.UIndex, "Parent"));
-                matInstConstProps.AddOrReplaceProp(CommonStructs.GuidProp(Guid.NewGuid(),
-                    "m_Guid")); // IDK if this is used but we're gonna do it anyways
+            matInstConstProps.AddOrReplaceProp(CommonStructs.GuidProp(Guid.NewGuid(), "m_Guid")); // IDK if this is used but we're gonna do it anyways
 
                 ArrayProperty<StructProperty> vectorParameters =
                     new ArrayProperty<StructProperty>("VectorParameterValues");
@@ -1475,7 +1479,7 @@ return;
                     {
                         if (expressionOP.Value <= 0)
                             continue; // It's null
-                        var expression = expressionOP.ResolveToEntry(pe.Pcc) as ExportEntry;
+                    var expression = expressionOP.ResolveToEntry(matExp.FileRef) as ExportEntry;
                         switch (expression.ClassName)
                         {
                             case "MaterialExpressionScalarParameter":
@@ -1528,7 +1532,7 @@ return;
                 if (textureParameters.Any()) matInstConstProps.AddOrReplaceProp(textureParameters);
 
                 matInstConst.WriteProperties(matInstConstProps);
-            }
+            return matInstConst;
         }
 
         public static void CheckNeverstream(PackageEditorWindow pe)

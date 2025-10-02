@@ -146,29 +146,41 @@ namespace LegendaryExplorerCore.Unreal
             {
                 // Parallel.ForEach(tocFolders, tocTarget =>
                 {
-                    string sfar = Path.Combine(tocTarget, game.CookedDirName(), "Default.sfar");
+                    bool doSfarCheck = game == MEGame.ME3;
 
-                    //This is a sfar - code ported from M3
-                    var fi = new FileInfo(sfar);
-                    if (tocTarget.EndsWith(".sfar") ||
-                        (fi.Exists &&
-                         fi.Length != 32)) //endswith .sfar is for TESTPATCH as it doesn't follow other naming system
+                    if (doSfarCheck)
                     {
-                        var sfarToToc = tocTarget;
-                        if (fi.Exists)
-                            sfarToToc = sfar; // Testpatch will fail file existence test as it is not named Default.sfar
+                        string sfar = Path.Combine(tocTarget, game.CookedDirName(), "Default.sfar");
 
-                        DLCPackage dlc = new DLCPackage(sfarToToc);
-                        var tocResult = dlc.UpdateTOCbin();
-                        if (tocResult is DLCPackage.DLCTOCUpdateResult.RESULT_ERROR_NO_ENTRIES)
+                        //This is a sfar - code ported from M3
+                        var fi = new FileInfo(sfar);
+                        if (tocTarget.EndsWith(".sfar") || // ends with .sfar will detect Patch_001.sfar
+                            (fi.Exists &&
+                             fi.Length != 32)) //endswith .sfar is for TESTPATCH as it doesn't follow other naming system
                         {
-                            var tocFileLocation = Path.Combine(tocTarget, "PCConsoleTOC.bin");
-                            CreateDLCTOCForDirectory(tocTarget, game).WriteToFile(tocFileLocation);
+                            var sfarToToc = tocTarget;
+                            if (fi.Exists)
+                                sfarToToc = sfar; // Testpatch will fail file existence test as it is not named Default.sfar
+
+                            DLCPackage dlc = new DLCPackage(sfarToToc);
+                            var tocResult = dlc.UpdateTOCbin();
+                            if (tocResult is DLCPackage.DLCTOCUpdateResult.RESULT_ERROR_NO_ENTRIES)
+                            {
+                                var tocFileLocation = Path.Combine(tocTarget, "PCConsoleTOC.bin");
+                                CreateDLCTOCForDirectory(tocTarget, game).WriteToFile(tocFileLocation);
+                            }
+                        }
+                        else
+                        {
+                            // Perform the next code branch as we didn't do the above one
+                            doSfarCheck = false;
                         }
                     }
-                    // This is an unpacked folder - either BioGame or a DLC Folder
-                    else
+
+                    // We reuse this bool here.
+                    if (!doSfarCheck)
                     {
+                        // This is an unpacked folder - either BioGame or a DLC Folder
                         var tocFileLocation = Path.Combine(tocTarget, "PCConsoleTOC.bin");
                         if (tocTarget == MEDirectories.GetBioGamePath(game, gameRootOverride))
                         {
@@ -180,10 +192,10 @@ namespace LegendaryExplorerCore.Unreal
                         }
 
                         Debug.WriteLine($"TOC'd: {tocFileLocation}");
-                        //Debug.WriteLine($"{tocFileLocation}-------------------------");
-                        //TOCBinFile tbf = new TOCBinFile(tocFileLocation);
-                        //tbf.DumpTOC();
                     }
+                    //Debug.WriteLine($"{tocFileLocation}-------------------------");
+                    //TOCBinFile tbf = new TOCBinFile(tocFileLocation);
+                    //tbf.DumpTOC();
 
                     Interlocked.Increment(ref numDone);
                     percentDoneCallback?.Invoke((int)(numDone * 100.0 / tocFolders.Count));
@@ -224,13 +236,15 @@ namespace LegendaryExplorerCore.Unreal
                     entries = files.Select(t =>
                     {
                         // Split for debugging
-                        var path = t.FullName.Substring(t.FullName.IndexOf(Path.DirectorySeparatorChar, biogameStrPos) + 1);
+                        // 07/04/2025 - This maybe was from DLC TOC, but it created an invalid basegame TOC that just crashes the game.
+                        //var path = t.FullName.Substring(t.FullName.IndexOf(Path.DirectorySeparatorChar, biogameStrPos) + 1);
+                        var path = t.FullName.Substring(biogameStrPos);
                         return (path, (int)t.Length);
                     }).ToList();
                 }
                 else
                 {
-                    entries = files.Select(t => (t.FullName, (int) t.Length)).ToList();
+                    entries = files.Select(t => (t.FullName, (int)t.Length)).ToList();
                 }
 
                 return CreateTOCForEntries(entries);

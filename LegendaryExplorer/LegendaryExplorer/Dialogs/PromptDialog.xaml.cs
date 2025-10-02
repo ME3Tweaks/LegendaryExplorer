@@ -1,6 +1,8 @@
-﻿using System;
+﻿using LegendaryExplorer.SharedUI;
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace LegendaryExplorer.Dialogs
 {
@@ -17,6 +19,17 @@ namespace LegendaryExplorer.Dialogs
 
         private InputType _inputType;
 
+        private Predicate<string> validationFunc;
+
+        private Func<string, string> validationTextFunc;
+
+        public ICommand OkCommand { get; set; }
+
+        private void LoadCommands()
+        {
+            OkCommand = new GenericCommand(SuccessClose, IsInputValid);
+        }
+
         /// <summary>
         /// Creates a new prompt dialog with the specified question, title, and default value. Ensure yo/su set the owner before showing if this if being called from a WPF window.
         /// </summary>
@@ -27,6 +40,7 @@ namespace LegendaryExplorer.Dialogs
         /// <param name="inputType"></param>
         public PromptDialog(string question, string title, string defaultValue = "", bool selectText = false, int selectionStart = -1, int selectionEnd = -1, InputType inputType = InputType.Text)
         {
+            LoadCommands();
             InitializeComponent();
             this.Loaded += PromptDialog_Loaded;
             txtQuestion.Text = question;
@@ -70,13 +84,25 @@ namespace LegendaryExplorer.Dialogs
             txtResponse.Focus();
         }
 
-        public static string Prompt(Control owner, string question, string title = "", string defaultValue = "", bool selectText = false, int selectionStart = -1, int selectionEnd = -1, InputType inputType = InputType.Text)
+        public static string Prompt(Control owner, string question, string title = "", 
+            string defaultValue = "", 
+            bool selectText = false, int selectionStart = -1, int selectionEnd = -1, 
+            InputType inputType = InputType.Text,
+            Predicate<string> validator = null,
+            Func<string, string> validationText = null)
         {
             PromptDialog inst = new PromptDialog(question, title, defaultValue, selectText, selectionStart, selectionEnd, inputType);
             if (owner != null)
             {
                 inst.Owner = owner as Window ?? GetWindow(owner);
                 inst.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            }
+            inst.validationFunc = validator;
+            inst.validationTextFunc = validationText;
+            if (validationText is not null)
+            {
+                inst.txtValidation.Visibility = Visibility.Visible;
+                inst.txtValidation.Text = validationText(inst.ResponseText);
             }
             inst.ShowDialog();
             if (inst.DialogResult == true)
@@ -86,7 +112,12 @@ namespace LegendaryExplorer.Dialogs
 
         public string ResponseText => txtResponse.Text;
 
-        private void btnOk_Click(object sender, RoutedEventArgs e)
+        private bool IsInputValid()
+        {
+            return validationFunc?.Invoke(ResponseText) ?? true;
+        }
+
+        private void SuccessClose()
         {
             DialogResult = true;
             Close();
@@ -95,6 +126,14 @@ namespace LegendaryExplorer.Dialogs
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (validationTextFunc is not null)
+            {
+                txtValidation.Text = validationTextFunc(ResponseText);
+            }
         }
     }
 }

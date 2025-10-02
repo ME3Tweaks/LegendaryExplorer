@@ -321,6 +321,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void UpdateAnimListBox()
         {
+            if (SelectedLine is null)
+            {
+                return;
+            }
             List<CurvePoint> points = SelectedLine.Points.Select(p => new CurvePoint(p.time, p.weight, p.inTangent, p.leaveTangent)).ToList();
 
             Animations.Clear();
@@ -1433,44 +1437,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     animationElement = animations[0];
                 }
-                var curveNodes = animationElement.Descendants("curves").Descendants();
-                var lineSec = new LineSection { animSecs = new Dictionary<string, List<FaceFXControlPoint>>() };
-                float firstTime = float.MaxValue;
-                float lastTime = float.MinValue;
-                foreach (XElement curveNode in curveNodes)
-                {
-                    string curveName = curveNode.Attribute("name")?.Value;
-                    if (curveName is null)
-                    {
-                        continue;
-                    }
-                    if (curveNode.Value is string value)
-                    {
-                        var keys = value.Trim().Split(' ').Select(s =>
-                        {
-                            if (float.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out float result))
-                            {
-                                return result;
-                            }
-                            return 0f;
-                        }).ToArray();
-                        var points = new List<FaceFXControlPoint>();
-                        for (int i = 0; i + 3 < keys.Length; i += 4)
-                        {
-                            firstTime = MathF.Min(firstTime, keys[i]);
-                            lastTime = MathF.Max(firstTime, keys[i]);
-                            points.Add(new FaceFXControlPoint
-                            {
-                                time = keys[i],
-                                weight = keys[i + 1],
-                                inTangent = keys[i + 2],
-                                leaveTangent = keys[i + 3]
-                            });
-                        }
-                        lineSec.animSecs.Add(curveName, points);
-                    }
-                }
-                lineSec.span = MathF.Max(0, lastTime - firstTime);
+                LineSection lineSec = ReadXMLAnimation(animationElement);
 
                 #endregion
 
@@ -1510,6 +1477,49 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 CurrentLoadedExport?.WriteBinary(FaceFX.Binary);
                 UpdateAnimListBox();
             }
+        }
+
+        private static LineSection ReadXMLAnimation(XElement animationElement)
+        {
+            var curveNodes = animationElement.Descendants("curves").Descendants();
+            var lineSec = new LineSection { animSecs = [] };
+            float firstTime = float.MaxValue;
+            float lastTime = float.MinValue;
+            foreach (XElement curveNode in curveNodes)
+            {
+                string curveName = curveNode.Attribute("name")?.Value;
+                if (curveName is null)
+                {
+                    continue;
+                }
+                if (curveNode.Value is string value)
+                {
+                    var keys = value.Trim().Split(' ').Select(s =>
+                    {
+                        if (float.TryParse(s, NumberStyles.Float, CultureInfo.InvariantCulture, out float result))
+                        {
+                            return result;
+                        }
+                        return 0f;
+                    }).ToArray();
+                    var points = new List<FaceFXControlPoint>();
+                    for (int i = 0; i + 3 < keys.Length; i += 4)
+                    {
+                        firstTime = MathF.Min(firstTime, keys[i]);
+                        lastTime = MathF.Max(firstTime, keys[i]);
+                        points.Add(new FaceFXControlPoint
+                        {
+                            time = keys[i],
+                            weight = keys[i + 1],
+                            inTangent = keys[i + 2],
+                            leaveTangent = keys[i + 3]
+                        });
+                    }
+                    lineSec.animSecs.Add(curveName, points);
+                }
+            }
+            lineSec.span = MathF.Max(0, lastTime - firstTime);
+            return lineSec;
         }
 
         public void ReAssignLineIds()
@@ -1555,9 +1565,153 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
+        private void AddLinesFromXML()
+        {
+            if (CurrentLoadedExport == null) return;
+
+            bool isNonSpkr = CurrentLoadedExport.ObjectName.Name.Contains("NonSpkr");
+            bool isF = CurrentLoadedExport.ObjectName.Name.EndsWith("_F");
+
+            var ofd = new OpenFileDialog
+            {
+                Filter = "*.xml|*.xml",
+                CheckFileExists = true,
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
+            if (ofd.ShowDialog() != true)
+            {
+                return;
+            }
+            var xmlDoc = XElement.Load(ofd.FileName);
+            var animations = xmlDoc.Descendants("animation_groups").Descendants("animation_group").Descendants("animation").ToList();
+            int animCount = animations.Count;
+            if (animCount is 0)
+            {
+                MessageBox.Show(Window.GetWindow(this), "No animations found in this xml file!");
+                return;
+            }
+            int tlkID = (Lines?.LastOrDefault()?.TLKID ?? -1) + 1;
+            string tlkIDString = "";
+            string audioPackage = null;
+            if (!isNonSpkr)
+            {
+                tlkIDString = PromptDialog.Prompt(this, "Please enter an initial TLK ID", defaultValue: tlkID.ToString(), selectText: true,
+                validator: response => int.TryParse(response, out _),
+                validationText: response =>
+                {
+                    if (int.TryParse(response, out int id))
+                    {
+                        return $"Lines will use TLK IDs {id} to {id + animCount}";
+                    }
+                    return $"'{response}' is an invalid TLK ID";
+                });
+                if (tlkIDString is null) return;
+                tlkID = int.Parse(tlkIDString);
+                var pckExp = EntrySelector.GetEntry<ExportEntry>(Window.GetWindow(this), Pcc, "Select Package audio exports are (or will be) in.", exp => exp.ClassName is "Package");
+                if (pckExp is null) return;
+                audioPackage = pckExp.InstancedFullPath;
+            }
+
+            ArrayProperty<ObjectProperty> referencedSoundCues = null;
+            if (!isNonSpkr)
+            {
+                referencedSoundCues = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("ReferencedSoundCues")
+                                                                    ?? new ArrayProperty<ObjectProperty>("ReferencedSoundCues");
+            }
+
+            var lineSections = animations.Select(ReadXMLAnimation);
+
+            var lines = new List<FaceFXLine>();
+            var lineEntries = new List<FaceFXLineEntry>();
+            int numSoundCuesAdded = 0;
+            int lineIdx = FaceFX.Lines.Count;
+            foreach (var lineSec in lineSections)
+            {
+                FaceFXLine line = new()
+                {
+                    AnimationNames = [],
+                    Points = [],
+                    NumKeys = [],
+                    FadeInTime = 0.16F,
+                    FadeOutTime = 0.22F,
+                    Path = "",
+                    ID = "",
+                    Index = -1
+                };
+                if (!isNonSpkr)
+                {
+                    if (Pcc.Game.IsGame1())
+                    {
+                        line.NameAsString = $"FXA_{tlkID}{(isF ? "" : "_M")}";
+                        line.Path = $"{audioPackage}.VO_{tlkID}{(isF ? "" : "_m")}_Play";
+                        line.ID = $"{audioPackage.Replace("_N", "")}:VO_{tlkID}{(isF ? "" : "_m")}_Play";
+                    }
+                    else
+                    {
+                        line.NameAsString = $"FXA_{tlkID}_{(isF ? 'F' : 'M')}";
+                        line.Path = $"{audioPackage}.VO_{tlkID}_{(isF ? 'f' : 'm')}_Play";
+                        line.ID = tlkID.ToString();
+                    }
+                    line.Index = lineIdx;
+                    if (Pcc.FindEntry(line.Path) is ExportEntry audio)
+                    {
+                        referencedSoundCues.Add(new ObjectProperty(audio.UIndex));
+                        numSoundCuesAdded++;
+                    }
+                }
+                else
+                {
+                    line.NameAsString = $"{lineIdx}_NonSpkr";
+                }
+                line.NameIndex = FaceFX.Names.FindOrAdd(line.NameAsString);
+
+                foreach ((string name, List<FaceFXControlPoint> points) in lineSec.animSecs)
+                {
+                    line.AnimationNames.Add(FaceFX.Names.FindOrAdd(name));
+                    line.NumKeys.Add(points.Count);
+                    line.Points.AddRange(points);
+                }
+                lines.Add(line);
+
+                var facefxEntry = new FaceFXLineEntry(line)
+                {
+                    IsMale = !isF
+                };
+                if (isNonSpkr)
+                {
+                    facefxEntry.TLKString = TLKManagerWPF.GlobalFindStrRefbyID(tlkID, Pcc);
+                    facefxEntry.TLKID = tlkID;
+                }
+
+                tlkID++;
+                lineIdx++;
+            }
+            FaceFX.Lines.AddRange(lines);
+            Lines.AddRange(lineEntries);
+            if (numSoundCuesAdded > 0)
+            {
+                CurrentLoadedExport.WriteProperty(referencedSoundCues);
+            }
+            CurrentLoadedExport?.WriteBinary(FaceFX.Binary);
+            UpdateAnimListBox();
+
+            MessageBox.Show(numSoundCuesAdded switch
+            {
+                0 => "Import complete. No matching audio exports were found; remember to add them to this export's ReferencedSoundCues array once they exist.",
+                _ when numSoundCuesAdded < animCount => "Import complete. Some matching audio exports were found and added to the ReferencedSoundCues array. Add the rest once they have been created.",
+                _ when numSoundCuesAdded == animCount => "Import complete. Matching audio exports for all lines were found and added to the ReferencedSoundCues array.",
+                _ => throw new NotImplementedException(),
+            });
+        }
+
         private void ReAssignLineIds_Click(object sender, RoutedEventArgs e)
         {
             ReAssignLineIds();
+        }
+
+        private void AddLinesFromXML_Click(object sender, RoutedEventArgs e)
+        {
+            AddLinesFromXML();
         }
     }
 

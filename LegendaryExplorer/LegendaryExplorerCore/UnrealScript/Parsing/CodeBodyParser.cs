@@ -1269,8 +1269,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 return null;
             }
             CheckIntegerLiteralRange(expr);
-            while (IsOperator(out bool isRightShift, out TokenType opType))
+            while (IsInfixOperator(out bool isRightShift, out TokenType opType))
             {
+                string friendlyName = CurrentToken.Value;
                 CurrentToken.SyntaxType = EF.Operator;
                 Expression lhs = expr;
 
@@ -1281,7 +1282,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 var possibleMatches = new List<InOpDeclaration>();
                 int precedence = 0;
-                foreach (InOpDeclaration opDecl in Symbols.GetInfixOperators(opType))
+                foreach (InOpDeclaration opDecl in Symbols.GetInfixOperators(opType, friendlyName))
                 {
                     precedence = opDecl.Precedence;
                     possibleMatches.Add(opDecl);
@@ -1301,7 +1302,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 Expression rhs = BinaryExpression(precedence);
                 if (rhs == null)
                 {
-                    throw ParseError($"Expected expression after '{opType}' operator!", CurrentPosition);
+                    throw ParseError($"Expected expression after '{friendlyName}' operator!", CurrentPosition);
                 }
 
                 var lType = lhs.ResolveType();
@@ -1368,13 +1369,13 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     }
                     else
                     {
-                        ParseError($"No valid operator found for '{lType.DisplayName()}' '{opType}' '{rType.DisplayName()}'!", opToken);
+                        ParseError($"No valid operator found for '{lType.DisplayName()}' '{friendlyName}' '{rType.DisplayName()}'!", opToken);
                         expr = new ErrorExpression(lhs.StartPos, rhs.EndPos, Tokens.GetTokensInRange(lhs.StartPos, rhs.EndPos).ToArray());
                     }
                 }
                 else if (matches > 1)
                 {
-                    ParseError($"Ambiguous operator overload! {matches} equally valid possibilites for '{lType.DisplayName()}' '{opType}' '{rType.DisplayName()}'!", opToken);
+                    ParseError($"Ambiguous operator overload! {matches} equally valid possibilites for '{lType.DisplayName()}' '{friendlyName}' '{rType.DisplayName()}'!", opToken);
                     expr = new ErrorExpression(lhs.StartPos, rhs.EndPos, Tokens.GetTokensInRange(lhs.StartPos, rhs.EndPos).ToArray());
                 }
                 else
@@ -1391,50 +1392,15 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         AddConversion(bestMatch.LeftOperand.VarType, ref lhs);
                         AddConversion(bestMatch.RightOperand.VarType, ref rhs);
                     }
-
+                    if (bestMatch.Implementer is not null)
+                    {
+                        Tokens.AddDefinitionLink(bestMatch.Implementer, opToken);
+                    }
                     expr = new InOpReference(bestMatch, lhs, rhs, lhs.StartPos, rhs.EndPos);
                 }
             }
 
             return expr;
-
-            bool IsOperator(out bool isRightShift, out TokenType opType)
-            {
-                opType = CurrentToken.Type;
-
-                //Lexer can't recognize >> as the right-shift operator, because of the conflicting array<delegate<delName>> syntax, so do it manually here
-                isRightShift = false;
-                if (CurrentToken.Type == TokenType.RightArrow && Tokens.LookAhead(1).Type == TokenType.RightArrow)
-                {
-                    //check to see if there is any whitespace between them. Otherwise > > would be recognized as the right shift operator! 
-                    isRightShift = Tokens.LookAhead(1).StartPos == CurrentToken.StartPos + 1;
-                    if (isRightShift)
-                    {
-                        opType = TokenType.RightShift;
-                        return true;
-                    }
-                }
-                else if (CurrentToken.Type is TokenType.Word)
-                {
-                    if (CurrentToken.Value.CaseInsensitiveEquals("Dot"))
-                    {
-                        opType = TokenType.DotProduct;
-                        return true;
-                    }
-                    if (CurrentToken.Value.CaseInsensitiveEquals("Cross"))
-                    {
-                        opType = TokenType.CrossProduct;
-                        return true;
-                    }
-                    if (CurrentToken.Value.CaseInsensitiveEquals("ClockwiseFrom"))
-                    {
-                        opType = TokenType.ClockwiseFrom;
-                        return true;
-                    }
-                    return false;
-                }
-                return Symbols.InFixOperatorSymbols.Contains(opType);
-            }
         }
 
         private Expression Unary()
@@ -1463,10 +1429,15 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     throw ParseError($"Only ints and bytes can be {(preFixToken.Type == TokenType.Increment ? "in" : "de")}cremented!", expr);
                 }
                 PreOpDeclaration opDeclaration = Symbols.GetPreOp(preFixToken.Type, exprType);
+                if (opDeclaration.Implementer is not null)
+                {
+                    Tokens.AddDefinitionLink(opDeclaration.Implementer, preFixToken);
+                }
                 return new PreOpReference(opDeclaration, expr, preFixToken.StartPos, expr.EndPos);
             }
-            if (Matches(TokenType.ExclamationMark, EF.Operator))
+            if (Consume(TokenType.ExclamationMark) is { } notToken)
             {
+                notToken.SyntaxType = EF.Operator;
                 expr = Unary();
                 if (expr is null)
                 {
@@ -1479,10 +1450,15 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
 
                 PreOpDeclaration opDeclaration = Symbols.GetPreOp(TokenType.ExclamationMark, exprType);
+                if (opDeclaration.Implementer is not null)
+                {
+                    Tokens.AddDefinitionLink(opDeclaration.Implementer, notToken);
+                }
                 return new PreOpReference(opDeclaration, expr, start, expr.EndPos);
             }
-            if (Matches(TokenType.MinusSign, EF.Operator))
+            if (Consume(TokenType.MinusSign) is { } negateToken)
             {
+                negateToken.SyntaxType = EF.Operator;
                 expr = Unary();
                 if (expr is null)
                 {
@@ -1509,10 +1485,16 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     throw ParseError("Unary '-' can only be used with expressions that evaluate to float, int, or Vector!", expr);
                 }
 
-                return new PreOpReference(Symbols.GetPreOp(TokenType.MinusSign, exprType), expr, start, expr.EndPos);
+                PreOpDeclaration opDeclaration = Symbols.GetPreOp(TokenType.MinusSign, exprType);
+                if (opDeclaration.Implementer is not null)
+                {
+                    Tokens.AddDefinitionLink(opDeclaration.Implementer, negateToken);
+                }
+                return new PreOpReference(opDeclaration, expr, start, expr.EndPos);
             }
-            if (Matches(TokenType.Complement, EF.Operator))
+            if (Consume(TokenType.Complement) is { } complementToken)
             {
+                complementToken.SyntaxType = EF.Operator;
                 expr = Unary();
                 if (expr is null)
                 {
@@ -1530,6 +1512,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
 
                 PreOpDeclaration opDeclaration = Symbols.GetPreOp(TokenType.Complement, exprType);
+                if (opDeclaration.Implementer is not null)
+                {
+                    Tokens.AddDefinitionLink(opDeclaration.Implementer, complementToken);
+                }
                 return new PreOpReference(opDeclaration, expr, start, expr.EndPos);
             }
 
@@ -1556,7 +1542,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     TypeError($"Only ints and bytes can be {(postFixToken.Type == TokenType.Increment ? "in" : "de")}cremented!", expr);
                 }
-                PostOpDeclaration opDeclaration = Symbols.GetPostOp(postFixToken.Type, exprType);
+                PostOpDeclaration opDeclaration = Symbols.GetPostOp(postFixToken.Type, exprType); 
+                if (opDeclaration.Implementer is not null)
+                {
+                    Tokens.AddDefinitionLink(opDeclaration.Implementer, postFixToken);
+                }
                 expr = new PostOpReference(opDeclaration, expr, expr.StartPos, postFixToken.EndPos);
             }
 

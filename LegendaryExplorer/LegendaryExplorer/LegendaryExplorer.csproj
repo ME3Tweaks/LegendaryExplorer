@@ -146,7 +146,7 @@
 		<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 		<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
 		<PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
-		<PackageReference Include="System.Drawing.Common" Version="9.0.3" />
+		<PackageReference Include="System.Drawing.Common" Version="9.0.6" />
 		<PackageReference Include="TerraFX.Interop.Windows" Version="10.0.26100.2" />
 		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.21" />
 		<PackageReference Include="NuGet.CommandLine" Version="6.13.2"> <!-- This is needed for trimming during build -->

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Text;
-using System.Windows.Forms;
-using LegendaryExplorerCore.Dialogue;
+﻿using LegendaryExplorerCore.Dialogue;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -13,6 +6,13 @@ using Piccolo;
 using Piccolo.Event;
 using Piccolo.Nodes;
 using Piccolo.Util;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Text;
+using System.Linq;
+using System.Windows.Forms;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 
 namespace LegendaryExplorer.DialogueEditor
@@ -502,7 +502,7 @@ namespace LegendaryExplorer.DialogueEditor
     }
 
     [DebuggerDisplay("DiagNode | #{NodeUID}")]
-    public class DiagNode : DBox
+    public abstract class DiagNode : DBox
     {
         public override IEnumerable<DiagEdEdge> Edges => InLinks.SelectMany(l => l.Edges).Union(base.Edges);
         public List<DiagEdEdge> InputEdges = new List<DiagEdEdge>();
@@ -746,9 +746,6 @@ namespace LegendaryExplorer.DialogueEditor
                 }
             }
         }
-        public override void CreateOutlink(PNode n1, PNode n2)
-        {
-        }
 
         public class InputDragHandler : PDragEventHandler
         {
@@ -796,6 +793,8 @@ namespace LegendaryExplorer.DialogueEditor
                 InLinks.ForEach(x => x.node.RemoveInputEventListener(inputDragHandler));
             }
         }
+
+        public abstract void CreateLink(DiagNode fromNode, DiagNode toNode);
     }
 
     public sealed class DiagNodeEntry : DiagNode
@@ -956,6 +955,19 @@ namespace LegendaryExplorer.DialogueEditor
         {
             DiagNode start = (DiagNode)n1.Parent.Parent.Parent;
             DiagNode end = (DiagNode)n2.Parent.Parent.Parent;
+            CreateLink(start, end);
+        }
+        public override void RemoveOutlink(int linkconnection, int linkIndex)
+        {
+            var oldEntriesProp = NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
+            oldEntriesProp.RemoveAt(linkconnection);
+            NodeProp.Properties.AddOrReplaceProp(oldEntriesProp);
+            //Editor.RecreateNodesToProperties(Editor.SelectedConv);
+            Editor.PushLocalGraphChanges(this);
+        }
+
+        public override void CreateLink(DiagNode start, DiagNode end)
+        {
             if (end.GetType() != typeof(DiagNodeReply))
             {
                 MessageBox.Show("You cannot link entry nodes to entries.\r\nEntries must link to replies.", "Dialogue Editor");
@@ -984,14 +996,6 @@ namespace LegendaryExplorer.DialogueEditor
             }));
 
             Node.NodeProp.Properties.AddOrReplaceProp(newReplyListProp);
-            Editor.PushLocalGraphChanges(this);
-        }
-        public override void RemoveOutlink(int linkconnection, int linkIndex)
-        {
-            var oldEntriesProp = NodeProp.GetProp<ArrayProperty<StructProperty>>("ReplyListNew");
-            oldEntriesProp.RemoveAt(linkconnection);
-            NodeProp.Properties.AddOrReplaceProp(oldEntriesProp);
-            //Editor.RecreateNodesToProperties(Editor.SelectedConv);
             Editor.PushLocalGraphChanges(this);
         }
     }
@@ -1108,6 +1112,18 @@ namespace LegendaryExplorer.DialogueEditor
         {
             DiagNode start = (DiagNode)n1.Parent.Parent.Parent;
             DiagNode end = (DiagNode)n2.Parent.Parent.Parent;
+            CreateLink(start, end);
+        }
+        public override void RemoveOutlink(int linkconnection, int linkIndex)
+        {
+            var oldEntriesProp = NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
+            oldEntriesProp.RemoveAt(linkconnection);
+            NodeProp.Properties.AddOrReplaceProp(oldEntriesProp);
+            Editor.PushLocalGraphChanges(this);
+        }
+
+        public override void CreateLink(DiagNode start, DiagNode end)
+        {
             if (end.GetType() != typeof(DiagNodeEntry))
             {
                 MessageBox.Show("You cannot link reply nodes to replies.\r\nReplies must link to entries.", "Dialogue Editor");
@@ -1130,13 +1146,6 @@ namespace LegendaryExplorer.DialogueEditor
             newEntriesProp.Add(new IntProperty(endNode));
             start.NodeProp.Properties.AddOrReplaceProp(newEntriesProp);  //Push to Property
 
-            Editor.PushLocalGraphChanges(this);
-        }
-        public override void RemoveOutlink(int linkconnection, int linkIndex)
-        {
-            var oldEntriesProp = NodeProp.GetProp<ArrayProperty<IntProperty>>("EntryList");
-            oldEntriesProp.RemoveAt(linkconnection);
-            NodeProp.Properties.AddOrReplaceProp(oldEntriesProp);
             Editor.PushLocalGraphChanges(this);
         }
     }

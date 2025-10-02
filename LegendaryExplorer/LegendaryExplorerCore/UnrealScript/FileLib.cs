@@ -518,9 +518,6 @@ namespace LegendaryExplorerCore.UnrealScript
                 log.CurrentClass = null;
                 switch (fileName)
                 {
-                    case "Core" when pcc.Game.IsGame3():
-                        symbols.InitializeME3LE3Operators();
-                        break;
                     case "Engine":
                         symbols.ValidateIntrinsics(usop);
                         break;

@@ -21,6 +21,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         private const string LIT_PIXEL_SHADER_TYPE_NAME = "TBasePassPixelShaderFNoLightMapPolicySkyLight";
         private const string UNLIT_PIXEL_SHADER_TYPE_NAME = "TBasePassPixelShaderFNoLightMapPolicyNoSkyLight";
 
+        public MEGame Game = export.Game;
         public EBlendMode BlendMode;
         public bool UseHairPass;
         public bool IsUnlit;
@@ -67,8 +68,8 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 foreach (ObjectProperty expressionProp in expressionsProp)
                 {
                     ExportEntry expressionExport = expressionProp.ResolveToExport(mat.FileRef, assetCache);
-                    var expressionProps = expressionExport.GetProperties(packageCache: assetCache);
-                    if (expressionProps.GetProp<NameProperty>("ParameterName") is {} paramNameProp)
+                    var expressionProps = expressionExport?.GetProperties(packageCache: assetCache);
+                    if (expressionProps?.GetProp<NameProperty>("ParameterName") is {} paramNameProp)
                     {
                         //this will run after ReadMaterialInstanceConstant, so we don't want to overwrite any values specified there
                         if (expressionProps.GetProp<FloatProperty>("DefaultValue") is { } defaultfloatProp)
@@ -181,7 +182,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             CachedVertexScalarParameters.Clear();
             CachedVertexVectorParameters.Clear();
 
-            var uniformContext = new UniformExpressionRenderContext(ScalarParameterValues, VectorParameterValues, context.Time, context.Time);
+            var uniformContext = new UniformExpressionRenderContext(
+                ScalarParameterValues, VectorParameterValues, 
+                context.Time, context.Time, GetFlipBookTextureOffset);
 
             UpdateExpressions(uniformContext,
                 ShaderMap.UniformVertexVectorExpressions, ShaderMap.UniformVertexScalarExpressions,
@@ -199,7 +202,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
             var uniformContext = new UniformExpressionRenderContext(
                 ScalarParameterValues, VectorParameterValues, 
-                context.Time, context.Time);
+                context.Time, context.Time, GetFlipBookTextureOffset);
 
             UpdateExpressions(uniformContext,
                 ShaderMap.UniformPixelVectorExpressions, ShaderMap.UniformPixelScalarExpressions,
@@ -207,6 +210,18 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
             UpdateTextureExpressions(ShaderMap.Uniform2DTextureExpressions, CachedTexture2DParameters);
             UpdateTextureExpressions(ShaderMap.UniformCubeTextureExpressions, CachedCubeTextureParameters);
+        }
+
+        private LinearColor GetFlipBookTextureOffset(UniformExpressionRenderContext context, int texIndex)
+        {
+            if ((uint)texIndex < Uniform2DTextureExpressions.Count 
+                && Uniform2DTextureExpressions[texIndex] is { } texifp
+                && TextureMap.TryGetValue(texifp, out var texture)
+                && texture is PreviewTextureCache.FlipBookTextureEntry flipBookTexture)
+            {
+                return flipBookTexture.GetTextureOffset(context);
+            }
+            return LinearColor.Black;
         }
 
         private void UpdateTextureExpressions(MaterialUniformExpressionTexture[] textureExpressions, List<PreviewTextureCache.TextureEntry> textureCache)

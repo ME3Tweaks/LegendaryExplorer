@@ -123,17 +123,20 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                             Debug.WriteLine("Preloading error");
                         }
                     }
-                    else if (textureEntry is ImportEntry import)
+                    if (texture is null)
                     {
-                        var extAsset = EntryImporter.ResolveImport(import, assetCache);
-                        if (extAsset != null)
+                        if (textureEntry is ImportEntry import)
                         {
-                            texture = texcache.LoadTexture(extAsset);
+                            var extAsset = EntryImporter.ResolveImport(import, assetCache);
+                            if (extAsset != null)
+                            {
+                                texture = texcache.LoadTexture(extAsset);
+                            }
                         }
-                    }
-                    else
-                    {
-                        texture = texcache.LoadTexture(textureEntry as ExportEntry);
+                        else
+                        {
+                            texture = texcache.LoadTexture(textureEntry as ExportEntry);
+                        }
                     }
                     if (texture is not null)
                     {

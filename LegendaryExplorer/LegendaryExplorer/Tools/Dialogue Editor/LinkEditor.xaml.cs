@@ -48,8 +48,6 @@ namespace LegendaryExplorer.DialogueEditor
 
             Dnode = node;
             IsReply = Dnode.Node.IsReply;
-            if (IsReply)
-                this.Width = 700;
 
             string s = "E";
             int id = Dnode.NodeID;
@@ -203,7 +201,6 @@ namespace LegendaryExplorer.DialogueEditor
                 Header = "Target Line",
                 Binding = new Binding(nameof(ReplyChoiceNode.TgtLine)),
                 IsReadOnly = true,
-                Width = 355,
                 Foreground = Brushes.DarkSlateGray
             };
             datagrid_Links.Columns.Add(clnG);
@@ -211,7 +208,6 @@ namespace LegendaryExplorer.DialogueEditor
             if (!IsReply)
             {
                 clnH.Width = 60;
-                clnG.Width = 200;
             }
 
             datagrid_Links.MouseDoubleClick += Datagrid_Table_MouseDoubleClick;
@@ -353,21 +349,28 @@ namespace LegendaryExplorer.DialogueEditor
         private void MoveLink(object obj)
         {
             string command = obj as string;
-
-            int n = 1;
-            if (command == "Up") //"Up" is down in index
-            {
-                n = -1;
-            }
-            int movelinkID = datagrid_Links.SelectedIndex;
-            int swapNodeID = movelinkID + n;
-
-            if ((movelinkID == 0 && command == "Up") || (movelinkID >= linkTable.Count - 1 && command == "Down"))
+            int moveLinkID = datagrid_Links.SelectedIndex;
+            if ((moveLinkID == 0 && command is "Up" or "Top") || (moveLinkID >= linkTable.Count - 1 && command is "Down" or "Bottom"))
                 return;
 
-            ReplyChoiceNode moveNode = linkTable[movelinkID];
-            ReplyChoiceNode swapNode = linkTable[swapNodeID];
-            (moveNode.Order, swapNode.Order) = (swapNode.Order, moveNode.Order);
+            int numSwaps = 1;
+            if (command is "Top")
+            {
+                numSwaps = moveLinkID;
+            }
+            else if (command is "Bottom")
+            {
+                numSwaps = linkTable.Count - 1 - moveLinkID;
+            }
+
+            int swapDir = command is "Up" or "Top" ? -1 : 1; //"Up" is down in index
+
+            for (int i = 0; Math.Abs(i) < numSwaps; i += swapDir)
+            {
+                ReplyChoiceNode moveNode = linkTable[moveLinkID];
+                ReplyChoiceNode swapNode = linkTable[moveLinkID + i + swapDir];
+                (moveNode.Order, swapNode.Order) = (swapNode.Order, moveNode.Order);
+            }
             NeedsSave = true;
             ReOrderTable();
         }

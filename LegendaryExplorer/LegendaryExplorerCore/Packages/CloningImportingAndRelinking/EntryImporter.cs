@@ -185,17 +185,32 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             //Port Shaders
             //var portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(sourceExports); // CrossGen Disabled
-            var portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList(), rop.GamePathOverride);
+            bool allowedToPortShaders = destPcc.Game == sourcePcc.Game;
+            bool isCrossGame = destPcc.Game != sourcePcc.Game;
+            ShaderCache portingCache = null;
+
+            // Allow LE1 <-> LE3 for now
+            if ((destPcc.Game == MEGame.LE1 && sourcePcc.Game == MEGame.LE3) ||
+                (destPcc.Game == MEGame.LE3 && sourcePcc.Game == MEGame.LE1))
+            {
+                portingCache = ShaderCacheManipulator.GetAllShadersForMaterials(rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList(), rop.GamePathOverride);
+                allowedToPortShaders = true;
+            }
+
+            if (portingCache == null && !isCrossGame)
+            {
+                portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList(), rop.GamePathOverride);
+            }
+
+            if (!allowedToPortShaders)
+            {   
+                rop.ErrorOccurredCallback?.Invoke($"You cannot port Materials from {sourcePcc.Game} into {destPcc.Game}");
+            }
+
+
             if (portingCache is not null)
             {
-                if (destPcc.Game != sourcePcc.Game)
-                {
-                    rop.ErrorOccurredCallback?.Invoke($"You cannot port Materials from {sourcePcc.Game} into {destPcc.Game}");
-                }
-                else
-                {
-                    ShaderCacheManipulator.AddShadersToFile(destPcc, portingCache);
-                }
+                ShaderCacheManipulator.AddShadersToFile(destPcc, portingCache);
             }
 
             // Reindex - disabled for now as it causes issues

@@ -34,12 +34,20 @@
         <Label Content="Lines"/>
         <Grid Grid.Row="1" Grid.Column="0" Grid.RowSpan="2">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition/>
                 <RowDefinition Height="155"/>
             </Grid.RowDefinitions>
-            <ListBox x:Name="linesListBox" ItemsSource="{Binding Lines}" SelectedItem="{Binding SelectedLineEntry}"
-                 AllowDrop="True" PreviewMouseLeftButtonDown="linesListBox_PreviewMouseLeftButtonDown" MouseMove="linesListBox_MouseMove"
-                 DragEnter="linesListBox_DragEnter" Drop="linesListBox_Drop" HorizontalContentAlignment="Stretch" PreviewMouseRightButtonDown="linesListBox_PreviewMouseRightButtonDown">
+            <Menu Grid.Row="0">
+                <MenuItem Header="Tools ▾">
+                    <MenuItem Header="Add Line" Click="AddLine_Click"/>
+                    <MenuItem Header="Re-assign Line IDs to new range" Click="ReAssignLineIds_Click"/>
+                    <MenuItem Header="Add Lines from XML" Click="AddLinesFromXML_Click"/>
+                </MenuItem>
+            </Menu>
+            <ListBox x:Name="linesListBox" Grid.Row="1"  ItemsSource="{Binding Lines}" SelectedItem="{Binding SelectedLineEntry}"
+             AllowDrop="True" PreviewMouseLeftButtonDown="linesListBox_PreviewMouseLeftButtonDown" MouseMove="linesListBox_MouseMove"
+             DragEnter="linesListBox_DragEnter" Drop="linesListBox_Drop" HorizontalContentAlignment="Stretch" PreviewMouseRightButtonDown="linesListBox_PreviewMouseRightButtonDown">
                 <ListBox.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Add Line" Click="AddLine_Click"/>
@@ -74,7 +82,7 @@
                 </ListBox.ItemTemplate>
                 <ListBox.Style>
                     <Style TargetType="ListBox"
-                               BasedOn="{StaticResource {x:Type ListBox}}">
+                           BasedOn="{StaticResource {x:Type ListBox}}">
                         <Style.Triggers>
                             <Trigger Property="HasItems" Value="False">
                                 <Setter Property="Template">
@@ -89,7 +97,7 @@
                     </Style>
                 </ListBox.Style>
             </ListBox>
-            <TreeView Name="treeView" ItemsSource="{Binding TreeNodes}" DisplayMemberPath="Header" Grid.Row="1" Margin="0,5,0,0">
+            <TreeView Name="treeView" ItemsSource="{Binding TreeNodes}" DisplayMemberPath="Header" Grid.Row="2" Margin="0,5,0,0">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
                         <EventSetter Event="MouseDoubleClick" Handler="OnTreeItemMouseDoubleClick" />
@@ -97,16 +105,16 @@
                 </TreeView.ItemContainerStyle>
             </TreeView>
             <!--<WindowsFormsHost Grid.Row="1" Margin="0,5,0,0"  Name="treeView_WinFormsHost">
-                <forms:TreeView x:Name="treeView"/>
-            </WindowsFormsHost>-->
+            <forms:TreeView x:Name="treeView"/>
+        </WindowsFormsHost>-->
         </Grid>
         <GridSplitter Grid.Row="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch" Grid.Column="1"/>
         <Label Content="Animations" Grid.Row="0" Grid.Column="2"/>
         <ListBox x:Name="animationListBox" Grid.Column="2" Grid.Row="1" Grid.RowSpan="2" ItemsSource="{Binding Animations}"
-                    SelectionChanged="animationListBox_SelectionChanged" 
-                     AllowDrop="True" PreviewMouseLeftButtonDown="animationListBox_PreviewMouseLeftButtonDown" MouseMove="animationListBox_MouseMove"
-                     DragEnter="animationListBox_DragEnter" Drop="animationListBox_Drop" HorizontalContentAlignment="Stretch"
-                     HorizontalAlignment="Stretch" SelectedItem="{Binding SelectedAnimation}">
+                SelectionChanged="animationListBox_SelectionChanged" 
+                 AllowDrop="True" PreviewMouseLeftButtonDown="animationListBox_PreviewMouseLeftButtonDown" MouseMove="animationListBox_MouseMove"
+                 DragEnter="animationListBox_DragEnter" Drop="animationListBox_Drop" HorizontalContentAlignment="Stretch"
+                 HorizontalAlignment="Stretch" SelectedItem="{Binding SelectedAnimation}">
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Add Animation" Click="AddAnimation_Click"/>

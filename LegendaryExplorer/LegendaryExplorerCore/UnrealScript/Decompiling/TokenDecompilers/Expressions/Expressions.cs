@@ -71,7 +71,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     return DecompileNew();
 
                 // (class|object|struct).member
-                case (byte)OpCodes.ClassContext: // TODO: support in AST
+                case (byte)OpCodes.ClassContext:
                     return DecompileContext(isClass:true);
 
                 case (byte)OpCodes.Context:
@@ -407,16 +407,26 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 //A const accessed by an instance of another class can be compiled as EX_Context(instancevar, literal),
                 //which, if decompiled naively, can lead to nonsense like: Weapon.-1
                 //in such a case, the context expression can be safely replaced with the literal
-                case IntegerLiteral _:
-                case FloatLiteral _:
-                case BooleanLiteral _:
-                case StringLiteral _:
-                case NameLiteral _:
-                case StringRefLiteral _:
+                case IntegerLiteral:
+                case FloatLiteral:
+                case BooleanLiteral:
+                case StringLiteral:
+                case NameLiteral:
+                case StringRefLiteral:
                     return right;
-                default:
-                    return new CompositeSymbolRef(left, right, isClass);
+                //user-defined operators can be used from any class,
+                //which means the function call may need to done in a class context
+                //this is an implementation detail, so we throw away the context
+                case InOpReference:
+                case PreOpReference:
+                case PostOpReference:
+                    if (isClass && left is ObjectLiteral)
+                    {
+                        return right;
+                    }
+                    break;
             }
+            return new CompositeSymbolRef(left, right, isClass);
         }
 
         private Expression DecompileStructMember()
@@ -565,7 +575,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
                 case NativeType.PostOperator:
                     var postOp = new PostOpDeclaration(OperatorHelper.FriendlyNameToTokenType(entry.Name), null, index, null);
-                    call = new PostOpReference(postOp, parameters[0], -1, -1);
+                    call = new PostOpReference(postOp, parameters[0]);
                     break;
             }
 
@@ -742,6 +752,22 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
 
             StartPositions.Pop();
+
+            //check if this is a user-defined operator
+            if (!byName && !withFuncListIdx && funcName.Contains('_') && LibInitialized 
+                && ReadOnlySymbolTable.TryGetOperatorFromVerboseName(funcName, out OperatorDeclaration op))
+            {
+                switch (op)
+                {
+                    case InOpDeclaration inOp when parameters.Count is 2:
+                        return new InOpReference(inOp, parameters[0], parameters[1]);
+                    case PreOpDeclaration preOp when parameters.Count is 1:
+                        return new PreOpReference(preOp, parameters[0]);
+                    case PostOpDeclaration postOp when parameters.Count is 1:
+                        return new PostOpReference(postOp, parameters[0]);
+                }
+            }
+
             var func = new SymbolReference(null, funcName)
             {
                 IsGlobal = global,

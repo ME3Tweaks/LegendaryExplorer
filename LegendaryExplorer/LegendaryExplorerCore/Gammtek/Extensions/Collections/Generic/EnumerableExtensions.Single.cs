@@ -359,7 +359,7 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic
         /// <param name="source"></param>
         /// <param name="firstListPredicate"></param>
         /// <returns></returns>
-        public static (List<T>, List<T>) Split<T>(this IEnumerable<T> source, Func<T, bool> firstListPredicate)
+        public static (List<T>, List<T>) Split<T>(this IEnumerable<T> source, Predicate<T> firstListPredicate)
         {
             var a = new List<T>();
 			var b = new List<T>();
@@ -376,5 +376,20 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic
             }
             return (a, b);
         }
-	}
+
+		public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> source)
+		{
+			return source.SelectMany(x => x);
+        }
+
+        public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<IEnumerable<T>>> source)
+        {
+            return source.SelectMany(Flatten);
+        }
+
+        public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<IEnumerable<IEnumerable<T>>>> source)
+        {
+            return source.SelectMany(Flatten);
+        }
+    }
 }
