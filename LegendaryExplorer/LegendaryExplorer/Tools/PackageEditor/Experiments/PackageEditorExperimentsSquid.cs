@@ -632,12 +632,9 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                         var weights = finalVerts[i].Weights;
                         switch (weights.Count)
                         {
-                            // TODO is this right?
                             case <= 1:
                                 chunk.RigidVerts++;
                                 break;
-                            case > 4:
-                                throw new Exception("there are too many bones influencing this vertex, and I don't know how to handle that.");
                             default:
                                 chunk.SoftVerts++;
                                 break;
