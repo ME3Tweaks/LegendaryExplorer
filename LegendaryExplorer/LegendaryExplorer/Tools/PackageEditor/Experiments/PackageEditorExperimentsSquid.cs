@@ -1978,7 +1978,6 @@ defaultproperties
                             // sanity checking. If this is correct, then we should be able to translate back from world space into tangent space for each
                         }
                         var targetVector = (PackedNormal)vectorToMatch;
-                        var originalBitangentSign = targetBin.LODModels[0].VertexBufferGPUSkin.VertexData[targetIndex].TangentZ.W;
                         targetBin.LODModels[0].VertexBufferGPUSkin.VertexData[targetIndex].TangentZ = new PackedNormal(targetVector.X, targetVector.Y, targetVector.Z, originalBitangentSign);
                     }
 
