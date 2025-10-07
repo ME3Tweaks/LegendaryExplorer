@@ -508,6 +508,7 @@ var annotated_dup =
             [ "FHeightFogVertexShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_height_fog_vertex_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_height_fog_vertex_shader_parameters" ],
             [ "FLightShaftPixelShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters" ],
             [ "FMaterialPixelShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters" ],
+            [ "FMaterialShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_shader_parameters" ],
             [ "FMaterialVertexShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters" ],
             [ "FMotionBlurShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_motion_blur_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_motion_blur_shader_parameters" ],
             [ "FSceneTextureShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_scene_texture_shader_parameters.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_scene_texture_shader_parameters" ],
@@ -539,7 +540,7 @@ var annotated_dup =
           [ "BioStateEventMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map" ],
           [ "BioTlkFileSet", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_tlk_file_set.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_tlk_file_set" ],
           [ "Box", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box" ],
-          [ "BoxSphereBounds", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds" ],
+          [ "BoxSphereBounds", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds" ],
           [ "BrushComponent", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_brush_component.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_brush_component" ],
           [ "BspNode", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_node.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_node" ],
           [ "BspSurf", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_surf.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_surf" ],
@@ -1164,6 +1165,7 @@ var annotated_dup =
     [ "UMultiMap", "class_u_multi_map.html", "class_u_multi_map" ],
     [ "UnparsedShader", "class_unparsed_shader.html", "class_unparsed_shader" ],
     [ "USet", "class_u_set.html", "class_u_set" ],
+    [ "USparseArray", "struct_u_sparse_array.html", "struct_u_sparse_array" ],
     [ "VarLinkInfo", "class_var_link_info.html", "class_var_link_info" ],
     [ "VisualizeTexturePixelShader", "class_visualize_texture_pixel_shader.html", "class_visualize_texture_pixel_shader" ]
 ];

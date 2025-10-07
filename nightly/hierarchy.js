@@ -81,7 +81,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Gammtek.Extensions.BooleanExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_boolean_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Box", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Box< int >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html", null ],
-    [ "LegendaryExplorerCore.Unreal.BinaryConverters.BoxSphereBounds", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds.html", null ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.BoxSphereBounds", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.BspNode", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_node.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.BspSurf", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_surf.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.Collections.ByteArrayExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_byte_array_extensions.html", null ],
@@ -279,6 +279,7 @@ var hierarchy =
     [ "FLightMapTexturePolicy", "class_f_light_map_texture_policy.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FLightShaftPixelShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FMaterialPixelShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html", null ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FMaterialShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_shader_parameters.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FMaterialVertexShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FMotionBlurShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_motion_blur_shader_parameters.html", null ],
     [ "FPointLightPolicy", "class_f_point_light_policy.html", null ],
@@ -500,7 +501,8 @@ var hierarchy =
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.TreeNode< T >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_tree_node.html", null ],
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.TreeNode< T >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_tree_node.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Parsing.TokenStream", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html", null ],
-      [ "USet< T, TKey, TKeyFuncs >", "class_u_set.html", null ]
+      [ "USet< T, TKey, TKeyFuncs >", "class_u_set.html", null ],
+      [ "USparseArray< T >", "struct_u_sparse_array.html", null ]
     ] ],
     [ "IEnumerator", null, [
       [ "IRefEnumerator< T >", "interface_i_ref_enumerator.html", [
@@ -1395,6 +1397,7 @@ var hierarchy =
     [ "USet< T, T, DefaultKeyFuncs< T > >", "class_u_set.html", [
       [ "USet< T, TKey, TKeyFuncs >", "class_u_set.html", null ]
     ] ],
+    [ "USparseArray< SetElement >", "struct_u_sparse_array.html", null ],
     [ "LegendaryExplorerCore.Misc.ValueTupleEqualityComparer", "class_legendary_explorer_core_1_1_misc_1_1_value_tuple_equality_comparer.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Language.Tree.VariableTypeExtensions", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_type_extensions.html", null ],
     [ "LegendaryExplorerCore.Gammtek.IO.VarInt", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_var_int.html", null ],

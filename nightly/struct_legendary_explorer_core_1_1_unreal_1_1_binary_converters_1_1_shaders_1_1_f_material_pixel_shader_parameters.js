@@ -1,12 +1,7 @@
 var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters =
 [
     [ "Serialize", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#a2c9997c4b78ce2b96879066fcadb5830", null ],
-    [ "CameraWorldPosition", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#a68a7190811ae940090d79d86c75fa6de", null ],
-    [ "ObjectWorldPositionAndRadius", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#a48d206a8f18e0da2f229b13f3f8b5020", null ],
-    [ "ObjectOrientation", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#abb4f7ca12976e7bc76de3010298a9944", null ],
-    [ "WindDirectionAndSpeed", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#a9daa113e8d1c85ecdc2c0eb8071232f5", null ],
-    [ "FoliageImpulseDirection", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#ab7243c4de7202845f2715e601d74a369", null ],
-    [ "FoliageNormalizedRotationAxisAndAngle", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#ab970944a94cfa0ee46eb68a291589b6a", null ],
+    [ "MaterialShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#a636b62bd10ad212d40cfec42d005d9ff", null ],
     [ "UniformPixelScalarShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#ad0e7499d921547a4f397de227e21afb9", null ],
     [ "UniformPixelVectorShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#a34ac6de58c641bb85373438cf9f6fda8", null ],
     [ "UniformPixel2DShaderResourceParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html#a9c3afd08fea76f0bfad113da9c94343b", null ],

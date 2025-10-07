@@ -25,7 +25,7 @@ var namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters =
     [ "BioStateEventMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_state_event_map" ],
     [ "BioTlkFileSet", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_tlk_file_set.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bio_tlk_file_set" ],
     [ "Box", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box" ],
-    [ "BoxSphereBounds", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds" ],
+    [ "BoxSphereBounds", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds" ],
     [ "BrushComponent", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_brush_component.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_brush_component" ],
     [ "BspNode", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_node.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_node" ],
     [ "BspSurf", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_surf.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_surf" ],
@@ -227,7 +227,6 @@ var namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters =
     [ "UniformExpressionRenderContext", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ad600b90c3eba6fec3fd17dab43241247", null ],
     [ "SerializingContainer", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a04a5286e1eec87620d4bd1c642f0eb22", null ],
     [ "Rotator", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a412abdb6fb9da189f2003f05c95f2a95", null ],
-    [ "LinearColor", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#aa4ed07417832208dee285343419e71f2", null ],
     [ "PackedNormal", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ada5aa52c19bb9a71916e3594f0bd4ddd", null ],
     [ "Influences", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a0c409539b20e68450858e1519fe92070", null ]
 ];

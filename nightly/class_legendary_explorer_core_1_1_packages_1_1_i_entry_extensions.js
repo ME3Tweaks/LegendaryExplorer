@@ -11,6 +11,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions =
     [ "GetAllDescendants", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a2f5c1fc5ea5563f0ee263abba2e804a0", null ],
     [ "GetEntriesThatReferenceThisOne", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a58a631c73d2ffde4d2ef7c14ad57cc07", null ],
     [ "ReplaceAllReferencesToThisOne", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a8e7f2bbbdfeb829e38c47d17436a041f", null ],
+    [ "GetCondensedProperties", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#a6efb9fcebc611fb7f25d780d371fe6e3", null ],
     [ "CondenseArchetypes", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#aa58aa7e674caee8c5b364cec4db1b767", null ],
     [ "GetBinaryData< T >", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#acc4083c94065c8bdfe55da0ca5ba53a7", null ],
     [ "GetBinaryData< T >", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html#ae34e2f561ae96f0f32ec352eaef23662", null ],

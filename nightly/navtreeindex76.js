@@ -1,5 +1,8 @@
 var NAVTREEINDEX76 =
 {
+"namespace_legendary_explorer_core_1_1_textures.html":[0,5,1,21],
+"namespace_legendary_explorer_core_1_1_textures.html#a00a75c8a054cd63f64b7bbecc2d61e09":[0,5,1,21,12],
+"namespace_legendary_explorer_core_1_1_textures_1_1_codecs.html":[0,5,1,21,0],
 "namespace_legendary_explorer_core_1_1_textures_1_1_studio.html":[0,5,1,21,1],
 "namespace_legendary_explorer_core_1_1_u_d_k.html":[0,5,1,23],
 "namespace_legendary_explorer_core_1_1_unreal.html":[0,5,1,24],
@@ -246,8 +249,5 @@ var NAVTREEINDEX76 =
 "namespace_legendary_explorer_core_1_1_unreal.html#a5139d8a6cdcf4b3e295fc602bd2f921f":[0,5,1,24,167],
 "namespace_legendary_explorer_core_1_1_unreal.html#a519d636c83889d11f4183fa6171aa077":[0,5,1,24,588],
 "namespace_legendary_explorer_core_1_1_unreal.html#a525f88604fc5748bec426f702313ea51":[0,5,1,24,685],
-"namespace_legendary_explorer_core_1_1_unreal.html#a52a1d4ea4438338603b76c83c42508a9":[0,5,1,24,489],
-"namespace_legendary_explorer_core_1_1_unreal.html#a52aff625bf71f308681e5161db4fc36a":[0,5,1,24,516],
-"namespace_legendary_explorer_core_1_1_unreal.html#a5467959e1fb218fdaddb761becea17dd":[0,5,1,24,309],
-"namespace_legendary_explorer_core_1_1_unreal.html#a54774df1ec43ddcac7e89006d2b53793":[0,5,1,24,357]
+"namespace_legendary_explorer_core_1_1_unreal.html#a52a1d4ea4438338603b76c83c42508a9":[0,5,1,24,489]
 };

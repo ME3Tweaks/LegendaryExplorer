@@ -1,12 +1,7 @@
 var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters =
 [
     [ "Serialize", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters.html#aadf3f81ccb05b1bef90ce93544312c7b", null ],
-    [ "CameraWorldPosition", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters.html#a75298d193b6131441bf3259d6468f9cf", null ],
-    [ "ObjectWorldPositionAndRadius", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters.html#af1801545c54941b92cdddd6c507e9c35", null ],
-    [ "ObjectOrientation", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters.html#add70bdf536e222e51e8e989531bd7b4d", null ],
-    [ "WindDirectionAndSpeed", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters.html#acf733cff28e3101efc4c118462c7d199", null ],
-    [ "FoliageImpulseDirection", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters.html#a1873bcbda2bf476f584fcfbc50835fba", null ],
-    [ "FoliageNormalizedRotationAxisAndAngle", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters.html#afa8476ca4618a5fb32d3707bca18b2c3", null ],
+    [ "MaterialShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters.html#a32effc70b080fb8e4453af0bbef91f6a", null ],
     [ "UniformVertexScalarShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters.html#ad0fbeefe0320a6093f76ab821051abcf", null ],
     [ "UniformVertexVectorShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters.html#adc4224def3087cada9f6b9c6b7876b2c", null ]
 ];
