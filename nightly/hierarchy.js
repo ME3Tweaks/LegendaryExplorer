@@ -279,7 +279,6 @@ var hierarchy =
     [ "FLightMapTexturePolicy", "class_f_light_map_texture_policy.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FLightShaftPixelShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_shaft_pixel_shader_parameters.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FMaterialPixelShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_pixel_shader_parameters.html", null ],
-    [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FMaterialShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_shader_parameters.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FMaterialVertexShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_material_vertex_shader_parameters.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.FMotionBlurShaderParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_motion_blur_shader_parameters.html", null ],
     [ "FPointLightPolicy", "class_f_point_light_policy.html", null ],
@@ -796,6 +795,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Compression.LZO2", "class_legendary_explorer_core_1_1_compression_1_1_l_z_o2.html", null ],
     [ "LegendaryExplorerCore.Compression.LZX", "class_legendary_explorer_core_1_1_compression_1_1_l_z_x.html", null ],
     [ "LegendaryExplorerCore.Unreal.Classes.MaterialInstanceConstant", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant.html", null ],
+    [ "LegendaryExplorerCore.Unreal.Classes.MaterialInstanceConstantLevelEditor", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant_level_editor.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialResource", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html", [
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.TerrainMaterialResource", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_terrain_material_resource.html", null ]
     ] ],
