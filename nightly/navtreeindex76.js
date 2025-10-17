@@ -1,5 +1,7 @@
 var NAVTREEINDEX76 =
 {
+"namespace_legendary_explorer_core_1_1_shaders.html#a16e2d8e2656133d6e362bcb2260bb05a":[0,5,1,18,11],
+"namespace_legendary_explorer_core_1_1_shaders.html#a2e188b924efe20c6f5f18ab25f77f29f":[0,5,1,18,13],
 "namespace_legendary_explorer_core_1_1_shaders.html#a2e569c048ef2ec864d36d14fc39b1374":[0,5,1,18,10],
 "namespace_legendary_explorer_core_1_1_shaders.html#a5881cb041be3e9746dc2d6ea42102996":[0,5,1,18,16],
 "namespace_legendary_explorer_core_1_1_shaders.html#a821f95ceba7386e31cc4e76743a46443":[0,5,1,18,14],
@@ -247,7 +249,5 @@ var NAVTREEINDEX76 =
 "namespace_legendary_explorer_core_1_1_unreal.html#a4bc0153e6c4472ef90e54ca8e0808348":[0,5,1,24,391],
 "namespace_legendary_explorer_core_1_1_unreal.html#a4bc9c5274b90ee9d44488c9aa94759a2":[0,5,1,24,705],
 "namespace_legendary_explorer_core_1_1_unreal.html#a4c53fff7749028651c58ce801265eaf0":[0,5,1,24,780],
-"namespace_legendary_explorer_core_1_1_unreal.html#a4d6d88b118bc2a5425ff2cdd98514b0e":[0,5,1,24,763],
-"namespace_legendary_explorer_core_1_1_unreal.html#a4d8cae3037757666fac97ab9b45b5093":[0,5,1,24,778],
-"namespace_legendary_explorer_core_1_1_unreal.html#a4de25d0108dc2eb3b7bdb2d3f3efbaba":[0,5,1,24,766]
+"namespace_legendary_explorer_core_1_1_unreal.html#a4d6d88b118bc2a5425ff2cdd98514b0e":[0,5,1,24,763]
 };

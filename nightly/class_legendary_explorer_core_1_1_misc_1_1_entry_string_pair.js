@@ -4,6 +4,7 @@ var class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair =
     [ "EntryStringPair", "class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair.html#afed658f392796c0efa5470599a885f47", null ],
     [ "EntryStringPair", "class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair.html#afc015c66e1a7ea0906c0200320d1789a", null ],
     [ "EntryStringPair", "class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair.html#a70256f49c0e0e5bb6b45ff881ae2369b", null ],
+    [ "FormatMessage", "class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair.html#a594885dd424acf49ae352b68d136c081", null ],
     [ "ToString", "class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair.html#ab3a55546fd3211126e831957b0ecb3c9", null ],
     [ "operator EntryStringPair", "class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair.html#a5c8cdfc33e1b14301270fa622f5ac3c7", null ],
     [ "operator EntryStringPair", "class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair.html#a4b496151cf1153005b3890d8dd75ed5c", null ],
