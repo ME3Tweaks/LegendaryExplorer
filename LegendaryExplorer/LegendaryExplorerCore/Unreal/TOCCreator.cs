@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -296,7 +297,8 @@ namespace LegendaryExplorerCore.Unreal
             string[] dlcList = Directory.GetDirectories(Path.Combine(biogameDirectory, "DLC"), "*.*", SearchOption.TopDirectoryOnly);
             foreach (var dlcFolder in dlcList)
             {
-                if (!(new DirectoryInfo(dlcFolder).Name).StartsWith("DLC_", StringComparison.OrdinalIgnoreCase))
+                var dlcName = Path.GetFileName(dlcFolder);
+                if (!dlcName.StartsWith("DLC_", StringComparison.OrdinalIgnoreCase))
                     continue;
 
                 string autoLoadPath = Path.Combine(dlcFolder, "autoload.ini");  //CHECK IF FILE EXISTS?
@@ -304,7 +306,10 @@ namespace LegendaryExplorerCore.Unreal
                 {
                     DuplicatingIni dlcAutoload = DuplicatingIni.LoadIni(autoLoadPath);
                     int mount = Convert.ToInt32(dlcAutoload["ME1DLCMOUNT"]["ModMount"].Value);
-                    dlcMounts.Add(mount, dlcFolder);
+                    if (!dlcMounts.TryAdd(mount, dlcFolder))
+                    {
+                        LECLog.Warning($"Duplicate mounts used in game: ${mount}, by {dlcName}");
+                    }
                 }
             }
 
