@@ -332,6 +332,25 @@ namespace LegendaryExplorerCore.Helpers
             stream.Write(buffer);
         }
 
+        /// <summary>
+        /// Writes a padded string to the stream. If padLen is smaller than the string length, an exception is thrown.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="str"></param>
+        /// <param name="padLen">Number of bytes to ensure are written</param>
+        public static void WritePaddedStringUnicodeNull(this Stream stream, string str, int padLen)
+        {
+            if (padLen < (str.Length + 1) * 2)
+            {
+                throw new Exception($@"The given string '{str}' exceeds the padding length of {padLen}");
+            }
+
+            var posStart = stream.Position;
+            stream.WriteStringUnicodeNull(str);
+            var sizeWritten = stream.Position - posStart;
+            stream.WriteZeros(padLen - (int) sizeWritten);
+        }
+
         public static void WriteStringUnicode(this EndianWriter stream, string str)
         {
             stream.BaseStream.WriteStringUnicode(str);

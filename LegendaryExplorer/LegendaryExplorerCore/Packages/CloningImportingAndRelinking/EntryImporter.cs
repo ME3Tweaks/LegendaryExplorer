@@ -1438,6 +1438,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 MEGame.LE1 => le1FilesSafeToImportFrom,
                 MEGame.LE2 => le2FilesSafeToImportFrom,
                 MEGame.LE3 => le3FilesSafeToImportFrom,
+                MEGame.LMP => le3FilesSafeToImportFrom, // Should we change this to support BIOP_MPCommon?
                 MEGame.UDK => FileLib.BaseFileNames(MEGame.UDK),
                 _ => throw new Exception($"Cannot lookup safe files for {game}")
             };
@@ -1458,6 +1459,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 MEGame.LE1 => le1FilesSafeToImportFromPostLoad,
                 MEGame.LE2 => le2FilesSafeToImportFromPostLoad,
                 MEGame.LE3 => le3FilesSafeToImportFromPostLoad,
+                MEGame.LMP => [], // Maybe MPCommon?
                 MEGame.UDK => [],
                 _ => throw new Exception($"Cannot lookup post-load safe files for {game}")
             };

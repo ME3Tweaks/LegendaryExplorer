@@ -27,6 +27,8 @@ namespace LegendaryExplorerCore.Packages
         LE3 = 6,
         /// <summary>Unreal Development Kit</summary>
         UDK = 7,
+        /// <summary>Mass Effect Legendary Edition Multiplayer</summary>
+        LMP = 8,
 
         /// <summary>Mass Effect Legendary Edition Launcher</summary>
         /// <remarks>
@@ -46,7 +48,7 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="game">Input game</param>
         /// <returns>True if game is LE</returns>
-        public static bool IsLEGame(this MEGame game) => game is MEGame.LE1 or MEGame.LE2 or MEGame.LE3;
+        public static bool IsLEGame(this MEGame game) => game is MEGame.LE1 or MEGame.LE2 or MEGame.LE3 or MEGame.LMP;
 
         /// <summary>
         /// Is game part of original trilogy (not including UDK)
@@ -60,7 +62,7 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <param name="game">Input game</param>
         /// <returns>True if game is OT</returns>
-        public static bool IsMEGame(this MEGame game) => game is MEGame.ME1 or MEGame.ME2 or MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3;
+        public static bool IsMEGame(this MEGame game) => game.IsLEGame() || game.IsOTGame();
 
         /// <summary>
         /// Is game a version of Mass Effect 1

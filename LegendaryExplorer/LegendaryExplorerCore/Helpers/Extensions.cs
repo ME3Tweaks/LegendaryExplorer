@@ -425,6 +425,17 @@ namespace LegendaryExplorerCore.Helpers
         }
 
         /// <summary>
+        /// Splits on \r and \n
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public static string[] SplitLinesAll(this string s, StringSplitOptions options = StringSplitOptions.None)
+        {
+            return s.Split(new[] { '\r', '\n'}, options);
+        }
+
+        /// <summary>
         /// Capitalizes the first letter in the string.
         /// </summary>
         /// <param name="str"></param>

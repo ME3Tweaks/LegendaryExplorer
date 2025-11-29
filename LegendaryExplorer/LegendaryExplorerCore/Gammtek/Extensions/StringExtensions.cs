@@ -39,6 +39,12 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
                 if (useLEShortName) return "Mass Effect 3 LE";
                 return "Mass Effect 3 (Legendary Edition)";
             }
+            if (game == MEGame.LMP)
+            {
+                if (useLEShortName) return "Legendary Edition MP";
+                return "Mass Effect Legendary Edition Multiplayer";
+
+            }
             if (game == MEGame.LELauncher)
             {
                 if (useLEShortName) return "LE Launcher";

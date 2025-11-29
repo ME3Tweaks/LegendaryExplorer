@@ -772,23 +772,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             if (Export.Game.IsLEGame())
             {
                 // Adjust the internal lod bias.
-                var maxLodInfo = TextureLODInfo.LEMaxLodSizes(Export.Game);
-                var texGroup = props.GetProp<EnumProperty>(@"LODGroup");
-                if (texGroup != null && maxLodInfo.TryGetValue(texGroup.Value.Instanced, out int maxDimension))
-                {
-                    // cubemaps will have null texture group. we don't want to update these
-                    int lodBias = 0;
-                    while (Mips[0].width > maxDimension || Mips[0].height > maxDimension)
-                    {
-                        lodBias--;
-                        maxDimension *= 2;
-                    }
-
-                    if (lodBias != 0)
-                    {
-                        props.AddOrReplaceProp(new IntProperty(lodBias, @"InternalFormatLodBias"));
-                    }
-                }
+                UpdateLODBiasForTexture(Export, props, Mips);
             }
 
             // Texture conversion
@@ -995,6 +979,60 @@ namespace LegendaryExplorerCore.Unreal.Classes
             }
 
             return false;
+        }
+
+        public static void UpdateLODBiasForTexture(ExportEntry export, PropertyCollection props, List<Texture2DMipInfo> Mips)
+        {
+            var maxLodInfo = TextureLODInfo.LEMaxLodSizes(export.Game);
+            var texGroup = props.GetProp<EnumProperty>(@"LODGroup");
+            if (texGroup != null && maxLodInfo.TryGetValue(texGroup.Value.Instanced, out int maxDimension))
+            {
+                // cubemaps will have null texture group. we don't want to update these
+                int lodBias = 0;
+                while (Mips[0].width > maxDimension || Mips[0].height > maxDimension)
+                {
+                    lodBias--;
+                    maxDimension *= 2;
+                }
+
+                if (lodBias != 0)
+                {
+                    props.AddOrReplaceProp(new IntProperty(lodBias, @"InternalFormatLodBias"));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates the Internal Format LOD Bias for the given texture export
+        /// </summary>
+        /// <param name="export"></param>
+        public static void UpdateLODBiasForTexture(ExportEntry export)
+        {
+            var maxLodInfo = TextureLODInfo.LEMaxLodSizes(export.Game);
+            var texGroup = export.GetProperty<EnumProperty>(@"LODGroup");
+            if (texGroup != null && maxLodInfo.TryGetValue(texGroup.Value.Instanced, out int maxDimension))
+            {
+                // cubemaps will have null texture group. we don't want to update these
+                var t2d = ObjectBinary.From<UTexture2D>(export);
+                int lodBias = 0;
+                var topMip = t2d.Mips.First(x => x.StorageType != StorageTypes.empty);
+                while (topMip.SizeX > maxDimension || topMip.SizeY > maxDimension)
+                {
+                    lodBias--;
+                    maxDimension *= 2;
+                }
+
+                if (lodBias != 0)
+                {
+                    // Adjust LOD Bias
+                    export.WriteProperty(new IntProperty(lodBias, @"InternalFormatLodBias"));
+                } 
+                else
+                {
+                    // Do not set
+                    export.RemoveProperty(@"InternalFormatLodBias");
+                }
+            }
         }
 
         /// <summary>
