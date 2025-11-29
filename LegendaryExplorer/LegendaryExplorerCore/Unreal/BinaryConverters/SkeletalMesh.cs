@@ -439,7 +439,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 if (IsLoading)
                 {
-                    ms.Read(MemoryMarshal.AsBytes<GPUSkinVertex>(svb.VertexData));
+                    ms.Read(MemoryMarshal.AsBytes<GPUSkinVertex>(svb.VertexData.AsSpan()));
                 }
                 else
                 {
