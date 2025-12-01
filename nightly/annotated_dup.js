@@ -355,6 +355,7 @@ var annotated_dup =
         [ "ExportEntryExtensions", "class_legendary_explorer_core_1_1_packages_1_1_export_entry_extensions.html", "class_legendary_explorer_core_1_1_packages_1_1_export_entry_extensions" ],
         [ "IEntry", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html", "interface_legendary_explorer_core_1_1_packages_1_1_i_entry" ],
         [ "IEntryExtensions", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions.html", "class_legendary_explorer_core_1_1_packages_1_1_i_entry_extensions" ],
+        [ "ILazyLoadPackage", "interface_legendary_explorer_core_1_1_packages_1_1_i_lazy_load_package.html", "interface_legendary_explorer_core_1_1_packages_1_1_i_lazy_load_package" ],
         [ "IMEPackage", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package" ],
         [ "ImportEntry", "class_legendary_explorer_core_1_1_packages_1_1_import_entry.html", "class_legendary_explorer_core_1_1_packages_1_1_import_entry" ],
         [ "IPackageUser", "interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html", "interface_legendary_explorer_core_1_1_packages_1_1_i_package_user" ],

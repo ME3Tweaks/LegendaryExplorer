@@ -476,6 +476,9 @@ var hierarchy =
       [ "LegendaryExplorerCore.Gammtek.IO.IBuffer", "interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_buffer.html", null ],
       [ "LegendaryExplorerCore.Packages.DisposableCollection< T >", "class_legendary_explorer_core_1_1_packages_1_1_disposable_collection.html", null ],
       [ "LegendaryExplorerCore.Packages.IMEPackage", "interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html", [
+        [ "LegendaryExplorerCore.Packages.ILazyLoadPackage", "interface_legendary_explorer_core_1_1_packages_1_1_i_lazy_load_package.html", [
+          [ "LegendaryExplorerCore.Packages.MEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html", null ]
+        ] ],
         [ "LegendaryExplorerCore.Packages.MEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html", null ],
         [ "LegendaryExplorerCore.Packages.UDKPackage", "class_legendary_explorer_core_1_1_packages_1_1_u_d_k_package.html", null ]
       ] ],
@@ -1010,6 +1013,7 @@ var hierarchy =
       [ "TieredPackageCache", "class_tiered_package_cache.html", null ]
     ] ],
     [ "LegendaryExplorerCore.Packages.PackageDiff", "class_legendary_explorer_core_1_1_packages_1_1_package_diff.html", null ],
+    [ "LegendaryExplorerCore.Packages.MEPackage.PackageLoadParameters", "struct_legendary_explorer_core_1_1_packages_1_1_m_e_package_1_1_package_load_parameters.html", null ],
     [ "LegendaryExplorerCore.Packages.PackageResynthesizer", "class_legendary_explorer_core_1_1_packages_1_1_package_resynthesizer.html", null ],
     [ "LegendaryExplorerCore.Packages.PackageSaver", "class_legendary_explorer_core_1_1_packages_1_1_package_saver.html", null ],
     [ "LegendaryExplorerCore.Packages.PackageUpdate", "struct_legendary_explorer_core_1_1_packages_1_1_package_update.html", null ],

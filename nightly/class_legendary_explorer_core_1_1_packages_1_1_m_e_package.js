@@ -1,9 +1,10 @@
 var class_legendary_explorer_core_1_1_packages_1_1_m_e_package =
 [
+    [ "PackageLoadParameters", "struct_legendary_explorer_core_1_1_packages_1_1_m_e_package_1_1_package_load_parameters.html", "struct_legendary_explorer_core_1_1_packages_1_1_m_e_package_1_1_package_load_parameters" ],
     [ "GamePlatform", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a423493ad96316a5a54f0df3fb3126cbe", null ],
     [ "getHeader", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#af71eb007aa3a9d75c2315ceba0e4aba6", null ],
     [ "RegisterBlankPackageCreator", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a136b7327f9f8d1b4c93f0ba1fcd6ffeb", null ],
-    [ "RegisterStreamLoader", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a7e9a46365feecd9c9022e5f78179244b", null ],
+    [ "RegisterStreamLoader", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a4fbdd1ff15875a4fed1808075be604c4", null ],
     [ "GetDecompressedPackageStream", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#aa3a6b04836f75ce08c03bcc9266bb96e", null ],
     [ "RegisterSaver", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a86104877b1852154aa27ec4c5478f4b1", null ],
     [ "SaveToStream", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a2718de8d0355d5160865354180ed7730", null ],
