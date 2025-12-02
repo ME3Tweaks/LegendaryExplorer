@@ -172,6 +172,10 @@ public class WwiseBankScans
                 case "STMG":
                     Scan_WwiseBank_STMG(chunkNode, bin, version);
                     break;
+                case "ENVS":
+                    Scan_WwiseBank_ENVS(chunkNode, bin, version);
+                    break;
+                    
             }
 
             // Just in case we don't parse chunk in full - jump to next chunk
@@ -713,7 +717,8 @@ public class WwiseBankScans
     {
         //var pluginExists = bin.ReadUInt32();
         //bin.Skip(-4);
-        root.Items.Add(MakeUInt32Node(bin, "PluginID"));
+        root.Items.Add(MakeUInt32Node(bin, "PluginID", out var pluginId));
+        var pluginType = pluginId & 0x0F;
 
         var streamTypeNode = new BinInterpNode(bin.Position, "");
         var streamType = StreamType.DeserializeStatic(bin.BaseStream, version);
@@ -750,7 +755,16 @@ public class WwiseBankScans
             flags &= ~MediaInformationFlags.Prefetch;
         }
         root.Items.Add(new BinInterpNode(bin.Position - 1, $"MediaInformationFlags: {flags}") { Length = 1 });
-        
+
+        if (pluginType == 2 || (pluginType == 5 && version <= 126))
+        {
+            root.Items.Add(MakeUInt32Node(bin, "PluginParametersSize", out var paramLength));
+            if (paramLength > 0)
+            {
+                root.Items.Add(new BinInterpNode(bin.Position, "PluginParameters") { Length = (int)paramLength });
+                bin.Skip(paramLength);
+            }
+        }
     }
 
     private void Scan_HIRC_NodeBaseParams(BinInterpNode root, EndianReader bin, uint version, bool useFeedback)
@@ -776,7 +790,6 @@ public class WwiseBankScans
                 if (version <= 48)
                 {
                     var pLength = bin.ReadUInt32();
-                    bin.Skip(-4);
                     fx.Items.Add(new BinInterpNode(bin.Position - 4, "FXParameters") { Length = (int)(pLength + 4) });
                     bin.Skip(pLength);
                 }
@@ -943,19 +956,24 @@ public class WwiseBankScans
                 pNode.Items.Add(MakeFloatNode(bin, "PanFR"));
             }
 
-            if(version <= 89)
+            if (version <= 72)
             {
-                if(version < 72)
-                {
-                    pNode.Items.Add(MakeBoolByteNode(bin, "Has2DPositioning", out has2dPositioning));
-                }
-
                 pNode.Items.Add(MakeBoolByteNode(bin, "Has3DPositioning", out has3dPositioning));
-                if ((!has3dPositioning && version <= 72) || has2dPositioning)
+                if (!has3dPositioning)
                 {
-                    pNode.Items.Add(MakeBoolByteNode(bin, "HasPanner"));
+                    pNode.Items.Add(MakeBoolByteNode(bin, "IsPannerEnabled"));
                 }
             }
+            else if (version <= 89)
+            {
+                pNode.Items.Add(MakeBoolByteNode(bin, "Has2DPositioning", out has2dPositioning));
+                pNode.Items.Add(MakeBoolByteNode(bin, "Has3DPositioning", out has3dPositioning));
+                if (has2dPositioning)
+                {
+                    pNode.Items.Add(MakeBoolByteNode(bin, "IsPannerEnabled"));
+                }
+            }
+            
         }
 
         if (has3dPositioning)
@@ -1207,12 +1225,16 @@ public class WwiseBankScans
                 rtpc.Items.Add(MakeBoolByteNode(bin, "IsRendered"));
             }
             rtpc.Items.Add(MakeWwiseIdRefNode(bin, "RTPCId"));
-            var rtpcType = bin.ReadByte();
-            if (version <= 140 && rtpcType == 0x02) rtpcType = 0x04;
-            rtpc.Items.Add(new BinInterpNode(bin.Position - 1, $"RTPCType: {Enum.GetName((RtpcTypeInner)rtpcType)}") { Length = 1 });
-            var accumType = (AccumTypeInner)bin.ReadByte();
-            if (version <= 125) accumType += 1;
-            rtpc.Items.Add(new BinInterpNode(bin.Position - 1, $"AccumType: {Enum.GetName(accumType)}"));
+
+            if (version > 89)
+            {
+                var rtpcType = bin.ReadByte();
+                if (version <= 140 && rtpcType == 0x02) rtpcType = 0x04;
+                rtpc.Items.Add(new BinInterpNode(bin.Position - 1, $"RTPCType: {Enum.GetName((RtpcTypeInner)rtpcType)}") { Length = 1 });
+                var accumType = (AccumTypeInner)bin.ReadByte();
+                if (version <= 125) accumType += 1;
+                rtpc.Items.Add(new BinInterpNode(bin.Position - 1, $"AccumType: {Enum.GetName(accumType)}"));
+            }
             
             var pidPos = bin.Position;
             var (paramId, modParamId) = ParameterId.DeserializeStatic(bin.BaseStream, version, false); // TODO: use modulator not handles on high versions!
@@ -1354,5 +1376,38 @@ public class WwiseBankScans
             }
             return at;
         }));
+    }
+
+    private void Scan_WwiseBank_ENVS(BinInterpNode root, EndianReader bin, uint version)
+    {
+        var x = version <= 150 ? 2 : 4;
+        var y = version <= 89 ? 2 : 3;
+        string[] xLabels = ["Obs", "Occ", "Diff", "Trans"];
+        string[] yLabels = ["Volume", "LPF", "HPF"];
+        
+        for(var i = 0; i < x; i++)
+        {
+            for(var j = 0; j < y; j++)
+            {
+                var curve = new BinInterpNode(bin.Position, $"Curve {xLabels[i]}[{yLabels[j]}]");
+                ScanCurve(curve);
+                curve.Length = (int)bin.Position - curve.Offset;
+                root.Items.Add(curve);
+            }
+        }
+        
+        void ScanCurve(BinInterpNode parent)
+        {
+            parent.Items.Add(MakeBoolByteNode(bin, "CurveEnabled"));
+            parent.Items.Add(MakeByteEnumNode<CurveScalingInner>(bin, "CurveScaling"));
+            parent.Items.Add(MakeArrayNodeInt16Count(bin, "Graph", j =>
+            {
+                var gItem = new BinInterpNode(bin.Position, $"Graph Item {j}");
+                gItem.Items.Add(MakeFloatNode(bin, "From"));
+                gItem.Items.Add(MakeFloatNode(bin, "To"));
+                gItem.Items.Add(MakeUInt32EnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
+                return gItem;
+            }));
+        }
     }
 }

@@ -37,16 +37,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             
             sc.SerializeConstInt(0); // bulk data flags
             var dataSizePos = sc.ms.Position; // come back to write size at the end
-            sc.ms.BaseStream.Position += sizeof(int) * 3;
+            sc.ms.BaseStream.Position += sizeof(int) * 2;
             var dataStartPos = sc.ms.Position;
             if (sc.IsLoading)
             {
-                Bank = WwiseBankParser.Deserialize(sc.ms.BaseStream);
+                sc.ms.JumpTo(dataSizePos);
+                var dataSize = sc.ms.ReadUInt32();
+                sc.ms.JumpTo(dataStartPos);
+                
+                if (dataSize > 0)
+                {
+                    Bank = WwiseBankParser.Deserialize(sc.ms.BaseStream);
+                }
             }
             if (sc.IsSaving)
             {
-                if(Bank is null) throw new Exception("WwiseBank is null, cannot serialize!");
-                WwiseBankParser.Serialize(Bank, sc.ms.BaseStream);
+                if(Bank is not null) WwiseBankParser.Serialize(Bank, sc.ms.BaseStream);
+                
                 var size = sc.ms.Position - dataStartPos;
                 sc.ms.JumpTo(dataSizePos);
                 sc.ms.Writer.WriteInt32((int)size);
