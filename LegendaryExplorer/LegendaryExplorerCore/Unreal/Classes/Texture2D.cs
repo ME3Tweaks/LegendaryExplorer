@@ -1025,12 +1025,12 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 if (lodBias != 0)
                 {
                     // Adjust LOD Bias
-                    export.WriteProperty(new IntProperty(lodBias, @"InternalFormatLodBias"));
+                    export.WriteProperty(new IntProperty(lodBias, @"InternalFormatLODBias"));
                 } 
                 else
                 {
                     // Do not set
-                    export.RemoveProperty(@"InternalFormatLodBias");
+                    export.RemoveProperty(@"InternalFormatLODBias");
                 }
             }
         }
