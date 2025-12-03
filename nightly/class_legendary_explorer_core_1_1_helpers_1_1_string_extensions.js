@@ -1,6 +1,7 @@
 var class_legendary_explorer_core_1_1_helpers_1_1_string_extensions =
 [
     [ "SplitLines", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a1fd8b84b69e6fba78316ca1185aeedaa", null ],
+    [ "SplitLinesAll", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a6c149db3a9ffef2e113f5d669b4118f0", null ],
     [ "UpperFirst", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a178a923be631b31dfd559e4ca0bd7c63", null ],
     [ "RepresentsPackageFilePath", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a3b994567c1122d60aba1429eac4f26d1", null ],
     [ "IsNumericallyEqual", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a15ae5162984258526653c712ca7000b2", null ],

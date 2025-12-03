@@ -119,6 +119,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a856c3fcaf186badc6f956bb5c630d757"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory.html#a856c3fcaf186badc6f956bb5c630d757">GetLauncherExecutable</a> (string rootPathOverride=null)</td></tr>
 <tr class="memdesc:a856c3fcaf186badc6f956bb5c630d757"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the path of the MassEffectLauncher.exe executable   <a href="class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory.html#a856c3fcaf186badc6f956bb5c630d757">More...</a><br /></td></tr>
 <tr class="separator:a856c3fcaf186badc6f956bb5c630d757"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af51e4ad2d8e804697ea2dbc780936bec"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory.html#af51e4ad2d8e804697ea2dbc780936bec">GetLauncherASIPath</a> (string rootPathOverride=null)</td></tr>
+<tr class="memdesc:af51e4ad2d8e804697ea2dbc780936bec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the path to the ASI install directory for the Launcher   <a href="class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory.html#af51e4ad2d8e804697ea2dbc780936bec">More...</a><br /></td></tr>
+<tr class="separator:af51e4ad2d8e804697ea2dbc780936bec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69811a6988529abb9ab3f56d29bd842e"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory.html#a69811a6988529abb9ab3f56d29bd842e">IsValidGameDir</a> (string rootPath)</td></tr>
 <tr class="memdesc:a69811a6988529abb9ab3f56d29bd842e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if a Mass Effect Legendary Edition folder is a valid game directory by checking for the launcher executable   <a href="class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory.html#a69811a6988529abb9ab3f56d29bd842e">More...</a><br /></td></tr>
 <tr class="separator:a69811a6988529abb9ab3f56d29bd842e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -146,6 +149,9 @@ Properties</h2></td></tr>
 <tr class="memitem:a8d6e12cdad0a231548c32640d615bf60"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory.html#a8d6e12cdad0a231548c32640d615bf60">LauncherExecutable</a><code> [get]</code></td></tr>
 <tr class="memdesc:a8d6e12cdad0a231548c32640d615bf60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Proxy for <a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory.html#a856c3fcaf186badc6f956bb5c630d757" title="Gets the path of the MassEffectLauncher.exe executable">GetLauncherExecutable</a> with no arguments   <a href="class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory.html#a8d6e12cdad0a231548c32640d615bf60">More...</a><br /></td></tr>
 <tr class="separator:a8d6e12cdad0a231548c32640d615bf60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a57ec10f8bf3c488c33c4178ef72dd526"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory.html#a57ec10f8bf3c488c33c4178ef72dd526">LauncherASIPath</a><code> [get]</code></td></tr>
+<tr class="memdesc:a57ec10f8bf3c488c33c4178ef72dd526"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the path to the ASI install directory for the Launcher   <a href="class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory.html#a57ec10f8bf3c488c33c4178ef72dd526">More...</a><br /></td></tr>
+<tr class="separator:a57ec10f8bf3c488c33c4178ef72dd526"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Contains information about the main LE directory as well as Launcher location. LE[X]Directory classes will use the <a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory.html" title="Contains information about the main LE directory as well as Launcher location. LE[X]Directory classes...">LEDirectory</a> default path to build their game paths.  </p>
@@ -281,6 +287,41 @@ Properties</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Path to launcher executable, null if not found</dd></dl>
+
+</div>
+</div>
+<a id="af51e4ad2d8e804697ea2dbc780936bec" name="af51e4ad2d8e804697ea2dbc780936bec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af51e4ad2d8e804697ea2dbc780936bec">&#9670;&#160;</a></span>GetLauncherASIPath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static string LegendaryExplorerCore.GameFilesystem.LEDirectory.GetLauncherASIPath </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>rootPathOverride</em> = <code>null</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the path to the ASI install directory for the Launcher  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rootPathOverride</td><td>Optional: override game path root</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Path to ASI folder, null if no usable root path</dd></dl>
 
 </div>
 </div>
@@ -470,6 +511,30 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Proxy for <a class="el" href="class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e_directory.html#a856c3fcaf186badc6f956bb5c630d757" title="Gets the path of the MassEffectLauncher.exe executable">GetLauncherExecutable</a> with no arguments  </p>
+
+</div>
+</div>
+<a id="a57ec10f8bf3c488c33c4178ef72dd526" name="a57ec10f8bf3c488c33c4178ef72dd526"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a57ec10f8bf3c488c33c4178ef72dd526">&#9670;&#160;</a></span>LauncherASIPath</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string LegendaryExplorerCore.GameFilesystem.LEDirectory.LauncherASIPath</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the path to the ASI install directory for the Launcher  </p>
 
 </div>
 </div>

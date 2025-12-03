@@ -11,5 +11,6 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_texture
     [ "SizeY", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_texture2_d_1_1_texture2_d_mip_map.html#a12bfcfcf7e4a929dbbcfcd5ac1b63dce", null ],
     [ "MipInfoOffsetFromBinStart", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_texture2_d_1_1_texture2_d_mip_map.html#a3a86b18b8c2073df0fd435cad69678c9", null ],
     [ "IsLocallyStored", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_texture2_d_1_1_texture2_d_mip_map.html#af213512486b219087ee382b04b715c52", null ],
+    [ "IsEmpty", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_texture2_d_1_1_texture2_d_mip_map.html#a69d7bf79b64cdc6af3ba78544953dc39", null ],
     [ "IsCompressed", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_texture2_d_1_1_texture2_d_mip_map.html#a29344a5f90484a4b640b3bc2cb42d174", null ]
 ];

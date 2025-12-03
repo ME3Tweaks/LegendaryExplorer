@@ -18,6 +18,8 @@ var class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d =
     [ "CalculateStorageType", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a564243e740d452cb14db5b4de9a81701", null ],
     [ "ExportToFile", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a6f087520c6a38317bf60810be1e6c848", null ],
     [ "ExportToARGB", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a93b9176a83802ffec2afd66bf2f5cf04", null ],
+    [ "UpdateLODBiasForTexture", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a9e39da6107cd4ed1d529696d0d16b4e1", null ],
+    [ "UpdateLODBiasForTexture", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#ad5fc38676e9f9fc742e0aeb7d79876d0", null ],
     [ "ExportToPNG", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a4377f32c0ce4a1f8427383abbcfe0b58", null ],
     [ "GetPNG", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a433e75319e4f8a3ad50307486dae3af2", null ],
     [ "ToImage", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html#a71c07f2fbfc9a032271357852207eb26", null ],

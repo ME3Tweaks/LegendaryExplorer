@@ -176,6 +176,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:af6f76753ee18f1d8411d9c729afee766"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a441e1a0e4ae512d24af406fc5f6de236"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#a441e1a0e4ae512d24af406fc5f6de236">WriteStringUnicodeNull</a> (this Stream stream, string str)</td></tr>
 <tr class="separator:a441e1a0e4ae512d24af406fc5f6de236"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7efa63b13da16eef3ba138d08dfb5ac8"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#a7efa63b13da16eef3ba138d08dfb5ac8">WritePaddedStringUnicodeNull</a> (this Stream stream, string str, int padLen)</td></tr>
+<tr class="memdesc:a7efa63b13da16eef3ba138d08dfb5ac8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes a padded string to the stream. If padLen is smaller than the string length, an exception is thrown.   <a href="class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#a7efa63b13da16eef3ba138d08dfb5ac8">More...</a><br /></td></tr>
+<tr class="separator:a7efa63b13da16eef3ba138d08dfb5ac8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3bbc32f4b318c2a0fc6477aad09efaf"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#ab3bbc32f4b318c2a0fc6477aad09efaf">WriteStringUnicode</a> (this <a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_writer.html">EndianWriter</a> stream, string str)</td></tr>
 <tr class="separator:ab3bbc32f4b318c2a0fc6477aad09efaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad492f7cefa9da66b6c710b103f2bd2dc"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html#ad492f7cefa9da66b6c710b103f2bd2dc">WriteStringUnicodeNull</a> (this <a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_writer.html">EndianWriter</a> stream, string str)</td></tr>
@@ -1572,6 +1575,58 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a7efa63b13da16eef3ba138d08dfb5ac8" name="a7efa63b13da16eef3ba138d08dfb5ac8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7efa63b13da16eef3ba138d08dfb5ac8">&#9670;&#160;</a></span>WritePaddedStringUnicodeNull()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.Helpers.StreamHelpers.WritePaddedStringUnicodeNull </td>
+          <td>(</td>
+          <td class="paramtype">this Stream&#160;</td>
+          <td class="paramname"><em>stream</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>str</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>padLen</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Writes a padded string to the stream. If padLen is smaller than the string length, an exception is thrown.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">stream</td><td></td></tr>
+    <tr><td class="paramname">str</td><td></td></tr>
+    <tr><td class="paramname">padLen</td><td>Number of bytes to ensure are written</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
