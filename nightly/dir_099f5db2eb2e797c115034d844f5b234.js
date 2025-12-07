@@ -4,6 +4,7 @@ var dir_099f5db2eb2e797c115034d844f5b234 =
     [ "Coalesced", "dir_4c4bc5a0ff425cb693d9f34af1af5007.html", "dir_4c4bc5a0ff425cb693d9f34af1af5007" ],
     [ "Compression", "dir_ee7bc3048170ec72a047ec36315017df.html", "dir_ee7bc3048170ec72a047ec36315017df" ],
     [ "DebugTools", "dir_0c5e2f2b51a9b51ab33ace78206f5d76.html", "dir_0c5e2f2b51a9b51ab33ace78206f5d76" ],
+    [ "Diagnostics", "dir_c6c4f562ac5f271e49bc071f6d0384a0.html", "dir_c6c4f562ac5f271e49bc071f6d0384a0" ],
     [ "Dialogue", "dir_7a3b5707d60ab99f358655adf22b7c56.html", "dir_7a3b5707d60ab99f358655adf22b7c56" ],
     [ "GameFilesystem", "dir_d4e3a615790dfb16f635e3dcf7bbdbbd.html", "dir_d4e3a615790dfb16f635e3dcf7bbdbbd" ],
     [ "Gammtek", "dir_fcbaed6291bc34708fd86da8b1325ec6.html", "dir_fcbaed6291bc34708fd86da8b1325ec6" ],

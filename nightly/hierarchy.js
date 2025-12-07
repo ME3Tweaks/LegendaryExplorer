@@ -1012,6 +1012,7 @@ var hierarchy =
     [ "PackageCache", null, [
       [ "TieredPackageCache", "class_tiered_package_cache.html", null ]
     ] ],
+    [ "LegendaryExplorerCore.Diagnostics.PackageDiags", "class_legendary_explorer_core_1_1_diagnostics_1_1_package_diags.html", null ],
     [ "LegendaryExplorerCore.Packages.PackageDiff", "class_legendary_explorer_core_1_1_packages_1_1_package_diff.html", null ],
     [ "LegendaryExplorerCore.Packages.MEPackage.PackageLoadParameters", "struct_legendary_explorer_core_1_1_packages_1_1_m_e_package_1_1_package_load_parameters.html", null ],
     [ "LegendaryExplorerCore.Packages.PackageResynthesizer", "class_legendary_explorer_core_1_1_packages_1_1_package_resynthesizer.html", null ],

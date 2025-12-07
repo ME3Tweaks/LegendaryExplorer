@@ -61,6 +61,9 @@ var annotated_dup =
         [ "DebugStopWatch", "class_legendary_explorer_core_1_1_debug_tools_1_1_debug_stop_watch.html", "class_legendary_explorer_core_1_1_debug_tools_1_1_debug_stop_watch" ],
         [ "LECLog", "class_legendary_explorer_core_1_1_debug_tools_1_1_l_e_c_log.html", "class_legendary_explorer_core_1_1_debug_tools_1_1_l_e_c_log" ]
       ] ],
+      [ "Diagnostics", "namespace_legendary_explorer_core_1_1_diagnostics.html", [
+        [ "PackageDiags", "class_legendary_explorer_core_1_1_diagnostics_1_1_package_diags.html", "class_legendary_explorer_core_1_1_diagnostics_1_1_package_diags" ]
+      ] ],
       [ "Dialogue", "namespace_legendary_explorer_core_1_1_dialogue.html", [
         [ "ConversationExtended", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended.html", "class_legendary_explorer_core_1_1_dialogue_1_1_conversation_extended" ],
         [ "DialogueNodeExtended", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended.html", "class_legendary_explorer_core_1_1_dialogue_1_1_dialogue_node_extended" ],

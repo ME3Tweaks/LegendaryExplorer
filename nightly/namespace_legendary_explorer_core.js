@@ -4,6 +4,7 @@ var namespace_legendary_explorer_core =
     [ "Coalesced", "namespace_legendary_explorer_core_1_1_coalesced.html", "namespace_legendary_explorer_core_1_1_coalesced" ],
     [ "Compression", "namespace_legendary_explorer_core_1_1_compression.html", "namespace_legendary_explorer_core_1_1_compression" ],
     [ "DebugTools", "namespace_legendary_explorer_core_1_1_debug_tools.html", "namespace_legendary_explorer_core_1_1_debug_tools" ],
+    [ "Diagnostics", "namespace_legendary_explorer_core_1_1_diagnostics.html", "namespace_legendary_explorer_core_1_1_diagnostics" ],
     [ "Dialogue", "namespace_legendary_explorer_core_1_1_dialogue.html", "namespace_legendary_explorer_core_1_1_dialogue" ],
     [ "GameFilesystem", "namespace_legendary_explorer_core_1_1_game_filesystem.html", "namespace_legendary_explorer_core_1_1_game_filesystem" ],
     [ "Gammtek", "namespace_legendary_explorer_core_1_1_gammtek.html", "namespace_legendary_explorer_core_1_1_gammtek" ],
