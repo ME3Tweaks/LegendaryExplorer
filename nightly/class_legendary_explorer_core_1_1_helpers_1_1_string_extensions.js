@@ -4,6 +4,7 @@ var class_legendary_explorer_core_1_1_helpers_1_1_string_extensions =
     [ "SplitLinesAll", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a6c149db3a9ffef2e113f5d669b4118f0", null ],
     [ "UpperFirst", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a178a923be631b31dfd559e4ca0bd7c63", null ],
     [ "RepresentsPackageFilePath", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a3b994567c1122d60aba1429eac4f26d1", null ],
+    [ "DetermineDLCNameFromPath", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#af427c1d58d1755b00f42a455cd389a74", null ],
     [ "IsNumericallyEqual", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a15ae5162984258526653c712ca7000b2", null ],
     [ "LevenshteinDistance", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#abff49b17b4a4d5cde692911fcc1bb487", null ],
     [ "FuzzyMatch", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a6b06d0941e53d376780f55bda25f7efe", null ],

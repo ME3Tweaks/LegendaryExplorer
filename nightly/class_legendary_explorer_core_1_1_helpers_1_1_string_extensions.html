@@ -115,6 +115,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a3b994567c1122d60aba1429eac4f26d1"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a3b994567c1122d60aba1429eac4f26d1">RepresentsPackageFilePath</a> (this string path)</td></tr>
 <tr class="memdesc:a3b994567c1122d60aba1429eac4f26d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns if the given string ends with a package file extension.   <a href="class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a3b994567c1122d60aba1429eac4f26d1">More...</a><br /></td></tr>
 <tr class="separator:a3b994567c1122d60aba1429eac4f26d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af427c1d58d1755b00f42a455cd389a74"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#af427c1d58d1755b00f42a455cd389a74">DetermineDLCNameFromPath</a> (this string path)</td></tr>
+<tr class="memdesc:af427c1d58d1755b00f42a455cd389a74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given a filepath, determine the name of the DLC folder. This looks for 'BIOGame'   <a href="class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#af427c1d58d1755b00f42a455cd389a74">More...</a><br /></td></tr>
+<tr class="separator:af427c1d58d1755b00f42a455cd389a74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15ae5162984258526653c712ca7000b2"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a15ae5162984258526653c712ca7000b2">IsNumericallyEqual</a> (this string first, string second)</td></tr>
 <tr class="separator:a15ae5162984258526653c712ca7000b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abff49b17b4a4d5cde692911fcc1bb487"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#abff49b17b4a4d5cde692911fcc1bb487">LevenshteinDistance</a> (this string a, string b)</td></tr>
@@ -293,6 +296,41 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="af427c1d58d1755b00f42a455cd389a74" name="af427c1d58d1755b00f42a455cd389a74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af427c1d58d1755b00f42a455cd389a74">&#9670;&#160;</a></span>DetermineDLCNameFromPath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static string LegendaryExplorerCore.Helpers.StringExtensions.DetermineDLCNameFromPath </td>
+          <td>(</td>
+          <td class="paramtype">this string&#160;</td>
+          <td class="paramname"><em>path</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Given a filepath, determine the name of the DLC folder. This looks for 'BIOGame'  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>A filepath, either to a folder or file.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The folder path after 'DLC', otherwise null.</dd></dl>
 
 </div>
 </div>
