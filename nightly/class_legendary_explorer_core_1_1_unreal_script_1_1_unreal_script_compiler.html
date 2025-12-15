@@ -101,12 +101,17 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_unre
   <div class="headertitle"><div class="title">LegendaryExplorerCore.UnrealScript.UnrealScriptCompiler Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Provides comprehensive <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> compilation and decompilation functionality for Mass Effect game packages. This compiler supports full-featured parsing, validation, and compilation of <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> code including classes, functions, states, structs, enums, and properties.   
+ <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af00573a9bf0c361a0e7a8b8cbf41f0d2"><td class="memItemLeft" align="right" valign="top">record&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#af00573a9bf0c361a0e7a8b8cbf41f0d2">LooseClass</a> (string ClassName, string Source, string SourceFilePath=null)</td></tr>
+<tr class="memdesc:af00573a9bf0c361a0e7a8b8cbf41f0d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a class defined outside of a package file, typically from a source file.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#af00573a9bf0c361a0e7a8b8cbf41f0d2">More...</a><br /></td></tr>
 <tr class="separator:af00573a9bf0c361a0e7a8b8cbf41f0d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0def63971d09a6d7cf93a13517b52e82"><td class="memItemLeft" align="right" valign="top">record&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a0def63971d09a6d7cf93a13517b52e82">LooseClassPackage</a> (string PackageName, List&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#af00573a9bf0c361a0e7a8b8cbf41f0d2">LooseClass</a> &gt; Classes)</td></tr>
+<tr class="memdesc:a0def63971d09a6d7cf93a13517b52e82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a package containing multiple loose class definitions.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a0def63971d09a6d7cf93a13517b52e82">More...</a><br /></td></tr>
 <tr class="separator:a0def63971d09a6d7cf93a13517b52e82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
@@ -114,20 +119,27 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ac2d4f8f9963b3289adab13cbb9efaddc"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html">ASTNode</a> string text&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#ac2d4f8f9963b3289adab13cbb9efaddc">DecompileExport</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
 <tr class="separator:ac2d4f8f9963b3289adab13cbb9efaddc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05e95d0ed683e2caef10a027c7e344c3"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a05e95d0ed683e2caef10a027c7e344c3">GetPropertyLiteralValue</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html">Property</a> prop, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> containingExport, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
+<tr class="memdesc:a05e95d0ed683e2caef10a027c7e344c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the literal string representation of a property value.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a05e95d0ed683e2caef10a027c7e344c3">More...</a><br /></td></tr>
 <tr class="separator:a05e95d0ed683e2caef10a027c7e344c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad37c4373faa4c1caaebdb73245e1c58a"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_property.html">Property</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#ad37c4373faa4c1caaebdb73245e1c58a">CompileProperty</a> (string propName, string valueliteral, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> containingExport, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
+<tr class="memdesc:ad37c4373faa4c1caaebdb73245e1c58a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a single property from <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> literal text. Used by M3 - do not delete.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#ad37c4373faa4c1caaebdb73245e1c58a">More...</a><br /></td></tr>
 <tr class="separator:ad37c4373faa4c1caaebdb73245e1c58a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47c25c53f99a93bceec2acae3530b999"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html">ASTNode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a47c25c53f99a93bceec2acae3530b999">ExportToAstNode</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
+<tr class="memdesc:a47c25c53f99a93bceec2acae3530b999"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts an export entry to its corresponding Abstract Syntax Tree (AST) node representation.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a47c25c53f99a93bceec2acae3530b999">More...</a><br /></td></tr>
 <tr class="separator:a47c25c53f99a93bceec2acae3530b999"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a759abc89ffe1ce7222232755d8e46269"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html">ASTNode</a> <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html">TokenStream</a> tokens&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a759abc89ffe1ce7222232755d8e46269">CompileOutlineAST</a> (string script, string type, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log, <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game)</td></tr>
 <tr class="separator:a759abc89ffe1ce7222232755d8e46269"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2dafe6a28e6b9c3f2ae7fdc83a1402e2"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a2dafe6a28e6b9c3f2ae7fdc83a1402e2">CompileBulkPropertiesFile</a> (string src, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
+<tr class="memdesc:a2dafe6a28e6b9c3f2ae7fdc83a1402e2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a bulk properties file that contains multiple object property definitions.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a2dafe6a28e6b9c3f2ae7fdc83a1402e2">More...</a><br /></td></tr>
 <tr class="separator:a2dafe6a28e6b9c3f2ae7fdc83a1402e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a556b2bdb2d0b9284bd982fb111f7e215"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a556b2bdb2d0b9284bd982fb111f7e215">CompileT3D</a> (string src, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> parentEntry, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
+<tr class="memdesc:a556b2bdb2d0b9284bd982fb111f7e215"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a T3D (<a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html">Unreal</a> Text) format object definition into the package.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a556b2bdb2d0b9284bd982fb111f7e215">More...</a><br /></td></tr>
 <tr class="separator:a556b2bdb2d0b9284bd982fb111f7e215"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa29b0107d31d95350c104756b919e971"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#aa29b0107d31d95350c104756b919e971">DecompileBulkProps</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, out <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
+<tr class="memdesc:aa29b0107d31d95350c104756b919e971"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decompiles all non-script exports in a package into a bulk properties format.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#aa29b0107d31d95350c104756b919e971">More...</a><br /></td></tr>
 <tr class="separator:aa29b0107d31d95350c104756b919e971"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a209ad9206029080e7ab0efc5236fd1c3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a209ad9206029080e7ab0efc5236fd1c3">AddOrReplaceInClass</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> classExport, string scriptText, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
+<tr class="memdesc:a209ad9206029080e7ab0efc5236fd1c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a new script element to a class or replaces an existing one with the same name. Supports functions, states, structs, enums, and variables. Used by M3 - do not delete.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a209ad9206029080e7ab0efc5236fd1c3">More...</a><br /></td></tr>
 <tr class="separator:a209ad9206029080e7ab0efc5236fd1c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64458a08cb209bfe3fb147e8cd8fa705"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html">ASTNode</a> <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a64458a08cb209bfe3fb147e8cd8fa705">CompileClass</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, string scriptText, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export=null, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> parent=null, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html">PackageCache</a> packageCache=null, string intendedClassName=null)</td></tr>
 <tr class="separator:a64458a08cb209bfe3fb147e8cd8fa705"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -142,32 +154,45 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a90e2324aee4fcd893aac6665d6210727"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html">ASTNode</a> <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a90e2324aee4fcd893aac6665d6210727">CompileDefaultProperties</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, string scriptText, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop, bool noCompile=false)</td></tr>
 <tr class="separator:a90e2324aee4fcd893aac6665d6210727"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af579ccff16dbca1a60ec6fff65d08815"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html">Class</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#af579ccff16dbca1a60ec6fff65d08815">CompileNewClassAST</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html">Class</a> cls, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, out bool vfTableChanged, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
+<tr class="memdesc:af579ccff16dbca1a60ec6fff65d08815"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a complete class AST including all members and function bodies.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#af579ccff16dbca1a60ec6fff65d08815">More...</a><br /></td></tr>
 <tr class="separator:af579ccff16dbca1a60ec6fff65d08815"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad050b6bdc3534d674fba4ef35883a2b9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html">Function</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#ad050b6bdc3534d674fba4ef35883a2b9">CompileNewFunctionBodyAST</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> parentExport, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html">Function</a> func, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
+<tr class="memdesc:ad050b6bdc3534d674fba4ef35883a2b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a function body AST and integrates it into the parent class or state.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#ad050b6bdc3534d674fba4ef35883a2b9">More...</a><br /></td></tr>
 <tr class="separator:ad050b6bdc3534d674fba4ef35883a2b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:addb13ac2f6fbf50b639727814896c776"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state.html">State</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#addb13ac2f6fbf50b639727814896c776">CompileNewStateBodyAST</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> parentExport, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_state.html">State</a> state, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
+<tr class="memdesc:addb13ac2f6fbf50b639727814896c776"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a state body AST and integrates it into the parent class.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#addb13ac2f6fbf50b639727814896c776">More...</a><br /></td></tr>
 <tr class="separator:addb13ac2f6fbf50b639727814896c776"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66c4024526287b4fd2b183055a8caeea"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_enumeration.html">Enumeration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a66c4024526287b4fd2b183055a8caeea">CompileNewEnumAST</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> parentExport, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_enumeration.html">Enumeration</a> enumeration, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
+<tr class="memdesc:a66c4024526287b4fd2b183055a8caeea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles an enum AST and integrates it into the parent class or struct.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a66c4024526287b4fd2b183055a8caeea">More...</a><br /></td></tr>
 <tr class="separator:a66c4024526287b4fd2b183055a8caeea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a122e08c0ab175a859b1fbff737d74628"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html">VariableDeclaration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a122e08c0ab175a859b1fbff737d74628">CompileNewVarDeclAST</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> parentExport, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_variable_declaration.html">VariableDeclaration</a> varDecl, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
+<tr class="memdesc:a122e08c0ab175a859b1fbff737d74628"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a variable declaration AST and integrates it into the parent class or struct.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a122e08c0ab175a859b1fbff737d74628">More...</a><br /></td></tr>
 <tr class="separator:a122e08c0ab175a859b1fbff737d74628"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a56dbeaf938180f45b086f93b447e32d2"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_struct.html">Struct</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a56dbeaf938180f45b086f93b447e32d2">CompileNewStructAST</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> parentExport, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_struct.html">Struct</a> strct, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
+<tr class="memdesc:a56dbeaf938180f45b086f93b447e32d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a struct AST and integrates it into the parent class or struct.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a56dbeaf938180f45b086f93b447e32d2">More...</a><br /></td></tr>
 <tr class="separator:a56dbeaf938180f45b086f93b447e32d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08dc4adfa9baf073dba7da4d1b10bf95"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_default_properties_block.html">DefaultPropertiesBlock</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a08dc4adfa9baf073dba7da4d1b10bf95">CompileDefaultPropertiesAST</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_default_properties_block.html">DefaultPropertiesBlock</a> propBlock, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a> log, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html">FileLib</a> lib, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> export, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
+<tr class="memdesc:a08dc4adfa9baf073dba7da4d1b10bf95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a default properties block AST for an object or class.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a08dc4adfa9baf073dba7da4d1b10bf95">More...</a><br /></td></tr>
 <tr class="separator:a08dc4adfa9baf073dba7da4d1b10bf95"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3d55490858c1953efd4cf9d89f6e89b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html">MessageLog</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#ab3d55490858c1953efd4cf9d89f6e89b">CompileLooseClasses</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> targetPcc, List&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a0def63971d09a6d7cf93a13517b52e82">LooseClassPackage</a> &gt; looseClasses, <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html">UnrealScriptOptionsPackage</a> usop)</td></tr>
+<tr class="memdesc:ab3d55490858c1953efd4cf9d89f6e89b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles multiple loose class definitions into a target package. This method handles proper dependency ordering and ensures parent classes are compiled before child classes.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#ab3d55490858c1953efd4cf9d89f6e89b">More...</a><br /></td></tr>
 <tr class="separator:ab3d55490858c1953efd4cf9d89f6e89b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a33d073a6a28a1bdff026712d4636ac1e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html">ASTNode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a33d073a6a28a1bdff026712d4636ac1e">node</a></td></tr>
+<tr class="memdesc:a33d073a6a28a1bdff026712d4636ac1e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decompiles an export entry into <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a33d073a6a28a1bdff026712d4636ac1e">More...</a><br /></td></tr>
 <tr class="separator:a33d073a6a28a1bdff026712d4636ac1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a91c3a3cd48d8f09fc62e71233eb86740"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html">ASTNode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a91c3a3cd48d8f09fc62e71233eb86740">ast</a></td></tr>
+<tr class="memdesc:a91c3a3cd48d8f09fc62e71233eb86740"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code into an outline AST without full body parsing. This performs lexical analysis and outline parsing but does not resolve symbols or parse function bodies.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a91c3a3cd48d8f09fc62e71233eb86740">More...</a><br /></td></tr>
 <tr class="separator:a91c3a3cd48d8f09fc62e71233eb86740"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7af807fb2356cc4d778da946ae5d7154"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_a_s_t_node.html">ASTNode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a7af807fb2356cc4d778da946ae5d7154">astNode</a></td></tr>
+<tr class="memdesc:a7af807fb2356cc4d778da946ae5d7154"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compiles a complete <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> class from source code.   <a href="class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_compiler.html#a7af807fb2356cc4d778da946ae5d7154">More...</a><br /></td></tr>
 <tr class="separator:a7af807fb2356cc4d778da946ae5d7154"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Provides comprehensive <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> compilation and decompilation functionality for Mass Effect game packages. This compiler supports full-featured parsing, validation, and compilation of <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> code including classes, functions, states, structs, enums, and properties.  </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="ac2d4f8f9963b3289adab13cbb9efaddc" name="ac2d4f8f9963b3289adab13cbb9efaddc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac2d4f8f9963b3289adab13cbb9efaddc">&#9670;&#160;</a></span>DecompileExport()</h2>
 
@@ -256,6 +281,18 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Gets the literal string representation of a property value.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">prop</td><td>The property to get the literal value from.</td></tr>
+    <tr><td class="paramname">containingExport</td><td>The export containing the property.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The string representation of the property's literal value.</dd></dl>
+
 </div>
 </div>
 <a id="ad37c4373faa4c1caaebdb73245e1c58a" name="ad37c4373faa4c1caaebdb73245e1c58a"></a>
@@ -316,6 +353,20 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Compiles a single property from <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> literal text. Used by M3 - do not delete.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">propName</td><td>The name of the property to compile.</td></tr>
+    <tr><td class="paramname">valueliteral</td><td>The literal value string to compile.</td></tr>
+    <tr><td class="paramname">containingExport</td><td>The export that will contain the property.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">log</td><td>Message log for compilation errors and warnings.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The compiled property, or null if compilation failed.</dd></dl>
+
 </div>
 </div>
 <a id="a47c25c53f99a93bceec2acae3530b999" name="a47c25c53f99a93bceec2acae3530b999"></a>
@@ -357,6 +408,17 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Converts an export entry to its corresponding Abstract Syntax Tree (AST) node representation.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>The export entry to convert.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The AST node representing the export, or null if conversion failed.</dd></dl>
 
 </div>
 </div>
@@ -448,6 +510,17 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Compiles a bulk properties file that contains multiple object property definitions.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">src</td><td>The source code containing bulk property definitions.</td></tr>
+    <tr><td class="paramname">pcc</td><td>The package to compile properties into.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A message log containing any errors or warnings from compilation.</dd></dl>
+
 </div>
 </div>
 <a id="a556b2bdb2d0b9284bd982fb111f7e215" name="a556b2bdb2d0b9284bd982fb111f7e215"></a>
@@ -496,6 +569,18 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Compiles a T3D (<a class="el" href="namespace_legendary_explorer_core_1_1_unreal.html">Unreal</a> Text) format object definition into the package.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">src</td><td>The T3D source code to compile.</td></tr>
+    <tr><td class="paramname">pcc</td><td>The package to create the object in.</td></tr>
+    <tr><td class="paramname">parentEntry</td><td>The parent entry for the new object.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A message log containing any errors or warnings from compilation.</dd></dl>
+
 </div>
 </div>
 <a id="aa29b0107d31d95350c104756b919e971" name="aa29b0107d31d95350c104756b919e971"></a>
@@ -537,6 +622,17 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Decompiles all non-script exports in a package into a bulk properties format.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pcc</td><td>The package to decompile properties from.</td></tr>
+    <tr><td class="paramname">log</td><td>Output parameter containing any errors or warnings from decompilation.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The decompiled bulk properties text, or null if decompilation failed.</dd></dl>
 
 </div>
 </div>
@@ -585,6 +681,18 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Adds a new script element to a class or replaces an existing one with the same name. Supports functions, states, structs, enums, and variables. Used by M3 - do not delete.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">classExport</td><td>The class export to modify.</td></tr>
+    <tr><td class="paramname">scriptText</td><td>The <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code for the element to add or replace.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A message log containing any errors or warnings from compilation.</dd></dl>
 
 </div>
 </div>
@@ -964,6 +1072,20 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Compiles a complete class AST including all members and function bodies.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pcc</td><td>The package containing the class.</td></tr>
+    <tr><td class="paramname">cls</td><td>The class AST to compile.</td></tr>
+    <tr><td class="paramname">log</td><td>Message log for compilation errors and warnings.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">vfTableChanged</td><td>Output parameter indicating if the virtual function table changed.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The compiled class AST, or null if compilation failed.</dd></dl>
+
 </div>
 </div>
 <a id="ad050b6bdc3534d674fba4ef35883a2b9" name="ad050b6bdc3534d674fba4ef35883a2b9"></a>
@@ -1017,6 +1139,19 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Compiles a function body AST and integrates it into the parent class or state.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parentExport</td><td>The parent export (class or state) containing the function.</td></tr>
+    <tr><td class="paramname">func</td><td>The function AST to compile.</td></tr>
+    <tr><td class="paramname">log</td><td>Message log for compilation errors and warnings.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The compiled function AST, or null if compilation failed.</dd></dl>
 
 </div>
 </div>
@@ -1072,6 +1207,19 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Compiles a state body AST and integrates it into the parent class.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parentExport</td><td>The parent class export containing the state.</td></tr>
+    <tr><td class="paramname">state</td><td>The state AST to compile.</td></tr>
+    <tr><td class="paramname">log</td><td>Message log for compilation errors and warnings.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The compiled state AST, or null if compilation failed.</dd></dl>
+
 </div>
 </div>
 <a id="a66c4024526287b4fd2b183055a8caeea" name="a66c4024526287b4fd2b183055a8caeea"></a>
@@ -1125,6 +1273,19 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Compiles an enum AST and integrates it into the parent class or struct.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parentExport</td><td>The parent export containing the enum.</td></tr>
+    <tr><td class="paramname">enumeration</td><td>The enumeration AST to compile.</td></tr>
+    <tr><td class="paramname">log</td><td>Message log for compilation errors and warnings.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The compiled enumeration AST, or null if compilation failed.</dd></dl>
 
 </div>
 </div>
@@ -1180,6 +1341,19 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Compiles a variable declaration AST and integrates it into the parent class or struct.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parentExport</td><td>The parent export containing the variable.</td></tr>
+    <tr><td class="paramname">varDecl</td><td>The variable declaration AST to compile.</td></tr>
+    <tr><td class="paramname">log</td><td>Message log for compilation errors and warnings.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The compiled variable declaration AST, or null if compilation failed.</dd></dl>
+
 </div>
 </div>
 <a id="a56dbeaf938180f45b086f93b447e32d2" name="a56dbeaf938180f45b086f93b447e32d2"></a>
@@ -1233,6 +1407,19 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Compiles a struct AST and integrates it into the parent class or struct.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">parentExport</td><td>The parent export containing the struct.</td></tr>
+    <tr><td class="paramname">strct</td><td>The struct AST to compile.</td></tr>
+    <tr><td class="paramname">log</td><td>Message log for compilation errors and warnings.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The compiled struct AST, or null if compilation failed.</dd></dl>
 
 </div>
 </div>
@@ -1288,6 +1475,19 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Compiles a default properties block AST for an object or class.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">propBlock</td><td>The default properties block AST to compile.</td></tr>
+    <tr><td class="paramname">log</td><td>Message log for compilation errors and warnings.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">export</td><td>The export to compile default properties for.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The compiled default properties block AST, or null if compilation failed.</dd></dl>
+
 </div>
 </div>
 <a id="af00573a9bf0c361a0e7a8b8cbf41f0d2" name="af00573a9bf0c361a0e7a8b8cbf41f0d2"></a>
@@ -1330,6 +1530,16 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Represents a class defined outside of a package file, typically from a source file.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ClassName</td><td>The name of the class.</td></tr>
+    <tr><td class="paramname">Source</td><td>The <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code for the class.</td></tr>
+    <tr><td class="paramname">SourceFilePath</td><td>Optional file path where the source originated.</td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a0def63971d09a6d7cf93a13517b52e82" name="a0def63971d09a6d7cf93a13517b52e82"></a>
@@ -1357,6 +1567,15 @@ Static Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Represents a package containing multiple loose class definitions.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">PackageName</td><td>The name of the package.</td></tr>
+    <tr><td class="paramname">Classes</td><td>The list of classes in this package.</td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -1400,6 +1619,17 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Compiles multiple loose class definitions into a target package. This method handles proper dependency ordering and ensures parent classes are compiled before child classes.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">targetPcc</td><td>The package to compile the classes into.</td></tr>
+    <tr><td class="paramname">looseClasses</td><td>The list of loose class packages to compile.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A message log containing any errors or warnings from compilation.</dd></dl>
+
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -1423,6 +1653,17 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Decompiles an export entry into <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>The export entry to decompile.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions for the package.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A tuple containing the AST node and the decompiled text source code.</dd></dl>
+
 </div>
 </div>
 <a id="a91c3a3cd48d8f09fc62e71233eb86740" name="a91c3a3cd48d8f09fc62e71233eb86740"></a>
@@ -1445,6 +1686,18 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Compiles <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code into an outline AST without full body parsing. This performs lexical analysis and outline parsing but does not resolve symbols or parse function bodies.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">script</td><td>The <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code to compile.</td></tr>
+    <tr><td class="paramname">type</td><td>The type of script element to parse (e.g., "Class", "Function").</td></tr>
+    <tr><td class="paramname">log</td><td>Message log for compilation errors and warnings.</td></tr>
+    <tr><td class="paramname">game</td><td>The Mass Effect game version for parsing rules.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A tuple containing the outline AST and the token stream.</dd></dl>
+
 </div>
 </div>
 <a id="a7af807fb2356cc4d778da946ae5d7154" name="a7af807fb2356cc4d778da946ae5d7154"></a>
@@ -1466,6 +1719,78 @@ Static Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Compiles a complete <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> class from source code.  </p>
+<p >Compiles default properties for an object or class. </p>
+<p >Compiles a struct's <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code and updates the export. </p>
+<p >Compiles an enum's <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code and updates the export. </p>
+<p >Compiles a state's <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code and updates the export. </p>
+<p >Compiles a function's <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code and updates the export. Used by M3 - do not change signature without good cause. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pcc</td><td>The package to compile the class into.</td></tr>
+    <tr><td class="paramname">scriptText</td><td>The <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code for the class.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+    <tr><td class="paramname">export</td><td>Optional existing export to compile into.</td></tr>
+    <tr><td class="paramname">parent</td><td>Optional parent entry for the class.</td></tr>
+    <tr><td class="paramname">packageCache</td><td>Optional package cache for symbol resolution.</td></tr>
+    <tr><td class="paramname">intendedClassName</td><td>Optional expected class name for validation.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A tuple containing the compiled AST node and a message log with any errors or warnings.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>The function export to compile.</td></tr>
+    <tr><td class="paramname">scriptText</td><td>The <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code for the function.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A tuple containing the compiled AST node and a message log with any errors or warnings.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>The state export to compile.</td></tr>
+    <tr><td class="paramname">scriptText</td><td>The <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code for the state.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A tuple containing the compiled AST node and a message log with any errors or warnings.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>The enum export to compile.</td></tr>
+    <tr><td class="paramname">scriptText</td><td>The <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code for the enum.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A tuple containing the compiled AST node and a message log with any errors or warnings.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>The struct export to compile.</td></tr>
+    <tr><td class="paramname">scriptText</td><td>The <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code for the struct.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A tuple containing the compiled AST node and a message log with any errors or warnings.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">export</td><td>The export to compile default properties for.</td></tr>
+    <tr><td class="paramname">scriptText</td><td>The <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> source code for the default properties block.</td></tr>
+    <tr><td class="paramname">lib</td><td>The file library containing symbol definitions.</td></tr>
+    <tr><td class="paramname">usop</td><td>Options package for <a class="el" href="namespace_legendary_explorer_core_1_1_unreal_script.html">UnrealScript</a> operations.</td></tr>
+    <tr><td class="paramname">noCompile</td><td>If true, only parses the properties without compiling them into binary format.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A tuple containing the compiled AST node and a message log with any errors or warnings.</dd></dl>
 
 </div>
 </div>
