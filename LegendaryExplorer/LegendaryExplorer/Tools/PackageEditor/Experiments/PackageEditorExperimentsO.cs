@@ -2079,11 +2079,11 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                     // Check for bank ID in all HIRCs, even though I'm almost certain it only appears
                     // in Event Actions - Updated 6/19/25 by HenBagle to just update Play action?
-                    if (hircC.Item is ME3Tweaks.Wwiser.Model.Hierarchy.Action { ActionParams: Play playAction })
+                    if (hircC.Item is ME3Tweaks.Wwiser.Model.Hierarchy.Action action)
                     {
-                        if(playAction.BankId == oldBankID)
+                        if(action.BankData.BankId == oldBankID)
                         {
-                            playAction.BankId = newBankID;
+                            action.BankData.BankId = newBankID;
                         }
                     }
                 }

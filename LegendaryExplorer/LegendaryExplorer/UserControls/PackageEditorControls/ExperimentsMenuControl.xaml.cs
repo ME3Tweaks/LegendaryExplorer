@@ -1318,6 +1318,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             PackageEditorExperimentsH.ReplaceAllWems(GetPEWindow());
         }
+        
+        private void DumpWwiseBanks_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsH.DumpAllWwiseBanks(GetPEWindow());
+        }
 
         #endregion
 

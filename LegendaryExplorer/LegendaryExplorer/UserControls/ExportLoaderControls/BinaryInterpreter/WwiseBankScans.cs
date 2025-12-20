@@ -316,14 +316,17 @@ public class WwiseBankScans
                     root.Items.Add(MakeArrayNode(propCount, bin, "ParameterIds", i =>
                     {
                         var pidPos = bin.Position;
-                        // TODO: Does this ever use modulator? prolly not
-                        var (paramId, modParamId) = ParameterId.DeserializeStatic(bin.BaseStream, version, false, isState: true);
+                        var (paramId, modParamId, customId) = ParameterId.DeserializeStatic(bin.BaseStream, version, false); // TODO: use modulator not handles on high versions!
+                        var pidLength = (int)(bin.Position - pidPos);
+                        if (customId != null)
+                        {
+                            return new BinInterpNode(pidPos,  $"CustomId: {customId}") { Length = pidLength };
+                        }
                         return paramId.HasValue
-                            ? new BinInterpNode(pidPos, $"ParameterId {i}: {Enum.GetName(paramId.Value)}")
-                                { Length = (int)(bin.Position - pidPos) }
-                            : new BinInterpNode(pidPos, $"ModulatorParameterId {i}: {Enum.GetName(modParamId.Value)}")
-                                { Length = (int)(bin.Position - pidPos) };
-
+                            ? new BinInterpNode(pidPos, $"ParameterId: {Enum.GetName(paramId.Value)}")
+                                { Length = pidLength }
+                            : new BinInterpNode(pidPos, $"ModulatorParameterId: {Enum.GetName(modParamId.Value)}")
+                                { Length = pidLength };
                     }, true));
                     root.Items.Add(MakeArrayNode(propCount, bin, "Values", i => MakeFloatNode(bin, $"{i}"), true));
                 }
@@ -351,6 +354,7 @@ public class WwiseBankScans
                     root.Items.Add(MakeInt32Node(bin, "Delay"));
                     root.Items.Add(MakeInt32Node(bin, "DelayModMin"));
                     root.Items.Add(MakeInt32Node(bin, "DelayModMax"));
+                    root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
                 }
 
                 if (version > 65) root.Items.Add(MakeBoolByteNode(bin, "IsBus"));
@@ -362,7 +366,6 @@ public class WwiseBankScans
                     case ActionTypeValue.PlayEventUnknown:
                         if (version <= 56)
                         {
-                            root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
                             root.Items.Add(MakeInt32Node(bin, "TransitionTime"));
                             root.Items.Add(MakeInt32Node(bin, "TransitionTimeModMin"));
                             root.Items.Add(MakeInt32Node(bin, "TransitionTimeModMax"));
@@ -378,18 +381,15 @@ public class WwiseBankScans
                         break;
                     case ActionTypeValue.SetState:
                     case ActionTypeValue.SetSwitch:
-                        if (version <= 56) root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
                         root.Items.Add(MakeWwiseIdRefNode(bin, "GroupId"));
                         root.Items.Add(MakeWwiseIdRefNode(bin, "TargetStateId"));
                         break;
                     case ActionTypeValue.SetRTPC:
-                        if (version <= 56) root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
                         root.Items.Add(MakeWwiseIdRefNode(bin, "RTPCId"));
                         root.Items.Add(MakeFloatNode(bin, "RTPCValue"));
                         break;
                     case ActionTypeValue.SetFX1:
                     case ActionTypeValue.SetFX2:
-                        if (version <= 56) root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
                         root.Items.Add(MakeBoolByteNode(bin, "IsAudioDeviceElement"));
                         root.Items.Add(MakeByteNode(bin, "SlotIndex"));
                         root.Items.Add(MakeWwiseIdRefNode(bin, "FXId"));
@@ -403,13 +403,11 @@ public class WwiseBankScans
                     case ActionTypeValue.BypassFX5:
                     case ActionTypeValue.BypassFX6:
                     case ActionTypeValue.BypassFX7:
-                        if (version <= 56) root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
                         root.Items.Add(MakeBoolByteNode(bin, "IsBypass"));
                         root.Items.Add(MakeByteNode(bin, "TargetMask"));
                         Scan_HIRC_ActionExceptParams(root, bin, version);
                         break;
                     case ActionTypeValue.Seek:
-                        if (version <= 56) root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
                         root.Items.Add(MakeBoolByteNode(bin, "IsSeekRelativeToDuration"));
                         root.Items.Add(MakeFloatNode(bin, "SeekValue"));
                         root.Items.Add(MakeFloatNode(bin, "SeekValueModMin"));
@@ -441,7 +439,6 @@ public class WwiseBankScans
                     default:
                         if (version <= 56)
                         {
-                            root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
                             root.Items.Add(MakeInt32Node(bin, "TransitionTime"));
                             root.Items.Add(MakeInt32Node(bin, "TransitionTimeModMin"));
                             root.Items.Add(MakeInt32Node(bin, "TransitionTimeModMax"));
@@ -453,7 +450,9 @@ public class WwiseBankScans
                 }
                 break;
             case HircType.Event:
-                root.Items.Add(MakeArrayNodeWwiseVarCount(bin, "Actions", i => MakeWwiseIdRefNode(bin, i.ToString())));
+                root.Items.Add(version <= 122
+                    ? MakeArrayNode(bin, "Actions", i => MakeWwiseIdRefNode(bin, i.ToString()))
+                    : MakeArrayNodeWwiseVarCount(bin, "Actions", i => MakeWwiseIdRefNode(bin, i.ToString())));
                 break;
             case HircType.RandomSequenceContainer:
                 Scan_HIRC_NodeBaseParams(root, bin, version, useFeedback);
@@ -1142,32 +1141,38 @@ public class WwiseBankScans
         if(version <= 52)
         {
             ReadStateGroup(sNode);
-
         }
         else
         {
-            sNode.Items.Add(MakeArrayNodeWwiseVarCount(bin, "StateProperties", i =>
+            if (version >= 125)
             {
-                var item = new BinInterpNode(bin.Position, i.ToString());
+                sNode.Items.Add(MakeArrayNodeWwiseVarCount(bin, "StateProperties", i =>
+                {
+                    var item = new BinInterpNode(bin.Position, i.ToString());
 
-                item.Items.Add(MakeWwiseVarCountNode(bin, "PropertyId"));
-                var accumType = (AccumTypeInner)bin.ReadByte();
-                if (version <= 125) accumType += 1;
-                item.Items.Add(new BinInterpNode(bin.Position - 1, $"AccumType: {Enum.GetName(accumType)}"));
-                if (version > 126) item.Items.Add(MakeBoolByteNode(bin, "InDb"));
-                
-                return item;
-            }));
-            
-            sNode.Items.Add(MakeArrayNodeWwiseVarCount(bin, "StateGroups", i =>
+                    item.Items.Add(MakeWwiseVarCountNode(bin, "PropertyId"));
+                    var accumType = (AccumTypeInner)bin.ReadByte();
+                    if (version <= 125) accumType += 1;
+                    item.Items.Add(new BinInterpNode(bin.Position - 1, $"AccumType: {Enum.GetName(accumType)}"));
+                    if (version > 126) item.Items.Add(MakeBoolByteNode(bin, "InDb"));
+                    
+                    return item;
+                }));
+            }
+
+            var arrayFunc = new Func<int, BinInterpNode>(i =>
             {
                 var item = new BinInterpNode(bin.Position, i.ToString());
 
                 item.Items.Add(MakeWwiseIdNode(bin, "StateGroup"));
                 ReadStateGroup(item);
-                
+
                 return item;
-            }));
+            });
+
+            sNode.Items.Add(version >= 125
+                ? MakeArrayNodeWwiseVarCount(bin, "StateGroups", arrayFunc)
+                : MakeArrayNode(bin, "StateGroups", arrayFunc));
         }
 
         root.Items.Add(sNode);
@@ -1198,18 +1203,12 @@ public class WwiseBankScans
 
         uint ReadStateCount()
         {
-            if (version > 122)
+            return version switch
             {
-                return VarCount.ReadResizingUint(bin.BaseStream);
-            }
-            else if (version is > 36 and <= 52)
-            {
-                return bin.ReadUInt16();
-            }
-            else
-            {
-                return bin.ReadUInt32();
-            }
+                > 122 => VarCount.ReadResizingUint(bin.BaseStream),
+                > 36 => bin.ReadUInt16(),
+                _ => bin.ReadUInt32()
+            };
         }
     }
 
@@ -1237,13 +1236,21 @@ public class WwiseBankScans
             }
             
             var pidPos = bin.Position;
-            var (paramId, modParamId) = ParameterId.DeserializeStatic(bin.BaseStream, version, false); // TODO: use modulator not handles on high versions!
-            rtpc.Items.Add(paramId.HasValue
-                ? new BinInterpNode(pidPos, $"ParameterId: {Enum.GetName(paramId.Value)}")
-                    { Length = (int)(bin.Position - pidPos) }
-                : new BinInterpNode(pidPos, $"ModulatorParameterId: {Enum.GetName(modParamId.Value)}")
-                    { Length = (int)(bin.Position - pidPos) });
-            
+            var (paramId, modParamId, customId) = ParameterId.DeserializeStatic(bin.BaseStream, version, false); // TODO: use modulator not handles on high versions!
+            var pidLength = (int)(bin.Position - pidPos);
+            if (customId != null)
+            {
+                rtpc.Items.Add(new BinInterpNode(pidPos,  $"CustomId: {customId}") { Length = pidLength });
+            }
+            else
+            {
+                rtpc.Items.Add(paramId.HasValue
+                    ? new BinInterpNode(pidPos, $"ParameterId: {Enum.GetName(paramId.Value)}")
+                        { Length = pidLength }
+                    : new BinInterpNode(pidPos, $"ModulatorParameterId: {Enum.GetName(modParamId.Value)}")
+                        { Length = pidLength });
+            }
+
             rtpc.Items.Add(MakeWwiseIdRefNode(bin, "RtpcCurveId"));
             rtpc.Items.Add(MakeByteEnumNode<CurveScalingInner>(bin, "CurveScaling"));
             rtpc.Items.Add(MakeArrayNodeInt16Count(bin, "Graph", j =>
@@ -1320,7 +1327,13 @@ public class WwiseBankScans
             var sg = new BinInterpNode(bin.Position, $"Group {i}");
             sg.Items.Add(MakeWwiseIdNode(bin, "StateId"));
             sg.Items.Add(MakeUInt32Node(bin, "DefaultTransitionTime"));
-            if(version <= 52) sg.Items.Add(MakeArrayNode(bin, "CustomStates", j =>  MakeHIRCNode(j, bin, version, false)));
+            if(version <= 52) sg.Items.Add(MakeArrayNode(bin, "CustomStates", j =>
+            {
+                var stateNode = MakeWwiseIdRefNode(bin, "StateId");
+                var node = MakeHIRCNode(j, bin, version, false);
+                node.Items.Insert(0, stateNode);
+                return node;
+            }));
             sg.Items.Add(MakeArrayNode(bin, "StateTransitions", j =>
             {
                 var st = new BinInterpNode(bin.Position, $"{j}");

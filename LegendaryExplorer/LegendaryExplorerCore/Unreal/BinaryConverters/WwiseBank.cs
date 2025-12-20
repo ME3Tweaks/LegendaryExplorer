@@ -37,7 +37,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             
             sc.SerializeConstInt(0); // bulk data flags
             var dataSizePos = sc.ms.Position; // come back to write size at the end
-            sc.ms.BaseStream.Position += sizeof(int) * 2;
+            sc.ms.BaseStream.Position += sizeof(int) * 3;
             var dataStartPos = sc.ms.Position;
             if (sc.IsLoading)
             {

@@ -372,5 +372,46 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 }
             }
         }
+        
+        public static void DumpAllWwiseBanks(PackageEditorWindow pe)
+        {
+            var games = new[] { MEGame.ME2, MEGame.ME3, MEGame.LE2, MEGame.LE3 };
+            var outputFolder = Path.Combine(AppDirectories.ObjectDatabasesFolder, "WwiseBankExport");
+            Task.Run(() =>
+            {
+                pe.SetBusy($"Exporting Wwise Banks");
+                foreach (var game in games)
+                {
+                    var outputGameFolder = Path.Combine(outputFolder, game.ToString());
+                    Directory.CreateDirectory(outputGameFolder);
+                    var found = new HashSet<string>();
+                    var allPackages = MELoadedFiles.GetFilesLoadedInGame(game).ToList();
+                    int numDone = 0;
+                    foreach (var f in allPackages)
+                    {
+                        pe.BusyText = $"Processing file {++numDone}/{allPackages.Count} in {game}";
+                        using var package = MEPackageHandler.OpenMEPackage(f.Value);
+                        
+                        foreach (var exp in package.Exports.Where(x => x.ClassName == "WwiseBank" && !x.IsDefaultObject))
+                        {
+                            if (found.Contains(exp.MemoryFullPath)) continue;
+                            found.Add(exp.MemoryFullPath);
+                            var fileName = exp.MemoryFullPath + ".bnk";
+                            
+                            var data = new MemoryStream(exp.GetBinaryData());
+                            var binSkip = game.IsGame3() ? 0x10 : 0x18;
+                            data.Skip(binSkip);
+
+                            using FileStream fs = new FileStream(Path.Combine(outputGameFolder, fileName), FileMode.Create);
+                            data.CopyToEx(fs, (int)data.Length - binSkip);
+                        }
+                    }
+                }
+            }).ContinueWithOnUIThread(_ =>
+            {
+                Process.Start(outputFolder);
+                pe.EndBusy();
+            });
+        }
     }
 }
