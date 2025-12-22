@@ -371,6 +371,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aa3a6b04836f75ce08c03bcc9266bb96e"><td class="memItemLeft" align="right" valign="top">static MemoryStream&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#aa3a6b04836f75ce08c03bcc9266bb96e">GetDecompressedPackageStream</a> (MemoryStream stream, bool includeAdditionalPackagesToCook=true, bool includeDependencyTable=true)</td></tr>
 <tr class="memdesc:aa3a6b04836f75ce08c03bcc9266bb96e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a decompressed stream of a package. Mixin rules makes it follow the following rules if the package is compressed and needs to be decompressed:  <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#aa3a6b04836f75ce08c03bcc9266bb96e">More...</a><br /></td></tr>
 <tr class="separator:aa3a6b04836f75ce08c03bcc9266bb96e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55a5d6b6ea294ab0c51357e4c16a3ab1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a55a5d6b6ea294ab0c51357e4c16a3ab1">GetGameFromHeader</a> (<a class="el" href="struct_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian.html">Endian</a> endian, uint unrealVersion, uint licenseeVersion, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a423493ad96316a5a54f0df3fb3126cbe">GamePlatform</a> platformOverride, out <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a4f4b00a25fc2001d86e3c461fa3539a2">Game</a>, out <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a423493ad96316a5a54f0df3fb3126cbe">GamePlatform</a> <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#ac786de6a79fdecf70e2b2167d7c5ceb2">Platform</a>, out bool platformNeedsResolved)</td></tr>
+<tr class="memdesc:a55a5d6b6ea294ab0c51357e4c16a3ab1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses out game information given an endian, unreal version, and licensee version. Throws an exception if it doesn't match any values.   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a55a5d6b6ea294ab0c51357e4c16a3ab1">More...</a><br /></td></tr>
+<tr class="separator:a55a5d6b6ea294ab0c51357e4c16a3ab1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86104877b1852154aa27ec4c5478f4b1"><td class="memItemLeft" align="right" valign="top">static Action&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html">MEPackage</a>, string, bool, bool, bool, bool, object &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a86104877b1852154aa27ec4c5478f4b1">RegisterSaver</a> ()</td></tr>
 <tr class="separator:a86104877b1852154aa27ec4c5478f4b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_static_methods_class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html">LegendaryExplorerCore.Packages.UnrealPackageFile</a></td></tr>
@@ -783,6 +786,92 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 </li>
 </ol>
+
+</div>
+</div>
+<a id="a55a5d6b6ea294ab0c51357e4c16a3ab1" name="a55a5d6b6ea294ab0c51357e4c16a3ab1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55a5d6b6ea294ab0c51357e4c16a3ab1">&#9670;&#160;</a></span>GetGameFromHeader()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.Packages.MEPackage.GetGameFromHeader </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian.html">Endian</a>&#160;</td>
+          <td class="paramname"><em>endian</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint&#160;</td>
+          <td class="paramname"><em>unrealVersion</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint&#160;</td>
+          <td class="paramname"><em>licenseeVersion</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a423493ad96316a5a54f0df3fb3126cbe">GamePlatform</a>&#160;</td>
+          <td class="paramname"><em>platformOverride</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">out <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td>
+          <td class="paramname"><em>Game</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">out <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a423493ad96316a5a54f0df3fb3126cbe">GamePlatform</a>&#160;</td>
+          <td class="paramname"><em>Platform</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">out bool&#160;</td>
+          <td class="paramname"><em>platformNeedsResolved</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Parses out game information given an endian, unreal version, and licensee version. Throws an exception if it doesn't match any values.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">endian</td><td></td></tr>
+    <tr><td class="paramname">unrealVersion</td><td></td></tr>
+    <tr><td class="paramname">licenseeVersion</td><td></td></tr>
+    <tr><td class="paramname">platformOverride</td><td></td></tr>
+    <tr><td class="paramname">Game</td><td></td></tr>
+    <tr><td class="paramname">Platform</td><td></td></tr>
+    <tr><td class="paramname">platformNeedsResolved</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">FormatException</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

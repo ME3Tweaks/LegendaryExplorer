@@ -6,6 +6,7 @@ var class_legendary_explorer_core_1_1_packages_1_1_m_e_package =
     [ "RegisterBlankPackageCreator", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a136b7327f9f8d1b4c93f0ba1fcd6ffeb", null ],
     [ "RegisterStreamLoader", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a4fbdd1ff15875a4fed1808075be604c4", null ],
     [ "GetDecompressedPackageStream", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#aa3a6b04836f75ce08c03bcc9266bb96e", null ],
+    [ "GetGameFromHeader", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a55a5d6b6ea294ab0c51357e4c16a3ab1", null ],
     [ "RegisterSaver", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a86104877b1852154aa27ec4c5478f4b1", null ],
     [ "SaveToStream", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a2718de8d0355d5160865354180ed7730", null ],
     [ "setGame", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a9f66c643e4f113c700a42b6ab3c05c86", null ],
