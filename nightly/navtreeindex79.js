@@ -1,5 +1,7 @@
 var NAVTREEINDEX79 =
 {
+"namespace_legendary_explorer_core_1_1_unreal.html#af038cb3263eb87c914adbfb237d04b9a":[0,5,1,25,52],
+"namespace_legendary_explorer_core_1_1_unreal.html#af07306fc40114cfd46ade6a90fdeedb9":[0,5,1,25,135],
 "namespace_legendary_explorer_core_1_1_unreal.html#af0a774ac03e8ed923daaaf8781bceb36":[0,5,1,25,534],
 "namespace_legendary_explorer_core_1_1_unreal.html#af103629960275ac22f2da363e13194e0":[0,5,1,25,190],
 "namespace_legendary_explorer_core_1_1_unreal.html#af17d098d13616068aecdc3eb8a21ae0b":[0,5,1,25,270],
@@ -98,8 +100,8 @@ var NAVTREEINDEX79 =
 "namespacemembers_c.html":[0,6,0,2],
 "namespacemembers_d.html":[0,6,0,3],
 "namespacemembers_e.html":[0,6,0,4],
-"namespacemembers_enum.html":[0,6,2,0],
 "namespacemembers_enum.html":[0,6,2],
+"namespacemembers_enum.html":[0,6,2,0],
 "namespacemembers_enum_b.html":[0,6,2,1],
 "namespacemembers_enum_c.html":[0,6,2,2],
 "namespacemembers_enum_d.html":[0,6,2,3],
@@ -247,7 +249,5 @@ var NAVTREEINDEX79 =
 "struct_fixed1.html":[1,0,62],
 "struct_fixed1.html#a9a8f9c261a419d30caede964c76a247b":[1,0,62,0],
 "struct_fixed10.html":[1,0,63],
-"struct_fixed10.html#a1d4cbec5818c6ec45c802775b7d4425a":[1,0,63,0],
-"struct_fixed2.html":[1,0,64],
-"struct_fixed2.html#a7f53f99853f21728774b375421afe42a":[1,0,64,0]
+"struct_fixed10.html#a1d4cbec5818c6ec45c802775b7d4425a":[1,0,63,0]
 };

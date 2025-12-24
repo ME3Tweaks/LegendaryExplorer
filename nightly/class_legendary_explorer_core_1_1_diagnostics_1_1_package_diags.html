@@ -102,11 +102,49 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_diag
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a5b01e973bcb18e2d0fbdc695c5e20cc9"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_diagnostics_1_1_package_diags.html#a5b01e973bcb18e2d0fbdc695c5e20cc9">FixBadForcedExport</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
+<tr class="memdesc:a5b01e973bcb18e2d0fbdc695c5e20cc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scans the specified package and automatically repairs all invalid forced export chains.   <a href="class_legendary_explorer_core_1_1_diagnostics_1_1_package_diags.html#a5b01e973bcb18e2d0fbdc695c5e20cc9">More...</a><br /></td></tr>
+<tr class="separator:a5b01e973bcb18e2d0fbdc695c5e20cc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d67cd65f0368cb82971a23b85a7e02b"><td class="memItemLeft" align="right" valign="top">static List&lt; <a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_entry_string_pair.html">EntryStringPair</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_diagnostics_1_1_package_diags.html#a7d67cd65f0368cb82971a23b85a7e02b">GetBadForcedExportLeaves</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package)</td></tr>
 <tr class="memdesc:a7d67cd65f0368cb82971a23b85a7e02b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Scans the package for forced export leaves that have inconsistent forced export flags in their parent chain   <a href="class_legendary_explorer_core_1_1_diagnostics_1_1_package_diags.html#a7d67cd65f0368cb82971a23b85a7e02b">More...</a><br /></td></tr>
 <tr class="separator:a7d67cd65f0368cb82971a23b85a7e02b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a5b01e973bcb18e2d0fbdc695c5e20cc9" name="a5b01e973bcb18e2d0fbdc695c5e20cc9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b01e973bcb18e2d0fbdc695c5e20cc9">&#9670;&#160;</a></span>FixBadForcedExport()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.Diagnostics.PackageDiags.FixBadForcedExport </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>package</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Scans the specified package and automatically repairs all invalid forced export chains.  </p>
+<p >This method displays a confirmation dialog before making any changes. After completion, a message box indicates that the operation is done. No action is taken if the package is not loaded or the user cancels the operation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">package</td><td>The package to scan and repair. Cannot be null.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a7d67cd65f0368cb82971a23b85a7e02b" name="a7d67cd65f0368cb82971a23b85a7e02b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7d67cd65f0368cb82971a23b85a7e02b">&#9670;&#160;</a></span>GetBadForcedExportLeaves()</h2>
 

@@ -1,5 +1,7 @@
 var NAVTREEINDEX71 =
 {
+"class_t_light_map_density_pixel_shader.html#ace142c4b38708812d498b90408fed90f":[1,0,180,4],
+"class_t_light_map_density_pixel_shader.html#acf01635e35ec54fef91518a1dd94e27d":[1,0,180,1],
 "class_t_light_map_density_pixel_shader.html#aee76a5f451d9b006f4463997b83ca3b2":[1,0,180,7],
 "class_t_light_pixel_shader.html":[1,0,181],
 "class_t_light_pixel_shader.html#a191ef2114d824e77a4f7ee6c36308740":[1,0,181,4],
@@ -247,7 +249,5 @@ var NAVTREEINDEX71 =
 "functions_enum.html":[1,2,3],
 "functions_evnt.html":[1,2,5],
 "functions_f.html":[1,2,0,6],
-"functions_func.html":[1,2,1,0],
-"functions_func.html":[1,2,1],
-"functions_func_b.html":[1,2,1,1]
+"functions_func.html":[1,2,1,0]
 };
