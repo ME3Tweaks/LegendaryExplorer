@@ -24,5 +24,6 @@ var class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinki
     [ "CheckImportsWhenExportingToPackage", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a8e77b33bc07d335d0d54c75c6c51d91a", null ],
     [ "ForceSamePackageImportRelink", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ac70d15e39a474e67cd935dbb3ecabdf1", null ],
     [ "CustomRelinkUIndex", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#ae0a37be114ab5c88f83a5da5d1be1cc0", null ],
-    [ "CustomImportDependency", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a5b58d4f67a9cd2a9518938ad3b7d3f4b", null ]
+    [ "CustomImportDependency", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a5b58d4f67a9cd2a9518938ad3b7d3f4b", null ],
+    [ "ForceAllowMaterialPorting", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a09dfdd7f0802b87ac704373988d22c1f", null ]
 ];
