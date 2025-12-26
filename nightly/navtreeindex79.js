@@ -1,5 +1,11 @@
 var NAVTREEINDEX79 =
 {
+"namespace_legendary_explorer_core_1_1_unreal.html#aed192a5406896f663a9e8931e618b585":[0,5,1,25,536],
+"namespace_legendary_explorer_core_1_1_unreal.html#aed67e35d4b6fec7f4c574b7f578768a5":[0,5,1,25,45],
+"namespace_legendary_explorer_core_1_1_unreal.html#aed6dbda49b50aa4dc7e63704d47cb02d":[0,5,1,25,544],
+"namespace_legendary_explorer_core_1_1_unreal.html#aed83d88dd69ae38927b0fc8ae3a00d44":[0,5,1,25,611],
+"namespace_legendary_explorer_core_1_1_unreal.html#aed8fe729fa1a2eb6644db6ab3a0da17c":[0,5,1,25,694],
+"namespace_legendary_explorer_core_1_1_unreal.html#aeda2ba23c3f21e0ce8bee59a6269f464":[0,5,1,25,481],
 "namespace_legendary_explorer_core_1_1_unreal.html#aef1d66571334f8d2ca2aa0670fa4b91f":[0,5,1,25,549],
 "namespace_legendary_explorer_core_1_1_unreal.html#aef3f7aa5d509e1493c8ea6c803c7c6fe":[0,5,1,25,410],
 "namespace_legendary_explorer_core_1_1_unreal.html#aefcc5a187c5ceb4b7bf1d3bf8d24bc9f":[0,5,1,25,664],
@@ -104,8 +110,8 @@ var NAVTREEINDEX79 =
 "namespacemembers_c.html":[0,6,0,2],
 "namespacemembers_d.html":[0,6,0,3],
 "namespacemembers_e.html":[0,6,0,4],
-"namespacemembers_enum.html":[0,6,2],
 "namespacemembers_enum.html":[0,6,2,0],
+"namespacemembers_enum.html":[0,6,2],
 "namespacemembers_enum_b.html":[0,6,2,1],
 "namespacemembers_enum_c.html":[0,6,2,2],
 "namespacemembers_enum_d.html":[0,6,2,3],
@@ -243,11 +249,5 @@ var NAVTREEINDEX79 =
 "struct_f_spot_light_policy_1_1_vertex_parameters_type.html":[1,0,114,2],
 "struct_f_spot_light_policy_1_1_vertex_parameters_type.html#a6c32c3979a497278f326837bc69bf5b0":[1,0,114,2,0],
 "struct_f_spot_light_policy_1_1_vertex_parameters_type.html#ac5b7c7bfb92011eeaacd62e5ded1b54a":[1,0,114,2,1],
-"struct_f_vertex_factory_parameter_ref.html":[1,0,127],
-"struct_f_vertex_factory_parameter_ref.html#a5fc7f3e83d1fc4036246c307981be227":[1,0,127,1],
-"struct_f_vertex_factory_parameter_ref.html#a7aebc749edb0aebc4b2c0d52e23639b2":[1,0,127,2],
-"struct_f_vertex_factory_parameter_ref.html#abb6eb52da1cbe645736505de5f46e5b0":[1,0,127,0],
-"struct_f_vertex_light_map_policy_1_1_vertex_parameters_type.html":[1,0,129,0],
-"struct_f_vertex_light_map_policy_1_1_vertex_parameters_type.html#a0f7d3f27a744ca6260fa561481ccc289":[1,0,129,0,1],
-"struct_f_vertex_light_map_policy_1_1_vertex_parameters_type.html#aa835452593da97ed9ee61e29cbc18315":[1,0,129,0,0]
+"struct_f_vertex_factory_parameter_ref.html":[1,0,127]
 };

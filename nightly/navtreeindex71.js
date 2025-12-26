@@ -1,5 +1,11 @@
 var NAVTREEINDEX71 =
 {
+"class_t_height_fog_vertex_shader.html#a7d9c8a579db198647086e3f0a52218b0":[1,0,177,2],
+"class_t_height_fog_vertex_shader.html#a94e91ab15c4b461f4b548ae25be3b5eb":[1,0,177,1],
+"class_t_height_fog_vertex_shader.html#abbb5deda529d4caf25b5e4a7f610574e":[1,0,177,3],
+"class_t_light_map_density_pixel_shader.html":[1,0,180],
+"class_t_light_map_density_pixel_shader.html#a1fbe03fd4e00093b02e3dbdc6e47a3d8":[1,0,180,2],
+"class_t_light_map_density_pixel_shader.html#a56deccc4617602aa1ab105fa9fe32720":[1,0,180,5],
 "class_t_light_map_density_pixel_shader.html#a69c9df6c553b009629f4e8aa351a87c7":[1,0,180,0],
 "class_t_light_map_density_pixel_shader.html#aa37e1d5eaee097cc497be5061f19aa33":[1,0,180,3],
 "class_t_light_map_density_pixel_shader.html#aa8e1774716cbf58d8d2324d577e9ed78":[1,0,180,6],
@@ -243,11 +249,5 @@ var NAVTREEINDEX71 =
 "dir_fc297f48b00bb058e25bce0d1d92428f.html":[2,0,0,0,14,0],
 "dir_fcbaed6291bc34708fd86da8b1325ec6.html":[2,0,0,0,7],
 "files.html":[2,0],
-"functions.html":[1,2,0],
-"functions.html":[1,2,0,0],
-"functions_a.html":[1,2,0,1],
-"functions_b.html":[1,2,0,2],
-"functions_c.html":[1,2,0,3],
-"functions_d.html":[1,2,0,4],
-"functions_e.html":[1,2,0,5]
+"functions.html":[1,2,0]
 };
