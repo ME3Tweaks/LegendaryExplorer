@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Reactive;
 using System.Windows;
 using static LegendaryExplorer.Misc.ExperimentsTools.PackageAutomations;
 using static LegendaryExplorer.Misc.ExperimentsTools.SequenceAutomations;
@@ -1877,7 +1878,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 Random random = new();
 
                 Dictionary<uint, uint> idPairs = new();
-                idPairs.AddRange(UpdateIDs_EXPERIMENTAL(wwiseEvents, random));
+                idPairs.AddRange(pcc.Game == MEGame.LE2 ? UpdateLE2EventIDs_EXPERIMENTAL(wwiseEvents, random) : UpdateIDs_EXPERIMENTAL(wwiseEvents, random)); // LE2 WwiseEvent IDs are in the Binary, instead of being a prop
                 idPairs.AddRange(UpdateIDs_EXPERIMENTAL(wwiseStreams));
 
                 UpdateAudioIDs_EXPERIMENTAL(wwiseBankEntry, newWwiseBankName, idPairs, random);
@@ -2146,13 +2147,52 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        /// <summary>
-        /// Update the IDs of a list of ExportEntries with hashes of their names.
-        /// </summary>
-        /// <param name="entries">WwiseStreams to update.</param>
-        /// <param name="random">If not null, the random object to generate ids, instead of the name.</param>
-        /// <returns>KVP of old and new IDs. Used to update references.</returns>
-        private static Dictionary<uint, uint> UpdateIDs_EXPERIMENTAL(List<ExportEntry> entries, Random random = null)
+		/// <summary>
+		/// Update the IDs of a list of LE2 WwiseEvents with random IDs.
+		/// </summary>
+		/// <param name="wwiseEvts">Events to update.</param>
+		/// <param name="random">The random object to generate ids.</param>
+		/// <returns>KVP of old and new IDs. Used to update references.</returns>
+		private static Dictionary<uint, uint> UpdateLE2EventIDs_EXPERIMENTAL(List<ExportEntry> events, Random random)
+        {
+            Dictionary<uint, uint> oldAndNewIDs = new();
+
+            foreach (ExportEntry evt in events)
+            {
+                (uint oldID, uint newID) = UpdateLE2EventID_EXPERIMENTAL(evt, random);
+
+                if (newID == 0) { continue; }
+
+                oldAndNewIDs.Add(oldID, newID);
+            }
+
+            return oldAndNewIDs;
+        }
+
+		/// <summary>
+		/// Update the ID of an LE2 WwiseEvent with a random ID, as they appear in the binary, instead of as props.
+		/// </summary>
+		/// <param name="wwiseEvt">Event to update.</param>
+		/// <param name="random">The random object to generate the id.</param>
+		/// <returns>KVP of old and new ID. Used to update references.</returns>
+		private static (uint, uint) UpdateLE2EventID_EXPERIMENTAL(ExportEntry wwiseEvt, Random random)
+        {
+            WwiseEvent wwiseEvent = wwiseEvt.GetBinaryData<WwiseEvent>();
+            uint oldID = wwiseEvent.WwiseEventID;
+            uint newID = GenerateRandomID(random);
+            wwiseEvent.WwiseEventID = newID;
+            wwiseEvt.WriteBinary(wwiseEvent);
+
+            return (oldID, newID);
+		}
+
+		/// <summary>
+		/// Update the IDs of a list of ExportEntries with hashes of their names.
+		/// </summary>
+		/// <param name="entries">WwiseStreams to update.</param>
+		/// <param name="random">If not null, the random object to generate ids, instead of the name.</param>
+		/// <returns>KVP of old and new IDs. Used to update references.</returns>
+		private static Dictionary<uint, uint> UpdateIDs_EXPERIMENTAL(List<ExportEntry> entries, Random random = null)
         {
             Dictionary<uint, uint> oldAndNewIDs = new();
 
