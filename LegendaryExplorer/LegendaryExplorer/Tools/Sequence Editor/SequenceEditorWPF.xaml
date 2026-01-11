@@ -368,7 +368,7 @@
                             </Style>
                         </TreeView.ItemContainerStyle>
                         <b:Interaction.Behaviors>
-                            <peregrineTreeView:TreeViewHelper BoundSelectedItem="{Binding SelectedItem}" />
+                            <peregrineTreeView:NodeTreeSelectionBehavior SelectedItem="{Binding SelectedItem}" />
                         </b:Interaction.Behaviors>
                     </TreeView>
                     <GridSplitter Grid.Row="0" Grid.Column="1" Width="5" HorizontalAlignment="Stretch"
