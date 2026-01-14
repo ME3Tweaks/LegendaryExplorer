@@ -9,13 +9,16 @@ var class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds =
     [ "LE1_DEBUGLOGGER_DEV", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3f22b4f2469711c34e3122e23fc5ca17", null ],
     [ "LE1_LEX_INTEROP", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ada1d4c9ae70e4eb8ff9ab613f481bed7", null ],
     [ "LE1_SCRIPT_DEBUGGER", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a2d80f1229272793d3e04b9b197002fc3", null ],
+    [ "LE1_TEXTURE_OVERRIDE", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ae6277d0d530420385d3d0adcf46955a3", null ],
     [ "LE2_AUTOTOC", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a84fd47401635d2456453fb56f90564dc", null ],
     [ "LE2_DEBUGLOGGER_DEV", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3f8f5ee27522aed2022cc00c51aa150b", null ],
     [ "LE2_HOT_RELOAD", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a93e212207c9456cc60abda31ef240b6d", null ],
     [ "LE2_LEX_INTEROP", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a8931cccc8317ef94ba4dd2fb2f8e2eb8", null ],
     [ "LE2_SCRIPT_DEBUGGER", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a05a4e9c5a2a10480ce4de8924c1fb719", null ],
+    [ "LE2_TEXTURE_OVERRIDE", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a1ed86c76ca1be8e3c6424e1629ffc13e", null ],
     [ "LE3_AUTOTOC", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a814717abdd624ab7bf4c87f13dbd7039", null ],
     [ "LE3_DEBUGLOGGER_DEV", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a7174af347162f75b712807d517b55a49", null ],
     [ "LE3_LEX_INTEROP", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#aa480b9a70e806e946c817cfdbd133fa3", null ],
-    [ "LE3_SCRIPT_DEBUGGER", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#af743142edd620194721f840e936e8698", null ]
+    [ "LE3_SCRIPT_DEBUGGER", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#af743142edd620194721f840e936e8698", null ],
+    [ "LE3_TEXTURE_OVERRIDE", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a2383f74ffce28546f0c2be7f814f7950", null ]
 ];

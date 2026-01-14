@@ -1,5 +1,11 @@
 var NAVTREEINDEX79 =
 {
+"namespace_legendary_explorer_core_1_1_unreal.html#ae89e115e75d9ebdbfc1c6ebe11bda099":[0,5,1,25,181],
+"namespace_legendary_explorer_core_1_1_unreal.html#ae8a68139ffe9a1c37ce1fa81db8c1f2a":[0,5,1,25,630],
+"namespace_legendary_explorer_core_1_1_unreal.html#ae9d81005f248aae7da7bb2f746292414":[0,5,1,25,423],
+"namespace_legendary_explorer_core_1_1_unreal.html#aea1847e0f967ab4a77e718559c27afb7":[0,5,1,25,259],
+"namespace_legendary_explorer_core_1_1_unreal.html#aea415008ccdbfd994a73fd302cc4e048":[0,5,1,25,506],
+"namespace_legendary_explorer_core_1_1_unreal.html#aec5c668cd451b5bc377e3ee444082885":[0,5,1,25,644],
 "namespace_legendary_explorer_core_1_1_unreal.html#aec8b04f3fd8a7d40577d54a997149031":[0,5,1,25,494],
 "namespace_legendary_explorer_core_1_1_unreal.html#aec9d5166a9a771b10e5ed9680a9ce164":[0,5,1,25,681],
 "namespace_legendary_explorer_core_1_1_unreal.html#aed192a5406896f663a9e8931e618b585":[0,5,1,25,536],
@@ -106,8 +112,8 @@ var NAVTREEINDEX79 =
 "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html":[0,5,1,26,7],
 "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html#a3d927c811de46c923f979e6023a3d309":[0,5,1,26,7,3],
 "namespace_legendary_explorer_core_1_1_unreal_script_1_1_utilities.html#a4e06b7d8f5c03d24603d8549cff64edb":[0,5,1,26,7,4],
-"namespacemembers.html":[0,6,0,0],
 "namespacemembers.html":[0,6,0],
+"namespacemembers.html":[0,6,0,0],
 "namespacemembers_b.html":[0,6,0,1],
 "namespacemembers_c.html":[0,6,0,2],
 "namespacemembers_d.html":[0,6,0,3],
@@ -243,11 +249,5 @@ var NAVTREEINDEX79 =
 "struct_f_spot_light_policy_1_1_mod_shadow_pixel_params_type.html#a2c597b21215e89c7b8888fb4833aedae":[1,0,114,0,4],
 "struct_f_spot_light_policy_1_1_mod_shadow_pixel_params_type.html#a8e4e7b3eff3a1719274a417c44b57d98":[1,0,114,0,1],
 "struct_f_spot_light_policy_1_1_mod_shadow_pixel_params_type.html#a9f3b81c485d829a609c1a179303b2f78":[1,0,114,0,0],
-"struct_f_spot_light_policy_1_1_pixel_parameters_type.html":[1,0,114,1],
-"struct_f_spot_light_policy_1_1_pixel_parameters_type.html#a074ae088a060cd6529d1302007e042da":[1,0,114,1,2],
-"struct_f_spot_light_policy_1_1_pixel_parameters_type.html#a455e7f8f2143fec8bb91d19168536f51":[1,0,114,1,3],
-"struct_f_spot_light_policy_1_1_pixel_parameters_type.html#a7feda38eda51144c465d8e34fc3966e8":[1,0,114,1,0],
-"struct_f_spot_light_policy_1_1_pixel_parameters_type.html#ad09069a382f7139adfdd4fd4c2fbbdb8":[1,0,114,1,1],
-"struct_f_spot_light_policy_1_1_vertex_parameters_type.html":[1,0,114,2],
-"struct_f_spot_light_policy_1_1_vertex_parameters_type.html#a6c32c3979a497278f326837bc69bf5b0":[1,0,114,2,0]
+"struct_f_spot_light_policy_1_1_pixel_parameters_type.html":[1,0,114,1]
 };
