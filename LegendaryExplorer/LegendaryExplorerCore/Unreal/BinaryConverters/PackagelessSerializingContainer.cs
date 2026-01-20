@@ -52,6 +52,11 @@ public class PackagelessSerializingContainer(Stream stream, IMEPackage pcc, bool
     {
         throw new Exception(nameof(PackagelessSerializingContainer) + " cannot serialize object references.");
     }
+
+    public void SetGame(MEGame game)
+    {
+        this.Game = game;
+    }
 }
 
 /// <summary>

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters.Shaders;
 using LegendaryExplorerCore.Unreal.Collections;
+using static LegendaryExplorerCore.Packages.MEPackage;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -288,10 +290,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public static GlobalShaderCache ReadGlobalShaderCache(Stream fs, MEGame game)
         {
             GlobalShaderCache sc = new GlobalShaderCache();
-            var container = new PackagelessSerializingContainer(fs, null, true)
-            {
-                Game = game
-            };
+            var container = new PackagelessSerializingContainer(fs, null, true);
+            container.SetGame(game);
             sc.Serialize(container);
             return sc;
         }
@@ -313,7 +313,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref version);
             int licensee = UnrealPackageFile.LicenseeVersion(sc.Game);
             sc.Serialize(ref licensee);
-
+            if (sc.IsLoading && sc is PackagelessSerializingContainer psc)
+            {
+                MEPackage.GetGameFromHeader(Endian.Native, (uint)version, (uint)licensee, GamePlatform.Unknown, out var game, out var platform, out _);
+                psc.SetGame(game);
+            }
             base.Serialize(sc);
         }
     }

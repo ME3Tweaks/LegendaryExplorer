@@ -23,6 +23,7 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.BinaryConverters.Shaders;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SharpDX.D3DCompiler;
@@ -755,7 +756,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             // Get Disassembly
                             string dissasembledShader = ShaderBytecode.FromStream(new MemoryStream(newShaderFile)).Disassemble();
                             // Get last line that contains instruction counts
-                            string result = string.Join("", dissasembledShader.Split('\n').Reverse().Take(2).ToArray());
+                            string result = string.Join("", Enumerable.Reverse(dissasembledShader.Split('\n')).Take(2).ToArray());
                             // Get digits from the result
                             string digits = string.Join("", new String(result.Where(char.IsDigit).ToArray()));
                             int instructions = int.Parse(digits);
@@ -816,6 +817,27 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         internal override void OpenFile()
         {
             // GLOBAL SHADER CACHE - Not implemented yet
+            var d = new OpenFileDialog
+            {
+                Title = "Open Global Shader Cache file",
+                Filter = "LE Global Shader Cache Files|*.bin",
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
+            if (d.ShowDialog() == true)
+            {
+#if !DEBUG
+                try
+                {
+#endif
+                LoadFile(d.FileName);
+#if !DEBUG
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to open file:\n" + ex.Message);
+                }
+#endif
+            }
         }
 
         public override bool CanSave()

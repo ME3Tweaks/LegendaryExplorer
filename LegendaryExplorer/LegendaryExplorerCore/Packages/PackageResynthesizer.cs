@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.DebugTools;
+using LegendaryExplorerCore.Diagnostics;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -115,10 +115,13 @@ namespace LegendaryExplorerCore.Packages
             PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Resolving);
             PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Transferring);
             newPackage.SetInternalFilepath(package.FilePath);
+
+            //12/24/2025 - Fix bad forced export
+            PackageDiags.FixBadForcedExport(package);
             return newPackage;
         }
 
-        private static IMEPackage DumpUnreferencedObjects(IMEPackage package, PackageCache cache)
+        public static IMEPackage DumpUnreferencedObjects(IMEPackage package, PackageCache cache)
         {
             // Package must be inventoried before dumping objects because otherwise we will try to resolve array types
             // when package may not yet be fully setup, which causes problems.
@@ -165,7 +168,6 @@ namespace LegendaryExplorerCore.Packages
             {
                 meNewPackage.AdditionalPackagesToCook.AddRange(mePackage.AdditionalPackagesToCook);
             }
-            // Todo: Generations?
         }
 
         private static void PortOrdering(EntryOrdering ordering, IMEPackage newPackage, IEntry parent, ESynthesisMode mode, List<ImportEntry> importsToConvert = null)
@@ -180,6 +182,7 @@ namespace LegendaryExplorerCore.Packages
                         if (ordering.ConvertToExport)
                         {
                             newEntry = ExportCreator.CreatePackageExport(newPackage, ordering.Entry.ObjectName, parent);
+                            (newEntry as ExportEntry).SetForcedExportFlag(true); // Import to export is always a forced export
                         }
                         else
                         {
@@ -198,9 +201,10 @@ namespace LegendaryExplorerCore.Packages
                             }
                         }
                     }
-                    else if (ordering.Entry is ExportEntry)
+                    else if (ordering.Entry is ExportEntry oExp)
                     {
                         newEntry = ExportCreator.CreatePackageExport(newPackage, ordering.Entry.ObjectName, parent);
+                        (newEntry as ExportEntry).SetForcedExportFlag(oExp.IsForcedExport); // Match ForcedExport for lookups
                     }
                 }
                 else if (mode == ESynthesisMode.Synth_Resolving)
@@ -218,10 +222,10 @@ namespace LegendaryExplorerCore.Packages
                         {
                             destExp.Class = null; // Change from Package to Class
                         }
-
+                        
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular,
-                            ordering.Entry,
-                            newPackage, destExp, true, new RelinkerOptionsPackage() { RelinkAllowDifferingClassesInRelink = true }, out _);
+                            ordering.Entry, newPackage, destExp, false, // no relink
+                            new RelinkerOptionsPackage() { RelinkAllowDifferingClassesInRelink = true }, out _);
                     }
                 }
                 else if (mode == ESynthesisMode.Synth_Transferring)
@@ -229,7 +233,7 @@ namespace LegendaryExplorerCore.Packages
                     // Don't filter out class
                     if (ordering.Entry is ExportEntry oExp)
                     {
-                        var destExp = newPackage.FindExport(ordering.Entry.InstancedFullPath);
+                        var destExp = newPackage.FindExport(oExp.InstancedFullPath);
 
                         // Update class, archetype, superclass
                         if (oExp.Class != null) // Class is not class
@@ -261,8 +265,10 @@ namespace LegendaryExplorerCore.Packages
 
                         // Update data
                         EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingular,
-                            ordering.Entry,
-                            newPackage, destExp, true, new RelinkerOptionsPackage() { RelinkAllowDifferingClassesInRelink = true }, out _);
+                            ordering.Entry, newPackage, destExp, true,
+                            new RelinkerOptionsPackage() { RelinkAllowDifferingClassesInRelink = true, ImportExportDependencies = false }, out _);
+
+
                     }
                 }
             }

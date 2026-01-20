@@ -12,11 +12,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             sc.Serialize(ref DestinationObject);
         }
 
-        public static ObjectRedirector Create()
+        public static ObjectRedirector Create(IEntry otherObj = null)
         {
             return new()
             {
-                DestinationObject = 0
+                DestinationObject = otherObj?.UIndex ?? 0
             };
         }
         

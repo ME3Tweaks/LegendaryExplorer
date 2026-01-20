@@ -45,7 +45,7 @@ namespace LegendaryExplorerCore.Tests
             Assert.IsTrue(plotDb.Organizational.ContainsKey(a.ElementId));
 
             // Null parent throws exception when element doesn't have parent
-            Assert.ThrowsException<Exception>(() => plotDb.AddElement(b, null));
+            Assert.Throws<Exception>(() => plotDb.AddElement(b, null));
 
             plotDb.AddElement(b, a);
             Assert.IsTrue(plotDb.Bools.ContainsValue(b));
@@ -74,8 +74,8 @@ namespace LegendaryExplorerCore.Tests
             // Pre-flight checks
             Assert.IsTrue(b.Children.Count > 0);
             Assert.IsTrue(a.Parent == plotDb.Root);
-            Assert.ThrowsException<ArgumentException>(() => plotDb.RemoveElement(plotDb.Root)); // Cannot remove root
-            Assert.ThrowsException<ArgumentException>(() => plotDb.RemoveElement(b, removeAllChildren: false)); // If element has children, error is thrown by default
+            Assert.Throws<ArgumentException>(() => plotDb.RemoveElement(plotDb.Root)); // Cannot remove root
+            Assert.Throws<ArgumentException>(() => plotDb.RemoveElement(b, removeAllChildren: false)); // If element has children, error is thrown by default
 
             // Actual testing
             plotDb.RemoveElement(a);

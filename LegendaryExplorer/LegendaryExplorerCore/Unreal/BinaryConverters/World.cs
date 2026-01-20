@@ -64,7 +64,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 Unsafe.AsRef(in action).Invoke(ref PersistentFaceFXAnimSet, nameof(PersistentFaceFXAnimSet));
             }
-            else if (game.IsGame1())
+            if (game.IsGame1())
             {
                 Unsafe.AsRef(in action).Invoke(ref DecalManager, nameof(DecalManager));
             }

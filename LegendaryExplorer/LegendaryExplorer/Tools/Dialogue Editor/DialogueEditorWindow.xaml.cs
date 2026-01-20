@@ -1,4 +1,31 @@
-﻿using Newtonsoft.Json;
+﻿using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.DialogueEditor.DialogueEditorExperiments;
+using LegendaryExplorer.Misc;
+using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.SharedUI.Bases;
+using LegendaryExplorer.SharedUI.Interfaces;
+using LegendaryExplorer.SharedUI.PeregrineTreeView;
+using LegendaryExplorer.Tools.FaceFXEditor;
+using LegendaryExplorer.Tools.InterpEditor;
+using LegendaryExplorer.Tools.PackageEditor;
+using LegendaryExplorer.Tools.Sequence_Editor;
+using LegendaryExplorer.Tools.Soundplorer;
+using LegendaryExplorer.Tools.TlkManagerNS;
+using LegendaryExplorer.UnrealExtensions;
+using LegendaryExplorer.UserControls.SharedToolControls;
+using LegendaryExplorerCore.Dialogue;
+using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.PlotDatabase;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
+using Newtonsoft.Json;
+using Piccolo;
+using Piccolo.Event;
+using Piccolo.Nodes;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -15,36 +42,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using LegendaryExplorer.Dialogs;
-using LegendaryExplorer.Misc;
-using LegendaryExplorer.SharedUI;
-using LegendaryExplorer.SharedUI.Bases;
-using LegendaryExplorer.SharedUI.Interfaces;
-using LegendaryExplorer.SharedUI.PeregrineTreeView;
-using LegendaryExplorer.Tools.FaceFXEditor;
-using LegendaryExplorer.Tools.InterpEditor;
-using LegendaryExplorer.Tools.PackageEditor;
-using LegendaryExplorer.Tools.Sequence_Editor;
-using LegendaryExplorer.Tools.Soundplorer;
-using LegendaryExplorer.Tools.TlkManagerNS;
-using LegendaryExplorer.UnrealExtensions;
-using LegendaryExplorer.UserControls.SharedToolControls;
 using static LegendaryExplorer.Tools.TlkManagerNS.TLKManagerWPF;
 using Key = System.Windows.Input.Key;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
-using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Misc;
-using LegendaryExplorerCore.Dialogue;
-using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
-using LegendaryExplorerCore.GameFilesystem;
-using LegendaryExplorerCore.Unreal.ObjectInfo;
-using LegendaryExplorerCore.PlotDatabase;
-using Piccolo;
-using Piccolo.Event;
-using Piccolo.Nodes;
 
 namespace LegendaryExplorer.DialogueEditor
 {
@@ -64,6 +65,20 @@ namespace LegendaryExplorer.DialogueEditor
             {
                 index = i;
             }
+        }
+
+        private enum ESaveViewMode
+        {
+            AutoSave,
+            ManualSave,
+            AutoGenerate
+        }
+
+        private enum ELayoutMode
+        {
+            Column,
+            Waterfall,
+            AdvancedColumn
         }
 
         private readonly ConvGraphEditor graphEditor;
@@ -141,8 +156,8 @@ namespace LegendaryExplorer.DialogueEditor
             get => _statusText;
             set => SetProperty(ref _statusText, $"{CurrentFile} {value}");
         }
-        private int LayoutMode; //0 = column, 1 = waterfall.
-        private int SaveViewMode; //0 = auto save, 1 = manual save, 2 = autogenerate.
+        private ELayoutMode LayoutMode; //0 = column, 1 = waterfall.
+        private ESaveViewMode SaveViewMode; //0 = auto save, 1 = manual save, 2 = autogenerate.
         public float StartPoDStarts;
         public float StartPoDiagNodes;
         public float StartPoDReplyNodes;
@@ -176,6 +191,9 @@ namespace LegendaryExplorer.DialogueEditor
         public ICommand ScriptDeleteCommand { get; set; }
         public ICommand NodeEditCommand { get; set; }
         public ICommand NodeAddCommand { get; set; }
+        public ICommand CloneNodeAndSequenceCommand { get; set; }
+        public ICommand UpdateInterpLengthCommand { get; set; }
+        public ICommand UpdateVOElementsAndInterpCommentCommand { get; set; }
         public ICommand NodeRemoveCommand { get; set; }
         public ICommand NodeDeleteAllLinksCommand { get; set; }
         public ICommand TestPathsCommand { get; set; }
@@ -206,9 +224,9 @@ namespace LegendaryExplorer.DialogueEditor
         {
             return Speakers_ListBox.SelectedIndex >= 2;
         }
-        private bool LineHasInterpdata(object param)
+        private bool LineHasInterpData()
         {
-            return SelectedDialogueNode?.Interpdata != null;
+            return SelectedDialogueNode?.InterpData != null;
         }
         private bool StartCanMoveUp(object param)
         {
@@ -325,12 +343,12 @@ namespace LegendaryExplorer.DialogueEditor
                 if (options.ContainsKey("AutoSaveMode"))
                 {
                     int.TryParse(options["AutoSaveMode"].ToString(), out int a);
-                    SaveViewMode = a;
+                    SaveViewMode = (ESaveViewMode)a;
                 }
                 if (options.ContainsKey("LayoutMode"))
                 {
                     int.TryParse(options["LayoutMode"].ToString(), out int l);
-                    LayoutMode = l;
+                    LayoutMode = (ELayoutMode)l;
                 }
                 if (options.ContainsKey("RowSpace"))
                 {
@@ -400,6 +418,9 @@ namespace LegendaryExplorer.DialogueEditor
             ScriptDeleteCommand = new GenericCommand(Script_Delete, ScriptCanDelete);
             NodeEditCommand = new RelayCommand(DialogueNode_OpenLinkEditor);
             NodeAddCommand = new RelayCommand(DialogueNode_Add);
+            CloneNodeAndSequenceCommand = new GenericCommand(() => DialogueEditorExperimentsE.CloneNodeAndSequence(this), LineHasInterpData);
+            UpdateInterpLengthCommand = new GenericCommand(() => DialogueEditorExperimentsE.UpdateInterpLengthExperiment(this), LineHasInterpData);
+            UpdateVOElementsAndInterpCommentCommand = new GenericCommand(() => DialogueEditorExperimentsE.UpdateVOAndCommentExperiment(this), LineHasInterpData);
             NodeRemoveCommand = new RelayCommand(DialogueNode_Delete);
             NodeDeleteAllLinksCommand = new RelayCommand(DialogueNode_DeleteLinks);
             StageDirectionsModCommand = new RelayCommand(StageDirections_Modify);
@@ -471,8 +492,8 @@ namespace LegendaryExplorer.DialogueEditor
                 {"ReplyPenColor", ColorTranslator.ToHtml(DObj.replyPenColor)},
                 {"LinesAtTop", DBox.LinesAtTop},
                 {"OutputNumbers", DObj.OutputNumbers},
-                {"AutoSaveMode", SaveViewMode},
-                {"LayoutMode", LayoutMode},
+                {"AutoSaveMode", (int)SaveViewMode},
+                {"LayoutMode", (int)LayoutMode},
                 {"RowSpace", RowSpace},
                 {"ColumnSpace", ColumnSpace},
                 {"WaterfallSpace", WaterfallSpace},
@@ -534,7 +555,7 @@ namespace LegendaryExplorer.DialogueEditor
         public void LoadFile(string fileName, int uIndex)
         {
             LoadFile(fileName);
-            var convo = Conversations.FirstOrDefault(c => c.ExportUID == uIndex);
+            var convo = Conversations.FirstOrDefault(c => c.UIndex == uIndex);
             if (convo != null)
             {
                 Conversations_ListBox.SelectedItem = convo;
@@ -761,7 +782,7 @@ namespace LegendaryExplorer.DialogueEditor
                     node.IsMajorDecision = false;
                 }
 
-                var lengthprop = node.Interpdata?.GetProperty<FloatProperty>("InterpLength");
+                var lengthprop = node.InterpData?.GetProperty<FloatProperty>("InterpLength");
                 if (lengthprop != null)
                 {
                     node.InterpLength = lengthprop.Value;
@@ -1004,11 +1025,11 @@ namespace LegendaryExplorer.DialogueEditor
 
             if (SelectedDialogueNode != null) //Update any changes to live dialogue node
             {
-                if (relevantUpdates.Select(x => x.Index).Any(update => Pcc.GetEntry(update) == SelectedDialogueNode.Interpdata))
+                if (relevantUpdates.Select(x => x.Index).Any(update => Pcc.GetEntry(update) == SelectedDialogueNode.InterpData))
                 {
-                    if (SelectedDialogueNode.Interpdata.ClassName == "Interpdata") //If changed??
+                    if (SelectedDialogueNode.InterpData.ClassName == "Interpdata") //If changed??
                     {
-                        var lengthprop = SelectedDialogueNode.Interpdata.GetProperty<FloatProperty>("InterpLength");
+                        var lengthprop = SelectedDialogueNode.InterpData.GetProperty<FloatProperty>("InterpLength");
                         if (lengthprop != null)
                         {
                             SelectedDialogueNode.InterpLength = lengthprop.Value;
@@ -1024,7 +1045,7 @@ namespace LegendaryExplorer.DialogueEditor
             int sSelectedIdx = Speakers_ListBox.SelectedIndex;
             foreach (var uxp in updatedConvos)
             {
-                int index = Conversations.FindIndex(i => i.ExportUID == uxp);
+                int index = Conversations.FindIndex(i => i.UIndex == uxp);
                 Conversations.RemoveAt(index);
                 if (Pcc.GetEntry(uxp) is ExportEntry exp)
                 {
@@ -1099,8 +1120,8 @@ namespace LegendaryExplorer.DialogueEditor
                 case "ExportID":
                     var nExportID = new IntProperty(node.ExportID, "nExportID");
                     prop.Properties.AddOrReplaceProp(nExportID);
-                    node.Interpdata = SelectedConv.ParseSingleNodeInterpData(node);
-                    var lengthprop = node.Interpdata?.GetProperty<FloatProperty>("InterpLength");
+                    node.InterpData = SelectedConv.ParseSingleNodeInterpData(node);
+                    var lengthprop = node.InterpData?.GetProperty<FloatProperty>("InterpLength");
                     node.InterpLength = lengthprop?.Value ?? -1;
                     needsRefresh = true;
                     break;
@@ -1184,15 +1205,19 @@ namespace LegendaryExplorer.DialogueEditor
 
         #region CreateGraph
 
-        public void GenerateGraph()
+        public void GenerateGraph(bool regenerate = false)
         {
-            if (File.Exists(JSONpath) && LayoutMode != 2)
+            if (regenerate)
+            {
+                saveView(false);
+            }
+            else if (File.Exists(JSONpath) && SaveViewMode != ESaveViewMode.AutoGenerate)
             {
                 SavedPositions = JsonConvert.DeserializeObject<List<SaveData>>(File.ReadAllText(JSONpath));
             }
             else
             {
-                SavedPositions = new List<SaveData>();
+                SavedPositions = [];
             }
             extraSaveData.Clear();
 
@@ -1217,7 +1242,7 @@ namespace LegendaryExplorer.DialogueEditor
 
             graphEditor.Camera.X = 0;
             graphEditor.Camera.Y = 0;
-            if (SavedPositions.IsEmpty() || SaveViewMode == 2)
+            if (!regenerate && (SavedPositions.IsEmpty() || SaveViewMode == ESaveViewMode.AutoGenerate))
             {
                 AutoLayout();
             }
@@ -1270,7 +1295,7 @@ namespace LegendaryExplorer.DialogueEditor
                 {
                     //SAVED DATA
                     SaveData savedInfo = new(-1);
-                    if (SavedPositions.Any() && LayoutMode != 2)
+                    if (SavedPositions.Any() && SaveViewMode != ESaveViewMode.AutoGenerate)
                     {
                         DObj obj1 = obj;
                         savedInfo = SavedPositions.FirstOrDefault(p => obj1.NodeUID == p.index);
@@ -1313,10 +1338,10 @@ namespace LegendaryExplorer.DialogueEditor
         {
             switch (LayoutMode)
             {
-                case 1:
+                case ELayoutMode.Waterfall:
                     AutoLayout_Waterfall();
                     break;
-                case 2:
+                case ELayoutMode.AdvancedColumn:
                     AutoLayout_AdvancedColumn();
                     break;
                 default:
@@ -1701,7 +1726,7 @@ namespace LegendaryExplorer.DialogueEditor
                 }
 
                 GenerateGraph();
-                if (LayoutMode != 2)
+                if (SaveViewMode != ESaveViewMode.AutoGenerate)
                 {
                     saveView(false);
                 }
@@ -2378,8 +2403,10 @@ namespace LegendaryExplorer.DialogueEditor
                 return;
             }
 
-            float newX = SelectedObjects[0].OffsetX + 100;
-            float newY = SelectedObjects[0].OffsetY + 150;
+            if (SelectedObjects.Count is 0 || SelectedObjects[0] is not DiagNode diagNode) return;
+
+            float newX = diagNode.OffsetX + 100;
+            float newY = diagNode.OffsetY + 150;
             int newIndex = 0;
 
             DiagNode node = null;
@@ -2388,6 +2415,23 @@ namespace LegendaryExplorer.DialogueEditor
             panToSelection = false;
             graphEditor.Enabled = false;
             graphEditor.UseWaitCursor = true;
+            bool cloneLinks = false;
+            List<DiagNode> inputNodes = [];
+            if (command is "CloneReply" or "CloneEntry")
+            {
+                if (MessageBox.Show("Clone links as well?", "Dialogue Editor", MessageBoxButton.YesNo) is MessageBoxResult.Yes)
+                {
+                    cloneLinks = true;
+                    foreach (var edge in diagNode.InputEdges)
+                    {
+                        if (edge.originator is DiagNode inputNode)
+                        {
+                            inputNodes.Add(inputNode);
+                        }
+                    }
+                }
+            }
+
             if (command == "CloneReply")
             {
                 isReply = true;
@@ -2397,7 +2441,7 @@ namespace LegendaryExplorer.DialogueEditor
                 PropertyCollection props = new();
                 foreach (var op in SelectedDialogueNode.NodeProp.Properties)
                 {
-                    if (op.Name.Name == "EntryList")
+                    if (!cloneLinks && op.Name.Name == "EntryList")
                     {
                         props.AddOrReplaceProp(new ArrayProperty<IntProperty>(op.Name));
                         continue;
@@ -2407,7 +2451,7 @@ namespace LegendaryExplorer.DialogueEditor
                 props.AddOrReplaceProp(new NoneProperty());
                 replyprop.Add(new StructProperty(typeName, props));
                 var nodeExtended = SelectedConv.ParseSingleLine(replyprop[newIndex], newIndex, isReply, TLKLookup);
-                nodeExtended.Interpdata = SelectedDialogueNode.Interpdata;
+                nodeExtended.InterpData = SelectedDialogueNode.InterpData;
                 nodeExtended.InterpLength = SelectedDialogueNode.InterpLength;
                 nodeExtended.Line = SelectedDialogueNode.Line;
                 nodeExtended.SpeakerTag = SelectedDialogueNode.SpeakerTag;
@@ -2427,9 +2471,9 @@ namespace LegendaryExplorer.DialogueEditor
                 PropertyCollection props = new();
                 foreach (var op in SelectedDialogueNode.NodeProp.Properties)
                 {
-                    if (op.Name.Name == "ReplyListNew")
+                    if (!cloneLinks && op.Name.Name == "ReplyListNew")
                     {
-                        props.AddOrReplaceProp(new ArrayProperty<StructProperty>(op.Name));
+                        props.AddOrReplaceProp(new ArrayProperty<IntProperty>(op.Name));
                         continue;
                     }
                     props.AddOrReplaceProp(op);
@@ -2437,7 +2481,7 @@ namespace LegendaryExplorer.DialogueEditor
                 props.AddOrReplaceProp(new NoneProperty());
                 entryprop.Add(new StructProperty(typeName, props));
                 var nodeExtended = SelectedConv.ParseSingleLine(entryprop[newIndex], newIndex, isReply, TLKLookup);
-                nodeExtended.Interpdata = SelectedDialogueNode.Interpdata;
+                nodeExtended.InterpData = SelectedDialogueNode.InterpData;
                 nodeExtended.InterpLength = SelectedDialogueNode.InterpLength;
                 nodeExtended.Line = SelectedDialogueNode.Line;
                 nodeExtended.SpeakerTag = SelectedDialogueNode.SpeakerTag;
@@ -2461,6 +2505,14 @@ namespace LegendaryExplorer.DialogueEditor
             graphEditor.Camera.AnimateViewToCenterBounds(node.GlobalFullBounds, false, 500);
             graphEditor.Refresh();
             PushConvoToFile(SelectedConv);
+            if (cloneLinks)
+            {
+                foreach (var inputNode in inputNodes)
+                {
+                    inputNode.CreateLink(inputNode, node);
+                }
+                GenerateGraph(true);
+            }
         }
         private void DialogueNode_DeleteLinks(object obj)
         {
@@ -2970,7 +3022,7 @@ namespace LegendaryExplorer.DialogueEditor
             switch (command)
             {
                 case "Lay_Manual":
-                    SaveViewMode = 1;
+                    SaveViewMode = ESaveViewMode.ManualSave;
                     break;
                 case "Lay_AutoSave":
                     SaveViewMode = 0;
@@ -2980,18 +3032,18 @@ namespace LegendaryExplorer.DialogueEditor
                     }
                     break;
                 case "Lay_AutoGen":
-                    SaveViewMode = 2;
+                    SaveViewMode = ESaveViewMode.AutoGenerate;
                     break;
                 case "Auto_Column":
                     LayoutMode = 0;
                     needsRegen = true;
                     break;
                 case "Auto_Waterfall":
-                    LayoutMode = 1;
+                    LayoutMode = ELayoutMode.Waterfall;
                     needsRegen = true;
                     break;
                 case "Auto_AdvColumn":
-                    LayoutMode = 2;
+                    LayoutMode = ELayoutMode.AdvancedColumn;
                     needsRegen = true;
                     break;
                 case "Toggle_Output":
@@ -3013,10 +3065,10 @@ namespace LegendaryExplorer.DialogueEditor
             AdvColumn_MenuItem.IsChecked = false;
             switch (SaveViewMode)
             {
-                case 1:
+                case ESaveViewMode.ManualSave:
                     ManualSaveView_MenuItem.IsChecked = true;
                     break;
-                case 2:
+                case ESaveViewMode.AutoGenerate:
                     AutoGenView_MenuItem.IsChecked = true;
                     break;
                 default: //in case non valid reset
@@ -3026,10 +3078,10 @@ namespace LegendaryExplorer.DialogueEditor
             }
             switch (LayoutMode)
             {
-                case 1:
+                case ELayoutMode.Waterfall:
                     Waterfall_MenuItem.IsChecked = true;
                     break;
-                case 2:
+                case ELayoutMode.AdvancedColumn:
                     AdvColumn_MenuItem.IsChecked = true;
                     break;
                 default: //in case non valid reset
@@ -3040,7 +3092,7 @@ namespace LegendaryExplorer.DialogueEditor
             DBox.LinesAtTop = ShowLinesOnTop_MenuItem.IsChecked;
             DObj.OutputNumbers = HideEntryOutput_MenuItem.IsChecked;
 
-            if (CurrentObjects.Any() && ((needsRegen && SaveViewMode == 2) || forceRegen))
+            if (CurrentObjects.Any() && ((needsRegen && SaveViewMode == ESaveViewMode.AutoGenerate) || forceRegen))
             {
                 RefreshView();
             }
@@ -3085,10 +3137,10 @@ namespace LegendaryExplorer.DialogueEditor
                     OpenInToolkit("PackageEditor", 0, Level);
                     break;
                 case "PackEdConv":
-                    OpenInToolkit("PackageEditor", SelectedConv.ExportUID);
+                    OpenInToolkit("PackageEditor", SelectedConv.UIndex);
                     break;
                 case "PackEdLine":
-                    OpenInToolkit("PackageEditor", SelectedDialogueNode.Interpdata.UIndex, Path.GetFileName(SelectedDialogueNode.Interpdata.FileRef.FilePath));
+                    OpenInToolkit("PackageEditor", SelectedDialogueNode.InterpData.UIndex, Path.GetFileName(SelectedDialogueNode.InterpData.FileRef.FilePath));
                     break;
                 case "PackEd_StreamM":
                     if (SelectedDialogueNode.WwiseStream_Male != null)
@@ -3116,7 +3168,7 @@ namespace LegendaryExplorer.DialogueEditor
                     }
                     break;
                 case "SeqEdLine":
-                    OpenInToolkit("SequenceEditor", SelectedDialogueNode.Interpdata.UIndex, Path.GetFileName(SelectedDialogueNode.Interpdata.FileRef.FilePath));
+                    OpenInToolkit("SequenceEditor", SelectedDialogueNode.InterpData.UIndex, Path.GetFileName(SelectedDialogueNode.InterpData.FileRef.FilePath));
                     break;
                 case "FaceFXNS":
                     OpenInToolkit("FaceFXEditor", SelectedConv.NonSpkrFFX.UIndex);
@@ -3180,9 +3232,9 @@ namespace LegendaryExplorer.DialogueEditor
                     }
                     break;
                 case "InterpEdLine":
-                    if (SelectedDialogueNode.Interpdata != null)
+                    if (SelectedDialogueNode.InterpData != null)
                     {
-                        OpenInInterpViewer_Clicked(SelectedDialogueNode.Interpdata);
+                        OpenInInterpViewer_Clicked(SelectedDialogueNode.InterpData);
                     }
                     break;
                 default:
@@ -3196,10 +3248,10 @@ namespace LegendaryExplorer.DialogueEditor
             string tool = obj as string;
             return tool switch
             {
-                "PackEdLine" => SelectedDialogueNode?.Interpdata != null,
+                "PackEdLine" => SelectedDialogueNode?.InterpData != null,
                 "PackEd_StreamM" => SelectedDialogueNode?.WwiseStream_Male != null,
                 "PackEd_StreamF" => SelectedDialogueNode?.WwiseStream_Female != null,
-                "SeqEdLine" => SelectedDialogueNode?.Interpdata != null,
+                "SeqEdLine" => SelectedDialogueNode?.InterpData != null,
                 "FaceFXNS" => SelectedConv?.NonSpkrFFX != null,
                 "FaceFXSpkrM" => SelectedSpeaker?.FaceFX_Male != null,
                 "FaceFXSpkrF" => SelectedSpeaker?.FaceFX_Female != null,
@@ -3208,7 +3260,7 @@ namespace LegendaryExplorer.DialogueEditor
                 "SoundP_Bank" => SelectedConv?.WwiseBank != null,
                 "SoundP_StreamM" => SelectedDialogueNode?.WwiseStream_Male != null,
                 "SoundP_StreamF" => SelectedDialogueNode?.WwiseStream_Female != null,
-                "InterpEdLine" => SelectedDialogueNode?.Interpdata != null,
+                "InterpEdLine" => SelectedDialogueNode?.InterpData != null,
                 _ => true
             };
         }
@@ -3546,7 +3598,7 @@ namespace LegendaryExplorer.DialogueEditor
                     copytext = SelectedDialogueNode.Line;
                     break;
                 case "ItpDta":
-                    copytext = SelectedDialogueNode.Interpdata.UIndex.ToString();
+                    copytext = SelectedDialogueNode.InterpData.UIndex.ToString();
                     break;
             }
 

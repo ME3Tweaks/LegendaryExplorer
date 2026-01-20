@@ -122,6 +122,22 @@ namespace LegendaryExplorerCore.GameFilesystem
         }
 
         /// <summary>
+        /// Gets the path to the ASI install directory for the Launcher
+        /// </summary>
+        public static string LauncherASIPath => GetLauncherASIPath();
+        /// <summary>
+        /// Gets the path to the ASI install directory for the Launcher
+        /// </summary>
+        /// <param name="rootPathOverride">Optional: override game path root</param>
+        /// <returns>Path to ASI folder, null if no usable root path</returns>
+        public static string GetLauncherASIPath(string rootPathOverride = null)
+        {
+            if (rootPathOverride == null) rootPathOverride = LauncherPath;
+            if (rootPathOverride == null) return null; // There is no usable root path
+            return Path.Combine(GetExecutableDirectory(rootPathOverride), "ASI");
+        }
+
+        /// <summary>
         /// The filenames of any vanilla DLLs that are shipped in the Launcher folder
         /// </summary>
         public static readonly ReadOnlyCollection<string> VanillaLauncherDlls = Array.AsReadOnly(new[]

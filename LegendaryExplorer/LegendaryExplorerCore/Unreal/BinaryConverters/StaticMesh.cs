@@ -208,15 +208,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             if (LODModels.Length == 0)
                 return;
-            if (LODModels[0].Elements.Length != materials.Count)
-                return; // Invalid length
+            StaticMeshElement[] elements = LODModels[0].Elements;
 
-            for (int i = 0; i < materials.Count; i++)
+            for (int i = 0; i < elements.Length && i < materials.Count; i++)
             {
                 var mat = materials[i];
                 if (mat != null || !overlay)
                 {
-                    LODModels[0].Elements[i].Material = mat?.UIndex ?? 0;
+                    elements[i].Material = mat?.UIndex ?? 0;
                 }
             }
         }

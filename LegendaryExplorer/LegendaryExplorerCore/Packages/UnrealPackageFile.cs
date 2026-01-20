@@ -335,6 +335,10 @@ namespace LegendaryExplorerCore.Packages
             exportEntry.DataChanged = true;
             exportEntry.HeaderOffset = 1; //This will make it so when setting idxLink it knows the export has been attached to the tree, even though this doesn't do anything. Find by offset may be confused by this. Updates on save
             exportEntry.Index = exports.Count;
+            if (exportEntry.Parent is ExportEntry parent)
+            {
+                exportEntry.ExportFlags = parent.ExportFlags;
+            }
             exportEntry.PropertyChanged += exportChanged;
             exports.Add(exportEntry);
 
@@ -376,7 +380,15 @@ namespace LegendaryExplorerCore.Packages
                 return matchingEntry;
             }
 
-            // No matching entry.
+            var dotIndex = instancedPath.LastIndexOf('.');
+            var objName = dotIndex > 0 ? instancedPath.AsSpan(dotIndex + 1) : instancedPath.AsSpan();
+            foreach (IEntry entry in Exports.Concat<IEntry>(Imports))
+            {
+                if (entry.ObjectName.EqualsInstancedString(objName) && entry.InstancedFullPath.CaseInsensitiveEquals(instancedPath) && entry.ClassName.CaseInsensitiveEquals(className))
+                {
+                    return entry;
+                }
+            }
             return null;
         }
 

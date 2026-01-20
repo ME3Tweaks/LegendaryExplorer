@@ -15,8 +15,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
         {
             if (e.IsDefault) return;
             
-            // 05/02/2025 - Change to .IsTexture() to cover other types like TextureFlipbooks.
-            if (e.Export.IsTexture())
+            if (e.Export.IsTexture() || e.ClassName == "TextureCube" || e.ClassName == "TextureMovie")
             {
                 var objectNameInstanced = e.ObjectNameInstanced;
                 var textureUsage = new TextureUsage(e.FileKey, e.Export.UIndex, e.IsDlc, e.IsMod);

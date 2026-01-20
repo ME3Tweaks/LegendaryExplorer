@@ -9,7 +9,7 @@ using ThrowHelper = LegendaryExplorerCore.Gammtek.ThrowHelper;
 namespace LegendaryExplorerCore.Unreal.Collections;
 
 //C# version of Unreal's TSparseArray
-internal struct USparseArray<T> : IEnumerable<T>
+public struct USparseArray<T> : IEnumerable<T>
 {
     private struct ElementOrFreeListLink
     {
@@ -24,7 +24,7 @@ internal struct USparseArray<T> : IEnumerable<T>
 
     public USparseArray()
     {
-        Data = ValueList<ElementOrFreeListLink>.Empty;
+        Data = [];
         AllocationFlags = new ResizeableBitArray();
         FirstFreeIndex = -1;
         NumFreeIndices = 0;
@@ -200,6 +200,17 @@ internal struct USparseArray<T> : IEnumerable<T>
             Guard.IsTrue(IsAllocated(index));
             return ref GetData(index).Element;
         }
+    }
+
+    public bool TryGetAt(int index, out T val)
+    {
+        if ((uint)index < MaxIndex && IsAllocated(index))
+        {
+            val = GetData(index).Element;
+            return true;
+        }
+        val = default;
+        return false;
     }
 
     private ref ElementOrFreeListLink GetData(int index) => ref Data.GetReferenceUnsafe(index);

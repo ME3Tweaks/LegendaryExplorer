@@ -47,5 +47,11 @@ namespace LegendaryExplorerCore.Gammtek
                 ThrowArgumentOutOfRangeException(paramName);
             }
         }
+
+        [DoesNotReturn]
+        public static void ThrowException(string message)
+        {
+            throw new Exception(message);
+        }
     }
 }

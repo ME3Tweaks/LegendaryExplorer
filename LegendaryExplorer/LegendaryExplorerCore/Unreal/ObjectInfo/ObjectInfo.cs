@@ -171,6 +171,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
                     new KeyValuePair<NameReference, PropertyInfo>("LODDistanceRatio",
                         new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LODMaxRange", 
+                        new PropertyInfo(PropertyType.FloatProperty)),
                     new KeyValuePair<NameReference, PropertyInfo>("LightMapCoordinateIndex",
                         new PropertyInfo(PropertyType.IntProperty)),
                     new KeyValuePair<NameReference, PropertyInfo>("LightMapResolution",
@@ -290,6 +292,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     new KeyValuePair<NameReference, PropertyInfo>("BodySetup",
                         new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
                     new KeyValuePair<NameReference, PropertyInfo>("LODDistanceRatio",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LODMaxRange", 
                         new PropertyInfo(PropertyType.FloatProperty)),
                     new KeyValuePair<NameReference, PropertyInfo>("LightMapCoordinateIndex",
                         new PropertyInfo(PropertyType.IntProperty)),
@@ -641,6 +645,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     new KeyValuePair<NameReference, PropertyInfo>("BodySetup",
                         new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
                     new KeyValuePair<NameReference, PropertyInfo>("LODDistanceRatio",
+                        new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LODMaxRange", 
                         new PropertyInfo(PropertyType.FloatProperty)),
                     new KeyValuePair<NameReference, PropertyInfo>("LightMapCoordinateIndex",
                         new PropertyInfo(PropertyType.IntProperty)),
@@ -1354,6 +1360,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         new PropertyInfo(PropertyType.BoolProperty)),
                     new KeyValuePair<NameReference, PropertyInfo>("UseSimpleRigidBodyCollision",
                         new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LODMaxRange", 
+                        new PropertyInfo(PropertyType.FloatProperty)),
                 }
             };
             // Native properties
@@ -1421,6 +1429,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     new KeyValuePair<NameReference, PropertyInfo>("UseSimpleboxCollision", new PropertyInfo(PropertyType.BoolProperty)),
                     new KeyValuePair<NameReference, PropertyInfo>("UseSimpleLineCollision", new PropertyInfo(PropertyType.BoolProperty)),
                     new KeyValuePair<NameReference, PropertyInfo>("UseSimpleRigidBodyCollision", new PropertyInfo(PropertyType.BoolProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LODMaxRange", new PropertyInfo(PropertyType.FloatProperty)),
                 }
             };
         }
@@ -1892,6 +1901,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                         new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
                     new KeyValuePair<NameReference, PropertyInfo>("LODDistanceRatio",
                         new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LODMaxRange",
+                        new PropertyInfo(PropertyType.FloatProperty)),
                     new KeyValuePair<NameReference, PropertyInfo>("LightMapCoordinateIndex",
                         new PropertyInfo(PropertyType.IntProperty)),
                     new KeyValuePair<NameReference, PropertyInfo>("LightMapResolution",
@@ -1965,6 +1976,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     new KeyValuePair<NameReference, PropertyInfo>("UseFullPrecisionUVs", new PropertyInfo(PropertyType.BoolProperty)),
                     new KeyValuePair<NameReference, PropertyInfo>("BodySetup", new PropertyInfo(PropertyType.ObjectProperty, "RB_BodySetup")),
                     new KeyValuePair<NameReference, PropertyInfo>("LODDistanceRatio", new PropertyInfo(PropertyType.FloatProperty)),
+                    new KeyValuePair<NameReference, PropertyInfo>("LODMaxRange", new PropertyInfo(PropertyType.FloatProperty)),
                     new KeyValuePair<NameReference, PropertyInfo>("LightMapCoordinateIndex", new PropertyInfo(PropertyType.IntProperty)),
                     new KeyValuePair<NameReference, PropertyInfo>("LightMapResolution", new PropertyInfo(PropertyType.IntProperty)),
                 }

@@ -226,6 +226,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                     new VariableDeclaration(BoolType, default, "UseFullPrecisionUVs"),
                     //"BodySetup" added in the AddType function
                     new VariableDeclaration(FloatType, default, "LODDistanceRatio"),
+                    new VariableDeclaration(FloatType, default, "LODMaxRange"),
                     new VariableDeclaration(IntType, default, "LightMapCoordinateIndex"),
                     new VariableDeclaration(IntType, default, "LightMapResolution"),
                 }

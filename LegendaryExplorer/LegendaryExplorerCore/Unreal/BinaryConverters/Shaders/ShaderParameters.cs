@@ -209,7 +209,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters.Shaders
         public FShaderParameter WrapLightingParameters;
         public void Serialize(SerializingContainer sc)
         {
-            // MaterialShaderParameters
             sc.SerializeUnmanaged(ref CameraWorldPosition);
             sc.SerializeUnmanaged(ref ObjectWorldPositionAndRadius);
             sc.SerializeUnmanaged(ref ObjectOrientation);

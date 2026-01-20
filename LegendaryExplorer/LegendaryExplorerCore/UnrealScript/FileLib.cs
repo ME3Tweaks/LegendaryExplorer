@@ -290,6 +290,10 @@ namespace LegendaryExplorerCore.UnrealScript
                             associatedFiles.Add("IpDrv.pcc");
                             break;
                     }
+                    if (Pcc.Game.IsGame3() && EntryImporter.IsPostLoadFile(Pcc.FilePath, Pcc.Game))
+                    {
+                        associatedFiles.Add("BIO_COMMON.pcc");
+                    }
                     foreach (string fileName in Enumerable.Reverse(associatedFiles))
                     {
                         if (gameFiles.TryGetValue(fileName, out string path) && File.Exists(path))

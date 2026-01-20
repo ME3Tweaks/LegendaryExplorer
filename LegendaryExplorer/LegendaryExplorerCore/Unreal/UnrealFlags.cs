@@ -207,7 +207,7 @@ namespace LegendaryExplorerCore.Unreal
             RsxStorage = 0x0001000000000000U,        // Property can be moved into RSX memory on the PS3
             BioDynamicLoad = 0x0080000000000000U,   // Property will dynamic load object on demand
             LoadForCooking = 0x0100000000000000U,        // property is editoronly or notforconsole but needs to be loaded during cooking
-            BioNonShip = 0x0200000000000000U,        // Property doesn't serialize to or from disk
+            BioNonShip = 0x0200000000000000U,        // Property is ignored when deserializing (meant to not be written to file either, but it was not implemented property)
             BioIgnorePropertyAdd = 0x0400000000000000U,        // ??????
             SortBarrier = 0x0800000000000000U,        // Inserts a barrier between the marked property and the previous property to avoid sorting properties across. 
             ClearCrossLevel = 0x1000000000000000U,        // Property should call BioClearCrossLevelReferences

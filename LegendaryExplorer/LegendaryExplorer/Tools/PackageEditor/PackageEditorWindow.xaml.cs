@@ -46,7 +46,6 @@ using LegendaryExplorerCore.Audio;
 using LegendaryExplorer.Packages;
 using LegendaryExplorerCore.Localization;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using GongSolutions.Wpf.DragDrop;
 using LegendaryExplorer.Tools.AssetViewer;
 using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.Tools.ObjectReferenceViewer;
@@ -206,6 +205,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         public ICommand CheckForInvalidObjectPropertiesCommand { get; set; }
         public ICommand CheckForBrokenMaterialsCommand { get; set; }
         public ICommand CheckForScriptErrorsCommand { get; set; }
+        public ICommand CheckForInvalidPropertiesCommand { get; set; }
         public ICommand EditNameCommand { get; set; }
         public ICommand AddNameCommand { get; set; }
         public ICommand CopyNameCommand { get; set; }
@@ -279,6 +279,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             CheckForInvalidObjectPropertiesCommand = new GenericCommand(CheckForBadObjectPropertyReferences, PackageIsLoaded);
             CheckForBrokenMaterialsCommand = new GenericCommand(CheckForBrokenMaterials, IsLoadedPackageME);
             CheckForScriptErrorsCommand = new GenericCommand(CheckForScriptErrors, IsLoadedPackageME);
+            CheckForInvalidPropertiesCommand = new GenericCommand(CheckForInvalidProperties, IsLoadedPackageME);
             EditNameCommand = new GenericCommand(EditName, NameIsSelected);
             AddNameCommand = new RelayCommand(AddName, CanAddName);
             CopyNameCommand = new GenericCommand(CopyName, NameIsSelected);
@@ -662,6 +663,76 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 else
                 {
                     new ListDialog(prevTask.Result, "Script errors", "", this)
+                    {
+                        DoubleClickEntryHandler = entryDoubleClick
+                    }.Show();
+                }
+            });
+        }
+
+        private void CheckForInvalidProperties()
+        {
+            if (Pcc is null)
+            {
+                return;
+            }
+            BusyText = "Checking for Property errors...";
+            IsBusy = true;
+            Task.Run(() =>
+            {
+                var errors = new List<EntryStringPair>();
+
+                var fileLib = new FileLib(Pcc);
+                UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage() { Cache = new PackageCache() };
+                using var packageCache = new PackageCache();
+                if (fileLib.Initialize(usop))
+                {
+                    var exports = Pcc.Exports.Where(exp => !exp.IsScriptExport() && !exp.IsInDefaultsTree() && !exp.IsTrash()).ToList();
+                    int sixteens = 0;
+                    for (int i = 0; i < exports.Count; i++)
+                    {
+                        ExportEntry export = exports[i];
+                        int t = i / 16;
+                        if (t > sixteens)
+                        {
+                            sixteens = t;
+                            BusyText = $"{i}/{exports.Count}";
+                        }
+                        try
+                        {
+                            (var node, string text) = UnrealScriptCompiler.DecompileExport(export, fileLib, usop);
+                            if (node is null)
+                            {
+                                errors.Add(EntryStringPair.FormatMessage(export, ""));
+                                continue;
+                            }
+                            (node, var log) = UnrealScriptCompiler.CompileDefaultProperties(export, text, fileLib, usop, true);
+                            if (log.HasErrors || log.HasLexErrors)
+                            {
+                                errors.Add(EntryStringPair.FormatMessage(export, ""));
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            errors.Add(EntryStringPair.FormatMessage(export, ""));
+                        }
+                    }
+                }
+                else
+                {
+                    errors.Add(new EntryStringPair($"FileLib failed to initialize! Errors: \n{string.Join('\n', fileLib.InitializationLog.AllErrors)}"));
+                }
+                return errors;
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                IsBusy = false;
+                if (prevTask.Result.IsEmpty())
+                {
+                    MessageBox.Show(this, "No Property Errors found!");
+                }
+                else
+                {
+                    new ListDialog(prevTask.Result, "Property errors", "Check the Script Editor tab to see the exact error", this)
                     {
                         DoubleClickEntryHandler = entryDoubleClick
                     }.Show();
@@ -1082,7 +1153,9 @@ namespace LegendaryExplorer.Tools.PackageEditor
                             w.Show();
                         }
                         break;
-
+                    case "LevelEditor":
+                        new LevelEditor.LevelEditor(exp).Show();
+                        break;
                 }
             }
         }
@@ -1109,6 +1182,8 @@ namespace LegendaryExplorer.Tools.PackageEditor
                         return exp.ClassName == "InterpData";
                     case "WwiseEditor":
                         return exp.ClassName == "WwiseBank";
+                    case "LevelEditor":
+                        return exp.ClassName is "Level" or "World" || exp.IsA("Actor") || (exp.ClassName is "StaticMeshComponent" && exp.Parent?.ClassName is "StaticMeshCollectionActor");
                 }
             }
 

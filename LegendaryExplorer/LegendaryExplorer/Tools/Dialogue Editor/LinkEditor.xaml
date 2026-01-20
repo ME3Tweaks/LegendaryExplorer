@@ -6,7 +6,7 @@
         xmlns:fa="http://schemas.fontawesome.com/icons/"
         mc:Ignorable="d"
         Closing="LinkEd_Closing"
-        Title="Link Editor" Height="250" Width="900"
+        Title="Link Editor" Height="350" Width="1200"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <Window.Resources>
 
@@ -33,6 +33,17 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Top" Width="35">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.UpCommand}" CommandParameter="Top" Margin="2">
+                                <Button.Content>
+                                    <fa:ImageAwesome Icon="Solid_ArrowUp" Width="16" Height="16" Foreground="DarkBlue"/>
+                                </Button.Content>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="Up" Width="35">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -44,12 +55,23 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Down" Width="35">
+                <DataGridTemplateColumn Header="Down" Width="40">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.DownCommand}" CommandParameter="Down" Margin="2">
                                 <Button.Content>
                                     <fa:ImageAwesome Icon="Solid_AngleDown" Width="16" Height="16" Foreground="DarkBlue"/>
+                                </Button.Content>
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Bottom" Width="49">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.DownCommand}" CommandParameter="Bottom" Margin="2">
+                                <Button.Content>
+                                    <fa:ImageAwesome Icon="Solid_ArrowDown" Width="16" Height="16" Foreground="DarkBlue"/>
                                 </Button.Content>
                             </Button>
                         </DataTemplate>

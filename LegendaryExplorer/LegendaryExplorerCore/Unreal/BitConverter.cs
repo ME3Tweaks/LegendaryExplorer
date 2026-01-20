@@ -45,7 +45,9 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.GetBytes(value).Reverse().ToArray();
+                var bytes = System.BitConverter.GetBytes(value);
+                bytes.Reverse();
+                return bytes;
             }
         }
         ///
@@ -67,7 +69,9 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.GetBytes(value).Reverse().ToArray();
+                var bytes = System.BitConverter.GetBytes(value);
+                bytes.Reverse();
+                return bytes;
             }
         }
         ///
@@ -90,7 +94,9 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.GetBytes(value).Reverse().ToArray();
+                var bytes = System.BitConverter.GetBytes(value);
+                bytes.Reverse();
+                return bytes;
             }
         }
         ///
@@ -113,7 +119,9 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.GetBytes(value).Reverse().ToArray();
+                var bytes = System.BitConverter.GetBytes(value);
+                bytes.Reverse();
+                return bytes;
             }
         }
         ///
@@ -379,7 +387,10 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.ToDouble(value.Reverse().ToArray(), value.Length - sizeof(double) - startIndex);
+                Span<byte> bytes = stackalloc byte[sizeof(double)];
+                value.AsSpan(startIndex).CopyTo(bytes);
+                bytes.Reverse();
+                return System.BitConverter.ToDouble(bytes);
             }
         }
         ///
@@ -417,7 +428,10 @@ namespace LegendaryExplorerCore.Unreal
                 }
                 else
                 {
-                    return System.BitConverter.ToInt16(value.Reverse().ToArray(), value.Length - sizeof(short) - startIndex);
+                    Span<byte> bytes = stackalloc byte[sizeof(short)];
+                    value.AsSpan(startIndex).CopyTo(bytes);
+                    bytes.Reverse();
+                    return System.BitConverter.ToInt16(bytes);
                 }
             }
             else
@@ -459,7 +473,10 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.ToInt32(value.Reverse().ToArray(), value.Length - sizeof(int) - startIndex);
+                Span<byte> bytes = stackalloc byte[sizeof(int)];
+                value.AsSpan(startIndex).CopyTo(bytes);
+                bytes.Reverse();
+                return System.BitConverter.ToInt32(bytes);
             }
         }
         ///
@@ -498,7 +515,10 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.ToInt64(value.Reverse().ToArray(), value.Length - sizeof(long) - startIndex);
+                Span<byte> bytes = stackalloc byte[sizeof(long)];
+                value.AsSpan(startIndex).CopyTo(bytes);
+                bytes.Reverse();
+                return System.BitConverter.ToInt64(bytes);
             }
         }
         ///
@@ -536,7 +556,10 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.ToSingle(value.Reverse().ToArray(), value.Length - sizeof(float) - startIndex);
+                Span<byte> bytes = stackalloc byte[sizeof(float)];
+                value.AsSpan(startIndex).CopyTo(bytes);
+                bytes.Reverse();
+                return System.BitConverter.ToSingle(bytes);
             }
         }
         ///
@@ -564,7 +587,10 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.ToString(value.Reverse().ToArray());
+                var bytes = new byte[value.Length];
+                value.CopyTo(bytes.AsSpan());
+                bytes.Reverse();
+                return System.BitConverter.ToString(bytes);
             }
         }
         ///
@@ -599,7 +625,10 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.ToString(value.Reverse().ToArray(), startIndex);
+                var bytes = new byte[value.Length - startIndex];
+                value.AsSpan(startIndex).CopyTo(bytes);
+                bytes.Reverse();
+                return System.BitConverter.ToString(bytes);
             }
         }
         ///
@@ -643,7 +672,10 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.ToString(value.Reverse().ToArray(), startIndex, length);
+                var bytes = new byte[length];
+                value.AsSpan(startIndex).CopyTo(bytes);
+                bytes.Reverse();
+                return System.BitConverter.ToString(bytes);
             }
         }
         ///
@@ -679,7 +711,10 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.ToUInt16(value.Reverse().ToArray(), value.Length - sizeof(ushort) - startIndex);
+                var bytes = new byte[sizeof(ushort)];
+                value.CopyTo(bytes.AsSpan());
+                bytes.Reverse();
+                return System.BitConverter.ToUInt16(bytes, value.Length - sizeof(ushort) - startIndex);
             }
         }
         ///
@@ -716,7 +751,10 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.ToUInt32(value.Reverse().ToArray(), value.Length - sizeof(uint) - startIndex);
+                var bytes = new byte[sizeof(uint)];
+                value.CopyTo(bytes.AsSpan());
+                bytes.Reverse();
+                return System.BitConverter.ToUInt32(bytes, value.Length - sizeof(uint) - startIndex);
             }
         }
         ///
@@ -753,7 +791,10 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                return System.BitConverter.ToUInt64(value.Reverse().ToArray(), value.Length - sizeof(ulong) - startIndex);
+                Span<byte> bytes = stackalloc byte[sizeof(ulong)];
+                value.AsSpan(startIndex).CopyTo(bytes);
+                bytes.Reverse();
+                return System.BitConverter.ToUInt64(bytes);
             }
         }
     }

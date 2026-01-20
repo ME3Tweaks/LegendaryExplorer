@@ -12,8 +12,11 @@
     <MenuItem Header=" &gt;&gt; THIS STUFF CAN BREAK GAMES/TOOLSET FUNCTIONALITY &lt;&lt;" IsEnabled="False"/>
     <MenuItem Header=" &gt;&gt; DO NOT USE IF YOU DON'T KNOW WHAT YOU'RE DOING &gt;&lt;" IsEnabled="False"/>
     <MenuItem Header=" &gt;&gt; Text may not reflect actual functionality &lt;&lt;" IsEnabled="False"/>
+    <MenuItem Header="Mgamerz's small experiments menu">
+        <MenuItem Header="Add speaker to all dialogues with shared FXAs" Click="AddSharedFXASpeakerToAll_Click"/>
+    </MenuItem>
     <MenuItem Header="Exkywor's buttons for lazy people">
-        <MenuItem Header="Change Audio Node StringRef" Click="UpdateAudioNodeStrRef_Click" ToolTip="Updates an audio node's VOElements, FXA, and Wwisestream StrRefs."/>
+            <MenuItem Header="Change Audio Node StringRef" Click="UpdateAudioNodeStrRef_Click" ToolTip="Updates an audio node's VOElements, FXA, and Wwisestream StrRefs."/>
         <MenuItem Header="Clone Node and Sequence" Click="CloneNodeAndSequence_Click" ToolTip="Clones a dialogue node along with its linked sequence, and give it a unique ID."/>
         <MenuItem Header="Link Nodes to Free ExportIDs" Click="LinkNodesFree_Click" ToolTip="Links all audio nodes in the conversation without an ExportID to the free ConvNodes in the sequence."/>
         <MenuItem Header="Link Nodes to ExportIDs by String Reference" Click="LinkNodesStrRef_Click" ToolTip="Links all audio nodes in the conversation without an ExportID to the free ConvNodes that have a matching StringRef in the sequence."/>

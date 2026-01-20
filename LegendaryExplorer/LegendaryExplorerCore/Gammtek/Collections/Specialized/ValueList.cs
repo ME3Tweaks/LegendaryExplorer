@@ -20,7 +20,7 @@ namespace LegendaryExplorerCore.Gammtek.Collections.Specialized;
 internal struct ValueList<T> : IEnumerable<T>
 {
     /// <summary>Gets an empty list.</summary>
-    public static ValueList<T> Empty => new();
+    public static ValueList<T> Empty => [];
 
     private T[] _items;
     private int _count;
@@ -28,7 +28,7 @@ internal struct ValueList<T> : IEnumerable<T>
     /// <summary>Initializes a new instance of the <see cref="ValueList{T}" /> struct.</summary>
     public ValueList()
     {
-        _items = Array.Empty<T>();
+        _items = [];
         _count = 0;
     }
 
@@ -176,7 +176,7 @@ internal struct ValueList<T> : IEnumerable<T>
     ///     <para>This method is unsafe because other operations may invalidate the backing array.</para>
     ///     <para>This method is unsafe because it gives access to uninitialized memory in the backing array when <see cref="Count" /> is less than <see cref="Capacity" />.</para>
     /// </remarks>
-    public Span<T> AsSpanUnsafe() => new Span<T>(_items);
+    public readonly Span<T> AsSpanUnsafe() => new Span<T>(_items);
 
     /// <summary>Converts the backing array for the list to a span starting at the specified index and continuing for the specified number of items.</summary>
     /// <param name="start">The index of the first item to include in the span.</param>
@@ -186,7 +186,7 @@ internal struct ValueList<T> : IEnumerable<T>
     ///     <para>This method is unsafe because other operations may invalidate the backing array.</para>
     ///     <para>This method is unsafe because it can give access to uninitialized memory in the backing array when <see cref="Count" /> is less than <see cref="Capacity" />.</para>
     /// </remarks>
-    public Span<T> AsSpanUnsafe(int start, int length) => new Span<T>(_items, start, length);
+    public readonly Span<T> AsSpanUnsafe(int start, int length) => new Span<T>(_items, start, length);
 
     /// <summary>Removes all items from the list.</summary>
     public void Clear()

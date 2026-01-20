@@ -247,13 +247,13 @@ namespace LegendaryExplorer.GameInterop
                 switch (game)
                 {
                     case MEGame.LE1:
-                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE1_LEX_INTEROP, 8);
+                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE1_LEX_INTEROP, LE1InteropTarget.InteropASIVersion);
                         break;
                     case MEGame.LE2:
-                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE2_LEX_INTEROP, 8);
+                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE2_LEX_INTEROP, LE2InteropTarget.InteropASIVersion);
                         break;
                     case MEGame.LE3:
-                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE3_LEX_INTEROP, 8);
+                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE3_LEX_INTEROP, LE3InteropTarget.InteropASIVersion);
                         break;
                 }
             }

@@ -1,5 +1,4 @@
-﻿//#define FPS_OVERLAY
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Input;
@@ -17,10 +16,8 @@ using SharpDX.Direct3D11;
 using SharpDX.Direct3D;
 using SharpDX.Mathematics.Interop;
 using Texture2D = SharpDX.Direct3D11.Texture2D;
-#if FPS_OVERLAY
 using D2D = SharpDX.Direct2D1;
 using DW = SharpDX.DirectWrite;
-#endif
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D;
 
@@ -61,11 +58,11 @@ public class MeshRenderContext : RenderContext
     public Texture2D DepthBuffer { get; private set; } // also called Depth-Stencil, but we don't use stencil at the moment.
     public DepthStencilView DepthBufferView { get; private set; }
 
-#if FPS_OVERLAY
     private D2D.RenderTarget renderTarget2D;
-    private DW.TextFormat textFormat;
-    private D2D.SolidColorBrush defaultForegroundBrush;
-#endif
+    private DW.TextFormat statsTextFormat;
+    private DW.TextFormat errorTextFormat;
+    private D2D.SolidColorBrush statsTextBrush;
+    private D2D.SolidColorBrush errorTextBrush;
     #endregion
     public GenericEffect<WorldConstants, WorldVertex> DefaultEffect { get; private set; }
     public LEEffect LEEffect { get; private set; }
@@ -105,6 +102,9 @@ public class MeshRenderContext : RenderContext
     public uint NumFrames { get; private set; }
 
     private float FPS;
+    private float lastFPSTime;
+    private float lastFPSFrame;
+    public string ErrorText;
 
     public event EventHandler<float> UpdateScene;
     public event EventHandler RenderScene;
@@ -122,7 +122,15 @@ public class MeshRenderContext : RenderContext
     public override void Update(float timestep)
     {
         Time += timestep;
-        FPS = 1f / timestep;
+        float fpsDelta = Time - lastFPSTime;
+        if (fpsDelta >= 1f)
+        {
+            float frameDelta = NumFrames - lastFPSFrame;
+            lastFPSTime = Time;
+            lastFPSFrame = NumFrames;
+
+            FPS = MathF.Round(frameDelta / fpsDelta);
+        }
 
         if (Camera.FirstPerson)
         {
@@ -156,18 +164,37 @@ public class MeshRenderContext : RenderContext
             ImmediateContext.ClearDepthStencilView(DepthBufferView, DepthStencilClearFlags.Depth, 1.0f, 0);
             ImmediateContext.ClearRenderTargetView(BackbufferView, new RawColor4(BackgroundColor.R / 255.0f, BackgroundColor.G / 255.0f, BackgroundColor.B / 255.0f, BackgroundColor.A / 255.0f));
 
-            // Do whatever event handlers want
-            RenderScene?.Invoke(null, EventArgs.Empty);
-
-#if FPS_OVERLAY
-            //render D2D overlay
-            renderTarget2D.BeginDraw();
+            if (ErrorText is not null)
             {
-                var size = renderTarget2D.Size;
-                renderTarget2D.DrawText($"{FPS} fps", textFormat, new RawRectangleF(0, 0, size.Width, size.Height), defaultForegroundBrush);
+                renderTarget2D.BeginDraw();
+                {
+                    var size = renderTarget2D.Size;
+                    renderTarget2D.DrawText($"{ErrorText}", errorTextFormat, new RawRectangleF(0, 0, size.Width, size.Height), errorTextBrush);
+                }
+                renderTarget2D.EndDraw();
             }
-            renderTarget2D.EndDraw();
-#endif
+            else
+            {
+                try
+                {
+                    RenderScene?.Invoke(null, EventArgs.Empty);
+                }
+                catch (Exception e)
+                {
+                    ErrorText = e.FlattenException();
+                }
+            }
+
+            if (App.IsDebug)
+            {
+                //render D2D overlay
+                renderTarget2D.BeginDraw();
+                {
+                    var size = renderTarget2D.Size;
+                    renderTarget2D.DrawText($"{FPS} fps", statsTextFormat, new RawRectangleF(0, 0, size.Width, size.Height), statsTextBrush);
+                }
+                renderTarget2D.EndDraw();
+            }
         }
 
         base.Render();
@@ -260,28 +287,33 @@ public class MeshRenderContext : RenderContext
         Camera.aspect = (float)Width / Height;
 
 
-#if FPS_OVERLAY
         using var factory = new D2D.Factory(D2D.FactoryType.SingleThreaded, App.IsDebug ? D2D.DebugLevel.Information : D2D.DebugLevel.None);
         renderTarget2D = new D2D.RenderTarget(factory, newBackBuffer.QueryInterface<Surface>(), new D2D.RenderTargetProperties(new D2D.PixelFormat(Format.Unknown, D2D.AlphaMode.Premultiplied)));
-        defaultForegroundBrush = new D2D.SolidColorBrush(renderTarget2D, new RawColor4(0, 0, 0, 1), new D2D.BrushProperties { Opacity = 1 });
+        statsTextBrush = new D2D.SolidColorBrush(renderTarget2D, new RawColor4(0, 0, 0, 1), new D2D.BrushProperties { Opacity = 1 });
+        errorTextBrush = new D2D.SolidColorBrush(renderTarget2D, new RawColor4(0.2f, 0, 0, 1), new D2D.BrushProperties { Opacity = 1 });
         using var dwFactory = new DW.Factory(DW.FactoryType.Shared);
-        textFormat = new DW.TextFormat(dwFactory, "Verdana", 12);
-        textFormat.TextAlignment = DW.TextAlignment.Trailing;
-        textFormat.ParagraphAlignment = DW.ParagraphAlignment.Near;
-#endif
+        statsTextFormat = new DW.TextFormat(dwFactory, "Verdana", 12)
+        {
+            TextAlignment = DW.TextAlignment.Trailing,
+            ParagraphAlignment = DW.ParagraphAlignment.Near
+        };
+        errorTextFormat = new DW.TextFormat(dwFactory, "Verdana", 18)
+        {
+            TextAlignment = DW.TextAlignment.Leading,
+            ParagraphAlignment = DW.ParagraphAlignment.Center
+        };
     }
 
     public override void DisposeSizeDependentResources()
     {
-        ImmediateContext.OutputMerger.SetRenderTargets((RenderTargetView)null);
-        BackbufferView.Dispose();
-        DepthBufferView.Dispose();
-        DepthBuffer.Dispose();
-#if FPS_OVERLAY
-        renderTarget2D.Dispose();
-        textFormat.Dispose();
-        defaultForegroundBrush.Dispose();
-#endif
+        ImmediateContext?.OutputMerger?.SetRenderTargets((RenderTargetView)null);
+        BackbufferView?.Dispose();
+        DepthBufferView?.Dispose();
+        DepthBuffer?.Dispose();
+        statsTextFormat?.Dispose();
+        errorTextFormat?.Dispose();
+        statsTextBrush?.Dispose();
+        errorTextBrush?.Dispose();
         base.DisposeSizeDependentResources();
     }
 

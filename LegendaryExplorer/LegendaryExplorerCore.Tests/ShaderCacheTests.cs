@@ -27,10 +27,8 @@ namespace LegendaryExplorerCore.Tests
                 using var input = new MemoryStream(File.ReadAllBytes(shaderCacheFile));
                 var inCache = GlobalShaderCache.ReadGlobalShaderCache(input, game);
                 var outS = new MemoryStream();
-                var container = new PackagelessSerializingContainer(outS, null)
-                {
-                    Game = game
-                };
+                var container = new PackagelessSerializingContainer(outS, null);
+                container.SetGame(game);
                 inCache.WriteTo(container);
 #if DEBUG
                 if (outS.Length != input.Length)
@@ -53,10 +51,8 @@ namespace LegendaryExplorerCore.Tests
             {
                 Debug.WriteLine($"PackagelessShaderCache Serialization Test: {shaderCacheFile}");
                 using var input = new MemoryStream(File.ReadAllBytes(shaderCacheFile));
-                var container = new PackagelessSerializingContainer(input, null, true)
-                {
-                    Game = MEGame.LE3
-                };
+                var container = new PackagelessSerializingContainer(input, null, true);
+                container.SetGame(MEGame.LE3);
 
                 ShaderCache cache = new ShaderCache() { Packageless = true };
                 // If it crashes and dies here, then deserialization probably failed.

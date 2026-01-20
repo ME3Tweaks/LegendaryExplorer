@@ -1055,7 +1055,7 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
-        public static void CondenseArchetypes(this ExportEntry export, bool removeArchetypeLink = true)
+        public static PropertyCollection GetCondensedProperties(this ExportEntry export)
         {
             IEntry archetypeEntry = export.Archetype;
             var properties = export.GetProperties();
@@ -1064,17 +1064,33 @@ namespace LegendaryExplorerCore.Packages
                 var archProps = archetype.GetProperties();
                 foreach (Property prop in archProps)
                 {
-                    if (!properties.ContainsNamedProp(prop.Name))
+                    if (!properties.ContainsNamedProp(prop.Name, prop.StaticArrayIndex))
                     {
-                        properties.AddOrReplaceProp(prop);
+                        properties.Add(prop);
                     }
                 }
 
                 archetypeEntry = archetype.Archetype;
             }
-            export.WriteProperties(properties);
+            return properties;
+        }
 
-            export.Archetype = removeArchetypeLink ? null : archetypeEntry;
+        public static void CondenseArchetypes(this ExportEntry export, bool removeArchetypeLink = true)
+        {
+            export.WriteProperties(GetCondensedProperties(export));
+            if (removeArchetypeLink)
+            {
+                export.Archetype = null;
+            }
+            else
+            {
+                IEntry archetypeEntry = export.Archetype;
+                while (archetypeEntry is ExportEntry archetype)
+                {
+                    archetypeEntry = archetype.Archetype;
+                }
+                export.Archetype = archetypeEntry;
+            }
         }
 
         public static T GetBinaryData<T>(this ExportEntry export) where T : ObjectBinary, new() => ObjectBinary.From<T>(export);

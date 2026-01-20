@@ -106,9 +106,9 @@ namespace LegendaryExplorerCore.Unreal
         /// </summary>
         /// <param name="name">Name of property to find. If an empty name is passed in, any property without a name will cause this to return true.</param>
         /// <returns>True if property is found, false if list is empty or not found</returns>
-        public bool ContainsNamedProp(NameReference name)
+        public bool ContainsNamedProp(NameReference name, int staticArrayIndex = 0)
         {
-            return Count > 0 && this.Any(x => x.Name == name);
+            return Count > 0 && this.Any(x => x.Name == name && x.StaticArrayIndex == staticArrayIndex);
         }
 
         /// <summary>

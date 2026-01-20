@@ -52,7 +52,7 @@ namespace LegendaryExplorer.Tests.Tools.AssetDatabase
             Assert.IsTrue(boolSpec.MatchesSpecification(match));
             Assert.IsFalse(boolSpec.MatchesSpecification(noMatch));
             Assert.IsFalse(boolSpec.MatchesSpecification(noProp));
-            Assert.ThrowsException<NullReferenceException>(() => { boolSpec.MatchesSpecification(null); });
+            Assert.Throws<NullReferenceException>(() => { boolSpec.MatchesSpecification(null); });
         }
 
         [TestMethod]
@@ -68,7 +68,7 @@ namespace LegendaryExplorer.Tests.Tools.AssetDatabase
             Assert.IsFalse(boolSpec.MatchesSpecification(match));
             Assert.IsTrue(boolSpec.MatchesSpecification(noMatch));
             Assert.IsTrue(boolSpec.MatchesSpecification(noProp));
-            Assert.ThrowsException<NullReferenceException>(() => { boolSpec.MatchesSpecification(null); });
+            Assert.Throws<NullReferenceException>(() => { boolSpec.MatchesSpecification(null); });
         }
 
         [TestMethod]

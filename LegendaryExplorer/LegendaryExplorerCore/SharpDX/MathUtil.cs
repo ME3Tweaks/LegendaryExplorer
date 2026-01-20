@@ -43,6 +43,7 @@
 * THE SOFTWARE.
 */
 
+using CommunityToolkit.Diagnostics;
 using System;
 
 namespace LegendaryExplorerCore.SharpDX
@@ -187,7 +188,7 @@ namespace LegendaryExplorerCore.SharpDX
         /// </summary>
         /// <param name="degree">The value to convert.</param>
         /// <returns>The converted value.</returns>
-        public static float DegreesToRadians(float degree)
+        public static float DegreesToRadians(this float degree)
         {
             return degree * (Pi / 180.0f);
         }
@@ -203,51 +204,11 @@ namespace LegendaryExplorerCore.SharpDX
         }
 
         /// <summary>
-        /// Converts radians to gradians.
-        /// </summary>
-        /// <param name="radian">The value to convert.</param>
-        /// <returns>The converted value.</returns>
-        public static float RadiansToGradians(float radian)
-        {
-            return radian * (200.0f / Pi);
-        }
-
-        /// <summary>
-        /// Converts gradians to revolutions.
-        /// </summary>
-        /// <param name="gradian">The value to convert.</param>
-        /// <returns>The converted value.</returns>
-        public static float GradiansToRevolutions(float gradian)
-        {
-            return gradian / 400.0f;
-        }
-
-        /// <summary>
-        /// Converts gradians to degrees.
-        /// </summary>
-        /// <param name="gradian">The value to convert.</param>
-        /// <returns>The converted value.</returns>
-        public static float GradiansToDegrees(float gradian)
-        {
-            return gradian * (9.0f / 10.0f);
-        }
-
-        /// <summary>
-        /// Converts gradians to radians.
-        /// </summary>
-        /// <param name="gradian">The value to convert.</param>
-        /// <returns>The converted value.</returns>
-        public static float GradiansToRadians(float gradian)
-        {
-            return gradian * (Pi / 200.0f);
-        }
-
-        /// <summary>
         /// Converts radians to degrees.
         /// </summary>
         /// <param name="radian">The value to convert.</param>
         /// <returns>The converted value.</returns>
-        public static float RadiansToDegrees(float radian)
+        public static float RadiansToDegrees(this float radian)
         {
             return radian * (180.0f / Pi);
         }
@@ -259,7 +220,7 @@ namespace LegendaryExplorerCore.SharpDX
         /// <param name="min">The min.</param>
         /// <param name="max">The max.</param>
         /// <returns>The result of clamping a value between min and max</returns>
-        public static float Clamp(float value, float min, float max)
+        public static float Clamp(this float value, float min, float max)
         {
             return value < min ? min : value > max ? max : value;
         }
@@ -271,7 +232,7 @@ namespace LegendaryExplorerCore.SharpDX
         /// <param name="min">The min.</param>
         /// <param name="max">The max.</param>
         /// <returns>The result of clamping a value between min and max</returns>
-        public static int Clamp(int value, int min, int max)
+        public static int Clamp(this int value, int min, int max)
         {
             return value < min ? min : value > max ? max : value;
         }
@@ -408,19 +369,18 @@ namespace LegendaryExplorerCore.SharpDX
         /// <param name="max">The max.</param>
         /// <returns>Result of the wrapping.</returns>
         /// <exception cref="ArgumentException">Is thrown when <paramref name="min"/> is greater than <paramref name="max"/>.</exception>
-        public static float Wrap(float value, float min, float max)
+        public static float Wrap(this float value, float min, float max)
         {
             if (NearEqual(min, max)) return min;
 
-            double mind = min;
-            double maxd = max;
-            double valued = value;
 
-            if (mind > maxd)
-                throw new ArgumentException(string.Format("min {0} should be less than or equal to max {1}", min, max), "min");
+            if (min > max)
+            {
+                ThrowHelper.ThrowArgumentException($"min {min} should be less than or equal to max {max}");
+            }
 
-            var range_size = maxd - mind;
-            return (float)(mind + (valued - mind) - range_size * Math.Floor((valued - mind) / range_size));
+            var range_size = max - min;
+            return min + (value - min) - range_size * MathF.Floor((value - min) / range_size);
         }
 
         /// <summary>

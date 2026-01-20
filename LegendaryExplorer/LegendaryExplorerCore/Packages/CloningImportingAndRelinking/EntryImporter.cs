@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using LegendaryExplorerCore.GameFilesystem;
+﻿using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
@@ -14,6 +8,12 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
@@ -202,8 +202,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList(), rop.GamePathOverride);
             }
 
-            if (!allowedToPortShaders)
-            {   
+            if (!rop.ForceAllowMaterialPorting && !allowedToPortShaders)
+            {
                 rop.ErrorOccurredCallback?.Invoke($"You cannot port Materials from {sourcePcc.Game} into {destPcc.Game}");
             }
 
@@ -431,7 +431,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                             }
 
                             // If IFP is the same but class changed the lookup earlier failed. We should retry here (used at least in Crossgen)
-                            if (destPackage.FindExport(seIFP, testExp.ClassName) is {} existingExport)
+                            if (destPackage.FindExport(seIFP, testExp.ClassName) is { } existingExport)
                             {
                                 // Export already in destination package
                                 return existingExport;
@@ -546,10 +546,32 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             byte[] prePropBinary;
             if (sourceExport.HasStack)
             {
-                var dummy = GetStackDummy(destPackage.Game);
-                prePropBinary = new byte[8 + dummy.Length];
-                sourceExport.DataReadOnly[..8].CopyTo(prePropBinary);
-                dummy.CopyTo(prePropBinary.AsSpan(8));
+                if (sourceExport.Game == destPackage.Game)
+                {
+                    // Same game - preserve latent action and net index so
+                    // comparisons are better and latent action is preserved
+                    // (whatever that does...)
+                    StateFrame oStack = StateFrame.FromExport(sourceExport);
+                    var newStack = oStack.ToBytes(destPackage);
+                    prePropBinary = new byte[newStack.Length + 4];
+                    newStack.CopyTo(prePropBinary);
+
+                    // Create a span representing the target slice of the byte array
+                    Span<byte> destination = prePropBinary.AsSpan().Slice(newStack.Length, 4);
+
+                    // Write the integer to that span. This handles platform endianness automatically.
+                    MemoryMarshal.Write(destination, sourceExport.NetIndex);
+                }
+                else
+                {
+                    // Use the old code when porting across games since latent
+                    // actinos may or may not be the same.
+                    var dummy = GetStackDummy(destPackage.Game);
+                    prePropBinary = new byte[8 + dummy.Length];
+                    sourceExport.DataReadOnly[..8].CopyTo(prePropBinary);
+                    dummy.CopyTo(prePropBinary.AsSpan(8));
+
+                }
             }
             else
             {
@@ -862,10 +884,19 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public static bool ReplaceExportDataWithAnother(ExportEntry incomingExport, ExportEntry targetExport, RelinkerOptionsPackage rop)
         {
             using var res = new EndianReader(MemoryManager.GetMemoryStream()) { Endian = targetExport.FileRef.Endian };
+
+            // Write Pre-Properties binary =======================================================
             if (incomingExport.HasStack)
             {
-                res.Writer.Write(incomingExport.DataReadOnly.Slice(0, 8));
-                res.Writer.WriteFromBuffer(GetStackDummy(targetExport.Game));
+                // Seems like this doesn't work, maybe stack has already been written
+                // or is overwritten somewhere.
+                // 12/30/2025 - Use StateFrame to copy stack over
+                var stateFrame = StateFrame.FromExport(incomingExport);
+                var stateFrameBytes = stateFrame.ToBytes(targetExport.FileRef);
+                res.Writer.Write(stateFrameBytes);
+                res.Writer.Write(incomingExport.NetIndex); // Write NetIndex
+                // res.Writer.Write(incomingExport.DataReadOnly.Slice(0, 8));
+                // res.Writer.WriteFromBuffer(GetStackDummy(targetExport.Game));
             }
             else
             {
@@ -879,10 +910,13 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             List<string> names = [.. targetExport.FileRef.Names];
             try
             {
+                // Write Properties ============================================================================
                 PropertyCollection props = incomingExport.GetProperties();
                 ApplyCrossGamePropertyFixes(incomingExport, targetExport.FileRef, props);
                 ObjectBinary binary = ExportBinaryConverter.ConvertPostPropBinary(incomingExport, targetExport.Game, props);
                 props.WriteTo(res.Writer, targetExport.FileRef);
+
+                // Write Binary ================================================================================
                 // 11/12/2024 - Set file offset to start of binary data so it can accurately serialize offsets for class types that depend on it being proper (ShaderCache) - Mgamerz
                 res.Writer.WriteFromBuffer(binary.ToBytes(targetExport.FileRef, fileOffset: targetExport.DataOffset + (int)res.Writer.BaseStream.Length));
             }
@@ -1692,7 +1726,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // 01/14/2024 - Support looking in package by name if our source package doesn't indicate needing it already loaded
             else if ((package.Flags & UnrealFlags.EPackageFlags.RequireImportsAlreadyLoaded) == 0)
             {
-                filesToCheck.Add($"{entry.GetRootName()}{Path.GetExtension(package.FilePath)}" );
+                filesToCheck.Add($"{entry.GetRootName()}{Path.GetExtension(package.FilePath)}");
             }
 
             //add base definition files that are always loaded (Core, Engine, etc.)
@@ -2245,7 +2279,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             // Move any children to the new import
             var children = export.FileRef.Exports.Where(x => x.idxLink == export.UIndex).OfType<IEntry>().Concat(export.FileRef.Imports.Where(x => x.idxLink == export.UIndex)).ToList();
-            foreach(var child in children)
+            foreach (var child in children)
             {
                 child.idxLink = convertedItem.UIndex;
             }

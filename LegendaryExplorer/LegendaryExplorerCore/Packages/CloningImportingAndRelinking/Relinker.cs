@@ -170,6 +170,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// Method for overriding dependencies being imported by <see cref="EntryExporter.ExportExportToPackage"/>
         /// </summary>
         public CustomImportDependencyDelegate CustomImportDependency { get; set; }
+
+        /// <summary>
+        /// Set to true to ignore the game check when porting materials between games. Only use if you know what you're doing.
+        /// </summary>
+        public bool ForceAllowMaterialPorting { get; set; }
     }
 
     public static class Relinker

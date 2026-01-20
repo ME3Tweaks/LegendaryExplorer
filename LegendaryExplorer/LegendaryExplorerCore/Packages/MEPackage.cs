@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Numerics;
-using System.Threading.Tasks;
-using LegendaryExplorerCore.Compression;
+﻿using LegendaryExplorerCore.Compression;
 using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
@@ -15,6 +7,15 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 #if AZURE
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -24,7 +25,7 @@ namespace LegendaryExplorerCore.Packages
 {
     [DebuggerDisplay("MEPackage {FilePath} | {Game}")]
 
-    public sealed class MEPackage : UnrealPackageFile, IMEPackage, IDisposable
+    public sealed class MEPackage : UnrealPackageFile, IMEPackage, ILazyLoadPackage, IDisposable
     {
         /// <summary>
         /// MEM writes this to every single package file it modifies
@@ -155,7 +156,16 @@ namespace LegendaryExplorerCore.Packages
             return (f, g) => new MEPackage(g, f);
         }
 
-        public static Func<Stream, string, bool, Func<ExportEntry, bool>, MEPackage> RegisterStreamLoader()
+        public struct PackageLoadParameters
+        {
+            public Stream Stream;
+            public string AssociatedFilePath;
+            public bool OnlyHeader;
+            public Func<ExportEntry, bool> DataLoadPredicate;
+            public bool LazyLoad;
+        }
+
+        public static Func<PackageLoadParameters, MEPackage> RegisterStreamLoader()
         {
             if (_isStreamLoaderRegistered)
             {
@@ -163,7 +173,7 @@ namespace LegendaryExplorerCore.Packages
             }
 
             _isStreamLoaderRegistered = true;
-            return (s, associatedFilePath, onlyheader, dataLoadPredicate) => new MEPackage(s, associatedFilePath, onlyheader, dataLoadPredicate);
+            return (PackageLoadParameters parmeters) => new MEPackage(parmeters);
         }
 
         /// <summary>
@@ -202,15 +212,113 @@ namespace LegendaryExplorerCore.Packages
         }
 
         /// <summary>
+        /// Parses out game information given an endian, unreal version, and licensee version. Throws an exception if it doesn't match any values.
+        /// </summary>
+        /// <param name="endian"></param>
+        /// <param name="unrealVersion"></param>
+        /// <param name="licenseeVersion"></param>
+        /// <param name="platformOverride"></param>
+        /// <param name="Game"></param>
+        /// <param name="Platform"></param>
+        /// <param name="platformNeedsResolved"></param>
+        /// <exception cref="FormatException"></exception>
+        public static void GetGameFromHeader(Endian endian, uint unrealVersion, uint licenseeVersion, GamePlatform platformOverride, out MEGame Game, out GamePlatform Platform, out bool platformNeedsResolved)
+        {
+            platformNeedsResolved = false;
+
+            switch (unrealVersion)
+            {
+                case ME1UnrealVersion when licenseeVersion == ME1LicenseeVersion:
+                    Game = MEGame.ME1;
+                    Platform = GamePlatform.PC;
+                    return;
+                case ME1XboxUnrealVersion when licenseeVersion == ME1XboxLicenseeVersion:
+                    Game = MEGame.ME1;
+                    Platform = GamePlatform.Xenon;
+                    return;
+                case ME1PS3UnrealVersion when licenseeVersion == ME1PS3LicenseeVersion:
+                    Game = MEGame.ME1;
+                    Platform = GamePlatform.PS3;
+                    return;
+                case ME2UnrealVersion when licenseeVersion == ME2LicenseeVersion && endian == Endian.Little:
+                case ME2DemoUnrealVersion when licenseeVersion == ME2LicenseeVersion:
+                    Game = MEGame.ME2;
+                    Platform = GamePlatform.PC;
+                    return;
+                case ME2UnrealVersion when licenseeVersion == ME2LicenseeVersion && endian == Endian.Big:
+                    Game = MEGame.ME2;
+                    Platform = GamePlatform.Xenon;
+                    return;
+                case ME2PS3UnrealVersion when licenseeVersion == ME2PS3LicenseeVersion:
+                    Game = MEGame.ME2;
+                    Platform = GamePlatform.PS3;
+                    return;
+                case ME3WiiUUnrealVersion when licenseeVersion == ME3LicenseeVersion:
+                    Game = MEGame.ME3;
+                    Platform = GamePlatform.WiiU;
+                    return;
+                case ME3UnrealVersion when licenseeVersion == ME3LicenseeVersion:
+                    Game = MEGame.ME3;
+                    if (endian == Endian.Little)
+                    {
+                        Platform = GamePlatform.PC;
+                    }
+                    else
+                    {
+                        // If the package is not compressed or fully compressed we cannot determine if this is PS3 or Xenon.
+                        // PS3 and Xbox use same engine versions on the ME3 game (ME1/2 use same one but has slight differences for some reason)
+
+                        // Code above determines platform if it's fully compressed, and code below determines platform based on compression type
+                        // However if neither exist we don't have an easy way to differentiate files (such as files from SFAR)
+
+                        // We attempt to resolve the platfrom later using SeekFreeShaderCache which is present
+                        // in every single console file (vs PC's DLC only).
+                        // Not 100% sure it's in every file. But hopefully it is.
+                        if (platformOverride == GamePlatform.Unknown)
+                        {
+                            //Debug.WriteLine("Cannot differentiate PS3 vs Xenon ME3 files. Assuming PS3, this may be wrong assumption!");
+                            platformNeedsResolved = true;
+                            Platform = GamePlatform.PS3; //This is placeholder as Xenon and PS3 use same header format
+                        }
+                        else
+                        {
+                            Platform = platformOverride; // Used for fully compressed packages
+                        }
+                    }
+                    return;
+                case ME3UnrealVersion when licenseeVersion == ME3Xenon2011DemoLicenseeVersion:
+                    Game = MEGame.ME3;
+                    Platform = GamePlatform.Xenon;
+                    return;
+                case LE1UnrealVersion when licenseeVersion == LE1LicenseeVersion:
+                    Game = MEGame.LE1;
+                    Platform = GamePlatform.PC;
+                    return;
+                case LE2UnrealVersion when licenseeVersion == LE2LicenseeVersion:
+                    Game = MEGame.LE2;
+                    Platform = GamePlatform.PC;
+                    return;
+                case LE3UnrealVersion when licenseeVersion == LE3LicenseeVersion:
+                    Game = MEGame.LE3;
+                    Platform = GamePlatform.PC;
+                    return;
+                default:
+                    throw new FormatException("Not a Mass Effect Package!");
+            }
+        }
+
+        /// <summary>
         /// Opens an ME package from the stream. If this file is from a disk, the filePath should be set to support saving and other lookups.
         /// </summary>
         /// <param name="fs"></param>
         /// <param name="filePath"></param>
         /// <param name="onlyHeader">Only read header data. Do not load the tables or decompress</param>
         /// <param name="dataLoadPredicate">If provided, export data will only be read for exports that match the predicate</param>
-        private MEPackage(Stream fs, string filePath = null, bool onlyHeader = false, Func<ExportEntry, bool> dataLoadPredicate = null) : base(filePath != null ? File.Exists(filePath) ? Path.GetFullPath(filePath) : filePath : null)
+        private MEPackage(PackageLoadParameters parameters) 
+            : base(parameters.AssociatedFilePath != null ? File.Exists(parameters.AssociatedFilePath) ? Path.GetFullPath(parameters.AssociatedFilePath) : parameters.AssociatedFilePath : null)
         {
-            //MemoryStream fs = new MemoryStream(File.ReadAllBytes(filePath));
+            Stream fs = parameters.Stream;
+            string filePath = parameters.AssociatedFilePath;
             //Debug.WriteLine($"Reading MEPackage from stream starting at position 0x{fs.Position:X8}");
             #region Header
 
@@ -257,86 +365,10 @@ namespace LegendaryExplorerCore.Packages
 
             var unrealVersion = (ushort)(versionLicenseePacked & 0xFFFF);
             var licenseeVersion = (ushort)(versionLicenseePacked >> 16);
-            bool platformNeedsResolved = false;
-            switch (unrealVersion)
-            {
-                case ME1UnrealVersion when licenseeVersion == ME1LicenseeVersion:
-                    Game = MEGame.ME1;
-                    Platform = GamePlatform.PC;
-                    break;
-                case ME1XboxUnrealVersion when licenseeVersion == ME1XboxLicenseeVersion:
-                    Game = MEGame.ME1;
-                    Platform = GamePlatform.Xenon;
-                    break;
-                case ME1PS3UnrealVersion when licenseeVersion == ME1PS3LicenseeVersion:
-                    Game = MEGame.ME1;
-                    Platform = GamePlatform.PS3;
-                    break;
-                case ME2UnrealVersion when licenseeVersion == ME2LicenseeVersion && Endian == Endian.Little:
-                case ME2DemoUnrealVersion when licenseeVersion == ME2LicenseeVersion:
-                    Game = MEGame.ME2;
-                    Platform = GamePlatform.PC;
-                    break;
-                case ME2UnrealVersion when licenseeVersion == ME2LicenseeVersion && Endian == Endian.Big:
-                    Game = MEGame.ME2;
-                    Platform = GamePlatform.Xenon;
-                    break;
-                case ME2PS3UnrealVersion when licenseeVersion == ME2PS3LicenseeVersion:
-                    Game = MEGame.ME2;
-                    Platform = GamePlatform.PS3;
-                    break;
-                case ME3WiiUUnrealVersion when licenseeVersion == ME3LicenseeVersion:
-                    Game = MEGame.ME3;
-                    Platform = GamePlatform.WiiU;
-                    break;
-                case ME3UnrealVersion when licenseeVersion == ME3LicenseeVersion:
-                    Game = MEGame.ME3;
-                    if (Endian == Endian.Little)
-                    {
-                        Platform = GamePlatform.PC;
-                    }
-                    else
-                    {
-                        // If the package is not compressed or fully compressed we cannot determine if this is PS3 or Xenon.
-                        // PS3 and Xbox use same engine versions on the ME3 game (ME1/2 use same one but has slight differences for some reason)
 
-                        // Code above determines platform if it's fully compressed, and code below determines platform based on compression type
-                        // However if neither exist we don't have an easy way to differentiate files (such as files from SFAR)
-
-                        // We attempt to resolve the platfrom later using SeekFreeShaderCache which is present
-                        // in every single console file (vs PC's DLC only).
-                        // Not 100% sure it's in every file. But hopefully it is.
-                        if (platformOverride == GamePlatform.Unknown)
-                        {
-                            //Debug.WriteLine("Cannot differentiate PS3 vs Xenon ME3 files. Assuming PS3, this may be wrong assumption!");
-                            platformNeedsResolved = true;
-                            Platform = GamePlatform.PS3; //This is placeholder as Xenon and PS3 use same header format
-                        }
-                        else
-                        {
-                            Platform = platformOverride; // Used for fully compressed packages
-                        }
-                    }
-                    break;
-                case ME3UnrealVersion when licenseeVersion == ME3Xenon2011DemoLicenseeVersion:
-                    Game = MEGame.ME3;
-                    Platform = GamePlatform.Xenon;
-                    break;
-                case LE1UnrealVersion when licenseeVersion == LE1LicenseeVersion:
-                    Game = MEGame.LE1;
-                    Platform = GamePlatform.PC;
-                    break;
-                case LE2UnrealVersion when licenseeVersion == LE2LicenseeVersion:
-                    Game = MEGame.LE2;
-                    Platform = GamePlatform.PC;
-                    break;
-                case LE3UnrealVersion when licenseeVersion == LE3LicenseeVersion:
-                    Game = MEGame.LE3;
-                    Platform = GamePlatform.PC;
-                    break;
-                default:
-                    throw new FormatException("Not a Mass Effect Package!");
-            }
+            MEPackage.GetGameFromHeader(Endian, unrealVersion, licenseeVersion, platformOverride, out var detectedGame, out var detectedPlatform, out var platformNeedsResolved);
+            Game = detectedGame;
+            Platform = detectedPlatform;
 
             if (Game.IsLEGame() && filePath != null && Path.GetExtension(filePath) == ".xxx")
             {
@@ -462,7 +494,7 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
 
-            if (onlyHeader) return; // That's all we need to parse. 
+            if (parameters.OnlyHeader) return; // That's all we need to parse. 
             #endregion
 
             #region Decompression of package data
@@ -574,16 +606,23 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
 
-            foreach (ExportEntry export in dataLoadPredicate is null ? exports : exports.Where(dataLoadPredicate))
+            if (parameters.LazyLoad)
             {
-                inStream.JumpTo(export.DataOffset);
-                var data = new byte[export.DataSize];
-                int bytesRead = inStream.Read(data.AsSpan());
-                if (bytesRead != data.Length)
+                decompressionStream = inStream;
+            }
+            else
+            {
+                foreach (ExportEntry export in parameters.DataLoadPredicate is null ? exports : exports.Where(parameters.DataLoadPredicate))
                 {
-                    throw new EndOfStreamException("Attempted to read export data past the end of the stream!");
+                    inStream.JumpTo(export.DataOffset);
+                    var data = new byte[export.DataSize];
+                    int bytesRead = inStream.Read(data.AsSpan());
+                    if (bytesRead != data.Length)
+                    {
+                        throw new EndOfStreamException("Attempted to read export data past the end of the stream!");
+                    }
+                    export.Data = data;
                 }
-                export.Data = data;
             }
 
             if (Game.IsLEGame())
@@ -637,9 +676,10 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
 
-            if (wasOriginallyCompressed)
+            if (wasOriginallyCompressed && !parameters.LazyLoad)
             {
                 // Do not dispose if the package was compressed as it will close the input stream
+                // Also do not dispose on lazy load as we need the underlying stream to be available.
                 packageReader.Dispose();
             }
 
@@ -1493,6 +1533,53 @@ namespace LegendaryExplorerCore.Packages
         internal void setPlatform(GamePlatform newPlatform)
         {
             Platform = newPlatform;
+        }
+
+        //is only set when lazy loading
+        private readonly Stream decompressionStream;
+
+        ExportEntry ILazyLoadPackage.LoadExport(ExportEntry export, bool loadParents)
+        {
+            // If the export is already loaded do not load it again
+            if (!export.IsDataLoaded())
+            {
+                if (decompressionStream is null)
+                {
+                    throw new InvalidOperationException("Cannot lazy load export data: Decompression stream is null");
+                }
+                decompressionStream.JumpTo(export.DataOffset);
+                var data = new byte[export.DataSize];
+                int bytesRead = decompressionStream.Read(data.AsSpan());
+                if (bytesRead != data.Length)
+                {
+                    throw new EndOfStreamException("Attempted to read export data past the end of the stream!");
+                }
+                export.Data = data;
+            }
+
+            if (loadParents && export.Parent is ExportEntry exp)
+            {
+                (this as ILazyLoadPackage).LoadExport(exp, true);
+            }
+
+            return export;
+        }
+
+        void ILazyLoadPackage.UnloadExport(ExportEntry export, bool unloadParents)
+        {
+            if (decompressionStream is null)
+            {
+                throw new InvalidOperationException("Cannot unload export data: Not a lazy-loaded package");
+            }
+            DataRef(export) = null;
+
+            [UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_data")]
+            extern static ref byte[] DataRef(ExportEntry export);
+
+            if (unloadParents && export.Parent is ExportEntry exp)
+            {
+                (this as ILazyLoadPackage).UnloadExport(exp, true);
+            }
         }
     }
 }

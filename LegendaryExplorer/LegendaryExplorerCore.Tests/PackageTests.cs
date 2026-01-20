@@ -100,7 +100,7 @@ namespace LegendaryExplorerCore.Tests
                     var originalLoadedPackage = MEPackageHandler.OpenMEPackage(p, forceLoadFromDisk: true);
                     if (originalLoadedPackage.Platform != MEPackage.GamePlatform.PC)
                     {
-                        Assert.ThrowsException<Exception>(() => { originalLoadedPackage.SaveToStream(true); },
+                        Assert.Throws<Exception>(() => { originalLoadedPackage.SaveToStream(true); },
                             "Non-PC platform package should not be saveable. An exception should have been thrown to stop this!");
                         continue;
                     }
@@ -490,7 +490,7 @@ namespace LegendaryExplorerCore.Tests
                 }
                 else
                 {
-                    Assert.ThrowsException<NullReferenceException>(() =>
+                    Assert.Throws<NullReferenceException>(() =>
                     {
                         byte[] _ = export.Data;
                     });
