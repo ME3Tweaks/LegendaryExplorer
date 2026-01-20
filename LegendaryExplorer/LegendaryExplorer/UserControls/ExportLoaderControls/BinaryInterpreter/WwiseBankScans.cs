@@ -479,13 +479,21 @@ public class WwiseBankScans
                 }
                 else root.Items.Add(MakeByteEnumNode<RanSeqInner>(bin, "RandSeqFlags"));
                 root.Items.Add(MakeArrayNode(bin, "Children", i => MakeWwiseIdRefNode(bin, $"Child {i}")));
-                root.Items.Add(MakeArrayNodeInt16Count(bin, "Playlist", i =>
+                var playlistArrayFunc = (int i) =>
                 {
                     var n = new BinInterpNode(bin.Position, $"Item {i}");
                     n.Items.Add(MakeWwiseIdRefNode(bin, "PlaylistItemId"));
                     n.Items.Add(version <= 56 ? MakeByteNode(bin, "Weight") : MakeInt32Node(bin, "Weight"));
                     return n;
-                }));
+                };
+                if (version <= 38)
+                {
+                    root.Items.Add(MakeArrayNode(bin, "Playlist", playlistArrayFunc));
+                }
+                else
+                {
+                    root.Items.Add(MakeArrayNodeInt16Count(bin, "Playlist", playlistArrayFunc));
+                }
                 break;
             case HircType.SwitchContainer:
                 Scan_HIRC_NodeBaseParams(root, bin, version, useFeedback);
@@ -1190,8 +1198,7 @@ public class WwiseBankScans
             for (var i = 0; i < stateCount; i++)
             {
                 var state = new BinInterpNode(bin.Position, $"{i}");
-                state.Items.Add(MakeWwiseIdNode(bin, "State"));
-                if (version <= 120) state.Items.Add(MakeWwiseIdRefNode(bin, "StateId"));
+                state.Items.Add(MakeWwiseIdNode(bin, "StateId"));
                 if (version <= 52) state.Items.Add(MakeBoolByteNode(bin, "IsCustom"));
                 if (version <= 145) state.Items.Add(MakeWwiseIdRefNode(bin, "StateInstanceId"));
 
@@ -1221,7 +1228,7 @@ public class WwiseBankScans
             if (version <= 48)
             {
                 rtpc.Items.Add(MakeWwiseIdRefNode(bin, "PluginId"));
-                rtpc.Items.Add(MakeBoolByteNode(bin, "IsRendered"));
+                rtpc.Items.Add(MakeByteNode(bin, "IsRendered"));
             }
             rtpc.Items.Add(MakeWwiseIdRefNode(bin, "RTPCId"));
 
