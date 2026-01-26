@@ -1,5 +1,9 @@
 var NAVTREEINDEX79 =
 {
+"namespace_legendary_explorer_core_1_1_unreal.html#ae657888f1469a6d4433ae11060ebfc4a":[0,5,1,25,86],
+"namespace_legendary_explorer_core_1_1_unreal.html#ae6f9817b1be1d4083186de4914e1b446":[0,5,1,25,690],
+"namespace_legendary_explorer_core_1_1_unreal.html#ae702e93ab5e798046c2bca9a1160356b":[0,5,1,25,715],
+"namespace_legendary_explorer_core_1_1_unreal.html#ae7de83e3ad5bf5ead2733db193f326a0":[0,5,1,25,182],
 "namespace_legendary_explorer_core_1_1_unreal.html#ae89e115e75d9ebdbfc1c6ebe11bda099":[0,5,1,25,181],
 "namespace_legendary_explorer_core_1_1_unreal.html#ae8a68139ffe9a1c37ce1fa81db8c1f2a":[0,5,1,25,630],
 "namespace_legendary_explorer_core_1_1_unreal.html#ae9d81005f248aae7da7bb2f746292414":[0,5,1,25,423],
@@ -118,8 +122,8 @@ var NAVTREEINDEX79 =
 "namespacemembers_c.html":[0,6,0,2],
 "namespacemembers_d.html":[0,6,0,3],
 "namespacemembers_e.html":[0,6,0,4],
-"namespacemembers_enum.html":[0,6,2,0],
 "namespacemembers_enum.html":[0,6,2],
+"namespacemembers_enum.html":[0,6,2,0],
 "namespacemembers_enum_b.html":[0,6,2,1],
 "namespacemembers_enum_c.html":[0,6,2,2],
 "namespacemembers_enum_d.html":[0,6,2,3],
@@ -245,9 +249,5 @@ var NAVTREEINDEX79 =
 "struct_f_spherical_harmonic_light_policy_1_1_pixel_parameters_type.html#a78b4d13d8abde7e8d126bc32406dce34":[1,0,112,0,1],
 "struct_f_spot_light_policy_1_1_mod_shadow_pixel_params_type.html":[1,0,114,0],
 "struct_f_spot_light_policy_1_1_mod_shadow_pixel_params_type.html#a11ac2909b4f8377ca02a2cb293b34617":[1,0,114,0,3],
-"struct_f_spot_light_policy_1_1_mod_shadow_pixel_params_type.html#a2bb1ebf3f3b7542db28e733e1796d83f":[1,0,114,0,2],
-"struct_f_spot_light_policy_1_1_mod_shadow_pixel_params_type.html#a2c597b21215e89c7b8888fb4833aedae":[1,0,114,0,4],
-"struct_f_spot_light_policy_1_1_mod_shadow_pixel_params_type.html#a8e4e7b3eff3a1719274a417c44b57d98":[1,0,114,0,1],
-"struct_f_spot_light_policy_1_1_mod_shadow_pixel_params_type.html#a9f3b81c485d829a609c1a179303b2f78":[1,0,114,0,0],
-"struct_f_spot_light_policy_1_1_pixel_parameters_type.html":[1,0,114,1]
+"struct_f_spot_light_policy_1_1_mod_shadow_pixel_params_type.html#a2bb1ebf3f3b7542db28e733e1796d83f":[1,0,114,0,2]
 };

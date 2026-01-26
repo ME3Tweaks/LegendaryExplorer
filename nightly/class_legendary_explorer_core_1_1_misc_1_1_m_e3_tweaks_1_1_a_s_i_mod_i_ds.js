@@ -1,5 +1,7 @@
 var class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds =
 [
+    [ "IsASIInstalled", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#acc34e6907d2410f6127cc413f2fa10d5", null ],
+    [ "GetInstalledASIModIds", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3734b78abc745151987f4fbbd53fccb5", null ],
     [ "ME1_DLC_MOD_ENABLER", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a61ba884b9b11a81e697bb98610071012", null ],
     [ "ME3_BALANCE_CHANGES_REPLACER", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ad0504f675db7ce09bc7d00db5ba7863d", null ],
     [ "ME3_AUTOTOC", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a1611d17c562302b9f6cf8e9c321152c1", null ],

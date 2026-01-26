@@ -94,6 +94,7 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_misc
 
 <div class="header">
   <div class="summary">
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs Class Reference</div></div>
@@ -103,6 +104,15 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_misc
 <p>Contains (some, not all) ASI Update Group IDs that can be used to request install of an ASI. Makes code easier to read.   
  <a href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#details">More...</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:acc34e6907d2410f6127cc413f2fa10d5"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#acc34e6907d2410f6127cc413f2fa10d5">IsASIInstalled</a> (int asiModId, string binaryPath)</td></tr>
+<tr class="memdesc:acc34e6907d2410f6127cc413f2fa10d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns if the given ASI is installed in the given game directory. This only detects ASIs built after 01/25/2026 that embed their ASI Mod ID in the binary metadata.   <a href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#acc34e6907d2410f6127cc413f2fa10d5">More...</a><br /></td></tr>
+<tr class="separator:acc34e6907d2410f6127cc413f2fa10d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3734b78abc745151987f4fbbd53fccb5"><td class="memItemLeft" align="right" valign="top">static IEnumerable&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3734b78abc745151987f4fbbd53fccb5">GetInstalledASIModIds</a> (string binaryPath)</td></tr>
+<tr class="memdesc:a3734b78abc745151987f4fbbd53fccb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a list of installed ASI update groups (mod ids)   <a href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3734b78abc745151987f4fbbd53fccb5">More...</a><br /></td></tr>
+<tr class="separator:a3734b78abc745151987f4fbbd53fccb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a61ba884b9b11a81e697bb98610071012"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a61ba884b9b11a81e697bb98610071012">ME1_DLC_MOD_ENABLER</a> = 16</td></tr>
@@ -150,7 +160,89 @@ Static Public Attributes</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Contains (some, not all) ASI Update Group IDs that can be used to request install of an ASI. Makes code easier to read.  </p>
-</div><h2 class="groupheader">Member Data Documentation</h2>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="acc34e6907d2410f6127cc413f2fa10d5" name="acc34e6907d2410f6127cc413f2fa10d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc34e6907d2410f6127cc413f2fa10d5">&#9670;&#160;</a></span>IsASIInstalled()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.IsASIInstalled </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>asiModId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>binaryPath</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns if the given ASI is installed in the given game directory. This only detects ASIs built after 01/25/2026 that embed their ASI Mod ID in the binary metadata.  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">asiModId</td><td>ID to find</td></tr>
+    <tr><td class="paramname">binaryPath</td><td>Path to the game binary</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<a id="a3734b78abc745151987f4fbbd53fccb5" name="a3734b78abc745151987f4fbbd53fccb5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3734b78abc745151987f4fbbd53fccb5">&#9670;&#160;</a></span>GetInstalledASIModIds()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static IEnumerable&lt; int &gt; LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.GetInstalledASIModIds </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>binaryPath</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets a list of installed ASI update groups (mod ids)  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">binaryPath</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
 <a id="a61ba884b9b11a81e697bb98610071012" name="a61ba884b9b11a81e697bb98610071012"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a61ba884b9b11a81e697bb98610071012">&#9670;&#160;</a></span>ME1_DLC_MOD_ENABLER</h2>
 
