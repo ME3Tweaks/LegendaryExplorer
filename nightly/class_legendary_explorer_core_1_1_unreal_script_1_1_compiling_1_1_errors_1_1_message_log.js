@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log =
 [
+    [ "SortLog", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html#aa9a1da03b4eb29547a4a90db815ab095", null ],
     [ "LogMessage", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html#ab7ea48867e2d164b1ccf335e0363c62d", null ],
     [ "LogMessage", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html#aa2a234835c1a056c455bf8fbee9289ed", null ],
     [ "LogError", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html#a72ff4b103089824999077e410c3a27b4", null ],

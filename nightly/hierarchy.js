@@ -407,6 +407,7 @@ var hierarchy =
           [ "LegendaryExplorerCore.UnrealScript.Language.Tree.DelegateType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_delegate_type.html", null ],
           [ "LegendaryExplorerCore.UnrealScript.Language.Tree.DynamicArrayType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_dynamic_array_type.html", null ],
           [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Enumeration", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_enumeration.html", null ],
+          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ErrorType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_error_type.html", null ],
           [ "LegendaryExplorerCore.UnrealScript.Language.Tree.ObjectType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_object_type.html", [
             [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Class", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_class.html", null ],
             [ "LegendaryExplorerCore.UnrealScript.Language.Tree.Struct", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_struct.html", null ]

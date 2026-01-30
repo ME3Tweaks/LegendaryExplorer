@@ -29,6 +29,7 @@ var dir_ae6fee5e9224c7717ab2b41089d86ad6 =
     [ "Enumeration.cs", "_enumeration_8cs.html", "_enumeration_8cs" ],
     [ "EnumValue.cs", "_enum_value_8cs.html", "_enum_value_8cs" ],
     [ "ErrorProductions.cs", "_error_productions_8cs.html", "_error_productions_8cs" ],
+    [ "ErrorType.cs", "_error_type_8cs.html", "_error_type_8cs" ],
     [ "Expression.cs", "_expression_8cs.html", "_expression_8cs" ],
     [ "ExpressionOnlyStatement.cs", "_expression_only_statement_8cs.html", "_expression_only_statement_8cs" ],
     [ "FloatLiteral.cs", "_float_literal_8cs.html", "_float_literal_8cs" ],
