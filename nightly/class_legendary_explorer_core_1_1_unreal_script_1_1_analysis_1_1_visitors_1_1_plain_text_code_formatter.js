@@ -1,8 +1,8 @@
 var class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_code_formatter =
 [
     [ "GetOutput", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_code_formatter.html#a72529eaa03300b9e26b5b2f1a6bd41e1", null ],
-    [ "AppendToNewLine", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_code_formatter.html#a873f8804bcff102d2865424962e1c191", null ],
-    [ "Append", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_code_formatter.html#a31ab7274bbdde93a54b3a83b56bf7b68", null ],
+    [ "AppendToNewLine", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_code_formatter.html#aea22ebb1accaea073faac61f202c8fdb", null ],
+    [ "Append", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_code_formatter.html#a449021cb3e25696fa29a4b0e1aed2bcf", null ],
     [ "Space", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_code_formatter.html#af46ba566c466c1dfefbdd464f295e114", null ],
     [ "ForceAlignment", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_code_formatter.html#a216e58d0aa52c098c4b73cfed594fcf3", null ],
     [ "Lines", "class_legendary_explorer_core_1_1_unreal_script_1_1_analysis_1_1_visitors_1_1_plain_text_code_formatter.html#a0de11ed8ff6b351c140d7cf2995d9c97", null ],
