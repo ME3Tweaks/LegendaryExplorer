@@ -106,23 +106,70 @@ $(document).ready(function(){initNavTree('class_legendary_explorer_core_1_1_misc
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:acc34e6907d2410f6127cc413f2fa10d5"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#acc34e6907d2410f6127cc413f2fa10d5">IsASIInstalled</a> (int asiModId, string binaryPath)</td></tr>
-<tr class="memdesc:acc34e6907d2410f6127cc413f2fa10d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns if the given ASI is installed in the given game directory. This only detects ASIs built after 01/25/2026 that embed their ASI Mod ID in the binary metadata.   <a href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#acc34e6907d2410f6127cc413f2fa10d5">More...</a><br /></td></tr>
-<tr class="separator:acc34e6907d2410f6127cc413f2fa10d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3734b78abc745151987f4fbbd53fccb5"><td class="memItemLeft" align="right" valign="top">static IEnumerable&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3734b78abc745151987f4fbbd53fccb5">GetInstalledASIModIds</a> (string binaryPath)</td></tr>
-<tr class="memdesc:a3734b78abc745151987f4fbbd53fccb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a list of installed ASI update groups (mod ids)   <a href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3734b78abc745151987f4fbbd53fccb5">More...</a><br /></td></tr>
-<tr class="separator:a3734b78abc745151987f4fbbd53fccb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24beb1db6b6f4c0e9d90889e6eb007cb"><td class="memItemLeft" align="right" valign="top">static IEnumerable&lt;(int id, int version)&gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a24beb1db6b6f4c0e9d90889e6eb007cb">GetInstalledASIModIds</a> (string win64Path)</td></tr>
+<tr class="memdesc:a24beb1db6b6f4c0e9d90889e6eb007cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a list of installed ASI update groups (mod ids) and their versions. only works on ASIs built after 01/26/2026   <a href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a24beb1db6b6f4c0e9d90889e6eb007cb">More...</a><br /></td></tr>
+<tr class="separator:a24beb1db6b6f4c0e9d90889e6eb007cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a61ba884b9b11a81e697bb98610071012"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a61ba884b9b11a81e697bb98610071012">ME1_DLC_MOD_ENABLER</a> = 16</td></tr>
 <tr class="separator:a61ba884b9b11a81e697bb98610071012"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab242a07e359be139be27469b0bccf8ce"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ab242a07e359be139be27469b0bccf8ce">ME2_KISMET_LOGGER</a> = 14</td></tr>
+<tr class="separator:ab242a07e359be139be27469b0bccf8ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38563dd61b68d36dafbe2ead241c134c"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a38563dd61b68d36dafbe2ead241c134c">ME2_FUNCTION_LOGGER</a> = 15</td></tr>
+<tr class="separator:a38563dd61b68d36dafbe2ead241c134c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0bbd3f9f63bdfbb3bbf0ac662369bc0"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ae0bbd3f9f63bdfbb3bbf0ac662369bc0">ME2_ACE_SLAMMER</a> = 18</td></tr>
+<tr class="separator:ae0bbd3f9f63bdfbb3bbf0ac662369bc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00541e71a9ae99e06d645c5b6deb5be4"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a00541e71a9ae99e06d645c5b6deb5be4">ME2_SPLASH_ENABLER</a> = 20</td></tr>
+<tr class="separator:a00541e71a9ae99e06d645c5b6deb5be4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a147f3a70134bb272715bc1c5b84455e8"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a147f3a70134bb272715bc1c5b84455e8">ME2_KASUMI_DLC_CRASH_FIX</a> = 23</td></tr>
+<tr class="separator:a147f3a70134bb272715bc1c5b84455e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3a253da1cb64a7f17c249086e51e545"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#af3a253da1cb64a7f17c249086e51e545">ME2_STREAMING_LEVELS_HUD</a> = 25</td></tr>
+<tr class="separator:af3a253da1cb64a7f17c249086e51e545"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a15cf4a83fcac739d8fa0cee1ab2e5ef4"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a15cf4a83fcac739d8fa0cee1ab2e5ef4">ME2_DEATH_COUNTER_LS</a> = 26</td></tr>
+<tr class="separator:a15cf4a83fcac739d8fa0cee1ab2e5ef4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad172696889cb79814165e24b0650712"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#aad172696889cb79814165e24b0650712">ME2_SEQACT_LOG_ENABLER</a> = 27</td></tr>
+<tr class="separator:aad172696889cb79814165e24b0650712"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6683b514028a4998f770786852079eb4"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a6683b514028a4998f770786852079eb4">ME2_COMBOLUTION_SUPPORT</a> = 28</td></tr>
+<tr class="separator:a6683b514028a4998f770786852079eb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad0504f675db7ce09bc7d00db5ba7863d"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ad0504f675db7ce09bc7d00db5ba7863d">ME3_BALANCE_CHANGES_REPLACER</a> = 5</td></tr>
 <tr class="separator:ad0504f675db7ce09bc7d00db5ba7863d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1611d17c562302b9f6cf8e9c321152c1"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a1611d17c562302b9f6cf8e9c321152c1">ME3_AUTOTOC</a> = 9</td></tr>
 <tr class="separator:a1611d17c562302b9f6cf8e9c321152c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81e8946e7f6cb4ea43c0c6216ca30842"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a81e8946e7f6cb4ea43c0c6216ca30842">ME3_LOGGER</a> = 8</td></tr>
-<tr class="separator:a81e8946e7f6cb4ea43c0c6216ca30842"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd88825aa57ff7d56e78cce1f2254e2c"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#afd88825aa57ff7d56e78cce1f2254e2c">ME3_ORIGIN_MP_STATUS</a> = 1</td></tr>
+<tr class="separator:afd88825aa57ff7d56e78cce1f2254e2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b365e49629869801485e6e1c38ab150"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3b365e49629869801485e6e1c38ab150">ME3_CLIENT_MESSAGE_EXPOSER</a> = 2</td></tr>
+<tr class="separator:a3b365e49629869801485e6e1c38ab150"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92d4bf0c75481507431f72998c663637"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a92d4bf0c75481507431f72998c663637">ME3_ORIGIN_UNLINKER</a> = 4</td></tr>
+<tr class="separator:a92d4bf0c75481507431f72998c663637"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa9fb8ce012d73d87534e42d51e5745a4"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#aa9fb8ce012d73d87534e42d51e5745a4">ME3_MOUSE_DISABLER</a> = 0</td></tr>
+<tr class="separator:aa9fb8ce012d73d87534e42d51e5745a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abded72da60657bd44a4689fe97652146"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#abded72da60657bd44a4689fe97652146">ME3_LIVE_TLK_REPLACER</a> = 6</td></tr>
+<tr class="separator:abded72da60657bd44a4689fe97652146"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a257bc0a4a88e34ee80f85992c53e321e"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a257bc0a4a88e34ee80f85992c53e321e">ME3_ALLOW_MULTIPLE_INSTANCES</a> = 7</td></tr>
+<tr class="separator:a257bc0a4a88e34ee80f85992c53e321e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaae4525c0bb00c5cce12cf9356dfddb0"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#aaae4525c0bb00c5cce12cf9356dfddb0">ME3_LOGGER_TRUNCATING</a> = 8</td></tr>
+<tr class="separator:aaae4525c0bb00c5cce12cf9356dfddb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6d4c88c7d4ac9cce6e841bcbd5e5822d"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a6d4c88c7d4ac9cce6e841bcbd5e5822d">ME3_KISMET_LOGGER</a> = 10</td></tr>
+<tr class="separator:a6d4c88c7d4ac9cce6e841bcbd5e5822d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac88e049fcd6024de4aaefdca686a10b1"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ac88e049fcd6024de4aaefdca686a10b1">ME3_RETALIATION_GLITCH_CRASH_FIX</a> = 11</td></tr>
+<tr class="separator:ac88e049fcd6024de4aaefdca686a10b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada6af845f811969f13f83b580e4c10de"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ada6af845f811969f13f83b580e4c10de">ME3_100_PERCENT_GALACTIC_READINESS</a> = 12</td></tr>
+<tr class="separator:ada6af845f811969f13f83b580e4c10de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0332d6ab32285a997c466d9508bb8ec"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ab0332d6ab32285a997c466d9508bb8ec">ME3_POC_COOP_MOVING_SPAWN_POINTS</a> = 13</td></tr>
+<tr class="separator:ab0332d6ab32285a997c466d9508bb8ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a840b429b998475869557e841cabe4c79"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a840b429b998475869557e841cabe4c79">ME3_DOCUMENTS_FOLDER_REDIRECTOR</a> = 17</td></tr>
+<tr class="separator:a840b429b998475869557e841cabe4c79"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae3e5d21616eeb738f9842deb4bac895"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#aae3e5d21616eeb738f9842deb4bac895">ME3_SEQACT_LOG_ENABLER</a> = 19</td></tr>
+<tr class="separator:aae3e5d21616eeb738f9842deb4bac895"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac86a7ab69440b5d148195c38f7621b6a"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ac86a7ab69440b5d148195c38f7621b6a">ME3_GARBAGE_COLLECTION_FORCER</a> = 22</td></tr>
+<tr class="separator:ac86a7ab69440b5d148195c38f7621b6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc30233b59165d0282e6348138b563e4"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#abc30233b59165d0282e6348138b563e4">ME3_SPLASH_ENABLER</a> = 21</td></tr>
+<tr class="separator:abc30233b59165d0282e6348138b563e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8fb9eec3966d658802f505e16c1c9a8"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ad8fb9eec3966d658802f505e16c1c9a8">ME3_STREAMING_LEVELS_HUD</a> = 24</td></tr>
+<tr class="separator:ad8fb9eec3966d658802f505e16c1c9a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3e780da8424ddc8cd79a88577b61fc17"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3e780da8424ddc8cd79a88577b61fc17">ME3_CONTROLLER_INPUT_TESTER</a> = 33</td></tr>
+<tr class="separator:a3e780da8424ddc8cd79a88577b61fc17"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd77877d52cb7644b6b96d9b8351a15d"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#acd77877d52cb7644b6b96d9b8351a15d">LE1_AUTOTOC</a> = 29</td></tr>
 <tr class="separator:acd77877d52cb7644b6b96d9b8351a15d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ad871d731e5f8444b617943746da342"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3ad871d731e5f8444b617943746da342">LE1_AUTOLOAD_ENABLER</a> = 32</td></tr>
@@ -135,6 +182,24 @@ Static Public Attributes</h2></td></tr>
 <tr class="separator:a2d80f1229272793d3e04b9b197002fc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6277d0d530420385d3d0adcf46955a3"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ae6277d0d530420385d3d0adcf46955a3">LE1_TEXTURE_OVERRIDE</a> = 88</td></tr>
 <tr class="separator:ae6277d0d530420385d3d0adcf46955a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ca7298909d6bc30e0df5aed98c4534b"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a7ca7298909d6bc30e0df5aed98c4534b">LE1_AUTOLOAD_ENABLER_DEBUG</a> = 34</td></tr>
+<tr class="separator:a7ca7298909d6bc30e0df5aed98c4534b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a680f016e488ba09e3ecc351579b2e8f8"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a680f016e488ba09e3ecc351579b2e8f8">LE1_STREAMING_LEVELS_HUD</a> = 35</td></tr>
+<tr class="separator:a680f016e488ba09e3ecc351579b2e8f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ba01c577e75796c38e29baf17f0d602"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a6ba01c577e75796c38e29baf17f0d602">LE1_KISMET_LOGGER</a> = 36</td></tr>
+<tr class="separator:a6ba01c577e75796c38e29baf17f0d602"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97e199f1f4a003058fded90c999f792b"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a97e199f1f4a003058fded90c999f792b">LE1_SEQACT_LOG_ENABLER</a> = 37</td></tr>
+<tr class="separator:a97e199f1f4a003058fded90c999f792b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3cc55c84dc7c6d14c7ece6f69939f8e"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#af3cc55c84dc7c6d14c7ece6f69939f8e">LE1_2DA_PRINTER</a> = 43</td></tr>
+<tr class="separator:af3cc55c84dc7c6d14c7ece6f69939f8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a794206b94e1b0d9d17d68f650ec4d3c7"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a794206b94e1b0d9d17d68f650ec4d3c7">LE1_PNG_SCREENSHOTS</a> = 44</td></tr>
+<tr class="separator:a794206b94e1b0d9d17d68f650ec4d3c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2973ad67b3d12d9a6cf5928bcbf83736"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a2973ad67b3d12d9a6cf5928bcbf83736">LE1_LINKER_PRINTER</a> = 47</td></tr>
+<tr class="separator:a2973ad67b3d12d9a6cf5928bcbf83736"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e253731038c8459f14264931b41fb5c"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a4e253731038c8459f14264931b41fb5c">LE1_SSR_UNLOCKER</a> = 51</td></tr>
+<tr class="separator:a4e253731038c8459f14264931b41fb5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae71cd553a0f558196468c876d04e7ec7"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ae71cd553a0f558196468c876d04e7ec7">LE1_CONSOLE_EXTENSION</a> = 75</td></tr>
+<tr class="separator:ae71cd553a0f558196468c876d04e7ec7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84fd47401635d2456453fb56f90564dc"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a84fd47401635d2456453fb56f90564dc">LE2_AUTOTOC</a> = 30</td></tr>
 <tr class="separator:a84fd47401635d2456453fb56f90564dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3f8f5ee27522aed2022cc00c51aa150b"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a3f8f5ee27522aed2022cc00c51aa150b">LE2_DEBUGLOGGER_DEV</a> = 71</td></tr>
@@ -147,6 +212,20 @@ Static Public Attributes</h2></td></tr>
 <tr class="separator:a05a4e9c5a2a10480ce4de8924c1fb719"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ed86c76ca1be8e3c6424e1629ffc13e"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a1ed86c76ca1be8e3c6424e1629ffc13e">LE2_TEXTURE_OVERRIDE</a> = 89</td></tr>
 <tr class="separator:a1ed86c76ca1be8e3c6424e1629ffc13e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a914329859013e07cd3dd1b52f059ce2f"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a914329859013e07cd3dd1b52f059ce2f">LE2_STREAMING_LEVELS_HUD</a> = 38</td></tr>
+<tr class="separator:a914329859013e07cd3dd1b52f059ce2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae99001c3311c085e776e8b2dd900b8bd"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ae99001c3311c085e776e8b2dd900b8bd">LE2_KISMET_LOGGER</a> = 41</td></tr>
+<tr class="separator:ae99001c3311c085e776e8b2dd900b8bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d53e2b4f5bc79075e79a0e09f553f51"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a9d53e2b4f5bc79075e79a0e09f553f51">LE2_SEQACT_LOG_ENABLER</a> = 73</td></tr>
+<tr class="separator:a9d53e2b4f5bc79075e79a0e09f553f51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a823d0470220511056bb0f4a51b4f6ca6"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a823d0470220511056bb0f4a51b4f6ca6">LE2_LINKER_PRINTER</a> = 48</td></tr>
+<tr class="separator:a823d0470220511056bb0f4a51b4f6ca6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f4b313b9cca52cecba255725513bdc1"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a1f4b313b9cca52cecba255725513bdc1">LE2_CONSOLE_EXTENSION</a> = 76</td></tr>
+<tr class="separator:a1f4b313b9cca52cecba255725513bdc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08f79715c2f0950eeb36e0637ea3b9c7"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a08f79715c2f0950eeb36e0637ea3b9c7">LE2_FUNCTION_LOGGER</a> = 84</td></tr>
+<tr class="separator:a08f79715c2f0950eeb36e0637ea3b9c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac7bc83674db8e545cf675a5344a2f971"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ac7bc83674db8e545cf675a5344a2f971">LE2_PNG_SCREENSHOTS</a> = 45</td></tr>
+<tr class="separator:ac7bc83674db8e545cf675a5344a2f971"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a814717abdd624ab7bf4c87f13dbd7039"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a814717abdd624ab7bf4c87f13dbd7039">LE3_AUTOTOC</a> = 31</td></tr>
 <tr class="separator:a814717abdd624ab7bf4c87f13dbd7039"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7174af347162f75b712807d517b55a49"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a7174af347162f75b712807d517b55a49">LE3_DEBUGLOGGER_DEV</a> = 72</td></tr>
@@ -157,12 +236,26 @@ Static Public Attributes</h2></td></tr>
 <tr class="separator:af743142edd620194721f840e936e8698"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2383f74ffce28546f0c2be7f814f7950"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a2383f74ffce28546f0c2be7f814f7950">LE3_TEXTURE_OVERRIDE</a> = 87</td></tr>
 <tr class="separator:a2383f74ffce28546f0c2be7f814f7950"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac3bb6057e2f69885bb09c2aa4bb14e6"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#aac3bb6057e2f69885bb09c2aa4bb14e6">LE3_STREAMING_LEVELS_HUD</a> = 39</td></tr>
+<tr class="separator:aac3bb6057e2f69885bb09c2aa4bb14e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2b3dc58f43d9a85b146c45b74118d3b"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ab2b3dc58f43d9a85b146c45b74118d3b">LE3_KISMET_LOGGER</a> = 40</td></tr>
+<tr class="separator:ab2b3dc58f43d9a85b146c45b74118d3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6394f181e310b50ee22ddeb9e3264b72"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a6394f181e310b50ee22ddeb9e3264b72">LE3_SEQACT_LOG_ENABLER</a> = 74</td></tr>
+<tr class="separator:a6394f181e310b50ee22ddeb9e3264b72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acebe3aa339a48667c1d7faca1a429dd6"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#acebe3aa339a48667c1d7faca1a429dd6">LE3_LINKER_PRINTER</a> = 49</td></tr>
+<tr class="separator:acebe3aa339a48667c1d7faca1a429dd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac31f3c4bd026628a96bb972898a39392"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#ac31f3c4bd026628a96bb972898a39392">LE3_CONSOLE_EXTENSION</a> = 77</td></tr>
+<tr class="separator:ac31f3c4bd026628a96bb972898a39392"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4516cd10c87e1e670bb8742813e87a92"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a4516cd10c87e1e670bb8742813e87a92">LE3_FUNCTION_LOGGER</a> = 85</td></tr>
+<tr class="separator:a4516cd10c87e1e670bb8742813e87a92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a975cb1b419fb38d812540d6db8769279"><td class="memItemLeft" align="right" valign="top">const int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html#a975cb1b419fb38d812540d6db8769279">LE3_PNG_SCREENSHOTS</a> = 46</td></tr>
+<tr class="separator:a975cb1b419fb38d812540d6db8769279"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Contains (some, not all) ASI Update Group IDs that can be used to request install of an ASI. Makes code easier to read.  </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="acc34e6907d2410f6127cc413f2fa10d5" name="acc34e6907d2410f6127cc413f2fa10d5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc34e6907d2410f6127cc413f2fa10d5">&#9670;&#160;</a></span>IsASIInstalled()</h2>
+<a id="a24beb1db6b6f4c0e9d90889e6eb007cb" name="a24beb1db6b6f4c0e9d90889e6eb007cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24beb1db6b6f4c0e9d90889e6eb007cb">&#9670;&#160;</a></span>GetInstalledASIModIds()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -171,56 +264,10 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static bool LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.IsASIInstalled </td>
-          <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>asiModId</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>binaryPath</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Returns if the given ASI is installed in the given game directory. This only detects ASIs built after 01/25/2026 that embed their ASI Mod ID in the binary metadata.  </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">asiModId</td><td>ID to find</td></tr>
-    <tr><td class="paramname">binaryPath</td><td>Path to the game binary</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd></dd></dl>
-
-</div>
-</div>
-<a id="a3734b78abc745151987f4fbbd53fccb5" name="a3734b78abc745151987f4fbbd53fccb5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3734b78abc745151987f4fbbd53fccb5">&#9670;&#160;</a></span>GetInstalledASIModIds()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static IEnumerable&lt; int &gt; LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.GetInstalledASIModIds </td>
+          <td class="memname">static IEnumerable&lt;(int id, int version)&gt; LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.GetInstalledASIModIds </td>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>binaryPath</em></td><td>)</td>
+          <td class="paramname"><em>win64Path</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -231,10 +278,10 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Gets a list of installed ASI update groups (mod ids)  </p>
+<p>Gets a list of installed ASI update groups (mod ids) and their versions. only works on ASIs built after 01/26/2026  </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">binaryPath</td><td></td></tr>
+    <tr><td class="paramname">win64Path</td><td>Path to game Win64 folder</td></tr>
   </table>
   </dd>
 </dl>
@@ -254,6 +301,204 @@ Static Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME1_DLC_MOD_ENABLER = 16</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab242a07e359be139be27469b0bccf8ce" name="ab242a07e359be139be27469b0bccf8ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab242a07e359be139be27469b0bccf8ce">&#9670;&#160;</a></span>ME2_KISMET_LOGGER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME2_KISMET_LOGGER = 14</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a38563dd61b68d36dafbe2ead241c134c" name="a38563dd61b68d36dafbe2ead241c134c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38563dd61b68d36dafbe2ead241c134c">&#9670;&#160;</a></span>ME2_FUNCTION_LOGGER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME2_FUNCTION_LOGGER = 15</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae0bbd3f9f63bdfbb3bbf0ac662369bc0" name="ae0bbd3f9f63bdfbb3bbf0ac662369bc0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0bbd3f9f63bdfbb3bbf0ac662369bc0">&#9670;&#160;</a></span>ME2_ACE_SLAMMER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME2_ACE_SLAMMER = 18</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a00541e71a9ae99e06d645c5b6deb5be4" name="a00541e71a9ae99e06d645c5b6deb5be4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a00541e71a9ae99e06d645c5b6deb5be4">&#9670;&#160;</a></span>ME2_SPLASH_ENABLER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME2_SPLASH_ENABLER = 20</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a147f3a70134bb272715bc1c5b84455e8" name="a147f3a70134bb272715bc1c5b84455e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a147f3a70134bb272715bc1c5b84455e8">&#9670;&#160;</a></span>ME2_KASUMI_DLC_CRASH_FIX</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME2_KASUMI_DLC_CRASH_FIX = 23</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af3a253da1cb64a7f17c249086e51e545" name="af3a253da1cb64a7f17c249086e51e545"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3a253da1cb64a7f17c249086e51e545">&#9670;&#160;</a></span>ME2_STREAMING_LEVELS_HUD</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME2_STREAMING_LEVELS_HUD = 25</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a15cf4a83fcac739d8fa0cee1ab2e5ef4" name="a15cf4a83fcac739d8fa0cee1ab2e5ef4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a15cf4a83fcac739d8fa0cee1ab2e5ef4">&#9670;&#160;</a></span>ME2_DEATH_COUNTER_LS</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME2_DEATH_COUNTER_LS = 26</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aad172696889cb79814165e24b0650712" name="aad172696889cb79814165e24b0650712"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad172696889cb79814165e24b0650712">&#9670;&#160;</a></span>ME2_SEQACT_LOG_ENABLER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME2_SEQACT_LOG_ENABLER = 27</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6683b514028a4998f770786852079eb4" name="a6683b514028a4998f770786852079eb4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6683b514028a4998f770786852079eb4">&#9670;&#160;</a></span>ME2_COMBOLUTION_SUPPORT</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME2_COMBOLUTION_SUPPORT = 28</td>
         </tr>
       </table>
   </td>
@@ -309,8 +554,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a81e8946e7f6cb4ea43c0c6216ca30842" name="a81e8946e7f6cb4ea43c0c6216ca30842"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a81e8946e7f6cb4ea43c0c6216ca30842">&#9670;&#160;</a></span>ME3_LOGGER</h2>
+<a id="afd88825aa57ff7d56e78cce1f2254e2c" name="afd88825aa57ff7d56e78cce1f2254e2c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd88825aa57ff7d56e78cce1f2254e2c">&#9670;&#160;</a></span>ME3_ORIGIN_MP_STATUS</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -319,7 +564,359 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_LOGGER = 8</td>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_ORIGIN_MP_STATUS = 1</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3b365e49629869801485e6e1c38ab150" name="a3b365e49629869801485e6e1c38ab150"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b365e49629869801485e6e1c38ab150">&#9670;&#160;</a></span>ME3_CLIENT_MESSAGE_EXPOSER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_CLIENT_MESSAGE_EXPOSER = 2</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a92d4bf0c75481507431f72998c663637" name="a92d4bf0c75481507431f72998c663637"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92d4bf0c75481507431f72998c663637">&#9670;&#160;</a></span>ME3_ORIGIN_UNLINKER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_ORIGIN_UNLINKER = 4</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa9fb8ce012d73d87534e42d51e5745a4" name="aa9fb8ce012d73d87534e42d51e5745a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9fb8ce012d73d87534e42d51e5745a4">&#9670;&#160;</a></span>ME3_MOUSE_DISABLER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_MOUSE_DISABLER = 0</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abded72da60657bd44a4689fe97652146" name="abded72da60657bd44a4689fe97652146"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abded72da60657bd44a4689fe97652146">&#9670;&#160;</a></span>ME3_LIVE_TLK_REPLACER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_LIVE_TLK_REPLACER = 6</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a257bc0a4a88e34ee80f85992c53e321e" name="a257bc0a4a88e34ee80f85992c53e321e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a257bc0a4a88e34ee80f85992c53e321e">&#9670;&#160;</a></span>ME3_ALLOW_MULTIPLE_INSTANCES</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_ALLOW_MULTIPLE_INSTANCES = 7</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aaae4525c0bb00c5cce12cf9356dfddb0" name="aaae4525c0bb00c5cce12cf9356dfddb0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaae4525c0bb00c5cce12cf9356dfddb0">&#9670;&#160;</a></span>ME3_LOGGER_TRUNCATING</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_LOGGER_TRUNCATING = 8</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6d4c88c7d4ac9cce6e841bcbd5e5822d" name="a6d4c88c7d4ac9cce6e841bcbd5e5822d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6d4c88c7d4ac9cce6e841bcbd5e5822d">&#9670;&#160;</a></span>ME3_KISMET_LOGGER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_KISMET_LOGGER = 10</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac88e049fcd6024de4aaefdca686a10b1" name="ac88e049fcd6024de4aaefdca686a10b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac88e049fcd6024de4aaefdca686a10b1">&#9670;&#160;</a></span>ME3_RETALIATION_GLITCH_CRASH_FIX</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_RETALIATION_GLITCH_CRASH_FIX = 11</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ada6af845f811969f13f83b580e4c10de" name="ada6af845f811969f13f83b580e4c10de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada6af845f811969f13f83b580e4c10de">&#9670;&#160;</a></span>ME3_100_PERCENT_GALACTIC_READINESS</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_100_PERCENT_GALACTIC_READINESS = 12</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab0332d6ab32285a997c466d9508bb8ec" name="ab0332d6ab32285a997c466d9508bb8ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0332d6ab32285a997c466d9508bb8ec">&#9670;&#160;</a></span>ME3_POC_COOP_MOVING_SPAWN_POINTS</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_POC_COOP_MOVING_SPAWN_POINTS = 13</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a840b429b998475869557e841cabe4c79" name="a840b429b998475869557e841cabe4c79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a840b429b998475869557e841cabe4c79">&#9670;&#160;</a></span>ME3_DOCUMENTS_FOLDER_REDIRECTOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_DOCUMENTS_FOLDER_REDIRECTOR = 17</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aae3e5d21616eeb738f9842deb4bac895" name="aae3e5d21616eeb738f9842deb4bac895"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae3e5d21616eeb738f9842deb4bac895">&#9670;&#160;</a></span>ME3_SEQACT_LOG_ENABLER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_SEQACT_LOG_ENABLER = 19</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac86a7ab69440b5d148195c38f7621b6a" name="ac86a7ab69440b5d148195c38f7621b6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac86a7ab69440b5d148195c38f7621b6a">&#9670;&#160;</a></span>ME3_GARBAGE_COLLECTION_FORCER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_GARBAGE_COLLECTION_FORCER = 22</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abc30233b59165d0282e6348138b563e4" name="abc30233b59165d0282e6348138b563e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc30233b59165d0282e6348138b563e4">&#9670;&#160;</a></span>ME3_SPLASH_ENABLER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_SPLASH_ENABLER = 21</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad8fb9eec3966d658802f505e16c1c9a8" name="ad8fb9eec3966d658802f505e16c1c9a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8fb9eec3966d658802f505e16c1c9a8">&#9670;&#160;</a></span>ME3_STREAMING_LEVELS_HUD</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_STREAMING_LEVELS_HUD = 24</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3e780da8424ddc8cd79a88577b61fc17" name="a3e780da8424ddc8cd79a88577b61fc17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e780da8424ddc8cd79a88577b61fc17">&#9670;&#160;</a></span>ME3_CONTROLLER_INPUT_TESTER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.ME3_CONTROLLER_INPUT_TESTER = 33</td>
         </tr>
       </table>
   </td>
@@ -463,6 +1060,204 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a7ca7298909d6bc30e0df5aed98c4534b" name="a7ca7298909d6bc30e0df5aed98c4534b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ca7298909d6bc30e0df5aed98c4534b">&#9670;&#160;</a></span>LE1_AUTOLOAD_ENABLER_DEBUG</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE1_AUTOLOAD_ENABLER_DEBUG = 34</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a680f016e488ba09e3ecc351579b2e8f8" name="a680f016e488ba09e3ecc351579b2e8f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a680f016e488ba09e3ecc351579b2e8f8">&#9670;&#160;</a></span>LE1_STREAMING_LEVELS_HUD</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE1_STREAMING_LEVELS_HUD = 35</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6ba01c577e75796c38e29baf17f0d602" name="a6ba01c577e75796c38e29baf17f0d602"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ba01c577e75796c38e29baf17f0d602">&#9670;&#160;</a></span>LE1_KISMET_LOGGER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE1_KISMET_LOGGER = 36</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a97e199f1f4a003058fded90c999f792b" name="a97e199f1f4a003058fded90c999f792b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97e199f1f4a003058fded90c999f792b">&#9670;&#160;</a></span>LE1_SEQACT_LOG_ENABLER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE1_SEQACT_LOG_ENABLER = 37</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="af3cc55c84dc7c6d14c7ece6f69939f8e" name="af3cc55c84dc7c6d14c7ece6f69939f8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3cc55c84dc7c6d14c7ece6f69939f8e">&#9670;&#160;</a></span>LE1_2DA_PRINTER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE1_2DA_PRINTER = 43</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a794206b94e1b0d9d17d68f650ec4d3c7" name="a794206b94e1b0d9d17d68f650ec4d3c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a794206b94e1b0d9d17d68f650ec4d3c7">&#9670;&#160;</a></span>LE1_PNG_SCREENSHOTS</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE1_PNG_SCREENSHOTS = 44</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a2973ad67b3d12d9a6cf5928bcbf83736" name="a2973ad67b3d12d9a6cf5928bcbf83736"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2973ad67b3d12d9a6cf5928bcbf83736">&#9670;&#160;</a></span>LE1_LINKER_PRINTER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE1_LINKER_PRINTER = 47</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4e253731038c8459f14264931b41fb5c" name="a4e253731038c8459f14264931b41fb5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e253731038c8459f14264931b41fb5c">&#9670;&#160;</a></span>LE1_SSR_UNLOCKER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE1_SSR_UNLOCKER = 51</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae71cd553a0f558196468c876d04e7ec7" name="ae71cd553a0f558196468c876d04e7ec7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae71cd553a0f558196468c876d04e7ec7">&#9670;&#160;</a></span>LE1_CONSOLE_EXTENSION</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE1_CONSOLE_EXTENSION = 75</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a84fd47401635d2456453fb56f90564dc" name="a84fd47401635d2456453fb56f90564dc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a84fd47401635d2456453fb56f90564dc">&#9670;&#160;</a></span>LE2_AUTOTOC</h2>
 
@@ -595,6 +1390,160 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a914329859013e07cd3dd1b52f059ce2f" name="a914329859013e07cd3dd1b52f059ce2f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a914329859013e07cd3dd1b52f059ce2f">&#9670;&#160;</a></span>LE2_STREAMING_LEVELS_HUD</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE2_STREAMING_LEVELS_HUD = 38</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ae99001c3311c085e776e8b2dd900b8bd" name="ae99001c3311c085e776e8b2dd900b8bd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae99001c3311c085e776e8b2dd900b8bd">&#9670;&#160;</a></span>LE2_KISMET_LOGGER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE2_KISMET_LOGGER = 41</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a9d53e2b4f5bc79075e79a0e09f553f51" name="a9d53e2b4f5bc79075e79a0e09f553f51"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d53e2b4f5bc79075e79a0e09f553f51">&#9670;&#160;</a></span>LE2_SEQACT_LOG_ENABLER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE2_SEQACT_LOG_ENABLER = 73</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a823d0470220511056bb0f4a51b4f6ca6" name="a823d0470220511056bb0f4a51b4f6ca6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a823d0470220511056bb0f4a51b4f6ca6">&#9670;&#160;</a></span>LE2_LINKER_PRINTER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE2_LINKER_PRINTER = 48</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a1f4b313b9cca52cecba255725513bdc1" name="a1f4b313b9cca52cecba255725513bdc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f4b313b9cca52cecba255725513bdc1">&#9670;&#160;</a></span>LE2_CONSOLE_EXTENSION</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE2_CONSOLE_EXTENSION = 76</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a08f79715c2f0950eeb36e0637ea3b9c7" name="a08f79715c2f0950eeb36e0637ea3b9c7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08f79715c2f0950eeb36e0637ea3b9c7">&#9670;&#160;</a></span>LE2_FUNCTION_LOGGER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE2_FUNCTION_LOGGER = 84</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac7bc83674db8e545cf675a5344a2f971" name="ac7bc83674db8e545cf675a5344a2f971"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7bc83674db8e545cf675a5344a2f971">&#9670;&#160;</a></span>LE2_PNG_SCREENSHOTS</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE2_PNG_SCREENSHOTS = 45</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a814717abdd624ab7bf4c87f13dbd7039" name="a814717abdd624ab7bf4c87f13dbd7039"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a814717abdd624ab7bf4c87f13dbd7039">&#9670;&#160;</a></span>LE3_AUTOTOC</h2>
 
@@ -694,6 +1643,160 @@ Static Public Attributes</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE3_TEXTURE_OVERRIDE = 87</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aac3bb6057e2f69885bb09c2aa4bb14e6" name="aac3bb6057e2f69885bb09c2aa4bb14e6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac3bb6057e2f69885bb09c2aa4bb14e6">&#9670;&#160;</a></span>LE3_STREAMING_LEVELS_HUD</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE3_STREAMING_LEVELS_HUD = 39</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ab2b3dc58f43d9a85b146c45b74118d3b" name="ab2b3dc58f43d9a85b146c45b74118d3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2b3dc58f43d9a85b146c45b74118d3b">&#9670;&#160;</a></span>LE3_KISMET_LOGGER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE3_KISMET_LOGGER = 40</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6394f181e310b50ee22ddeb9e3264b72" name="a6394f181e310b50ee22ddeb9e3264b72"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6394f181e310b50ee22ddeb9e3264b72">&#9670;&#160;</a></span>LE3_SEQACT_LOG_ENABLER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE3_SEQACT_LOG_ENABLER = 74</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="acebe3aa339a48667c1d7faca1a429dd6" name="acebe3aa339a48667c1d7faca1a429dd6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acebe3aa339a48667c1d7faca1a429dd6">&#9670;&#160;</a></span>LE3_LINKER_PRINTER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE3_LINKER_PRINTER = 49</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac31f3c4bd026628a96bb972898a39392" name="ac31f3c4bd026628a96bb972898a39392"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac31f3c4bd026628a96bb972898a39392">&#9670;&#160;</a></span>LE3_CONSOLE_EXTENSION</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE3_CONSOLE_EXTENSION = 77</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a4516cd10c87e1e670bb8742813e87a92" name="a4516cd10c87e1e670bb8742813e87a92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4516cd10c87e1e670bb8742813e87a92">&#9670;&#160;</a></span>LE3_FUNCTION_LOGGER</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE3_FUNCTION_LOGGER = 85</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a975cb1b419fb38d812540d6db8769279" name="a975cb1b419fb38d812540d6db8769279"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a975cb1b419fb38d812540d6db8769279">&#9670;&#160;</a></span>LE3_PNG_SCREENSHOTS</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const int LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs.LE3_PNG_SCREENSHOTS = 46</td>
         </tr>
       </table>
   </td>
