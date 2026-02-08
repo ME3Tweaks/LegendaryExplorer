@@ -1,5 +1,7 @@
 var NAVTREEINDEX79 =
 {
+"namespace_legendary_explorer_core_1_1_unreal.html#ac0d2edc7e31e2494aab23e3928a4aea5":[0,5,1,25,383],
+"namespace_legendary_explorer_core_1_1_unreal.html#ac1011ee4a653849552a3805d1ca80ab0":[0,5,1,25,71],
 "namespace_legendary_explorer_core_1_1_unreal.html#ac18844663500d2df82e0ffcba7f66e3d":[0,5,1,25,578],
 "namespace_legendary_explorer_core_1_1_unreal.html#ac27e11328851c8e5c9d34327876d7023":[0,5,1,25,456],
 "namespace_legendary_explorer_core_1_1_unreal.html#ac2e3df70894f2a8f30cdfcfa4fd3222a":[0,5,1,25,782],
@@ -247,7 +249,5 @@ var NAVTREEINDEX79 =
 "namespacemembers_enum_t.html":[0,6,2,18],
 "namespacemembers_enum_u.html":[0,6,2,19],
 "namespacemembers_enum_v.html":[0,6,2,20],
-"namespacemembers_enum_w.html":[0,6,2,21],
-"namespacemembers_f.html":[0,6,0,5],
-"namespacemembers_func.html":[0,6,1]
+"namespacemembers_enum_w.html":[0,6,2,21]
 };

@@ -13,6 +13,7 @@ var class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended =
     [ "Sort< TKey >", "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a1f2c4f931d1f55ecc0f76aff5d7a2f72", null ],
     [ "RaiseBindableCountChanged", "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a38fbf7c7f0fa226701e4ed3b96e2b1e6", null ],
     [ "GetSyncLock", "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#ae270344f18a9dae470b4dee8681da283", null ],
+    [ "AddEx", "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a37f23189aec86633486c31cc5270eabc", null ],
     [ "Any", "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a4868e5ffce558120824fb83ae251b497", null ],
     [ "BindableCount", "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a1079befa82fa7954700207626ac8f01d", null ],
     [ "PropertyChanged", "class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a656401ec735de7f49d0b774d94ce7b19", null ],
