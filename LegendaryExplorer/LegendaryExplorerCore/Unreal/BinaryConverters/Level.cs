@@ -75,8 +75,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 ApexMesh = [];
             }
 
-            int byteSize = 1;
-            sc.Serialize(ref byteSize);
+            if (!(sc.Game == MEGame.ME1 && sc.Pcc.Platform == MEPackage.GamePlatform.Xenon))
+            {
+                int byteSize = 1;
+                sc.Serialize(ref byteSize);
+            }
+
             sc.Serialize(ref CachedPhysBSPData);
 
             sc.Serialize(ref CachedPhysSMDataMap, sc.Serialize, sc.Serialize);
