@@ -2,6 +2,7 @@
 
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Gammtek.IO;
+using System;
 using System.Buffers.Binary;
 using System.Linq;
 using System.Runtime.InteropServices;
