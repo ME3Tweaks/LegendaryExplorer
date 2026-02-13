@@ -378,11 +378,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                                             ScriptToken typeNameToken = Log.Tokens.TokensSpan[idx];
                                             if (node.VarType is Struct)
                                             {
-                                                typeNameToken.SyntaxType = EF.Struct;
+                                                typeNameToken.SyntaxType = ST.Struct;
                                             }
                                             else if (node.VarType is Enumeration)
                                             {
-                                                typeNameToken.SyntaxType = EF.Enum;
+                                                typeNameToken.SyntaxType = ST.Enum;
                                             }
                                         }
                                         break;
@@ -395,11 +395,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                                             ScriptToken typeNameToken = Log.Tokens.TokensSpan[idx];
                                             if (dynArrType.ElementType is Struct)
                                             {
-                                                typeNameToken.SyntaxType = EF.Struct;
+                                                typeNameToken.SyntaxType = ST.Struct;
                                             }
                                             else if (dynArrType.ElementType is Enumeration)
                                             {
-                                                typeNameToken.SyntaxType = EF.Enum;
+                                                typeNameToken.SyntaxType = ST.Enum;
                                             }
                                         }
                                         break;

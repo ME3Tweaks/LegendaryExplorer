@@ -16,6 +16,7 @@ using System.Diagnostics;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.Packages;
 using Newtonsoft.Json.Linq;
+using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor;
 
 namespace LegendaryExplorer.Misc.AppSettings
 {
@@ -40,7 +41,7 @@ namespace LegendaryExplorer.Misc.AppSettings
         if (type == "string")
         {
             defaultValue = "\"" + defaultValue + "\"";
-        } else if (type.StartsWith("List"))
+        } else if (type.StartsWith("List") || type.StartsWith("Dictionary"))
         {
             storeRaw = true;
         }
@@ -64,10 +65,10 @@ namespace LegendaryExplorer.Misc.AppSettings
         return Tuple.Create(name, type);
     });
 
-    foreach (var setting in settings){ 
-#>        private static <#= setting.Item2 #> _<#= setting.Item1.ToLower() #> = <#= setting.Item3 #>; 
+    foreach (var setting in settings){
+#>        private static <#= setting.Item2 #> _<#= setting.Item1.ToLower() #> = <#= setting.Item3 #>;
         public static <#= setting.Item2 #> <#= setting.Item1 #> {
-            get => _<#= setting.Item1.ToLower() #>; 
+            get => _<#= setting.Item1.ToLower() #>;
             set => SetProperty(ref _<#= setting.Item1.ToLower() #>, value);
         }
 <# } #>
@@ -101,6 +102,15 @@ namespace LegendaryExplorer.Misc.AppSettings
         public static bool TryGetSetting(Dictionary<string, object> settings, string key, bool defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue && bool.TryParse(svalue, out var bvalue) ? bvalue : defaultValue;
         public static string TryGetSetting(Dictionary<string, object> settings, string key, string defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue ? svalue : defaultValue;
         public static List<string> TryGetSetting(Dictionary<string, object> settings, string key, List<string> defaultValue) => settings.TryGetValue(key, out var value) && value is JArray listValue ? listValue.ToObject<List<string>>() : defaultValue;
+        public static Dictionary<string, ThemeData> TryGetSetting(Dictionary<string, object> settings, string key, Dictionary<string, ThemeData> defaultValue)
+        {
+            if (settings.TryGetValue(key, out var value) && value is JObject jObj)
+            {
+                try { return jObj.ToObject<Dictionary<string, ThemeData>>() ?? defaultValue; }
+                catch { return defaultValue; }
+            }
+            return defaultValue;
+        }
 
 
         private static string AppSettingsFile => Path.Combine(AppDirectories.AppDataFolder, "appsettings.json");

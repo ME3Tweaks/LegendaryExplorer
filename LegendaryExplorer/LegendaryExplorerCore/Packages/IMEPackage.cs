@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using LegendaryExplorerCore.Gammtek.Collections.Specialized;
+﻿using LegendaryExplorerCore.Gammtek.Collections.Specialized;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.Packages
@@ -351,5 +351,49 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         /// <returns></returns>
         public bool HasDuplicateObjects();
+    }
+
+    /// <summary>
+    /// Allows lazy-loading package export data via LoadExport() and UnloadExport() methods, for advanced memory management scenarios. You must be sure to dispose this package when done!
+    /// </summary>
+    public interface ILazyLoadPackage : IMEPackage
+    {
+        /// <summary>
+        /// Loads an export's data block.
+        /// </summary>
+        /// <param name="uIndex">The UIndex to load</param>
+        /// <param name="loadParents">If parent exports should also be loaded, which is often needed when porting. Parents will be loaded until an import is encountered.</param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException">If an invalid UIndex is specified</exception>
+        public ExportEntry LoadExport(int uIndex, bool loadParents = false)
+        {
+            if (!TryGetUExport(uIndex, out ExportEntry export))
+            {
+                throw new InvalidOperationException("The specified UIndex is not an export.");
+            }
+            return LoadExport(export, loadParents);
+        }
+        public ExportEntry LoadExport(ExportEntry exportEntry, bool loadParents = false);
+
+        /// <summary>
+        /// Unloads export data from memory. Optionally can unload parent exports as well, up until the first import encountered.
+        /// </summary>
+        /// <param name="uIndex">The export uindex to unload</param>
+        /// <param name="unloadParents">If parent exports of this should be also unloaded, until an import is encountered.</param>
+        void UnloadExport(int uIndex, bool unloadParents = false)
+        {
+            if (!TryGetUExport(uIndex, out ExportEntry export))
+            {
+                throw new InvalidOperationException("The specified UIndex is not an export.");
+            }
+            UnloadExport(export, unloadParents);
+        }
+
+        /// <summary>
+        /// Unloads export data from memory. Optionally can unload parent exports as well, up until the first import encountered.
+        /// </summary>
+        /// <param name="exportEntry">The export to unload</param>
+        /// <param name="unloadParents">If parent exports of this should be also unloaded, until an import is encountered.</param>
+        public void UnloadExport(ExportEntry exportEntry, bool unloadParents = false);
     }
 }

@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using ClosedXML.Excel;
+﻿using ClosedXML.Excel;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.Misc;
@@ -38,6 +29,16 @@ using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SharpDX.D3DCompiler;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Numerics;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using TerraFX.Interop.Windows;
 using static LegendaryExplorer.Tools.ScriptDebugger.DebuggerInterface;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -2212,10 +2213,17 @@ import java.util.*;"
                 if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
                 {
                     pew.IsBusy = true;
+
+                    string getDumpedFilename(int shaderIndex, Shader shader)
+                    {
+                        string shaderType = shader.ShaderType;
+                        return $"GlobalShader-{shaderIndex}-{shader.ShaderType.Instanced.Replace("<", "[").Replace(">", "]")}.hlsl";
+                    }
+
                     var fileName = Path.Combine(MEDirectories.GetCookedPath(game), "GlobalShaderCache-PC-D3D-SM5.bin");
                     using var input = new MemoryStream(File.ReadAllBytes(fileName));
                     var shaderCache = GlobalShaderCache.ReadGlobalShaderCache(input, game);
-                    dumpShadersCore(pew, dlg.FileName, shaderCache);
+                    dumpShadersCore(pew, dlg.FileName, shaderCache, true, getDumpedFilename);
                 }
             }
         }
@@ -2242,11 +2250,11 @@ import java.util.*;"
             {
                 pew.IsBusy = true;
                 var shaderCache = ObjectBinary.From<ShaderCache>(shaderCacheExport);
-                dumpShadersCore(pew, dlg.FileName, shaderCache);
+                dumpShadersCore(pew, dlg.FileName, shaderCache, true); // 12/21/2025 - Dumps hlsl instead of disassembly - mgamerz
             }
         }
 
-        private static void dumpShadersCore(PackageEditorWindow pew, string folder, ShaderCache shaderCache)
+        private static void dumpShadersCore(PackageEditorWindow pew, string folder, ShaderCache shaderCache, bool decompile, Func<int, Shader, string> getFilenameFromShader = null)
         {
             Task.Run(() =>
             {
@@ -2256,11 +2264,18 @@ import java.util.*;"
                 foreach (Shader shader in shaders)
                 {
                     string shaderType = shader.ShaderType;
-                    string pathWithoutInvalids = Path.Combine(folder,
-                        $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid}.txt");
-                    File.WriteAllText(pathWithoutInvalids,
-                        ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode))
-                            .Disassemble());
+                    string pathWithoutInvalids = Path.Combine(folder, getFilenameFromShader?.Invoke(done, shader) ?? $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid}.txt");
+                    string testShaderText = null;
+                    if (decompile)
+                    {
+                        testShaderText = HLSLDecompiler.DecompileShader(shader.ShaderByteCode, false).Trim();
+                    }
+                    else
+                    {
+                        testShaderText = ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode)).Disassemble();
+                    }
+
+                    File.WriteAllText(pathWithoutInvalids, testShaderText);
                     pew.BusyText = $"{++done}/{total}";
                 }
             }).ContinueWithOnUIThread(prevTask =>

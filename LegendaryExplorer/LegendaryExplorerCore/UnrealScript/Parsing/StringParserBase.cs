@@ -51,7 +51,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         protected ParseException ParseError(string msg, ScriptToken token)
         {
-            token.SyntaxType = EF.ERROR;
+            token.SyntaxType = ST.ERROR;
             return ParseError(msg, token.StartPos, token.EndPos);
         }
 
@@ -65,7 +65,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         protected void TypeError(string msg, ScriptToken token)
         {
-            token.SyntaxType = EF.ERROR;
+            token.SyntaxType = ST.ERROR;
             TypeError(msg, token.StartPos, token.EndPos);
         }
 
@@ -78,7 +78,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         protected void LogWarning(string msg, ScriptToken token)
         {
-            token.SyntaxType = EF.ERROR;
+            token.SyntaxType = ST.ERROR;
             LogWarning(msg, token.StartPos, token.EndPos);
         }
 
@@ -130,7 +130,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public VariableType ParseTypeRef()
         {
-            if (Matches(ARRAY, EF.Keyword))
+            if (Matches(ARRAY, ST.Keyword))
             {
                 var arrayToken = Tokens.Prev();
                 if (Consume(TokenType.LeftArrow) is null)
@@ -154,7 +154,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 return new DynamicArrayType(elementType, arrayToken.StartPos, CurrentPosition);
             }
 
-            if (Matches(DELEGATE, EF.Keyword))
+            if (Matches(DELEGATE, ST.Keyword))
             {
                 var delegateToken = Tokens.Prev();
                 if (Consume(TokenType.LeftArrow) is null)
@@ -167,7 +167,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     if (Consume(TokenType.Word) is ScriptToken identifier)
                     {
-                        identifier.SyntaxType = EF.Function;
+                        identifier.SyntaxType = ST.Function;
                         if (functionName.Length > 0)
                         {
                             functionName += ".";
@@ -178,7 +178,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         throw ParseError("Expected function name for delegate!", CurrentPosition);
                     }
-                } while (Matches(TokenType.Dot, EF.Function));
+                } while (Matches(TokenType.Dot, ST.Function));
                 if (Consume(TokenType.RightArrow) is null)
                 {
                     throw ParseError("Expected '>' after function name!", CurrentPosition);
@@ -188,7 +188,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (Consume(CLASS) is { } classToken)
             {
-                classToken.SyntaxType = EF.Keyword;
+                classToken.SyntaxType = ST.Keyword;
                 if (Consume(TokenType.LeftArrow) is null)
                 {
                     return new ClassType(new VariableType(OBJECT), classToken.StartPos, classToken.EndPos);
@@ -199,7 +199,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     throw ParseError("Expected class name!", CurrentPosition);
                 }
 
-                classNameToken.SyntaxType = EF.Class;
+                classNameToken.SyntaxType = ST.Class;
 
                 if (Consume(TokenType.RightArrow) is null)
                 {
@@ -214,18 +214,18 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 return null;
             }
 
-            type.SyntaxType = type.Value is INT or FLOAT or BOOL or BYTE or BIOMASK4 or STRING or STRINGREF or NAME ? EF.Keyword : EF.Class;
+            type.SyntaxType = type.Value is INT or FLOAT or BOOL or BYTE or BIOMASK4 or STRING or STRINGREF or NAME ? ST.Keyword : ST.Class;
             return new VariableType(type.Value, type.StartPos, type.EndPos);
         }
 
         #region Helpers
 
-        public bool Matches(string str, EF syntaxType = EF.None)
+        public bool Matches(string str, ST syntaxType = ST.None)
         {
             bool matches = CurrentIs(str);
             if (matches)
             {
-                if (syntaxType != EF.None)
+                if (syntaxType != ST.None)
                 {
                     CurrentToken.SyntaxType = syntaxType;
                 }
@@ -244,11 +244,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return matches;
         }
 
-        public bool Matches(TokenType tokenType, EF syntaxType = EF.None)
+        public bool Matches(TokenType tokenType, ST syntaxType = ST.None)
         {
             if (Tokens.CurrentItem.Type == tokenType)
             {
-                if (syntaxType != EF.None)
+                if (syntaxType != ST.None)
                 {
                     CurrentToken.SyntaxType = syntaxType;
                 }
@@ -422,25 +422,25 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             if (Matches(TRUE, FALSE))
             {
-                token.SyntaxType = EF.Keyword;
+                token.SyntaxType = ST.Keyword;
                 return new BooleanLiteral(bool.Parse(token.Value), token.StartPos, token.EndPos);
             }
 
-            if (Matches(NONE, EF.Keyword))
+            if (Matches(NONE, ST.Keyword))
             {
                 return new NoneLiteral(token.StartPos, token.EndPos);
             }
 
             if (CurrentIs(VECT) && Tokens.LookAhead(1).Type == TokenType.LeftParenth)
             {
-                token.SyntaxType = EF.Keyword;
+                token.SyntaxType = ST.Keyword;
                 Tokens.Advance();
                 return ParseVectorLiteral();
             }
 
             if (CurrentIs(ROT) && Tokens.LookAhead(1).Type == TokenType.LeftParenth)
             {
-                token.SyntaxType = EF.Keyword;
+                token.SyntaxType = ST.Keyword;
                 Tokens.Advance();
                 return ParseRotatorLiteral();
             }
@@ -538,7 +538,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         protected ObjectLiteral ParseObjectLiteral(ScriptToken className, ScriptToken objName, bool noActors = true)
         {
-            className.SyntaxType = EF.Class;
+            className.SyntaxType = ST.Class;
             bool isClassLiteral = className.Value.CaseInsensitiveEquals(CLASS);
 
             var classType = new VariableType((isClassLiteral ? objName : className).Value);
@@ -593,7 +593,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
             if (symRef.Node is Function)
             {
-                token.SyntaxType = EF.Function;
+                token.SyntaxType = ST.Function;
                 if (isDefaultRef)
                 {
                     TypeError("Expected property name!", token);

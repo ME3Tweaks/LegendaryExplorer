@@ -124,5 +124,8 @@
   <setting name="CustomAssetDirectories" type="List&lt;string&gt;" defaultvalue="new List&lt;string&gt;()" category="General"
            friendlyName="Custom Asset Directories"/>
 
+  <!-- Script Editor IDE Theme -->
+  <setting name="ScriptIDE_ActiveTheme" type="string" defaultvalue=""/>
+  <setting name="ScriptIDE_SavedThemes" type="Dictionary&lt;string, ThemeData&gt;" defaultvalue="new Dictionary&lt;string, ThemeData&gt;()"/>
 
 </appsettings>

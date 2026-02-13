@@ -23,10 +23,10 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
     {
         static string KismetLogME3Path => ME3Directory.DefaultGamePath != null ? Path.Combine(ME3Directory.DefaultGamePath, "Binaries", "Win32", "KismetLog.txt") : "";
         static string KismetLogME2Path => ME2Directory.DefaultGamePath != null ? Path.Combine(ME2Directory.DefaultGamePath, "Binaries", "KismetLog.txt") : "";
-        static string KismetLogME1Path => ME1Directory.DefaultGamePath != null ? Path.Combine(ME1Directory.DefaultGamePath, "Binaries", "KismetLog.txt") : "";
-        static string KismetLogLE1Path => LE1Directory.DefaultGamePath != null ? Path.Combine(LE1Directory.DefaultGamePath, "Binaries", "Win64", "KismetLog.txt") : "";
-        static string KismetLogLE2Path => LE2Directory.DefaultGamePath != null ? Path.Combine(LE2Directory.DefaultGamePath, "Binaries", "Win64", "KismetLog.txt") : "";
-        static string KismetLogLE3Path => LE3Directory.DefaultGamePath != null ? Path.Combine(LE3Directory.DefaultGamePath, "Binaries", "Win64", "KismetLog.txt") : "";
+        static string KismetLogME1Path => ME1Directory.DefaultGamePath != null ? Path.Combine(ME1Directory.DefaultGamePath, "Binaries", "KismetLog.txt") : ""; // Does not exist
+        static string KismetLogLE1Path => LE1Directory.DefaultGamePath != null ? Path.Combine(LE1Directory.DefaultGamePath, "Binaries", "Win64", "Logs", "KismetLogger.log") : "";
+        static string KismetLogLE2Path => LE2Directory.DefaultGamePath != null ? Path.Combine(LE2Directory.DefaultGamePath, "Binaries", "Win64", "Logs", "KismetLogger.log") : "";
+        static string KismetLogLE3Path => LE3Directory.DefaultGamePath != null ? Path.Combine(LE3Directory.DefaultGamePath, "Binaries", "Win64", "Logs", "KismetLogger.log") : "";
 
         public static string KismetLogPath(MEGame game) => game switch
         {

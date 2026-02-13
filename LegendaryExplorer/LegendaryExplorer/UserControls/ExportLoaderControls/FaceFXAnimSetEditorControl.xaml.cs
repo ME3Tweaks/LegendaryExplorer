@@ -1596,14 +1596,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (!isNonSpkr)
             {
                 tlkIDString = PromptDialog.Prompt(this, "Please enter an initial TLK ID", defaultValue: tlkID.ToString(), selectText: true,
-                validator: response => int.TryParse(response, out _),
-                validationText: response =>
+                validator: response =>
                 {
                     if (int.TryParse(response, out int id))
                     {
-                        return $"Lines will use TLK IDs {id} to {id + animCount}";
+                        return (true, $"Lines will use TLK IDs {id} to {id + animCount}");
                     }
-                    return $"'{response}' is an invalid TLK ID";
+                    return (false, $"'{response}' is an invalid TLK ID");
                 });
                 if (tlkIDString is null) return;
                 tlkID = int.Parse(tlkIDString);

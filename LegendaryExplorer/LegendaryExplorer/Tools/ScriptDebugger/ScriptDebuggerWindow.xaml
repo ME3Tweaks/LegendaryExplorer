@@ -19,6 +19,19 @@
     <Window.Resources>
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <!-- Property editor control styles -->
+        <Style TargetType="{x:Type xctk:IntegerUpDown}">
+            <Setter Property="MinWidth" Value="80"/>
+            <Setter Property="Padding" Value="2"/>
+        </Style>
+        <Style TargetType="{x:Type xctk:SingleUpDown}">
+            <Setter Property="MinWidth" Value="80"/>
+            <Setter Property="Padding" Value="2"/>
+        </Style>
+        <Style TargetType="{x:Type xctk:ByteUpDown}">
+            <Setter Property="MinWidth" Value="60"/>
+            <Setter Property="Padding" Value="2"/>
+        </Style>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="F5" Command="{Binding ResumeCommand}"/>
@@ -91,42 +104,64 @@
                                   Panel.ZIndex="60" />
                     <ToolBar Grid.Row="0" Grid.Column="2" IsEnabled="{Binding IsAttached}"
                              sharedUi:Bindings.VisibilityToEnabled="True">
-                        <Button FontWeight="Bold" Command="{Binding DetachDebuggerCommand}">Detach</Button>
+                        <Button ToolTip="Detach Debugger" Command="{Binding DetachDebuggerCommand}" Padding="4,2">
+                            <StackPanel Orientation="Horizontal">
+                                <fa5:FontAwesome Icon="Solid_Unlink" Height="14" Margin="0,0,4,0"/>
+                                <TextBlock Text="Detach" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
                         <Separator />
+                        <Button ToolTip="Re-synchronize debugger state. Click if debugger seems out of sync with the game."
+                                Command="{Binding ReSyncDebuggerCommand}" Padding="4,2">
+                            <StackPanel Orientation="Horizontal">
+                                <fa5:FontAwesome Icon="Solid_Sync" Height="14" Margin="0,0,4,0"/>
+                                <TextBlock Text="ReSync" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
                         <Separator />
                         <Button ToolTip="Break All" Command="{Binding BreakAllCommand}">
                             <Button.Content>
-                                <fa5:FontAwesome Icon="Solid_Pause" Height="12" />
+                                <fa5:FontAwesome Icon="Solid_Pause" Height="16" />
                             </Button.Content>
                         </Button>
                         <Button ToolTip="Resume (F5)" Command="{Binding ResumeCommand}">
                             <Button.Content>
-                                <fa5:FontAwesome Icon="Solid_Play" Height="12" />
+                                <fa5:FontAwesome Icon="Solid_Play" Height="16" />
                             </Button.Content>
                         </Button>
                         <Separator />
                         <Button ToolTip="Step Into (F11)" Command="{Binding StepIntoCommand}">
                             <Button.Content>
-                                <fa5:FontAwesome Icon="Solid_LevelDownAlt" Height="12" />
+                                <fa5:FontAwesome Icon="Solid_LevelDownAlt" Height="16" />
                             </Button.Content>
                         </Button>
                         <Button ToolTip="Step Over (F10)" Command="{Binding StepOverCommand}">
                             <Button.Content>
-                                <fa5:FontAwesome Icon="Solid_LongArrowAltRight" Height="12" />
+                                <fa5:FontAwesome Icon="Solid_LongArrowAltRight" Height="16" />
                             </Button.Content>
                         </Button>
                         <Button ToolTip="Step Out (Shift+F11)" Command="{Binding StepOutCommand}">
                             <Button.Content>
-                                <fa5:FontAwesome Icon="Solid_LevelUpAlt" Height="12" />
+                                <fa5:FontAwesome Icon="Solid_LevelUpAlt" Height="16" />
                             </Button.Content>
                         </Button>
                     </ToolBar>
                     <ListBox Grid.Row="1" Grid.Column="2" Name="FunctionListBox"  HorizontalAlignment="Stretch"
                              VerticalAlignment="Stretch" ItemsSource="{Binding Statements}" SelectionMode="Single">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="Padding" Value="0,2"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#15000000"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
                         <ListBox.Resources>
                             <DataTemplate DataType="{x:Type local:ScriptStatement}">
                                 <StackPanel Orientation="Horizontal">
-                                    <Grid x:Name="Gutter" Background="Black" MouseDown="Gutter_OnMouseDown"
+                                    <Grid x:Name="Gutter" Background="#2D2D30" MinWidth="24" MouseDown="Gutter_OnMouseDown"
                                           Margin="0,-5,0,-5">
                                         <Label x:Name="HoverBreakPointIcon" Visibility="Hidden">
                                             <Label.Content>
@@ -193,10 +228,10 @@
                                                           ButtonText="Get ASI loader"
                                                           Command="{Binding ASILoaderInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:ScriptDebuggerWindow}}}" />
                                     <controls:Requirement x:Name="DebuggerAsiInstalledReq"
-                                                          FullfilledText="Debugger ASI is installed"
+                                                          FullfilledText="Interop ASI is installed"
                                                           Margin="0,5,0,5"
-                                                          UnFullfilledText="Debugger ASI is not installed!"
-                                                          ButtonText="Install Debugger ASI (via M3)"
+                                                          UnFullfilledText="Interop ASI is not installed!"
+                                                          ButtonText="Install Interop ASI (via M3)"
                                                           Command="{Binding DebuggerASIInstalledRequirementCommand, RelativeSource={RelativeSource AncestorType={x:Type local:ScriptDebuggerWindow}}}" />
                                     <TextBlock
                                         Text="Once the above requirements are fulfilled, start the game, and attach the debugger."
@@ -228,7 +263,10 @@
                                                     <ColumnDefinition Width="200" />
                                                     <ColumnDefinition />
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock>
+                                                    <Run Text="{Binding PropName, Mode=OneTime}"/>
+                                                    <Run Text=" (Int)" Foreground="Gray" FontSize="10"/>
+                                                </TextBlock>
                                                 <xctk:IntegerUpDown Grid.Column="1" Value="{Binding Value}" />
                                             </Grid>
                                         </DataTemplate>
@@ -238,7 +276,10 @@
                                                     <ColumnDefinition Width="200" />
                                                     <ColumnDefinition />
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock>
+                                                    <Run Text="{Binding PropName, Mode=OneTime}"/>
+                                                    <Run Text=" (StrRef)" Foreground="Gray" FontSize="10"/>
+                                                </TextBlock>
                                                 <xctk:IntegerUpDown Grid.Column="1" Value="{Binding Value}" />
                                             </Grid>
                                         </DataTemplate>
@@ -248,7 +289,10 @@
                                                     <ColumnDefinition Width="200" />
                                                     <ColumnDefinition />
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock>
+                                                    <Run Text="{Binding PropName, Mode=OneTime}"/>
+                                                    <Run Text=" (Float)" Foreground="Gray" FontSize="10"/>
+                                                </TextBlock>
                                                 <xctk:SingleUpDown Grid.Column="1" Value="{Binding Value}" />
                                             </Grid>
                                         </DataTemplate>
@@ -258,7 +302,10 @@
                                                     <ColumnDefinition Width="200" />
                                                     <ColumnDefinition />
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock>
+                                                    <Run Text="{Binding PropName, Mode=OneTime}"/>
+                                                    <Run Text=" (Byte)" Foreground="Gray" FontSize="10"/>
+                                                </TextBlock>
                                                 <xctk:ByteUpDown Grid.Column="1" Value="{Binding Value}" />
                                             </Grid>
                                         </DataTemplate>
@@ -268,7 +315,10 @@
                                                     <ColumnDefinition Width="200" />
                                                     <ColumnDefinition />
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock>
+                                                    <Run Text="{Binding PropName, Mode=OneTime}"/>
+                                                    <Run Text=" (Bool)" Foreground="Gray" FontSize="10"/>
+                                                </TextBlock>
                                                 <CheckBox Grid.Column="1" IsChecked="{Binding Value}" />
                                             </Grid>
                                         </DataTemplate>
@@ -278,7 +328,10 @@
                                                     <ColumnDefinition Width="200" />
                                                     <ColumnDefinition />
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock>
+                                                    <Run Text="{Binding PropName, Mode=OneTime}"/>
+                                                    <Run Text=" (String)" Foreground="Gray" FontSize="10"/>
+                                                </TextBlock>
                                                 <TextBox Grid.Column="1" Text="{Binding Value}" />
                                             </Grid>
                                         </DataTemplate>
@@ -288,7 +341,10 @@
                                                     <ColumnDefinition Width="200" />
                                                     <ColumnDefinition />
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock>
+                                                    <Run Text="{Binding PropName, Mode=OneTime}"/>
+                                                    <Run Text=" (Name)" Foreground="Gray" FontSize="10"/>
+                                                </TextBlock>
                                                 <TextBlock Grid.Column="1" Text="{Binding Value, Mode=OneTime}" />
                                             </Grid>
                                         </DataTemplate>
@@ -298,7 +354,10 @@
                                                     <ColumnDefinition Width="200" />
                                                     <ColumnDefinition />
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock>
+                                                    <Run Text="{Binding PropName, Mode=OneTime}"/>
+                                                    <Run Text=" (Delegate)" Foreground="Gray" FontSize="10"/>
+                                                </TextBlock>
                                                 <TextBlock Grid.Column="1" Text="{Binding Value, Mode=OneTime}" />
                                             </Grid>
                                         </DataTemplate>
@@ -308,7 +367,10 @@
                                                     <ColumnDefinition Width="200" />
                                                     <ColumnDefinition />
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock>
+                                                    <Run Text="{Binding PropName, Mode=OneTime}"/>
+                                                    <Run Text=" (Enum)" Foreground="Gray" FontSize="10"/>
+                                                </TextBlock>
                                                 <ComboBox Grid.Column="1" ItemsSource="{Binding EnumValues}"
                                                           SelectedItem="{Binding Value}">
                                                     <ComboBox.Resources>
@@ -330,7 +392,10 @@
                                                     <ColumnDefinition Width="*" />
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock>
+                                                    <Run Text="{Binding PropName, Mode=OneTime}"/>
+                                                    <Run Text=" (Object)" Foreground="Gray" FontSize="10"/>
+                                                </TextBlock>
                                                 <TextBlock Grid.Column="1" Text="{Binding Value, Mode=OneTime}" />
                                                 <Button Grid.Column="2" Content="Copy properties to clipboard" Padding="4,0" Click="CopyPropertiesToClipboard"/>
                                             </Grid>
@@ -342,7 +407,10 @@
                                                     <ColumnDefinition Width="200" />
                                                     <ColumnDefinition />
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock>
+                                                    <Run Text="{Binding PropName, Mode=OneTime}"/>
+                                                    <Run Text=" (Struct)" Foreground="Gray" FontSize="10"/>
+                                                </TextBlock>
                                                 <TextBlock Grid.Column="1" Text="{Binding Value, Mode=OneTime}" />
                                             </Grid>
                                         </HierarchicalDataTemplate>
@@ -353,7 +421,10 @@
                                                     <ColumnDefinition Width="200" />
                                                     <ColumnDefinition />
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock>
+                                                    <Run Text="{Binding PropName, Mode=OneTime}"/>
+                                                    <Run Text=" (Array)" Foreground="Gray" FontSize="10"/>
+                                                </TextBlock>
                                                 <TextBlock Grid.Column="1" Text="{Binding Value, Mode=OneTime}" />
                                             </Grid>
                                         </HierarchicalDataTemplate>
@@ -363,7 +434,10 @@
                                                     <ColumnDefinition Width="200" />
                                                     <ColumnDefinition />
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding PropName, Mode=OneTime}" />
+                                                <TextBlock>
+                                                    <Run Text="{Binding PropName, Mode=OneTime}"/>
+                                                    <Run Text=" (Loading...)" Foreground="Gray" FontStyle="Italic" FontSize="10"/>
+                                                </TextBlock>
                                             </Grid>
                                         </DataTemplate>
                                     </controls:StretchingTreeView.Resources>
@@ -381,18 +455,18 @@
                                          SelectedItem="{Binding SelectedCallStackEntry}">
                                     <ListBox.Resources>
                                         <DataTemplate DataType="{x:Type local:CallStackEntry}">
-                                            <Border HorizontalAlignment="Stretch">
+                                            <Border x:Name="CallStackBorder" HorizontalAlignment="Stretch">
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*" />
+                                                        <ColumnDefinition Width="20" />
                                                         <ColumnDefinition />
                                                     </Grid.ColumnDefinitions>
-                                                    <Label x:Name="SelectedCallIndicator" Visibility="Hidden">
+                                                    <Label x:Name="SelectedCallIndicator" Visibility="Hidden" Padding="0">
                                                         <Label.Content>
-                                                            <fa5:ImageAwesome Icon="Solid_ArrowRight" Height="10" />
+                                                            <fa5:ImageAwesome Icon="Solid_ArrowRight" Height="12"/>
                                                         </Label.Content>
                                                     </Label>
-                                                    <TextBlock Grid.Column="1"
+                                                    <TextBlock x:Name="DisplayTextBlock" Grid.Column="1"
                                                                Text="{Binding DisplayText, Mode=OneTime}" />
                                                 </Grid>
                                             </Border>
@@ -424,14 +498,18 @@
                     <DockPanel Grid.Row="0" Grid.RowSpan="4" Grid.Column="4">
                         <!--<controls:SearchBox DockPanel.Dock="Top"
                                             WatermarkText="Search BreakPoints" TextChanged="BreakPointSearchBox_OnTextChanged" />-->
-                        <Label DockPanel.Dock="Top">BreakPoints</Label>
+                        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="4">
+                            <fa5:FontAwesome Icon="Solid_Circle" Foreground="Red" Height="12" Margin="0,0,6,0"/>
+                            <TextBlock Text="Breakpoints" FontWeight="Bold" VerticalAlignment="Center"/>
+                        </StackPanel>
                         <ListBox ItemsSource="{Binding BreakPoints}" SelectionMode="Single"
                                  SelectionChanged="BreakPoints_OnSelectionChanged">
                             <ListBox.Resources>
                                 <DataTemplate DataType="{x:Type local:BreakPoint}">
                                     <StackPanel Orientation="Horizontal">
+                                        <fa5:FontAwesome Icon="Solid_Circle" Foreground="Red" Height="13" Margin="0,0,4,0" VerticalAlignment="Center"/>
                                         <TextBlock Text="{Binding Path=Position, StringFormat='{}(0x{0:X}):'}" />
-                                        <TextBlock Text="{Binding Path=FullFunctionPath, Mode=OneTime}" />
+                                        <TextBlock Text="{Binding Path=FullFunctionPath, Mode=OneTime}" Margin="4,0,0,0"/>
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.Resources>

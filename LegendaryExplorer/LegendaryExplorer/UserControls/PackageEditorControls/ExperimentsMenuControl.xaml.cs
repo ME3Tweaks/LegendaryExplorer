@@ -15,6 +15,7 @@ using LegendaryExplorer.Tools.CustomFilesManager;
 using LegendaryExplorer.Tools.LiveLevelEditor;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.Tools.PackageEditor.Experiments;
+using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -406,6 +407,16 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         {
             new CustomFilesManagerWindow().Show();
         }
+        
+        private void DetectInconsistentForcedExport_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.FindBadForcedExport(GetPEWindow());
+        }
+
+        private void FixInconsistentForcedExport_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.FixBadForcedExport(GetPEWindow());
+        }
 
         private void GenerateTextureToInstancesMap_Click(object sender, RoutedEventArgs e)
         {
@@ -691,6 +702,16 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void ValidateNavpointChain_Clicked(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ValidateNavpointChain(GetPEWindow().Pcc);
+        }
+
+        private void MakeLE1MakoMap_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OpenHostedExportLoader_Shader_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.OpenHostedExportLoader(new ShaderExportLoader());
         }
 
         private void TriggerObjBinGetNames_Clicked(object sender, RoutedEventArgs e)
@@ -1579,6 +1600,10 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void StreamFile_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsO.StreamFileExperiment(GetPEWindow());
+        }
+        private void CreateConvo_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsO.CreateConversationExperiment(GetPEWindow());
         }
         #endregion
 

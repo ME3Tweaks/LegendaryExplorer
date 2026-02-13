@@ -4487,7 +4487,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
 
                 int cachedPhysBSPDataSize;
-                subnodes.Add(MakeInt32Node(bin, "size of byte"));
+                if (!(Pcc.Game == MEGame.ME1 && Pcc.Platform == MEPackage.GamePlatform.Xenon))
+                {
+                    subnodes.Add(MakeInt32Node(bin, "size of byte"));
+                }
                 subnodes.Add(new BinInterpNode(bin.Position, $"CachedPhysBSPData Size: {cachedPhysBSPDataSize = bin.ReadInt32()}"));
                 if (cachedPhysBSPDataSize > 0)
                 {

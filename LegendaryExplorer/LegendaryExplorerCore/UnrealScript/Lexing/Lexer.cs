@@ -207,7 +207,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                 int endPos = startPos != CurrentIndex ? CurrentIndex : CurrentIndex + 1;
                 Log.LogLexError($"Could not lex '{GetCurrentChar()}'", startPos, endPos);
                 Advance();
-                return new ScriptToken(TokenType.INVALID, GetCurrentChar().ToString(), startPos, endPos) { SyntaxType = EF.ERROR };
+                return new ScriptToken(TokenType.INVALID, GetCurrentChar().ToString(), startPos, endPos) { SyntaxType = ST.ERROR };
             }
             return result;
         }
@@ -274,7 +274,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                     else
                     {
                         Log.LogLexError("Incomplete number! Expected digit after '.'", CurrentIndex);
-                        return new ScriptToken(type, first.ToString(), startPos, CurrentIndex) { SyntaxType = EF.Number };
+                        return new ScriptToken(type, first.ToString(), startPos, CurrentIndex) { SyntaxType = ST.Number };
                     }
                 }
                 else
@@ -293,7 +293,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                 value = first.ToString();
             }
             
-            return new ScriptToken(type, value, startPos, CurrentIndex) { SyntaxType = EF.Number };
+            return new ScriptToken(type, value, startPos, CurrentIndex) { SyntaxType = ST.Number };
         }
 
         private string SubNumberHex()
@@ -339,7 +339,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             }
 
             int numLength = CurrentIndex - numStart;
-            return new ScriptToken(TokenType.StringRefLiteral, Text.Substring(numStart, numLength), tokenStart, CurrentIndex) { SyntaxType = EF.Number };
+            return new ScriptToken(TokenType.StringRefLiteral, Text.Substring(numStart, numLength), tokenStart, CurrentIndex) { SyntaxType = ST.Number };
         }
 
         private ScriptToken MatchWord(char peek)
@@ -421,7 +421,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
 
             Log.LogLexError("Name Literal was not terminated properly!", startPos, CurrentIndex);
         end:
-            return new ScriptToken(TokenType.NameLiteral, Builder.ToString(), startPos, CurrentIndex) { SyntaxType = EF.Name };
+            return new ScriptToken(TokenType.NameLiteral, Builder.ToString(), startPos, CurrentIndex) { SyntaxType = ST.Name };
         }
 
         private ScriptToken MatchString()
@@ -477,7 +477,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             
             Log.LogLexError("String Literal was not terminated properly!", startPos, CurrentIndex);
         end:
-            return new ScriptToken(TokenType.StringLiteral, Builder.ToString(), startPos, CurrentIndex) { SyntaxType = EF.String };
+            return new ScriptToken(TokenType.StringLiteral, Builder.ToString(), startPos, CurrentIndex) { SyntaxType = ST.String };
         }
 
         private ScriptToken MatchSingleLineComment()
@@ -489,7 +489,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                 ++CurrentIndex;
             }
             
-            return new ScriptToken(TokenType.SingleLineComment, Text.Substring(commentStart, CurrentIndex - commentStart), startPos, CurrentIndex) { SyntaxType = EF.Comment };
+            return new ScriptToken(TokenType.SingleLineComment, Text.Substring(commentStart, CurrentIndex - commentStart), startPos, CurrentIndex) { SyntaxType = ST.Comment };
         }
         
         private ScriptToken MakeSymbolToken(TokenType type, string symbol)

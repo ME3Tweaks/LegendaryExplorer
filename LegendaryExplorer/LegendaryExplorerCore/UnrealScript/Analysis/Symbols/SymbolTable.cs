@@ -448,7 +448,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
             return null;
         }
-        
+
         public bool TypeExists(VariableType type, bool globalOnly = false) => TryResolveType(ref type, globalOnly);
 
         public bool TryGetSymbolInScopeStack<T>(string symbol, out T node, string lowestScope) where T : ASTNode
@@ -456,6 +456,21 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             node = null;
 
             return TryBuildSpecificScope(lowestScope, out Stack<ASTNodeDict> stack) && TryGetSymbolInternal(symbol, out node, stack);
+        }
+
+        public bool TryGetScopeSymbol(string scope, out ASTNode scopeSymbol) 
+        {
+            int lastDotIndex = scope.LastIndexOf('.');
+            if (lastDotIndex > 0)
+            {
+                string symbolName = scope[(lastDotIndex + 1)..];
+                if (TryGetSymbolFromSpecificScope(symbolName, out scopeSymbol, scope[..lastDotIndex]))
+                {
+                    return true;
+                }
+            }
+            scopeSymbol = null;
+            return false;
         }
 
         private bool TryBuildSpecificScope(string lowestScope, out Stack<ASTNodeDict> stack)

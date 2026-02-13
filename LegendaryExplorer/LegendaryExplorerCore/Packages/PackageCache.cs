@@ -9,7 +9,9 @@ using LegendaryExplorerCore.Misc;
 namespace LegendaryExplorerCore.Packages
 {
     /// <summary>
-    /// Class that allows you to cache packages in memory for fast accessing, without having to use a global package cache like ME3Explorer's system. Can be subclassed for specific implementations.
+    /// Class that allows you to cache packages in memory for fast accessing, without having to use a global package cache like 
+    /// Legendary Explorer's package interop system. 
+    /// Can be subclassed for specific implementations.
     /// </summary>
     public class PackageCache : IDisposable
     {

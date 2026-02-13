@@ -172,13 +172,13 @@ namespace LegendaryExplorerCore.UnrealScript
 
         public static string[] BaseFileNames(MEGame game) => game switch
         {
-            MEGame.ME3 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" },
-            MEGame.ME2 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc" },
-            MEGame.ME1 => new[] { "Core.u", "Engine.u", "GameFramework.u", "PlotManagerMap.u", "BIOC_Base.u" },
-            MEGame.LE3 => new[] { "Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc" },
-            MEGame.LE2 => new[] { "Core.pcc", "Engine.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc" },
-            MEGame.LE1 => new[] { "Core.pcc", "Engine.pcc", "GFxUI.pcc", "PlotManagerMap.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "SFXStrategicAI.pcc", "SFXGameContent_Powers.pcc" },
-            MEGame.UDK => new[] { "Core.u", "Engine.u", "GFxUI.u", "GameFramework.u", "UnrealEd.u", "OnlineSubsystemPC.u", "UDKBase.u" },
+            MEGame.ME3 => ["Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc"],
+            MEGame.ME2 => ["Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc"],
+            MEGame.ME1 => ["Core.u", "Engine.u", "GameFramework.u", "PlotManagerMap.u", "BIOC_Base.u"],
+            MEGame.LE3 => ["Core.pcc", "Engine.pcc", "GameFramework.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc"],
+            MEGame.LE2 => ["Core.pcc", "Engine.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "PlotManagerMap.pcc", "SFXGame.pcc", "Startup_INT.pcc"],
+            MEGame.LE1 => ["Core.pcc", "Engine.pcc", "GFxUI.pcc", "PlotManagerMap.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "SFXStrategicAI.pcc", "SFXGameContent_Powers.pcc"],
+            MEGame.UDK => ["Core.u", "Engine.u", "GFxUI.u", "GameFramework.u", "UnrealEd.u", "OnlineSubsystemPC.u", "UDKBase.u"],
             _ => throw new ArgumentOutOfRangeException(nameof(game))
         };
 
@@ -187,7 +187,7 @@ namespace LegendaryExplorerCore.UnrealScript
             var basefiles = BaseFileNames(game);
             if (game is MEGame.LE1)
             {
-                return basefiles.Concat(new[] { "SFXGameContent_Powers.pcc", "SFXVehicleResources.pcc", "SFXWorldResources.pcc" });
+                return basefiles.Concat(["SFXGameContent_Powers.pcc", "SFXVehicleResources.pcc", "SFXWorldResources.pcc"]);
             }
             return basefiles;
         }

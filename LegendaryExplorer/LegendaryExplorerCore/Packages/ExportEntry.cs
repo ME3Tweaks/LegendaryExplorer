@@ -1,10 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using LegendaryExplorerCore.Gammtek.IO;
+﻿using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Misc;
@@ -13,6 +7,12 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using PropertyChanged;
+using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.Packages
@@ -506,6 +506,10 @@ namespace LegendaryExplorerCore.Packages
                         throw new Exception("Cannot set import link to itself, this will cause infinite recursion");
                     }
                     _commonHeaderFields._idxLink = value;
+                    if (Parent is ExportEntry parent)
+                    {
+                        _commonHeaderFields._exportFlags = parent._commonHeaderFields._exportFlags;
+                    }
                     HeaderChanged = true;
                     _fileRef.IsModified = true;
                     _fileRef.InvalidateLookupTable();
@@ -794,7 +798,7 @@ namespace LegendaryExplorerCore.Packages
         }
 
         //NEVER DIRECTLY SET THIS OUTSIDE OF CONSTRUCTOR!
-        private byte[] _data;
+        private byte[] _data; // (also used by MEPackage.UnloadExport. do not change field name without updating that method)
 
         /// <summary>
         /// Returns a ReadOnlySpan of Data. This is much more efficient than cloning with Data.
@@ -940,6 +944,23 @@ namespace LegendaryExplorerCore.Packages
             m.Writer.Write(_data, binStart, _data.Length - binStart);
             Data = m.ToArray();
         }
+
+        ///// <summary>
+        ///// Used for writing StateFrame pre-prop binary.
+        ///// </summary>
+        ///// <param name="bin"></param>
+        ///// <param name="props"></param>
+        ///// <param name="binStart"></param>
+        //public void WritePrePropsAndProperties(ObjectBinary bin, PropertyCollection props, int binStart = -1)
+        //{
+        //    MemoryStream ms = MemoryManager.GetMemoryStream(_data.Length);
+        //    var m = new EndianReader(ms) { Endian = _fileRef.Endian };
+        //    bin.WriteTo(m.Writer, _fileRef);
+        //    props.WriteTo(m.Writer, _fileRef);
+        //    binStart = binStart == -1 ? propsEnd() : binStart; // this allows us to precompute the starting position, which can avoid issues during relink as props may not have resolved yet
+        //    m.Writer.Write(_data, binStart, _data.Length - binStart);
+        //    Data = m.ToArray();
+        //}
 
         public int GetPropertyStart()
         {
@@ -1219,6 +1240,24 @@ namespace LegendaryExplorerCore.Packages
                 if (Parent is ExportEntry exp) return exp.IsForcedExport;
                 // Need to handle ImportEntry parents, I think? Are all downlevel children marked in vanilla?
                 return false;
+            }
+        }
+
+        /// <summary>
+        /// Sets/unsets forced export flag on the export
+        /// </summary>
+        /// <param name="set">True for forced export, false for not</param>
+        public void SetForcedExportFlag( bool set)
+        {
+            if (set)
+            {
+                // Set
+                ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
+            }
+            else
+            {
+                // Strip
+                ExportFlags &= ~UnrealFlags.EExportFlags.ForcedExport;
             }
         }
 

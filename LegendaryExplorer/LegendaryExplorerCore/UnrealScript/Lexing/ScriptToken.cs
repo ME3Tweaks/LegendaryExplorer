@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
 
         public readonly TokenType Type;
         //TODO: remove this information from the token and store it seperately, as was done with the go-to-definition info
-        public EF SyntaxType;
+        public ST SyntaxType;
         public readonly int StartPos;
         public readonly int EndPos;
 

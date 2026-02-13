@@ -21,8 +21,20 @@ using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript
 {
+    /// <summary>
+    /// Provides comprehensive UnrealScript compilation and decompilation functionality for Mass Effect game packages.
+    /// This compiler supports full-featured parsing, validation, and compilation of UnrealScript code including
+    /// classes, functions, states, structs, enums, and properties.
+    /// </summary>
     public static class UnrealScriptCompiler
     {
+        /// <summary>
+        /// Decompiles an export entry into UnrealScript source code.
+        /// </summary>
+        /// <param name="export">The export entry to decompile.</param>
+        /// <param name="lib">The file library containing symbol definitions for the package.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>A tuple containing the AST node and the decompiled text source code.</returns>
         public static (ASTNode node, string text) DecompileExport(ExportEntry export, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, export.FileRef))
@@ -48,12 +60,31 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, $"Could not decompile {export.InstancedFullPath}");
         }
 
+        /// <summary>
+        /// Gets the literal string representation of a property value.
+        /// </summary>
+        /// <param name="prop">The property to get the literal value from.</param>
+        /// <param name="containingExport">The export containing the property.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>The string representation of the property's literal value.</returns>
         public static string GetPropertyLiteralValue(Property prop, ExportEntry containingExport, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             Expression literal = ScriptObjectToASTConverter.ConvertToLiteralValue(prop, containingExport, lib);
             return CodeBuilderVisitor.GetOutput(literal);
         }
 
+        /// <summary>
+        /// Compiles a single property from UnrealScript literal text.
+        /// Used by M3 - do not delete.
+        /// </summary>
+        /// <param name="propName">The name of the property to compile.</param>
+        /// <param name="valueliteral">The literal value string to compile.</param>
+        /// <param name="containingExport">The export that will contain the property.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="log">Message log for compilation errors and warnings.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>The compiled property, or null if compilation failed.</returns>
         [CanBeNull]
         //Used by M3. Do not delete
         public static Property CompileProperty(string propName, string valueliteral, ExportEntry containingExport, FileLib lib, MessageLog log, UnrealScriptOptionsPackage usop)
@@ -101,6 +132,13 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
+        /// <summary>
+        /// Converts an export entry to its corresponding Abstract Syntax Tree (AST) node representation.
+        /// </summary>
+        /// <param name="export">The export entry to convert.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>The AST node representing the export, or null if conversion failed.</returns>
         public static ASTNode ExportToAstNode(ExportEntry export, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, export.FileRef))
@@ -121,6 +159,15 @@ namespace LegendaryExplorerCore.UnrealScript
             return astNode;
         }
 
+        /// <summary>
+        /// Compiles UnrealScript source code into an outline AST without full body parsing.
+        /// This performs lexical analysis and outline parsing but does not resolve symbols or parse function bodies.
+        /// </summary>
+        /// <param name="script">The UnrealScript source code to compile.</param>
+        /// <param name="type">The type of script element to parse (e.g., "Class", "Function").</param>
+        /// <param name="log">Message log for compilation errors and warnings.</param>
+        /// <param name="game">The Mass Effect game version for parsing rules.</param>
+        /// <returns>A tuple containing the outline AST and the token stream.</returns>
         public static (ASTNode ast, TokenStream tokens) CompileOutlineAST(string script, string type, MessageLog log, MEGame game)
         {
             var tokens = Lexer.Lex(script, log);
@@ -150,6 +197,13 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
+        /// <summary>
+        /// Compiles a bulk properties file that contains multiple object property definitions.
+        /// </summary>
+        /// <param name="src">The source code containing bulk property definitions.</param>
+        /// <param name="pcc">The package to compile properties into.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>A message log containing any errors or warnings from compilation.</returns>
         public static MessageLog CompileBulkPropertiesFile(string src, IMEPackage pcc, UnrealScriptOptionsPackage usop)
         {
             var log = new MessageLog();
@@ -216,6 +270,14 @@ namespace LegendaryExplorerCore.UnrealScript
             return log;
         }
 
+        /// <summary>
+        /// Compiles a T3D (Unreal Text) format object definition into the package.
+        /// </summary>
+        /// <param name="src">The T3D source code to compile.</param>
+        /// <param name="pcc">The package to create the object in.</param>
+        /// <param name="parentEntry">The parent entry for the new object.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>A message log containing any errors or warnings from compilation.</returns>
         public static MessageLog CompileT3D(string src, IMEPackage pcc, IEntry parentEntry, UnrealScriptOptionsPackage usop)
         {
             var log = new MessageLog();
@@ -261,6 +323,13 @@ namespace LegendaryExplorerCore.UnrealScript
             return log;
         }
 
+        /// <summary>
+        /// Decompiles all non-script exports in a package into a bulk properties format.
+        /// </summary>
+        /// <param name="pcc">The package to decompile properties from.</param>
+        /// <param name="log">Output parameter containing any errors or warnings from decompilation.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>The decompiled bulk properties text, or null if decompilation failed.</returns>
         public static string DecompileBulkProps(IMEPackage pcc, out MessageLog log, UnrealScriptOptionsPackage usop)
         {
             var fileLib = new FileLib(pcc);
@@ -296,6 +365,16 @@ namespace LegendaryExplorerCore.UnrealScript
             return codeBuilder.GetOutput();
         }
 
+        /// <summary>
+        /// Adds a new script element to a class or replaces an existing one with the same name.
+        /// Supports functions, states, structs, enums, and variables.
+        /// Used by M3 - do not delete.
+        /// </summary>
+        /// <param name="classExport">The class export to modify.</param>
+        /// <param name="scriptText">The UnrealScript source code for the element to add or replace.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>A message log containing any errors or warnings from compilation.</returns>
         //Used by M3. Do not delete
         public static MessageLog AddOrReplaceInClass(ExportEntry classExport, string scriptText, FileLib lib, UnrealScriptOptionsPackage usop)
         {
@@ -397,6 +476,18 @@ namespace LegendaryExplorerCore.UnrealScript
             return log;
         }
 
+        /// <summary>
+        /// Compiles a complete UnrealScript class from source code.
+        /// </summary>
+        /// <param name="pcc">The package to compile the class into.</param>
+        /// <param name="scriptText">The UnrealScript source code for the class.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <param name="export">Optional existing export to compile into.</param>
+        /// <param name="parent">Optional parent entry for the class.</param>
+        /// <param name="packageCache">Optional package cache for symbol resolution.</param>
+        /// <param name="intendedClassName">Optional expected class name for validation.</param>
+        /// <returns>A tuple containing the compiled AST node and a message log with any errors or warnings.</returns>
         public static (ASTNode astNode, MessageLog log) CompileClass(IMEPackage pcc, string scriptText, FileLib lib, UnrealScriptOptionsPackage usop, ExportEntry export = null, IEntry parent = null, PackageCache packageCache = null, string intendedClassName = null)
         {
             if (!ReferenceEquals(lib.Pcc, pcc))
@@ -463,6 +554,15 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, log);
         }
 
+        /// <summary>
+        /// Compiles a function's UnrealScript source code and updates the export.
+        /// Used by M3 - do not change signature without good cause.
+        /// </summary>
+        /// <param name="export">The function export to compile.</param>
+        /// <param name="scriptText">The UnrealScript source code for the function.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>A tuple containing the compiled AST node and a message log with any errors or warnings.</returns>
         //Used by M3. Do not change signature without good cause
         public static (ASTNode astNode, MessageLog log) CompileFunction(ExportEntry export, string scriptText, FileLib lib, UnrealScriptOptionsPackage usop)
         {
@@ -525,6 +625,14 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, log);
         }
 
+        /// <summary>
+        /// Compiles a state's UnrealScript source code and updates the export.
+        /// </summary>
+        /// <param name="export">The state export to compile.</param>
+        /// <param name="scriptText">The UnrealScript source code for the state.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>A tuple containing the compiled AST node and a message log with any errors or warnings.</returns>
         public static (ASTNode astNode, MessageLog log) CompileState(ExportEntry export, string scriptText, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, export.FileRef))
@@ -590,6 +698,14 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, log);
         }
 
+        /// <summary>
+        /// Compiles an enum's UnrealScript source code and updates the export.
+        /// </summary>
+        /// <param name="export">The enum export to compile.</param>
+        /// <param name="scriptText">The UnrealScript source code for the enum.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>A tuple containing the compiled AST node and a message log with any errors or warnings.</returns>
         public static (ASTNode astNode, MessageLog log) CompileEnum(ExportEntry export, string scriptText, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, export.FileRef))
@@ -655,6 +771,14 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, log);
         }
 
+        /// <summary>
+        /// Compiles a struct's UnrealScript source code and updates the export.
+        /// </summary>
+        /// <param name="export">The struct export to compile.</param>
+        /// <param name="scriptText">The UnrealScript source code for the struct.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>A tuple containing the compiled AST node and a message log with any errors or warnings.</returns>
         public static (ASTNode astNode, MessageLog log) CompileStruct(ExportEntry export, string scriptText, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, export.FileRef))
@@ -724,6 +848,15 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, log);
         }
 
+        /// <summary>
+        /// Compiles default properties for an object or class.
+        /// </summary>
+        /// <param name="export">The export to compile default properties for.</param>
+        /// <param name="scriptText">The UnrealScript source code for the default properties block.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <param name="noCompile">If true, only parses the properties without compiling them into binary format.</param>
+        /// <returns>A tuple containing the compiled AST node and a message log with any errors or warnings.</returns>
         public static (ASTNode astNode, MessageLog log) CompileDefaultProperties(ExportEntry export, string scriptText, FileLib lib, UnrealScriptOptionsPackage usop, bool noCompile = false)
         {
             if (!ReferenceEquals(lib.Pcc, export.FileRef))
@@ -800,6 +933,16 @@ namespace LegendaryExplorerCore.UnrealScript
             return (null, log);
         }
 
+        /// <summary>
+        /// Compiles a complete class AST including all members and function bodies.
+        /// </summary>
+        /// <param name="pcc">The package containing the class.</param>
+        /// <param name="cls">The class AST to compile.</param>
+        /// <param name="log">Message log for compilation errors and warnings.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="vfTableChanged">Output parameter indicating if the virtual function table changed.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>The compiled class AST, or null if compilation failed.</returns>
         public static Class CompileNewClassAST(IMEPackage pcc, Class cls, MessageLog log, FileLib lib, out bool vfTableChanged, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, pcc))
@@ -938,6 +1081,15 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
+        /// <summary>
+        /// Compiles a function body AST and integrates it into the parent class or state.
+        /// </summary>
+        /// <param name="parentExport">The parent export (class or state) containing the function.</param>
+        /// <param name="func">The function AST to compile.</param>
+        /// <param name="log">Message log for compilation errors and warnings.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>The compiled function AST, or null if compilation failed.</returns>
         public static Function CompileNewFunctionBodyAST(ExportEntry parentExport, Function func, MessageLog log, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, parentExport.FileRef))
@@ -1000,6 +1152,15 @@ namespace LegendaryExplorerCore.UnrealScript
             return func;
         }
 
+        /// <summary>
+        /// Compiles a state body AST and integrates it into the parent class.
+        /// </summary>
+        /// <param name="parentExport">The parent class export containing the state.</param>
+        /// <param name="state">The state AST to compile.</param>
+        /// <param name="log">Message log for compilation errors and warnings.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>The compiled state AST, or null if compilation failed.</returns>
         public static State CompileNewStateBodyAST(ExportEntry parentExport, State state, MessageLog log, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, parentExport.FileRef))
@@ -1038,6 +1199,15 @@ namespace LegendaryExplorerCore.UnrealScript
             return null;
         }
 
+        /// <summary>
+        /// Compiles an enum AST and integrates it into the parent class or struct.
+        /// </summary>
+        /// <param name="parentExport">The parent export containing the enum.</param>
+        /// <param name="enumeration">The enumeration AST to compile.</param>
+        /// <param name="log">Message log for compilation errors and warnings.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>The compiled enumeration AST, or null if compilation failed.</returns>
         public static Enumeration CompileNewEnumAST(ExportEntry parentExport, Enumeration enumeration, MessageLog log, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, parentExport.FileRef))
@@ -1074,6 +1244,15 @@ namespace LegendaryExplorerCore.UnrealScript
             return null;
         }
 
+        /// <summary>
+        /// Compiles a variable declaration AST and integrates it into the parent class or struct.
+        /// </summary>
+        /// <param name="parentExport">The parent export containing the variable.</param>
+        /// <param name="varDecl">The variable declaration AST to compile.</param>
+        /// <param name="log">Message log for compilation errors and warnings.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>The compiled variable declaration AST, or null if compilation failed.</returns>
         public static VariableDeclaration CompileNewVarDeclAST(ExportEntry parentExport, VariableDeclaration varDecl, MessageLog log, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, parentExport.FileRef))
@@ -1109,6 +1288,15 @@ namespace LegendaryExplorerCore.UnrealScript
             return null;
         }
 
+        /// <summary>
+        /// Compiles a struct AST and integrates it into the parent class or struct.
+        /// </summary>
+        /// <param name="parentExport">The parent export containing the struct.</param>
+        /// <param name="strct">The struct AST to compile.</param>
+        /// <param name="log">Message log for compilation errors and warnings.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>The compiled struct AST, or null if compilation failed.</returns>
         public static Struct CompileNewStructAST(ExportEntry parentExport, Struct strct, MessageLog log, FileLib lib, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, parentExport.FileRef))
@@ -1145,6 +1333,15 @@ namespace LegendaryExplorerCore.UnrealScript
             return null;
         }
 
+        /// <summary>
+        /// Compiles a default properties block AST for an object or class.
+        /// </summary>
+        /// <param name="propBlock">The default properties block AST to compile.</param>
+        /// <param name="log">Message log for compilation errors and warnings.</param>
+        /// <param name="lib">The file library containing symbol definitions.</param>
+        /// <param name="export">The export to compile default properties for.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>The compiled default properties block AST, or null if compilation failed.</returns>
         public static DefaultPropertiesBlock CompileDefaultPropertiesAST(DefaultPropertiesBlock propBlock, MessageLog log, FileLib lib, ExportEntry export, UnrealScriptOptionsPackage usop)
         {
             if (!ReferenceEquals(lib.Pcc, export.FileRef))
@@ -1174,12 +1371,23 @@ namespace LegendaryExplorerCore.UnrealScript
             return null;
         }
 
+        /// <summary>
+        /// Represents a class defined outside of a package file, typically from a source file.
+        /// </summary>
+        /// <param name="ClassName">The name of the class.</param>
+        /// <param name="Source">The UnrealScript source code for the class.</param>
+        /// <param name="SourceFilePath">Optional file path where the source originated.</param>
         public record LooseClass(string ClassName, string Source, string SourceFilePath = null)
         {
             internal Class ClassAST;
             internal MessageLog Log;
         }
 
+        /// <summary>
+        /// Represents a package containing multiple loose class definitions.
+        /// </summary>
+        /// <param name="PackageName">The name of the package.</param>
+        /// <param name="Classes">The list of classes in this package.</param>
         public record LooseClassPackage(string PackageName, List<LooseClass> Classes);
 
         private record CompilationCompletion(UClass UClass, string SuperClassName, Action<UnrealScriptOptionsPackage> Action)
@@ -1187,6 +1395,14 @@ namespace LegendaryExplorerCore.UnrealScript
             public bool Completed;
         }
 
+        /// <summary>
+        /// Compiles multiple loose class definitions into a target package.
+        /// This method handles proper dependency ordering and ensures parent classes are compiled before child classes.
+        /// </summary>
+        /// <param name="targetPcc">The package to compile the classes into.</param>
+        /// <param name="looseClasses">The list of loose class packages to compile.</param>
+        /// <param name="usop">Options package for UnrealScript operations.</param>
+        /// <returns>A message log containing any errors or warnings from compilation.</returns>
         public static MessageLog CompileLooseClasses(IMEPackage targetPcc, List<LooseClassPackage> looseClasses, UnrealScriptOptionsPackage usop)
         {
             using var packageCache = new PackageCache();

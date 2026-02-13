@@ -37,8 +37,10 @@ namespace LegendaryExplorerCore.Pathing
                 if (!component.GetRootName().CaseInsensitiveEquals("TheWorld"))
                     continue;
 
-                ObjectProperty meshProp = component.GetProperty<ObjectProperty>("StaticMesh");
-                meshProp ??= component.GetProperty<ObjectProperty>("SkeletalMesh");
+                var props = component.GetProperties();
+
+                ObjectProperty meshProp = props.GetProp<ObjectProperty>("StaticMesh");
+                meshProp ??= props.GetProp<ObjectProperty>("SkeletalMesh");
 
                 if (meshProp == null)
                     continue; // Not supported by this code.
@@ -46,7 +48,7 @@ namespace LegendaryExplorerCore.Pathing
                 // List of materials this mesh uses
                 List<IEntry> texturesOnMesh = new List<IEntry>();
                 List<ExportEntry> materials = new List<ExportEntry>();
-                var matList = component.GetProperty<ArrayProperty<ObjectProperty>>("Materials");
+                var matList = props.GetProp<ArrayProperty<ObjectProperty>>("Materials");
                 if (matList != null)
                 {
                     foreach (var mat in matList)
@@ -257,28 +259,30 @@ namespace LegendaryExplorerCore.Pathing
         {
             // I don't like working with structs.
             // So we use Point3D instead.
-            if (exportEntry.HasParent && (exportEntry.IsA("StaticMeshComponent")
-                                          && exportEntry.Parent.IsA("StaticMeshCollectionActor")
-                                          || exportEntry.IsA("LightComponent") &&
-                                          exportEntry.Parent.IsA("StaticLightCollectionActor")))
+            if (exportEntry.HasParent)
             {
-                // collection actor
-                if (StaticCollectionActor.TryGetStaticCollectionActorAndIndex(exportEntry,
-                        out StaticCollectionActor sca, out int index))
+                if (exportEntry.IsA("StaticMeshComponent") && exportEntry.Parent.IsA("StaticMeshCollectionActor")
+                 || exportEntry.IsA("LightComponent") && exportEntry.Parent.IsA("StaticLightCollectionActor"))
                 {
-                    float PosX;
-                    float PosY;
-                    float PosZ;
-                    ((PosX, PosY, PosZ), (_, _, _), (_, _, _)) = sca.GetDecomposedTransformationForIndex(index);
-                    return new Point3D(PosX, PosY, PosZ);
+                    // collection actor
+                    if (StaticCollectionActor.TryGetStaticCollectionActorAndIndex(exportEntry,
+                            out StaticCollectionActor sca, out int index))
+                    {
+                        float PosX;
+                        float PosY;
+                        float PosZ;
+                        ((PosX, PosY, PosZ), (_, _, _), (_, _, _)) = sca.GetDecomposedTransformationForIndex(index);
+                        return new Point3D(PosX, PosY, PosZ);
+                    }
+                }
+                else
+                {
+                    // Use parent of component, which should be the actor
+                    return LevelTools.GetLocation(exportEntry.Parent as ExportEntry);
                 }
             }
-            else
-            {
-                return LevelTools.GetLocation(exportEntry);
-            }
 
-            // Unknown location...
+            // Unknown location... components should always be nested
             Debugger.Break();
             return new Point3D();
         }
@@ -341,6 +345,18 @@ namespace LegendaryExplorerCore.Pathing
             }
         }
 
+        public static void SetRotation(ExportEntry export, int pitch, int yaw, int roll)
+        {
+            if (export.ClassName.Contains("Component"))
+            {
+                SetCollectionActorRotation(export, pitch, yaw, roll);
+            }
+            else
+            {
+                export.WriteProperty(CommonStructs.RotatorProp(pitch, yaw, roll, "Rotation"));
+            }
+        }
+
         public static void SetLocation(ExportEntry export, Point3D point)
         {
             if (export.ClassName.Contains("Component"))
@@ -387,7 +403,33 @@ namespace LegendaryExplorerCore.Pathing
             }
         }
 
+        public static void SetCollectionActorRotation(ExportEntry component, int pitch, int yaw, int roll, List<ExportEntry> collectionitems = null, ExportEntry collectionactor = null)
+        {
+            if (collectionactor == null)
+            {
+                if (!(component.HasParent && component.Parent.ClassName.Contains("CollectionActor")))
+                    return;
+                collectionactor = (ExportEntry)component.Parent;
+            }
 
+            collectionitems ??= GetCollectionItems(collectionactor);
+
+            if (collectionitems?.Count > 0)
+            {
+                var idx = collectionitems.FindIndex(o => o != null && o.UIndex == component.UIndex);
+                if (idx >= 0)
+                {
+                    var binData = (StaticCollectionActor)ObjectBinary.From(collectionactor);
+
+                    Matrix4x4 m = binData.LocalToWorldTransforms[idx];
+                    var dsd = m.UnrealDecompose();
+                    dsd.rotation = new Rotator(pitch, yaw, roll);
+                    binData.LocalToWorldTransforms[idx] = ActorUtils.ComposeLocalToWorld(dsd);
+
+                    collectionactor.WriteBinary(binData);
+                }
+            }
+        }
 
 
 

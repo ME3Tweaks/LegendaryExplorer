@@ -14,7 +14,7 @@ using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 {
-    public enum EF : byte
+    public enum ST : byte
     {
         None = 0,
         Keyword,
@@ -82,11 +82,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public TOutput GetOutput() => Formatter.GetOutput();
 
-        private EF? ForcedFormatType = null;
+        private ST? ForcedFormatType = null;
 
         private bool ForceComment = false;
 
-        public void AppendToNewLine(string text = "", EF formatType = EF.None)
+        public void AppendToNewLine(string text = "", ST formatType = ST.None)
         {
             if (!ForceComment)
             {
@@ -94,113 +94,112 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             else
             {
-                Formatter.AppendToNewLine($"//{text}", EF.Comment);
+                Formatter.AppendToNewLine($"//{text}", ST.Comment);
             }
         }
 
-        public void Append(string text, EF formatType = EF.None) => Formatter.Append(text, ForcedFormatType ?? formatType);
+        public void Append(string text, ST formatType = ST.None) => Formatter.Append(text, ForcedFormatType ?? formatType);
         public void Space() => Formatter.Space();
 
         public void ForceAlignment() => Formatter.ForceAlignment();
 
         public bool VisitNode(Class node)
         {
-            AppendToNewLine(CLASS, EF.Keyword);
+            AppendToNewLine(CLASS, ST.Keyword);
             Space();
-            Append(node.Name, EF.Class);
+            Append(node.Name, ST.Class);
 
             if (node.Parent != null && !node.Parent.Name.Equals("Object", StringComparison.OrdinalIgnoreCase))
             {
                 Space();
-                Append(EXTENDS, EF.Keyword);
+                Append(EXTENDS, ST.Keyword);
                 Space();
-                Append(node.Parent.Name, EF.Class);
+                Append(node.Parent.Name, ST.Class);
             }
             if (node.OuterClass != null && !node.OuterClass.Name.Equals("Object", StringComparison.OrdinalIgnoreCase))
             {
                 Space();
-                Append(WITHIN, EF.Keyword);
+                Append(WITHIN, ST.Keyword);
                 Space();
-                Append(node.OuterClass.Name, EF.Class);
+                Append(node.OuterClass.Name, ST.Class);
             }
 
             NestingLevel++;
 
             if (node.Interfaces.Any())
             {
-                AppendToNewLine("implements", EF.Keyword);
+                AppendToNewLine("implements", ST.Keyword);
                 Append("(");
-                Join(node.Interfaces.Select(i => i.Name).ToList(), ", ", EF.Class);
+                Join(node.Interfaces.Select(i => i.Name).ToList(), ", ", ST.Class);
                 Append(")");
             }
 
             EClassFlags flags = node.Flags;
             if (flags.Has(EClassFlags.Native))
             {
-                AppendToNewLine("native", EF.Specifier);
+                AppendToNewLine("native", ST.Specifier);
             }
             if (flags.Has(EClassFlags.NativeOnly))
             {
-                AppendToNewLine("nativeonly", EF.Specifier);
+                AppendToNewLine("nativeonly", ST.Specifier);
             }
             if (flags.Has(EClassFlags.NoExport))
             {
-                AppendToNewLine("noexport", EF.Specifier);
+                AppendToNewLine("noexport", ST.Specifier);
             }
             if (flags.Has(EClassFlags.EditInlineNew))
             {
-                AppendToNewLine("editinlinenew", EF.Specifier);
+                AppendToNewLine("editinlinenew", ST.Specifier);
             }
             if (flags.Has(EClassFlags.Placeable))
             {
-                AppendToNewLine("placeable", EF.Specifier);
+                AppendToNewLine("placeable", ST.Specifier);
             }
             if (flags.Has(EClassFlags.HideDropDown))
             {
-                AppendToNewLine("hidedropdown", EF.Specifier);
+                AppendToNewLine("hidedropdown", ST.Specifier);
             }
             if (flags.Has(EClassFlags.NativeReplication))
             {
-                AppendToNewLine("nativereplication", EF.Specifier);
+                AppendToNewLine("nativereplication", ST.Specifier);
             }
             if (flags.Has(EClassFlags.PerObjectConfig))
             {
-                AppendToNewLine("perobjectconfig", EF.Specifier);
+                AppendToNewLine("perobjectconfig", ST.Specifier);
             }
             if (flags.Has(EClassFlags.Abstract))
             {
-                AppendToNewLine("abstract", EF.Specifier);
+                AppendToNewLine("abstract", ST.Specifier);
             }
             if (flags.Has(EClassFlags.Deprecated))
             {
-                AppendToNewLine("deprecated", EF.Specifier);
+                AppendToNewLine("deprecated", ST.Specifier);
             }
             if (flags.Has(EClassFlags.Transient))
             {
-                AppendToNewLine("transient", EF.Specifier);
+                AppendToNewLine("transient", ST.Specifier);
             }
             if (flags.Has(EClassFlags.Config))
             {
-                AppendToNewLine("config", EF.Specifier);
+                AppendToNewLine("config", ST.Specifier);
                 Append($"({node.ConfigName})");
             }
             if (flags.Has(EClassFlags.SafeReplace))
             {
-                AppendToNewLine("safereplace", EF.Specifier);
+                AppendToNewLine("safereplace", ST.Specifier);
             }
             if (flags.Has(EClassFlags.Hidden))
             {
-                AppendToNewLine("hidden", EF.Specifier);
+                AppendToNewLine("hidden", ST.Specifier);
             }
             if (flags.Has(EClassFlags.CollapseCategories))
             {
-                AppendToNewLine("collapsecategories", EF.Specifier);
+                AppendToNewLine("collapsecategories", ST.Specifier);
             }
 
             NestingLevel--;
             Append(";");
 
-            // print the rest of the class, according to the standard "anatomy of an unrealscript" article.
             if (node.TypeDeclarations.Count > 0)
             {
                 AppendToNewLine();
@@ -234,9 +233,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 AppendToNewLine();
                 if (node.Flags.Has(EClassFlags.NativeReplication))
                 {
-                    AppendToNewLine("//Replication conditions for this class are native. This block has no effect", EF.Comment);
+                    AppendToNewLine("//Replication conditions for this class are native. This block has no effect", ST.Comment);
                 }
-                AppendToNewLine(REPLICATION, EF.Keyword);
+                AppendToNewLine(REPLICATION, ST.Keyword);
                 AppendToNewLine("{");
                 NestingLevel++;
                 node.ReplicationBlock.AcceptVisitor(this);
@@ -245,7 +244,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
 
             AppendToNewLine();
-            AppendToNewLine("//class default properties can be edited in the Properties tab for the class's Default__ object.", EF.Comment);
+            AppendToNewLine("//class default properties can be edited in the Properties tab for the class's Default__ object.", ST.Comment);
             node.DefaultProperties?.AcceptVisitor(this);
 
             return true;
@@ -257,7 +256,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             //It only makes sense to have done that for a class field
             if (node.Outer?.Type != ASTNodeType.Function)
             {
-                AppendToNewLine(VAR, EF.Keyword);
+                AppendToNewLine(VAR, ST.Keyword);
                 if (!string.IsNullOrEmpty(node.Category) && !node.Category.CaseInsensitiveEquals("None"))
                 {
                     Append($"({node.Category})");
@@ -265,7 +264,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             else
             {
-                AppendToNewLine(LOCAL, EF.Keyword);
+                AppendToNewLine(LOCAL, ST.Keyword);
             }
 
             Space();
@@ -284,7 +283,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (node.IsStaticArray)
             {
                 Append("[");
-                Append($"{node.ArrayLength}", EF.Number);
+                Append($"{node.ArrayLength}", ST.Number);
                 Append("]");
             }
         }
@@ -295,14 +294,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Space();
             if (node.Outer is ObjectType outer)
             {
-                Append(outer.Name, outer is Struct ? EF.Struct : EF.Class);
+                Append(outer.Name, outer is Struct ? ST.Struct : ST.Class);
                 Append(".");
             }
             Append(node.Name);
             if (node.IsStaticArray)
             {
                 Append("[");
-                Append($"{node.ArrayLength}", EF.Number);
+                Append($"{node.ArrayLength}", ST.Number);
                 Append("]");
             }
         }
@@ -318,20 +317,20 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     node.AcceptVisitor(this);
                     break;
                 case Enumeration:
-                    Append(node.Name, EF.Enum);
+                    Append(node.Name, ST.Enum);
                     break;
                 case Const:
                     Append(node.Name);
                     break;
                 case PrimitiveType:
-                    Append(node.Name, EF.Keyword);
+                    Append(node.Name, ST.Keyword);
                     break;
                 case Struct:
-                    Append(node.Name, EF.Struct);
+                    Append(node.Name, ST.Struct);
                     break;
                 case Class:
                 default:
-                    Append(node.Name, EF.Class);
+                    Append(node.Name, ST.Class);
                     break;
             }
         }
@@ -350,7 +349,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(DynamicArrayType node)
         {
-            Append(ARRAY, EF.Keyword);
+            Append(ARRAY, ST.Keyword);
             Append("<");
             AppendTypeName(node.ElementType);
             Append(">");
@@ -359,18 +358,18 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(DelegateType node)
         {
-            Append(DELEGATE, EF.Keyword);
+            Append(DELEGATE, ST.Keyword);
             Append("<");
-            Append(node.DefaultFunction.Name, EF.Function);
+            Append(node.DefaultFunction.Name, ST.Function);
             Append(">");
             return true;
         }
 
         public bool VisitNode(ClassType node)
         {
-            Append(CLASS, EF.Keyword);
+            Append(CLASS, ST.Keyword);
             Append("<");
-            Append(node.ClassLimiter.Name, EF.Class);
+            Append(node.ClassLimiter.Name, ST.Class);
             Append(">");
             return true;
         }
@@ -378,7 +377,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(Struct node)
         {
             // struct [specifiers] structname [extends parentstruct] { \n contents \n };
-            AppendToNewLine(STRUCT, EF.Keyword);
+            AppendToNewLine(STRUCT, ST.Keyword);
             Space();
             var specs = new List<string>();
             ScriptStructFlags flags = node.Flags;
@@ -417,17 +416,17 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             foreach (string spec in specs)
             {
-                Append(spec, EF.Specifier);
+                Append(spec, ST.Specifier);
                 Space();
             }
 
-            Append(node.Name, EF.Struct);
+            Append(node.Name, ST.Struct);
             Space();
             if (node.Parent != null)
             {
-                Append(EXTENDS, EF.Keyword);
+                Append(EXTENDS, ST.Keyword);
                 Space();
-                Append(node.Parent.Name, EF.Struct);
+                Append(node.Parent.Name, ST.Struct);
                 Space();
             }
 
@@ -457,9 +456,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(Enumeration node)
         {
             // enum enumname { \n contents \n };
-            AppendToNewLine(ENUM, EF.Keyword);
+            AppendToNewLine(ENUM, ST.Keyword);
             Space();
-            Append(node.Name, EF.Enum);
+            Append(node.Name, ST.Enum);
             AppendToNewLine("{");
             NestingLevel++;
 
@@ -482,11 +481,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(Const node)
         {
-            AppendToNewLine(CONST, EF.Keyword);
+            AppendToNewLine(CONST, ST.Keyword);
             Space();
             Append(node.Name);
             Space();
-            Append("=", EF.Operator);
+            Append("=", ST.Operator);
             Space();
             Append(node.Value);
             Append(";");
@@ -569,44 +568,44 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             foreach (string spec in specs)
             {
-                Append(spec, EF.Specifier);
+                Append(spec, ST.Specifier);
                 Space();
             }
             if (flags.Has(EFunctionFlags.Native))
             {
-                Append("native", EF.Specifier);
+                Append("native", ST.Specifier);
                 if (node.NativeIndex > 0)
                 {
                     Append("(");
-                    Append(node.NativeIndex.ToString(), EF.Number);
+                    Append(node.NativeIndex.ToString(), ST.Number);
                     Append(")");
                 }
                 Space();
             }
             if (flags.Has(EFunctionFlags.PreOperator))
             {
-                Append("preoperator", EF.Specifier);
+                Append("preoperator", ST.Specifier);
             }
             else if (flags.Has(EFunctionFlags.Operator))
             {
                 if (node.Parameters.Count is 1)
                 {
-                    Append("postoperator", EF.Specifier);
+                    Append("postoperator", ST.Specifier);
                 }
                 else
                 {
-                    Append("operator", EF.Specifier);
+                    Append("operator", ST.Specifier);
                     if (node.Parameters.Count is 2 && node.OperatorPrecedence > 0)
                     {
                         Append("(");
-                        Append(node.OperatorPrecedence.ToString(), EF.Number);
+                        Append(node.OperatorPrecedence.ToString(), ST.Number);
                         Append(")");
                     }
                 }
             }
             else
             {
-                Append(FUNCTION, EF.Keyword);
+                Append(FUNCTION, ST.Keyword);
             }
 
             Space();
@@ -646,7 +645,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 if (node.CoerceReturn)
                 {
-                    Append("coerce", EF.Specifier);
+                    Append("coerce", ST.Specifier);
                     Space();
                 }
                 AppendTypeName(node.ReturnType);
@@ -654,12 +653,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             if (node.IsOperator && node.FriendlyName is not null)
             {
-                Append(node.FriendlyName, EF.Operator);
+                Append(node.FriendlyName, ST.Operator);
                 Space();
             }
             else
             {
-                Append(node.Name, EF.Function);
+                Append(node.Name, ST.Function);
             }
             Append("(");
             if (node.Parameters.Any())
@@ -684,7 +683,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (node.DefaultParameter != null)
             {
                 Space();
-                Append("=", EF.Operator);
+                Append("=", ST.Operator);
                 Space();
                 node.DefaultParameter.AcceptVisitor(this);
             }
@@ -711,23 +710,23 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             foreach (string spec in specs)
             {
-                Append(spec, EF.Specifier);
+                Append(spec, ST.Specifier);
                 Space();
             }
 
-            Append(STATE, EF.Keyword);
+            Append(STATE, ST.Keyword);
             if (flags.Has(EStateFlags.Editable))
             {
                 Append("()");
             }
             Space();
-            Append(node.Name, EF.State);
+            Append(node.Name, ST.State);
             Space();
             if (node.Parent != null)
             {
-                Append(EXTENDS, EF.Keyword);
+                Append(EXTENDS, ST.Keyword);
                 Space();
-                Append(node.Parent.Name, EF.State);
+                Append(node.Parent.Name, ST.State);
                 Space();
             }
 
@@ -739,9 +738,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             if (node.IgnoreMask != (EProbeFunctions)ulong.MaxValue)
             {
-                AppendToNewLine(IGNORES, EF.Keyword);
+                AppendToNewLine(IGNORES, ST.Keyword);
                 Space();
-                Join((~node.IgnoreMask).MaskToList().Select(flag => flag.ToString()).ToList(), ", ", EF.Function);
+                Join((~node.IgnoreMask).MaskToList().Select(flag => flag.ToString()).ToList(), ", ", ST.Function);
                 AppendToNewLine(";");
             }
 
@@ -778,7 +777,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DefaultPropertiesBlock node)
         {
             bool isStructDefaults = node.Outer is Struct;
-            AppendToNewLine(isStructDefaults ? STRUCTDEFAULTPROPERTIES : node.IsNormalExport ? "properties" : DEFAULTPROPERTIES, EF.Keyword);
+            AppendToNewLine(isStructDefaults ? STRUCTDEFAULTPROPERTIES : node.IsNormalExport ? "properties" : DEFAULTPROPERTIES, ST.Keyword);
             AppendToNewLine("{");
             NestingLevel++;
             foreach (Statement s in node.Statements)
@@ -793,20 +792,20 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(Subobject node)
         {
-            AppendToNewLine("Begin", EF.Keyword);
+            AppendToNewLine("Begin", ST.Keyword);
             Space();
-            Append(node.IsTemplate ? "Template" : "Object", EF.Keyword);
+            Append(node.IsTemplate ? "Template" : "Object", ST.Keyword);
             Space();
-            Append("Class", EF.Keyword);
-            Append("=", EF.Operator);
-            Append(node.Class.Name, EF.Class);
+            Append("Class", ST.Keyword);
+            Append("=", ST.Operator);
+            Append(node.Class.Name, ST.Class);
             Space();
-            Append("Name", EF.Keyword);
-            Append("=", EF.Operator);
+            Append("Name", ST.Keyword);
+            Append("=", ST.Operator);
             if (node.Outer is null)
             {
                 //supports bulk property feature
-                Append($"'{EncodeName(node.NameDeclaration)}'", EF.Name);
+                Append($"'{EncodeName(node.NameDeclaration)}'", ST.Name);
             }
             else
             {
@@ -818,16 +817,16 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 s.AcceptVisitor(this);
             }
             NestingLevel--;
-            AppendToNewLine("End", EF.Keyword);
+            AppendToNewLine("End", ST.Keyword);
             Space();
-            Append(node.IsTemplate ? "Template" : "Object", EF.Keyword);
+            Append(node.IsTemplate ? "Template" : "Object", ST.Keyword);
             return true;
         }
 
         public bool VisitNode(DoUntilLoop node)
         {
             // do { /n contents /n } until(condition);
-            AppendToNewLine(DO, EF.Keyword);
+            AppendToNewLine(DO, ST.Keyword);
             Space();
             Append("{");
             NestingLevel++;
@@ -837,7 +836,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             AppendToNewLine("}");
             Space();
-            Append(UNTIL, EF.Keyword);
+            Append(UNTIL, ST.Keyword);
             Space();
             Append("(");
             node.Condition.AcceptVisitor(this);
@@ -849,7 +848,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(ForLoop node)
         {
             // for (initstatement; loopcondition; updatestatement) { /n contents /n }
-            AppendToNewLine(FOR, EF.Keyword);
+            AppendToNewLine(FOR, ST.Keyword);
             Space();
             Append("(");
             ForceNoNewLines = true;
@@ -875,7 +874,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(ForEachLoop node)
         {
             // foreach IteratorFunction(parameters) { /n contents /n }
-            AppendToNewLine(FOREACH, EF.Keyword);
+            AppendToNewLine(FOREACH, ST.Keyword);
             Space();
             node.IteratorCall.AcceptVisitor(this);
             AppendToNewLine("{");
@@ -891,7 +890,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(WhileLoop node)
         {
             // while (condition) { /n contents /n }
-            AppendToNewLine(WHILE, EF.Keyword);
+            AppendToNewLine(WHILE, ST.Keyword);
             Space();
             Append("(");
             node.Condition.AcceptVisitor(this);
@@ -909,7 +908,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(SwitchStatement node)
         {
             // switch (expression) { /n contents /n }
-            AppendToNewLine(SWITCH, EF.Keyword);
+            AppendToNewLine(SWITCH, ST.Keyword);
             Space();
             Append("(");
             node.Expression.AcceptVisitor(this);
@@ -927,7 +926,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             // case expression:
             NestingLevel--; // de-indent this line only
-            AppendToNewLine(CASE, EF.Keyword);
+            AppendToNewLine(CASE, ST.Keyword);
             Space();
             node.Value.AcceptVisitor(this);
             Append(":");
@@ -939,7 +938,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             // default:
             NestingLevel--; // de-indent this line only
-            AppendToNewLine(DEFAULT, EF.Keyword);
+            AppendToNewLine(DEFAULT, ST.Keyword);
             Append(":");
             NestingLevel++;
             return true;
@@ -951,7 +950,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             AppendToNewLine();
             node.Target.AcceptVisitor(this);
             Space();
-            Append("=", EF.Operator);
+            Append("=", ST.Operator);
             Space();
             node.Value.AcceptVisitor(this);
 
@@ -961,7 +960,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(AssertStatement node)
         {
             // assert(condition)
-            AppendToNewLine(ASSERT, EF.Keyword);
+            AppendToNewLine(ASSERT, ST.Keyword);
             Append("(");
             node.Condition.AcceptVisitor(this);
             Append(")");
@@ -972,28 +971,28 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(BreakStatement node)
         {
             // break;
-            AppendToNewLine(BREAK, EF.Keyword);
+            AppendToNewLine(BREAK, ST.Keyword);
             return true;
         }
 
         public bool VisitNode(ContinueStatement node)
         {
             // continue;
-            AppendToNewLine(CONTINUE, EF.Keyword);
+            AppendToNewLine(CONTINUE, ST.Keyword);
             return true;
         }
 
         public bool VisitNode(StopStatement node)
         {
             // stop;
-            AppendToNewLine(STOP, EF.Keyword);
+            AppendToNewLine(STOP, ST.Keyword);
             return true;
         }
 
         public bool VisitNode(StateGoto node)
         {
             // goto expression;
-            AppendToNewLine(GOTO, EF.Keyword);
+            AppendToNewLine(GOTO, ST.Keyword);
             Space();
             node.LabelExpression.AcceptVisitor(this);
             return true;
@@ -1002,16 +1001,16 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(Goto node)
         {
             // goto labelName;
-            AppendToNewLine(GOTO, EF.Keyword);
+            AppendToNewLine(GOTO, ST.Keyword);
             Space();
-            Append(node.LabelName, EF.Label);
+            Append(node.LabelName, ST.Label);
             return true;
         }
 
         public bool VisitNode(ReturnStatement node)
         {
             // return expression;
-            AppendToNewLine(RETURN, EF.Keyword);
+            AppendToNewLine(RETURN, ST.Keyword);
             if (node.Value != null)
             {
                 Space();
@@ -1041,7 +1040,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             AppendToNewLine();
             if (node.InnerStatement != null)
             {
-                ForcedFormatType = EF.ERROR;
+                ForcedFormatType = ST.ERROR;
                 node.InnerStatement.AcceptVisitor(this);
                 ForcedFormatType = null;
             }
@@ -1049,13 +1048,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 foreach (ScriptToken errorToken in node.ErrorTokens)
                 {
-                    Append(errorToken.Value, EF.ERROR);
+                    Append(errorToken.Value, ST.ERROR);
                 }
             }
             else
             {
                 int len = node.EndPos - node.StartPos;
-                Append(new string('_', len), EF.ERROR);
+                Append(new string('_', len), ST.ERROR);
             }
 
             return true;
@@ -1065,7 +1064,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             if (node.InnerExpression != null)
             {
-                ForcedFormatType = EF.ERROR;
+                ForcedFormatType = ST.ERROR;
                 node.InnerExpression.AcceptVisitor(this);
                 ForcedFormatType = null;
             }
@@ -1073,13 +1072,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 foreach (ScriptToken errorToken in node.ErrorTokens)
                 {
-                    Append(errorToken.Value, EF.ERROR);
+                    Append(errorToken.Value, ST.ERROR);
                 }
             }
             else
             {
                 int len = node.EndPos - node.StartPos;
-                Append(new string('_', len), EF.ERROR);
+                Append(new string('_', len), ST.ERROR);
             }
 
             return true;
@@ -1094,7 +1093,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(ReplicationStatement node)
         {
-            AppendToNewLine(IF, EF.Keyword);
+            AppendToNewLine(IF, ST.Keyword);
             Space();
             Append("(");
             node.Condition.AcceptVisitor(this);
@@ -1123,7 +1122,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             if (!ifElse)
                 AppendToNewLine(); // New line only if we're not chaining
-            Append(IF, EF.Keyword);
+            Append(IF, ST.Keyword);
             Space();
             Append("(");
             node.Condition.AcceptVisitor(this);
@@ -1137,7 +1136,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             if (node.Else != null && node.Else.Statements.Any())
             {
-                AppendToNewLine(ELSE, EF.Keyword);
+                AppendToNewLine(ELSE, ST.Keyword);
                 if (invalidBlock)
                 {
                     ForceComment = false;
@@ -1172,11 +1171,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             if (scopeNeeded) Append("(");
             node.Condition.AcceptVisitor(this);
             Space();
-            Append("?", EF.Operator);
+            Append("?", ST.Operator);
             Space();
             node.TrueExpression.AcceptVisitor(this);
             Space();
-            Append(":", EF.Operator);
+            Append(":", ST.Operator);
             Space();
             node.FalseExpression.AcceptVisitor(this);
             if (scopeNeeded) Append(")");
@@ -1204,7 +1203,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             ExpressionPrescedence.Pop();
             Space();
-            Append(node.Operator.FriendlyName, EF.Operator);
+            Append(node.Operator.FriendlyName, ST.Operator);
             Space();
             ExpressionPrescedence.Push(node.Operator.Precedence);
             if (node.Operator.OperatorType is TokenType.AtSign or TokenType.DollarSign or TokenType.StrConcAssSpace or TokenType.StrConcatAssign && node.RightOperand is PrimitiveCast { CastType.Name: "string" } rpc)
@@ -1225,7 +1224,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             ExpressionPrescedence.Push(1);
             // operatorkeywordExpression
-            Append(node.Operator.FriendlyName, EF.Operator);
+            Append(node.Operator.FriendlyName, ST.Operator);
             node.Operand.AcceptVisitor(this);
 
             ExpressionPrescedence.Pop();
@@ -1237,7 +1236,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             ExpressionPrescedence.Push(NOPRESCEDENCE);
             // ExpressionOperatorkeyword
             node.Operand.AcceptVisitor(this);
-            Append(node.Operator.FriendlyName, EF.Operator);
+            Append(node.Operator.FriendlyName, ST.Operator);
 
             ExpressionPrescedence.Pop();
             return true;
@@ -1253,7 +1252,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Append("(");
             node.LeftOperand.AcceptVisitor(this);
             Space();
-            Append(node.IsEqual ? "==" : "!=", EF.Operator);
+            Append(node.IsEqual ? "==" : "!=", ST.Operator);
             Space();
             node.RightOperand.AcceptVisitor(this);
             if (scopeNeeded)
@@ -1273,7 +1272,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Append("(");
             node.LeftOperand.AcceptVisitor(this);
             Space();
-            Append(node.IsEqual ? "==" : "!=", EF.Operator);
+            Append(node.IsEqual ? "==" : "!=", ST.Operator);
             Space();
             node.RightOperand.AcceptVisitor(this);
             if (scopeNeeded)
@@ -1288,7 +1287,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             // new [( [outer [, name [, flags]]] )] class [( template )]
             ExpressionPrescedence.Push(NOPRESCEDENCE);
 
-            Append(NEW, EF.Keyword);
+            Append(NEW, ST.Keyword);
             Space();
             if (node.OuterObject != null)
             {
@@ -1329,21 +1328,21 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             // functionName( parameter1, parameter2.. )
             if (node.Function.IsGlobal)
             {
-                Append(GLOBAL, EF.Keyword);
-                Append(".", EF.Operator);
+                Append(GLOBAL, ST.Keyword);
+                Append(".", ST.Operator);
             }
             else if (node.Function.IsSuper)
             {
-                Append(SUPER, EF.Keyword);
+                Append(SUPER, ST.Keyword);
                 if (node.Function.SuperSpecifier is { } superSpecifier)
                 {
                     Append("(");
-                    Append(superSpecifier.Name, EF.Class);
+                    Append(superSpecifier.Name, ST.Class);
                     Append(")");
                 }
-                Append(".", EF.Operator);
+                Append(".", ST.Operator);
             }
-            Append(node.Function.Name, EF.Function);
+            Append(node.Function.Name, ST.Function);
             Append("(");
             int countOfNonNullArgs = node.Arguments.FindLastIndex(arg => arg is not null) + 1;
             for (int i = 0; i < countOfNonNullArgs; i++)
@@ -1423,10 +1422,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             if (node.IsClassContext && node.InnerSymbol is not DefaultReference)
             {
-                Append(".", EF.Operator);
-                Append(STATIC, EF.Keyword);
+                Append(".", ST.Operator);
+                Append(STATIC, ST.Keyword);
             }
-            Append(".", EF.Operator);
+            Append(".", ST.Operator);
             node.InnerSymbol.AcceptVisitor(this);
             return true;
         }
@@ -1435,8 +1434,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             if (node.Node is EnumValue ev)
             {
-                Append(ev.Enum.Name, EF.Enum);
-                Append(".", EF.Operator);
+                Append(ev.Enum.Name, ST.Enum);
+                Append(".", ST.Operator);
                 Append(ev.Name);
                 return true;
             }
@@ -1447,8 +1446,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DefaultReference node)
         {
             // symbolname
-            Append(DEFAULT, EF.Keyword);
-            Append(".", EF.Operator);
+            Append(DEFAULT, ST.Keyword);
+            Append(".", ST.Operator);
             Append(node.Name);
             return true;
         }
@@ -1456,7 +1455,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DynArrayLength node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append(".", EF.Operator);
+            Append(".", ST.Operator);
             Append(LENGTH);
             return true;
         }
@@ -1464,8 +1463,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DynArrayAdd node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append(".", EF.Operator);
-            Append(ADD, EF.Function);
+            Append(".", ST.Operator);
+            Append(ADD, ST.Function);
             Append("(");
             node.CountArg.AcceptVisitor(this);
             Append(")");
@@ -1475,8 +1474,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DynArrayAddItem node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append(".", EF.Operator);
-            Append(ADDITEM, EF.Function);
+            Append(".", ST.Operator);
+            Append(ADDITEM, ST.Function);
             Append("(");
             node.ValueArg.AcceptVisitor(this);
             Append(")");
@@ -1486,8 +1485,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DynArrayInsert node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append(".", EF.Operator);
-            Append(INSERT, EF.Function);
+            Append(".", ST.Operator);
+            Append(INSERT, ST.Function);
             Append("(");
             node.IndexArg.AcceptVisitor(this);
             Append(",");
@@ -1500,8 +1499,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DynArrayInsertItem node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append(".", EF.Operator);
-            Append(INSERTITEM, EF.Function);
+            Append(".", ST.Operator);
+            Append(INSERTITEM, ST.Function);
             Append("(");
             node.IndexArg.AcceptVisitor(this);
             Append(",");
@@ -1514,8 +1513,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DynArrayRemove node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append(".", EF.Operator);
-            Append(REMOVE, EF.Function);
+            Append(".", ST.Operator);
+            Append(REMOVE, ST.Function);
             Append("(");
             node.IndexArg.AcceptVisitor(this);
             Append(",");
@@ -1528,8 +1527,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DynArrayRemoveItem node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append(".", EF.Operator);
-            Append(REMOVEITEM, EF.Function);
+            Append(".", ST.Operator);
+            Append(REMOVEITEM, ST.Function);
             Append("(");
             node.ValueArg.AcceptVisitor(this);
             Append(")");
@@ -1539,8 +1538,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DynArrayFind node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append(".", EF.Operator);
-            Append(FIND, EF.Function);
+            Append(".", ST.Operator);
+            Append(FIND, ST.Function);
             Append("(");
             node.ValueArg.AcceptVisitor(this);
             Append(")");
@@ -1550,8 +1549,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DynArrayFindStructMember node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append(".", EF.Operator);
-            Append(FIND, EF.Function);
+            Append(".", ST.Operator);
+            Append(FIND, ST.Function);
             Append("(");
             node.MemberNameArg.AcceptVisitor(this);
             Append(",");
@@ -1564,8 +1563,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DynArraySort node)
         {
             node.DynArrayExpression.AcceptVisitor(this);
-            Append(".", EF.Operator);
-            Append(SORT, EF.Function);
+            Append(".", ST.Operator);
+            Append(SORT, ST.Function);
             Append("(");
             node.CompareFuncArg.AcceptVisitor(this);
             Append(")");
@@ -1591,7 +1590,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             foreach (string comment in node.CommentLines)
             {
-                AppendToNewLine($"//{comment}", EF.Comment);
+                AppendToNewLine($"//{comment}", ST.Comment);
             }
             return true;
         }
@@ -1599,20 +1598,20 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(BooleanLiteral node)
         {
             // true|false
-            Append(node.Value ? TRUE : FALSE, EF.Keyword);
+            Append(node.Value ? TRUE : FALSE, ST.Keyword);
             return true;
         }
 
         public bool VisitNode(FloatLiteral node)
         {
-            Append(FormatFloat(node.Value), EF.Number); //TODO: seperate out the minus?
+            Append(FormatFloat(node.Value), ST.Number); //TODO: seperate out the minus?
             return true;
         }
 
         public bool VisitNode(IntegerLiteral node)
         {
             // integervalue
-            Append($"{node.Value}", EF.Number);
+            Append($"{node.Value}", ST.Number);
             return true;
         }
 
@@ -1620,49 +1619,49 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             //commented version is unrealscript compliant, but harder to parse
             //Append(node.Outer is StructLiteral ? "\"{EncodeName(node.Value)}\"" : "'{EncodeName(node.Value)}'");
-            Append($"'{EncodeName(node.Value)}'", EF.Name);
+            Append($"'{EncodeName(node.Value)}'", ST.Name);
             return true;
         }
 
         public bool VisitNode(ObjectLiteral node)
         {
-            Append(node.Class.Name, EF.Class);
+            Append(node.Class.Name, ST.Class);
             node.Name.AcceptVisitor(this);
             return true;
         }
 
         public bool VisitNode(NoneLiteral node)
         {
-            Append(NONE, EF.Keyword);
+            Append(NONE, ST.Keyword);
             return true;
         }
 
         public bool VisitNode(VectorLiteral node)
         {
-            Append(VECT, EF.Keyword);
+            Append(VECT, ST.Keyword);
             Append("(");
-            Append(FormatFloat(node.X), EF.Number);
+            Append(FormatFloat(node.X), ST.Number);
             Append(",");
             Space();
-            Append(FormatFloat(node.Y), EF.Number);
+            Append(FormatFloat(node.Y), ST.Number);
             Append(",");
             Space();
-            Append(FormatFloat(node.Z), EF.Number);
+            Append(FormatFloat(node.Z), ST.Number);
             Append(")");
             return true;
         }
 
         public bool VisitNode(RotatorLiteral node)
         {
-            Append(ROT, EF.Keyword);
+            Append(ROT, ST.Keyword);
             Append("(");
-            Append(FormatRotator(node.Pitch), EF.Number);
+            Append(FormatRotator(node.Pitch), ST.Number);
             Append(",");
             Space();
-            Append(FormatRotator(node.Yaw), EF.Number);
+            Append(FormatRotator(node.Yaw), ST.Number);
             Append(",");
             Space();
-            Append(FormatRotator(node.Roll), EF.Number);
+            Append(FormatRotator(node.Roll), ST.Number);
             Append(")");
             return true;
 
@@ -1683,13 +1682,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(StringLiteral node)
         {
             // "string"
-            Append($"\"{EncodeString(node.Value)}\"", EF.String);
+            Append($"\"{EncodeString(node.Value)}\"", ST.String);
             return true;
         }
 
         public bool VisitNode(StringRefLiteral node)
         {
-            Append($"${node.Value}", EF.Number);
+            Append($"${node.Value}", ST.Number);
             return true;
         }
         public bool VisitNode(StructLiteral node)
@@ -1779,7 +1778,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             // Label
             var temp = NestingLevel;
             NestingLevel = LabelNest;
-            AppendToNewLine(node.Name, EF.Label);
+            AppendToNewLine(node.Name, ST.Label);
             Append(":");
             NestingLevel = temp;
             return true;
@@ -2024,7 +2023,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
             foreach (string spec in specs)
             {
-                Append(spec, EF.Specifier);
+                Append(spec, ST.Specifier);
                 Space();
             }
         }
@@ -2059,7 +2058,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 string digits = floatString[..ePos].Replace(".", "");
                 floatString = $"{minus}0.{new string('0', exponent - 1)}{digits}";
             }
-            else if (!floatString.Contains(".") && !floatString.Contains("e"))
+            else if (!floatString.Contains('.') && !floatString.Contains('e'))
             {
                 //need a decimal place in the float so that it does not get parsed as an int
                 floatString += $".0";
@@ -2121,7 +2120,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return sb.ToString();
         }
 
-        private void Join(List<string> items, string seperator, EF formatType = EF.None)
+        private void Join(List<string> items, string seperator, ST formatType = ST.None)
         {
             Append(items[0], formatType);
             for (int i = 1; i < items.Count; i++)
@@ -2148,9 +2147,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
     {
         TOutput GetOutput();
 
-        void AppendToNewLine(string text, EF formatType);
+        void AppendToNewLine(string text, ST formatType);
 
-        void Append(string text, EF formatType);
+        void Append(string text, ST formatType);
 
         void Space();
 
@@ -2172,7 +2171,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public string GetOutput() => string.Join("\n", Lines.Append(currentLine));
 
-        public virtual void AppendToNewLine(string text, EF _)
+        public virtual void AppendToNewLine(string text, ST _)
         {
             if (!ForceNoNewLines)
             {
@@ -2186,12 +2185,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Append(text, _);
         }
 
-        public virtual void Append(string text, EF _)
+        public virtual void Append(string text, ST _)
         {
             currentLine += text;
         }
 
-        public void Space() => Append(" ", EF.None);
+        public void Space() => Append(" ", ST.None);
 
         public void ForceAlignment()
         {
@@ -2211,7 +2210,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public string GetOutput() => Builder.ToString();
 
-        public void AppendToNewLine(string text, EF _)
+        public void AppendToNewLine(string text, ST _)
         {
             if (!ForceNoNewLines)
             {
@@ -2225,13 +2224,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Append(text, _);
         }
 
-        public void Append(string text, EF _)
+        public void Append(string text, ST _)
         {
             Builder.Append(text);
             CurrentLineLength += text.Length;
         }
 
-        public void Space() => Append(" ", EF.None);
+        public void Space() => Append(" ", ST.None);
 
         public void ForceAlignment()
         {
@@ -2291,7 +2290,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 ";
         }
 
-        public void AppendToNewLine(string text, EF formatType)
+        public void AppendToNewLine(string text, ST formatType)
         {
             if (!ForceNoNewLines)
             {
@@ -2306,37 +2305,37 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Append(text, formatType);
         }
 
-        public void Append(string text, EF formatType)
+        public void Append(string text, ST formatType)
         {
             lineDisplayLength += text.Length;
             switch (formatType)
             {
-                case EF.None:
+                case ST.None:
                     currentLine += WebUtility.HtmlEncode(text);
                     break;
-                case EF.Keyword:
-                case EF.Specifier:
-                case EF.Class:
-                case EF.String:
-                case EF.Name:
-                case EF.Number:
-                case EF.Enum:
-                case EF.Comment:
-                case EF.ERROR:
-                case EF.Function:
-                case EF.State:
-                case EF.Label:
-                case EF.Operator:
-                case EF.Struct:
+                case ST.Keyword:
+                case ST.Specifier:
+                case ST.Class:
+                case ST.String:
+                case ST.Name:
+                case ST.Number:
+                case ST.Enum:
+                case ST.Comment:
+                case ST.ERROR:
+                case ST.Function:
+                case ST.State:
+                case ST.Label:
+                case ST.Operator:
+                case ST.Struct:
                 default:
                     Span(text, formatType);
                     break;
             }
         }
 
-        private void Span(string text, EF formatType)
+        private void Span(string text, ST formatType)
         {
-            currentLine += $"<span class=\"{nameof(EF)}-{formatType}\">{WebUtility.HtmlEncode(text)}</span>";
+            currentLine += $"<span class=\"{nameof(ST)}-{formatType}\">{WebUtility.HtmlEncode(text)}</span>";
         }
 
         public void Space()

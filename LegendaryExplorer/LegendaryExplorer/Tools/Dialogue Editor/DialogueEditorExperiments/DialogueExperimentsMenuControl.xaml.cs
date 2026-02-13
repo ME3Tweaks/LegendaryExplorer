@@ -28,6 +28,20 @@ namespace LegendaryExplorer.Tools.Dialogue_Editor.DialogueEditorExperiments
             return null;
         }
 
+        // EXPERIMENTS: MGAMERZ-----------------------------------------------------------
+        #region Mgamerz's experiments
+        private void AddSharedFXASpeakerToAll_Click(object sender, RoutedEventArgs e)
+        {
+            DialogueEditorExperimentsM.AddSpeakerWithSharedFXAToAllConvos(GetDEWindow());
+        }
+
+        private void ExtractAllAudioBySpeakerTag_Click(object sender, RoutedEventArgs e)
+        {
+            DialogueEditorExperimentsM.ExtractAllAudioFromSpeakerByTag(GetDEWindow());
+        }
+
+        #endregion
+
         // EXPERIMENTS: EXKYWOR------------------------------------------------------------
         #region Exkywor's experiments
         private void UpdateAudioNodeStrRef_Click(object sender, RoutedEventArgs e)

@@ -31,23 +31,43 @@
                 <RowDefinition Height="5"/>
                 <RowDefinition Height="100"/>
             </Grid.RowDefinitions>
-            <ToolBar ToolBarTray.IsLocked="True" Visibility="Collapsed">
+            <ToolBar ToolBarTray.IsLocked="True" Visibility="Visible">
+                <Button Content="Theme Editor" Click="ThemePicker_OnClick"/>
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                 <Label IsEnabled="False">Text Size:</Label>
-                <Button Name="FontSizeIncrease_Button" ToolTip="Add a new element to the selected array"
+                <Button Name="FontSizeIncrease_Button" ToolTip="Increase font size"
                         Command="{Binding IncreaseFontSizeCommand}"
                         VerticalAlignment="Center">
                     <fa5:FontAwesome Icon="Solid_Plus"/>
                 </Button>
-                <Button Name="FontSizeDecrease_Button" ToolTip="Add a new element to the selected array"
+                <Button Name="FontSizeDecrease_Button" ToolTip="Decrease font size"
                         Command="{Binding DecreaseFontSizeCommand}"
                         VerticalAlignment="Center">
                     <fa5:FontAwesome Icon="Solid_Minus"/>
                 </Button>
                 <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                <Button Content="Theme" Click="ThemePicker_OnClick"/>
+                <Button Name="DecreaseIndent_Button" ToolTip="Decrease indent of selected lines"
+                        Command="{Binding DecreaseIndentCommand}"
+                        VerticalAlignment="Center">
+                    <fa5:FontAwesome Icon="Solid_Indent" FlipOrientation="Horizontal"/>
+                </Button>
+                <Button Name="IncreaseIndent_Button" ToolTip="Increase indent of selected lines"
+                        Command="{Binding IncreaseIndentCommand}"
+                        VerticalAlignment="Center">
+                    <fa5:FontAwesome Icon="Solid_Indent"/>
+                </Button>
+                <Button Name="Comment_Button" ToolTip="Comment out the selected lines"
+                        Command="{Binding AddCommentCommand}"
+                        VerticalAlignment="Center">
+                    <fa5:FontAwesome Icon="Solid_Comment"/>
+                </Button>
+                <Button Name="Uncomment_Button" ToolTip="Uncomment the selected lines"
+                        Command="{Binding UncommentCommand}"
+                        VerticalAlignment="Center">
+                    <fa5:FontAwesome Icon="Solid_CommentSlash"/>
+                </Button>
             </ToolBar>
             <ide:UnrealScriptTextEditor x:Name="textEditor" Grid.Row="1" Document="{Binding Document}" SyntaxHighlighting="Unrealscript"
-                                        Background="#1E1E1E" Foreground="#DBDBDB" LineNumbersForeground ="#2B90AE"
                                         FontFamily="Consolas" ContextMenuOpening="TextEditor_OnContextMenuOpening" ContextMenuClosing="TextEditor_OnContextMenuClosing"
                                         MouseHover="TextEditor_OnMouseHover" MouseHoverStopped="TextEditor_OnMouseHoverStopped">
                 <avalonedit:TextEditor.InputBindings>
@@ -72,8 +92,6 @@
                 <avalonedit:TextEditor.Resources>
                     <Style TargetType="{x:Type avalonedit:TextEditor}">
                         <Setter Property="FlowDirection" Value="LeftToRight" />
-                        <Setter Property="Background" Value="#1E1E1E"/>
-                        <Setter Property="Foreground" Value="#DBDBDB"/>
                         <Setter Property="LineNumbersForeground" Value="Black"/>
                         <Setter Property="Template">
                             <Setter.Value>

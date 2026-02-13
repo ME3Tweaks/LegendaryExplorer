@@ -464,6 +464,23 @@ namespace LegendaryExplorerCore.Helpers
             return false;
         }
 
+        /// <summary>
+        /// Given a filepath, determine the name of the DLC folder. This looks for 'BIOGame'
+        /// </summary>
+        /// <param name="path">A filepath, either to a folder or file.</param>
+        /// <returns>The folder path after 'DLC', otherwise null.</returns>
+        public static string DetermineDLCNameFromPath(this string path)
+        {
+            var parts = path.Split(Path.DirectorySeparatorChar);
+            var dlcIndex = parts.IndexOf("DLC"); // We purposely do not do case insensitive here
+            if (dlcIndex != -1 && parts.Length > dlcIndex + 1)
+            {
+                return parts[dlcIndex + 1];
+            }
+            return null;
+        }
+
+
         public static bool IsNumericallyEqual(this string first, string second)
         {
             return double.TryParse(first, out double a)
@@ -909,7 +926,7 @@ namespace LegendaryExplorerCore.Helpers
 
             static int RadToURR(double d)
             {
-                return ((float)(d * (180.0 / Math.PI))).DegreesToUnrealRotationUnits();
+                return ((float)d).RadiansToUnrealRotationUnits();
             }
         }
         public static Vector3 GetAxis(this Matrix4x4 m, int axis) => new Vector3(m[axis, 0], m[axis, 1], m[axis, 2]);
@@ -935,6 +952,14 @@ namespace LegendaryExplorerCore.Helpers
                 SharpDX.MathUtil.IsZero(scale.Z))
             {
                 return (translation, scale, default);
+            }
+
+            // Detect reflection via determinant sign
+            // Negative determinant = odd number of axis reflections; assign to X by convention
+            float det = Vector3.Dot(new(m.M11, m.M12, m.M13), Vector3.Cross(new(m.M21, m.M22, m.M23), new(m.M31, m.M32, m.M33)));
+            if (det < 0f)
+            {
+                scale.X = -scale.X;
             }
 
             m.M11 /= scale.X;

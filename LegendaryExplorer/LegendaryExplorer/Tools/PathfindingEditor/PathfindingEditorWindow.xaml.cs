@@ -601,9 +601,9 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
             {
                 obj = obj.Substring(16); // Remove prefix.
                 //LastGPSUpdate = DateTime.Now;
-                if (obj.StartsWith("PLAYERLOC="))
+                if (obj.IndexOf("PLAYERLOC=") is int locIdx and not -1)
                 {
-                    var pos = obj.Substring(10).Split(',');
+                    var pos = obj.Substring(locIdx, 10).Split(',');
                     //Debug.WriteLine($"Updating player position to {pos[0]}, {pos[1]}");
                     PlayerGPSObject.SetOffset(new PointF(float.Parse(pos[0]), float.Parse(pos[1])));
 
@@ -615,9 +615,9 @@ namespace LegendaryExplorer.Tools.PathfindingEditor
                     graphEditor.nodeLayer.ChildPaintInvalid = true;
                     //RefreshGraph();
                 }
-                else if (obj.StartsWith("PLAYERROT="))
+                if (obj.IndexOf("PLAYERROT=") is int rotIdx and not -1)
                 {
-                    var rot = obj.Substring(10).Split(',');
+                    var rot = obj.Substring(rotIdx, 10).Split(',');
                     //Debug.WriteLine($"Updating player rotation (yaw) to {rot[1]}");
                     PlayerGPSObject.SetYaw(int.Parse(rot[1]).UnrealRotationUnitsToDegrees());
                     graphEditor.nodeLayer.ChildPaintInvalid = true;

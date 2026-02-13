@@ -174,23 +174,52 @@ namespace LegendaryExplorer.GameInterop
 
             DeletePreLEXInteropASI(game);
 
-            // 05/15/2022
-            // Change to scanning for matching md5
-            // This way you can install an asi with any name and it will determine if another same-asi
-            // is installed (this won't handle different builds/versions like mod manager but it's better
-            // than not doing any check at all)
-            // - Mgamerz
-#if DEBUG
-            // If you're developing the LEX Interop ASI you can 
-            // force it to think it's installed and ignore the MD5 check.
-            if (game is MEGame.LE1 or MEGame.LE3)
+            // 02/03/2026 - Keep OT logic unchanged, use new detection system
+            // for LE V2 SDK ASIs.
+            if (game.IsOTGame())
             {
-                return true; // DEV ONLY
+                // 05/15/2022
+                // Change to scanning for matching md5
+                // This way you can install an asi with any name and it will determine if another same-asi
+                // is installed (this won't handle different builds/versions like mod manager but it's better
+                // than not doing any check at all)
+                // - Mgamerz
+                string asiDir = GetAsiDir(game);
+                string asiMD5 = GameController.GetInteropTargetForGame(game).InteropASIMD5;
+                return IsASIInstalled(asiMD5, asiDir);
             }
-#endif
-            string asiDir = GetAsiDir(game);
-            string asiMD5 = GameController.GetInteropTargetForGame(game).InteropASIMD5;
-            return IsASIInstalled(asiMD5, asiDir);
+            else if (game.IsLEGame())
+            {
+                // 02/03/2026 - Removed the always true on debug builds,
+                // to make this work as expected, bump the Interop version 
+                // and bump it as well in SharedVersion.h in the Interop ASI
+                // project.
+                var interopId = game switch
+                {
+                    MEGame.LE1 => ASIModIDs.LE1_LEX_INTEROP,
+                    MEGame.LE2 => ASIModIDs.LE2_LEX_INTEROP,
+                    MEGame.LE3 => ASIModIDs.LE3_LEX_INTEROP,
+                    _ => 0
+                };
+
+                if (interopId == 0)
+                {
+                    throw new Exception($"Unsupported game passed to {nameof(IsInteropASIInstalled)}");
+                }
+
+                foreach (var asi in ASIModIDs.GetInstalledASIModIds(MEDirectories.GetExecutableFolderPath(game)))
+                {
+                    if (asi.id == interopId && asi.version >= GameController.GetInteropVersion(game))
+                    {
+                        // If we are out of date, requesting ASI installation should clear the old one.
+                        // This only works if old versions are in the ASI manifest as Mod Manager does not
+                        // ID ASI files via the V2 versioning system as of 02/03/2026.
+                        return true;
+                    }
+                }
+            }
+         
+            return false;
         }
 
         //https://stackoverflow.com/a/10520086
@@ -247,13 +276,13 @@ namespace LegendaryExplorer.GameInterop
                 switch (game)
                 {
                     case MEGame.LE1:
-                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE1_LEX_INTEROP, 8);
+                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE1_LEX_INTEROP, LE1InteropTarget.InteropASIVersion);
                         break;
                     case MEGame.LE2:
-                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE2_LEX_INTEROP, 8);
+                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE2_LEX_INTEROP, LE2InteropTarget.InteropASIVersion);
                         break;
                     case MEGame.LE3:
-                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE3_LEX_INTEROP, 8);
+                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE3_LEX_INTEROP, LE3InteropTarget.InteropASIVersion);
                         break;
                 }
             }

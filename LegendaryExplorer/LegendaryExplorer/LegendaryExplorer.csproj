@@ -135,7 +135,7 @@
 			<NoWarn>NU1701</NoWarn> <!-- Package targets .NETFramework,Version=v4.8.1, but works fine on net6.0-windows -->
 		</PackageReference>
 		<PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
-		<PackageReference Include="MSTest.TestAdapter" Version="3.8.3" />
+		<PackageReference Include="MSTest.TestAdapter" Version="4.0.2" />
 		<PackageReference Include="NAudio" Version="2.2.1" />
 		<PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
 		<PackageReference Include="SharpDX" Version="4.2.0" />
@@ -148,10 +148,10 @@
 		<PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
 		<PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
 		<PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20071.2" />
-		<PackageReference Include="System.Drawing.Common" Version="9.0.6" />
+		<PackageReference Include="System.Drawing.Common" Version="10.0.2" />
 		<PackageReference Include="TerraFX.Interop.Windows" Version="10.0.26100.2" />
 		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.21" />
-		<PackageReference Include="NuGet.CommandLine" Version="6.13.2"> <!-- This is needed for trimming during build -->
+		<PackageReference Include="NuGet.CommandLine" Version="7.0.1"> <!-- This is needed for trimming during build -->
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

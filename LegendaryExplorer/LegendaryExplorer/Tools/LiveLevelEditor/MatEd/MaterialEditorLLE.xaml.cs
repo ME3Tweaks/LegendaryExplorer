@@ -179,7 +179,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             {
                 try
                 {
-                    LoadedMaterials.Add(command[2]);
+                    LoadedMaterials.Add(string.Join(' ', command[2..]));
                 }
                 catch (Exception ex)
                 {
@@ -188,7 +188,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             }
         }
 
-        private void LoadCustomMaterialInGame(IMEPackage incomingPackage, string materialIMP)
+        private void LoadCustomMaterialInGame(IMEPackage incomingPackage, ExportEntry material)
         {
             InteropHelper.SendMessageToGame($"{InteropCommands.INTEROP_SHOWLOADINGINDICATOR}", Game);
             InteropHelper.SendFileToGame(incomingPackage); // Send package into game for loading
@@ -203,7 +203,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
                 Thread.Sleep(1000);
             }).ContinueWithOnUIThread(x =>
             {
-                InteropHelper.SendMessageToGame($"{InteropCommands.LME_SET_MATERIAL} {SelectedComponentSlot.SlotIdx} {materialIMP}", Game);
+                InteropHelper.SendMessageToGame($"{InteropCommands.LME_SET_MATERIAL} {SelectedComponentSlot.SlotIdx} \"{material.ClassName} {material.MemoryFullPath}\"", Game);
                 InteropHelper.SendMessageToGame($"{InteropCommands.INTEROP_HIDELOADINGINDICATOR}", Game);
             });
         }
@@ -273,18 +273,18 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
                 void tryFindMaterial(IMEPackage packageToInspect)
                 {
 
-                    if (packageToInspect.FindExport(SelectedComponentSlot.MaterialMemoryPath) != null)
+                    if (packageToInspect.FindExport(SelectedComponentSlot.MaterialMemoryPath, SelectedComponentSlot.MaterialClass) != null)
                     {
-                        preloadMaterial = packageToInspect.FindExport(SelectedComponentSlot.MaterialMemoryPath);
+                        preloadMaterial = packageToInspect.FindExport(SelectedComponentSlot.MaterialMemoryPath, SelectedComponentSlot.MaterialClass);
                     }
 
                     // Try under PersistentLevel.
                     if (preloadMaterial == null &&
-                        packageToInspect.FindExport($"TheWorld.PersistentLevel.{SelectedComponentSlot.MaterialMemoryPath}") !=
+                        packageToInspect.FindExport($"TheWorld.PersistentLevel.{SelectedComponentSlot.MaterialMemoryPath}", SelectedComponentSlot.MaterialClass) !=
                         null)
                     {
                         preloadMaterial =
-                            packageToInspect.FindExport($"TheWorld.PersistentLevel.{SelectedComponentSlot.MaterialMemoryPath}");
+                            packageToInspect.FindExport($"TheWorld.PersistentLevel.{SelectedComponentSlot.MaterialMemoryPath}", SelectedComponentSlot.MaterialClass);
                     }
                 }
 
@@ -365,7 +365,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
 
         private void SetMaterial()
         {
-            InteropHelper.SendMessageToGame($"{InteropCommands.LME_SET_MATERIAL} {SelectedComponentSlot.SlotIdx} {SelectedMaterial}", Game);
+            InteropHelper.SendMessageToGame($"{InteropCommands.LME_SET_MATERIAL} {SelectedComponentSlot.SlotIdx} \"{SelectedMaterial}\"", Game);
         }
 
         private void LoadCommands()
@@ -437,7 +437,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             //pe.LoadPackage(newP);
             //pe.Show();
             //return;
-            LoadCustomMaterialInGame(newP, matExp.MemoryFullPath);
+            LoadCustomMaterialInGame(newP, matExp);
         }
 
         public async void SaveMaterialPackage()

@@ -6,18 +6,106 @@
                                  xmlns:local="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor"
                                  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
                                  xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+                                 xmlns:fa5="http://schemas.fontawesome.com/icons/"
+                                 xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
                                  mc:Ignorable="d"
                                  DataContext="{Binding RelativeSource={RelativeSource Self}}"
-                                 Title="IdeThemePicker" Height="450" Width="800">
+                                 Height="500" Width="600"
+                                 Closing="Window_Closing">
     <Window.Resources>
         <DataTemplate DataType="{x:Type local:ColorBinding}">
             <StackPanel Orientation="Horizontal" Margin="0,2">
                 <TextBlock Text="{Binding Name, Mode=OneTime}" MinWidth="100" FontWeight="Bold" VerticalAlignment="Center"/>
-                <xctk:ColorPicker SelectedColor="{Binding Color}"/>
+                <xctk:ColorPicker SelectedColor="{Binding Color}" Width="180"/>
             </StackPanel>
         </DataTemplate>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVis"/>
     </Window.Resources>
-    <Grid>
-        <ItemsControl ItemsSource="{Binding Colors, Mode=OneTime}"/>
+    <Grid Margin="8">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="190"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left: Theme list -->
+        <DockPanel Grid.Column="0" Margin="0,0,8,0">
+            <Border BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="3">
+                <DockPanel>
+                    <!-- New theme button pinned to bottom of the list area -->
+                    <Border DockPanel.Dock="Bottom" BorderBrush="#CCCCCC" BorderThickness="0,1,0,0">
+                        <Button Click="New_OnClick" Cursor="Hand"
+                                Background="Transparent" BorderThickness="0" HorizontalContentAlignment="Left" Padding="8,6">
+                            <StackPanel Orientation="Horizontal">
+                                <fa5:FontAwesome Icon="Solid_Plus" FontSize="10" VerticalAlignment="Center" Foreground="#888888" Margin="0,0,6,0"/>
+                                <TextBlock Text="New Theme" Foreground="#888888"/>
+                            </StackPanel>
+                        </Button>
+                    </Border>
+
+                    <ListBox x:Name="ThemeListBox"
+                             ItemsSource="{Binding ThemeEntries}"
+                             SelectedItem="{Binding SelectedThemeEntry}"
+                             SelectionChanged="ThemeListBox_SelectionChanged"
+                             BorderThickness="0"
+                             HorizontalContentAlignment="Stretch">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="6,5"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="{x:Type local:ThemeEntry}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <fa5:FontAwesome Grid.Column="0" Icon="Solid_Circle" FontSize="8" Foreground="#FF0000" VerticalAlignment="Center"
+                                                     Visibility="{Binding IsDirty, Converter={StaticResource BoolToVis}}" Padding="4"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsDefault}" Value="True">
+                                                        <Setter Property="FontStyle" Value="Italic"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <Button Grid.Column="2"
+                                            Click="DeleteInline_OnClick"
+                                            Tag="{Binding}"
+                                            Visibility="{Binding IsDefault, Converter={StaticResource InverseBoolToVis}}"
+                                            Background="Transparent" BorderThickness="0"
+                                            Cursor="Hand" Padding="4,0" VerticalAlignment="Center"
+                                            ToolTip="Delete this theme">
+                                        <fa5:FontAwesome Icon="Solid_Times" FontSize="16" Foreground="#999999"/>
+                                    </Button>
+                                    <Button Grid.Column="3"
+                                            Click="Save_OnClick"
+                                            Tag="{Binding}"
+                                            Visibility="{Binding CanDelete, Converter={StaticResource BoolToVis}}"
+                                            Background="Transparent" BorderThickness="0"
+                                            Cursor="Hand" Padding="4,0" VerticalAlignment="Center"
+                                            ToolTip="Save changes">
+                                        <fa5:FontAwesome Icon="Solid_Save" FontSize="16" Foreground="#999999"/>
+                                    </Button>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </Border>
+        </DockPanel>
+
+        <!-- Right: Color pickers -->
+        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding Colors, Mode=OneTime}"/>
+        </ScrollViewer>
     </Grid>
 </misc:NotifyPropertyChangedWindowBase>

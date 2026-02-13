@@ -640,6 +640,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 }
             }
 
+            int lodNum = 0;
             // STEP 2: LODS
             foreach (var lodmodel in m.LODModels)
             {
@@ -669,6 +670,22 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                     triangles.Add(new Triangle(lodmodel.IndexBuffer[i], lodmodel.IndexBuffer[i + 1], lodmodel.IndexBuffer[i + 2]));
                 }
                 var mesh = new Mesh<TVertex>(Device, triangles, vertices);
+
+                if (preloadedData?.lodMaterialMaps is { } lodMatMaps
+                    && lodMatMaps.Count > lodNum
+                    && lodMatMaps[lodNum] is { } matMap
+                    && matMap.Length == lodmodel.Sections.Length)
+                {
+                    for (int i = 0; i < lodmodel.Sections.Length; i++)
+                    {
+                        int matIndex = lodmodel.Sections[i].MaterialIndex;
+                        if (matIndex >= 0 && matIndex < matMap.Length)
+                        {
+                            lodmodel.Sections[i].MaterialIndex = (ushort)matMap[matIndex];
+                        }
+                    }
+                }
+
                 // Sections
                 var sections = new List<ModelPreviewSection>();
                 foreach (var section in lodmodel.Sections)
@@ -679,6 +696,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                     }
                 }
                 LODs.Add(new ModelPreviewLOD<TVertex>(mesh, sections));
+                lodNum++;
             }
         }
 
@@ -724,7 +742,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         public object meshObject;
         public List<ModelPreviewSection> sections;
         public List<PreloadedTextureData> texturePreviewMaterials;
-
+        public List<int[]> lodMaterialMaps;
     }
 
     public class PreloadedTextureData

@@ -292,7 +292,18 @@
                     Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
                     GameType="{Binding Pcc, Converter={StaticResource GameTypeConverter}}" Margin="0,-4" />
                 <StatusBarItem>
-                    <TextBlock Name="StatusBar_LeftMostText" Text="{Binding StatusText}" />
+                    <TextBlock Name="StatusBar_LeftMostText">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding StatusText}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                                        <Setter Property="Text" Value="{Binding BusyText}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </StatusBarItem>
                 <StatusBarItem>
                     <TextBlock Name="StatusBar_OtherText" Text="" />
@@ -1223,6 +1234,12 @@
                                 <MenuItem Header="Delete Speaker" Command="{Binding DeleteSpeakerCommand}" />
                                 <MenuItem Header="Rename" Command="{Binding ChangeNameCommand}"
                                           ToolTip="Rename the speaker's tag" />
+                                <Separator />
+                                <MenuItem Header="Extract All Audio for Speaker" Command="{Binding ExtractSpeakerAudioCommand}">
+                                    <MenuItem.Icon>
+                                        <fa:ImageAwesome Icon="Solid_FileAudio" Width="16" Height="16" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
                             </ContextMenu>
                         </ListBox.ContextMenu>
                     </ListBox>

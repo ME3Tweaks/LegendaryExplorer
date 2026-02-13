@@ -1,8 +1,4 @@
-﻿using System;
-using System.Buffers.Text;
-using System.Collections.Generic;
-using System.Linq;
-using LegendaryExplorerCore.Helpers;
+﻿using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
@@ -10,6 +6,10 @@ using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
+using System;
+using System.Buffers.Text;
+using System.Collections.Generic;
+using System.Linq;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Parsing
@@ -190,14 +190,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             var startPos = CurrentPosition;
 
             //BEGIN
-            CurrentToken.SyntaxType = EF.Keyword;
+            CurrentToken.SyntaxType = ST.Keyword;
             Tokens.Advance();
             var objOrTemplateToken = CurrentToken;
-            objOrTemplateToken.SyntaxType = EF.Keyword;
+            objOrTemplateToken.SyntaxType = ST.Keyword;
             Tokens.Advance();
             bool isTemplate = objOrTemplateToken.Value.CaseInsensitiveEquals("Template");
 
-            if (!Matches("Class", EF.Keyword) || !Matches(TokenType.Assign, EF.Operator))
+            if (!Matches("Class", ST.Keyword) || !Matches(TokenType.Assign, ST.Operator))
             {
                 throw ParseError("Expected 'Class=' after 'Begin Object'!", CurrentPosition);
             }
@@ -207,7 +207,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 throw ParseError("Expected name of class!", CurrentPosition);
             }
-            classNameToken.SyntaxType = EF.Class;
+            classNameToken.SyntaxType = ST.Class;
 
             if (!Symbols.TryGetType(classNameToken.Value, out Class objectClass))
             {
@@ -219,7 +219,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 TypeError($"A '{objectClass.Name}' must be declared within a '{outerClass.Name}', not a '{SubObjectClasses.Peek().Name}'!", classNameToken);
             }
 
-            if (!Matches("Name", EF.Keyword) || !Matches(TokenType.Assign, EF.Operator))
+            if (!Matches("Name", ST.Keyword) || !Matches(TokenType.Assign, ST.Operator))
             {
                 throw ParseError("Expected 'Name=' after Class reference!", CurrentPosition);
             }
@@ -252,10 +252,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 Tokens.Advance();
             }
             //END
-            CurrentToken.SyntaxType = EF.Keyword;
+            CurrentToken.SyntaxType = ST.Keyword;
             Tokens.Advance();
             //Object or Template
-            CurrentToken.SyntaxType = EF.Keyword;
+            CurrentToken.SyntaxType = ST.Keyword;
             Tokens.Advance();
 
             var subObj = new Subobject(objectName, objectClass, new List<Statement>(), isTemplate, startPos, PrevToken.EndPos)
@@ -273,21 +273,21 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         {
             var startPos = CurrentPosition;
 
-            if (!Matches("BEGIN", EF.Keyword))
+            if (!Matches("BEGIN", ST.Keyword))
             {
                 return null;
             }
-            if (!Matches("OBJECT", EF.Keyword))
+            if (!Matches("OBJECT", ST.Keyword))
             {
                 return null;
             }
-            if (!Matches("Class", EF.Keyword) || !Matches(TokenType.Assign, EF.Operator))
+            if (!Matches("Class", ST.Keyword) || !Matches(TokenType.Assign, ST.Operator))
             {
                 throw ParseError("Expected 'Class=' after 'Begin Object'!", CurrentPosition);
             }
 
             var classNameToken = Consume(TokenType.Word) ?? throw ParseError("Expected name of class!", CurrentPosition);
-            classNameToken.SyntaxType = EF.Class;
+            classNameToken.SyntaxType = ST.Class;
 
             if (!Symbols.TryGetType(classNameToken.Value, out Class objectClass))
             {
@@ -299,7 +299,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 TypeError($"A '{objectClass.Name}' must be declared within a '{outerClass.Name}', not a '{SubObjectClasses.Peek().Name}'!", classNameToken);
             }
 
-            if (!Matches("Name", EF.Keyword) || !Matches(TokenType.Assign, EF.Operator))
+            if (!Matches("Name", ST.Keyword) || !Matches(TokenType.Assign, ST.Operator))
             {
                 throw ParseError("Expected 'Name=' after Class reference!", CurrentPosition);
             }
@@ -358,10 +358,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 SubObjectClasses.Pop();
             }
             //END
-            CurrentToken.SyntaxType = EF.Keyword;
+            CurrentToken.SyntaxType = ST.Keyword;
             Tokens.Advance();
             //Object
-            CurrentToken.SyntaxType = EF.Keyword;
+            CurrentToken.SyntaxType = ST.Keyword;
             Tokens.Advance();
 
             //T3D support: condense dynamic array by-index assignments into a single DynamicArrayLiteral assignment
@@ -512,7 +512,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     throw ParseError($"Cannot assign directly to a static array! You must assign to each index individually, (eg. {propName.Value}[0] = ...)", propName);
                 }
-                if (Matches(TokenType.Assign, EF.Operator))
+                if (Matches(TokenType.Assign, ST.Operator))
                 {
                     Expression literal = ParseValue(targetType);
                     return new AssignStatement(target, literal, propName.StartPos, literal.EndPos);
@@ -571,7 +571,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             else
             {
                 var literalStart = CurrentPosition;
-                bool isNegative = Matches(TokenType.MinusSign, EF.Operator);
+                bool isNegative = Matches(TokenType.MinusSign, ST.Operator);
 
                 literal = ParseLiteral();
                 if (literal is null)
@@ -588,7 +588,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         }
                         else if (IsT3D && targetType is Enumeration enm && enm.Values.FirstOrDefault(val => val.Name.CaseInsensitiveEquals(token.Value)) is EnumValue enumValue)
                         {
-                            token.SyntaxType = EF.Enum;
+                            token.SyntaxType = ST.Enum;
                             Tokens.AddDefinitionLink(enm, token);
                             literal = NewSymbolReference(enumValue, token, false);
                         }
@@ -789,7 +789,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             if (Symbols.TryGetType(prevToken.Value, out Enumeration enum2) && enum2 == enumeration
                                                                                            && Matches(TokenType.Dot) && Consume(TokenType.Word) is ScriptToken enumValueToken)
                             {
-                                prevToken.SyntaxType = EF.Enum;
+                                prevToken.SyntaxType = ST.Enum;
                                 Tokens.AddDefinitionLink(enum2, prevToken);
                                 if (enumeration.Values.FirstOrDefault(val => val.Name.CaseInsensitiveEquals(enumValueToken.Value)) is EnumValue enumValue)
                                 {
@@ -913,8 +913,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
             else
             {
-                if (!IsT3D) TypeError($"{scopeObject.GetScope()} has no member named '{token.Value}'!", token);
-                symbol = new ErrorType();
+                if (!IsT3D)
+                {
+                    TypeError($"{scopeObject.GetScope()} has no member named '{token.Value}'!", token);
+                }
+
+                symbol = new ErrorType(scopeObject);
             }
 
             if (!inStruct && !IsT3D && (token.Value.CaseInsensitiveEquals("Name") || token.Value.CaseInsensitiveEquals("ObjectArchetype")))
@@ -936,7 +940,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     Tokens.AddDefinitionLink(destType, token);
                     if (destType is Enumeration enm && Matches(TokenType.Dot))
                     {
-                        token.SyntaxType = EF.Enum;
+                        token.SyntaxType = ST.Enum;
                         if (Consume(TokenType.Word) is { } enumValName
                          && enm.Values.FirstOrDefault(val => val.Name.CaseInsensitiveEquals(enumValName.Value)) is EnumValue enumValue)
                         {
@@ -952,7 +956,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 //TODO: better error message
                 TypeError($"{specificScope} has no member named '{token.Value}'!", token);
-                symbol = new ErrorType();
+                Symbols.TryGetScopeSymbol(specificScope, out ASTNode scopeSymbol);
+                symbol = new ErrorType(scopeSymbol);
             }
 
             return NewSymbolReference(symbol, token, false);

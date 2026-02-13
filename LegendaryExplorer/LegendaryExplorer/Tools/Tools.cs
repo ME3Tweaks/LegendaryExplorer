@@ -244,12 +244,12 @@ public static class ToolSet
         set.Add(new Tool
         {
             name = "Live Level Editor",
-            type = typeof(Tools.LiveLevelEditor.LiveLevelEditorWindow),
+            type = typeof(Tools.LiveLevelEditor.LELiveLevelEditorWindow),
             icon = Application.Current.FindResource("iconLiveLevelEditor") as ImageSource,
             open = () =>
             {
                 var gameStr = InputComboBoxWPF.GetValue(null, "Choose game you want to use Live Level Editor with.", "Live Level Editor game selector",
-                                          new[] { "LE3", "LE2", "LE1", "ME3", "ME2" }, "LE3", getDefaultValueFunc: GameController.GetRunningMEGameStrDelegate([MEGame.ME2, MEGame.ME3, MEGame.LE1, MEGame.LE2, MEGame.LE3]));
+                                          ["LE3", "LE2", "LE1", "ME3", "ME2"], "LE3", getDefaultValueFunc: GameController.GetRunningMEGameStrDelegate([MEGame.ME2, MEGame.ME3, MEGame.LE1, MEGame.LE2, MEGame.LE3]));
 
                 if (Enum.TryParse(gameStr, out MEGame game))
                 {

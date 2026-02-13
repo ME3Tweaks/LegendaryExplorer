@@ -339,7 +339,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         private void GameControllerOnReceiveMessage(string msg)
         {
-            string[] command = msg.Split(" ");
+            Span<string> command = msg.Split(" ");
             if (command.Length < 2)
                 return;
             if (command[0] == "PATHFINDING_GPS" && command[1].StartsWith("PLAYERLOC="))
@@ -361,114 +361,140 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
                     return;
                 }
                 PlayerPosition = new Vector3(x, y, z);
+                return;
             }
 
             if (command[0] != "LIVELEVELEDITOR")
                 return; // Not for us
 
+            command = command[1..]; // Remove tool name
+
             Debug.WriteLine($"LLE Command: {msg}");
-            var verb = command[1]; // Message Info
-            // "READY" is done on first initialize and will automatically 
-            if (verb == "READY") // We polled game, and found LLE is available
-            {
-                InteropHelper.SendMessageToGame("ACTIVATE_PLAYERGPS", Game);
-                RetryLoadTimer.Stop();
-                GameOpenTimer.Start();
-                BusyText = "Building Actor list";
-                actorTab.IsSelected = true;
 
-                // Reload all files in the game to make sure the list is current
-                MELoadedFiles.GetFilesLoadedInGame(Game, true);
-                ActorDict.Clear();
-
-                InitializeCamPath();
-            }
-            else if (verb == "LEVELSUPDATE")
+            while (command.Length is not 0)
             {
-                try
+                var verb = command[0]; // Message Info
+                                       // "READY" is done on first initialize and will automatically 
+                if (verb == "READY") // We polled game, and found LLE is available
                 {
-                    UpdateLevels(string.Join(' ', command.Skip(2))); // Skip tool and verb
+                    InteropHelper.SendMessageToGame("ACTIVATE_PLAYERGPS", Game);
+                    RetryLoadTimer.Stop();
+                    GameOpenTimer.Start();
+                    BusyText = "Building Actor list";
+                    actorTab.IsSelected = true;
 
-                    ReadyToView = true;
-                    EndBusy();
-                    regenActorsRetryCount = 0;
+                    // Reload all files in the game to make sure the list is current
+                    MELoadedFiles.GetFilesLoadedInGame(Game, true);
+                    ActorDict.Clear();
+
+                    InitializeCamPath();
+                    return;
                 }
-                catch
+                command = command[1..]; // Remove verb
+                if (verb == "LEVELSUPDATE")
                 {
-                    regenActorsRetryCount++;
-                    if (regenActorsRetryCount > 5)
+                    try
                     {
-                        throw;
+                        UpdateLevels(string.Join(' ', command.ToArray())); // Skip tool and verb
+
+                        ReadyToView = true;
+                        EndBusy();
+                        regenActorsRetryCount = 0;
                     }
-                    RegenActorList();
+                    catch
+                    {
+                        regenActorsRetryCount++;
+                        if (regenActorsRetryCount > 5)
+                        {
+                            throw;
+                        }
+                        RegenActorList();
+                    }
+                    return;
                 }
-            }
-            else if (verb == "ACTORSELECTED")
-            {
-                InteropHelper.SendMessageToGame("LLE_GET_ACTOR_POSDATA", Game);
-            }
-            else if (verb == "ACTORLOC" && command.Length == 5)
-            {
-                noUpdate = true;
-                if (float.TryParse(command[2], CultureInfo.InvariantCulture, out var xPosf))
+                else if (verb == "ACTORSELECTED")
                 {
-                    XPos = (int)xPosf;
+                    if (command.Length > 0 && command[0] == "NOTFOUND")
+                    {
+                        SelectedActor = null;
+                        EndBusy();
+                        return;
+                    }
+                    InteropHelper.SendMessageToGame("LLE_GET_ACTOR_POSDATA", Game);
+                    return;
                 }
-                if (float.TryParse(command[3], CultureInfo.InvariantCulture, out var yPosf))
+                else if (verb == "ACTORLOC" && command.Length >= 3)
                 {
-                    YPos = (int)yPosf;
-                }
-                if (float.TryParse(command[4], CultureInfo.InvariantCulture, out var zPosf))
-                {
-                    ZPos = (int)zPosf;
-                }
+                    noUpdate = true;
+                    if (float.TryParse(command[0], CultureInfo.InvariantCulture, out var xPosf))
+                    {
+                        XPos = (int)xPosf;
+                    }
+                    if (float.TryParse(command[1], CultureInfo.InvariantCulture, out var yPosf))
+                    {
+                        YPos = (int)yPosf;
+                    }
+                    if (float.TryParse(command[2], CultureInfo.InvariantCulture, out var zPosf))
+                    {
+                        ZPos = (int)zPosf;
+                    }
+                    command = command[3..];
 
-                // Also get the component materials. This must be done after as it doesn't seem to queue
-                InteropHelper.SendMessageToGame("LLE_GET_COMPONENT_MATERIALS", Game);
-                noUpdate = false;
-                EndBusy();
-            }
-            else if (verb == "ACTORROT" && command.Length == 5)
-            {
-                var rot = new Rotator(int.Parse(command[2]), int.Parse(command[3]), int.Parse(command[4]));
+                    // Also get the component materials. This must be done after as it doesn't seem to queue
+                    InteropHelper.SendMessageToGame("LLE_GET_COMPONENT_MATERIALS", Game);
+                    noUpdate = false;
+                    EndBusy();
+                }
+                else if (verb == "ACTORROT" && command.Length >= 3)
+                {
+                    var rot = new Rotator(int.Parse(command[0]), int.Parse(command[1]), int.Parse(command[2]));
+                    command = command[3..];
 
-                noUpdate = true;
-                Yaw = (int)rot.Yaw.UnrealRotationUnitsToDegrees();
-                Pitch = (int)rot.Pitch.UnrealRotationUnitsToDegrees();
-                Roll = (int)rot.Roll.UnrealRotationUnitsToDegrees();
-                noUpdate = false;
-                EndBusy();
-            }
-            else if (verb == "ACTORSCALE" && command.Length == 6)
-            {
-                noUpdate = true;
+                    noUpdate = true;
+                    Yaw = (int)rot.Yaw.UnrealRotationUnitsToDegrees();
+                    Pitch = (int)rot.Pitch.UnrealRotationUnitsToDegrees();
+                    Roll = (int)rot.Roll.UnrealRotationUnitsToDegrees();
+                    noUpdate = false;
+                    EndBusy();
+                }
+                else if (verb == "ACTORSCALE" && command.Length >= 4)
+                {
+                    noUpdate = true;
 
-                if (float.TryParse(command[2], CultureInfo.InvariantCulture, out var fScale))
-                {
-                    Scale = fScale;
-                }
-                if (float.TryParse(command[3], CultureInfo.InvariantCulture, out var fXScale))
-                {
-                    XScale = fXScale;
-                }
-                if (float.TryParse(command[4], CultureInfo.InvariantCulture, out var fYScale))
-                {
-                    YScale = fYScale;
-                }
-                if (float.TryParse(command[5], CultureInfo.InvariantCulture, out var fZScale))
-                {
-                    ZScale = fZScale;
-                }
+                    if (float.TryParse(command[0], CultureInfo.InvariantCulture, out var fScale))
+                    {
+                        Scale = fScale;
+                    }
+                    if (float.TryParse(command[1], CultureInfo.InvariantCulture, out var fXScale))
+                    {
+                        XScale = fXScale;
+                    }
+                    if (float.TryParse(command[2], CultureInfo.InvariantCulture, out var fYScale))
+                    {
+                        YScale = fYScale;
+                    }
+                    if (float.TryParse(command[3], CultureInfo.InvariantCulture, out var fZScale))
+                    {
+                        ZScale = fZScale;
+                    }
+                    command = command[4..];
 
-                noUpdate = false;
-                EndBusy();
-            }
-            else if (verb == "HIDDEN" && command.Length == 3)
-            {
-                noUpdate = true;
-                Hidden = command[2] == "1";
-                noUpdate = false;
-                EndBusy();
+                    noUpdate = false;
+                    EndBusy();
+                }
+                else if (verb == "HIDDEN" && command.Length >= 1)
+                {
+                    noUpdate = true;
+                    Hidden = command[0] == "1";
+                    command = command[1..];
+                    noUpdate = false;
+                    EndBusy();
+                }
+                else
+                {
+                    // Unknown verb
+                    return;
+                }
             }
         }
 
@@ -543,6 +569,12 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             public string MaterialMemoryPath { get; set; }
 
             /// <summary>
+            /// Class of the material that was loaded
+            /// </summary>
+            [JsonProperty("materialclass")]
+            public string MaterialClass { get; set; }
+
+            /// <summary>
             /// File the asset was loaded from (in-game pathing)
             /// </summary>
             [JsonProperty("source")]
@@ -555,7 +587,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
             public int SlotIdx { get; set; }
 
             [JsonIgnore]
-            public string DisplayString => $"Slot {SlotIdx}: {MaterialMemoryPath}";
+            public string DisplayString => $"Slot {SlotIdx}: {MaterialClass} {MaterialMemoryPath}";
 
         }
 
