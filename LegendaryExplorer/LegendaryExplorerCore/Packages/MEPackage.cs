@@ -1538,6 +1538,12 @@ namespace LegendaryExplorerCore.Packages
         //is only set when lazy loading
         private readonly Stream decompressionStream;
 
+        public override void Dispose()
+        {
+            base.Dispose();
+            this.decompressionStream?.Dispose();
+        }
+
         ExportEntry ILazyLoadPackage.LoadExport(ExportEntry export, bool loadParents)
         {
             // If the export is already loaded do not load it again

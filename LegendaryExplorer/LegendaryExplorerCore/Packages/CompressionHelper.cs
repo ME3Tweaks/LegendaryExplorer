@@ -751,6 +751,15 @@ namespace LegendaryExplorerCore.Packages
                 BaseStream.Read(datain);
                 return datain;
             }
+
+            protected override void Dispose(bool disposing)
+            {
+                if (disposing)
+                {
+                    BaseStream?.Dispose();
+                }
+                base.Dispose(disposing);
+            }
         }
     }
 }

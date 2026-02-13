@@ -1108,7 +1108,7 @@ namespace LegendaryExplorerCore.Packages
         /// Will only do so once this has been called by every place that uses it.
         /// HIGHLY Recommend using the using block instead of calling this directly.
         /// </summary>
-        public void Dispose()
+        public virtual void Dispose()
         {
             // DEBUGGING MEMORY LEAK CODE
             //Debug.WriteLine($"{FilePath} RefCount decrementing from {RefCount} to {RefCount - 1}");
