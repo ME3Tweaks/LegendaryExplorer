@@ -26,7 +26,7 @@ namespace LegendaryExplorerCore.Dialogue
     public class ConversationExtended : INotifyPropertyChanged
     {
         /// <summary>The UIndex of this BioConversation</summary>
-        public int ExportUID { get; init; }
+        public int UIndex => Export.UIndex;
         /// <summary>The properties of this BioConversation</summary>
         public PropertyCollection BioConvo { get; }
         /// <summary>The export for the BioConversation</summary>
@@ -46,7 +46,7 @@ namespace LegendaryExplorerCore.Dialogue
         /// Key: Index into m_StartingList array.
         /// Value: Index into <see cref="EntryList"/> collection
         /// </remarks>
-        public SortedDictionary<int, int> StartingList { get; private set; } = new();
+        public SortedDictionary<int, int> StartingList { get; private set; } = [];
         /// <summary>The speakers defined in this conversation, including player and owner. Parsed from the m_SpeakerList or m_aSpeakerList property</summary>
         public ObservableCollectionExtended<SpeakerExtended> Speakers { get; set; }
         /// <summary>The entry (non-player) dialogue nodes in this conversation, in correct order</summary>
@@ -54,9 +54,9 @@ namespace LegendaryExplorerCore.Dialogue
         /// <summary>The reply (player) dialogue nodes in this conversation, in correct order</summary>
         public ObservableCollectionExtended<DialogueNodeExtended> ReplyList { get; private set; }
         /// <summary>The stage directions defined in this conversation</summary>
-        public ObservableCollectionExtended<StageDirection> StageDirections { get; } = new();
+        public ObservableCollectionExtended<StageDirection> StageDirections { get; } = [];
         /// <summary>The scripted events defined for use by this BioConversation. The m_aScriptList property</summary>
-        public ObservableCollectionExtended<NameReference> ScriptList { get; } = new();
+        public ObservableCollectionExtended<NameReference> ScriptList { get; } = [];
 
         /// <summary>Reference to the WwiseBank export for this BioConversation</summary>
         public ExportEntry WwiseBank { get; set; }
@@ -72,12 +72,11 @@ namespace LegendaryExplorerCore.Dialogue
         public ConversationExtended(ExportEntry export)
         {
             Export = export;
-            ExportUID = export.UIndex;
             ConvName = export.ObjectName;
             BioConvo = export.GetProperties();
-            Speakers = new ObservableCollectionExtended<SpeakerExtended>();
-            EntryList = new ObservableCollectionExtended<DialogueNodeExtended>();
-            ReplyList = new ObservableCollectionExtended<DialogueNodeExtended>();
+            Speakers = [];
+            EntryList = [];
+            ReplyList = [];
         }
 
         /// <summary>
@@ -86,7 +85,6 @@ namespace LegendaryExplorerCore.Dialogue
         /// <param name="other">Conversation to copy properties from</param>
         public ConversationExtended(ConversationExtended other)
         {
-            ExportUID = other.ExportUID;
             ConvName = other.ConvName;
             BioConvo = other.BioConvo;
             Export = other.Export;
@@ -170,7 +168,7 @@ namespace LegendaryExplorerCore.Dialogue
         }
 
         /// <summary>
-        /// Finds and sets the <see cref="DialogueNodeExtended.Interpdata"/> for each dialogue node in the conversation
+        /// Finds and sets the <see cref="DialogueNodeExtended.InterpData"/> for each dialogue node in the conversation
         /// </summary>
         /// <remarks>Entry list and reply list should already be populated before calling</remarks>
         private void parseLinesInterpData()
@@ -202,7 +200,7 @@ namespace LegendaryExplorerCore.Dialogue
                 {
                     try
                     {
-                        entry.Interpdata = ParseSingleNodeInterpData(entry, convStarts);
+                        entry.InterpData = ParseSingleNodeInterpData(entry, convStarts);
                     }
                     catch (Exception e)
                     {
@@ -216,7 +214,7 @@ namespace LegendaryExplorerCore.Dialogue
                 {
                     try
                     {
-                        reply.Interpdata = ParseSingleNodeInterpData(reply, convStarts);
+                        reply.InterpData = ParseSingleNodeInterpData(reply, convStarts);
                     }
                     catch (Exception e)
                     {

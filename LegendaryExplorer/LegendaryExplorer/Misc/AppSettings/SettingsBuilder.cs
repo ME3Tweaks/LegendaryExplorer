@@ -6,6 +6,7 @@ using System.Diagnostics;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.Packages;
 using Newtonsoft.Json.Linq;
+using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor;
 
 namespace LegendaryExplorer.Misc.AppSettings
 {
@@ -15,310 +16,320 @@ namespace LegendaryExplorer.Misc.AppSettings
     public static partial class Settings
     {
         private static readonly object settingsSyncObj = new();
-        private static bool _mainwindow_disabletransparencyandanimations = false; 
+        private static bool _mainwindow_disabletransparencyandanimations = false;
         public static bool MainWindow_DisableTransparencyAndAnimations {
-            get => _mainwindow_disabletransparencyandanimations; 
+            get => _mainwindow_disabletransparencyandanimations;
             set => SetProperty(ref _mainwindow_disabletransparencyandanimations, value);
         }
-        private static string _mainwindow_favorites = ""; 
+        private static string _mainwindow_favorites = "";
         public static string MainWindow_Favorites {
-            get => _mainwindow_favorites; 
+            get => _mainwindow_favorites;
             set => SetProperty(ref _mainwindow_favorites, value);
         }
-        private static bool _mainwindow_completedinitialsetup = false; 
+        private static bool _mainwindow_completedinitialsetup = false;
         public static bool MainWindow_CompletedInitialSetup {
-            get => _mainwindow_completedinitialsetup; 
+            get => _mainwindow_completedinitialsetup;
             set => SetProperty(ref _mainwindow_completedinitialsetup, value);
         }
-        private static bool _packageeditor_hideinterpreterhexbox = true; 
+        private static bool _packageeditor_hideinterpreterhexbox = true;
         public static bool PackageEditor_HideInterpreterHexBox {
-            get => _packageeditor_hideinterpreterhexbox; 
+            get => _packageeditor_hideinterpreterhexbox;
             set => SetProperty(ref _packageeditor_hideinterpreterhexbox, value);
         }
-        private static bool _packageeditor_touchcomfymode = false; 
+        private static bool _packageeditor_touchcomfymode = false;
         public static bool PackageEditor_TouchComfyMode {
-            get => _packageeditor_touchcomfymode; 
+            get => _packageeditor_touchcomfymode;
             set => SetProperty(ref _packageeditor_touchcomfymode, value);
         }
-        private static bool _packageeditor_showimpexpprefix = true; 
+        private static bool _packageeditor_showimpexpprefix = true;
         public static bool PackageEditor_ShowImpExpPrefix {
-            get => _packageeditor_showimpexpprefix; 
+            get => _packageeditor_showimpexpprefix;
             set => SetProperty(ref _packageeditor_showimpexpprefix, value);
         }
-        private static bool _packageeditor_showexporttypeicons = true; 
+        private static bool _packageeditor_showexporttypeicons = true;
         public static bool PackageEditor_ShowExportTypeIcons {
-            get => _packageeditor_showexporttypeicons; 
+            get => _packageeditor_showexporttypeicons;
             set => SetProperty(ref _packageeditor_showexporttypeicons, value);
         }
-        private static bool _packageeditor_showtreeentrysubtext = true; 
+        private static bool _packageeditor_showtreeentrysubtext = true;
         public static bool PackageEditor_ShowTreeEntrySubText {
-            get => _packageeditor_showtreeentrysubtext; 
+            get => _packageeditor_showtreeentrysubtext;
             set => SetProperty(ref _packageeditor_showtreeentrysubtext, value);
         }
-        private static bool _packageeditor_showexperiments = false; 
+        private static bool _packageeditor_showexperiments = false;
         public static bool PackageEditor_ShowExperiments {
-            get => _packageeditor_showexperiments; 
+            get => _packageeditor_showexperiments;
             set => SetProperty(ref _packageeditor_showexperiments, value);
         }
-        private static int _sequenceeditor_maxvarstringlength = 40; 
+        private static int _sequenceeditor_maxvarstringlength = 40;
         public static int SequenceEditor_MaxVarStringLength {
-            get => _sequenceeditor_maxvarstringlength; 
+            get => _sequenceeditor_maxvarstringlength;
             set => SetProperty(ref _sequenceeditor_maxvarstringlength, value);
         }
-        private static bool _sequenceeditor_showparsedinfo = true; 
+        private static bool _sequenceeditor_showparsedinfo = true;
         public static bool SequenceEditor_ShowParsedInfo {
-            get => _sequenceeditor_showparsedinfo; 
+            get => _sequenceeditor_showparsedinfo;
             set => SetProperty(ref _sequenceeditor_showparsedinfo, value);
         }
-        private static bool _sequenceeditor_autosaveviewv2 = true; 
+        private static bool _sequenceeditor_autosaveviewv2 = true;
         public static bool SequenceEditor_AutoSaveViewV2 {
-            get => _sequenceeditor_autosaveviewv2; 
+            get => _sequenceeditor_autosaveviewv2;
             set => SetProperty(ref _sequenceeditor_autosaveviewv2, value);
         }
-        private static bool _sequenceeditor_showoutputnumbers = false; 
+        private static bool _sequenceeditor_showoutputnumbers = false;
         public static bool SequenceEditor_ShowOutputNumbers {
-            get => _sequenceeditor_showoutputnumbers; 
+            get => _sequenceeditor_showoutputnumbers;
             set => SetProperty(ref _sequenceeditor_showoutputnumbers, value);
         }
-        private static string _sequenceeditor_favorites_me1 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent"; 
+        private static string _sequenceeditor_favorites_me1 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent";
         public static string SequenceEditor_Favorites_ME1 {
-            get => _sequenceeditor_favorites_me1; 
+            get => _sequenceeditor_favorites_me1;
             set => SetProperty(ref _sequenceeditor_favorites_me1, value);
         }
-        private static string _sequenceeditor_favorites_me2 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent"; 
+        private static string _sequenceeditor_favorites_me2 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent";
         public static string SequenceEditor_Favorites_ME2 {
-            get => _sequenceeditor_favorites_me2; 
+            get => _sequenceeditor_favorites_me2;
             set => SetProperty(ref _sequenceeditor_favorites_me2, value);
         }
-        private static string _sequenceeditor_favorites_me3 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent"; 
+        private static string _sequenceeditor_favorites_me3 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent";
         public static string SequenceEditor_Favorites_ME3 {
-            get => _sequenceeditor_favorites_me3; 
+            get => _sequenceeditor_favorites_me3;
             set => SetProperty(ref _sequenceeditor_favorites_me3, value);
         }
-        private static string _sequenceeditor_favorites_le1 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent"; 
+        private static string _sequenceeditor_favorites_le1 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent";
         public static string SequenceEditor_Favorites_LE1 {
-            get => _sequenceeditor_favorites_le1; 
+            get => _sequenceeditor_favorites_le1;
             set => SetProperty(ref _sequenceeditor_favorites_le1, value);
         }
-        private static string _sequenceeditor_favorites_le2 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent"; 
+        private static string _sequenceeditor_favorites_le2 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent";
         public static string SequenceEditor_Favorites_LE2 {
-            get => _sequenceeditor_favorites_le2; 
+            get => _sequenceeditor_favorites_le2;
             set => SetProperty(ref _sequenceeditor_favorites_le2, value);
         }
-        private static string _sequenceeditor_favorites_le3 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent"; 
+        private static string _sequenceeditor_favorites_le3 = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent";
         public static string SequenceEditor_Favorites_LE3 {
-            get => _sequenceeditor_favorites_le3; 
+            get => _sequenceeditor_favorites_le3;
             set => SetProperty(ref _sequenceeditor_favorites_le3, value);
         }
-        private static string _sequenceeditor_favorites_udk = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent"; 
+        private static string _sequenceeditor_favorites_udk = "Sequence;SeqAct_Interp;InterpData;BioSeqAct_EndCurrentConvNode;BioSeqEvt_ConvNode;BioSeqVar_ObjectFindByTag;SeqVar_Object;SeqAct_ActivateRemoteEvent;SeqEvent_SequenceActivated;SeqAct_Delay;SeqAct_Gate;BioSeqAct_PMCheckState;BioSeqAct_PMExecuteTransition;SeqAct_FinishSequence;SeqEvent_RemoteEvent";
         public static string SequenceEditor_Favorites_UDK {
-            get => _sequenceeditor_favorites_udk; 
+            get => _sequenceeditor_favorites_udk;
             set => SetProperty(ref _sequenceeditor_favorites_udk, value);
         }
-        private static bool _soundplorer_reverseiddisplayendianness = false; 
+        private static bool _soundplorer_reverseiddisplayendianness = false;
         public static bool Soundplorer_ReverseIDDisplayEndianness {
-            get => _soundplorer_reverseiddisplayendianness; 
+            get => _soundplorer_reverseiddisplayendianness;
             set => SetProperty(ref _soundplorer_reverseiddisplayendianness, value);
         }
-        private static bool _soundplorer_autoplayentriesonselection = false; 
+        private static bool _soundplorer_autoplayentriesonselection = false;
         public static bool Soundplorer_AutoplayEntriesOnSelection {
-            get => _soundplorer_autoplayentriesonselection; 
+            get => _soundplorer_autoplayentriesonselection;
             set => SetProperty(ref _soundplorer_autoplayentriesonselection, value);
         }
-        private static string _meshplorer_backgroundcolor = "#999999"; 
+        private static string _meshplorer_backgroundcolor = "#999999";
         public static string Meshplorer_BackgroundColor {
-            get => _meshplorer_backgroundcolor; 
+            get => _meshplorer_backgroundcolor;
             set => SetProperty(ref _meshplorer_backgroundcolor, value);
         }
-        private static bool _meshplorer_viewfirstperson = false; 
+        private static bool _meshplorer_viewfirstperson = false;
         public static bool Meshplorer_ViewFirstPerson {
-            get => _meshplorer_viewfirstperson; 
+            get => _meshplorer_viewfirstperson;
             set => SetProperty(ref _meshplorer_viewfirstperson, value);
         }
-        private static bool _meshplorer_viewrotating = false; 
+        private static bool _meshplorer_viewrotating = false;
         public static bool Meshplorer_ViewRotating {
-            get => _meshplorer_viewrotating; 
+            get => _meshplorer_viewrotating;
             set => SetProperty(ref _meshplorer_viewrotating, value);
         }
-        private static bool _meshplorer_view_solidenabled = true; 
+        private static bool _meshplorer_view_solidenabled = true;
         public static bool Meshplorer_View_SolidEnabled {
-            get => _meshplorer_view_solidenabled; 
+            get => _meshplorer_view_solidenabled;
             set => SetProperty(ref _meshplorer_view_solidenabled, value);
         }
-        private static bool _meshplorer_viewwireframeenabled = false; 
+        private static bool _meshplorer_viewwireframeenabled = false;
         public static bool Meshplorer_ViewWireframeEnabled {
-            get => _meshplorer_viewwireframeenabled; 
+            get => _meshplorer_viewwireframeenabled;
             set => SetProperty(ref _meshplorer_viewwireframeenabled, value);
         }
-        private static bool _pathfindingeditor_shownodesizes = false; 
+        private static bool _pathfindingeditor_shownodesizes = false;
         public static bool PathfindingEditor_ShowNodeSizes {
-            get => _pathfindingeditor_shownodesizes; 
+            get => _pathfindingeditor_shownodesizes;
             set => SetProperty(ref _pathfindingeditor_shownodesizes, value);
         }
-        private static bool _pathfindingeditor_showpathfindingnodeslayer = true; 
+        private static bool _pathfindingeditor_showpathfindingnodeslayer = true;
         public static bool PathfindingEditor_ShowPathfindingNodesLayer {
-            get => _pathfindingeditor_showpathfindingnodeslayer; 
+            get => _pathfindingeditor_showpathfindingnodeslayer;
             set => SetProperty(ref _pathfindingeditor_showpathfindingnodeslayer, value);
         }
-        private static bool _pathfindingeditor_showactorslayer = false; 
+        private static bool _pathfindingeditor_showactorslayer = false;
         public static bool PathfindingEditor_ShowActorsLayer {
-            get => _pathfindingeditor_showactorslayer; 
+            get => _pathfindingeditor_showactorslayer;
             set => SetProperty(ref _pathfindingeditor_showactorslayer, value);
         }
-        private static bool _pathfindingeditor_showartlayer = false; 
+        private static bool _pathfindingeditor_showartlayer = false;
         public static bool PathfindingEditor_ShowArtLayer {
-            get => _pathfindingeditor_showartlayer; 
+            get => _pathfindingeditor_showartlayer;
             set => SetProperty(ref _pathfindingeditor_showartlayer, value);
         }
-        private static bool _pathfindingeditor_showsplineslayer = false; 
+        private static bool _pathfindingeditor_showsplineslayer = false;
         public static bool PathfindingEditor_ShowSplinesLayer {
-            get => _pathfindingeditor_showsplineslayer; 
+            get => _pathfindingeditor_showsplineslayer;
             set => SetProperty(ref _pathfindingeditor_showsplineslayer, value);
         }
-        private static bool _pathfindingeditor_showeverythingelselayer = false; 
+        private static bool _pathfindingeditor_showeverythingelselayer = false;
         public static bool PathfindingEditor_ShowEverythingElseLayer {
-            get => _pathfindingeditor_showeverythingelselayer; 
+            get => _pathfindingeditor_showeverythingelselayer;
             set => SetProperty(ref _pathfindingeditor_showeverythingelselayer, value);
         }
-        private static string _assetdb_defaultgame = ""; 
+        private static string _assetdb_defaultgame = "";
         public static string AssetDB_DefaultGame {
-            get => _assetdb_defaultgame; 
+            get => _assetdb_defaultgame;
             set => SetProperty(ref _assetdb_defaultgame, value);
         }
-        private static string _assetdbgame = "LE3"; 
+        private static string _assetdbgame = "LE3";
         public static string AssetDBGame {
-            get => _assetdbgame; 
+            get => _assetdbgame;
             set => SetProperty(ref _assetdbgame, value);
         }
-        private static string _assetdbpath = ""; 
+        private static string _assetdbpath = "";
         public static string AssetDBPath {
-            get => _assetdbpath; 
+            get => _assetdbpath;
             set => SetProperty(ref _assetdbpath, value);
         }
-        private static bool _assetdb_hidemics = false; 
+        private static bool _assetdb_hidemics = false;
         public static bool AssetDB_HideMICs {
-            get => _assetdb_hidemics; 
+            get => _assetdb_hidemics;
             set => SetProperty(ref _assetdb_hidemics, value);
         }
-        private static string _coalescededitor_sourcepath = ""; 
+        private static string _coalescededitor_sourcepath = "";
         public static string CoalescedEditor_SourcePath {
-            get => _coalescededitor_sourcepath; 
+            get => _coalescededitor_sourcepath;
             set => SetProperty(ref _coalescededitor_sourcepath, value);
         }
-        private static string _coalescededitor_destinationpath = ""; 
+        private static string _coalescededitor_destinationpath = "";
         public static string CoalescedEditor_DestinationPath {
-            get => _coalescededitor_destinationpath; 
+            get => _coalescededitor_destinationpath;
             set => SetProperty(ref _coalescededitor_destinationpath, value);
         }
-        private static bool _wwisegrapheditor_autosaveview = false; 
+        private static bool _wwisegrapheditor_autosaveview = false;
         public static bool WwiseGraphEditor_AutoSaveView {
-            get => _wwisegrapheditor_autosaveview; 
+            get => _wwisegrapheditor_autosaveview;
             set => SetProperty(ref _wwisegrapheditor_autosaveview, value);
         }
-        private static bool _binaryinterpreter_skipautoparsesizecheck = false; 
+        private static bool _binaryinterpreter_skipautoparsesizecheck = false;
         public static bool BinaryInterpreter_SkipAutoParseSizeCheck {
-            get => _binaryinterpreter_skipautoparsesizecheck; 
+            get => _binaryinterpreter_skipautoparsesizecheck;
             set => SetProperty(ref _binaryinterpreter_skipautoparsesizecheck, value);
         }
-        private static bool _textureviewer_autoloadmip = true; 
+        private static bool _textureviewer_autoloadmip = true;
         public static bool TextureViewer_AutoLoadMip {
-            get => _textureviewer_autoloadmip; 
+            get => _textureviewer_autoloadmip;
             set => SetProperty(ref _textureviewer_autoloadmip, value);
         }
-        private static bool _interpreter_limitarraypropertysize = true; 
+        private static bool _interpreter_limitarraypropertysize = true;
         public static bool Interpreter_LimitArrayPropertySize {
-            get => _interpreter_limitarraypropertysize; 
+            get => _interpreter_limitarraypropertysize;
             set => SetProperty(ref _interpreter_limitarraypropertysize, value);
         }
-        private static bool _interpreter_advanceddisplay = true; 
+        private static bool _interpreter_advanceddisplay = true;
         public static bool Interpreter_AdvancedDisplay {
-            get => _interpreter_advanceddisplay; 
+            get => _interpreter_advanceddisplay;
             set => SetProperty(ref _interpreter_advanceddisplay, value);
         }
-        private static bool _interpreter_colorize = true; 
+        private static bool _interpreter_colorize = true;
         public static bool Interpreter_Colorize {
-            get => _interpreter_colorize; 
+            get => _interpreter_colorize;
             set => SetProperty(ref _interpreter_colorize, value);
         }
-        private static bool _interpreter_showlinearcolorwheel = false; 
+        private static bool _interpreter_showlinearcolorwheel = false;
         public static bool Interpreter_ShowLinearColorWheel {
-            get => _interpreter_showlinearcolorwheel; 
+            get => _interpreter_showlinearcolorwheel;
             set => SetProperty(ref _interpreter_showlinearcolorwheel, value);
         }
-        private static bool _soundpanel_loopaudio = false; 
+        private static bool _soundpanel_loopaudio = false;
         public static bool Soundpanel_LoopAudio {
-            get => _soundpanel_loopaudio; 
+            get => _soundpanel_loopaudio;
             set => SetProperty(ref _soundpanel_loopaudio, value);
         }
-        private static string _wwise_3773path = ""; 
+        private static string _wwise_3773path = "";
         public static string Wwise_3773Path {
-            get => _wwise_3773path; 
+            get => _wwise_3773path;
             set => SetProperty(ref _wwise_3773path, value);
         }
-        private static string _wwise_7110path = ""; 
+        private static string _wwise_7110path = "";
         public static string Wwise_7110Path {
-            get => _wwise_7110path; 
+            get => _wwise_7110path;
             set => SetProperty(ref _wwise_7110path, value);
         }
-        private static string _tfccompactor_laststagingpath = ""; 
+        private static string _tfccompactor_laststagingpath = "";
         public static string TFCCompactor_LastStagingPath {
-            get => _tfccompactor_laststagingpath; 
+            get => _tfccompactor_laststagingpath;
             set => SetProperty(ref _tfccompactor_laststagingpath, value);
         }
-        private static bool _global_propertyparsing_parseunknownarraytypeasobject = false; 
+        private static bool _global_propertyparsing_parseunknownarraytypeasobject = false;
         public static bool Global_PropertyParsing_ParseUnknownArrayTypeAsObject {
-            get => _global_propertyparsing_parseunknownarraytypeasobject; 
+            get => _global_propertyparsing_parseunknownarraytypeasobject;
             set => SetProperty(ref _global_propertyparsing_parseunknownarraytypeasobject, value);
         }
-        private static bool _global_analytics_enabled = true; 
+        private static bool _global_analytics_enabled = true;
         public static bool Global_Analytics_Enabled {
-            get => _global_analytics_enabled; 
+            get => _global_analytics_enabled;
             set => SetProperty(ref _global_analytics_enabled, value);
         }
-        private static string _global_me1directory = ""; 
+        private static string _global_me1directory = "";
         public static string Global_ME1Directory {
-            get => _global_me1directory; 
+            get => _global_me1directory;
             set => SetProperty(ref _global_me1directory, value);
         }
-        private static string _global_me2directory = ""; 
+        private static string _global_me2directory = "";
         public static string Global_ME2Directory {
-            get => _global_me2directory; 
+            get => _global_me2directory;
             set => SetProperty(ref _global_me2directory, value);
         }
-        private static string _global_me3directory = ""; 
+        private static string _global_me3directory = "";
         public static string Global_ME3Directory {
-            get => _global_me3directory; 
+            get => _global_me3directory;
             set => SetProperty(ref _global_me3directory, value);
         }
-        private static string _global_ledirectory = ""; 
+        private static string _global_ledirectory = "";
         public static string Global_LEDirectory {
-            get => _global_ledirectory; 
+            get => _global_ledirectory;
             set => SetProperty(ref _global_ledirectory, value);
         }
-        private static string _global_udkcustomdirectory = ""; 
+        private static string _global_udkcustomdirectory = "";
         public static string Global_UDKCustomDirectory {
-            get => _global_udkcustomdirectory; 
+            get => _global_udkcustomdirectory;
             set => SetProperty(ref _global_udkcustomdirectory, value);
         }
-        private static string _global_tlk_language = "INT"; 
+        private static string _global_tlk_language = "INT";
         public static string Global_TLK_Language {
-            get => _global_tlk_language; 
+            get => _global_tlk_language;
             set => SetProperty(ref _global_tlk_language, value);
         }
-        private static bool _global_tlk_ismale = true; 
+        private static bool _global_tlk_ismale = true;
         public static bool Global_TLK_IsMale {
-            get => _global_tlk_ismale; 
+            get => _global_tlk_ismale;
             set => SetProperty(ref _global_tlk_ismale, value);
         }
-        private static List<string> _customstartupfiles = new List<string>(); 
+        private static List<string> _customstartupfiles = new List<string>();
         public static List<string> CustomStartupFiles {
-            get => _customstartupfiles; 
+            get => _customstartupfiles;
             set => SetProperty(ref _customstartupfiles, value);
         }
-        private static List<string> _customassetdirectories = new List<string>(); 
+        private static List<string> _customassetdirectories = new List<string>();
         public static List<string> CustomAssetDirectories {
-            get => _customassetdirectories; 
+            get => _customassetdirectories;
             set => SetProperty(ref _customassetdirectories, value);
+        }
+        private static string _scriptide_activetheme = "";
+        public static string ScriptIDE_ActiveTheme {
+            get => _scriptide_activetheme;
+            set => SetProperty(ref _scriptide_activetheme, value);
+        }
+        private static Dictionary<string, ThemeData> _scriptide_savedthemes = new Dictionary<string, ThemeData>();
+        public static Dictionary<string, ThemeData> ScriptIDE_SavedThemes {
+            get => _scriptide_savedthemes;
+            set => SetProperty(ref _scriptide_savedthemes, value);
         }
 
         public static string Get_SequenceEditor_Favorites (MEGame game) => game switch
@@ -366,6 +377,15 @@ namespace LegendaryExplorer.Misc.AppSettings
         public static bool TryGetSetting(Dictionary<string, object> settings, string key, bool defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue && bool.TryParse(svalue, out var bvalue) ? bvalue : defaultValue;
         public static string TryGetSetting(Dictionary<string, object> settings, string key, string defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue ? svalue : defaultValue;
         public static List<string> TryGetSetting(Dictionary<string, object> settings, string key, List<string> defaultValue) => settings.TryGetValue(key, out var value) && value is JArray listValue ? listValue.ToObject<List<string>>() : defaultValue;
+        public static Dictionary<string, ThemeData> TryGetSetting(Dictionary<string, object> settings, string key, Dictionary<string, ThemeData> defaultValue)
+        {
+            if (settings.TryGetValue(key, out var value) && value is JObject jObj)
+            {
+                try { return jObj.ToObject<Dictionary<string, ThemeData>>() ?? defaultValue; }
+                catch { return defaultValue; }
+            }
+            return defaultValue;
+        }
 
 
         private static string AppSettingsFile => Path.Combine(AppDirectories.AppDataFolder, "appsettings.json");
@@ -445,6 +465,8 @@ namespace LegendaryExplorer.Misc.AppSettings
             Global_TLK_IsMale = TryGetSetting(settingsJson, "global_tlk_ismale", true);
             CustomStartupFiles = TryGetSetting(settingsJson, "customstartupfiles", new List<string>());
             CustomAssetDirectories = TryGetSetting(settingsJson, "customassetdirectories", new List<string>());
+            ScriptIDE_ActiveTheme = TryGetSetting(settingsJson, "scriptide_activetheme", "");
+            ScriptIDE_SavedThemes = TryGetSetting(settingsJson, "scriptide_savedthemes", new Dictionary<string, ThemeData>());
 
             // Settings Bridge Init
             LegendaryExplorerCoreLibSettings.Instance.ParseUnknownArrayTypesAsObject = Global_PropertyParsing_ParseUnknownArrayTypeAsObject;
@@ -526,6 +548,8 @@ namespace LegendaryExplorer.Misc.AppSettings
                     settingsJson["global_tlk_ismale"] = Global_TLK_IsMale.ToString();
                     settingsJson["customstartupfiles"] = CustomStartupFiles;
                     settingsJson["customassetdirectories"] = CustomAssetDirectories;
+                    settingsJson["scriptide_activetheme"] = ScriptIDE_ActiveTheme.ToString();
+                    settingsJson["scriptide_savedthemes"] = ScriptIDE_SavedThemes;
 
             var settingsText = JsonConvert.SerializeObject(settingsJson, Formatting.Indented);
             try

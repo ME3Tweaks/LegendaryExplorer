@@ -33,33 +33,9 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
     /// </summary>
     public partial class ScriptDebuggerWindow : TrackingNotifyPropertyChangedWindowBase
     {
-        //MUST BE UPDATED WHEN A NEW VERSION OF THE ASI IS RELEASED!
-        public string debuggerASIName => Game switch
-        {
-            MEGame.LE1 => "LE1ScriptDebugger-v3.asi", // In M3
-            MEGame.LE2 => "LE2ScriptDebugger-v3.asi", // In M3
-            MEGame.LE3 => "LE3ScriptDebugger-v4.asi",  // In M3
-            _ => throw new ArgumentOutOfRangeException(nameof(Game))
-        };
-        private void GetDebuggerASI()
-        {
-            switch (Game)
-            {
-                case MEGame.LE1:
-                    ModManagerIntegration.RequestASIInstallation(MEGame.LE1, ASIModIDs.LE1_SCRIPT_DEBUGGER, 3);
-                    break;
-                case MEGame.LE2:
-                    ModManagerIntegration.RequestASIInstallation(MEGame.LE2, ASIModIDs.LE2_SCRIPT_DEBUGGER, 3);
-                    break;
-                case MEGame.LE3:
-                    ModManagerIntegration.RequestASIInstallation(MEGame.LE3, ASIModIDs.LE3_SCRIPT_DEBUGGER, 4);
-                    break;
-            }
-        }
-
         public static readonly string ScriptDebuggerDataFolder = Path.Combine(AppDirectories.AppDataFolder, @"ScriptDebugger\");
 
-        private static readonly Dictionary<MEGame, ScriptDebuggerWindow> Instances = new();
+        private static readonly Dictionary<MEGame, ScriptDebuggerWindow> Instances = [];
         public static ScriptDebuggerWindow Instance(MEGame game)
         {
             if (!game.IsLEGame())
@@ -94,9 +70,9 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             }
         }
 
-        public ObservableCollectionExtended<PropertyValue> Locals { get; } = new();
+        public ObservableCollectionExtended<PropertyValue> Locals { get; } = [];
 
-        public ObservableCollectionExtended<CallStackEntry> CallStack { get; } = new();
+        public ObservableCollectionExtended<CallStackEntry> CallStack { get; } = [];
 
         private CallStackEntry _selectedCallStackEntry;
         public CallStackEntry SelectedCallStackEntry
@@ -110,10 +86,10 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                 }
             }
         }
-        public ObservableCollectionExtended<ScriptStatement> Statements { get; } = new();
+        public ObservableCollectionExtended<ScriptStatement> Statements { get; } = [];
 
-        private readonly List<ScriptDatabaseEntry> functionList = new();
-        public ObservableCollectionExtended<ScriptDatabaseEntry> FunctionList { get; } = new();
+        private readonly List<ScriptDatabaseEntry> functionList = [];
+        public ObservableCollectionExtended<ScriptDatabaseEntry> FunctionList { get; } = [];
 
         private ScriptDatabaseEntry _selectedScriptDatabaseEntry;
         public ScriptDatabaseEntry SelectedScriptDatabaseEntry
@@ -126,7 +102,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             }
         }
 
-        public ObservableCollectionExtended<BreakPoint> BreakPoints { get; } = new();
+        public ObservableCollectionExtended<BreakPoint> BreakPoints { get; } = [];
 
         private DebuggerInterface Debugger;
 
@@ -167,6 +143,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         public Requirement.RequirementCommand DebuggerASIInstalledRequirementCommand { get; set; }
         public GenericCommand AttachDebuggerCommand { get; private set; }
         public GenericCommand DetachDebuggerCommand { get; private set; }
+        public GenericCommand ReSyncDebuggerCommand { get; private set; }
         public GenericCommand BreakAllCommand { get; private set; }
         public GenericCommand ResumeCommand { get; private set; }
         public GenericCommand StepIntoCommand { get; private set; }
@@ -176,9 +153,10 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
         {
             GameInstalledRequirementCommand = new Requirement.RequirementCommand(IsGameInstalled, () => InteropHelper.SelectGamePath(Game));
             ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(Game), () => InteropHelper.OpenASILoaderDownload(Game));
-            DebuggerASIInstalledRequirementCommand = new Requirement.RequirementCommand(IsDebuggerASIInstalled, GetDebuggerASI);
+            DebuggerASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsInteropASIInstalled(Game), () => InteropHelper.OpenInteropASIDownload(Game));
             AttachDebuggerCommand = new GenericCommand(AttachDebugger, CanAttachDebugger);
             DetachDebuggerCommand = new GenericCommand(DetachDebugger, CanDetachDebugger);
+            ReSyncDebuggerCommand = new GenericCommand(ReSyncDebugger, CanDetachDebugger);
             BreakAllCommand = new GenericCommand(BreakAll, CanBreakAll);
             ResumeCommand = new GenericCommand(Resume, CanResume);
             StepIntoCommand = new GenericCommand(StepInto, CanResume);
@@ -306,22 +284,12 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             }
         }
 
-        private bool IsDebuggerASIInstalled()
+        private void ReSyncDebugger()
         {
-            if (!InteropHelper.IsGameInstalled(Game))
+            if (CanDetachDebugger())
             {
-                return false;
+                Debugger?.ReSync();
             }
-
-            string asiPath = GetDebuggerAsiWritePath();
-            return File.Exists(asiPath);
-        }
-
-        private string GetDebuggerAsiWritePath()
-        {
-            string asiDir = InteropHelper.GetAsiDir(Game);
-            string interopASIWritePath = Path.Combine(asiDir, debuggerASIName);
-            return interopASIWritePath;
         }
 
         private bool CanAttachDebugger() => GameInstalledReq.IsFullfilled && AsiLoaderInstalledReq.IsFullfilled && DebuggerAsiInstalledReq.IsFullfilled && GameController.TryGetMEProcess(Game, out _);

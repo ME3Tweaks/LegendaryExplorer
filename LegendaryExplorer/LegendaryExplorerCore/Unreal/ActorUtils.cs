@@ -26,6 +26,12 @@ namespace LegendaryExplorerCore.Unreal
             return ComposeLocalToWorld(location, rotator, scale, pivot);
         }
 
+        public static Matrix4x4 ComposeLocalToWorld((Vector3 translation, Vector3 scale, Rotator rotation) decomposed, Vector3 pivot = default)
+        {
+            return ComposeLocalToWorld(location: decomposed.translation, rotation: decomposed.rotation, scale: decomposed.scale, pivot: pivot);
+        }
+
+
         //inverse of this method is Matrix4x4::UnrealDecompose
         public static Matrix4x4 ComposeLocalToWorld(Vector3 location, Rotator rotation, Vector3 scale, Vector3 pivot = default)
         {

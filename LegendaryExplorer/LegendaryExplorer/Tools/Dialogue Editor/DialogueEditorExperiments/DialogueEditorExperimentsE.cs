@@ -17,6 +17,7 @@ using System.Windows;
 using static LegendaryExplorer.Misc.ExperimentsTools.SharedMethods;
 using static LegendaryExplorer.Misc.ExperimentsTools.DialogueAutomations;
 using static LegendaryExplorer.Misc.ExperimentsTools.SequenceAutomations;
+using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 
 namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
 {
@@ -381,51 +382,37 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
             if (dew.Pcc != null && selectedDialogueNode != null)
             {
                 // Need to check if the node has associated data
-                if (selectedDialogueNode.Interpdata == null)
+                if (selectedDialogueNode.InterpData == null)
                 {
                     MessageBox.Show("The selected node does not have an InterpData associated with it.", "Warning", MessageBoxButton.OK);
                     return;
                 }
 
-                int newID = PromptForInt("New node ExportID:", "Not a valid ExportID.", 0);
-                if (newID == 0) { return; }
+                int newID = dew.SelectedConv.EntryList.Concat(dew.SelectedConv.ReplyList).Max(node => node.ExportID) + 1;
 
-                if (selectedDialogueNode.ExportID.Equals(newID))
+                ExportEntry oldInterpData = selectedDialogueNode.InterpData;
+
+                // Get the Interp linked to the InterpData
+                KeyValuePair<IEntry, List<string>> interpDataReferences = oldInterpData.GetEntriesThatReferenceThisOne().FirstOrDefault(entry => entry.Key.ClassName == "SeqAct_Interp");
+                if (interpDataReferences.Key is not ExportEntry oldInterp)
                 {
-                    MessageBox.Show("New ExportID matches the existing one.", "Warning", MessageBoxButton.OK);
+                    MessageBox.Show("The selected Node's InterpData is linked to multiple Interps. Please ensure it's only linked to one.", "Warning", MessageBoxButton.OK);
                     return;
                 }
 
-                ExportEntry oldInterpData = selectedDialogueNode.Interpdata;
-
-                // Get the Interp linked to the InterpData
-                IEnumerable<KeyValuePair<IEntry, List<string>>> interpDataReferences = oldInterpData.GetEntriesThatReferenceThisOne()
-                    .Where(entry => entry.Key.ClassName == "SeqAct_Interp");
-                if (interpDataReferences.Count() > 1)
-                {
-                    MessageBox.Show("The selected Node's InterpData is linked to Interps. Please ensure it's only linked to one.", "Warning", MessageBoxButton.OK);
-                }
-                ExportEntry oldInterp = (ExportEntry)interpDataReferences.First().Key;
-
-                // Get the/a ConvNode linked to the Interp
-                ExportEntry oldConvNode = KismetHelper.FindOutputConnectionsToNode(oldInterp, KismetHelper.GetAllSequenceElements(oldInterp).OfType<ExportEntry>())
-                    .FirstOrDefault(entry => entry.ClassName == "BioSeqEvt_ConvNode");
-
                 // Get the/a EndCurrentConvNode that the Interp outputs to
-                ExportEntry oldEndNode = KismetHelper.GetOutputLinksOfNode(oldInterp).Select(outboundLink =>
-                {
-                    IEnumerable<OutputLink> links = outboundLink.Where(link => link.LinkedOp.ClassName == "BioSeqAct_EndCurrentConvNode");
-                    if (links.Any()) { return (ExportEntry)links.First().LinkedOp; } else { return null; }
-                }).ToList().FirstOrDefault();
 
                 ExportEntry sequence = KismetHelper.GetParentSequence(oldInterpData);
 
-                // Clone the Intero and Interpdata objects
+                // Clone the Interp and Interpdata objects
                 ExportEntry newInterp = CloneObject(oldInterp, sequence);
                 ExportEntry newInterpData = EntryCloner.CloneTree(oldInterpData);
                 KismetHelper.AddObjectToSequence(newInterpData, sequence, true);
 
                 // Clone and link the Conv and End objects, if they exist
+                // Get the/a ConvNode linked to the Interp
+                ExportEntry oldConvNode = KismetHelper.FindOutputConnectionsToNode(oldInterp, KismetHelper.GetAllSequenceElements(oldInterp).OfType<ExportEntry>())
+                    .FirstOrDefault(entry => entry.ClassName == "BioSeqEvt_ConvNode");
                 ExportEntry newConvNode = null;
                 if (oldConvNode != null)
                 {
@@ -433,7 +420,8 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
                     KismetHelper.CreateOutputLink(newConvNode, "Started", newInterp, 0);
                 }
 
-                if (oldEndNode != null)
+                if (KismetHelper.GetOutputLinksOfNode(oldInterp).Flatten()
+                    .FirstOrDefault(link => link.LinkedOp.ClassName == "BioSeqAct_EndCurrentConvNode")?.LinkedOp is ExportEntry oldEndNode)
                 {
                     ExportEntry newEndNode = CloneObject(oldEndNode, sequence);
                     KismetHelper.CreateOutputLink(newInterp, "Completed", newEndNode, 0);
@@ -674,7 +662,7 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
                 MessageBox.Show(errMsg, "Warning", MessageBoxButton.OK);
                 return;
             }
-            if (node.Interpdata != null)
+            if (node.InterpData != null)
             {
                 MessageBox.Show("The selected node already points to an InterpData.", "Warning", MessageBoxButton.OK);
                 return;
@@ -966,7 +954,7 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
                 MessageBox.Show(errMsg, "Warning", MessageBoxButton.OK);
                 return;
             }
-            if (node.Interpdata == null)
+            if (node.InterpData == null)
             {
                 MessageBox.Show("The selected node doesn't point to an InterpData.", "Warning", MessageBoxButton.OK);
                 return;
@@ -986,7 +974,7 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
         /// <param name="node">Node to update</param>
         private static void UpdateVOAndComment(DialogueNodeExtended node)
         {
-            ExportEntry interpData = node.Interpdata;
+            ExportEntry interpData = node.InterpData;
 
             if (interpData != null && TryGetInterp(interpData, out ExportEntry interp))
             {
@@ -1013,9 +1001,9 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
 
             foreach (DialogueNodeExtended node in nodes)
             {
-                if (IsAudioNode(node) && node.ExportID > 0 && node.Interpdata != null)
+                if (IsAudioNode(node) && node.ExportID > 0 && node.InterpData != null)
                 {
-                    AddConversationDefaultsToInterpData(node.Interpdata, node.LineStrRef);
+                    AddConversationDefaultsToInterpData(node.InterpData, node.LineStrRef);
                 }
             }
 
@@ -1040,13 +1028,13 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
                 MessageBox.Show(errMsg, "Warning", MessageBoxButton.OK);
                 return;
             }
-            if (node.Interpdata == null)
+            if (node.InterpData == null)
             {
                 MessageBox.Show("The selected node doesn't point to an InterpData.", "Warning", MessageBoxButton.OK);
                 return;
             }
 
-            AddConversationDefaultsToInterpData(node.Interpdata, node.LineStrRef);
+            AddConversationDefaultsToInterpData(node.InterpData, node.LineStrRef);
 
             dew.RecreateNodesToProperties(dew.SelectedConv);
             dew.ForceRefreshCommand.Execute(null);
@@ -1096,14 +1084,11 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
                 "Calculate the InterpLengths by the FXA length? If not, the audio length will be used.",
                 "Calculate by FXA", MessageBoxButton.YesNo);
 
-            List<DialogueNodeExtended> nodes = new();
-
-            nodes.AddRange(dew.SelectedConv.EntryList);
-            nodes.AddRange(dew.SelectedConv.ReplyList);
+            DialogueNodeExtended[] nodes = [..dew.SelectedConv.EntryList, ..dew.SelectedConv.ReplyList];
 
             foreach (DialogueNodeExtended node in nodes)
             {
-                if (IsAudioNode(node) && node.ExportID > 0 && node.Interpdata != null)
+                if (IsAudioNode(node) && node.ExportID > 0 && node.InterpData != null)
                 {
                     UpdateInterpLength(node, byFXA, dew.FaceFXAnimSetEditorControl_F, dew.FaceFXAnimSetEditorControl_M);
                 }
@@ -1130,7 +1115,7 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
                 MessageBox.Show(errMsg, "Warning", MessageBoxButton.OK);
                 return;
             }
-            if (node.Interpdata == null)
+            if (node.InterpData == null)
             {
                 MessageBox.Show("The selected node doesn't point to an InterpData.", "Warning", MessageBoxButton.OK);
                 return;
@@ -1156,7 +1141,7 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
         private static void UpdateInterpLength(DialogueNodeExtended node, bool byFXA, FaceFXAnimSetEditorControl animControlF, FaceFXAnimSetEditorControl animControlM)
         {
             float interpLength = 0;
-            IMEPackage pcc = node.Interpdata.FileRef;
+            IMEPackage pcc = node.InterpData.FileRef;
 
             if (byFXA)
             {
@@ -1224,7 +1209,7 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
             }
 
             // If the first VO starts beyond zero, add that offset to the length
-            if (MatineeHelper.TryGetInterpGroup(node.Interpdata, "Conversation", out ExportEntry conversation))
+            if (MatineeHelper.TryGetInterpGroup(node.InterpData, "Conversation", out ExportEntry conversation))
             {
                 if (MatineeHelper.TryGetInterpTrack(conversation, "BioEvtSysTrackVOElements", out ExportEntry VOElements))
                 {
@@ -1237,7 +1222,10 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
                 }
             }
 
-            node.Interpdata.WriteProperty(new FloatProperty(interpLength, "InterpLength"));
+            //per Scottina, an extra second needs to be added to avoid animation and audio issues
+            interpLength += 1f;
+
+            node.InterpData.WriteProperty(new FloatProperty(interpLength, "InterpLength"));
         }
         #endregion
 
@@ -1272,7 +1260,7 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
 
             foreach (DialogueNodeExtended node in nodes)
             {
-                if (IsAudioNode(node) && node.ExportID > 0 && node.Interpdata != null)
+                if (IsAudioNode(node) && node.ExportID > 0 && node.InterpData != null)
                 {
                     GenerateLE1AudioLinks(node, (ExportEntry)dew.Pcc.GetEntry(dew.SelectedConv.Sequence.idxLink),
                         baseName, bioStreamingDataID);
@@ -1301,7 +1289,7 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
                 MessageBox.Show(errMsg, "Warning", MessageBoxButton.OK);
                 return;
             }
-            if (node.Interpdata == null)
+            if (node.InterpData == null)
             {
                 MessageBox.Show("The selected node doesn't point to an InterpData.", "Warning", MessageBoxButton.OK);
                 return;
@@ -1340,7 +1328,7 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
         /// <param name="bioStreamingDataID">BioStreamingData to link to the SoundNodeWaves.</param>
         private static void GenerateLE1AudioLinks(DialogueNodeExtended node, ExportEntry audioPackage, string baseName, int bioStreamingDataID)
         {
-            IMEPackage pcc = node.Interpdata.FileRef;
+            IMEPackage pcc = node.InterpData.FileRef;
             string strRefAsString = $"{node.LineStrRef}";
             ExportEntry soundNodeWaveF = null;
             ExportEntry soundCueF = null;
@@ -1549,9 +1537,9 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
 
             foreach (DialogueNodeExtended node in nodes)
             {
-                if (node.Interpdata == null) { continue; }
+                if (node.InterpData == null) { continue; }
 
-                if (UnlistTrackFromGroup(dew.Pcc, groupName, trackName, node.Interpdata))
+                if (UnlistTrackFromGroup(dew.Pcc, groupName, trackName, node.InterpData))
                 {
                     updateCount++;
                 }
@@ -1573,13 +1561,13 @@ namespace LegendaryExplorer.DialogueEditor.DialogueEditorExperiments
 
             DialogueNodeExtended node = dew.SelectedDialogueNode;
 
-            if (node.Interpdata == null)
+            if (node.InterpData == null)
             {
                 MessageBox.Show("The selected node does not contain an InterpData.", "Warning", MessageBoxButton.OK);
                 return;
             }
 
-            if (UnlistTrackFromGroup(dew.Pcc, groupName, trackName, node.Interpdata))
+            if (UnlistTrackFromGroup(dew.Pcc, groupName, trackName, node.InterpData))
             {
                 MessageBox.Show($"Successfully unlisted {trackName} InterpTrack from {groupName} InterpGroup.", "Success", MessageBoxButton.OK);
             }

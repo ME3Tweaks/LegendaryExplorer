@@ -258,7 +258,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
                             foreach (var prop in defaults.GetProperties())
                             {
-                                if (!props.ContainsNamedProp(prop.Name))
+                                if (!props.ContainsNamedProp(prop.Name, prop.StaticArrayIndex))
                                 {
                                     props.Add(prop);
                                 }
@@ -1180,7 +1180,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             AddCore("DelegateProperty", "Property");
             AddCore("StringRefProperty", "Property");
 
-            if (game == MEGame.LE3)
+            if (game.IsLEGame())
             {
                 // Exists in executable but is not in any package file, so was not exposed to packages.
                 AddCore("ObjectRedirector", "Object");

@@ -58,14 +58,8 @@ namespace LegendaryExplorer.Packages
                                 return $"{nameof(CompareToPackageWrapper)}() requires at least one parameter be set!";
                             }
                         }
-                        var diff = PackageDiff.Create(wpfBase.Pcc, package);
-                        var list = new List<EntryStringPair>();
-                        list.AddRange(diff.ChangedEntries.Select(ed => new EntryStringPair(ed.A, $"{(ed.A.UIndex > 0 ? "Export" : "Import")} Changed #{ed.A.UIndex} {ed.A.InstancedFullPath}")));
-                        list.AddRange(diff.AOnlyEntries.Select(entry => new EntryStringPair(entry, $"{(entry.UIndex > 0 ? "Export" : "Import")} only exists in this file #{entry.UIndex} {entry.InstancedFullPath}")));
-                        list.AddRange(diff.BOnlyEntries.Select(entry => new EntryStringPair(entry, $"{(entry.UIndex > 0 ? "Export" : "Import")} only exists in other file #{entry.UIndex} {entry.InstancedFullPath}")));
-                        list.AddRange(diff.AOnlyNames.Select(name => new EntryStringPair($"Name only exists in this file: {name}")));
-                        list.AddRange(diff.BOnlyNames.Select(name => new EntryStringPair($"Name only exists in other file: {name}")));
-                        return list;
+
+                        return StructrualPackageCompare(wpfBase.Pcc, package);
                     }
                     if (package != null) return wpfBase.Pcc.CompareToPackage(package);
                     if (diskPath != null) return wpfBase.Pcc.CompareToPackage(diskPath);
@@ -98,6 +92,28 @@ namespace LegendaryExplorer.Packages
                     }
                 }
             });
+        }
+
+        /// <summary>
+        /// Compares two ME packages and returns a list of differences between their entries and names.
+        /// </summary>
+        /// <remarks>The returned list provides a human-readable summary of differences, including whether
+        /// an entry is an export or import, and whether it is unique to one package or changed between the two. This
+        /// method does not modify the input packages.</remarks>
+        /// <param name="package1">The first ME package to compare.</param>
+        /// <param name="package2">The second ME package to compare.</param>
+        /// <returns>A list of entry string pairs describing the differences between the two packages. The list includes changed
+        /// entries, entries unique to each package, and names that exist only in one package.</returns>
+        public static List<EntryStringPair> StructrualPackageCompare(IMEPackage package1, IMEPackage package2)
+        {
+            var diff = PackageDiff.Create(package1, package2);
+            var list = new List<EntryStringPair>();
+            list.AddRange(diff.ChangedEntries.Select(ed => new EntryStringPair(ed.A, $"{(ed.A.UIndex > 0 ? "Export" : "Import")} Changed #{ed.A.UIndex} {ed.A.InstancedFullPath}")));
+            list.AddRange(diff.AOnlyEntries.Select(entry => new EntryStringPair(entry, $"{(entry.UIndex > 0 ? "Export" : "Import")} only exists in this file #{entry.UIndex} {entry.InstancedFullPath}")));
+            list.AddRange(diff.BOnlyEntries.Select(entry => new EntryStringPair(entry, $"{(entry.UIndex > 0 ? "Export" : "Import")} only exists in other file #{entry.UIndex} {entry.InstancedFullPath}")));
+            list.AddRange(diff.AOnlyNames.Select(name => new EntryStringPair($"Name only exists in this file: {name}")));
+            list.AddRange(diff.BOnlyNames.Select(name => new EntryStringPair($"Name only exists in other file: {name}")));
+            return list;
         }
 
         /// <summary>

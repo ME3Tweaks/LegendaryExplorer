@@ -70,6 +70,11 @@ namespace LegendaryExplorerCore.Misc
         {
         }
 
+        public static EntryStringPair FormatMessage(IEntry entry, string message)
+        {
+            return new EntryStringPair(entry, $"{entry.UIndex,-9}\t{entry.InstancedFullPath}: {message}");
+        }
+
         /// <summary>
         /// Entry reference without package reference
         /// </summary>

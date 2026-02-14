@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Binary;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -292,8 +293,9 @@ namespace LegendaryExplorerCore.TLK.ME1
             while (offset * 8 < bits.Length)
             {
                 int size = BitConverter.ToInt32(data, offset);
+                if (!r.Endian.IsNative) size = BinaryPrimitives.ReverseEndianness(size);
                 offset += 4;
-                string s = GetString(offset * 8, bits);
+                string s = GetString(offset * 8, bits, swapEndian: !r.Endian.IsNative);
                 offset += size + 4;
                 rawStrings.Add(s);
             }
@@ -308,7 +310,7 @@ namespace LegendaryExplorerCore.TLK.ME1
             }
         }
 
-        private string GetString(int bitOffset, TLKBitArray bits)
+        private string GetString(int bitOffset, TLKBitArray bits, bool swapEndian = false)
         {
             HuffmanNode root = nodes[0];
             HuffmanNode curNode = root;
@@ -332,6 +334,7 @@ namespace LegendaryExplorerCore.TLK.ME1
                 /* it's a leaf! */
                 {
                     char c = curNode.Data;
+                    if (swapEndian) c = (char)BinaryPrimitives.ReverseEndianness((short)c);
                     if (c != '\0')
                     {
                         /* it's not NULL */

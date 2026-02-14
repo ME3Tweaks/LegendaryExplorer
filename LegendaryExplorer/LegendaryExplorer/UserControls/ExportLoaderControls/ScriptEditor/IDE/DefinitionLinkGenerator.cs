@@ -1,10 +1,11 @@
 ﻿#nullable enable
-using System;
-using System.Collections.Generic;
 using ICSharpCode.AvalonEdit.Rendering;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Parsing;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 {
@@ -112,10 +113,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 
         public override VisualLineElement? ConstructElement(int offset)
         {
-            //Debug.WriteLine($"Construct Offset: {offset}");
             if (Spans.TryGetValue(offset, out DefinitionLinkSpan span))
             {
-                //Debug.WriteLine($"Constructed at Offset: {offset}");
+                //definition links should never span multiple lines, so either we're operating on stale data or their's a bug in the parser
+                //LEX will hard-crash if we don't return null in this case, as AvalonEdit will get caught in an error loop
+                if (offset + span.Length > CurrentContext.VisualLine.FirstDocumentLine.EndOffset)
+                {
+                    //if (Debugger.IsAttached)
+                    //{
+                    //    Debugger.Break();
+                    //}
+                    return null;
+                }
                 return new VisualLineDefinitionLinkText(CurrentContext.VisualLine, span.Node, span.Length, ScrollTo);
             }
 

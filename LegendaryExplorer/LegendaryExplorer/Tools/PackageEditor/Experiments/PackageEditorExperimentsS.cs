@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using ClosedXML.Excel;
+﻿using ClosedXML.Excel;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.Misc;
@@ -38,6 +29,16 @@ using Microsoft.Win32;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using Newtonsoft.Json;
 using SharpDX.D3DCompiler;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Numerics;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using TerraFX.Interop.Windows;
 using static LegendaryExplorer.Tools.ScriptDebugger.DebuggerInterface;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
@@ -1244,7 +1245,7 @@ import java.util.*;"
                         }
                         foreach (string filePath in EnumerateOfficialFiles(game))
                         {
-                            ReserializeShaderCaches(filePath);
+                            //ReserializeShaderCaches(filePath);
                             //ScanShaderCache(filePath);
                             //ScanMaterials(filePath);
                             //ScanStaticMeshComponents(filePath);
@@ -1256,7 +1257,7 @@ import java.util.*;"
                             //RecompileAllFunctions(filePath);
                             //RecompileAllStates(filePath);
                             //RecompileAllDefaults(filePath, packageCache);
-                            //RecompileAllPropsOfNonScriptExports(filePath, packageCache);
+                            RecompileAllPropsOfNonScriptExports(filePath, packageCache);
                             //RecompileAllStructs(filePath, packageCache);
                             //RecompileAllEnums(filePath, packageCache);
                             //RecompileAllClasses(filePath, packageCache);
@@ -2199,9 +2200,10 @@ import java.util.*;"
             }
         }
 
-        public static void DumpAllShaders(IMEPackage Pcc)
+        public static void DumpGlobalShaders(PackageEditorWindow pew)
         {
-            if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache") is ExportEntry shaderCacheExport)
+            if (InputComboBoxDialog.GetValue(pew, "Choose game:", "Game to dump GlobalShaderCache for", new[] { "LE1", "LE2", "LE3" }, "LE1") is string gameStr &&
+                Enum.TryParse(gameStr, out MEGame game))
             {
                 var dlg = new CommonOpenFileDialog("Pick a folder to save Shaders to.")
                 {
@@ -2210,20 +2212,77 @@ import java.util.*;"
                 };
                 if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
                 {
-                    var shaderCache = ObjectBinary.From<ShaderCache>(shaderCacheExport);
-                    foreach (Shader shader in shaderCache.Shaders.Values)
+                    pew.IsBusy = true;
+
+                    string getDumpedFilename(int shaderIndex, Shader shader)
                     {
                         string shaderType = shader.ShaderType;
-                        string pathWithoutInvalids = Path.Combine(dlg.FileName,
-                            $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid}.txt");
-                        File.WriteAllText(pathWithoutInvalids,
-                            ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode))
-                                .Disassemble());
+                        return $"GlobalShader-{shaderIndex}-{shader.ShaderType.Instanced.Replace("<", "[").Replace(">", "]")}.hlsl";
                     }
 
-                    MessageBox.Show("Done!");
+                    var fileName = Path.Combine(MEDirectories.GetCookedPath(game), "GlobalShaderCache-PC-D3D-SM5.bin");
+                    using var input = new MemoryStream(File.ReadAllBytes(fileName));
+                    var shaderCache = GlobalShaderCache.ReadGlobalShaderCache(input, game);
+                    dumpShadersCore(pew, dlg.FileName, shaderCache, true, getDumpedFilename);
                 }
             }
+        }
+
+        public static void DumpAllShaders(PackageEditorWindow pew)
+        {
+            IMEPackage pcc = pew.Pcc;
+            if (pcc is null || !pcc.Game.IsLEGame())
+            {
+                MessageBox.Show("Must have a legendary edition file open!");
+                return;
+            }
+            if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache") is not ExportEntry shaderCacheExport)
+            {
+                MessageBox.Show("No Shader Cache found in file!");
+                return;
+            }
+            var dlg = new CommonOpenFileDialog("Pick a folder to save Shaders to.")
+            {
+                IsFolderPicker = true,
+                EnsurePathExists = true
+            };
+            if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                pew.IsBusy = true;
+                var shaderCache = ObjectBinary.From<ShaderCache>(shaderCacheExport);
+                dumpShadersCore(pew, dlg.FileName, shaderCache, true); // 12/21/2025 - Dumps hlsl instead of disassembly - mgamerz
+            }
+        }
+
+        private static void dumpShadersCore(PackageEditorWindow pew, string folder, ShaderCache shaderCache, bool decompile, Func<int, Shader, string> getFilenameFromShader = null)
+        {
+            Task.Run(() =>
+            {
+                ICollection<Shader> shaders = shaderCache.Shaders.Values;
+                int total = shaders.Count;
+                int done = 0;
+                foreach (Shader shader in shaders)
+                {
+                    string shaderType = shader.ShaderType;
+                    string pathWithoutInvalids = Path.Combine(folder, getFilenameFromShader?.Invoke(done, shader) ?? $"{shaderType.GetPathWithoutInvalids()} - {shader.Guid}.txt");
+                    string testShaderText = null;
+                    if (decompile)
+                    {
+                        testShaderText = HLSLDecompiler.DecompileShader(shader.ShaderByteCode, false).Trim();
+                    }
+                    else
+                    {
+                        testShaderText = ShaderBytecode.FromStream(new MemoryStream(shader.ShaderByteCode)).Disassemble();
+                    }
+
+                    File.WriteAllText(pathWithoutInvalids, testShaderText);
+                    pew.BusyText = $"{++done}/{total}";
+                }
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                pew.IsBusy = false;
+                MessageBox.Show("Done!");
+            });
         }
 
         public static void DumpMaterialShaders(ExportEntry matExport)

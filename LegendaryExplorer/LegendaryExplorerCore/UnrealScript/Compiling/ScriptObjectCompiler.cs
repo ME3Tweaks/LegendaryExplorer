@@ -471,10 +471,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         {
             var functionName = NameReference.FromInstancedString(funcAST.Name);
             ExportEntry funcExport;
-
+            string friendlyName = funcAST.FriendlyName ?? functionName;
             if (refFuncObj is null)
             {
-                funcExport = CreateNewExport(parent.FileRef, functionName, "Function", parent, new UFunction { ScriptBytes = [], FriendlyName = functionName });
+                funcExport = CreateNewExport(parent.FileRef, functionName, "Function", parent, new UFunction { ScriptBytes = [], FriendlyName = friendlyName });
                 refFuncObj = funcExport.GetBinaryData<UFunction>();
             }
             else
@@ -487,7 +487,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             UFunction funcObj = refFuncObj;
 
-            funcObj.FriendlyName = functionName;
+            funcObj.FriendlyName = friendlyName;
             funcObj.FunctionFlags = funcAST.Flags;
             funcObj.NativeIndex = (ushort)funcAST.NativeIndex;
             funcObj.OperatorPrecedence = funcAST.OperatorPrecedence;

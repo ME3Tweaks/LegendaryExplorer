@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using FontAwesome5;
+﻿using FontAwesome5;
 using FontAwesome5.Extensions;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Language.Util;
+using System;
+using System.Collections.Generic;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 {
     public class FunctionCompletion : ICompletionData
     {
         private readonly Function function;
-        private string _description;
+        private object _description;
         private string _text;
 
         private FunctionCompletion(Function func)
@@ -61,7 +58,21 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 
         public string Text => _text ??= function.Name;
 
-        public object Description => _description ??= CodeBuilderVisitor.GetFunctionSignature(function);
+        public object Description
+        {
+            get
+            {
+                if (_description is null)
+                {
+                    var textBlock = new TextBlock();
+                    textBlock.Inlines.AddRange(XamlCodeBuilder.GetFunctionSignature(function));
+
+                    textBlock.Background = SyntaxInfo.BackgroundBrush;
+                    _description = textBlock;
+                }
+                return _description;
+            }
+        }
 
         public object Content => Text;
 

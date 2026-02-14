@@ -3750,11 +3750,9 @@ namespace LegendaryExplorerCore.Unreal
             t.inPackageReferences.AddRange(a.inPackageReferences);
 
             pos += a.raw.Length;
-            int index = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
-            t.inPackageReferences.Add((pos, Token.INPACKAGEREFTYPE_NAME, index));
+            string delName = ReadName(pos, export, t);
             pos += 8;
-            string s = export.FileRef.GetNameEntry(index);
-            t.text = a.text + "." + s + "(";
+            t.text = a.text + "." + delName + "(";
             int count = 0;
             while (pos < memsize)
             {
@@ -3781,10 +3779,10 @@ namespace LegendaryExplorerCore.Unreal
         private Token ReadGlobalFunc(int start, ExportEntry export)
         {
             Token t = new Token();
-            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
-            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = "Global." + export.FileRef.GetNameEntry(index) + "(";
+            string name = ReadName(start + 1, export, t);
+
+            t.text = $"Global.{name}(";
             int pos = start + 9;
             int count = 0;
             while (pos < memsize)
@@ -4201,13 +4199,13 @@ namespace LegendaryExplorerCore.Unreal
         {
             Token t = new Token();
             int pos = start + 1;
-            int nameIdx = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
-            t.inPackageReferences.Add((pos, Token.INPACKAGEREFTYPE_NAME, nameIdx));
+
+            string name = ReadName(pos, export, t);
             pos += 8;
             int funcIndex = EndianReader.ToUInt16(memory, pos, export.FileRef.Endian); //index of this function in the class' Full Function List
             pos += 2;
 
-            t.text = export.FileRef.GetNameEntry(nameIdx);
+            t.text = name;
             t.text += "(";
             int count = 0;
             while (pos < memsize)
@@ -4488,12 +4486,12 @@ namespace LegendaryExplorerCore.Unreal
         {
             Token t = new Token();
 
-            int name = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
-            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, name));
+
+            string name = ReadName(start + 1, export, t);
             int uIndex = EndianReader.ToInt32(memory, start + 9, export.FileRef.Endian);
             t.inPackageReferences.Add((start + 9, Token.INPACKAGEREFTYPE_ENTRY, uIndex));
 
-            t.text = export.FileRef.GetNameEntry(name);
+            t.text = name;
             t.raw = new byte[13];
             for (int i = 0; i < 13; i++)
                 t.raw[i] = memory[start + i];
@@ -4504,10 +4502,10 @@ namespace LegendaryExplorerCore.Unreal
         {
             Token t = new Token();
 
-            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
-            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = export.FileRef.GetNameEntry(index);
+            string name = ReadName(start + 1, export, t);
+
+            t.text = name;
             t.raw = new byte[9];
             for (int i = 0; i < 9; i++)
                 t.raw[i] = memory[start + i];
@@ -4578,15 +4576,21 @@ namespace LegendaryExplorerCore.Unreal
         {
             Token t = new Token();
 
-            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
-            int num = EndianReader.ToInt32(memory, start + 5, export.FileRef.Endian);
-            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
+            string name = ReadName(start + 1, export, t);
 
-            t.text = $"'{new NameReference(export.FileRef.GetNameEntry(index), num).Instanced}'";
+            t.text = $"'{name}'";
             t.raw = new byte[9];
             for (int i = 0; i < 9; i++)
                 t.raw[i] = memory[start + i];
             return t;
+        }
+
+        private string ReadName(int pos, ExportEntry export, Token t)
+        {
+            int index = EndianReader.ToInt32(memory, pos, export.FileRef.Endian);
+            int num = EndianReader.ToInt32(memory, pos + 4, export.FileRef.Endian);
+            t.inPackageReferences.Add((pos, Token.INPACKAGEREFTYPE_NAME, index));
+            return new NameReference(export.FileRef.GetNameEntry(index), num).Instanced;
         }
 
         private Token ReadNone(int start, ExportEntry export)
@@ -4610,10 +4614,10 @@ namespace LegendaryExplorerCore.Unreal
         private Token ReadVirtualFunc(int start, ExportEntry export)
         {
             Token t = new Token();
-            int index = EndianReader.ToInt32(memory, start + 1, export.FileRef.Endian);
-            t.inPackageReferences.Add((start + 1, Token.INPACKAGEREFTYPE_NAME, index));
 
-            t.text = export.FileRef.GetNameEntry(index) + "(";
+            string name = ReadName(start + 1, export, t);
+
+            t.text = name + "(";
             int pos = start + 9;
             int count = 0;
             while (pos < memsize)
@@ -4937,10 +4941,11 @@ namespace LegendaryExplorerCore.Unreal
                     t.text += "\n";
 
                 int index = EndianReader.ToInt32(memory, endpos, export.FileRef.Endian);
+                int num = EndianReader.ToInt32(memory, endpos + 4, export.FileRef.Endian);
                 int offset = EndianReader.ToInt32(memory, endpos + 8, export.FileRef.Endian);
                 if (export.FileRef.IsName(index))
                 {
-                    var name = export.FileRef.GetNameEntry(index);
+                    var name = new NameReference(export.FileRef.GetNameEntry(index), num);
                     if (name == "None")
                     {
                         //end of Label Table
@@ -4952,7 +4957,7 @@ namespace LegendaryExplorerCore.Unreal
                     else
                     {
 
-                        t.text += name + " @ 0x" + offset.ToString("X8") + ")";
+                        t.text += name.Instanced + " @ 0x" + offset.ToString("X8") + ")";
                         t.inPackageReferences.Add((position: endpos, type: Token.INPACKAGEREFTYPE_NAME, value: index));
                         endpos += 12;
                     }

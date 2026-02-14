@@ -9,13 +9,16 @@ using LegendaryExplorerCore.Matinee;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.SharpDX;
+using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Reactive;
 using System.Windows;
 using static LegendaryExplorer.Misc.ExperimentsTools.PackageAutomations;
 using static LegendaryExplorer.Misc.ExperimentsTools.SequenceAutomations;
@@ -1877,7 +1880,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 Random random = new();
 
                 Dictionary<uint, uint> idPairs = new();
-                idPairs.AddRange(UpdateIDs_EXPERIMENTAL(wwiseEvents, random));
+                idPairs.AddRange(pcc.Game == MEGame.LE2 ? UpdateLE2EventIDs_EXPERIMENTAL(wwiseEvents, random) : UpdateIDs_EXPERIMENTAL(wwiseEvents, random)); // LE2 WwiseEvent IDs are in the Binary, instead of being a prop
                 idPairs.AddRange(UpdateIDs_EXPERIMENTAL(wwiseStreams));
 
                 UpdateAudioIDs_EXPERIMENTAL(wwiseBankEntry, newWwiseBankName, idPairs, random);
@@ -2146,13 +2149,52 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        /// <summary>
-        /// Update the IDs of a list of ExportEntries with hashes of their names.
-        /// </summary>
-        /// <param name="entries">WwiseStreams to update.</param>
-        /// <param name="random">If not null, the random object to generate ids, instead of the name.</param>
-        /// <returns>KVP of old and new IDs. Used to update references.</returns>
-        private static Dictionary<uint, uint> UpdateIDs_EXPERIMENTAL(List<ExportEntry> entries, Random random = null)
+		/// <summary>
+		/// Update the IDs of a list of LE2 WwiseEvents with random IDs.
+		/// </summary>
+		/// <param name="wwiseEvts">Events to update.</param>
+		/// <param name="random">The random object to generate ids.</param>
+		/// <returns>KVP of old and new IDs. Used to update references.</returns>
+		private static Dictionary<uint, uint> UpdateLE2EventIDs_EXPERIMENTAL(List<ExportEntry> events, Random random)
+        {
+            Dictionary<uint, uint> oldAndNewIDs = new();
+
+            foreach (ExportEntry evt in events)
+            {
+                (uint oldID, uint newID) = UpdateLE2EventID_EXPERIMENTAL(evt, random);
+
+                if (newID == 0) { continue; }
+
+                oldAndNewIDs.Add(oldID, newID);
+            }
+
+            return oldAndNewIDs;
+        }
+
+		/// <summary>
+		/// Update the ID of an LE2 WwiseEvent with a random ID, as they appear in the binary, instead of as props.
+		/// </summary>
+		/// <param name="wwiseEvt">Event to update.</param>
+		/// <param name="random">The random object to generate the id.</param>
+		/// <returns>KVP of old and new ID. Used to update references.</returns>
+		private static (uint, uint) UpdateLE2EventID_EXPERIMENTAL(ExportEntry wwiseEvt, Random random)
+        {
+            WwiseEvent wwiseEvent = wwiseEvt.GetBinaryData<WwiseEvent>();
+            uint oldID = wwiseEvent.WwiseEventID;
+            uint newID = GenerateRandomID(random);
+            wwiseEvent.WwiseEventID = newID;
+            wwiseEvt.WriteBinary(wwiseEvent);
+
+            return (oldID, newID);
+		}
+
+		/// <summary>
+		/// Update the IDs of a list of ExportEntries with hashes of their names.
+		/// </summary>
+		/// <param name="entries">WwiseStreams to update.</param>
+		/// <param name="random">If not null, the random object to generate ids, instead of the name.</param>
+		/// <returns>KVP of old and new IDs. Used to update references.</returns>
+		private static Dictionary<uint, uint> UpdateIDs_EXPERIMENTAL(List<ExportEntry> entries, Random random = null)
         {
             Dictionary<uint, uint> oldAndNewIDs = new();
 
@@ -2844,7 +2886,6 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         /// <param name="set"></param>
         public static void SetForcedExportFlag(ExportEntry exp, bool set)
         {
-
             List<IEntry> entries = exp.GetAllDescendants();
             entries.Add(exp);
 
@@ -2854,16 +2895,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
 
                 if (export.ClassName == "ObjectReferencer") { continue; }
 
-                if (set)
-                {
-                    // Set
-                    export.ExportFlags |= UnrealFlags.EExportFlags.ForcedExport;
-                }
-                else
-                {
-                    // Strip
-                    export.ExportFlags &= ~UnrealFlags.EExportFlags.ForcedExport;
-                }
+                export.SetForcedExportFlag(set);
             }
         }
 
@@ -3416,6 +3448,123 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             StreamFile(pew.Pcc, filename, conditionalFile);
 
             ShowSuccess($"Added loading and streaming for {filename} wherever {conditionalFile} is present");
+        }
+        /// <summary>
+        /// Add all the strings in a tlk file as entries/replies in a BioConversation.
+        /// </summary>
+        /// <param name="pcc">Package to operate on.</param>
+        /// <param name="talkfile">BioTlkFile export.</param>
+        /// <param name="bioConversation">Conversation to be edited.</param>
+        public static void CreateConversation(ME1TalkFile talkfile, IMEPackage pcc, ExportEntry bioConversation)
+        {
+            ConversationExtended conversation = new(bioConversation);
+            int totalStrings = talkfile.StringRefs?.Count ?? 0;
+            int processedCount = 0;
+
+            // If more than 20 strings, tell the user there's gonna be a lot of dialogs
+            if (totalStrings > 20)
+            {
+                bool proceed = PromptForBool(
+                    $"This TLK contains {totalStrings} strings. You will be prompted once for each string to determine whether it is a reply node. Do you want to continue?",
+                    "Warning");
+                if (!proceed)
+                {
+                    ShowError("Operation cancelled.");
+                    return;
+                }
+            }
+
+            // Enumerate all strings in the TLK export and ask the user if they are reply nodes or entry nodes,
+            // then add them to the conversation accordingly
+            foreach (var stringref in talkfile.StringRefs)
+            {
+                string message = $"Is this a reply node?\n\n{stringref.Data}";
+                MessageBoxResult choice = MessageBox.Show(message, "Select node type", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+
+                if (choice == MessageBoxResult.Cancel)
+                {
+                    conversation.Export.WriteProperties(conversation.BioConvo);
+                    ShowSuccess($"Operation cancelled. {processedCount} strings were added.");
+                    return;
+                }
+
+                // Build reply/entry properties
+                bool isReply = choice == MessageBoxResult.Yes;
+                string structType = isReply ? "BioDialogReplyNode" : "BioDialogEntryNode";
+                string listPropName = isReply ? "m_ReplyList" : "m_EntryList";
+                PropertyCollection newprop = GlobalUnrealObjectInfo.getDefaultStructValue(pcc.Game, structType, true, pcc);
+                newprop.AddOrReplaceProp(new EnumProperty("GUI_STYLE_NONE", "EConvGUIStyles", pcc.Game, "eGUIStyle"));
+                if (isReply)
+                {
+                    newprop.GetProp<IntProperty>("nListenerIndex").Value = -1;
+                    newprop.GetProp<EnumProperty>("ReplyType").Value = "REPLY_STANDARD";
+                }
+                else
+                {
+                    newprop.GetProp<IntProperty>("nSpeakerIndex").Value = -1;
+                    newprop.GetProp<IntProperty>("nListenerIndex").Value = -2;
+                    newprop.GetProp<BoolProperty>("bSkippable").Value = true;
+                }
+                newprop.GetProp<IntProperty>("nScriptIndex").Value = -1;
+                newprop.GetProp<StringRefProperty>("srText").Value = stringref.StringID;
+                newprop.GetProp<BoolProperty>("bFireConditional").Value = true;
+                newprop.GetProp<IntProperty>("nConditionalFunc").Value = -1;
+                newprop.GetProp<IntProperty>("nConditionalParam").Value = -1;
+                newprop.GetProp<IntProperty>("nStateTransition").Value = -1;
+                newprop.GetProp<IntProperty>("nStateTransitionParam").Value = -1;
+                newprop.GetProp<IntProperty>("nCameraIntimacy").Value = 1;
+                var props = conversation.BioConvo.GetProp<ArrayProperty<StructProperty>>(listPropName) ??
+                            new ArrayProperty<StructProperty>(listPropName);
+                props.Add(new StructProperty(structType, newprop));
+                conversation.BioConvo.AddOrReplaceProp(props);
+                processedCount++;
+            }
+            conversation.Export.WriteProperties(conversation.BioConvo);
+            ShowSuccess($"Added {processedCount} strings to {conversation.ConvName}");
+        }
+
+        /// <summary>
+        /// Populates a conversation object with replies/entries based on a TLK export in the specified package editor
+        /// window.
+        /// </summary>
+        /// <remarks>This method is intended for use with LE1 conversation exports
+        /// only. The selected export must be of the BioConversation class, and a valid BioTlkFile export must be
+        /// selected as a source. If these conditions are not met, the method will display an error and return without making
+        /// changes.</remarks>
+        /// <param name="pew">The package editor window containing the package and selected export to use for the conversation experiment.
+        /// Cannot be null.</param>
+        public static void CreateConversationExperiment(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null || pew.SelectedItem?.Entry == null)
+            {
+                return;
+            }
+            if (pew.Pcc.Game != MEGame.LE1)
+            {
+                ShowError("This experiment is only for LE1 conversations currently.");
+                return;
+            }
+            var selectedEntry = pew.SelectedItem.Entry;
+            if (selectedEntry.ClassName != "BioConversation")
+            {
+                ShowError("Selected entry is not a BioConversation");
+                return;
+            }
+
+            PackageCache cache = new PackageCache();
+            var convoExport = ResolveEntryToExport(selectedEntry, cache);
+
+            ExportEntry TLKExport = EntrySelector.GetEntry<ExportEntry>(pew, pew.Pcc, "Select BioTlkFile export", 
+                exp => exp.ClassName == "BioTlkFile");
+
+            if (TLKExport == null)
+            {
+                // User cancelled or no valid BioTlkFile found
+                return;
+            }
+         
+            var talkfile = new ME1TalkFile(pew.Pcc, TLKExport.UIndex);
+            CreateConversation(talkfile, pew.Pcc, convoExport);
         }
 
         // HELPER FUNCTIONS

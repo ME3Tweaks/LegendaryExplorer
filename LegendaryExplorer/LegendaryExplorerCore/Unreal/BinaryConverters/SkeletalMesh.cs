@@ -103,6 +103,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 ForEachUIndexInSpan(action, ClothingAssets.AsSpan(), nameof(ClothingAssets));
             }
         }
+
+        /// <summary>
+        /// Sets the material UIndexes. For convenience only. You probably shouldn't use this for actual editing, this is used by LEX mesh preview.
+        /// </summary>
+        /// <param name="overlay">If null values should not be set</param>
+        /// <returns></returns>
+        public void SetMaterials(List<IEntry> materials, bool overlay = false)
+        {
+            for (int i = 0; i < materials.Count && i < Materials.Length; i++)
+            {
+                var mat = materials[i];
+                if (mat != null || !overlay)
+                {
+                    Materials[i] = mat?.UIndex ?? 0;
+                }
+            }
+        }
     }
 
     public class MeshBone
@@ -422,7 +439,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 if (IsLoading)
                 {
-                    ms.Read(MemoryMarshal.AsBytes<GPUSkinVertex>(svb.VertexData));
+                    ms.Read(MemoryMarshal.AsBytes<GPUSkinVertex>(svb.VertexData.AsSpan()));
                 }
                 else
                 {

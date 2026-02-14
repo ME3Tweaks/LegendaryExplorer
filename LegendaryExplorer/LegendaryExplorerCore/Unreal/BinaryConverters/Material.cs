@@ -719,12 +719,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         Dictionary<string, float> scalarParameterValues,
         Dictionary<string, LinearColor> vectorParameterValues,
         float currentTime,
-        float currentRealTime)
+        float currentRealTime,
+        Func<UniformExpressionRenderContext, int, LinearColor> getFlipBookTextureOffset)
     {
         public readonly Dictionary<string, float> ScalarParameterValues = scalarParameterValues;
         public readonly Dictionary<string, LinearColor> VectorParameterValues = vectorParameterValues;
         public readonly float CurrentTime = currentTime;
         public readonly float CurrentRealTime = currentRealTime;
+        public readonly Func<UniformExpressionRenderContext, int, LinearColor> GetFlipBookTextureOffset = getFlipBookTextureOffset;
     }
 
     public abstract class MaterialUniformExpression
@@ -817,7 +819,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
         {
             //TODO: replace guess with whatever this actually should be
-            Debugger.Break();
+            if (LegendaryExplorerCoreLib.IsDebug && Debugger.IsAttached)
+            {
+                Debugger.Break();
+            }
             outVal = new LinearColor(1, 1, 1, 1);
         }
 
@@ -913,7 +918,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public class MaterialUniformExpressionFlipbookParameter : MaterialUniformExpression
     {
-        public int Index;
+        public int Index; //TODO: what is this?
         public UIndex TextureIndex; //UIndex in ME1/2, index into MaterialResource's Uniform2DTextureExpressions in ME3/LE
         public override void Serialize(SerializingContainer sc)
         {
@@ -924,7 +929,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
         {
-            throw new NotImplementedException();
+            outVal = context.GetFlipBookTextureOffset(context, TextureIndex);
         }
         public override bool IsNotFrameDependent => false;
     }
@@ -1186,9 +1191,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
         {
-            //R = U, G = V, B = A = 0
-            Debugger.Break();
-            throw new NotImplementedException();
+            outVal = context.GetFlipBookTextureOffset(context, TextureIndex);
         }
         public override bool IsNotFrameDependent => false;
     }

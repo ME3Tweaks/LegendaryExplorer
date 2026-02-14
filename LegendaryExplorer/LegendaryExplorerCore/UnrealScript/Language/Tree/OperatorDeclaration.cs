@@ -1,5 +1,6 @@
 ﻿using System;
 using LegendaryExplorerCore.UnrealScript.Lexing;
+using LegendaryExplorerCore.UnrealScript.Utilities;
 
 namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 {
@@ -11,6 +12,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public Function Implementer;
 
+        public string FriendlyName => OperatorType is TokenType.Word ? Implementer?.FriendlyName ?? "None" : OperatorHelper.OperatorTypeToString(OperatorType);
+
         public abstract bool HasOutParams { get; }
 
         protected OperatorDeclaration(TokenType operatorType, VariableType returnType, int nativeIndex)
@@ -20,15 +23,6 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             NativeIndex = nativeIndex;
         }
 
-        public bool IdenticalSignature(OperatorDeclaration other)
-        {
-            if (this.ReturnType is null && other.ReturnType is not null)
-                return false;
-            if (this.ReturnType is not null && other.ReturnType is null)
-                return false;
 
-            return this.OperatorType == other.OperatorType
-                   && string.Equals(this.ReturnType?.Name, other.ReturnType?.Name, StringComparison.Ordinal);
-        }
     }
 }

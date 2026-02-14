@@ -19,6 +19,7 @@ using Resource = SharpDX.Direct3D11.Resource;
 using LegendaryExplorerCore.Gammtek;
 using LegendaryExplorerCore.Packages;
 using Texture2D = SharpDX.Direct3D11.Texture2D;
+using LegendaryExplorer.Dialogs;
 
 namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 {
@@ -112,7 +113,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         public static Texture2D LoadUnrealTexture(this RenderContext renderContext, ExportEntry texture2DExport)
         {
             var unrealTexture = new LECTexture2D(texture2DExport);
-            return renderContext.LoadUnrealMip(unrealTexture.GetTopMip(), LegendaryExplorerCore.Textures.Image.getPixelFormatType(unrealTexture.Export.GetProperties().GetProp<EnumProperty>("Format").Value.Name));
+            return renderContext.LoadUnrealMip(unrealTexture.GetTopMip(), LegendaryExplorerCore.Textures.Image.getPixelFormatType(unrealTexture.Export.GetProperty<EnumProperty>("Format").Value.Name));
         }
 
         public static Texture2D LoadUnrealTextureCube(this RenderContext renderContext, ExportEntry textureCubeExport, PackageCache packageCache = null)
@@ -286,22 +287,6 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         public SceneRenderControl()
         {
             InitializeComponent();
-            Loaded += (s, e) =>
-            {
-                // only at this point the control is ready
-                var window = Window.GetWindow(this); // get the parent window
-                //this will obviously always be true at runtime, but is NOT true in the designer.
-                if (window is not null)
-                {
-                    window.Closing += (s1, e1) =>
-                    {
-                        if (!e1.Cancel)
-                        {
-                            Dispose();
-                        }
-                    };
-                }
-            };
         }
 
         private void InitializeComponent()
@@ -317,6 +302,19 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         {
             if (!InitiallyLoaded)
             {
+                // only at this point the control is ready
+                var window = Window.GetWindow(this); // get the parent window
+                //this will obviously always be true at runtime, but is NOT true in the designer.
+                if (window is not null)
+                {
+                    window.Closing += (s1, e1) =>
+                    {
+                        if (!e1.Cancel)
+                        {
+                            Dispose();
+                        }
+                    };
+                }
                 // Debug.WriteLine("SceneRenderControl_Loaded");
                 D3DImage = new Microsoft.Wpf.Interop.DirectX.D3D11Image
                 {
@@ -339,16 +337,19 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 }
                 catch (Exception exception)
                 {
+                    SetShouldRender(false);
                     Content = Image = new ImageAwesome
                     {
                         Icon = EFontAwesomeIcon.Solid_Ban,
                         Foreground = Brushes.DarkRed
                     };
+                    new ExceptionHandlerDialog(exception).Show();
                     return;
                 }
 
                 CompositionTarget.Rendering += CompositionTarget_Rendering;
                 InitiallyLoaded = true;
+                D3DImage.SetPixelSize(RenderWidth, RenderHeight);
             }
             else
             {
@@ -444,7 +445,20 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
                 IntPtr sharedHandle = resource.SharedHandle;
                 resource.Dispose();
                 var d3dres = Context.Device.OpenSharedResource<Resource>(sharedHandle);
-                Context.CreateSizeDependentResources(RenderWidth, RenderHeight, d3dres.QueryInterface<Texture2D>());
+                try
+                {
+                    Context.CreateSizeDependentResources(RenderWidth, RenderHeight, d3dres.QueryInterface<Texture2D>());
+                }
+                catch (Exception exception)
+                {
+                    SetShouldRender(false);
+                    Content = Image = new ImageAwesome
+                    {
+                        Icon = EFontAwesomeIcon.Solid_Ban,
+                        Foreground = Brushes.DarkRed
+                    };
+                    new ExceptionHandlerDialog(exception).Show();
+                }
                 d3dres.Dispose();
             }
 

@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing;
+using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
@@ -120,13 +122,13 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private Class TryParseClass()
         {
             var startPos = CurrentPosition;
-            if (!Matches(CLASS, EF.Keyword)) throw ParseError("Expected class declaration!");
+            if (!Matches(CLASS, ST.Keyword)) throw ParseError("Expected class declaration!");
 
             var name = Consume(TokenType.Word);
             if (name == null) throw ParseError("Expected class name!");
-            name.SyntaxType = EF.Class;
+            name.SyntaxType = ST.Class;
 
-            var parentClass = ParseTheExtendsSpecifier(EF.Class) ?? new VariableType("Object");
+            var parentClass = ParseTheExtendsSpecifier(ST.Class) ?? new VariableType("Object");
 
             var outerClass = ParseTheWithinSpecifier() ?? new VariableType("Object");
 
@@ -136,51 +138,51 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             string configName = "None";
             while (CurrentTokenType == TokenType.Word)
             {
-                if (Matches("native", EF.Specifier))
+                if (Matches("native", ST.Specifier))
                 {
                     flags |= EClassFlags.Native;
                 }
-                else if (Matches("nativeonly", EF.Specifier))
+                else if (Matches("nativeonly", ST.Specifier))
                 {
                     flags |= EClassFlags.NativeOnly;
                 }
-                else if (Matches("noexport", EF.Specifier))
+                else if (Matches("noexport", ST.Specifier))
                 {
                     flags |= EClassFlags.NoExport;
                 }
-                else if (Matches("editinlinenew", EF.Specifier))
+                else if (Matches("editinlinenew", ST.Specifier))
                 {
                     flags |= EClassFlags.EditInlineNew;
                 }
-                else if (Matches("placeable", EF.Specifier))
+                else if (Matches("placeable", ST.Specifier))
                 {
                     flags |= EClassFlags.Placeable;
                 }
-                else if (Matches("hidedropdown", EF.Specifier))
+                else if (Matches("hidedropdown", ST.Specifier))
                 {
                     flags |= EClassFlags.HideDropDown;
                 }
-                else if (Matches("nativereplication", EF.Specifier))
+                else if (Matches("nativereplication", ST.Specifier))
                 {
                     flags |= EClassFlags.NativeReplication;
                 }
-                else if (Matches("perobjectconfig", EF.Specifier))
+                else if (Matches("perobjectconfig", ST.Specifier))
                 {
                     flags |= EClassFlags.PerObjectConfig;
                 }
-                else if (Matches("abstract", EF.Specifier))
+                else if (Matches("abstract", ST.Specifier))
                 {
                     flags |= EClassFlags.Abstract;
                 }
-                else if (Matches("deprecated", EF.Specifier))
+                else if (Matches("deprecated", ST.Specifier))
                 {
                     flags |= EClassFlags.Deprecated;
                 }
-                else if (Matches("transient", EF.Specifier))
+                else if (Matches("transient", ST.Specifier))
                 {
                     flags |= EClassFlags.Transient;
                 }
-                else if (Matches("config", EF.Specifier))
+                else if (Matches("config", ST.Specifier))
                 {
                     flags |= EClassFlags.Config;
                     if (Consume(TokenType.LeftParenth) is null || Consume(TokenType.Word) is null)
@@ -198,19 +200,19 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         throw ParseError("Expected ')' after config file name!", CurrentPosition);
                     }
                 }
-                else if (Matches("safereplace", EF.Specifier))
+                else if (Matches("safereplace", ST.Specifier))
                 {
                     flags |= EClassFlags.SafeReplace;
                 }
-                else if (Matches("hidden", EF.Specifier))
+                else if (Matches("hidden", ST.Specifier))
                 {
                     flags |= EClassFlags.Hidden;
                 }
-                else if (Matches("collapsecategories", EF.Specifier))
+                else if (Matches("collapsecategories", ST.Specifier))
                 {
                     flags |= EClassFlags.CollapseCategories;
                 }
-                else if (Matches("implements", EF.Keyword))
+                else if (Matches("implements", ST.Keyword))
                 {
                     if (Consume(TokenType.LeftParenth) is null)
                     {
@@ -219,7 +221,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                     while (Consume(TokenType.Word) is ScriptToken interfaceName)
                     {
-                        interfaceName.SyntaxType = EF.Class;
+                        interfaceName.SyntaxType = ST.Class;
                         interfaces.Add(new VariableType(interfaceName.Value, interfaceName.StartPos, interfaceName.EndPos));
                         if (Consume(TokenType.Comma) is null)
                         {
@@ -343,10 +345,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private Const ParseConstant()
         {
             var startPos = CurrentPosition;
-            if (!Matches(CONST, EF.Keyword)) return null;
+            if (!Matches(CONST, ST.Keyword)) return null;
             if (Consume(TokenType.Word) is ScriptToken constName)
             {
-                if (!Matches(TokenType.Assign, EF.Operator))
+                if (!Matches(TokenType.Assign, ST.Operator))
                 {
                     throw ParseError("Expected '=' after constant name!", CurrentPosition);
                 }
@@ -388,7 +390,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private VariableDeclaration ParseVarDecl()
         {
             var startPos = CurrentPosition;
-            if (!Matches(VAR, EF.Keyword)) return null;
+            if (!Matches(VAR, ST.Keyword)) return null;
             string category = null;
             if (CurrentTokenType == TokenType.LeftParenth)
             {
@@ -438,40 +440,40 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private Struct ParseStruct()
         {
             var startPos = CurrentToken.StartPos;
-            if (!Matches(STRUCT, EF.Keyword)) return null;
+            if (!Matches(STRUCT, ST.Keyword)) return null;
 
             ScriptStructFlags flags = 0;
             while (CurrentTokenType == TokenType.Word)
             {
-                if (Matches("native", EF.Specifier))
+                if (Matches("native", ST.Specifier))
                 {
                     flags |= ScriptStructFlags.Native;
                 }
-                else if (Matches("export", EF.Specifier))
+                else if (Matches("export", ST.Specifier))
                 {
                     flags |= ScriptStructFlags.Export;
                 }
-                else if (Matches("transient", EF.Specifier))
+                else if (Matches("transient", ST.Specifier))
                 {
                     flags |= ScriptStructFlags.Transient;
                 }
-                else if (Matches("atomic", EF.Specifier))
+                else if (Matches("atomic", ST.Specifier))
                 {
                     flags |= ScriptStructFlags.Atomic;
                 }
-                else if (Matches("immutable", EF.Specifier))
+                else if (Matches("immutable", ST.Specifier))
                 {
                     flags |= ScriptStructFlags.Immutable | ScriptStructFlags.Atomic;
                 }
-                else if (Matches("immutablewhencooked", EF.Specifier))
+                else if (Matches("immutablewhencooked", ST.Specifier))
                 {
                     flags |= ScriptStructFlags.ImmutableWhenCooked | ScriptStructFlags.AtomicWhenCooked;
                 }
-                else if (Matches("strictconfig", EF.Specifier))
+                else if (Matches("strictconfig", ST.Specifier))
                 {
                     flags |= ScriptStructFlags.StrictConfig;
                 }
-                else if (Matches(nameof(ScriptStructFlags.UnkStructFlag), EF.Specifier))
+                else if (Matches(nameof(ScriptStructFlags.UnkStructFlag), ST.Specifier))
                 {
                     flags |= ScriptStructFlags.UnkStructFlag;
                 }
@@ -483,9 +485,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             var name = Consume(TokenType.Word);
             if (name == null) throw ParseError("Expected struct name!", CurrentPosition);
-            name.SyntaxType = EF.Struct;
+            name.SyntaxType = ST.Struct;
 
-            var parent = ParseTheExtendsSpecifier(EF.Struct);
+            var parent = ParseTheExtendsSpecifier(ST.Struct);
 
             if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
 
@@ -515,7 +517,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 else if (Consume(STRUCTDEFAULTPROPERTIES, DEFAULTPROPERTIES) is { } defaultPropsToken)
                 {
-                    defaultPropsToken.SyntaxType = EF.Keyword;
+                    defaultPropsToken.SyntaxType = ST.Keyword;
                     if (defaultPropsToken.Value.CaseInsensitiveEquals(DEFAULTPROPERTIES))
                     {
                         TypeError($"In Structs, use '{STRUCTDEFAULTPROPERTIES}', not '{DEFAULTPROPERTIES}'.", CurrentToken);
@@ -551,11 +553,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private Enumeration ParseEnum()
         {
             var startPos = CurrentToken.StartPos;
-            if (!Matches(ENUM, EF.Keyword)) return null;
+            if (!Matches(ENUM, ST.Keyword)) return null;
 
             var name = Consume(TokenType.Word);
             if (name == null) throw ParseError("Expected enumeration name!", CurrentPosition);
-            name.SyntaxType = EF.Enum;
+            name.SyntaxType = ST.Enum;
 
             if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
 
@@ -597,33 +599,70 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         {
             Tokens.PushSnapshot();
             var start = CurrentPosition;
-            ParseFunctionSpecifiers(out int nativeIndex, out EFunctionFlags flags);
+            (int nativeIndex, byte operatorPrecedence, bool isPostfixOperator) = ParseFunctionSpecifiers(out EFunctionFlags flags);
 
-            if (!Matches(FUNCTION, EF.Keyword))
+            bool hasFunctionKeyword = Matches(FUNCTION, ST.Keyword);
+            if (!flags.Has(EFunctionFlags.Operator) && !hasFunctionKeyword)
             {
                 Tokens.PopSnapshot();
                 return null;
             }
             Tokens.DiscardSnapshot();
 
-            bool coerceReturn = Matches("coerce", EF.Keyword);
+            bool coerceReturn = Matches("coerce", ST.Keyword);
             Tokens.PushSnapshot();
             var returnType = ParseTypeRef();
-            if (returnType == null) throw ParseError("Expected function name or return type!", CurrentPosition);
-
-            ScriptToken name = Consume(TokenType.Word);
-            if (name == null)
+            ScriptToken nameToken;
+            if (flags.Has(EFunctionFlags.Operator))
             {
-                Tokens.PopSnapshot();
-                name = Consume(TokenType.Word);
-                returnType = null;
+                Tokens.DiscardSnapshot();
+                if (returnType == null) throw ParseError("Expected return type!", CurrentPosition);
+
+                nameToken = Consume(TokenType.Word);
+                if (nameToken is null)
+                {
+                    if (CurrentToken.Type is TokenType.LeftParenth)
+                    {
+                        throw ParseError("Expected operator name!", CurrentPosition);
+                    }
+                    if (!IsOperator(out bool isRightShift, out TokenType opType))
+                    {
+                        throw ParseError($"{CurrentToken.Value} is not a valid operator!", CurrentPosition);
+                    }
+                    CurrentToken.SyntaxType = ST.Operator;
+                    nameToken = Consume(CurrentTokenType);
+                    nameToken.SyntaxType = ST.Operator;
+                    if (isRightShift)
+                    {
+                        CurrentToken.SyntaxType = ST.Operator;
+                        Consume(TokenType.RightArrow);
+                        nameToken = new ScriptToken(TokenType.RightShift, ">>", nameToken.StartPos, nameToken.EndPos);
+                    }
+                }
+                if (nameToken.Value.CaseInsensitiveEquals("None"))
+                {
+                    TypeError("'None' is not a valid operator name!", nameToken);
+                }
             }
             else
             {
-                Tokens.DiscardSnapshot();
-            }
+                if (returnType == null) throw ParseError("Expected function name or return type!", CurrentPosition);
 
-            name.SyntaxType = EF.Function;
+                nameToken = Consume(TokenType.Word);
+                if (nameToken == null)
+                {
+                    Tokens.PopSnapshot();
+                    nameToken = Consume(TokenType.Word);
+                    returnType = null;
+                }
+                else
+                {
+                    Tokens.DiscardSnapshot();
+                }
+                nameToken.SyntaxType = ST.Function;
+            }
+            string functionName = nameToken.Value;
+            string friendlyName = functionName;
 
             if (coerceReturn && returnType == null)
             {
@@ -652,6 +691,70 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 parameters.Add(param);
                 if (Consume(TokenType.Comma) == null && CurrentTokenType != TokenType.RightParenth) throw ParseError("Unexpected parameter content!", CurrentPosition);
+            }
+
+            if (flags.Has(EFunctionFlags.Operator))
+            {
+                if (parameters.Count is 0 or > 2)
+                {
+                    throw ParseError($"An operator cannot have {parameters.Count} parameters!");
+                }
+                if (isPostfixOperator is true || flags.Has(EFunctionFlags.PreOperator))
+                {
+                    if (parameters.Count > 1)
+                    {
+                        throw ParseError($"A {(isPostfixOperator ? "post" : "pre")}fix operator must have 1 parameter!", nameToken);
+                    }
+                    if (operatorPrecedence > 0)
+                    {
+                        TypeError($"A {(isPostfixOperator ? "post" : "pre")}fix operator cannot have a precedence!", nameToken);
+                    }
+                }
+
+                if (nameToken.Type is TokenType.Word && nameToken.Value.Contains('_'))
+                {
+                    string[] parts = nameToken.Value.Split('_');
+                    if (parts.Length is not (2 or 3) || 
+                        nameToken.Value != ConstructOperatorFunctionName(new ScriptToken(TokenType.Word, parts[0], nameToken.StartPos, nameToken.StartPos + parts[0].Length), 
+                                                                         parameters, flags.Has(EFunctionFlags.PreOperator), operatorPrecedence))
+                    {
+                        TypeError("An operator name cannot have an '_' in it (unless it is the full verbose form)");
+                    }
+                    if (OperatorHelper.VerboseNameToOperatorType.TryGetValue(parts[0], out TokenType operatorType))
+                    {
+                        friendlyName = OperatorHelper.OperatorTypeToString(operatorType);
+                    }
+                    else
+                    {
+                        friendlyName = parts[0];
+                    }
+                }
+                else
+                {
+                    if (parameters.Count is 1)
+                    {
+                        if (flags.Has(EFunctionFlags.PreOperator))
+                        {
+                            if (nameToken.Type is not (TokenType.ExclamationMark or TokenType.MinusSign or TokenType.Complement or TokenType.Increment or TokenType.Decrement))
+                            {
+                                TypeError($"prefix operators can only be '!', '-', '~', '--' or '++' ", nameToken);
+                            }
+                        }
+                        else
+                        {
+
+                            if (nameToken.Type is not (TokenType.Increment or TokenType.Decrement))
+                            {
+                                TypeError($"postfix operators can only be '--' or '++' ", nameToken);
+                            }
+                        }
+                    }
+                    else if (operatorPrecedence is 0)
+                    {
+                        operatorPrecedence = OperatorHelper.DefaultPrecedence(nameToken.Type);
+                    }
+                    functionName = ConstructOperatorFunctionName(nameToken, parameters, flags.Has(EFunctionFlags.PreOperator), operatorPrecedence);
+                }
             }
 
             if (Game >= MEGame.ME3 && hasOptionalParams)
@@ -691,15 +794,84 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 returnDeclaration = new VariableDeclaration(returnType, returnFlags, "ReturnValue");
             }
-            var function = new Function(name.Value, flags, returnDeclaration, body, parameters, start, PrevToken.EndPos)
+            var function = new Function(functionName, flags, returnDeclaration, body, parameters, start, PrevToken.EndPos)
             {
                 NativeIndex = nativeIndex,
                 Tokens = Tokens
             };
+            if (flags.Has(EFunctionFlags.Operator))
+            {
+                function.FriendlyName = friendlyName;
+                function.OperatorPrecedence = operatorPrecedence;
+            }
 
-            Tokens.AddDefinitionLink(function, name);
+            Tokens.AddDefinitionLink(function, nameToken);
 
             return function;
+        }
+
+        private string ConstructOperatorFunctionName(ScriptToken nameToken, List<FunctionParameter> parameters, bool isPreOperator, byte precedence)
+        {
+            string funcName;
+            if (nameToken.Type is TokenType.Word)
+            {
+                funcName = nameToken.Value;
+            }
+            else if (OperatorHelper.OperatorTypeToVerboseName.TryGetValue(nameToken.Type, out string name))
+            {
+                funcName = name;
+            }
+            else
+            {
+                throw ParseError($"Unrecognized operator type: {nameToken.Value}!", nameToken);
+            }
+
+            funcName += '_';
+            if (isPreOperator)
+            {
+                funcName += "Pre";
+            }
+            foreach (FunctionParameter param in parameters)
+            {
+                if (param.VarType is DelegateType)
+                {
+                    throw ParseError("Cannot define an operator on a delegate!", param);
+                }
+                funcName += GetTypeName(param.VarType);
+            }
+            if (parameters.Count is 2 && precedence > 0)
+            {
+                funcName += $"_{precedence}";
+            }
+            return funcName;
+
+            string GetTypeName(VariableType varType)
+            {
+                switch (varType)
+                {
+                    case DynamicArrayType dynArrType:
+                        return $"ArrayOf{GetTypeName(dynArrType.ElementType)}";
+                    case ClassType classType:
+                        if (classType.ClassLimiter.Name is OBJECT)
+                        {
+                            return "Class";
+                        }
+                        return $"Class{classType.ClassLimiter.Name}";
+                    default:
+                        return varType.Name switch
+                        {
+                            INT => "Int",
+                            FLOAT => "Float",
+                            BOOL => "Bool",
+                            BYTE => "Byte",
+                            BIOMASK4 => "BioMask4",
+                            STRING => "Str",
+                            STRINGREF => "StringRef",
+                            NAME => "Name",
+                            _ => varType.Name,
+                        };
+                }
+            }
         }
 
         private bool IsStartOfStateDeclaration()
@@ -715,11 +887,11 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             var flags = EStateFlags.None;
             while (CurrentTokenType == TokenType.Word)
             {
-                if (Matches("simulated", EF.Specifier))
+                if (Matches("simulated", ST.Specifier))
                 {
                     flags |= EStateFlags.Simulated;
                 }
-                else if (Matches("auto", EF.Specifier))
+                else if (Matches("auto", ST.Specifier))
                 {
                     flags |= EStateFlags.Auto;
                 }
@@ -729,7 +901,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
             }
 
-            if (!Matches(STATE, EF.Keyword)) return null;
+            if (!Matches(STATE, ST.Keyword)) return null;
             if (Consume(TokenType.LeftParenth) != null)
             {
                 if (Consume(TokenType.RightParenth) is null)
@@ -742,14 +914,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             var name = Consume(TokenType.Word);
             if (name == null) throw ParseError("Expected state name!", CurrentPosition);
-            name.SyntaxType = EF.State;
+            name.SyntaxType = ST.State;
 
-            var parent = ParseTheExtendsSpecifier(EF.State);
+            var parent = ParseTheExtendsSpecifier(ST.State);
 
             if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
 
             var ignoreMask = (EProbeFunctions)ulong.MaxValue;
-            if (Matches(IGNORES, EF.Keyword))
+            if (Matches(IGNORES, ST.Keyword))
             {
                 do
                 {
@@ -757,7 +929,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         throw ParseError("Malformed ignore statement!", CurrentPosition);
                     }
-                    ignore.SyntaxType = EF.Function;
+                    ignore.SyntaxType = ST.Function;
                     if (Enum.TryParse(ignore.Value, out EProbeFunctions ignoreFlag))
                     {
                         ignoreMask &= ~ignoreFlag;
@@ -808,7 +980,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public DefaultPropertiesBlock ParseDefaultProperties()
         {
-            if (!Matches(DEFAULTPROPERTIES, EF.Keyword) && !Matches("properties", EF.Keyword)) return null;
+            if (!Matches(DEFAULTPROPERTIES, ST.Keyword) && !Matches("properties", ST.Keyword)) return null;
 
             if (!ParseScopeSpan(false, out int bodyStart, out int bodyEnd, out List<ScriptToken> scopeTokens))
             {
@@ -823,7 +995,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private CodeBody ParseReplicationBlock()
         {
-            if (!Matches(REPLICATION, EF.Keyword)) return null;
+            if (!Matches(REPLICATION, ST.Keyword)) return null;
 
             if (!ParseScopeSpan(false, out int bodyStart, out int bodyEnd, out List<ScriptToken> scopeTokens))
             {
@@ -858,7 +1030,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             var funcParam = new FunctionParameter(type, flags, variable.Name, variable.Size, variable.StartPos, variable.EndPos);
 
-            if (Matches(TokenType.Assign, EF.Operator))
+            if (Matches(TokenType.Assign, ST.Operator))
             {
                 if (!funcParam.IsOptional)
                 {
@@ -909,9 +1081,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             return funcParam;
         }
 
-        private VariableType ParseTheExtendsSpecifier(EF syntaxType)
+        private VariableType ParseTheExtendsSpecifier(ST syntaxType)
         {
-            if (!Matches(EXTENDS, EF.Keyword)) return null;
+            if (!Matches(EXTENDS, ST.Keyword)) return null;
             var parentName = Consume(TokenType.Word);
             if (parentName == null)
             {
@@ -925,14 +1097,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private VariableType ParseTheWithinSpecifier()
         {
-            if (!Matches(WITHIN, EF.Keyword)) return null;
+            if (!Matches(WITHIN, ST.Keyword)) return null;
             var outerName = Consume(TokenType.Word);
             if (outerName == null)
             {
                 throw ParseError($"Expected outer class name after '{WITHIN}'!", CurrentPosition);
             }
 
-            outerName.SyntaxType = EF.Class;
+            outerName.SyntaxType = ST.Class;
 
             return new VariableType(outerName.Value, outerName.StartPos, outerName.EndPos);
         }
@@ -946,192 +1118,196 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             flags = EPropertyFlags.None;
             while (CurrentTokenType == TokenType.Word)
             {
-                if (Matches("const", EF.Specifier))
+                if (Matches("const", ST.Specifier))
                 {
                     flags |= EPropertyFlags.Const;
                 }
-                else if (Matches("config", EF.Specifier))
+                else if (Matches("config", ST.Specifier))
                 {
                     flags |= EPropertyFlags.Config;
                 }
-                else if (Matches("globalconfig", EF.Specifier))
+                else if (Matches("globalconfig", ST.Specifier))
                 {
                     flags |= EPropertyFlags.GlobalConfig | EPropertyFlags.Config;
                 }
-                else if (Matches(nameof(EPropertyFlags.EditInline), EF.Specifier))
+                else if (Matches("instanced", ST.Specifier))
+                {
+                    flags |= EPropertyFlags.EditInline | EPropertyFlags.ExportObject;
+                }
+                else if (Matches(nameof(EPropertyFlags.EditInline), ST.Specifier))
                 {
                     flags |= EPropertyFlags.EditInline;
                 }
-                else if (Matches("localized", EF.Specifier))
+                else if (Matches("localized", ST.Specifier))
                 {
                     flags |= EPropertyFlags.Localized | EPropertyFlags.Const;
                 }
                 //TODO: private, protected, and public are in ObjectFlags, not PropertyFlags 
-                else if (Matches("privatewrite", EF.Specifier))
+                else if (Matches("privatewrite", ST.Specifier))
                 {
                     flags |= EPropertyFlags.PrivateWrite;
                 }
-                else if (Matches("protectedwrite", EF.Specifier))
+                else if (Matches("protectedwrite", ST.Specifier))
                 {
                     flags |= EPropertyFlags.ProtectedWrite;
                 }
-                else if (Matches("editconst", EF.Specifier))
+                else if (Matches("editconst", ST.Specifier))
                 {
                     flags |= EPropertyFlags.EditConst;
                 }
-                else if (Matches("edithide", EF.Specifier))
+                else if (Matches("edithide", ST.Specifier))
                 {
                     flags |= EPropertyFlags.EditHide;
                 }
-                else if (Matches("edittextbox", EF.Specifier))
+                else if (Matches("edittextbox", ST.Specifier))
                 {
                     flags |= EPropertyFlags.EditTextBox;
                 }
-                else if (Matches("input", EF.Specifier))
+                else if (Matches("input", ST.Specifier))
                 {
                     flags |= EPropertyFlags.Input;
                 }
-                else if (Matches("transient", EF.Specifier))
+                else if (Matches("transient", ST.Specifier))
                 {
                     flags |= EPropertyFlags.Transient;
                 }
-                else if (Matches("native", EF.Specifier))
+                else if (Matches("native", ST.Specifier))
                 {
                     flags |= EPropertyFlags.Native;
                 }
-                else if (Matches("noexport", EF.Specifier))
+                else if (Matches("noexport", ST.Specifier))
                 {
                     flags |= EPropertyFlags.NoExport;
                 }
-                else if (Matches("duplicatetransient", EF.Specifier))
+                else if (Matches("duplicatetransient", ST.Specifier))
                 {
                     flags |= EPropertyFlags.DuplicateTransient;
                 }
-                else if (Matches("noimport", EF.Specifier))
+                else if (Matches("noimport", ST.Specifier))
                 {
                     flags |= EPropertyFlags.NoImport;
                 }
-                else if (Matches("out", EF.Specifier))
+                else if (Matches("out", ST.Specifier))
                 {
                     flags |= EPropertyFlags.OutParm;
                 }
-                else if (Matches("export", EF.Specifier))
+                else if (Matches("export", ST.Specifier))
                 {
                     flags |= EPropertyFlags.ExportObject;
                 }
-                else if (Matches("editinlineuse", EF.Specifier))
+                else if (Matches("editinlineuse", ST.Specifier))
                 {
                     flags |= EPropertyFlags.EditInlineUse;
                 }
-                else if (Matches("noclear", EF.Specifier))
+                else if (Matches("noclear", ST.Specifier))
                 {
                     flags |= EPropertyFlags.NoClear;
                 }
-                else if (Matches("editfixedsize", EF.Specifier))
+                else if (Matches("editfixedsize", ST.Specifier))
                 {
                     flags |= EPropertyFlags.EditFixedSize;
                 }
-                else if (Matches("repnotify", EF.Specifier))
+                else if (Matches("repnotify", ST.Specifier))
                 {
                     flags |= EPropertyFlags.RepNotify;
                 }
-                else if (Matches("repretry", EF.Specifier))
+                else if (Matches("repretry", ST.Specifier))
                 {
                     flags |= EPropertyFlags.RepRetry;
                 }
-                else if (Matches("interp", EF.Specifier))
+                else if (Matches("interp", ST.Specifier))
                 {
                     flags |= EPropertyFlags.Interp | EPropertyFlags.Editable;
                 }
-                else if (Matches("nontransactional", EF.Specifier))
+                else if (Matches("nontransactional", ST.Specifier))
                 {
                     flags |= EPropertyFlags.NonTransactional;
                 }
-                else if (Matches("deprecated", EF.Specifier))
+                else if (Matches("deprecated", ST.Specifier))
                 {
                     flags |= EPropertyFlags.Deprecated;
                 }
-                else if (Matches("skip", EF.Specifier))
+                else if (Matches("skip", ST.Specifier))
                 {
                     flags |= EPropertyFlags.SkipParm;
                 }
-                else if (Matches("coerce", EF.Specifier))
+                else if (Matches("coerce", ST.Specifier))
                 {
                     flags |= EPropertyFlags.CoerceParm;
                 }
-                else if (Matches("optional", EF.Specifier))
+                else if (Matches("optional", ST.Specifier))
                 {
                     flags |= EPropertyFlags.OptionalParm;
                 }
-                else if (Matches("init", EF.Specifier))
+                else if (Matches("init", ST.Specifier))
                 {
                     flags |= EPropertyFlags.AlwaysInit;
                 }
-                else if (Matches("databinding", EF.Specifier))
+                else if (Matches("databinding", ST.Specifier))
                 {
                     flags |= EPropertyFlags.DataBinding;
                 }
-                else if (Matches("editoronly", EF.Specifier))
+                else if (Matches("editoronly", ST.Specifier))
                 {
                     flags |= EPropertyFlags.EditorOnly;
                 }
-                else if (Matches("notforconsole", EF.Specifier))
+                else if (Matches("notforconsole", ST.Specifier))
                 {
                     flags |= EPropertyFlags.NotForConsole;
                 }
-                else if (Matches("archetype", EF.Specifier))
+                else if (Matches("archetype", ST.Specifier))
                 {
                     flags |= EPropertyFlags.Archetype;
                 }
-                else if (Matches("serializetext", EF.Specifier))
+                else if (Matches("serializetext", ST.Specifier))
                 {
                     flags |= EPropertyFlags.SerializeText;
                 }
-                else if (Matches("crosslevelactive", EF.Specifier))
+                else if (Matches("crosslevelactive", ST.Specifier))
                 {
                     flags |= EPropertyFlags.CrossLevelActive;
                 }
-                else if (Matches("crosslevelpassive", EF.Specifier))
+                else if (Matches("crosslevelpassive", ST.Specifier))
                 {
                     flags |= EPropertyFlags.CrossLevelPassive;
                 }
-                else if (Matches("rsxstorage", EF.Specifier))
+                else if (Matches("rsxstorage", ST.Specifier))
                 {
                     flags |= EPropertyFlags.RsxStorage;
                 }
-                else if (Matches(nameof(EPropertyFlags.BioDynamicLoad), EF.Specifier))
+                else if (Matches(nameof(EPropertyFlags.BioDynamicLoad), ST.Specifier))
                 {
                     flags |= EPropertyFlags.BioDynamicLoad;
                 }
-                else if (Matches("loadforcooking", EF.Specifier))
+                else if (Matches("loadforcooking", ST.Specifier))
                 {
                     flags |= EPropertyFlags.LoadForCooking;
                 }
-                else if (Matches("biononship", EF.Specifier))
+                else if (Matches("biononship", ST.Specifier))
                 {
                     flags |= EPropertyFlags.BioNonShip;
                 }
-                else if (Matches("bioignorepropertyadd", EF.Specifier))
+                else if (Matches("bioignorepropertyadd", ST.Specifier))
                 {
                     flags |= EPropertyFlags.BioIgnorePropertyAdd;
                 }
-                else if (Matches("sortbarrier", EF.Specifier))
+                else if (Matches("sortbarrier", ST.Specifier))
                 {
                     flags |= EPropertyFlags.SortBarrier;
                 }
-                else if (Matches("clearcrosslevel", EF.Specifier))
+                else if (Matches("clearcrosslevel", ST.Specifier))
                 {
                     flags |= EPropertyFlags.ClearCrossLevel;
                 }
-                else if (Matches("biosave", EF.Specifier))
+                else if (Matches("biosave", ST.Specifier))
                 {
                     flags |= EPropertyFlags.BioSave;
                 }
-                else if (Matches("bioexpanded", EF.Specifier))
+                else if (Matches("bioexpanded", ST.Specifier))
                 {
                     flags |= EPropertyFlags.BioExpanded;
                 }
-                else if (Matches("bioautogrow", EF.Specifier))
+                else if (Matches("bioautogrow", ST.Specifier))
                 {
                     flags |= EPropertyFlags.BioAutoGrow;
                 }
@@ -1142,104 +1318,116 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
         }
 
-        private void ParseFunctionSpecifiers(out int nativeIndex, out EFunctionFlags flags)
+        private (int nativeIndex, byte operatorPrecedence, bool isPostfixOperator) ParseFunctionSpecifiers(out EFunctionFlags flags)
         {
-            nativeIndex = 0;
+            int nativeIndex = 0;
+            byte operatorPrecedence = 0;
+            bool isPostfixOperator = false;
             flags = default;
             bool unreliable = false;
             while (CurrentTokenType == TokenType.Word)
             {
-                if (Matches("event", EF.Keyword))
+                if (Matches("event", ST.Keyword))
                 {
                     flags |= EFunctionFlags.Event;
                 }
-                else if (Matches("delegate", EF.Keyword))
+                else if (Matches("delegate", ST.Keyword))
                 {
                     flags |= EFunctionFlags.Delegate;
                 }
-                else if (Matches("operator", EF.Keyword))
+                else if (Matches("operator", ST.Keyword))
                 {
                     flags |= EFunctionFlags.Operator;
+                    operatorPrecedence = GetOperatorPrecedence();
                 }
-                else if (Matches("preoperator", EF.Keyword))
+                else if (Matches("postoperator", ST.Keyword))
+                {
+                    flags |= EFunctionFlags.Operator;
+                    isPostfixOperator = true;
+                    if (Matches(TokenType.LeftParenth))
+                    {
+                        throw ParseError("Postfix operators do not have a precedence");
+                    }
+                }
+                else if (Matches("preoperator", ST.Keyword))
                 {
                     flags |= EFunctionFlags.PreOperator | EFunctionFlags.Operator;
+                    if (Matches(TokenType.LeftParenth))
+                    {
+                        throw ParseError("Prefix operators do not have a precedence");
+                    }
                 }
-                else if (Matches("native", EF.Keyword))
+                else if (Matches("native", ST.Keyword))
                 {
                     flags |= EFunctionFlags.Native;
                     if (Consume(TokenType.LeftParenth) != null)
                     {
                         if (Consume(TokenType.IntegerNumber) == null)
                         {
-                            {
-                                throw ParseError("Expected native index!", CurrentPosition);
-                            }
+                            throw ParseError("Expected native index!", CurrentPosition);
                         }
 
                         nativeIndex = int.Parse(Tokens.Prev().Value);
 
                         if (Consume(TokenType.RightParenth) == null)
                         {
-                            {
-                                throw ParseError("Expected ')' after native index!", CurrentPosition);
-                            }
+                            throw ParseError("Expected ')' after native index!", CurrentPosition);
                         }
                     }
                 }
-                else if (Matches("static", EF.Keyword))
+                else if (Matches("static", ST.Keyword))
                 {
                     flags |= EFunctionFlags.Static;
                 }
-                else if (Matches("simulated", EF.Keyword))
+                else if (Matches("simulated", ST.Keyword))
                 {
                     flags |= EFunctionFlags.Simulated;
                 }
-                else if (Matches("iterator", EF.Keyword))
+                else if (Matches("iterator", ST.Keyword))
                 {
                     flags |= EFunctionFlags.Iterator;
                 }
-                else if (Matches("singular", EF.Keyword))
+                else if (Matches("singular", ST.Keyword))
                 {
                     flags |= EFunctionFlags.Singular;
                 }
-                else if (Matches("latent", EF.Keyword))
+                else if (Matches("latent", ST.Keyword))
                 {
                     flags |= EFunctionFlags.Latent;
                 }
-                else if (Matches("exec", EF.Keyword))
+                else if (Matches("exec", ST.Keyword))
                 {
                     flags |= EFunctionFlags.Exec;
                 }
-                else if (Matches("final", EF.Keyword))
+                else if (Matches("final", ST.Keyword))
                 {
                     flags |= EFunctionFlags.Final;
                 }
-                else if (Matches("server", EF.Keyword))
+                else if (Matches("server", ST.Keyword))
                 {
                     flags |= EFunctionFlags.NetServer | EFunctionFlags.Net;
                 }
-                else if (Matches("client", EF.Keyword))
+                else if (Matches("client", ST.Keyword))
                 {
                     flags |= EFunctionFlags.NetClient | EFunctionFlags.Net | EFunctionFlags.Simulated;
                 }
-                else if (Matches("reliable", EF.Keyword))
+                else if (Matches("reliable", ST.Keyword))
                 {
                     flags |= EFunctionFlags.NetReliable;
                 }
-                else if (Matches("unreliable", EF.Keyword))
+                else if (Matches("unreliable", ST.Keyword))
                 {
                     unreliable = true;
                 }
-                else if (Matches("private", EF.Keyword))
+                else if (Matches("private", ST.Keyword))
                 {
                     flags |= EFunctionFlags.Private | EFunctionFlags.Final;
                 }
-                else if (Matches("protected", EF.Keyword))
+                else if (Matches("protected", ST.Keyword))
                 {
                     flags |= EFunctionFlags.Protected;
                 }
-                else if (Matches("public", EF.Keyword))
+                else if (Matches("public", ST.Keyword))
                 {
                     flags |= EFunctionFlags.Public;
                 }
@@ -1313,6 +1501,48 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     TypeError("'reliable' specified without 'client' or 'server'!", CurrentPosition);
                 }
+            }
+
+            if (flags.Has(EFunctionFlags.Operator))
+            {
+                if (!flags.Has(EFunctionFlags.Static))
+                {
+                    TypeError("operators must be static.", CurrentPosition);
+                }
+                if (!flags.Has(EFunctionFlags.Final))
+                {
+                    TypeError("operators must be final.", CurrentPosition);
+                }
+            }
+            return (nativeIndex, operatorPrecedence, isPostfixOperator);
+
+            byte GetOperatorPrecedence()
+            {
+                byte b = 0;
+                if (Consume(TokenType.LeftParenth) != null)
+                {
+                    if (Consume(TokenType.IntegerNumber) == null)
+                    {
+                        throw ParseError($"Expected operator precedence!", CurrentPosition);
+                    }
+
+                    int i = int.Parse(Tokens.Prev().Value);
+                    if (i is < byte.MinValue or > byte.MaxValue)
+                    {
+                        TypeError("Operator precedence cannot be negative or greater than 255!", CurrentPosition);
+                    }
+                    else
+                    {
+                        b = (byte)i;
+                    }
+
+                    if (Consume(TokenType.RightParenth) == null)
+                    {
+                        throw ParseError("Expected ')' after operator precedence!", CurrentPosition);
+                    }
+                }
+
+                return b;
             }
         }
 

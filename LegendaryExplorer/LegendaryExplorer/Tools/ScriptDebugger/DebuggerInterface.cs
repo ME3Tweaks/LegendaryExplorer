@@ -62,7 +62,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
 
         public void Attach()
         {
-            SendMessage(new[] { (byte)PipeCommands.AttachDebugger });
+            SendMessage(PipeCommands.AttachDebugger);
         }
 
         public async Task WaitForAttach()
@@ -75,7 +75,12 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
 
         public void Detach()
         {
-            SendMessage(new[] { (byte)PipeCommands.DetachDebugger });
+            SendMessage(PipeCommands.DetachDebugger);
+        }
+
+        public void ReSync()
+        {
+            SendMessage(PipeCommands.ReSync);
         }
 
         public async Task WaitForDetach()
@@ -88,7 +93,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
 
         public void BreakASAP()
         {
-            SendMessage(new[] { (byte)PipeCommands.BreakImmediate });
+            SendMessage(PipeCommands.BreakImmediate);
         }
 
         public async Task WaitForBreak()
@@ -118,7 +123,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             {
                 throw new InvalidOperationException("Can't StepInto when not in break state.");
             }
-            SendMessage(new[] { (byte)PipeCommands.StepInto });
+            SendMessage(PipeCommands.StepInto);
             InBreakState = false;
         }
 
@@ -128,7 +133,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             {
                 throw new InvalidOperationException("Can't StepOver when not in break state.");
             }
-            SendMessage(new[] { (byte)PipeCommands.StepOver });
+            SendMessage(PipeCommands.StepOver);
             InBreakState = false;
         }
 
@@ -138,7 +143,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             {
                 throw new InvalidOperationException("Can't StepOut when not in break state.");
             }
-            SendMessage(new[] { (byte)PipeCommands.StepOut });
+            SendMessage(PipeCommands.StepOut);
             InBreakState = false;
         }
 
@@ -148,7 +153,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             {
                 throw new InvalidOperationException("Can't Resume when not in break state.");
             }
-            SendMessage(new[] { (byte)PipeCommands.Resume });
+            SendMessage(PipeCommands.Resume);
             InBreakState = false;
         }
 
@@ -164,7 +169,9 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             StepOver = 8,
             StepOut = 9,
             Resume = 10,
+            ReSync = 11,
         };
+        private void SendMessage(PipeCommands command) => SendMessage([(byte)command]);
 
         private void SendMessage(byte[] bytes)
         {
@@ -206,11 +213,19 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
                 case "Break":
                     EnterBreakState(debuggerFrame);
                     break;
+                case "Running":
+                    InBreakState = false;
+                    break;
             }
         }
 
         private void EnterBreakState(IntPtr framePtr)
         {
+            if (InBreakState)
+            {
+                //resync, ignore
+                return;
+            }
             InBreakState = true;
             ClassCache.Clear();
             ObjectCache.Clear();

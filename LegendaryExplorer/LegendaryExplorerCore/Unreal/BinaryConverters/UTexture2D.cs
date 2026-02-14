@@ -111,6 +111,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             /// If the texture is locally stored. This will return true for empty mipmaps!
             /// </summary>
             public bool IsLocallyStored => ((int)StorageType & (int)StorageFlags.externalFile) == 0;
+
+            /// <summary>
+            /// If this is an empty stub mip that was removed during cooking because it exceeded the LOD limits
+            /// </summary>
+            public bool IsEmpty => ((int)StorageType & (int)StorageTypes.empty) != 0;
+
+            /// <summary>
+            /// If the texture is stored with chunked compression
+            /// </summary>
             public bool IsCompressed =>
                 ((int)StorageType & (int)StorageFlags.compressedLZO) != 0 ||
                 ((int)StorageType & (int)StorageFlags.compressedLZMA) != 0 ||

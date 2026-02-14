@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -46,6 +47,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 if (Document is not null)
                 {
                     Document.TextChanged -= TextChanged;
+                    Document.Changed -= DocumentOnChanged;
                     Document.UpdateStarted -= DocumentOnUpdateStarted;
                 }
 
@@ -59,6 +61,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 foldingManager = FoldingManager.Install(textEditor.TextArea);
                 foldingStrategy.UpdateFoldings(foldingManager, Document);
                 Document.TextChanged += TextChanged;
+                Document.Changed += DocumentOnChanged;
                 Document.UpdateStarted += DocumentOnUpdateStarted;
             });
         }
@@ -68,6 +71,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         public ICommand ToggleCommentCommand { get; set; }
         public ICommand IncreaseFontSizeCommand { get; set; }
         public ICommand DecreaseFontSizeCommand { get; set; }
+        public ICommand IncreaseIndentCommand { get; set; }
+        public ICommand DecreaseIndentCommand { get; set; }
+        public ICommand AddCommentCommand { get; set; }
+        public ICommand UncommentCommand { get; set; }
 
         public UnrealScriptIDE() : base("UnrealScript IDE")
         {
@@ -75,6 +82,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             DataContext = this;
             progressBarTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
             progressBarTimer.Tick += ProgressBarTimer_Tick;
+            _parseTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(150) };
+            _parseTimer.Tick += ParseTimerTick;
             IsBusy = true;
             BusyText = "Initializing Script Compiler";
 
@@ -85,10 +94,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
             FindUsagesInFileCommand = new GenericCommand(FindUsagesInFile, CanFindReferences);
             GoToDefinitionCommand = new GenericCommand(() => VisualLineDefinitionLinkText.GoToDefinition(contextMenuDefinitionNode, ScrollTo), () => contextMenuDefinitionNode is not null && CurrentFileLib.IsInitialized);
-            ToggleCommentCommand = new GenericCommand(ToggleComment, CanToggleComment);
+            ToggleCommentCommand = new GenericCommand(() => ToggleComment(CommentAction.Toggle), CanApplyTextEdit);
 
             IncreaseFontSizeCommand = new GenericCommand(() => textEditor.UpdateFontSize(true));
             DecreaseFontSizeCommand = new GenericCommand(() => textEditor.UpdateFontSize(false));
+            IncreaseIndentCommand = new GenericCommand(() => IndentCode(true), CanApplyTextEdit);
+            DecreaseIndentCommand = new GenericCommand(() => IndentCode(false), CanApplyTextEdit);
+            AddCommentCommand = new GenericCommand(() => ToggleComment(CommentAction.Add), CanApplyTextEdit);
+            UncommentCommand = new GenericCommand(() => ToggleComment(CommentAction.Remove), CanApplyTextEdit);
+
+            ApplyThemeColors();
+            SyntaxInfo.ThemeChanged += OnThemeChanged;
         }
 
         public override bool CanParse(ExportEntry exportEntry) =>
@@ -174,6 +190,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         public override void Dispose()
         {
             AST = null;
+            _parseTimer.Stop();
+            _parseTimer.Tick -= ParseTimerTick;
+            _parseCts?.Cancel();
+            _parseCts?.Dispose();
+
             if (progressBarTimer is not null)
             {
                 progressBarTimer.IsEnabled = false; //Stop timer
@@ -188,9 +209,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             if (Document is not null)
             {
                 Document.TextChanged -= TextChanged;
+                Document.Changed -= DocumentOnChanged;
             }
             textEditor.TextArea.TextEntered -= TextAreaOnTextEntered;
             textEditor.TextArea.TextEntering -= TextAreaOnTextEntering;
+            SyntaxInfo.ThemeChanged -= OnThemeChanged;
         }
 
         private void ExportLoaderControl_Loaded(object sender, RoutedEventArgs e)
@@ -487,81 +510,146 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
         private void TextChanged(object sender, EventArgs e)
         {
-            Parse(ScriptText);
+            _parseTimer.Stop();
+            //class parsing is slow enough that we can't do it synchronously without degrading typing responsiveness
+            if (CurrentLoadedExport.IsClass)
+            {
+                _parseTimer.Start();
+            }
+            else
+            {
+                Parse(ScriptText);
+            }
         }
 
         private ASTNode AST;
+        private readonly DispatcherTimer _parseTimer;
+        private CancellationTokenSource _parseCts;
+
+        private void ParseTimerTick(object sender, EventArgs e)
+        {
+            _parseTimer.Stop();
+            _ = ParseAsync(ScriptText);
+        }
+
+        private async Task ParseAsync(string source)
+        {
+            _parseCts?.Cancel();
+            var cts = new CancellationTokenSource();
+            _parseCts = cts;
+            var ct = cts.Token;
+
+            // Capture state on UI thread
+            var exportEntry = CurrentLoadedExport;
+            var game = Pcc.Game;
+            var fileLib = CurrentFileLib;
+            var fullyInitialized = FullyInitialized;
+
+            ParseResult result = await Task.Run(() =>
+            {
+                var r = ParseCore(source, exportEntry, game, fileLib, fullyInitialized);
+                return r;
+            }, ct);
+
+            if (ct.IsCancellationRequested) return;
+
+            ApplyParseResult(result);
+        }
 
         private void Parse(string source)
         {
-            bool needsTokensReset = true;
-            var log = new MessageLog();
-            try
-            {
-                (AST, TokenStream tokens) = UnrealScriptCompiler.CompileOutlineAST(source, CurrentLoadedExport.ClassName, log, Pcc.Game);
+            var result = ParseCore(source, CurrentLoadedExport, Pcc.Game, CurrentFileLib, FullyInitialized);
+            ApplyParseResult(result);
+        }
 
-                if (AST != null && !log.HasErrors && FullyInitialized)
+        /// <summary>
+        /// Pure computation: lexes and compiles the source. Safe to call from any thread.
+        /// </summary>
+        private static ParseResult ParseCore(string source, ExportEntry exportEntry, MEGame game, FileLib fileLib, bool fullyInitialized)
+        {
+            lock (fileLib)
+            {
+                var log = new MessageLog();
+                ASTNode ast = null;
+                TokenStream resultTokens = null;
+                bool needsTokensReset = true;
+                try
                 {
-                    UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
-                    log.Tokens = tokens;
-                    switch (AST)
+                    (ast, TokenStream tokens) = UnrealScriptCompiler.CompileOutlineAST(source, exportEntry.ClassName, log, game);
+
+                    if (ast != null && !log.HasErrors && fullyInitialized)
                     {
-                        case Class cls:
-                            AST = UnrealScriptCompiler.CompileNewClassAST(Pcc, cls, log, CurrentFileLib, out bool vfTableChanged, usop);
-                            if (vfTableChanged)
-                            {
-                                log.LogWarning("Compiling will cause Virtual Function Table to change! All classes that depend on this one will need recompilation to work properly!");
-                            }
-                            break;
-                        case Function func when CurrentLoadedExport.Parent is ExportEntry funcParent:
-                            AST = UnrealScriptCompiler.CompileNewFunctionBodyAST(funcParent, func, log, CurrentFileLib, usop);
-                            break;
-                        case State state when CurrentLoadedExport.Parent is ExportEntry stateParent:
-                            AST = UnrealScriptCompiler.CompileNewStateBodyAST(stateParent, state, log, CurrentFileLib, usop);
-                            break;
-                        case Struct strct when CurrentLoadedExport.Parent is ExportEntry structParent:
-                            AST = UnrealScriptCompiler.CompileNewStructAST(structParent, strct, log, CurrentFileLib, usop);
-                            break;
-                        case Enumeration enumeration when CurrentLoadedExport.Parent is ExportEntry enumParent:
-                            AST = UnrealScriptCompiler.CompileNewEnumAST(enumParent, enumeration, log, CurrentFileLib, usop);
-                            break;
-                        case VariableDeclaration varDecl when CurrentLoadedExport.Parent is ExportEntry varParent:
-                            AST = UnrealScriptCompiler.CompileNewVarDeclAST(varParent, varDecl, log, CurrentFileLib, usop);
-                            break;
-                        case Const cnst:
-                            //no additional processing needed for consts
-                            break;
-                        case DefaultPropertiesBlock propertiesBlock:
-                            AST = UnrealScriptCompiler.CompileDefaultPropertiesAST(propertiesBlock, log, CurrentFileLib, CurrentLoadedExport, usop);
-                            break;
-                        default:
-                            return;
+                        UnrealScriptOptionsPackage usop = new UnrealScriptOptionsPackage();
+                        log.Tokens = tokens;
+                        switch (ast)
+                        {
+                            case Class cls:
+                                ast = UnrealScriptCompiler.CompileNewClassAST(exportEntry.FileRef, cls, log, fileLib, out bool vfTableChanged, usop);
+                                if (vfTableChanged)
+                                {
+                                    log.LogWarning("Compiling will cause Virtual Function Table to change! All classes that depend on this one will need recompilation to work properly!");
+                                }
+                                break;
+                            case Function func when exportEntry.Parent is ExportEntry funcParent:
+                                ast = UnrealScriptCompiler.CompileNewFunctionBodyAST(funcParent, func, log, fileLib, usop);
+                                break;
+                            case State state when exportEntry.Parent is ExportEntry stateParent:
+                                ast = UnrealScriptCompiler.CompileNewStateBodyAST(stateParent, state, log, fileLib, usop);
+                                break;
+                            case Struct strct when exportEntry.Parent is ExportEntry structParent:
+                                ast = UnrealScriptCompiler.CompileNewStructAST(structParent, strct, log, fileLib, usop);
+                                break;
+                            case Enumeration enumeration when exportEntry.Parent is ExportEntry enumParent:
+                                ast = UnrealScriptCompiler.CompileNewEnumAST(enumParent, enumeration, log, fileLib, usop);
+                                break;
+                            case VariableDeclaration varDecl when exportEntry.Parent is ExportEntry varParent:
+                                ast = UnrealScriptCompiler.CompileNewVarDeclAST(varParent, varDecl, log, fileLib, usop);
+                                break;
+                            case Const:
+                                break;
+                            case DefaultPropertiesBlock propertiesBlock:
+                                ast = UnrealScriptCompiler.CompileDefaultPropertiesAST(propertiesBlock, log, fileLib, exportEntry, usop);
+                                break;
+                            default:
+                                return new ParseResult(null, null, log, true);
+                        }
+                        log.Tokens = null;
+                        resultTokens = tokens;
+                        needsTokensReset = false;
                     }
-                    log.Tokens = null;
-
-                    _definitionLinkGenerator.SetTokens(tokens);
-                    needsTokensReset = false;
-
-                    SetSyntaxHighlighting(tokens);
                 }
-            }
-            catch (ParseException)
-            {
-                log.LogError("Parse Failed!");
-            }
-            catch (Exception exception) // when (!LegendaryExplorerCoreLib.IsDebug)
-            {
-                log.LogError($"Exception: {exception.Message}");
-            }
-            finally
-            {
-                if (needsTokensReset)
+                catch (ParseException)
                 {
-                    _definitionLinkGenerator.Reset();
+                    log.LogError("Parse Failed!");
                 }
-                OutputListBox.ItemsSource = log.Content;
+                catch (Exception exception)
+                {
+                    log.LogError($"Exception: {exception.Message}");
+                }
+                return new ParseResult(ast, resultTokens, log, needsTokensReset);
             }
         }
+
+        /// <summary>
+        /// Applies parse results to the UI. Must be called on the UI thread.
+        /// </summary>
+        private void ApplyParseResult(ParseResult result)
+        {
+            AST = result.AST;
+            if (!result.NeedsTokensReset && result.Tokens != null)
+            {
+                _definitionLinkGenerator.SetTokens(result.Tokens);
+                SetSyntaxHighlighting(result.Tokens);
+            }
+            else
+            {
+                _definitionLinkGenerator.Reset();
+            }
+            result.Log?.SortLog();
+            OutputListBox.ItemsSource = result.Log?.Content;
+        }
+
+        private readonly record struct ParseResult(ASTNode AST, TokenStream Tokens, MessageLog Log, bool NeedsTokensReset);
 
         private void SetSyntaxHighlighting(TokenStream tokens)
         {
@@ -613,6 +701,24 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         private CompletionWindow completionWindow;
         private void TextAreaOnTextEntered(object sender, TextCompositionEventArgs e)
         {
+            //if (completionWindow is not null)
+            //{
+            //    return;
+            //}
+            if (_parseTimer.IsEnabled)
+            {
+                if (e.Text == ".")
+                {
+                    // Parse immediately so tokens/AST are up-to-date for completions
+                    _parseTimer.Stop();
+                    _parseCts?.Cancel();
+                    Parse(ScriptText);
+                }
+                else
+                {
+                    return;
+                }
+            }
             TokenStream tokens = _definitionLinkGenerator.Tokens;
             int currentTokenIdx = tokens.GetIndexOfTokenAtOffset(textEditor.TextArea.Caret.Offset - 1);
             if (currentTokenIdx < 0)
@@ -628,6 +734,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                         DisplayCompletions(tokensSpan, currentTokenIdx);
                         break;
                     }
+                    //case TokenType.Word when currentToken.Value.Length is 1 && GetDefinitionFromToken(currentToken) is ErrorType errorType:
+                    //{
+                    //    //DisplayCompletions(tokensSpan, currentTokenIdx + 1);
+                    //    break;
+                    //}
                     //case TokenType.Word when currentToken.Value.Length == 1 && completionWindow is null:
                     //{
 
@@ -706,7 +817,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                                 {
                                     do
                                     {
-                                        completionData.AddRange(cls.TypeDeclarations.OfType<Const>().Select(c => new CompletionData(c.Name, $"{c.Literal?.ResolveType().DisplayName()} {c.Value}")));
+                                        completionData.AddRange(cls.TypeDeclarations.OfType<Const>().Select(c => new CompletionData(c.Name, $"{c.Value}")));
                                         cls = cls.Parent as Class;
                                     } while (cls is not null);
                                 }
@@ -732,7 +843,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             }
             if (completionData.Count > 0)
             {
-                completionWindow = new CompletionWindow(textEditor.TextArea)
+                completionWindow?.Close();
+                completionWindow = new LEXCompletionWindow(textEditor.TextArea)
                 {
                     SizeToContent = SizeToContent.WidthAndHeight
                 };
@@ -816,6 +928,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
         private void DocumentOnUpdateStarted(object sender, EventArgs e)
         {
             _definitionLinkGenerator.Reset();
+        }
+
+        private void DocumentOnChanged(object sender, DocumentChangeEventArgs e)
+        {
+            (textEditor.SyntaxHighlighting as SyntaxInfo)?.AdjustForChange(e.Offset, e.InsertionLength, e.RemovalLength);
         }
 
         #endregion
@@ -918,9 +1035,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             });
         }
 
-        private bool CanToggleComment() => Document is not null;
+        private bool CanApplyTextEdit() => Document is not null;
 
-        private void ToggleComment()
+        private enum CommentAction
+        {
+            Toggle,
+            Add,
+            Remove
+        }
+
+        private void ToggleComment(CommentAction action)
         {
             TextArea textArea = textEditor.TextArea;
             Selection selection = textArea.Selection;
@@ -958,7 +1082,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     //oops, all whitespace!
                     return;
                 }
-                if (hasNonCommentedLines)
+                if (action is CommentAction.Add || action is CommentAction.Toggle && hasNonCommentedLines)
                 {
                     for (int i = 0; i < lines.Length; i++)
                     {
@@ -974,13 +1098,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                     for (int i = 0; i < lines.Length; i++)
                     {
                         string lineText = lines[i];
-                        if (lineText.IndexOf("//", StringComparison.Ordinal) is var commentStart and > 0)
+                        if (lineText.IndexOf("//", StringComparison.Ordinal) is var commentStart and >= 0)
                         {
                             lines[i] = $"{lineText.AsSpan(0, commentStart)}{lineText.AsSpan(commentStart + 2)}";
                         }
                     }
                 }
                 textArea.PerformTextInput(string.Join('\n', lines));
+                startLine = Document.GetLineByNumber(startLineNum);
+                endLine = Document.GetLineByNumber(endLineNum);
+                textArea.Selection = selection = Selection.Create(textArea, startLine.Offset, endLine.EndOffset);
             }
             else
             {
@@ -996,6 +1123,72 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 {
                     textArea.PerformTextInput($"{indentation}//{lineText.AsSpan(indentation.Length)}");
                 }
+            }
+        }
+
+        private void IndentCode(bool indent = true)
+        {
+            const int IndentSize = 4;
+            TextArea textArea = textEditor.TextArea;
+            Selection selection = textArea.Selection;
+            if (!selection.IsEmpty)
+            {
+                int startLineNum = selection.StartPosition.Line;
+                int endLineNum = selection.EndPosition.Line;
+                //if the selection was made by dragging up, these must be swapped
+                if (startLineNum > endLineNum)
+                {
+                    (startLineNum, endLineNum) = (endLineNum, startLineNum);
+                }
+                DocumentLine startLine = Document.GetLineByNumber(startLineNum);
+                DocumentLine endLine = Document.GetLineByNumber(endLineNum);
+                textArea.Selection = selection = Selection.Create(textArea, startLine.Offset, endLine.EndOffset);
+                string text = selection.GetText();
+                string[] lines = text.Split('\n');
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    string line = lines[i];
+                    int whitespaceCount = line.CountLeadingWhitespace();
+                    if (whitespaceCount == line.Length) break;
+                    if (indent)
+                    {
+                        lines[i] = new string(' ', IndentSize) + line;
+                    }
+                    else
+                    {
+                        int whitespaceRemoved = Math.Min(IndentSize, whitespaceCount);
+                        lines[i] = line.AsSpan(whitespaceRemoved).ToString();
+                    }
+                }
+                textArea.PerformTextInput(string.Join('\n', lines));
+                startLine = Document.GetLineByNumber(startLineNum);
+                endLine = Document.GetLineByNumber(endLineNum);
+                textArea.Selection = selection = Selection.Create(textArea, startLine.Offset, endLine.EndOffset);
+            }
+            else
+            {
+                DocumentLine line = Document.GetLineByNumber(textArea.Caret.Line);
+                string lineText = Document.GetText(line);
+                int indentationLength = lineText.CountLeadingWhitespace();
+                if (indentationLength == lineText.Length)
+                {
+                    //all whitespace
+                    return;
+                }
+                var caretPos = textArea.Caret.Offset;
+                textArea.Selection = Selection.Create(textArea, line.Offset, line.EndOffset);
+                if (indent)
+                {
+                    textArea.PerformTextInput(new string(' ', IndentSize) + lineText);
+                    caretPos += IndentSize;
+                }
+                else
+                {
+                    int whitespaceRemoved = Math.Min(IndentSize, indentationLength);
+                    textArea.PerformTextInput(lineText.AsSpan(whitespaceRemoved).ToString());
+                    caretPos -= whitespaceRemoved;
+                }
+                textArea.Caret.Offset = caretPos ;
             }
         }
 
@@ -1049,20 +1242,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
 
             void SetStringTooltip(string text)
             {
-                SetInlinesTooltip([new Run(text) { Foreground = SyntaxInfo.ColorBrushes[EF.None] }]);
+                SetInlinesTooltip([new Run(text) { Foreground = SyntaxInfo.ColorBrushes[ST.None] }]);
             }
 
             void SetTooltip(TextBlock content)
             {
-                content.Background = ToolTipBackgroundBrush;
+                content.Background = SyntaxInfo.BackgroundBrush;
                 _hoverToolTip.Content = content;
-                _hoverToolTip.Background = ToolTipBackgroundBrush;
+                _hoverToolTip.Background = SyntaxInfo.BackgroundBrush;
                 _hoverToolTip.PlacementTarget = this; // required for property inheritance
                 _hoverToolTip.IsOpen = true;
             }
         }
-
-        private static readonly SolidColorBrush ToolTipBackgroundBrush = new(Color.FromRgb(56, 56, 56));
 
         private void TextEditor_OnMouseHoverStopped(object sender, MouseEventArgs e)
         {
@@ -1158,9 +1349,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             }
         }
 
+        private void OnThemeChanged()
+        {
+            Dispatcher.Invoke(ApplyThemeColors);
+        }
+
+        private void ApplyThemeColors()
+        {
+            textEditor.Background = SyntaxInfo.BackgroundBrush;
+            textEditor.Foreground = SyntaxInfo.ColorBrushes[ST.None];
+            textEditor.LineNumbersForeground = SyntaxInfo.ColorBrushes[ST.Keyword];
+            textEditor.TextArea.TextView.Redraw();
+        }
+
         private void ThemePicker_OnClick(object sender, RoutedEventArgs e)
         {
-            new IdeThemePicker(Window.GetWindow(this)).Show();
+            IdeThemePicker.ShowThemeEditor(Window.GetWindow(this));
         }
     }
 }

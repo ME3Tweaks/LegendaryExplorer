@@ -16,7 +16,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public readonly EndianReader ms = new(stream) { Endian = pcc?.Endian ?? Endian.Little };
         public readonly bool IsLoading = isLoading;
-        public MEGame Game { get; init; } = pcc?.Game ?? MEGame.Unknown;
+        public MEGame Game { get; protected set; } = pcc?.Game ?? MEGame.Unknown;
         public readonly PackageCache PackageCache = packageCache;
         public readonly IMEPackage Pcc = pcc;
         public readonly int startOffset = offset;
@@ -269,7 +269,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 if (IsLoading)
                 {
                     arr = new ushort[count];
-                    ms.Read(MemoryMarshal.AsBytes<ushort>(arr));
+                    ms.Read(MemoryMarshal.AsBytes<ushort>(arr.AsSpan()));
                 }
                 else if (count > 0)
                 {
@@ -291,7 +291,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 if (IsLoading)
                 {
                     arr = new Vector3[count];
-                    ms.Read(MemoryMarshal.AsBytes<Vector3>(arr));
+                    ms.Read(MemoryMarshal.AsBytes<Vector3>(arr.AsSpan()));
                 }
                 else if (count > 0)
                 {

@@ -71,7 +71,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             (List<Vector4> scalarParamValues, List<Vector4> vectorParamValues) = mat.GetCachedVertexParameters(context);
             foreach (TUniformParameter<FShaderParameter> scalarParam in p.UniformVertexScalarShaderParameters)
             {
-                buffer.WriteVal(scalarParam.Param, scalarParamValues[scalarParam.Index]);
+                buffer.WriteVal(scalarParam.Param, scalarParamValues[scalarParam.Index / 4][scalarParam.Index % 4]);
             }
             foreach (TUniformParameter<FShaderParameter> vectorParam in p.UniformVertexVectorShaderParameters)
             {
@@ -95,7 +95,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
 
             foreach (TUniformParameter<FShaderParameter> scalarParam in p.UniformPixelScalarShaderParameters)
             {
-                buffer.WriteVal(scalarParam.Param, scalarParamValues[scalarParam.Index]);
+                buffer.WriteVal(scalarParam.Param, scalarParamValues[scalarParam.Index / 4][scalarParam.Index % 4]);
             }
             foreach (TUniformParameter<FShaderParameter> vectorParam in p.UniformPixelVectorShaderParameters)
             {
@@ -213,12 +213,12 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             {
                 return;
             }
-            if (sizeof(T) != param.NumBytes 
-                && !(typeof(T) == typeof(Matrix3x3) && param.NumBytes == 44) 
-                && Debugger.IsAttached)
-            {
-                Debugger.Break();
-            }
+            //if (sizeof(T) != param.NumBytes 
+            //    && !(typeof(T) == typeof(Matrix3x3) && param.NumBytes == 44) 
+            //    && Debugger.IsAttached)
+            //{
+            //    Debugger.Break();
+            //}
             int bytesToWrite = Math.Min(sizeof(T), param.NumBytes);
             val.AsBytes()[..bytesToWrite].CopyTo(buff[param.BaseIndex..]);
         }

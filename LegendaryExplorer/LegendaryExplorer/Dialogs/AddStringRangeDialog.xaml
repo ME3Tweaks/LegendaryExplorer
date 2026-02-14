@@ -1,0 +1,40 @@
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    x:Class="LegendaryExplorer.Dialogs.AddStringRangeDialog"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    WindowStartupLocation="CenterOwner" 
+    SizeToContent="WidthAndHeight"
+    MinWidth="350"
+    MinHeight="150"
+    WindowStyle="SingleBorderWindow"
+    ResizeMode="NoResize"
+    Title="Add String Range"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <StackPanel Margin="5">
+        <TextBlock Margin="5" TextWrapping="Wrap" FontWeight="Bold">Add New String Range</TextBlock>
+        <TextBlock Margin="5" TextWrapping="Wrap">Enter the range of String IDs to add. Blank strings will be created for each ID in the range.</TextBlock>
+        <TextBlock Margin="5,10,5,5" TextWrapping="Wrap" Foreground="Red" FontWeight="Bold">
+            ⚠ Only make strings you need to use.
+            <LineBreak/> 
+            Do not add unused strings, as these may override other mods using those values.
+        </TextBlock>
+        <Grid Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0" Margin="5" VerticalAlignment="Center">Start String ID:</TextBlock>
+            <TextBox Grid.Row="0" Grid.Column="1" Name="txtStartID" Margin="5" TextChanged="OnTextChanged"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Margin="5" VerticalAlignment="Center">End String ID:</TextBlock>
+            <TextBox Grid.Row="1" Grid.Column="1" Name="txtEndID" Margin="5" TextChanged="OnTextChanged"/>
+        </Grid>
+        <TextBlock Name="txtValidation" Margin="5" TextWrapping="Wrap" Foreground="Red" Visibility="Collapsed"/>
+        <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Right">
+            <Button Content="_OK" IsDefault="True" Margin="5" Width="60" Height="25" Name="btnOk" Command="{Binding OkCommand, Mode=OneTime}" />
+            <Button Content="_Cancel" IsCancel="True" Margin="5" Width="60" Height="25" Name="btnCancel" Click="btnCancel_Click" />
+        </StackPanel>
+    </StackPanel>
+</Window>

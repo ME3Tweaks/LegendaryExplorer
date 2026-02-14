@@ -9,7 +9,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
     public sealed class ASTHighlighter : IHighlighter, ILineTracker
     {
         public IDocument Document { get; }
-        public HighlightingColor DefaultTextColor { get; }
+        public HighlightingColor DefaultTextColor => SyntaxInfo.HighlightingColors[ST.None];
         private readonly WeakLineTracker weakLineTracker;
 
         private readonly SyntaxInfo SyntaxInfo;
@@ -17,7 +17,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         public ASTHighlighter(TextDocument document, SyntaxInfo syntaxInfo)
         {
             SyntaxInfo = syntaxInfo ?? throw new ArgumentNullException(nameof(syntaxInfo));
-            DefaultTextColor = SyntaxInfo.HighlightingColors[EF.None];
             Document = document ?? throw new ArgumentNullException(nameof(document));
             document.VerifyAccess();
             //weakLineTracker = WeakLineTracker.Register(document, this);

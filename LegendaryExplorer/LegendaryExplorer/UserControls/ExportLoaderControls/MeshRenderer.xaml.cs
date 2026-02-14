@@ -649,12 +649,31 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 {
                     BusyText = "Fetching assets";
                     IsBusy = true;
+
+                    var lodMatMaps = new List<int[]>();
+                    if (CurrentLoadedExport.GetProperty<ArrayProperty<StructProperty>>("LODInfo", assetCache) is { } lodInfo)
+                    {
+                        foreach (var lod in lodInfo)
+                        {
+                            var matMapProp = lod.GetProp<ArrayProperty<IntProperty>>("LODMaterialMap");
+                            if (matMapProp?.Count > 0)
+                            {
+                                lodMatMaps.Add([.. matMapProp.Select(x => x.Value)]);
+                            }
+                            else
+                            {
+                                lodMatMaps.Add([]);
+                            }
+                        }
+                    }
+
                     var meshObject = ObjectBinary.From<SkeletalMesh>(CurrentLoadedExport);
                     var pmd = new PreloadedModelData
                     {
                         meshObject = meshObject,
                         sections = new List<ModelPreviewSection>(),
-                        texturePreviewMaterials = new List<PreloadedTextureData>()
+                        texturePreviewMaterials = new List<PreloadedTextureData>(),
+                        lodMaterialMaps = lodMatMaps
                     };
                     IMEPackage package = meshObject.Export.FileRef;
                     if (package.Game != MEGame.UDK)

@@ -43,7 +43,7 @@ namespace LegendaryExplorerCore.Dialogue
         /// <summary>Extended information on this node's speaker</summary>
         public SpeakerExtended SpeakerTag { get; set; }
         /// <summary>A reference to the InterpData used by this node</summary>
-        public ExportEntry Interpdata { get; set; }
+        public ExportEntry InterpData { get; set; }
         /// <summary>The length of this node's InterpData</summary>
         public float InterpLength { get; set; }
         /// <summary>A reference to this node's male WwiseStream object</summary>
@@ -129,7 +129,7 @@ namespace LegendaryExplorerCore.Dialogue
             ConditionalOrBool = nodeExtended.ConditionalOrBool;
             Transition = nodeExtended.Transition;
             SpeakerTag = nodeExtended.SpeakerTag;
-            Interpdata = nodeExtended.Interpdata;
+            InterpData = nodeExtended.InterpData;
             WwiseStream_Male = nodeExtended.WwiseStream_Male;
             WwiseStream_Female = nodeExtended.WwiseStream_Female;
             FaceFX_Male = nodeExtended.FaceFX_Male;

@@ -39,7 +39,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public readonly struct Rotator(int pitch, int yaw, int roll)
+    public readonly struct Rotator(int pitch, int yaw, int roll) : IEquatable<Rotator>
     {
         public readonly int Pitch = pitch;
         public readonly int Yaw = yaw;
@@ -62,6 +62,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return new Rotator(pitch.RadiansToUnrealRotationUnits(), yaw.RadiansToUnrealRotationUnits(), 0);
         }
 
+        public static Rotator FromQuaternion(Quaternion quat)
+        {
+            return Matrix4x4.CreateFromQuaternion(quat).GetRotator();
+        }
+
         public Vector3 GetDirectionalVector()
         {
             var cp = MathF.Cos(Pitch.UnrealRotationUnitsToRadians());
@@ -71,11 +76,32 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return new Vector3((cp * cy), (cp * sy), sp);
         }
 
-        public bool IsZero => Pitch == 0 && Yaw == 0 && Roll == 0; 
+        public bool IsZero => Pitch == 0 && Yaw == 0 && Roll == 0;
+
+        public static Rotator operator +(Rotator a, Rotator b)
+        {
+            return new Rotator(a.Pitch + b.Pitch, a.Yaw + b.Yaw, a.Roll + b.Roll);
+        }
         public override string ToString()
         {
             return $"Pitch:{Pitch} Yaw:{Yaw} Roll:{Roll}";
         }
+
+        public bool Equals(Rotator other)
+        {
+            return Pitch == other.Pitch && Yaw == other.Yaw && Roll == other.Roll;
+        }
+
+        public static bool operator ==(Rotator a, Rotator b) => a.Equals(b);
+
+        public static bool operator !=(Rotator a, Rotator b) => !a.Equals(b);
+
+        public override bool Equals(object obj)
+        {
+            return obj is Rotator rotator && Equals(rotator);
+        }
+
+        public override int GetHashCode() => HashCode.Combine(Pitch, Yaw, Roll);
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -171,6 +197,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Vector3 Max;
         public byte IsValid;
 
+        public Box()
+        {
+            Min = Vector3.Zero;
+            Max = Vector3.Zero;
+            IsValid = 0;
+        }
+        public Box(Vector3 min, Vector3 max)
+        {
+            Min = min;
+            Max = max;
+            IsValid = 1;
+        }
+
         public void Add(Vector3 vec)
         {
             if (IsValid > 0)
@@ -191,11 +230,65 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public class BoxSphereBounds
+    public struct BoxSphereBounds
     {
         public Vector3 Origin;
         public Vector3 BoxExtent;
-        public float SphereRadius;
+        public float SphereRadius; public BoxSphereBounds()
+        {
+            Origin = Vector3.Zero;
+            BoxExtent = Vector3.Zero;
+            SphereRadius = 0f;
+        }
+
+        public BoxSphereBounds(Box box)
+        {
+            BoxExtent = (box.Max - box.Min) * 0.5f;
+            Origin = box.Min + BoxExtent;
+            SphereRadius = BoxExtent.Length();
+        }
+        public readonly BoxSphereBounds TransformBy(Matrix4x4 M)
+        {
+            BoxSphereBounds Result;
+
+            Result.Origin = Vector3.Transform(Origin, M);
+            Result.BoxExtent = new Vector3(0, 0, 0);
+            Span<float> signs = [-1.0f, 1.0f];
+            for (int x = 0; x < 2; x++)
+            {
+                for (int y = 0; y < 2; y++)
+                {
+                    for (int z = 0; z < 2; z++)
+                    {
+                        Vector3 Corner = Vector3.TransformNormal(new Vector3(signs[x] * BoxExtent.X, signs[y] * BoxExtent.Y, signs[z] * BoxExtent.Z), M);
+                        Result.BoxExtent.X = Math.Max(Corner.X, Result.BoxExtent.X);
+                        Result.BoxExtent.Y = Math.Max(Corner.Y, Result.BoxExtent.Y);
+                        Result.BoxExtent.Z = Math.Max(Corner.Z, Result.BoxExtent.Z);
+                    }
+                }
+            }
+
+            var xAxis = new Vector3(M[0, 0], M[0, 1], M[0, 2]);
+            var YAxis = new Vector3(M[1, 0], M[1, 1], M[1, 2]);
+            var zAxis = new Vector3(M[2, 0], M[2, 1], M[2, 2]);
+
+            Result.SphereRadius = MathF.Sqrt(Math.Max(Vector3.Dot(xAxis, xAxis), Math.Max(Vector3.Dot(YAxis, YAxis), Vector3.Dot(zAxis, zAxis)))) * SphereRadius;
+
+            return Result;
+        }
+
+        public readonly BoxSphereBounds Union(BoxSphereBounds other)
+        {
+            Box box = new Box();
+            box.Add(Origin - BoxExtent);
+            box.Add(Origin + BoxExtent);
+            box.Add(other.Origin - other.BoxExtent);
+            box.Add(other.Origin + other.BoxExtent);
+
+            var result = new BoxSphereBounds(box);
+            result.SphereRadius = MathF.Min(result.SphereRadius, MathF.Max((Origin - result.Origin).Length() + SphereRadius, (other.Origin - result.Origin).Length()));
+            return result;
+        }
     }
 
     public class Sphere

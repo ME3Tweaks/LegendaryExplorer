@@ -36,6 +36,12 @@
             <Separator />
             <MenuItem Header="Add Reply" Command="{Binding NodeAddCommand}" CommandParameter="AddReply" ToolTip="Create a new clean reply"/>
             <MenuItem Header="Clone Reply" Command="{Binding NodeAddCommand}" CommandParameter="CloneReply" ToolTip="Create a new reply as a duplicate of this one"/>
+            <MenuItem Header="Clone Reply and Sequence" Command="{Binding CloneNodeAndSequenceCommand}" ToolTip="Clones a dialogue node along with its linked sequence, and give it a unique ID." 
+                      sharedUi:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Update InterpLengths" Command="{Binding UpdateInterpLengthCommand}" ToolTip="Update the InterpLength of the selected audio node, based either on the FXA or the audio length." 
+                      sharedUi:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Update VOElements and Interp Comment" Command="{Binding UpdateVOElementsAndInterpCommentCommand}" ToolTip="Update the Interp comment and VOElement' StrRefID that are linked to the selected audio node." 
+                      sharedUi:Bindings.VisibilityToEnabled="True"/>
             <Separator />
             <MenuItem Header="Break Links" Name="breakLinksMenuItem">
                 <MenuItem Header="Individual Links" Name="outputLinksMenuItem"></MenuItem>
@@ -50,6 +56,12 @@
             <Separator />
             <MenuItem Header="Add Entry" Command="{Binding NodeAddCommand}" CommandParameter="AddEntry" ToolTip="Create a new clean entry"/>
             <MenuItem Header="Clone Entry" Command="{Binding NodeAddCommand}" CommandParameter="CloneEntry" ToolTip="Create a new entry as a duplicate of this one"/>
+            <MenuItem Header="Clone Entry and Sequence" Command="{Binding CloneNodeAndSequenceCommand}" ToolTip="Clones a dialogue node along with its linked sequence, and give it a unique ID." 
+                      sharedUi:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Update InterpLengths" Command="{Binding UpdateInterpLengthCommand}" ToolTip="Update the InterpLength of the selected audio node, based either on the FXA or the audio length." 
+                      sharedUi:Bindings.VisibilityToEnabled="True"/>
+            <MenuItem Header="Update VOElements and Interp Comment" Command="{Binding UpdateVOElementsAndInterpCommentCommand}" ToolTip="Update the Interp comment and VOElement' StrRefID that are linked to the selected audio node." 
+                      sharedUi:Bindings.VisibilityToEnabled="True"/>
             <Separator />
             <MenuItem Header="Break Links" Name="ebreakLinksMenuItem">
                 <MenuItem Header="Individual Links" Name="eoutputLinksMenuItem"></MenuItem>
@@ -280,7 +292,18 @@
                     Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"
                     GameType="{Binding Pcc, Converter={StaticResource GameTypeConverter}}" Margin="0,-4" />
                 <StatusBarItem>
-                    <TextBlock Name="StatusBar_LeftMostText" Text="{Binding StatusText}" />
+                    <TextBlock Name="StatusBar_LeftMostText">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding StatusText}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                                        <Setter Property="Text" Value="{Binding BusyText}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </StatusBarItem>
                 <StatusBarItem>
                     <TextBlock Name="StatusBar_OtherText" Text="" />
@@ -1211,6 +1234,12 @@
                                 <MenuItem Header="Delete Speaker" Command="{Binding DeleteSpeakerCommand}" />
                                 <MenuItem Header="Rename" Command="{Binding ChangeNameCommand}"
                                           ToolTip="Rename the speaker's tag" />
+                                <Separator />
+                                <MenuItem Header="Extract All Audio for Speaker" Command="{Binding ExtractSpeakerAudioCommand}">
+                                    <MenuItem.Icon>
+                                        <fa:ImageAwesome Icon="Solid_FileAudio" Width="16" Height="16" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
                             </ContextMenu>
                         </ListBox.ContextMenu>
                     </ListBox>

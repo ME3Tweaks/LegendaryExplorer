@@ -16,6 +16,7 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
 using LegendaryExplorer.Tools.CustomFilesManager;
+using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Helpers;
@@ -51,6 +52,7 @@ namespace LegendaryExplorer.Startup
             DispatcherHelper.Initialize();
 
             Settings.LoadSettings();
+            SyntaxInfo.LoadFromSettings();
             initCoreLib();
 
             // AppCenter setup

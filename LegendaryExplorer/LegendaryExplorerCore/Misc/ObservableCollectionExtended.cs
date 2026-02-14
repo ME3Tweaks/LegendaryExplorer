@@ -230,6 +230,20 @@ namespace LegendaryExplorerCore.Misc
         /// <returns></returns>
         public object GetSyncLock() => _syncLock;
 
+        /// <summary>
+        /// Adds the specified item to the collection and raises property change notifications for the 'Any' and 'Count'
+        /// properties.
+        /// </summary>
+        /// <remarks>Use this method to add an item and ensure that property change notifications are
+        /// triggered for dependent properties. This is useful in scenarios where UI elements are bound to the 'Any' or
+        /// 'Count' properties and need to update when the collection changes.</remarks>
+        public void AddEx(T item)
+        {
+            this.Add(item);
+            OnPropertyChanged(nameof(Any));
+            OnPropertyChanged(nameof(Count));
+        }
+
         /// <summary> 
         /// Initializes a new instance of the System.Collections.ObjectModel.ObservableCollection(Of T) class that contains elements copied from the specified collection. 
         /// </summary> 

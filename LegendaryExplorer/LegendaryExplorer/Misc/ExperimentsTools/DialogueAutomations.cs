@@ -430,7 +430,7 @@ namespace LegendaryExplorer.Misc.ExperimentsTools
         /// <param name="length">New length.</param>
         public static void UpdateNodeLength(DialogueNodeExtended node, float length)
         {
-            ExportEntry interpData = node.Interpdata;
+            ExportEntry interpData = node.InterpData;
             interpData.WriteProperty(new FloatProperty(length, "InterpLength"));
         }
 

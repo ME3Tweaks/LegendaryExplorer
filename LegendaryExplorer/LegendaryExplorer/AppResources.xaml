@@ -211,6 +211,7 @@
     <BitmapImage x:Key="iconTLKEditorME23" UriSource="Tools/Icons/me2me3tlkeditor_256x256.ico"/>
     <BitmapImage x:Key="iconTLKEditor" UriSource="Tools/Icons/tlkeditor_256x256.ico"/>
     <BitmapImage x:Key="iconLiveLevelEditor" UriSource="Tools/Icons/liveleveleditor_256x256.ico"/>
+    <BitmapImage x:Key="iconLevelEditor" UriSource="Tools/Icons/LevelEditor_256x256.ico"/>
     <BitmapImage x:Key="iconAnimationImporter" UriSource="Tools/Icons/animationimporter_256x256.ico"/>
     <BitmapImage x:Key="iconAnimViewer" UriSource="Tools/Icons/animviewer_256x256.ico"/>
     <BitmapImage x:Key="iconAssetViewer" UriSource="Tools/Icons/assetviewer_256x256.ico"/>

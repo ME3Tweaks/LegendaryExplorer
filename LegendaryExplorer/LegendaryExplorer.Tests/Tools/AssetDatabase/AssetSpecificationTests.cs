@@ -19,7 +19,7 @@ namespace LegendaryExplorer.Tests.Tools.AssetDatabase
             Assert.IsTrue(spec1.MatchesSpecification(assertionString));
             Assert.IsFalse(spec1.MatchesSpecification("blah"));
 
-            Assert.ThrowsException<ArgumentNullException>(() =>
+            Assert.Throws<ArgumentNullException>(() =>
             {
                 var _ = new PredicateSpecification<string>(null, null);
             });
