@@ -20,6 +20,8 @@ namespace LegendaryExplorerCore.Shaders
             //figure out which MaterialShaderMaps to keep
             foreach (ExportEntry export in pcc.Exports)
             {
+                // this should be IsA() as DecalMaterial subclasses
+                // also should take into account TerrainMaterial
                 if (export.ClassName == "Material")
                 {
                     staticParamSetsInFile.Add((StaticParameterSet)ObjectBinary.From<Material>(export).SM3MaterialResource.ID);
@@ -36,6 +38,12 @@ namespace LegendaryExplorerCore.Shaders
             localCache?.WriteBinary(GetLocalShaders(staticParamSetsInFile, localCache));
         }
 
+        /// <summary>
+        /// Gets ALL shaders for a material, including from the ref shader cache.
+        /// </summary>
+        /// <param name="materials"></param>
+        /// <param name="gamePathOverride"></param>
+        /// <returns>A shader cache object that contains the material shader maps and the shaders.</returns>
         public static ShaderCache GetAllShadersForMaterials(List<ExportEntry> materials, string gamePathOverride = null)
         {
             if (materials.Count is 0)
@@ -78,6 +86,12 @@ namespace LegendaryExplorerCore.Shaders
             return allShaderCache;
         }
 
+        /// <summary>
+        /// Returns shaders in the local shader cache for the given materials
+        /// </summary>
+        /// <param name="materials"></param>
+        /// <param name="gamePathOverride"></param>
+        /// <returns></returns>
         public static ShaderCache GetLocalShadersForMaterials(List<ExportEntry> materials, string gamePathOverride = null)
         {
             if (materials.Count is 0)
@@ -223,6 +237,11 @@ namespace LegendaryExplorerCore.Shaders
             return tempCache;
         }
 
+        /// <summary>
+        /// Adds shaders from the given cache into the target package, creating cache if necessary.
+        /// </summary>
+        /// <param name="destFile"></param>
+        /// <param name="shadersToAdd"></param>
         public static void AddShadersToFile(IMEPackage destFile, ShaderCache shadersToAdd)
         {
             const string seekfreeshadercache = "SeekFreeShaderCache";
