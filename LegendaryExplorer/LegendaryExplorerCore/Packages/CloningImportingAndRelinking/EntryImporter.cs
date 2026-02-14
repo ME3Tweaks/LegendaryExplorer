@@ -1820,6 +1820,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     return null;
                 }
 
+                // CitSim files seem to also depend on Loader?
+                if (game.IsGame3() && filenameWithoutExtension.StartsWith("BioD_CitSim_", StringComparison.OrdinalIgnoreCase))
+                {
+                    associatedFiles.Add("BioD_CitSim_Loader.pcc");
+                }
+
                 string nextfile = bioXNextFileLookup(game, filenameWithoutExtension);
                 while (nextfile != null)
                 {
