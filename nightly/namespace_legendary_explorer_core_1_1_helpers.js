@@ -13,6 +13,8 @@ var namespace_legendary_explorer_core_1_1_helpers =
     [ "IOExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_i_o_extensions.html", "class_legendary_explorer_core_1_1_helpers_1_1_i_o_extensions" ],
     [ "LegendaryExplorerCoreUtilities", "class_legendary_explorer_core_1_1_helpers_1_1_legendary_explorer_core_utilities.html", "class_legendary_explorer_core_1_1_helpers_1_1_legendary_explorer_core_utilities" ],
     [ "ListInitHelper", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper.html", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper" ],
+    [ "MaterialHelper", "class_legendary_explorer_core_1_1_helpers_1_1_material_helper.html", "class_legendary_explorer_core_1_1_helpers_1_1_material_helper" ],
+    [ "MeshHelper", "class_legendary_explorer_core_1_1_helpers_1_1_mesh_helper.html", "class_legendary_explorer_core_1_1_helpers_1_1_mesh_helper" ],
     [ "MiscExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_misc_extensions.html", "class_legendary_explorer_core_1_1_helpers_1_1_misc_extensions" ],
     [ "StreamHelpers", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers" ],
     [ "StringExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions" ],

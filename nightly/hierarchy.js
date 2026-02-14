@@ -334,6 +334,7 @@ var hierarchy =
     ] ],
     [ "LegendaryExplorerCore.Gammtek.GammtekUtilities", "class_legendary_explorer_core_1_1_gammtek_1_1_gammtek_utilities.html", null ],
     [ "LegendaryExplorerCore.Unreal.ObjectInfo.GlobalUnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html", null ],
+    [ "LegendaryExplorerCore.Unreal.GLTF", "class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.GPUSkinVertex", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_g_p_u_skin_vertex.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.GuidIndexPair", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_guid_index_pair.html", null ],
     [ "LegendaryExplorerCore.Unreal.DLCPackage.HeaderStruct", "struct_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package_1_1_header_struct.html", null ],
@@ -702,6 +703,9 @@ var hierarchy =
       [ "LegendaryExplorerCore.Unreal.BinaryConverters.UIndexZeroer", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_u_index_zeroer.html", null ]
     ] ],
     [ "LegendaryExplorerCore.Gammtek.Data.IValueValidator< in TValue >", "interface_legendary_explorer_core_1_1_gammtek_1_1_data_1_1_i_value_validator.html", null ],
+    [ "IVertexCustom", null, [
+      [ "LegendaryExplorerCore.Unreal.VertexTextureNOriginalIndex", "struct_legendary_explorer_core_1_1_unreal_1_1_vertex_texture_n_original_index.html", null ]
+    ] ],
     [ "IVertexParametersType", "interface_i_vertex_parameters_type.html", [
       [ "FDirectionalLightLightMapPolicy.VertexParametersType", "struct_f_directional_light_light_map_policy_1_1_vertex_parameters_type.html", null ],
       [ "FDirectionalLightPolicy.VertexParametersType", "struct_f_directional_light_policy_1_1_vertex_parameters_type.html", null ],
@@ -798,6 +802,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Compression.LZMA", "class_legendary_explorer_core_1_1_compression_1_1_l_z_m_a.html", null ],
     [ "LegendaryExplorerCore.Compression.LZO2", "class_legendary_explorer_core_1_1_compression_1_1_l_z_o2.html", null ],
     [ "LegendaryExplorerCore.Compression.LZX", "class_legendary_explorer_core_1_1_compression_1_1_l_z_x.html", null ],
+    [ "LegendaryExplorerCore.Helpers.MaterialHelper", "class_legendary_explorer_core_1_1_helpers_1_1_material_helper.html", null ],
     [ "LegendaryExplorerCore.Unreal.Classes.MaterialInstanceConstant", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant.html", null ],
     [ "LegendaryExplorerCore.Unreal.Classes.MaterialInstanceConstantLevelEditor", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant_level_editor.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.MaterialResource", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html", [
@@ -865,6 +870,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Packages.MEPackageHandler", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.MeshBone", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_mesh_bone.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.MeshEdge", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_mesh_edge.html", null ],
+    [ "LegendaryExplorerCore.Helpers.MeshHelper", "class_legendary_explorer_core_1_1_helpers_1_1_mesh_helper.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.MeshShaderMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_mesh_shader_map.html", null ],
     [ "LegendaryExplorerCore.UnrealScript.Compiling.Errors.MessageLog", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html", null ],
     [ "LegendaryExplorerCore.Textures.MipMap", "class_legendary_explorer_core_1_1_textures_1_1_mip_map.html", null ],

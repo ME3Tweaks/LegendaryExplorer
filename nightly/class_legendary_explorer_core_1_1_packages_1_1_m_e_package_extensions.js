@@ -8,5 +8,6 @@ var class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions =
     [ "RemoveFromLevelActors", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html#a194bd365dd97d1058c2aefb7a00f5add", null ],
     [ "LevelContainsActor", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html#aafc10602b256986eeacd95cd6038d3b5", null ],
     [ "FindUsagesOfName", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html#ab5374589f98e039a6898509bbf0ee922", null ],
-    [ "GetReferencedEntries", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html#a0ccdbf76cf78019a77237623674cc6c8", null ]
+    [ "GetReferencedEntries", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html#a0ccdbf76cf78019a77237623674cc6c8", null ],
+    [ "FindEntryByMemeroryFullPath", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html#aa381f29ccb8d473dabf9d6a09b799a40", null ]
 ];

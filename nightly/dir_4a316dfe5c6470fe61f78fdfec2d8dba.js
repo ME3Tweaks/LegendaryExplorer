@@ -7,5 +7,7 @@ var dir_4a316dfe5c6470fe61f78fdfec2d8dba =
     [ "FileSize.cs", "_file_size_8cs.html", "_file_size_8cs" ],
     [ "GameFileFilters.cs", "_game_file_filters_8cs.html", "_game_file_filters_8cs" ],
     [ "LegendaryExplorerCoreUtilities.cs", "_legendary_explorer_core_utilities_8cs.html", "_legendary_explorer_core_utilities_8cs" ],
+    [ "MaterialHelper.cs", "_material_helper_8cs.html", "_material_helper_8cs" ],
+    [ "MeshHelper.cs", "_mesh_helper_8cs.html", "_mesh_helper_8cs" ],
     [ "StreamIO.cs", "_stream_i_o_8cs.html", "_stream_i_o_8cs" ]
 ];

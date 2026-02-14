@@ -255,6 +255,8 @@ var annotated_dup =
         [ "IOExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_i_o_extensions.html", "class_legendary_explorer_core_1_1_helpers_1_1_i_o_extensions" ],
         [ "LegendaryExplorerCoreUtilities", "class_legendary_explorer_core_1_1_helpers_1_1_legendary_explorer_core_utilities.html", "class_legendary_explorer_core_1_1_helpers_1_1_legendary_explorer_core_utilities" ],
         [ "ListInitHelper", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper.html", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper" ],
+        [ "MaterialHelper", "class_legendary_explorer_core_1_1_helpers_1_1_material_helper.html", "class_legendary_explorer_core_1_1_helpers_1_1_material_helper" ],
+        [ "MeshHelper", "class_legendary_explorer_core_1_1_helpers_1_1_mesh_helper.html", "class_legendary_explorer_core_1_1_helpers_1_1_mesh_helper" ],
         [ "MiscExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_misc_extensions.html", "class_legendary_explorer_core_1_1_helpers_1_1_misc_extensions" ],
         [ "StreamHelpers", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers.html", "class_legendary_explorer_core_1_1_helpers_1_1_stream_helpers" ],
         [ "StringExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions" ],
@@ -784,6 +786,7 @@ var annotated_dup =
         [ "EndianBitConverter", "class_legendary_explorer_core_1_1_unreal_1_1_endian_bit_converter.html", "class_legendary_explorer_core_1_1_unreal_1_1_endian_bit_converter" ],
         [ "EnumProperty", "class_legendary_explorer_core_1_1_unreal_1_1_enum_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_enum_property" ],
         [ "FloatProperty", "class_legendary_explorer_core_1_1_unreal_1_1_float_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_float_property" ],
+        [ "GLTF", "class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f.html", "class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f" ],
         [ "ImmutableByteArrayProperty", "class_legendary_explorer_core_1_1_unreal_1_1_immutable_byte_array_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_immutable_byte_array_property" ],
         [ "IntProperty", "class_legendary_explorer_core_1_1_unreal_1_1_int_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_int_property" ],
         [ "LEXJSONExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_l_e_x_j_s_o_n_extensions.html", "class_legendary_explorer_core_1_1_unreal_1_1_l_e_x_j_s_o_n_extensions" ],
@@ -809,7 +812,8 @@ var annotated_dup =
         [ "Token", "class_legendary_explorer_core_1_1_unreal_1_1_token.html", "class_legendary_explorer_core_1_1_unreal_1_1_token" ],
         [ "UDKUnrealObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_u_d_k_unreal_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_u_d_k_unreal_object_info" ],
         [ "UnknownProperty", "class_legendary_explorer_core_1_1_unreal_1_1_unknown_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_unknown_property" ],
-        [ "UnrealFlags", "class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html", "class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags" ]
+        [ "UnrealFlags", "class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags.html", "class_legendary_explorer_core_1_1_unreal_1_1_unreal_flags" ],
+        [ "VertexTextureNOriginalIndex", "struct_legendary_explorer_core_1_1_unreal_1_1_vertex_texture_n_original_index.html", "struct_legendary_explorer_core_1_1_unreal_1_1_vertex_texture_n_original_index" ]
       ] ],
       [ "UnrealScript", "namespace_legendary_explorer_core_1_1_unreal_script.html", [
         [ "Analysis", "namespace_legendary_explorer_core_1_1_unreal_script_1_1_analysis.html", [

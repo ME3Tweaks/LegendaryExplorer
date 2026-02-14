@@ -128,6 +128,10 @@ Public Member Functions</h2></td></tr>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a47dce6d32b1303c31f2fbf90bb01f06b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html">PSK</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a47dce6d32b1303c31f2fbf90bb01f06b">FromFile</a> (string filePath)</td></tr>
 <tr class="separator:a47dce6d32b1303c31f2fbf90bb01f06b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3237822ea49c0baf08eccce11f900c7b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html">PSK</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a3237822ea49c0baf08eccce11f900c7b">CreateFromStaticMesh</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh.html">StaticMesh</a> staticMesh, int lodIdx=0)</td></tr>
+<tr class="separator:a3237822ea49c0baf08eccce11f900c7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad057917ee2d5dcd5faff061a2b12c774"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html">PSK</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#ad057917ee2d5dcd5faff061a2b12c774">CreateFromAggGeom</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_struct_property.html">StructProperty</a> aggGeom)</td></tr>
+<tr class="separator:ad057917ee2d5dcd5faff061a2b12c774"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a915d23c56e09e1f24fc648a1d47bf8e2"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html">PSK</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a915d23c56e09e1f24fc648a1d47bf8e2">CreateFromSkeletalMesh</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html">SkeletalMesh</a> skelMesh, int lodIdx=0, bool includeVertexNormals=false)</td></tr>
 <tr class="separator:a915d23c56e09e1f24fc648a1d47bf8e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -151,6 +155,8 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a8e757d09d3126f3fa0a51e3f29bdba45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9dc301e5a02d8c31a8e79babdc7b2a3f"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_morph_delta.html">MorphDelta</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a9dc301e5a02d8c31a8e79babdc7b2a3f">MorphData</a></td></tr>
 <tr class="separator:a9dc301e5a02d8c31a8e79babdc7b2a3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0b0e671ceef093efa7a58dc3180f130"><td class="memItemLeft" align="right" valign="top">List&lt; <a class="el" href="_static_mesh_8cs.html#a321920980945bba9f0a4760f3cccba57">Vector2</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#aa0b0e671ceef093efa7a58dc3180f130">ExtraUVs</a></td></tr>
+<tr class="separator:aa0b0e671ceef093efa7a58dc3180f130"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -224,6 +230,68 @@ Protected Member Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>filePath</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3237822ea49c0baf08eccce11f900c7b" name="a3237822ea49c0baf08eccce11f900c7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3237822ea49c0baf08eccce11f900c7b">&#9670;&#160;</a></span>CreateFromStaticMesh()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html">PSK</a> LegendaryExplorerCore.Unreal.PSK.CreateFromStaticMesh </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh.html">StaticMesh</a>&#160;</td>
+          <td class="paramname"><em>staticMesh</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>lodIdx</em> = <code>0</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ad057917ee2d5dcd5faff061a2b12c774" name="ad057917ee2d5dcd5faff061a2b12c774"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad057917ee2d5dcd5faff061a2b12c774">&#9670;&#160;</a></span>CreateFromAggGeom()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html">PSK</a> LegendaryExplorerCore.Unreal.PSK.CreateFromAggGeom </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_struct_property.html">StructProperty</a>&#160;</td>
+          <td class="paramname"><em>aggGeom</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -399,6 +467,20 @@ Protected Member Functions</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">List&lt;<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_p_s_k_1_1_morph_delta.html">MorphDelta</a>&gt; LegendaryExplorerCore.Unreal.PSK.MorphData</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa0b0e671ceef093efa7a58dc3180f130" name="aa0b0e671ceef093efa7a58dc3180f130"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0b0e671ceef093efa7a58dc3180f130">&#9670;&#160;</a></span>ExtraUVs</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">List&lt;<a class="el" href="_static_mesh_8cs.html#a321920980945bba9f0a4760f3cccba57">Vector2</a>&gt; LegendaryExplorerCore.Unreal.PSK.ExtraUVs</td>
         </tr>
       </table>
 </div><div class="memdoc">

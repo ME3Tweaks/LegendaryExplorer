@@ -122,6 +122,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:ab5374589f98e039a6898509bbf0ee922"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ccdbf76cf78019a77237623674cc6c8"><td class="memItemLeft" align="right" valign="top">static HashSet&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html#a0ccdbf76cf78019a77237623674cc6c8">GetReferencedEntries</a> (this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pcc, bool getreferenced=true, bool getactorrefs=false, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> startatexport=null)</td></tr>
 <tr class="separator:a0ccdbf76cf78019a77237623674cc6c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa381f29ccb8d473dabf9d6a09b799a40"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html#aa381f29ccb8d473dabf9d6a09b799a40">FindEntryByMemeroryFullPath</a> (this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> pachage, string memoryFullPath, string className=null)</td></tr>
+<tr class="memdesc:aa381f29ccb8d473dabf9d6a09b799a40"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find an entry within the given package by <a class="el" href="namespace_legendary_explorer_core_1_1_memory.html">Memory</a> full path, optionally filtering by class   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_extensions.html#aa381f29ccb8d473dabf9d6a09b799a40">More...</a><br /></td></tr>
+<tr class="separator:aa381f29ccb8d473dabf9d6a09b799a40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a4e2ce89fd7057a2813fc379e669cdfab" name="a4e2ce89fd7057a2813fc379e669cdfab"></a>
@@ -498,6 +501,59 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa381f29ccb8d473dabf9d6a09b799a40" name="aa381f29ccb8d473dabf9d6a09b799a40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa381f29ccb8d473dabf9d6a09b799a40">&#9670;&#160;</a></span>FindEntryByMemeroryFullPath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> LegendaryExplorerCore.Packages.MEPackageExtensions.FindEntryByMemeroryFullPath </td>
+          <td>(</td>
+          <td class="paramtype">this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td>
+          <td class="paramname"><em>pachage</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>memoryFullPath</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>className</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Find an entry within the given package by <a class="el" href="namespace_legendary_explorer_core_1_1_memory.html">Memory</a> full path, optionally filtering by class  </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pachage</td><td>The package to search in</td></tr>
+    <tr><td class="paramname">memoryFullPath</td><td>The memory full path to search for</td></tr>
+    <tr><td class="paramname">className</td><td>The class to filter on. It will find instances of this class or classes that extend it. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the matching entry, or null if none are found.</dd></dl>
 
 </div>
 </div>

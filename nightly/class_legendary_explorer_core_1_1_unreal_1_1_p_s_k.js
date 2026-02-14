@@ -9,6 +9,8 @@ var class_legendary_explorer_core_1_1_unreal_1_1_p_s_k =
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#af187fb7da6192ffe9bd6bc21499b1823", null ],
     [ "ToFile", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#ad0d819e071e52dcc90762fe5eb947fa5", null ],
     [ "FromFile", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a47dce6d32b1303c31f2fbf90bb01f06b", null ],
+    [ "CreateFromStaticMesh", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a3237822ea49c0baf08eccce11f900c7b", null ],
+    [ "CreateFromAggGeom", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#ad057917ee2d5dcd5faff061a2b12c774", null ],
     [ "CreateFromSkeletalMesh", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a915d23c56e09e1f24fc648a1d47bf8e2", null ],
     [ "Points", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#ad2f5e4c37e94fb003a40515b9cf81575", null ],
     [ "Wedges", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a300caa5cf77cdb474f1d5560c3817e92", null ],
@@ -18,5 +20,6 @@ var class_legendary_explorer_core_1_1_unreal_1_1_p_s_k =
     [ "Weights", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#afe787106ffaa74a7e6ad2dce116bf4a0", null ],
     [ "VertexNormals", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a19f8b4891ea399ce50b0426a8477cd31", null ],
     [ "Morphs", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a8e757d09d3126f3fa0a51e3f29bdba45", null ],
-    [ "MorphData", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a9dc301e5a02d8c31a8e79babdc7b2a3f", null ]
+    [ "MorphData", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#a9dc301e5a02d8c31a8e79babdc7b2a3f", null ],
+    [ "ExtraUVs", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html#aa0b0e671ceef093efa7a58dc3180f130", null ]
 ];
