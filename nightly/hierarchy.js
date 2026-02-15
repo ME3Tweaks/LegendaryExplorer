@@ -1340,6 +1340,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Gammtek.ThrowHelper", "class_legendary_explorer_core_1_1_gammtek_1_1_throw_helper.html", null ],
     [ "LegendaryExplorerCore.TLK.TLKBitArray", "class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_bit_array.html", null ],
     [ "LegendaryExplorerCore.TLK.ME2ME3.ME2ME3TLKBase.TLKHeader", "struct_legendary_explorer_core_1_1_t_l_k_1_1_m_e2_m_e3_1_1_m_e2_m_e3_t_l_k_base_1_1_t_l_k_header.html", null ],
+    [ "LegendaryExplorerCore.GameFilesystem.TLKSystem", "class_legendary_explorer_core_1_1_game_filesystem_1_1_t_l_k_system.html", null ],
     [ "LegendaryExplorerCore.Unreal.TOCBinFile", "class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_bin_file.html", null ],
     [ "LegendaryExplorerCore.Unreal.TOCCreator", "class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_creator.html", null ],
     [ "LegendaryExplorerCore.Unreal.TOCBinFile.TOCHashTableEntry", "class_legendary_explorer_core_1_1_unreal_1_1_t_o_c_bin_file_1_1_t_o_c_hash_table_entry.html", null ],

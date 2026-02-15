@@ -17,5 +17,6 @@ var class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file =
     [ "BioTlkSetName", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html#a7dc78ac06ad3f5dd7510db0d1e863852", null ],
     [ "Localization", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html#a9484daf33fc1b694d933781c8e1144b4", null ],
     [ "IsModified", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html#a57dc27e0d156b5d91da6ec711e4133cf", null ],
-    [ "StringRefs", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html#ad9eb06419e15359defe0a9e7a8d1cbc9", null ]
+    [ "StringRefs", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html#ad9eb06419e15359defe0a9e7a8d1cbc9", null ],
+    [ "Source", "class_legendary_explorer_core_1_1_t_l_k_1_1_m_e1_1_1_m_e1_talk_file.html#ad31b1326ae053c027b1d05d446a3c338", null ]
 ];

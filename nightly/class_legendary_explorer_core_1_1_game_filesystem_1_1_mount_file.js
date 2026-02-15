@@ -2,7 +2,10 @@ var class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file =
 [
     [ "MountFile", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html#aef95ef383b209ef22ab6ef03bd6dd50c", null ],
     [ "MountFile", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html#a95201f2fc761fa61fdfc2c5bad2fc0c8", null ],
+    [ "MountFile", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html#a087487f0551c6b9d19c2d60f32d7a887", null ],
     [ "GetMountPriority", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html#a6c1198c78be44a221d40db6cabae70de", null ],
+    [ "LoadMountFileME2", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html#ae8bd64404bcc9743ed8794310859493b", null ],
+    [ "LoadMountFileME3", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html#ade821a0e6995e10ba0d9b04e979e3aa7", null ],
     [ "WriteMountFileToStream", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html#a7fe42042d6f306888ef069ae257864d8", null ],
     [ "WriteMountFile", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html#a8d6b67d7628ea8e27ee8e0cb021a1d1e", null ],
     [ "Game", "class_legendary_explorer_core_1_1_game_filesystem_1_1_mount_file.html#ada75d01d46a39d339407baefa0a7ada0", null ],

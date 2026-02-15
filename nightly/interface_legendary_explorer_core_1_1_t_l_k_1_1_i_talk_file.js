@@ -6,5 +6,6 @@ var interface_legendary_explorer_core_1_1_t_l_k_1_1_i_talk_file =
     [ "FindIdByData", "interface_legendary_explorer_core_1_1_t_l_k_1_1_i_talk_file.html#aa6bec191197267c19515794061ffe31a", null ],
     [ "Localization", "interface_legendary_explorer_core_1_1_t_l_k_1_1_i_talk_file.html#a82212fe93e2d3309a441006c7271be91", null ],
     [ "StringRefs", "interface_legendary_explorer_core_1_1_t_l_k_1_1_i_talk_file.html#a87c5191695aaab72729aba1c66f655f5", null ],
-    [ "IsModified", "interface_legendary_explorer_core_1_1_t_l_k_1_1_i_talk_file.html#ad00804346d7bbeac991c74432e581115", null ]
+    [ "IsModified", "interface_legendary_explorer_core_1_1_t_l_k_1_1_i_talk_file.html#ad00804346d7bbeac991c74432e581115", null ],
+    [ "Source", "interface_legendary_explorer_core_1_1_t_l_k_1_1_i_talk_file.html#af9d0ef2505b9313219e405c759a28142", null ]
 ];
