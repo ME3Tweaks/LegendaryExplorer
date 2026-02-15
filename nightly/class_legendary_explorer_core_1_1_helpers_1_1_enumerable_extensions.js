@@ -19,6 +19,7 @@ var class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions =
     [ "Any< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a01984dc2491972ba2619c7eb7a764ba3", null ],
     [ "HasExactly< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#ac1a3efe2ad78b70491433fb0ff55eb5e", null ],
     [ "NonNull< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#aa7fe9f9ceb0d6cbff7b446991db46e11", null ],
+    [ "SelectWhereNonNull< TIn, TOut >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a9593bfed051f95684c636cfc9e67c9b9", null ],
     [ "StringJoin< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#aeecfe41619eb016d8f3ce19c25d40377", null ],
     [ "SubsetOf< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a9af55ea66d7f129c64086959a38f165a", null ],
     [ "RemoveAll< T >", "class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a03a8c68ae171674b1600082aac62ba4d", null ],

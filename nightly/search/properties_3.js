@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['data_0',['data',['../class_legendary_explorer_core_1_1_textures_1_1_mip_map.html#a6143cd0e7fbaaf8541ffae969a7bf224',1,'LegendaryExplorerCore::Textures::MipMap']]],
-  ['data_1',['Data',['../class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#ac59ecd8971ec4c170ca290cc11ea5129',1,'LegendaryExplorerCore.Packages.ExportEntry.Data()'],['../class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a91c56c2659121dc7f34fc9bde2ceffac',1,'LegendaryExplorerCore.Save.ProfileSetting.Data()'],['../class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_string_ref.html#a9f6177b88d45f1ddda5f735a106f3816',1,'LegendaryExplorerCore.TLK.TLKStringRef.Data()']]],
+  ['data_0',['Data',['../class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#ac59ecd8971ec4c170ca290cc11ea5129',1,'LegendaryExplorerCore.Packages.ExportEntry.Data()'],['../class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a91c56c2659121dc7f34fc9bde2ceffac',1,'LegendaryExplorerCore.Save.ProfileSetting.Data()'],['../class_legendary_explorer_core_1_1_t_l_k_1_1_t_l_k_string_ref.html#a9f6177b88d45f1ddda5f735a106f3816',1,'LegendaryExplorerCore.TLK.TLKStringRef.Data()']]],
+  ['data_1',['data',['../class_legendary_explorer_core_1_1_textures_1_1_mip_map.html#a6143cd0e7fbaaf8541ffae969a7bf224',1,'LegendaryExplorerCore::Textures::MipMap']]],
   ['dataasblob_2',['DataAsBlob',['../class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#ab7df5b266e5f41fc7c4f663ab5eba57b',1,'LegendaryExplorerCore::Save::ProfileSetting']]],
   ['dataasdatetime_3',['DataAsDateTime',['../class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a6625a08bd093c9e2fdbafcfe11d29de9',1,'LegendaryExplorerCore::Save::ProfileSetting']]],
   ['dataasdouble_4',['DataAsDouble',['../class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a9bb9b3e6be40365505e69ac5c6e2c5ee',1,'LegendaryExplorerCore::Save::ProfileSetting']]],
@@ -36,5 +36,6 @@ var searchData=
   ['dlcname_33',['DLCName',['../class_legendary_explorer_core_1_1_textures_1_1_t_f_c_compactor_info_package.html#ad88f2efd684e2d040c6cc624406d0766',1,'LegendaryExplorerCore::Textures::TFCCompactorInfoPackage']]],
   ['dlcpath_34',['DLCPath',['../class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e1_directory.html#a628bf72c580549ef89331dae5a071268',1,'LegendaryExplorerCore.GameFilesystem.LE1Directory.DLCPath()'],['../class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e2_directory.html#a9255cbe6732ae799287632610520e4e0',1,'LegendaryExplorerCore.GameFilesystem.LE2Directory.DLCPath()'],['../class_legendary_explorer_core_1_1_game_filesystem_1_1_l_e3_directory.html#a4763a5065677cc4f9b7d864c485576fd',1,'LegendaryExplorerCore.GameFilesystem.LE3Directory.DLCPath()']]],
   ['driveinfo_35',['DriveInfo',['../interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_drive_letter.html#abc61f88572a5dbc84b132e148b8e8ead',1,'LegendaryExplorerCore::Gammtek::Paths::IDriveLetter']]],
-  ['dropsuntilfullgc_36',['DropsUntilFullGC',['../class_tiered_package_cache.html#ab627b6d394b81b41d8484848e8489412',1,'TieredPackageCache']]]
+  ['dropsuntilfullgc_36',['DropsUntilFullGC',['../class_tiered_package_cache.html#ab627b6d394b81b41d8484848e8489412',1,'TieredPackageCache']]],
+  ['duration_37',['Duration',['../class_skeleton_anim_player.html#ab194c5a6e6fece75bc86cac71ff30e04',1,'SkeletonAnimPlayer']]]
 ];

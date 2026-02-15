@@ -769,7 +769,7 @@ var annotated_dup =
           [ "UDKObjectInfo", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_u_d_k_object_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_u_d_k_object_info" ]
         ] ],
         [ "PhysX", "namespace_legendary_explorer_core_1_1_unreal_1_1_phys_x.html", [
-          [ "PhysXCooker", "class_legendary_explorer_core_1_1_unreal_1_1_phys_x_1_1_phys_x_cooker.html", "class_legendary_explorer_core_1_1_unreal_1_1_phys_x_1_1_phys_x_cooker" ]
+          [ "KConvexElem", "class_legendary_explorer_core_1_1_unreal_1_1_phys_x_1_1_k_convex_elem.html", "class_legendary_explorer_core_1_1_unreal_1_1_phys_x_1_1_k_convex_elem" ]
         ] ],
         [ "ActorUtils", "class_legendary_explorer_core_1_1_unreal_1_1_actor_utils.html", "class_legendary_explorer_core_1_1_unreal_1_1_actor_utils" ],
         [ "ArrayProperty", "class_legendary_explorer_core_1_1_unreal_1_1_array_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_array_property" ],
@@ -798,6 +798,7 @@ var annotated_dup =
         [ "ObjectProperty", "class_legendary_explorer_core_1_1_unreal_1_1_object_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_property" ],
         [ "Property", "class_legendary_explorer_core_1_1_unreal_1_1_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_property" ],
         [ "PropertyCollection", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection" ],
+        [ "PropertyCollectionExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions.html", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions" ],
         [ "PSA", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a" ],
         [ "PSK", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k" ],
         [ "SFAREntryReader", "class_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_entry_reader.html", "class_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_entry_reader" ],
@@ -1134,6 +1135,7 @@ var annotated_dup =
     [ "SampleOffsetBankChunk", "class_sample_offset_bank_chunk.html", "class_sample_offset_bank_chunk" ],
     [ "Shader", "class_shader.html", "class_shader" ],
     [ "SingleTextureShader", "class_single_texture_shader.html", "class_single_texture_shader" ],
+    [ "SkeletonAnimPlayer", "class_skeleton_anim_player.html", "class_skeleton_anim_player" ],
     [ "SoundConeBankChunk", "class_sound_cone_bank_chunk.html", "class_sound_cone_bank_chunk" ],
     [ "SoundEventInfoBankChunk", "class_sound_event_info_bank_chunk.html", "class_sound_event_info_bank_chunk" ],
     [ "SoundEventSoundTracks", "class_sound_event_sound_tracks.html", "class_sound_event_sound_tracks" ],

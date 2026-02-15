@@ -31,6 +31,7 @@ var namespace_legendary_explorer_core_1_1_unreal =
     [ "ObjectProperty", "class_legendary_explorer_core_1_1_unreal_1_1_object_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_object_property" ],
     [ "Property", "class_legendary_explorer_core_1_1_unreal_1_1_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_property" ],
     [ "PropertyCollection", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection.html", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection" ],
+    [ "PropertyCollectionExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions.html", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions" ],
     [ "PSA", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a" ],
     [ "PSK", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_k" ],
     [ "SFAREntryReader", "class_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_entry_reader.html", "class_legendary_explorer_core_1_1_unreal_1_1_s_f_a_r_entry_reader" ],

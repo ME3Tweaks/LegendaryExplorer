@@ -486,7 +486,6 @@ var hierarchy =
       ] ],
       [ "LegendaryExplorerCore.Packages.MEPackage", "class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html", null ],
       [ "LegendaryExplorerCore.Packages.PackageCache", "class_legendary_explorer_core_1_1_packages_1_1_package_cache.html", null ],
-      [ "LegendaryExplorerCore.Unreal.PhysX.PhysXCooker", "class_legendary_explorer_core_1_1_unreal_1_1_phys_x_1_1_phys_x_cooker.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.Compiling.BytecodeWriter.SkipPlaceholder", "class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_bytecode_writer_1_1_skip_placeholder.html", null ],
       [ "LegendaryExplorerCore.UnrealScript.FileLib", "class_legendary_explorer_core_1_1_unreal_script_1_1_file_lib.html", null ]
     ] ],
@@ -729,6 +728,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.KCachedConvexData", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_k_cached_convex_data.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.KCachedConvexDataElement", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_k_cached_convex_data_element.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.KCachedPerTriData", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_k_cached_per_tri_data.html", null ],
+    [ "LegendaryExplorerCore.Unreal.PhysX.KConvexElem", "class_legendary_explorer_core_1_1_unreal_1_1_phys_x_1_1_k_convex_elem.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.kDOP", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1k_d_o_p.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.kDOPCollisionTriangle", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1k_d_o_p_collision_triangle.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.kDOPCompact", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1k_d_o_p_compact.html", null ],
@@ -1061,6 +1061,7 @@ var hierarchy =
       [ "LegendaryExplorerCore.Unreal.StructProperty", "class_legendary_explorer_core_1_1_unreal_1_1_struct_property.html", null ],
       [ "LegendaryExplorerCore.Unreal.UnknownProperty", "class_legendary_explorer_core_1_1_unreal_1_1_unknown_property.html", null ]
     ] ],
+    [ "LegendaryExplorerCore.Unreal.PropertyCollectionExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions.html", null ],
     [ "LegendaryExplorerCore.Coalesced.PropertyValue", "struct_legendary_explorer_core_1_1_coalesced_1_1_property_value.html", null ],
     [ "LegendaryExplorerCore.Unreal.PSA", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a.html", null ],
     [ "LegendaryExplorerCore.Unreal.PSA.PSAAnimInfo", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a_1_1_p_s_a_anim_info.html", null ],
@@ -1242,6 +1243,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ShaderReference", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_reference.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.SingleExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_single_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SkeletalMeshVertexBuffer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh_vertex_buffer.html", null ],
+    [ "SkeletonAnimPlayer", "class_skeleton_anim_player.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SkelMeshChunk", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skel_mesh_chunk.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SkelMeshSection", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skel_mesh_section.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SoftSkinVertex", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_soft_skin_vertex.html", null ],

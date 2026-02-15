@@ -150,6 +150,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:ac1a3efe2ad78b70491433fb0ff55eb5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7fe9f9ceb0d6cbff7b446991db46e11"><td class="memItemLeft" align="right" valign="top">static IEnumerable&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#aa7fe9f9ceb0d6cbff7b446991db46e11">NonNull&lt; T &gt;</a> (this IEnumerable&lt; T &gt; src)</td></tr>
 <tr class="separator:aa7fe9f9ceb0d6cbff7b446991db46e11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9593bfed051f95684c636cfc9e67c9b9"><td class="memItemLeft" align="right" valign="top">static IEnumerable&lt; TOut &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a9593bfed051f95684c636cfc9e67c9b9">SelectWhereNonNull&lt; TIn, TOut &gt;</a> (this IEnumerable&lt; TIn &gt; src, Func&lt; TIn, TOut &gt; selector)</td></tr>
+<tr class="separator:a9593bfed051f95684c636cfc9e67c9b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeecfe41619eb016d8f3ce19c25d40377"><td class="memItemLeft" align="right" valign="top">static string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#aeecfe41619eb016d8f3ce19c25d40377">StringJoin&lt; T &gt;</a> (this IEnumerable&lt; T &gt; values, string separator)</td></tr>
 <tr class="separator:aeecfe41619eb016d8f3ce19c25d40377"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9af55ea66d7f129c64086959a38f165a"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_helpers_1_1_enumerable_extensions.html#a9af55ea66d7f129c64086959a38f165a">SubsetOf&lt; T &gt;</a> (this IList&lt; T &gt; src, IList&lt; T &gt; compare)</td></tr>
@@ -862,6 +864,50 @@ Static Public Member Functions</h2></td></tr>
 <dl><dt><b>Type Constraints</b></dt><dd>
 <table border="0" cellspacing="2" cellpadding="0">
 <tr><td valign="top"><em>T</em></td><td>&#160;:</td><td valign="top"><em>class</em></td><td>&#160;</td></tr>
+</table>
+</dd>
+</dl>
+</div>
+
+</div>
+</div>
+<a id="a9593bfed051f95684c636cfc9e67c9b9" name="a9593bfed051f95684c636cfc9e67c9b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9593bfed051f95684c636cfc9e67c9b9">&#9670;&#160;</a></span>SelectWhereNonNull&lt; TIn, TOut &gt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static IEnumerable&lt; TOut &gt; LegendaryExplorerCore.Helpers.EnumerableExtensions.SelectWhereNonNull&lt; TIn, TOut &gt; </td>
+          <td>(</td>
+          <td class="paramtype">this IEnumerable&lt; TIn &gt;&#160;</td>
+          <td class="paramname"><em>src</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Func&lt; TIn, TOut &gt;&#160;</td>
+          <td class="paramname"><em>selector</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<div class="typeconstraint">
+<dl><dt><b>Type Constraints</b></dt><dd>
+<table border="0" cellspacing="2" cellpadding="0">
+<tr><td valign="top"><em>TOut</em></td><td>&#160;:</td><td valign="top"><em>class</em></td><td>&#160;</td></tr>
 </table>
 </dd>
 </dl>

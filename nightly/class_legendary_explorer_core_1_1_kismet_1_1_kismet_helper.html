@@ -231,6 +231,14 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a3a9653bf6ebc11de59ed128302088871"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3a9653bf6ebc11de59ed128302088871">RemoveFromSequence</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> node, bool trash)</td></tr>
 <tr class="memdesc:a3a9653bf6ebc11de59ed128302088871"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes an object from a sequence, optionally trashing it and its children.   <a href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3a9653bf6ebc11de59ed128302088871">More...</a><br /></td></tr>
 <tr class="separator:a3a9653bf6ebc11de59ed128302088871"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3dbcc96ea503d1b63a3a6c74823302f5"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3dbcc96ea503d1b63a3a6c74823302f5">GetNamedVar</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> sequence, <a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a> varName, bool searchParents)</td></tr>
+<tr class="separator:a3dbcc96ea503d1b63a3a6c74823302f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3c6efb595e3a6f041c6f30eae3406cae"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3c6efb595e3a6f041c6f30eae3406cae">ResolveSeqVar_External</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> seqVarExternal)</td></tr>
+<tr class="separator:a3c6efb595e3a6f041c6f30eae3406cae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7173dc3b1706ce7aaca5161182b5246"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#aa7173dc3b1706ce7aaca5161182b5246">ResolveSeqVar_Named</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> seqVarNamed)</td></tr>
+<tr class="separator:aa7173dc3b1706ce7aaca5161182b5246"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ac36de50adfaab422058c162feb64a3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3ac36de50adfaab422058c162feb64a3">ResolveObjectVarValue</a> (<a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> seqVar, bool searchRelatedFiles=false, bool femShep=true)</td></tr>
+<tr class="separator:a3ac36de50adfaab422058c162feb64a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Static methods to perform common sequence editing operations  </p>
@@ -2235,6 +2243,142 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a3dbcc96ea503d1b63a3a6c74823302f5" name="a3dbcc96ea503d1b63a3a6c74823302f5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3dbcc96ea503d1b63a3a6c74823302f5">&#9670;&#160;</a></span>GetNamedVar()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Kismet.KismetHelper.GetNamedVar </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>sequence</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html">NameReference</a>&#160;</td>
+          <td class="paramname"><em>varName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>searchParents</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3c6efb595e3a6f041c6f30eae3406cae" name="a3c6efb595e3a6f041c6f30eae3406cae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c6efb595e3a6f041c6f30eae3406cae">&#9670;&#160;</a></span>ResolveSeqVar_External()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Kismet.KismetHelper.ResolveSeqVar_External </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>seqVarExternal</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="aa7173dc3b1706ce7aaca5161182b5246" name="aa7173dc3b1706ce7aaca5161182b5246"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7173dc3b1706ce7aaca5161182b5246">&#9670;&#160;</a></span>ResolveSeqVar_Named()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> LegendaryExplorerCore.Kismet.KismetHelper.ResolveSeqVar_Named </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>seqVarNamed</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a3ac36de50adfaab422058c162feb64a3" name="a3ac36de50adfaab422058c162feb64a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ac36de50adfaab422058c162feb64a3">&#9670;&#160;</a></span>ResolveObjectVarValue()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_entry.html">IEntry</a> LegendaryExplorerCore.Kismet.KismetHelper.ResolveObjectVarValue </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>&#160;</td>
+          <td class="paramname"><em>seqVar</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>searchRelatedFiles</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>femShep</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 
 </div>
 </div>

@@ -41,5 +41,9 @@ var class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper =
     [ "FindEventConnectionsToNode", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a10e992f253e7a5899e095b230251626e", null ],
     [ "InsertActionAfter", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0165f371fc31008d7037db04937bc166", null ],
     [ "AddVariableLink", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a0a55406297c62d8019f10670cf0c54f7", null ],
-    [ "RemoveFromSequence", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3a9653bf6ebc11de59ed128302088871", null ]
+    [ "RemoveFromSequence", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3a9653bf6ebc11de59ed128302088871", null ],
+    [ "GetNamedVar", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3dbcc96ea503d1b63a3a6c74823302f5", null ],
+    [ "ResolveSeqVar_External", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3c6efb595e3a6f041c6f30eae3406cae", null ],
+    [ "ResolveSeqVar_Named", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#aa7173dc3b1706ce7aaca5161182b5246", null ],
+    [ "ResolveObjectVarValue", "class_legendary_explorer_core_1_1_kismet_1_1_kismet_helper.html#a3ac36de50adfaab422058c162feb64a3", null ]
 ];

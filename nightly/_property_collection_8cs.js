@@ -18,5 +18,6 @@ var _property_collection_8cs =
     [ "LegendaryExplorerCore.Unreal.StrProperty", "class_legendary_explorer_core_1_1_unreal_1_1_str_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_str_property" ],
     [ "LegendaryExplorerCore.Unreal.StringRefProperty", "class_legendary_explorer_core_1_1_unreal_1_1_string_ref_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_string_ref_property" ],
     [ "LegendaryExplorerCore.Unreal.DelegateProperty", "class_legendary_explorer_core_1_1_unreal_1_1_delegate_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_delegate_property" ],
-    [ "LegendaryExplorerCore.Unreal.UnknownProperty", "class_legendary_explorer_core_1_1_unreal_1_1_unknown_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_unknown_property" ]
+    [ "LegendaryExplorerCore.Unreal.UnknownProperty", "class_legendary_explorer_core_1_1_unreal_1_1_unknown_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_unknown_property" ],
+    [ "LegendaryExplorerCore.Unreal.PropertyCollectionExtensions", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions.html", "class_legendary_explorer_core_1_1_unreal_1_1_property_collection_extensions" ]
 ];

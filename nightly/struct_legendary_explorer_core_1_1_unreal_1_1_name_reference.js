@@ -15,6 +15,8 @@ var struct_legendary_explorer_core_1_1_unreal_1_1_name_reference =
     [ "FromInstancedString", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a4db35e20774640f3b3f2bb9340f8b55e", null ],
     [ "operator==", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#aa8ad2a09d9c704ab9be4417e9a8e2e34", null ],
     [ "operator!=", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a8566e936d5672ca36b7fba3b57dc5700", null ],
+    [ "operator==", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#ad796fe7fdd8dfa9db0e5007f825ad4cf", null ],
+    [ "operator!=", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a2afca2438b6fdcdabe92d22c35e065f5", null ],
     [ "Equals", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a353949f8728ac6e2a5262f3b9ea25818", null ],
     [ "Equals", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#aecdb420f8b785a25ded6883616d1515d", null ],
     [ "GetHashCode", "struct_legendary_explorer_core_1_1_unreal_1_1_name_reference.html#a3585aa529d88dfea7420a6c797a2b3a8", null ],

@@ -3,6 +3,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box =
     [ "Box", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html#aa241c75f171aa3191b120b200aad64fa", null ],
     [ "Box", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html#a4d7407da7c9a49ae9f8e2889a8e96400", null ],
     [ "Add", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html#a72abc60bba5416a7ccee9f885bd49fd5", null ],
+    [ "GetStructProperty", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html#aa4c4d8e200320ee7d577ea09a365fddf", null ],
     [ "Min", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html#a978d6ada8c0df1907b0f9d7c30d30f93", null ],
     [ "Max", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html#acb9f3e00c7d93e5a8b89f7012ebd2bb3", null ],
     [ "IsValid", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html#a1360751f01a1b46d29f9b825d13a595c", null ]
