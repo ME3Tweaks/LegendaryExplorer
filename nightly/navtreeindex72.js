@@ -1,7 +1,5 @@
 var NAVTREEINDEX72 =
 {
-"class_t_light_pixel_shader.html":[1,0,182],
-"class_t_light_pixel_shader.html#a191ef2114d824e77a4f7ee6c36308740":[1,0,182,4],
 "class_t_light_pixel_shader.html#a859e3bee42e186b2448a6c474e0848d2":[1,0,182,3],
 "class_t_light_pixel_shader.html#aa20e12fd023c618b5208baa0983afdea":[1,0,182,2],
 "class_t_light_pixel_shader.html#aacc50fdf1e1c9b2ec299bbfae6f645de":[1,0,182,1],
@@ -237,8 +235,8 @@ var NAVTREEINDEX72 =
 "dir_fc297f48b00bb058e25bce0d1d92428f.html":[2,0,0,0,14,0],
 "dir_fcbaed6291bc34708fd86da8b1325ec6.html":[2,0,0,0,7],
 "files.html":[2,0],
-"functions.html":[1,2,0,0],
 "functions.html":[1,2,0],
+"functions.html":[1,2,0,0],
 "functions_a.html":[1,2,0,1],
 "functions_b.html":[1,2,0,2],
 "functions_c.html":[1,2,0,3],
@@ -247,7 +245,9 @@ var NAVTREEINDEX72 =
 "functions_enum.html":[1,2,3],
 "functions_evnt.html":[1,2,5],
 "functions_f.html":[1,2,0,6],
-"functions_func.html":[1,2,1,0],
 "functions_func.html":[1,2,1],
-"functions_func_b.html":[1,2,1,1]
+"functions_func.html":[1,2,1,0],
+"functions_func_b.html":[1,2,1,1],
+"functions_func_c.html":[1,2,1,2],
+"functions_func_d.html":[1,2,1,3]
 };

@@ -109,12 +109,12 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:ab011911f6bc9410163dd7cc962629ee9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a456ec7f2529232f5a92369d1c921cbb9"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_saver.html#a456ec7f2529232f5a92369d1c921cbb9">Initialize</a> ()</td></tr>
 <tr class="separator:a456ec7f2529232f5a92369d1c921cbb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a530a7288340b41701e46c6013a3087f1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_saver.html#a530a7288340b41701e46c6013a3087f1">Save</a> (this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, string savePath=null, bool? compress=null, bool includeAdditionalPackagesToCook=true, bool includeDependencyTable=true, object diskIOSyncLock=null)</td></tr>
-<tr class="memdesc:a530a7288340b41701e46c6013a3087f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the package to disk. If calling from the UI thread, consider using SaveAsync instead.   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_saver.html#a530a7288340b41701e46c6013a3087f1">More...</a><br /></td></tr>
-<tr class="separator:a530a7288340b41701e46c6013a3087f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab45ae66b693dba5ab1603267b35ad8f4"><td class="memItemLeft" align="right" valign="top">static async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_saver.html#ab45ae66b693dba5ab1603267b35ad8f4">SaveAsync</a> (this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, string savePath=null, bool? compress=null, bool includeAdditionalPackagesToCook=true, bool includeDependencyTable=true, object diskIOSyncLock=null)</td></tr>
-<tr class="memdesc:ab45ae66b693dba5ab1603267b35ad8f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the package to disk on a different thread   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_saver.html#ab45ae66b693dba5ab1603267b35ad8f4">More...</a><br /></td></tr>
-<tr class="separator:ab45ae66b693dba5ab1603267b35ad8f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa86b85ffe410dcdd867919bc6bbe5fd4"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_saver.html#aa86b85ffe410dcdd867919bc6bbe5fd4">Save</a> (this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, string savePath=null, bool? compress=null, bool includeAdditionalPackagesToCook=true, bool includeDependencyTable=true, Lock diskIOSyncLock=null)</td></tr>
+<tr class="memdesc:aa86b85ffe410dcdd867919bc6bbe5fd4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the package to disk. If calling from the UI thread, consider using SaveAsync instead.   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_saver.html#aa86b85ffe410dcdd867919bc6bbe5fd4">More...</a><br /></td></tr>
+<tr class="separator:aa86b85ffe410dcdd867919bc6bbe5fd4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6afe12a8c7c607a021b99f1763a1f5a5"><td class="memItemLeft" align="right" valign="top">static async Task&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_saver.html#a6afe12a8c7c607a021b99f1763a1f5a5">SaveAsync</a> (this <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, string savePath=null, bool? compress=null, bool includeAdditionalPackagesToCook=true, bool includeDependencyTable=true, Lock diskIOSyncLock=null)</td></tr>
+<tr class="memdesc:a6afe12a8c7c607a021b99f1763a1f5a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the package to disk on a different thread   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_saver.html#a6afe12a8c7c607a021b99f1763a1f5a5">More...</a><br /></td></tr>
+<tr class="separator:a6afe12a8c7c607a021b99f1763a1f5a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
@@ -216,8 +216,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a530a7288340b41701e46c6013a3087f1" name="a530a7288340b41701e46c6013a3087f1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a530a7288340b41701e46c6013a3087f1">&#9670;&#160;</a></span>Save()</h2>
+<a id="aa86b85ffe410dcdd867919bc6bbe5fd4" name="aa86b85ffe410dcdd867919bc6bbe5fd4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa86b85ffe410dcdd867919bc6bbe5fd4">&#9670;&#160;</a></span>Save()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -258,7 +258,7 @@ Properties</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">object&#160;</td>
+          <td class="paramtype">Lock&#160;</td>
           <td class="paramname"><em>diskIOSyncLock</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
@@ -289,8 +289,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="ab45ae66b693dba5ab1603267b35ad8f4" name="ab45ae66b693dba5ab1603267b35ad8f4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab45ae66b693dba5ab1603267b35ad8f4">&#9670;&#160;</a></span>SaveAsync()</h2>
+<a id="a6afe12a8c7c607a021b99f1763a1f5a5" name="a6afe12a8c7c607a021b99f1763a1f5a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6afe12a8c7c607a021b99f1763a1f5a5">&#9670;&#160;</a></span>SaveAsync()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -331,7 +331,7 @@ Properties</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">object&#160;</td>
+          <td class="paramtype">Lock&#160;</td>
           <td class="paramname"><em>diskIOSyncLock</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>

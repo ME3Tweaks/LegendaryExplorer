@@ -174,9 +174,9 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a979a16005572513084c0ae5dc72d6d65"><td class="memItemLeft" align="right" valign="top">readonly <a class="el" href="_convert_extensions_8cs.html#add5aeb4d12283fa0452cb03a86feb9a3">Guid</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a979a16005572513084c0ae5dc72d6d65">guid</a> = Guid.NewGuid()</td></tr>
 <tr class="memdesc:a979a16005572513084c0ae5dc72d6d65"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unique identifier for this cache   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a979a16005572513084c0ae5dc72d6d65">More...</a><br /></td></tr>
 <tr class="separator:a979a16005572513084c0ae5dc72d6d65"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5c6a5b140e8c446e1975bf90fa5b616d"><td class="memItemLeft" align="right" valign="top">readonly object&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a5c6a5b140e8c446e1975bf90fa5b616d">syncObj</a> = new()</td></tr>
-<tr class="memdesc:a5c6a5b140e8c446e1975bf90fa5b616d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object used for synchronizing for threads   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a5c6a5b140e8c446e1975bf90fa5b616d">More...</a><br /></td></tr>
-<tr class="separator:a5c6a5b140e8c446e1975bf90fa5b616d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f2bbc4b6efc009b135860776b45bec8"><td class="memItemLeft" align="right" valign="top">readonly Lock&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a2f2bbc4b6efc009b135860776b45bec8">syncObj</a> = new()</td></tr>
+<tr class="memdesc:a2f2bbc4b6efc009b135860776b45bec8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Object used for synchronizing for threads   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a2f2bbc4b6efc009b135860776b45bec8">More...</a><br /></td></tr>
+<tr class="separator:a2f2bbc4b6efc009b135860776b45bec8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a93e4e7bdf6a95a7edeceee998bff38ea"><td class="memItemLeft" align="right" valign="top">readonly CaseInsensitiveConcurrentDictionary&lt; DateTime &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a93e4e7bdf6a95a7edeceee998bff38ea">LastAccessMap</a> = new()</td></tr>
 <tr class="memdesc:a93e4e7bdf6a95a7edeceee998bff38ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">The last access order. <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html">Packages</a> at the bottom are the last accessed, the ones at the top are first. This is only for dropping packages if the count is not 0.   <a href="class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#a93e4e7bdf6a95a7edeceee998bff38ea">More...</a><br /></td></tr>
 <tr class="separator:a93e4e7bdf6a95a7edeceee998bff38ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -892,14 +892,14 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a5c6a5b140e8c446e1975bf90fa5b616d" name="a5c6a5b140e8c446e1975bf90fa5b616d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c6a5b140e8c446e1975bf90fa5b616d">&#9670;&#160;</a></span>syncObj</h2>
+<a id="a2f2bbc4b6efc009b135860776b45bec8" name="a2f2bbc4b6efc009b135860776b45bec8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f2bbc4b6efc009b135860776b45bec8">&#9670;&#160;</a></span>syncObj</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">readonly object LegendaryExplorerCore.Packages.PackageCache.syncObj = new()</td>
+          <td class="memname">readonly Lock LegendaryExplorerCore.Packages.PackageCache.syncObj = new()</td>
         </tr>
       </table>
 </div><div class="memdoc">

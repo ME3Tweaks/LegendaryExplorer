@@ -374,8 +374,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a55a5d6b6ea294ab0c51357e4c16a3ab1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a55a5d6b6ea294ab0c51357e4c16a3ab1">GetGameFromHeader</a> (<a class="el" href="struct_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian.html">Endian</a> endian, uint unrealVersion, uint licenseeVersion, <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a423493ad96316a5a54f0df3fb3126cbe">GamePlatform</a> platformOverride, out <a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a4f4b00a25fc2001d86e3c461fa3539a2">Game</a>, out <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a423493ad96316a5a54f0df3fb3126cbe">GamePlatform</a> <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#ac786de6a79fdecf70e2b2167d7c5ceb2">Platform</a>, out bool platformNeedsResolved)</td></tr>
 <tr class="memdesc:a55a5d6b6ea294ab0c51357e4c16a3ab1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parses out game information given an endian, unreal version, and licensee version. Throws an exception if it doesn't match any values.   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a55a5d6b6ea294ab0c51357e4c16a3ab1">More...</a><br /></td></tr>
 <tr class="separator:a55a5d6b6ea294ab0c51357e4c16a3ab1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86104877b1852154aa27ec4c5478f4b1"><td class="memItemLeft" align="right" valign="top">static Action&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html">MEPackage</a>, string, bool, bool, bool, bool, object &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#a86104877b1852154aa27ec4c5478f4b1">RegisterSaver</a> ()</td></tr>
-<tr class="separator:a86104877b1852154aa27ec4c5478f4b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb995ebfe409c94f9415ad2e3996f8fb"><td class="memItemLeft" align="right" valign="top">static Action&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html">MEPackage</a>, string, bool, bool, bool, bool, Lock &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html#abb995ebfe409c94f9415ad2e3996f8fb">RegisterSaver</a> ()</td></tr>
+<tr class="separator:abb995ebfe409c94f9415ad2e3996f8fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_static_methods_class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html">LegendaryExplorerCore.Packages.UnrealPackageFile</a></td></tr>
 <tr class="memitem:a62b635195f855f3f96c76f80ac20f732 inherit pub_static_methods_class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file.html#a62b635195f855f3f96c76f80ac20f732">DebugByteArrayComparison</a> (byte[] arr1, byte[] arr2)</td></tr>
 <tr class="separator:a62b635195f855f3f96c76f80ac20f732 inherit pub_static_methods_class_legendary_explorer_core_1_1_packages_1_1_unreal_package_file"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -875,8 +875,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a86104877b1852154aa27ec4c5478f4b1" name="a86104877b1852154aa27ec4c5478f4b1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a86104877b1852154aa27ec4c5478f4b1">&#9670;&#160;</a></span>RegisterSaver()</h2>
+<a id="abb995ebfe409c94f9415ad2e3996f8fb" name="abb995ebfe409c94f9415ad2e3996f8fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb995ebfe409c94f9415ad2e3996f8fb">&#9670;&#160;</a></span>RegisterSaver()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -885,7 +885,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static Action&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html">MEPackage</a>, string, bool, bool, bool, bool, object &gt; LegendaryExplorerCore.Packages.MEPackage.RegisterSaver </td>
+          <td class="memname">static Action&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package.html">MEPackage</a>, string, bool, bool, bool, bool, Lock &gt; LegendaryExplorerCore.Packages.MEPackage.RegisterSaver </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>

@@ -116,9 +116,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aa16f945ad6f0dc436798cd62400f2ccc"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#aa16f945ad6f0dc436798cd62400f2ccc">OpenMEPackage</a> (<a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a> package, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html">IPackageUser</a> user=null)</td></tr>
 <tr class="memdesc:aa16f945ad6f0dc436798cd62400f2ccc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens an already open package, registering it for use in a tool.   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#aa16f945ad6f0dc436798cd62400f2ccc">More...</a><br /></td></tr>
 <tr class="separator:aa16f945ad6f0dc436798cd62400f2ccc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4244a5bcd64521a8433b547445761c7f"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a4244a5bcd64521a8433b547445761c7f">OpenMEPackage</a> (string pathToFile, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html">IPackageUser</a> user=null, bool forceLoadFromDisk=false, bool quickLoad=false, object diskIOSyncLock=null)</td></tr>
-<tr class="memdesc:a4244a5bcd64521a8433b547445761c7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a Mass Effect package file. By default, this call will attempt to return an existing open (non-disposed) package at the same path if it is opened twice. Use the forceLoadFromDisk parameter to ignore this behavior.   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a4244a5bcd64521a8433b547445761c7f">More...</a><br /></td></tr>
-<tr class="separator:a4244a5bcd64521a8433b547445761c7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43af79913d718f42245a11b11fcb660e"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a43af79913d718f42245a11b11fcb660e">OpenMEPackage</a> (string pathToFile, <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_package_user.html">IPackageUser</a> user=null, bool forceLoadFromDisk=false, bool quickLoad=false, Lock diskIOSyncLock=null)</td></tr>
+<tr class="memdesc:a43af79913d718f42245a11b11fcb660e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a Mass Effect package file. By default, this call will attempt to return an existing open (non-disposed) package at the same path if it is opened twice. Use the forceLoadFromDisk parameter to ignore this behavior.   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a43af79913d718f42245a11b11fcb660e">More...</a><br /></td></tr>
+<tr class="separator:a43af79913d718f42245a11b11fcb660e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47e5b996712d47dcdb5aae972b86a36d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="interface_legendary_explorer_core_1_1_packages_1_1_i_m_e_package.html">IMEPackage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a47e5b996712d47dcdb5aae972b86a36d">UnsafePartialLoad</a> (string pathToFile, Func&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>, bool &gt; exportPredicate)</td></tr>
 <tr class="memdesc:a47e5b996712d47dcdb5aae972b86a36d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Partially opens an ME package file. Name, Export, and Import tables will be fully read, but export data will only be loaded for <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a>s that match <em>exportPredicate</em> . Attempting to access the Data for any other <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> will cause a NullReferenceException. Use with caution in performance critical situations only! The file is loaded from disk, and does not participate in package sharing.   <a href="class_legendary_explorer_core_1_1_packages_1_1_m_e_package_handler.html#a47e5b996712d47dcdb5aae972b86a36d">More...</a><br /></td></tr>
 <tr class="separator:a47e5b996712d47dcdb5aae972b86a36d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -384,8 +384,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a4244a5bcd64521a8433b547445761c7f" name="a4244a5bcd64521a8433b547445761c7f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4244a5bcd64521a8433b547445761c7f">&#9670;&#160;</a></span>OpenMEPackage() <span class="overload">[2/2]</span></h2>
+<a id="a43af79913d718f42245a11b11fcb660e" name="a43af79913d718f42245a11b11fcb660e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43af79913d718f42245a11b11fcb660e">&#9670;&#160;</a></span>OpenMEPackage() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -420,7 +420,7 @@ Static Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">object&#160;</td>
+          <td class="paramtype">Lock&#160;</td>
           <td class="paramname"><em>diskIOSyncLock</em> = <code>null</code>&#160;</td>
         </tr>
         <tr>
