@@ -64,10 +64,7 @@ namespace LegendaryExplorerCore.Coalesced
 
 		public void Combine(CoalesceSection other)
 		{
-			if (other == null)
-			{
-				throw new ArgumentNullException(nameof(other));
-			}
+			ArgumentNullException.ThrowIfNull(other);
 
 			foreach (var pair in other)
 			{

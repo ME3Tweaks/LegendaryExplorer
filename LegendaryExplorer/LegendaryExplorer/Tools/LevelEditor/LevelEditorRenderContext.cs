@@ -22,13 +22,16 @@ public class LevelEditorRenderContext : MeshRenderContext
 {
     public event Action<ActorProxy> SelectActor;
     public List<ActorProxy> DrawList_3D = [];
-    public List<UIElement> DrawList_2D = [];
+    public List<UIElement> DrawList_UI = [];
 
     private USparseArray<IHitProxy> HitProxies = [];
 
     public readonly Widget TransformWidget;
 
     public readonly BatchedPrimitives Primitives = new();
+
+    public bool ShowVolumes;
+    public bool ShowVolumetrics;
 
     public LevelEditorRenderContext() : base()
     {
@@ -191,7 +194,7 @@ public class LevelEditorRenderContext : MeshRenderContext
 
     public void DrawUI()
     {
-        foreach (UIElement uiElem in DrawList_2D)
+        foreach (UIElement uiElem in DrawList_UI)
         {
             uiElem.Draw(this);
         }
@@ -205,8 +208,30 @@ public class LevelEditorRenderContext : MeshRenderContext
         {
             actor.HitID = HitProxies.Add(actor);
         }
-        DrawList_2D.Add(TransformWidget);
+        DrawList_UI.Add(TransformWidget);
         TransformWidget.GetAxisHitProxies(ref HitProxies);
+    }
+
+    public void LoadActors(IList<ActorProxy> actors)
+    {
+        DrawList_3D.AddRange(actors);
+        foreach (var actor in actors)
+        {
+            actor.HitID = HitProxies.Add(actor);
+        }
+        if (!DrawList_UI.Contains(TransformWidget))
+        {
+            DrawList_UI.Add(TransformWidget);
+            TransformWidget.GetAxisHitProxies(ref HitProxies);
+        }
+    }
+
+    public void UnloadActors(IList<ActorProxy> actors)
+    {
+        foreach (var actor in actors)
+        {
+            RemoveActor(actor);
+        }
     }
 
     public void UnloadLevel()
@@ -214,7 +239,7 @@ public class LevelEditorRenderContext : MeshRenderContext
         EmptyCaches();
         HitProxies.Reset();
         DrawList_3D.DisposeAndClear();
-        DrawList_2D.Clear();
+        DrawList_UI.Clear();
         TransformWidget.Attach = null;
     }
 
@@ -226,5 +251,22 @@ public class LevelEditorRenderContext : MeshRenderContext
     public override void DisposeSizeDependentResources()
     {
         base.DisposeSizeDependentResources();
+    }
+
+    internal void RemoveActor(ActorProxy actor)
+    {
+        if (DrawList_3D.Remove(actor))
+        {
+            HitProxies.RemoveAt(actor.HitID);
+        }
+    }
+
+    internal void AddActor(ActorProxy actor)
+    {
+        if (!DrawList_3D.Contains(actor))
+        {
+            DrawList_3D.Add(actor);
+            actor.HitID = HitProxies.Add(actor);
+        }
     }
 }

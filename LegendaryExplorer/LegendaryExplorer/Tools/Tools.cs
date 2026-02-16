@@ -84,6 +84,20 @@ public static class ToolSet
 #if DEBUG
         set.Add(new Tool
         {
+            name = "Hex Editor Test",
+            type = typeof(Tools.HexEditorTest.HexEditorTestWindow),
+            icon = Application.Current.FindResource("iconFileHexAnalyzer") as ImageSource,
+            open = () =>
+            {
+                (new Tools.HexEditorTest.HexEditorTestWindow()).Show();
+            },
+            tags = ["utility", "toolsetdev", "hex", "test"],
+            category = "Toolset Devs",
+            description = "Hex Editor Test is a test harness for the WPF HexEditorControl. Load any file to view and edit its bytes in hex format with dynamic resizing support."
+        });
+
+        set.Add(new Tool
+        {
             name = "AutoTOC",
             type = typeof(Tools.AutoTOC.AutoTOCWindow),
             icon = Application.Current.FindResource("iconAutoTOC") as ImageSource,

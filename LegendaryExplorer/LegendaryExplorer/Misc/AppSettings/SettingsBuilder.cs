@@ -6,6 +6,7 @@ using System.Diagnostics;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.Packages;
 using Newtonsoft.Json.Linq;
+using System.Threading;
 using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor;
 
 namespace LegendaryExplorer.Misc.AppSettings
@@ -15,7 +16,7 @@ namespace LegendaryExplorer.Misc.AppSettings
     /// </summary>
     public static partial class Settings
     {
-        private static readonly object settingsSyncObj = new();
+        private static readonly Lock settingsSyncObj = new();
         private static bool _mainwindow_disabletransparencyandanimations = false;
         public static bool MainWindow_DisableTransparencyAndAnimations {
             get => _mainwindow_disabletransparencyandanimations;

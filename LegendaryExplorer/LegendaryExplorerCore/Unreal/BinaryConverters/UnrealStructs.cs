@@ -62,6 +62,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return new Rotator(pitch.RadiansToUnrealRotationUnits(), yaw.RadiansToUnrealRotationUnits(), 0);
         }
 
+        //Takes Vector3 where X:Roll, Y:Pitch, Z:Yaw, in degrees 
+        public static Rotator FromDegreesVector(Vector3 degrees)
+        {
+            return new Rotator(degrees.Y.DegreesToUnrealRotationUnits(), degrees.Z.DegreesToUnrealRotationUnits(), degrees.X.DegreesToUnrealRotationUnits());
+        }
+
         public static Rotator FromQuaternion(Quaternion quat)
         {
             return Matrix4x4.CreateFromQuaternion(quat).GetRotator();
@@ -74,6 +80,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             var sp = MathF.Sin(Pitch.UnrealRotationUnitsToRadians());
             var sy = MathF.Sin(Yaw.UnrealRotationUnitsToRadians());
             return new Vector3((cp * cy), (cp * sy), sp);
+        }
+
+        public Vector3 GetDegreesVector()
+        {
+            return new Vector3(Roll.UnrealRotationUnitsToDegrees(), Pitch.UnrealRotationUnitsToDegrees(), Yaw.UnrealRotationUnitsToDegrees());
         }
 
         public bool IsZero => Pitch == 0 && Yaw == 0 && Roll == 0;
@@ -227,6 +238,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Max = Min = vec;
                 IsValid = 1;
             }
+        }
+
+        public StructProperty GetStructProperty()
+        {
+            return new StructProperty("Box", true,
+                CommonStructs.Vector3Prop(Min, "Min"),
+                CommonStructs.Vector3Prop(Max, "Max"),
+                new ByteProperty(IsValid, "IsValid"));
         }
     }
 

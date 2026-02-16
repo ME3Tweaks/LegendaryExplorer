@@ -10,7 +10,7 @@ using float2 = System.Numerics.Vector2;
 using float3 = System.Numerics.Vector3;
 using float4 = System.Numerics.Vector4;
 
-namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
+namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
 {
 
     /// <summary>

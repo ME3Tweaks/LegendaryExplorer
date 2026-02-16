@@ -59,5 +59,10 @@ namespace LegendaryExplorerCore.TLK
         /// <param name="value"></param>
         /// <returns></returns>
         public int FindIdByData(string value, bool male = true);
+
+        /// <summary>
+        /// Stores where the TLK loaded from
+        /// </summary>
+        public string Source { get; init; }
     }
 }

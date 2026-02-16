@@ -1,0 +1,60 @@
+<misc:NotifyPropertyChangedControlBase x:Class="LegendaryExplorer.UserControls.SharedToolControls.AnimationPreviewControl"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+        xmlns:scene3D="clr-namespace:LegendaryExplorer.Tools.LevelEditor.Scene3D"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        d:DesignHeight="400" d:DesignWidth="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <!-- Row 0: 3D viewport -->
+        <scene3D:SceneRenderControl x:Name="SceneViewer" Grid.Row="0" />
+        <!-- Row 1: Playback controls -->
+        <WrapPanel Grid.Row="1" Margin="2">
+            <Button Content="Play/Pause" Command="{Binding PlayPauseCommand, RelativeSource={RelativeSource AncestorType=misc:NotifyPropertyChangedControlBase}}"
+                    Width="75" Margin="0,0,5,0" />
+            <Slider Width="200" Minimum="0"
+                    Maximum="{Binding AnimFrameCount, RelativeSource={RelativeSource AncestorType=misc:NotifyPropertyChangedControlBase}}"
+                    Value="{Binding AnimCurrentFrame, RelativeSource={RelativeSource AncestorType=misc:NotifyPropertyChangedControlBase}}"
+                    IsSnapToTickEnabled="True" TickFrequency="1"
+                    VerticalAlignment="Center" Margin="0,0,5,0" />
+            <TextBlock VerticalAlignment="Center" Margin="0,0,10,0">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0} / {1}">
+                        <Binding Path="AnimCurrentFrame" RelativeSource="{RelativeSource AncestorType=misc:NotifyPropertyChangedControlBase}" />
+                        <Binding Path="AnimFrameCount" RelativeSource="{RelativeSource AncestorType=misc:NotifyPropertyChangedControlBase}" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+			<Border Margin="0,0,10,0">
+				<StackPanel Orientation="Horizontal">
+					<Label>
+						Remove Animation Offset
+					</Label>
+					<CheckBox Margin="0,0,0,0" VerticalAlignment="Center" IsChecked="{Binding RemoveOffset, RelativeSource={RelativeSource AncestorType=misc:NotifyPropertyChangedControlBase}}"/>
+				</StackPanel>
+			</Border>
+			<Border>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="Speed:" VerticalAlignment="Center" Margin="0,0,5,0" />
+					<ComboBox Width="60" SelectedItem="{Binding PlaybackSpeed, RelativeSource={RelativeSource AncestorType=misc:NotifyPropertyChangedControlBase}}"
+							  VerticalAlignment="Center">
+						<ComboBox.Items>
+							<system:Double>0.1</system:Double>
+							<system:Double>0.25</system:Double>
+							<system:Double>0.5</system:Double>
+							<system:Double>1</system:Double>
+							<system:Double>2</system:Double>
+						</ComboBox.Items>
+					</ComboBox>
+				</StackPanel>
+			</Border>
+        </WrapPanel>
+    </Grid>
+</misc:NotifyPropertyChangedControlBase>

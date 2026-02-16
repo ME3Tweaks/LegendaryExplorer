@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing;
@@ -33,7 +34,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         Struct
     }
 
-    public class CodeBuilderVisitor<TFormatter, TOutput> : IASTVisitor where TFormatter : class, ICodeFormatter<TOutput>, new()
+    public partial class CodeBuilderVisitor<TFormatter, TOutput> : IASTVisitor where TFormatter : class, ICodeFormatter<TOutput>, new()
     {
         public static TOutput GetOutput(ASTNode node)
         {
@@ -45,7 +46,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public static TOutput GetFunctionSignature(Function func)
         {
             var builder = new CodeBuilderVisitor<TFormatter, TOutput>();
-            builder.AppendReturnTypeAndParameters(func);
+            builder.AppendFunctionSignature(func, true);
             return builder.GetOutput();
         }
         public static TOutput GetVariableDeclarationSignature(VariableDeclaration varDecl)
@@ -218,7 +219,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 AppendToNewLine();
                 foreach (Function func in node.Functions)
+                {
+                    if (func.IsLambda)
+                    {
+                        continue; //implementation detail
+                    }
                     func.AcceptVisitor(this);
+                }
             }
 
             if (node.States.Count > 0)
@@ -252,6 +259,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(VariableDeclaration node)
         {
+            if (node.Outer?.Type is ASTNodeType.Class && node.VarType is DelegateType 
+                && node.Name.EndsWith("__Delegate", StringComparison.OrdinalIgnoreCase) && node.Name.StartsWith("__"))
+            {
+                //implementation detail
+                return true;
+            }
             //node.Outer can be null if we have decompiled a single var and nothing else
             //It only makes sense to have done that for a class field
             if (node.Outer?.Type != ASTNodeType.Function)
@@ -498,6 +511,41 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             // [specifiers] function [returntype] functionname ( [parameter declarations] ) body_or_semicolon
             AppendToNewLine();
 
+            AppendFunctionSignature(node);
+
+            if (node.Flags.Has(EFunctionFlags.Defined) && node.Body.Statements != null)
+            {
+                AppendFunctionBody(node);
+            }
+            else
+            {
+                Append(";");
+                AppendToNewLine();
+            }
+
+            return true;
+        }
+
+        private void AppendFunctionBody(Function node)
+        {
+            var tmp = LabelNest;
+            LabelNest = NestingLevel;
+            AppendToNewLine("{");
+            NestingLevel++;
+            if (node.Locals.Count > 0)
+            {
+                foreach (VariableDeclaration v in node.Locals)
+                    v.AcceptVisitor(this);
+                AppendToNewLine();
+            }
+            node.Body.AcceptVisitor(this);
+            NestingLevel--;
+            AppendToNewLine("}");
+            LabelNest = tmp;
+        }
+
+        public void AppendFunctionSignature(Function node, bool withScope = false)
+        {
             var specs = new List<string>();
             EFunctionFlags flags = node.Flags;
 
@@ -609,38 +657,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
 
             Space();
-            AppendReturnTypeAndParameters(node);
-
-            if (flags.Has(EFunctionFlags.Defined) && node.Body.Statements != null)
-            {
-                var tmp = LabelNest;
-                LabelNest = NestingLevel;
-
-                AppendToNewLine("{");
-                NestingLevel++;
-                if (node.Locals.Any())
-                {
-                    foreach (VariableDeclaration v in node.Locals)
-                        v.AcceptVisitor(this);
-                    AppendToNewLine();
-                }
-                node.Body.AcceptVisitor(this);
-                NestingLevel--;
-                AppendToNewLine("}");
-
-                LabelNest = tmp;
-            }
-            else
-            {
-                Append(";");
-                AppendToNewLine();
-            }
-
-            return true;
-        }
-
-        public void AppendReturnTypeAndParameters(Function node)
-        {
             if (node.ReturnType != null)
             {
                 if (node.CoerceReturn)
@@ -658,6 +674,26 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             else
             {
+                if (withScope)
+                {
+                    var outer = node.Outer;
+                    State state = null;
+                    if (outer is State s)
+                    {
+                        outer = s.Outer;
+                        state = s;
+                    }
+                    if (outer is Class containingClass)
+                    {
+                        Append(containingClass.Name, ST.Class);
+                        Append(".");
+                    }
+                    if (state is not null)
+                    {
+                        Append(state.Name, ST.State);
+                        Append(".");
+                    }
+                }
                 Append(node.Name, ST.Function);
             }
             Append("(");
@@ -1430,6 +1466,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             return true;
         }
 
+        [GeneratedRegex("__(.+)__Delegate", RegexOptions.IgnoreCase)]
+        private static partial Regex DelegatePropRegex();
+
         public bool VisitNode(SymbolReference node)
         {
             if (node.Node is EnumValue ev)
@@ -1437,6 +1476,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Append(ev.Enum.Name, ST.Enum);
                 Append(".", ST.Operator);
                 Append(ev.Name);
+                return true;
+            }
+            if (node.Name.StartsWith("__", StringComparison.Ordinal) && DelegatePropRegex().Match(node.Name) is { Success: true } match)
+            {
+                Append(match.Groups[1].Value, ST.Function);
                 return true;
             }
             Append(node.Name);
@@ -1449,6 +1493,49 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Append(DEFAULT, ST.Keyword);
             Append(".", ST.Operator);
             Append(node.Name);
+            return true;
+        }
+
+        public bool VisitNode(LambdaExpression lambdaExpression)
+        {
+            var func = lambdaExpression.Lambda;
+            if (func.Parameters.Count is 1)
+            {
+                Append(func.Parameters[0].Name);
+            }
+            else
+            {
+                Append("(");
+                for (int i = 0; i < func.Parameters.Count; i++)
+                {
+                    Append(func.Parameters[i].Name);
+                    if (i < func.Parameters.Count - 1)
+                    {
+                        Append(",");
+                        Space();
+                    }
+                }
+                Append(")");
+            }
+            Space();
+            Append("=>", ST.Operator);
+            Space();
+            if (func.Body.Statements.Count == 1 && func.Locals.Count == 0)
+            {
+                if (func.Body.Statements[0] is ReturnStatement rs && rs.Value is not null)
+                {
+                    //omit the 'return' keyword for single-expression lambdas
+                    rs.Value.AcceptVisitor(this);
+                }
+                else
+                {
+                    func.Body.Statements[0].AcceptVisitor(this);
+                }
+            }
+            else
+            {
+                AppendFunctionBody(func);
+            }
             return true;
         }
 

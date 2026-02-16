@@ -7,7 +7,7 @@
              xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
              xmlns:Converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
              xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
-             xmlns:scene3D="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls.Scene3D"
+             xmlns:scene3D="clr-namespace:LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -85,7 +85,7 @@
                 <TextBlock Name="TextureStatus_TextBlock" Text="{Binding CannotShowTextureText, FallbackValue=Select a mip}" Visibility="{Binding CannotShowTextureTextVisibility}" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 <!--<Button Name="TFCSelect_Button" Margin="10,0,0,0" Content="Select TFC"/>-->
                 <!--<Image Name="TextureImage" Stretch="{Binding ImageStretchOption}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>-->
-                <scene3D:SceneRenderControl x:Name="PreviewRenderer" DataContext="{Binding}" Background="Aqua"/>
+                <scene3D:LegacySceneRenderControl x:Name="PreviewRenderer" DataContext="{Binding}" Background="Aqua"/>
             </Grid>
         </DockPanel>
     </DockPanel>

@@ -573,6 +573,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         protected SymbolReference NewSymbolReference(ASTNode symbol, ScriptToken token, bool isDefaultRef)
         {
+            if (token.Value.StartsWith("__lambda__", StringComparison.OrdinalIgnoreCase))
+            {
+                TypeError("Lambda functions cannot be referenced directly!", token);
+            }
             SymbolReference symRef;
             if (isDefaultRef)
             {
@@ -666,6 +670,30 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 return true;
             }
             return opType is TokenType.Increment or TokenType.Decrement or TokenType.Complement or TokenType.MinusSign or TokenType.ExclamationMark;
+        }
+
+        protected bool ParseScopeSpan(bool isPartialScope, out int startPos, out int endPos, out List<ScriptToken> scopeTokens)
+        {
+            scopeTokens = new List<ScriptToken>();
+            startPos = -1;
+            endPos = -1;
+            if (!isPartialScope && Consume(TokenType.LeftBracket) == null)
+            {
+                Log.LogError($"Expected '{TokenType.LeftBracket}'!", CurrentPosition);
+                return false;
+            }
+            startPos = Tokens.CurrentItem.StartPos;
+
+            var tokens = Tokens.GetRestOfScope();
+            if (tokens is null)
+            {
+                Log.LogError("Scope ended prematurely, are your scopes unbalanced?", CurrentPosition);
+                return false;
+            }
+            scopeTokens = tokens;
+            endPos = Tokens.CurrentItem.StartPos;
+            Tokens.Advance();
+            return true;
         }
     }
 

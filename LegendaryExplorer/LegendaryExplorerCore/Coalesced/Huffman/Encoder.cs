@@ -14,10 +14,7 @@ namespace LegendaryExplorerCore.Coalesced.Huffman
 
 		public void Build(string text)
 		{
-			if (text == null)
-			{
-				throw new ArgumentNullException(nameof(text));
-			}
+			ArgumentNullException.ThrowIfNull(text);
 
 			_root = null;
 			var frequencies = new Dictionary<char, int>();
@@ -167,10 +164,7 @@ namespace LegendaryExplorerCore.Coalesced.Huffman
 
 		public int Encode(string text, BitArray bits, int offset)
 		{
-			if (text == null)
-			{
-				throw new ArgumentNullException(nameof(text));
-			}
+			ArgumentNullException.ThrowIfNull(text);
 
 			var bitCount = 0;
 

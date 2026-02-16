@@ -151,6 +151,10 @@ namespace LegendaryExplorer.Tools.Meshplorer
         public ICommand ReplaceLODFromUDKCommand { get; set; }
         public ICommand ExportToPSKUModelCommand { get; set; }
         public ICommand ExportToPSKCommand { get; set; }
+        public ICommand ExportToGltfCommand { get; set; }
+        public ICommand ExportToGltfTexturesCommand { get; set; }
+        public ICommand ReplaceFromGltfCommand { get; set; }
+        public ICommand ImportNewFromGltfCommand { get; set; }
         private void LoadCommands()
         {
             OpenFileCommand = new GenericCommand(OpenFile);
@@ -165,6 +169,25 @@ namespace LegendaryExplorer.Tools.Meshplorer
             ReplaceLODFromUDKCommand = new GenericCommand(ImportLODFromUDK, IsSkeletalMeshSelected);
             ExportToPSKUModelCommand = new GenericCommand(() => Mesh3DViewer.EnsureUModelAndExport(), IsMeshSelected);
             ExportToPSKCommand = new GenericCommand(ExportToPSK, IsSkeletalMeshSelected);
+            ExportToGltfCommand = new GenericCommand(() => ExportToGltf(GLTF.MaterialExportLevel.NameOnly), IsMeshSelected);
+            ExportToGltfTexturesCommand = new GenericCommand(() => ExportToGltf(GLTF.MaterialExportLevel.Basic), IsMeshSelected);
+            ReplaceFromGltfCommand = new GenericCommand(ReplaceFromGltf, IsMeshSelected);
+            ImportNewFromGltfCommand = new GenericCommand(ImportNewFromGltf);
+        }
+
+        private void ExportToGltf(GLTF.MaterialExportLevel materialExportLevel)
+        {
+            GltfHelper.ExportMeshToGltf(this, null, this.Pcc, CurrentExport, materialExportLevel);
+        }
+
+        private void ReplaceFromGltf()
+        {
+            GltfHelper.ReplaceFromGltf(this, CurrentExport);
+        }
+
+        private void ImportNewFromGltf()
+        {
+            GltfHelper.ImportNewFromGltf(this);
         }
 
         private void ExportToPSK()

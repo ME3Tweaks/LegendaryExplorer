@@ -6,10 +6,12 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
+using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
+using LegendaryExplorer.Tools.InterpEditor.InterpExperiments;
 using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
 using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Helpers;
@@ -56,8 +58,8 @@ namespace LegendaryExplorer.Tools.InterpEditor
             }
         }
         public bool LoadedExportIsCurve => Properties_InterpreterWPF != null && CurveTab_CurveEditor != null && CurveTab_CurveEditor.CanParse(Properties_InterpreterWPF.CurrentLoadedExport);
-        public ObservableCollectionExtended<ExportEntry> InterpDataExports { get; } = new();
-        public ObservableCollectionExtended<string> Animations { get; } = new();
+        public ObservableCollectionExtended<ExportEntry> InterpDataExports { get; } = [];
+        public ObservableCollectionExtended<string> Animations { get; } = [];
 
         #region Properties and Bindings
         public ICommand OpenCommand { get; set; }
@@ -65,6 +67,12 @@ namespace LegendaryExplorer.Tools.InterpEditor
         public ICommand SaveAsCommand { get; set; }
         public ICommand GotoCommand { get; set; }
         public ICommand RenameTrackCommand { get; set; }
+
+        public ICommand InsertKeyCommand { get; set; }
+        public ICommand AddPresetDirectorGroupCommand { get; set; }
+        public ICommand AddPresetCameraGroupCommand { get; set; }
+        public ICommand AddPresetActorGroupCommand { get; set; }
+
         private void LoadCommands()
         {
             OpenCommand = new GenericCommand(OpenPackage);
@@ -72,15 +80,66 @@ namespace LegendaryExplorer.Tools.InterpEditor
             SaveAsCommand = new GenericCommand(SavePackageAs, PackageIsLoaded);
             GotoCommand = new GenericCommand(GoTo, PackageIsLoaded);
             RenameTrackCommand = new GenericCommand(RenameTrack);
+
+            InsertKeyCommand = new GenericCommand(InsertKeyAtTime, PackageIsLoaded);
+            AddPresetDirectorGroupCommand = new GenericCommand(() => InterpEditorExperimentsE.AddPresetGroup("Director", this), PackageIsLoaded);
+            AddPresetCameraGroupCommand = new GenericCommand(() => InterpEditorExperimentsE.AddPresetGroup("Camera", this), PackageIsLoaded);
+            AddPresetActorGroupCommand = new GenericCommand(() => InterpEditorExperimentsE.AddPresetGroup("Actor", this), PackageIsLoaded);
         }
 
         private void GoTo()
         {
+            string result = PromptDialog.Prompt(this, "Enter export UIndex to navigate to:", "Go To Export");
+            if (string.IsNullOrEmpty(result) || !int.TryParse(result, out int uIndex))
+            {
+                return;
+            }
+
+            if (!Pcc.IsUExport(uIndex))
+            {
+                MessageBox.Show($"Export #{uIndex} does not exist in this package.", "Invalid Export", MessageBoxButton.OK);
+                return;
+            }
+
+            var export = Pcc.GetUExport(uIndex);
+
+            // If the export is an InterpData, select it in the list
+            if (export.ClassName == "InterpData")
+            {
+                var match = InterpDataExports.FirstOrDefault(e => e.UIndex == uIndex);
+                if (match != null)
+                {
+                    SelectedInterpData = match;
+                }
+                return;
+            }
+
+            // If the export is a descendant of an InterpData, load that InterpData and select the export
+            var interpDataParent = InterpDataExports.FirstOrDefault(e => export.IsDescendantOf(e));
+            if (interpDataParent != null)
+            {
+                if (SelectedInterpData != interpDataParent)
+                {
+                    SelectedInterpData = interpDataParent;
+                }
+
+                // Select the track/group in the timeline
+                TimelineControl.SelectExport(export);
+                return;
+            }
+
+            // Otherwise just load the export into the properties panel
+            Properties_InterpreterWPF.LoadExport(export);
         }
 
         private void RenameTrack()
         {
             TimelineControl?.RenameTrack();
+        }
+
+        private void InsertKeyAtTime()
+        {
+            TimelineControl?.InsertKeyAtTime();
         }
 
         private string _statusText;

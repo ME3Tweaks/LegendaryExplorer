@@ -67,6 +67,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         ConditionalExpression,
         CastExpression,
+        LambdaExpression,
 
         DefaultPropertiesBlock,
         SubObject,

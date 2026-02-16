@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace LegendaryExplorerCore.Unreal
         // AND BEAT YOU OVER THE HEAD
         // WITH YOUR KEYBOARD
         // - Mgamerz
-        public static readonly Dictionary<short, string> byteOpnameMap = new Dictionary<short, string>
+        public static readonly FrozenDictionary<short, string> byteOpnameMap = new Dictionary<short, string>
         {
             {0x0000, "EX_LocalVariable"},
             {0x0001, "EX_InstanceVariable"},
@@ -340,7 +341,7 @@ namespace LegendaryExplorerCore.Unreal
             {0x0F81, "NATIVE_MoveSmooth"},
             {0x0F82, "NATIVE_SetPhysics"},
             {0x0F83, "NATIVE_AutonomousPhysics"},
-            };
+            }.ToFrozenDictionary();
         #region NormalToken
         private const int EX_LocalVariable = 0x00;
         private const int EX_InstanceVariable = 0x01;

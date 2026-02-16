@@ -1,38 +1,41 @@
-﻿using System;
+﻿using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.SharedUI;
+using LegendaryExplorer.SharedUI.Bases;
+using LegendaryExplorer.UnrealExtensions.Classes;
+using LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D;
+using LegendaryExplorer.UserControls.ExportLoaderControls.TextureViewer;
+using LegendaryExplorer.UserControls.Interfaces;
+using LegendaryExplorerCore.Gammtek;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Shaders;
+using LegendaryExplorerCore.SharpDX;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Classes;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using LegendaryExplorer.Misc;
-using LegendaryExplorer.Misc.AppSettings;
-using LegendaryExplorer.SharedUI;
-using LegendaryExplorer.UnrealExtensions.Classes;
-using LegendaryExplorer.UserControls.SharedToolControls.Scene3D;
-using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.Misc;
-using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
-using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
-using LegendaryExplorerCore.Unreal.Classes;
-using LegendaryExplorerCore.Unreal.ObjectInfo;
-using LegendaryExplorerCore.SharpDX;
-using Microsoft.WindowsAPICodePack.Dialogs;
-using System.Numerics;
-using System.Runtime.InteropServices;
-using LegendaryExplorer.UserControls.ExportLoaderControls.TextureViewer;
-using LegendaryExplorer.UserControls.Interfaces;
-using LegendaryExplorerCore.Gammtek;
-using LegendaryExplorerCore.Shaders;
-using SkeletalMesh = LegendaryExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
+//using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Color = LegendaryExplorerCore.SharpDX.Color;
+using SkeletalMesh = LegendaryExplorerCore.Unreal.BinaryConverters.SkeletalMesh;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -525,10 +528,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         public ICommand UModelExportCommand { get; set; }
+        public ICommand GltfExportCommand { get; set; }
 
         private void LoadCommands()
         {
             UModelExportCommand = new GenericCommand(EnsureUModelAndExport, CanExportViaUModel);
+            GltfExportCommand = new GenericCommand(ExportToGltf, CanExportViaUModel);
         }
 
         public event EventHandler IsBusyChanged;
@@ -917,6 +922,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// Material overrides for a mesh
         /// </summary>
         public List<IEntry> OverlayMaterials { get; set; }
+
+        public void ExportToGltf()
+        {
+            var prompt = new DropdownPromptDialog("Select how you want the materials exported.",
+                    "Material Export", "Textures", ["Name only", "Diff and Normal Textures"], Window.GetWindow(this));
+            prompt.ShowDialog();
+            var materialSetting = GLTF.MaterialExportLevel.NameOnly;
+            if (prompt.DialogResult == true)
+            {
+                if (prompt.Response != "Name only")
+                {
+                    materialSetting = GLTF.MaterialExportLevel.Basic;
+                }
+            }
+            GltfHelper.ExportMeshToGltf(Window.GetWindow(this) as WPFBase, this, this.Pcc, CurrentLoadedExport, materialSetting);
+        }
 
         /// <summary>
         /// Exports via UModel after ensuring

@@ -14,12 +14,13 @@ using static LegendaryExplorerCore.Unreal.UnrealFlags;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
 {
-    internal partial class ByteCodeDecompiler : ObjectReader 
+    internal partial class ByteCodeDecompiler : ObjectReader
     {
         private readonly UStruct DataContainer;
         private readonly UClass ContainingClass;
         private readonly FileLib FileLib;
-
+        private readonly UnrealScriptOptionsPackage Usop;
+        public Function Function;
         private readonly MEGame Game;
         private readonly byte extNativeIndex;
 
@@ -77,7 +78,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             return new NameReference(Pcc.GetNameEntry(ReadInt32()), ReadInt32());
         }
 
-        public ByteCodeDecompiler(UStruct dataContainer, UClass containingClass, FileLib lib, List<FunctionParameter> parameters = null, VariableType returnType = null, Dictionary<ushort, List<string>> replicatedProperties = null)
+        public ByteCodeDecompiler(UStruct dataContainer, UClass containingClass, FileLib lib, UnrealScriptOptionsPackage usop,
+            List<FunctionParameter> parameters = null, VariableType returnType = null, Dictionary<ushort, List<string>> replicatedProperties = null)
             :base(new byte[dataContainer.ScriptBytecodeSize])
         {
             Buffer.BlockCopy(dataContainer.ScriptBytes, 0, _data, 0, dataContainer.ScriptStorageSize);
@@ -86,6 +88,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             Parameters = parameters;
             ReturnType = returnType;
             FileLib = lib;
+            Usop = usop;
             Game = dataContainer.Export.Game;
             extNativeIndex = (byte)(Game.IsGame3() ? 0x70 : 0x60);
             ReplicatedProperties = replicatedProperties;

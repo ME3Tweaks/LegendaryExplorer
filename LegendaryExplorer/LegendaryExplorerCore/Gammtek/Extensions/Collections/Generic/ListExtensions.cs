@@ -20,6 +20,14 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic
             }
         }
 
+        public static void MoveElement<T>(this IList<T> list, int fromIndex, int toIndex)
+        {
+            if (list == null || fromIndex == toIndex || fromIndex >= list.Count) return;
+            var item = list[fromIndex];
+            list.RemoveAt(fromIndex);
+            list.Insert(toIndex, item);
+        }
+
         // IDK how to do this with .ToDictionary()
         public static CaseInsensitiveDictionary<TOutObjType> ToCaseInsensitiveDictionary<TOutObjType, TInObjType>(
             this IList<TInObjType> collection, Func<TInObjType, string> keySelector,

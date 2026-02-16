@@ -163,7 +163,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             GameInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameInstalled(Game), () => InteropHelper.SelectGamePath(Game));
             ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(Game), () => InteropHelper.OpenASILoaderDownload(Game));
-            InteropASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => /*App.IsDebug ||*/ InteropHelper.IsInteropASIInstalled(Game), () => InteropHelper.OpenInteropASIDownload(Game));
+            InteropASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => App.IsDebug || InteropHelper.IsInteropASIInstalled(Game), () => InteropHelper.OpenInteropASIDownload(Game));
             LoadLiveEditorCommand = new GenericCommand(LoadLiveEditor, CanLoadLiveEditor);
             OpenPackageCommand = new GenericCommand(OpenPackage, CanOpenPackage);
             OpenActorInPackEdCommand = new GenericCommand(OpenActorInPackEd, CanOpenInPackEd);

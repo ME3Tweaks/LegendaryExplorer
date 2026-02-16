@@ -58,6 +58,31 @@
                 <TextBlock Text="{Binding }" />
             </DockPanel>
         </DataTemplate>
+        <Style x:Key="ColumnHeaderStyle" TargetType="TextBlock">
+            <Setter Property="Background" Value="AliceBlue"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="3"/>
+        </Style>
+        <Style x:Key="ModHighlightItemStyle" TargetType="ListBoxItem">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
+                    <Setter Property="Foreground" Value="IndianRed"/>
+                    <Setter Property="TextElement.ToolTip" Value="Mod content"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="DlcAndModHighlightItemStyle" TargetType="ListBoxItem">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=IsDLCOnly}" Value="True">
+                    <Setter Property="Background" Value="LightGray"/>
+                    <Setter Property="TextElement.ToolTip" Value="DLC content"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
+                    <Setter Property="Foreground" Value="IndianRed"/>
+                    <Setter Property="TextElement.ToolTip" Value="Mod content"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="G" Modifiers="Control"  Command="{Binding GenerateDBCommand}"/>
@@ -214,7 +239,7 @@
                     <TabItem Header="Files" TabIndex="0">
                         <DockPanel DockPanel.Dock="Left" MinWidth="300">
                             <DockPanel LastChildFill="True">
-                                <TextBlock Text="All game files (right click to open in various tools)" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the files in the game" DockPanel.Dock="Top"/>
+                                <TextBlock Text="All game files (right click to open in various tools)" Style="{StaticResource ColumnHeaderStyle}" ToolTip="All the files in the game" DockPanel.Dock="Top"/>
                                 <Expander Name="expander_CustomFiles" DockPanel.Dock="Right" MaxWidth="300" ExpandDirection="Left" IsExpanded="False" Background="Orange" Padding="2" >
                                     <Expander.Header>
                                         <TextBlock Text="Custom File List" Background="Orange" VerticalAlignment="Stretch" TextAlignment="Center" Padding="3" DockPanel.Dock="Right" ToolTip="{x:Static assetDatabase:AssetDatabaseWindow.CustomListDesc}">
@@ -318,7 +343,7 @@
                                     <RowDefinition Height="24"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="Class Records" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" Grid.Row="0" ToolTip="Unreal classes"/>
+                                <TextBlock Text="Class Records" Style="{StaticResource ColumnHeaderStyle}" Grid.Row="0" ToolTip="Unreal classes"/>
                                 <controls:ListBoxScroll x:Name="lstbx_Classes"  MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.ClassRecords, Mode=OneWay}" Grid.Row="1"
                                                         SelectedItem="{Binding SelectedClass}">
                                     <controls:ListBoxScroll.ItemTemplate>
@@ -360,7 +385,7 @@
                                     <RowDefinition Height="24"/>
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Text="Properties" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" Grid.Row="0" ToolTip="Properties of this class that are used in game"/>
+                                <TextBlock Text="Properties" Style="{StaticResource ColumnHeaderStyle}" Grid.Row="0" ToolTip="Properties of this class that are used in game"/>
                                 <controls:ListBoxScroll x:Name="lstbx_Properties" MinWidth="200" ItemsSource="{Binding Source={StaticResource PropertyContentView} }"
                                                         ItemTemplate="{StaticResource PropertyTemplate}" Grid.Row="1" >
                                     <controls:ListBoxScroll.ContextMenu>
@@ -436,7 +461,7 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*" MinWidth="200"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Material Records" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Material Records (Grey shows DLC only materials that require a shadercache)" Grid.Row="0" Grid.Column="0"/>
+                            <TextBlock Text="Material Records" Style="{StaticResource ColumnHeaderStyle}" ToolTip="Material Records (Grey shows DLC only materials that require a shadercache)" Grid.Row="0" Grid.Column="0"/>
                             <controls:ListBoxScroll x:Name="lstbx_Materials" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Materials}" Grid.Row="1" Grid.Column="0" SelectionChanged="SelectedMaterial_Changed">
                                 <controls:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
@@ -451,18 +476,12 @@
                                     </DataTemplate>
                                 </controls:ListBoxScroll.ItemTemplate>
                                 <controls:ListBoxScroll.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsDLCOnly}" Value="True">
-                                                <Setter Property="Background" Value="LightGray"/>
-                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
+                                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource DlcAndModHighlightItemStyle}">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                     </Style>
                                 </controls:ListBoxScroll.ItemContainerStyle>
                             </controls:ListBoxScroll>
-                            <TextBlock Text="Material Info" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="The default properties of the material" Grid.Row="0"  Grid.Column="2"/>
+                            <TextBlock Text="Material Info" Style="{StaticResource ColumnHeaderStyle}" ToolTip="The default properties of the material" Grid.Row="0"  Grid.Column="2"/>
                             <!-- Todo: Make this a toggleable switch -->
                             <!--
                             <controls:ListBoxScroll x:Name="lstbx_MatProps" MinWidth="200" ItemsSource="{Binding SelectedItem.MatSettings, ElementName=lstbx_Materials }" Grid.Row="1" Grid.Column="1">
@@ -481,42 +500,9 @@
                             <GridSplitter Grid.RowSpan="2" Grid.Column="1" Width="5" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
                             <materialEditor:MaterialEditorExportLoader x:Name="MaterialEditorExportLoader_Control" Grid.Row="1" Grid.Column="2" IsReadOnly="True" ShowSaveBar="False" AlwaysLoadData="True" MinWidth="200"/>
                             <GridSplitter Grid.RowSpan="2" Grid.Column="3" Width="5" HorizontalAlignment="Center" VerticalAlignment="Stretch"/>
-                            <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the files that use the material (grey is official DLC with shadercache)&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="4"/>
-                            <Button ToolTip="Copies the list of usages to the clipboard as text" Name="CopyUsagesMaterials_Button" Click="CopyUsages_Click" VerticalAlignment="Center" Padding="3" HorizontalAlignment="Right" Width="26" Grid.Row="0" Grid.Column="4">
-                                <fa:ImageAwesome Icon="Solid_Copy" Foreground="CornflowerBlue"/>
-                            </Button>
-                            <controls:ListBoxScroll x:Name="lstbx_MatUsages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.Usages, ElementName=lstbx_Materials}" Grid.Row="1" Grid.Column="4">
-                                <controls:ListBoxScroll.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock>
-                                            <TextBlock.Text>
-                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
-                                                    <Binding Path="FileKey"/>
-                                                    <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
-                                                    <Binding Path="UIndex"/>
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </controls:ListBoxScroll.ItemTemplate>
-                                <controls:ListBoxScroll.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsInDLC}" Value="True">
-                                                <Setter Property="Background" Value="LightGray"/>
-                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </controls:ListBoxScroll.ItemContainerStyle>
-                                <controls:ListBoxScroll.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
-                                        <MenuItem Header="Open in Windows Explorer" Command="{Binding OpenInWindowsExplorerCommand}" ToolTip="Opens this file in Windows Explorer."/>
-                                    </ContextMenu>
-                                </controls:ListBoxScroll.ContextMenu>
-                            </controls:ListBoxScroll>
+                            <assetDatabase:AssetUsagesPanel x:Name="materialsUsagesPanel" Grid.Row="0" Grid.RowSpan="2" Grid.Column="4"
+                                                           UsagesSource="{Binding SelectedItem.Usages, ElementName=lstbx_Materials}"
+                                                           HeaderToolTip="All the files that use the material (grey is official DLC with shadercache)&#x0a;Right click to open in Package Editor"/>
                         </Grid>
                     </TabItem>
                     <!-- Meshes -->
@@ -531,7 +517,7 @@
                                 <ColumnDefinition MinWidth="400" Width="30*"/>
                                 <ColumnDefinition Width="15*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Meshes" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Meshes within the game" Grid.Row="0" Grid.Column="0"/>
+                            <TextBlock Text="Meshes" Style="{StaticResource ColumnHeaderStyle}" ToolTip="Meshes within the game" Grid.Row="0" Grid.Column="0"/>
                             <controls:ListBoxScroll x:Name="lstbx_Meshes" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Meshes}" SelectionChanged="lstbx_Meshes_SelectionChanged" Grid.Row="1" Grid.Column="0">
                                 <controls:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
@@ -556,53 +542,22 @@
                                     </DataTemplate>
                                 </controls:ListBoxScroll.ItemTemplate>
                                 <controls:ListBoxScroll.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
-                                                <Setter Property="Foreground" Value="IndianRed"/>
-                                                <Setter Property="TextElement.ToolTip" Value="Mod - Mesh comes from a mod"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
+                                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource ModHighlightItemStyle}">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                     </Style>
                                 </controls:ListBoxScroll.ItemContainerStyle>
                             </controls:ListBoxScroll>
-                            <TextBlock Text="Viewer" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Toggle the viewer on or off" Grid.Row="0" Grid.Column="1"/>
+                            <TextBlock Text="Viewer" Style="{StaticResource ColumnHeaderStyle}" ToolTip="Toggle the viewer on or off" Grid.Row="0" Grid.Column="1"/>
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.7" Grid.Row="1" Grid.Column="1">
                                 <DockPanel x:Name="details_Mesh" MinWidth="350" Margin="3" >
                                     <ToggleButton x:Name="btn_MeshRenderToggle" Content="Toggle Mesh Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_MeshRenderToggle_Click" IsChecked="False"></ToggleButton>
                                     <exportLoaderControls:MeshRenderer x:Name="MeshRendererTab_MeshRenderer" Visibility="Visible" />
                                 </DockPanel>
                             </Border>
-                            <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this Mesh&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
-                            <Button ToolTip="Copies the list of usages to the clipboard as text" Name="CopyUsagesMeshes_Button" Click="CopyUsages_Click" VerticalAlignment="Center" Padding="3" HorizontalAlignment="Right" Width="26" Grid.Row="0" Grid.Column="2">
-                                <fa:ImageAwesome Icon="Solid_Copy" Foreground="CornflowerBlue"/>
-                            </Button>
-                            <controls:ListBoxScroll x:Name="lstbx_MeshUsages" DockPanel.Dock="Right" MinWidth="250" ItemsSource="{Binding SelectedItem.Usages, ElementName=lstbx_Meshes }" Grid.Row="1" Grid.Column="2">
-                                <controls:ListBoxScroll.ItemTemplate>
-                                    <DataTemplate DataType="assetDatabase:MeshRecord">
-                                        <TextBlock>
-                                            <TextBlock.Text>
-                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
-                                                    <Binding Path="FileKey"/>
-                                                    <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
-                                                    <Binding Path="UIndex"/>
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </controls:ListBoxScroll.ItemTemplate>
-                                <controls:ListBoxScroll.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsInMod}" Value="True">
-                                                <Setter Property="Foreground" Value="IndianRed"/>
-                                                <Setter Property="TextElement.ToolTip" Value="Mod - DLC file from a Mod"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </controls:ListBoxScroll.ItemContainerStyle>
-                                <controls:ListBoxScroll.ContextMenu>
+                            <assetDatabase:AssetUsagesPanel x:Name="meshesUsagesPanel" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"
+                                                           UsagesSource="{Binding SelectedItem.Usages, ElementName=lstbx_Meshes}"
+                                                           HeaderToolTip="Every file that uses this Mesh&#x0a;Right click to open in Package Editor">
+                                <assetDatabase:AssetUsagesPanel.UsageContextMenu>
                                     <ContextMenu>
                                         <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
                                         <MenuItem Header="Open in Meshplorer" Command="{Binding OpenUsagePkgCommand}" CommandParameter="Meshplorer" ToolTip="Opens this Usage in Meshplorer.">
@@ -612,8 +567,8 @@
                                         </MenuItem>
                                         <MenuItem Header="Open in Windows Explorer" Command="{Binding OpenInWindowsExplorerCommand}" ToolTip="Opens this file in Windows Explorer."/>
                                     </ContextMenu>
-                                </controls:ListBoxScroll.ContextMenu>
-                            </controls:ListBoxScroll>
+                                </assetDatabase:AssetUsagesPanel.UsageContextMenu>
+                            </assetDatabase:AssetUsagesPanel>
                         </Grid>
                     </TabItem>
                     <!-- Textures -->
@@ -628,7 +583,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Textures" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="All the textures in the game (Grey is DLC only)" Grid.Row="0" Grid.Column="0"/>
+                            <TextBlock Text="Textures" Style="{StaticResource ColumnHeaderStyle}" ToolTip="All the textures in the game (Grey is DLC only)" Grid.Row="0" Grid.Column="0"/>
                             <controls:ListBoxScroll x:Name="lstbx_Textures" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Textures}" SelectionChanged="lstbx_Textures_SelectionChanged" Grid.Row="1" Grid.Column="0">
                                 <controls:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
@@ -651,21 +606,10 @@
                                     </DataTemplate>
                                 </controls:ListBoxScroll.ItemTemplate>
                                 <controls:ListBoxScroll.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsDLCOnly}" Value="True">
-                                                <Setter Property="Background" Value="LightGray"/>
-                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
-                                                <Setter Property="Foreground" Value="IndianRed"/>
-                                                <Setter Property="TextElement.ToolTip" Value="Mod - Texture comes from a DLC mod"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
+                                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource DlcAndModHighlightItemStyle}"/>
                                 </controls:ListBoxScroll.ItemContainerStyle>
                             </controls:ListBoxScroll>
-                            <TextBlock Text="Texture Viewer" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Click button to toggle the viewer" Grid.Row="0" Grid.Column="1"/>
+                            <TextBlock Text="Texture Viewer" Style="{StaticResource ColumnHeaderStyle}" ToolTip="Click button to toggle the viewer" Grid.Row="0" Grid.Column="1"/>
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="1" Background="LightYellow">
                                 <DockPanel x:Name="details_Textures" MinWidth="350" MaxWidth="550" Margin="3">
                                     <ToggleButton x:Name="btn_TextRenderToggle" Content="Toggle Texture Rendering" DockPanel.Dock="Bottom" MaxHeight="30" ClickMode="Release" Click="btn_TextRenderToggle_Click"/>
@@ -675,45 +619,9 @@
                                     </Grid>
                                 </DockPanel>
                             </Border>
-                            <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this texture&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
-                            <Button ToolTip="Copies the list of usages to the clipboard as text" Name="CopyUsagesTextures_Button" Click="CopyUsages_Click" VerticalAlignment="Center" Padding="3" HorizontalAlignment="Right" Width="26" Grid.Row="0" Grid.Column="2">
-                                <fa:ImageAwesome Icon="Solid_Copy" Foreground="CornflowerBlue"/>
-                            </Button>
-                            <controls:ListBoxScroll x:Name="lstbx_TextureUsages"  MinWidth="250" ItemsSource="{Binding SelectedItem.Usages, ElementName=lstbx_Textures }" Grid.Row="1" Grid.Column="2">
-                                <controls:ListBoxScroll.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock>
-                                            <TextBlock.Text>
-                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
-                                                    <Binding Path="FileKey"/>
-                                                    <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
-                                                    <Binding Path="UIndex"/>
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </controls:ListBoxScroll.ItemTemplate>
-                                <controls:ListBoxScroll.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsInDLC}" Value="True">
-                                                <Setter Property="Background" Value="LightGray"/>
-                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Path=IsInMod}" Value="True">
-                                                <Setter Property="Foreground" Value="IndianRed"/>
-                                                <Setter Property="TextElement.ToolTip" Value="Mod - file from a mod DLC directory"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </controls:ListBoxScroll.ItemContainerStyle>
-                                <controls:ListBoxScroll.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
-                                        <MenuItem Header="Open in Windows Explorer" Command="{Binding OpenInWindowsExplorerCommand}" ToolTip="Opens this file in Windows Explorer."/>
-                                    </ContextMenu>
-                                </controls:ListBoxScroll.ContextMenu>
-                            </controls:ListBoxScroll>
+                            <assetDatabase:AssetUsagesPanel x:Name="texturesUsagesPanel" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"
+                                                           UsagesSource="{Binding SelectedItem.Usages, ElementName=lstbx_Textures}"
+                                                           HeaderToolTip="Every file that uses this texture&#x0a;Right click to open in Package Editor"/>
                         </Grid>
                     </TabItem>
                     <!-- Animations -->
@@ -725,11 +633,11 @@
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition MinWidth="350" Width="*"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition MinWidth="400" Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Animsequences / Ambient Performance Tracks" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Animations within the game" Grid.Row="0" Grid.Column="0"/>
-                            <controls:ListBoxScroll x:Name="lstbx_Anims" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Animations}" Grid.Row="1" Grid.Column="0">
+                            <TextBlock Text="Animsequences / Ambient Performance Tracks" Style="{StaticResource ColumnHeaderStyle}" ToolTip="Animations within the game" Grid.Row="0" Grid.Column="0"/>
+                            <controls:ListBoxScroll x:Name="lstbx_Anims" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Animations}" SelectionChanged="lstbx_Anims_SelectionChanged" Grid.Row="1" Grid.Column="0">
                                 <controls:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
                                         <DockPanel>
@@ -746,14 +654,8 @@
                                     </DataTemplate>
                                 </controls:ListBoxScroll.ItemTemplate>
                                 <controls:ListBoxScroll.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
-                                                <Setter Property="Foreground" Value="IndianRed"/>
-                                                <Setter Property="TextElement.ToolTip" Value="Mod - Mesh comes from a mod"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
+                                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource ModHighlightItemStyle}">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                     </Style>
                                 </controls:ListBoxScroll.ItemContainerStyle>
                                 <controls:ListBoxScroll.ContextMenu>
@@ -764,61 +666,22 @@
                                     </ContextMenu>
                                 </controls:ListBoxScroll.ContextMenu>
                             </controls:ListBoxScroll>
-                            <TextBlock Text="Details" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Details of each animation" Grid.Row="0" Grid.Column="1"/>
-                            <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="1">
-                                <StackPanel x:Name="details_Anim" MinWidth="200" Margin="8">
-                                    <TextBlock Text="Ambient Performance" FontWeight="DemiBold" Margin="0,5,0,0" Visibility="{Binding Path=SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                    <TextBlock Text="Sequence Name: " Margin="0,5,0,0" />
-                                    <TextBlock Text="{Binding Path=SelectedItem.SeqName, ElementName=lstbx_Anims}" />
-                                    <TextBlock Text="Animation Group: " Margin="0,5,0,0" Visibility="{Binding Path=SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                    <TextBlock Text="{Binding Path=SelectedItem.AnimData, ElementName=lstbx_Anims}" Visibility="{Binding SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                    <TextBlock Text="Length (s): " Margin="0,5,0,0" Visibility="{Binding SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                    <TextBlock Text="{Binding Path=SelectedItem.Length, ElementName=lstbx_Anims}" Visibility="{Binding SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                    <TextBlock Text="Number of Frames (runs at 30fps): " Margin="0,5,0,0" Visibility="{Binding SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                    <TextBlock Text="Number of Animation Sets: " Margin="0,5,0,0" Visibility="{Binding SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                    <TextBlock Text="{Binding Path=SelectedItem.Frames, ElementName=lstbx_Anims}" />
-                                    <TextBlock Text="Compression Format: " Margin="0,5,0,0" Visibility="{Binding SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                    <TextBlock Text="{Binding Path=SelectedItem.Compression, ElementName=lstbx_Anims}" Visibility="{Binding SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                    <TextBlock Text="Key Format: " Margin="0,5,0,0" Visibility="{Binding SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                    <TextBlock Text="{Binding Path=SelectedItem.KeyFormat, ElementName=lstbx_Anims}" Visibility="{Binding SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
-                                </StackPanel>
+                            <TextBlock Text="Animation Preview and details" Style="{StaticResource ColumnHeaderStyle}" ToolTip="Toggle the animation preview on or off" Grid.Row="0" Grid.Column="1"/>
+                            <Border BorderBrush="LightSlateGray" BorderThickness="0.7" Grid.Row="1" Grid.Column="1">
+                                <DockPanel MinWidth="350" Margin="3">
+                                    <ToggleButton x:Name="btn_AnimPreviewToggle" Content="Toggle Animation Preview" MaxHeight="30" ClickMode="Release" 
+                                                  Click="btn_AnimPreviewToggle_Click" IsChecked="False" DockPanel.Dock="Bottom"
+                                                  Visibility="{Binding SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                    <ComboBox x:Name="cbx_AnimPreviewMesh" DockPanel.Dock="Top" Margin="0,0,0,3"
+                                              DisplayMemberPath="MeshName"
+                                              SelectionChanged="AnimPreview_MeshSelectionChanged" Visibility="{Binding SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                    <sharedToolControls:AnimationPreviewControl x:Name="AnimPreviewControl" Visibility="{Binding SelectedItem.IsAmbPerf, ElementName=lstbx_Anims, Converter={StaticResource InverseBoolToVisibilityConverter}}"/>
+                                </DockPanel>
                             </Border>
-                            <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this animsequence&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
-                            <Button ToolTip="Copies the list of usages to the clipboard as text" Name="CopyUsagesAnimations_Button" Click="CopyUsages_Click" VerticalAlignment="Center" Padding="3" HorizontalAlignment="Right" Width="26" Grid.Row="0" Grid.Column="2">
-                                <fa:ImageAwesome Icon="Solid_Copy" Foreground="CornflowerBlue"/>
-                            </Button>
-                            <controls:ListBoxScroll x:Name="lstbx_AnimUsages" MinWidth="200" ItemsSource="{Binding SelectedItem.Usages, ElementName=lstbx_Anims }" Grid.Row="1" Grid.Column="2">
-                                <controls:ListBoxScroll.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock>
-                                            <TextBlock.Text>
-                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
-                                                    <Binding Path="FileKey"/>
-                                                    <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
-                                                    <Binding Path="UIndex"/>
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </controls:ListBoxScroll.ItemTemplate>
-
-                                <controls:ListBoxScroll.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsInMod}" Value="True">
-                                                <Setter Property="Foreground" Value="IndianRed"/>
-                                                <Setter Property="TextElement.ToolTip" Value="Mod - file from a mod DLC directory"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </controls:ListBoxScroll.ItemContainerStyle>
-                                <controls:ListBoxScroll.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
-                                        <MenuItem Header="Open in Windows Explorer" Command="{Binding OpenInWindowsExplorerCommand}" ToolTip="Opens this file in Windows Explorer."/>
-                                    </ContextMenu>
-                                </controls:ListBoxScroll.ContextMenu>
-                            </controls:ListBoxScroll>
+                            <TextBlock Text="Details" Style="{StaticResource ColumnHeaderStyle}" ToolTip="Details of each animation" Grid.Row="0" Grid.Column="2"/>
+                            <assetDatabase:AssetUsagesPanel x:Name="animationsUsagesPanel" Grid.Row="0" Grid.RowSpan="2" Grid.Column="3"
+                                                           UsagesSource="{Binding SelectedItem.Usages, ElementName=lstbx_Anims}"
+                                                           HeaderToolTip="Every file that uses this animsequence&#x0a;Right click to open in Package Editor"/>
                         </Grid>
                     </TabItem>
                     <!-- VFX-->
@@ -833,7 +696,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Particle Systems and Receiver Effects (Visual Effects)" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Particle systems (Grey is DLC only)" Grid.Row="0" Grid.Column="0"/>
+                            <TextBlock Text="Particle Systems and Receiver Effects (Visual Effects)" Style="{StaticResource ColumnHeaderStyle}" ToolTip="Particle systems (Grey is DLC only)" Grid.Row="0" Grid.Column="0"/>
                             <controls:ListBoxScroll x:Name="lstbx_Particles" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.Particles}" Grid.Row="1" Grid.Column="0">
                                 <controls:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
@@ -848,22 +711,12 @@
                                     </DataTemplate>
                                 </controls:ListBoxScroll.ItemTemplate>
                                 <controls:ListBoxScroll.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsDLCOnly}" Value="True">
-                                                <Setter Property="Background" Value="LightGray"/>
-                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
-                                                <Setter Property="Foreground" Value="IndianRed"/>
-                                                <Setter Property="TextElement.ToolTip" Value="Mod - Particle system created by a modder"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
+                                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource DlcAndModHighlightItemStyle}">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                                     </Style>
                                 </controls:ListBoxScroll.ItemContainerStyle>
                             </controls:ListBoxScroll>
-                            <TextBlock Text="Details" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Additional details" Grid.Row="0" Grid.Column="1"/>
+                            <TextBlock Text="Details" Style="{StaticResource ColumnHeaderStyle}" ToolTip="Additional details" Grid.Row="0" Grid.Column="1"/>
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="1">
                                 <StackPanel x:Name="details_PS" MinWidth="200" Margin="3">
                                     <TextBlock Text="Parent Package: " Margin="0,5,0,0"/>
@@ -874,45 +727,9 @@
                                     <TextBlock Text="{Binding Path=SelectedItem.IsDLCOnly, ElementName=lstbx_Particles}" />
                                 </StackPanel>
                             </Border>
-                            <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this effect&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
-                            <Button ToolTip="Copies the list of usages to the clipboard as text" Name="CopyUsagesVFX_Button" Click="CopyUsages_Click" VerticalAlignment="Center" Padding="3" HorizontalAlignment="Right" Width="26" Grid.Row="0" Grid.Column="2">
-                                <fa:ImageAwesome Icon="Solid_Copy" Foreground="CornflowerBlue"/>
-                            </Button>
-                            <controls:ListBoxScroll x:Name="lstbx_PSUsages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.Usages, ElementName=lstbx_Particles }" Grid.Row="1" Grid.Column="2">
-                                <controls:ListBoxScroll.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock>
-                                            <TextBlock.Text>
-                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
-                                                    <Binding Path="FileKey"/>
-                                                    <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
-                                                    <Binding Path="UIndex"/>
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </controls:ListBoxScroll.ItemTemplate>
-                                <controls:ListBoxScroll.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsInDLC}" Value="True">
-                                                <Setter Property="Background" Value="LightGray"/>
-                                                <Setter Property="TextElement.ToolTip" Value="DLC - Requires ShaderCache"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding Path=IsInMod}" Value="True">
-                                                <Setter Property="Foreground" Value="IndianRed"/>
-                                                <Setter Property="TextElement.ToolTip" Value="Mod - file from a mod DLC directory"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </controls:ListBoxScroll.ItemContainerStyle>
-                                <controls:ListBoxScroll.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
-                                        <MenuItem Header="Open in Windows Explorer" Command="{Binding OpenInWindowsExplorerCommand}" ToolTip="Opens this file in Windows Explorer."/>
-                                    </ContextMenu>
-                                </controls:ListBoxScroll.ContextMenu>
-                            </controls:ListBoxScroll>
+                            <assetDatabase:AssetUsagesPanel x:Name="vfxUsagesPanel" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"
+                                                           UsagesSource="{Binding SelectedItem.Usages, ElementName=lstbx_Particles}"
+                                                           HeaderToolTip="Every file that uses this effect&#x0a;Right click to open in Package Editor"/>
                         </Grid>
                     </TabItem>
                     <!-- GUI -->
@@ -927,7 +744,7 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="GUI Elements (ScaleForm)" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="GUI Elements such as menus and Hud." Grid.Row="0" Grid.Column="0"/>
+                            <TextBlock Text="GUI Elements (ScaleForm)" Style="{StaticResource ColumnHeaderStyle}" ToolTip="GUI Elements such as menus and Hud." Grid.Row="0" Grid.Column="0"/>
                             <controls:ListBoxScroll x:Name="lstbx_Scaleform" DockPanel.Dock="Left" MinWidth="300" ItemsSource="{Binding Path=CurrentDataBase.GUIElements}" Grid.Row="1" Grid.Column="0">
                                 <controls:ListBoxScroll.ItemTemplate>
                                     <DataTemplate>
@@ -939,57 +756,18 @@
                                     </DataTemplate>
                                 </controls:ListBoxScroll.ItemTemplate>
                                 <controls:ListBoxScroll.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsModOnly}" Value="True">
-                                                <Setter Property="Foreground" Value="IndianRed"/>
-                                                <Setter Property="TextElement.ToolTip" Value="Mod - created by a modder"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
+                                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource ModHighlightItemStyle}"/>
                                 </controls:ListBoxScroll.ItemContainerStyle>
                             </controls:ListBoxScroll>
-                            <TextBlock Text="Details" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Additional details" Grid.Row="0" Grid.Column="1"/>
+                            <TextBlock Text="Details" Style="{StaticResource ColumnHeaderStyle}" ToolTip="Additional details" Grid.Row="0" Grid.Column="1"/>
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="1">
                                 <StackPanel x:Name="details_GUI" MinWidth="200" Margin="3">
 
                                 </StackPanel>
                             </Border>
-                            <TextBlock Text="Usages" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Every file that uses this effect&#x0a;Right click to open in Package Editor" Grid.Row="0" Grid.Column="2"/>
-                            <Button ToolTip="Copies the list of usages to the clipboard as text" Name="CopyUsagesGUI_Button" Click="CopyUsages_Click" VerticalAlignment="Center" Padding="3" HorizontalAlignment="Right" Width="26" Grid.Row="0" Grid.Column="2">
-                                <fa:ImageAwesome Icon="Solid_Copy" Foreground="CornflowerBlue"/>
-                            </Button>
-                            <controls:ListBoxScroll x:Name="lstbx_GUIUsages" DockPanel.Dock="Right" MinWidth="200" ItemsSource="{Binding SelectedItem.Usages, ElementName=lstbx_Scaleform }" Grid.Row="1" Grid.Column="2">
-                                <controls:ListBoxScroll.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock>
-                                            <TextBlock.Text>
-                                                <MultiBinding Converter="{StaticResource FileIndexToNameConverter}">
-                                                    <Binding Path="FileKey"/>
-                                                    <Binding Path="FileListExtended" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}"/>
-                                                    <Binding Path="UIndex"/>
-                                                </MultiBinding>
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                    </DataTemplate>
-                                </controls:ListBoxScroll.ItemTemplate>
-                                <controls:ListBoxScroll.ItemContainerStyle>
-                                    <Style TargetType="ListBoxItem">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Path=IsInMod}" Value="True">
-                                                <Setter Property="Foreground" Value="IndianRed"/>
-                                                <Setter Property="TextElement.ToolTip" Value="Mod - file from a mod DLC directory"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </controls:ListBoxScroll.ItemContainerStyle>
-                                <controls:ListBoxScroll.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Open Usage" Command="{Binding OpenUsagePkgCommand}" ToolTip="Opens this Usage in Package Editor." />
-                                        <MenuItem Header="Open in Windows Explorer" Command="{Binding OpenInWindowsExplorerCommand}" ToolTip="Opens this file in Windows Explorer."/>
-                                    </ContextMenu>
-                                </controls:ListBoxScroll.ContextMenu>
-                            </controls:ListBoxScroll>
+                            <assetDatabase:AssetUsagesPanel x:Name="guiUsagesPanel" Grid.Row="0" Grid.RowSpan="2" Grid.Column="2"
+                                                           UsagesSource="{Binding SelectedItem.Usages, ElementName=lstbx_Scaleform}"
+                                                           HeaderToolTip="Every file that uses this effect&#x0a;Right click to open in Package Editor"/>
                         </Grid>
                     </TabItem>
                     <!-- Lines -->
@@ -1038,7 +816,7 @@
                                     </ContextMenu>
                                 </ListView.ContextMenu>
                             </ListView>
-                            <TextBlock Text="Details" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Additional details" Grid.Row="0" Grid.Column="1"/>
+                            <TextBlock Text="Details" Style="{StaticResource ColumnHeaderStyle}" ToolTip="Additional details" Grid.Row="0" Grid.Column="1"/>
                             <Border BorderBrush="LightSlateGray" BorderThickness="0.65" Grid.Row="1" Grid.Column="1">
                                 <StackPanel Margin="5" Visibility="{Binding CurrentConvo.Item1, Converter={StaticResource NullVisibilityConverter}}" >
                                     <TextBlock Text="Conversation:" FontSize="14"/>
@@ -1067,7 +845,7 @@
                             </Border>
                             <DockPanel Grid.Row="2" Grid.Column="1" >
                                 <StackPanel DockPanel.Dock="Top">
-                                    <TextBlock Text="Playback" Background="AliceBlue" HorizontalAlignment="Stretch" Padding="3" ToolTip="Playback of selected line." />
+                                    <TextBlock Text="Playback" Style="{StaticResource ColumnHeaderStyle}" ToolTip="Playback of selected line." />
                                     <TabControl x:Name="genderTabs" SelectionChanged="genderTabs_SelectionChanged">
                                         <TabItem Header="Male"/>
                                         <TabItem Header="Female"/>

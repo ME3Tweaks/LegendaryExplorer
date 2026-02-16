@@ -104,10 +104,7 @@ namespace LegendaryExplorerCore.Unreal
         //All Animsequences MUST have the same BoneLists!
         public static PSA CreateFrom(List<AnimSequence> animSeqs)
         {
-            if (animSeqs == null)
-            {
-                throw new ArgumentNullException(nameof(animSeqs));
-            }
+            ArgumentNullException.ThrowIfNull(animSeqs);
 
             if (animSeqs.Count == 0)
             {

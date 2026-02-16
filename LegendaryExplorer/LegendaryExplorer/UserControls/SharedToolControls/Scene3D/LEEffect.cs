@@ -7,7 +7,7 @@ using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using Vector4 = System.Numerics.Vector4;
 
-namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D;
+namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D;
 
 public unsafe class LEEffect : IDisposable
 {

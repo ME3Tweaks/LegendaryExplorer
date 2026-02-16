@@ -6,7 +6,6 @@ using ICSharpCode.AvalonEdit.Editing;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using System;
 using System.Collections.Generic;
-using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
@@ -44,11 +43,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             {
                 if (_description is null)
                 {
-                    var textBlock = new TextBlock();
-                    textBlock.Inlines.AddRange(XamlCodeBuilder.GetVariableDeclarationSignature(varDecl));
-
-                    textBlock.Background = SyntaxInfo.BackgroundBrush;
-                    _description = textBlock;
+                    _description = CompletionHelper.CreateDescriptionBlock(XamlCodeBuilder.GetVariableDeclarationSignature(varDecl));
                 }
                 return _description;
             }

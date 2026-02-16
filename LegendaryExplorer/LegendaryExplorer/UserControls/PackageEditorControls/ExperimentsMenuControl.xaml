@@ -84,6 +84,7 @@
             <MenuItem Header="Print loaded packages to debug console" Click="PrintLoadedPackages_Clicked"/>
             <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>
             <MenuItem Header="Open hosted shader export loader" Click="OpenHostedExportLoader_Shader_Click"/>
+            <MenuItem Header="Test TLKSystem" Click="TestTLKSystem_Click"/>
         </MenuItem>
         <MenuItem Header="Useful for Mgamerz (maybe)">
             <MenuItem Header="Mgamerz' Easy Button™" Click="MScanner_Click"/>
@@ -201,7 +202,11 @@
         <MenuItem Header="Replace all wems" Click="ReplaceAllWems_Click"/>
     </MenuItem>
     <MenuItem Header="Squid's new and exciting ways to break stuff">
+        <MenuItem Header="Export to glTF/glb (no textures)" Click="ExportGltf_Click" ToolTip="Export a mesh as a glTF/glb file. quick, small files."/>
+        <MenuItem Header="Export to glTF/glb (with textures)" Click="ExportGltf_Textures_Click" ToolTip="Export a mesh as a glTF/glb file, including diff and normal textures ready to import/preview in most tools. much slower and larger, especially if there are many materials. "/>
+        <MenuItem Header="Import glTF/glb" Click="ImportGltf_Click" ToolTip="Import one or more things from a gLTF/glb file. Select a compatible item to replace it. Otrherwise, imports as new item."/>
         <MenuItem Header="Export Selected Item as PSKX/PSA" Click="ExportSelectedToPsx_Click" ToolTip="Exports the selected item as a pskx and/or psa and config file. Works for SkeletalMesh, BioMorphFace, MorphTargetSet, AnimSet, BioDynamicAnimSet, and AnimSequence"/>
+        <MenuItem Header="Export all textures from material" Click="ExportSelectedMaterial_Click" ToolTip="Exports the selected Material's textures to the selected folder"/>
         <MenuItem Header="Ron File tools">
             <MenuItem Header="Export RON file as PSKX/PSA" Click="ExportRonToPsx_Click" ToolTip="Converts a ron file into a pskx and psa file that can be imported into blender to edit your Shepard's head."/>
             <MenuItem Header="import ron to BioMorphFace" Click="ImportRonToBmf_Click" ToolTip="Imports a Ron file as a BioMorphFace; assets will be linked if they are in the file. "/>
@@ -209,6 +214,7 @@
             <MenuItem Header="replace ron vertex + bone data from psk + psa" Click="UpdateRonFromPskAndPsa_Click" ToolTip="Updates the vertex positions in a ron file with those from a psk"/>
         </MenuItem>
         <MenuItem Header="Import Mesh/Animation">
+            <MenuItem Header="Import PSK/PSKX over existing mesh" Click="ImportPskOverMesh_Click" ToolTip="Directly imports a psk/pskx file over an existing skeletal mesh, maintaining sockets."/>
             <MenuItem Header="Import PSK/PSKX as new mesh" Click="ImportPskAsNewMesh_Click" ToolTip="Directly imports a psk/pskx file as a new skeletal mesh. Select an existing one to copy the sockets from it to the new one."/>
             <MenuItem Header="Add/Update a new MorphTarget from a psk + psa" Click="AddNewMorphTargetFromPskAndPsa_Click" ToolTip="Converts a psk to a morph target as a delta to the base mesh. select a morphTargetSet to use this. "/>
             <MenuItem Header="import psk + psa to BioMorphFace" Click="ImportPskAndPsaToBmf_Click" ToolTip="Applies the vetex positions from a psk file onto a BioMorphFace. "/>
@@ -223,6 +229,8 @@
             <MenuItem Header="Make Custom Morph Target Set" Click="MakeCustomMorphTargetSet_Click" ToolTip="Makes a new CustomMorphTargetSet and BioMorphFace for use in mods that dynamically change appearance from MorphTargetSet or SkeletalMesh. currently only for AMM LE3. "/>
         </MenuItem>
         <MenuItem Header="Even more experimental than usual">
+            <MenuItem Header="Fill in LODs" Click="MakeLODs_Click" ToolTip="Duplicates the first LOD into the other LOD slots. This will allow you to not lock the pawn LOD to 0 and allow other meshes that have proper LODs to work as intended. Can fix face melting. It would still be better to generate proper LODs."/>
+            <MenuItem Header="Remove LODs" Click="RemoveLODs_Click" ToolTip="Removes all but the first LOD."/>
             <MenuItem Header="Calculate normal map blue channel" Click="CalculateNormalBlue_Click" ToolTip="Calculates the blue channel of a normal map from the red and green channels. some engines do this at runtime to save space or pack other data into the blue and alpha channels."/>
             <MenuItem Header="Invert Green Channel of normal map" Click="InvertGreenChannel_Click" ToolTip="Inverts the green channel of a normal map. useful for converting from engines that have the opposite convention."/>
             <MenuItem Header="Make Texture transparent" Click="MakeTransparent_Click" ToolTip="."/>

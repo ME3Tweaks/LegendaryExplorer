@@ -58,11 +58,11 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             Parent = parent;
             OuterClass = outer;
             Flags = flags;
-            Interfaces = interfaces ?? new List<VariableType>();
-            VariableDeclarations = vars ?? new List<VariableDeclaration>();
-            TypeDeclarations = types ?? new List<VariableType>();
-            Functions = funcs ?? new List<Function>();
-            States = states ?? new List<State>();
+            Interfaces = interfaces ?? [];
+            VariableDeclarations = vars ?? [];
+            TypeDeclarations = types ?? [];
+            Functions = funcs ?? [];
+            States = states ?? [];
             DefaultProperties = defaultProperties ?? new DefaultPropertiesBlock();
             ReplicationBlock = replicationBlock ?? new CodeBody();
             ReplicationBlock.Outer = this;
@@ -138,7 +138,15 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                 foreach (VariableType interfaceType in Interfaces) yield return interfaceType;
                 foreach (VariableType typeDeclaration in TypeDeclarations) yield return typeDeclaration;
                 foreach (VariableDeclaration variableDeclaration in VariableDeclarations) yield return variableDeclaration;
-                foreach (Function function in Functions) yield return function;
+                foreach (Function function in Functions)
+                {
+                    foreach (Function lambda in function.Lambdas)
+                    {
+                        yield return lambda;
+                    }
+                    yield return function;
+                }
+
                 foreach (State state in States) yield return state;
                 if (ReplicationBlock is not null)
                 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LegendaryExplorerCore.Textures
@@ -233,7 +234,7 @@ namespace LegendaryExplorerCore.Textures
             }
         }
 
-        private static object _syncObj = new object();
+        private static Lock _syncObj = new();
 
         public static unsafe byte[] ConvertTexture(byte[] pixelData, uint width, uint height, PixelFormat inputFormat, PixelFormat outputFormat)
         {

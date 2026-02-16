@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
@@ -47,7 +48,7 @@ namespace LegendaryExplorerCore.UnrealScript
             }
         }
 
-        private readonly object _initializationLock = new();
+        private readonly Lock _initializationLock = new();
 
         private SymbolTable _baseSymbols;
 

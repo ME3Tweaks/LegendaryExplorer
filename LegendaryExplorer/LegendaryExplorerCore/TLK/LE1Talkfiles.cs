@@ -39,7 +39,25 @@ namespace LegendaryExplorerCore.TLK
         {
             string s = "No Data";
 
-            //Look in package local first
+            if (package.Game == MEGame.LE1)
+            {
+                // LE1 - First check override TLKs in priority order (highest to lowest priority)
+                // LoadedTlks is in mount priority order (lowest to highest), so iterate in reverse
+                for (int i = LoadedTlks.Count - 1; i >= 0; i--)
+                {
+                    ME1TalkFile tlk = LoadedTlks[i];
+                    if (tlk.IsLE1OverrideTLK)
+                    {
+                        s = tlk.FindDataById(strRefID, withFileName);
+                        if (s != "No Data")
+                        {
+                            return s;
+                        }
+                    }
+                }
+            }
+
+            // If not found in override TLKs, check package local tlks
             if (package != null)
             {
                 foreach (ME1TalkFile tlk in package.LocalTalkFiles)
@@ -52,15 +70,20 @@ namespace LegendaryExplorerCore.TLK
                 }
             }
 
-            //Look in loaded list
-            foreach (ME1TalkFile tlk in LoadedTlks)
+            // Finally check non-override TLKs in reverse order (highest to lowest priority)
+            for (int i = LoadedTlks.Count - 1; i >= 0; i--)
             {
-                s = tlk.FindDataById(strRefID, withFileName);
-                if (s != "No Data")
+                ME1TalkFile tlk = LoadedTlks[i];
+                if (!tlk.IsLE1OverrideTLK) // This is always be false in ME1
                 {
-                    return s;
+                    s = tlk.FindDataById(strRefID, withFileName);
+                    if (s != "No Data")
+                    {
+                        return s;
+                    }
                 }
             }
+
             return s;
         }
 

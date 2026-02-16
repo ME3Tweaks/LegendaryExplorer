@@ -9,7 +9,7 @@ using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.Shaders;
 using LegendaryExplorerCore.Unreal.BinaryConverters.Shaders;
 
-namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
+namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
 {
     //update the name strings too
     using VertexShaderType = TBasePassVertexShader<FNullPolicy, FNullPolicy>;

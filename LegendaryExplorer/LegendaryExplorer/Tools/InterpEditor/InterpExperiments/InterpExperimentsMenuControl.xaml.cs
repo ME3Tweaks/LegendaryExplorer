@@ -94,7 +94,6 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
         {
             bool isMale = (string) (sender as FrameworkElement)?.Tag == "M";
             InterpEditorExperimentsH.OpenFovoLineAudio(isMale, GetIEWindow());
-            var IEWindow = GetIEWindow();
         }
 
         private void OpenFovoLineFXA_Click(object sender, RoutedEventArgs e)

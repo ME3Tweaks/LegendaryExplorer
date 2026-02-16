@@ -319,19 +319,23 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 else if (TryParseFunction() is Function func)
                 {
                     funcs.Add(func);
+                    if (func.Flags.Has(EFunctionFlags.Delegate))
+                    {
+                        variables.Add(new VariableDeclaration(new DelegateType(func), EPropertyFlags.None, $"__{func.Name}__Delegate"));
+                    }
                 }
                 else
                 {
                     throw ParseError($"Unexpected token in {CLASS}: {CurrentToken.Value}", CurrentToken);
                 }
             }
-            replicationBlock ??= new CodeBody(new List<Statement>(), PrevToken.EndPos, CurrentToken.StartPos)
+            replicationBlock ??= new CodeBody([], PrevToken.EndPos, CurrentToken.StartPos)
             {
-                Tokens = new TokenStream(new List<ScriptToken>(), Tokens)
+                Tokens = new TokenStream([], Tokens)
             };
-            defaultPropertiesBlock ??= new DefaultPropertiesBlock(new List<Statement>(), PrevToken.EndPos, CurrentToken.StartPos)
+            defaultPropertiesBlock ??= new DefaultPropertiesBlock([], PrevToken.EndPos, CurrentToken.StartPos)
             {
-                Tokens = new TokenStream(new List<ScriptToken>(), Tokens)
+                Tokens = new TokenStream([], Tokens)
             };
 
             var @class = new Class(name.Value, parentClass, outerClass, flags, interfaces, types, variables, funcs, states, defaultPropertiesBlock, replicationBlock, startPos, CurrentToken.StartPos)
@@ -1544,30 +1548,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                 return b;
             }
-        }
-
-        private bool ParseScopeSpan(bool isPartialScope, out int startPos, out int endPos, out List<ScriptToken> scopeTokens)
-        {
-            scopeTokens = new List<ScriptToken>();
-            startPos = -1;
-            endPos = -1;
-            if (!isPartialScope && Consume(TokenType.LeftBracket) == null)
-            {
-                Log.LogError($"Expected '{TokenType.LeftBracket}'!", CurrentPosition);
-                return false;
-            }
-            startPos = Tokens.CurrentItem.StartPos;
-
-            var tokens = Tokens.GetRestOfScope();
-            if (tokens is null)
-            {
-                Log.LogError("Scope ended prematurely, are your scopes unbalanced?", CurrentPosition);
-                return false;
-            }
-            scopeTokens = tokens;
-            endPos = Tokens.CurrentItem.StartPos;
-            Tokens.Advance();
-            return true;
         }
 
         #endregion

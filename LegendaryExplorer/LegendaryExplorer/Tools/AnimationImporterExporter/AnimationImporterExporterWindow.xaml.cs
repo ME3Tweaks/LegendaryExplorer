@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using LegendaryExplorer.Dialogs;
@@ -16,6 +15,7 @@ using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
@@ -53,6 +53,8 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
             UIndexQueuedForFocusing = uIndex;
         }
 
+        #region Properties
+
         private ExportEntry _currentExport;
         public ExportEntry CurrentExport
         {
@@ -69,6 +71,12 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                 {
                     BinaryInterpreterTab_BinaryInterpreter.LoadExport(CurrentExport);
                     InterpreterTab_Interpreter.LoadExport(CurrentExport);
+
+                    // If it's an AnimSequence, load it into the preview
+                    if (CurrentExport.ClassName == "AnimSequence")
+                    {
+                        AnimPreview.LoadAnimSequence(CurrentExport);
+                    }
                 }
             }
         }
@@ -78,6 +86,24 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
         private readonly int UIndexQueuedForFocusing;
 
         public ObservableCollectionExtended<ExportEntry> AnimSequenceExports { get; } = new();
+        public ObservableCollectionExtended<ExportEntry> SkeletalMeshExports { get; } = new();
+
+        private ExportEntry _selectedSkeletalMesh;
+        public ExportEntry SelectedSkeletalMesh
+        {
+            get => _selectedSkeletalMesh;
+            set
+            {
+                if (SetProperty(ref _selectedSkeletalMesh, value) && value != null)
+                {
+                    AnimPreview.LoadSkeletalMesh(value);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Commands
 
         public ICommand OpenFileCommand { get; set; }
         public ICommand SaveFileCommand { get; set; }
@@ -88,6 +114,7 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
         public ICommand ReplaceFromPSACommand { get; set; }
         public ICommand ExportAnimSeqToPSACommand { get; set; }
         public ICommand ExportAnimSetToPSACommand { get; set; }
+
         private void LoadCommands()
         {
             OpenFileCommand = new GenericCommand(OpenFile);
@@ -101,6 +128,10 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
             ExportAnimSeqToPSACommand = new GenericCommand(ExportAnimSeqToPSA, IsAnimSequenceSelected);
             ExportAnimSetToPSACommand = new GenericCommand(ExportAnimSetToPSA, IsBioAnimDataSelected);
         }
+
+        #endregion
+
+        #region Import/Export functionality
 
         private void ExportAnimSetToPSA()
         {
@@ -403,11 +434,19 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
             }
         }
 
+        #endregion
+
+        #region Helpers
+
         private bool IsBioAnimDataSelected() => CurrentExport?.ClassName == "BioAnimSetData";
 
         private bool IsAnimSequenceSelected() => CurrentExport?.ClassName == "AnimSequence";
 
         private bool IsPackageLoaded() => Pcc != null;
+
+        #endregion
+
+        #region File operations
 
         private async void SaveFile()
         {
@@ -468,13 +507,12 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
         {
             try
             {
-                //BusyText = "Loading " + Path.GetFileName(s);
-                //IsBusy = true;
                 StatusBar_LeftMostText.Text = $"Loading {Path.GetFileName(s)} ({FileSize.FormatSize(new FileInfo(s).Length)})";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 LoadMEPackage(s);
 
                 AnimSequenceExports.ReplaceAll(Pcc.Exports.Where(exp => exp.ClassName == "AnimSequence"));
+                SkeletalMeshExports.ReplaceAll(Pcc.Exports.Where(exp => exp.ClassName == "SkeletalMesh"));
 
                 StatusBar_LeftMostText.Text = Path.GetFileName(s);
                 Title = $"Animation Importer/Exporter - {s}";
@@ -493,6 +531,8 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                 MessageBox.Show($"Error loading {Path.GetFileName(s)}:\n{e.Message}");
             }
         }
+
+        #endregion
 
         public override void HandleUpdate(List<PackageUpdate> updates)
         {
@@ -612,6 +652,7 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
             if (e.Cancel)
                 return;
 
+            AnimPreview?.Dispose();
             InterpreterTab_Interpreter?.Dispose();
             BinaryInterpreterTab_BinaryInterpreter?.Dispose();
             RecentsController?.Dispose();

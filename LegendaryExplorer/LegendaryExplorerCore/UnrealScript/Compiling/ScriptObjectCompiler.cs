@@ -163,8 +163,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             classObj.StateFlags = hasAutoState ? EStateFlags.None : EStateFlags.Auto;
 
-            (CaseInsensitiveDictionary<UConst> existingConsts, CaseInsensitiveDictionary<UEnum> existingEnums, CaseInsensitiveDictionary<UScriptStruct> existingStructs,
-                CaseInsensitiveDictionary<UProperty> existingProperties, CaseInsensitiveDictionary<UFunction> existingFunctions, CaseInsensitiveDictionary<UState> existingStates)
+            (CaseInsensitiveDictionary<UConst> existingConsts,
+                CaseInsensitiveDictionary<UEnum> existingEnums,
+                CaseInsensitiveDictionary<UScriptStruct> existingStructs,
+                CaseInsensitiveDictionary<UProperty> existingProperties,
+                CaseInsensitiveDictionary<UFunction> existingFunctions,
+                CaseInsensitiveDictionary<UState> existingStates)
                 = GetClassMembers(classObj);
 
             //Stub out all the child exports, and trash existing ones that don't get re-used
@@ -231,18 +235,62 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             var compiledFunctions = new List<UFunction>();
             classObj.LocalFunctionMap.Clear();
+
+            List<(NameReference, int)> lambdaFunctionMapEntries = [];
             foreach (Function function in classAST.Functions)
             {
                 existingFunctions.Remove(function.Name, out UFunction uFunction);
                 childrenHaveBeenAdded |= uFunction is null;
+
+                if (uFunction?.Lambdas?.Count is > 0)
+                {
+                    // always remove existing lambdas from the link chain, they will be re-added in order later as-needed
+                    uFunction.Next = uFunction.Lambdas[^1].Next;
+                }
+                if (uFunction?.Lambdas?.Count > function.Lambdas.Count)
+                {
+                    //trash any extra lambdas that are no longer needed
+                    int newLambdaCount = function.Lambdas.Count;
+                    int existingLambdaCount = uFunction.Lambdas.Count;
+                    for (int i = newLambdaCount; i < existingLambdaCount; i++)
+                    {
+                        EntryPruner.TrashEntryAndDescendants(uFunction.Lambdas[i].Export);
+                    }
+                    uFunction.Lambdas.RemoveRange(newLambdaCount, existingLambdaCount - newLambdaCount);
+                }
                 completions.Add(CreateFunctionStub(function, classExport, ref uFunction, usop));
                 compiledFunctions.Add(uFunction);
                 classObj.LocalFunctionMap.Add(uFunction.Export.ObjectName, uFunction.Export.UIndex);
+                var newLambdas = new List<UFunction>();
+                foreach (Function lambda in function.Lambdas)
+                {
+                    UFunction uLambda = null;
+                    if (uFunction.Lambdas?.Count > 0)
+                    {
+                        uLambda = uFunction.Lambdas[0];
+                        uFunction.Lambdas.RemoveAt(0);
+                    }
+                    completions.Add(CreateFunctionStub(lambda, classExport, ref uLambda, usop));
+                    newLambdas.Add(uLambda);
+                    lambdaFunctionMapEntries.Add((uLambda.Export.ObjectName, uLambda.Export.UIndex));
+                }
+                uFunction.Lambdas = newLambdas;
             }
-            foreach (UFunction unusedField in existingFunctions.Values)
+            foreach (var (lambdaName, lambdaUIndex) in lambdaFunctionMapEntries)
+            {
+                classObj.LocalFunctionMap.Add(lambdaName, lambdaUIndex);
+            }
+            foreach (UFunction unusedFunction in existingFunctions.Values)
             {
                 childrenHaveBeenTrashed = true;
-                EntryPruner.TrashEntryAndDescendants(unusedField.Export);
+                if (unusedFunction.Lambdas is not null)
+                {
+                    foreach (UFunction lambda in unusedFunction.Lambdas)
+                    {
+                        EntryPruner.TrashEntryAndDescendants(lambda.Export);
+                    }
+                }
+                EntryPruner.TrashEntryAndDescendants(unusedFunction.Export);
             }
 
             var compiledStates = new List<UState>();
@@ -253,10 +301,10 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 completions.Add(CreateStateStub(state, classExport, ref uState, usop));
                 compiledStates.Add(uState);
             }
-            foreach (UState unusedField in existingStates.Values)
+            foreach (UState unusedState in existingStates.Values)
             {
                 childrenHaveBeenTrashed = true;
-                EntryPruner.TrashEntryAndDescendants(unusedField.Export);
+                EntryPruner.TrashEntryAndDescendants(unusedState.Export);
             }
 
             //make defaults stub
@@ -310,6 +358,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     UField prev = null;
                     foreach (UField current in allChildren)
                     {
+                        if (current is UFunction curFunc && curFunc?.Lambdas.Count > 0)
+                        {
+                            foreach (UFunction lambda in curFunc.Lambdas)
+                            {
+                                AdvanceField(ref prev, lambda, classObj);
+                            }
+                        }
                         AdvanceField(ref prev, current, classObj);
                     }
                     if (prev is not null)
@@ -322,6 +377,18 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     foreach (UField field in allChildren)
                     {
+                        if (field is UFunction curFunc && curFunc?.Lambdas?.Count > 0)
+                        {
+                            UField prev = curFunc;
+                            int originalNext = curFunc.Next;
+                            foreach (UFunction lambda in curFunc.Lambdas)
+                            {
+                                AdvanceField(ref prev, lambda, classObj);
+                            }
+                            prev.Next = originalNext;
+                            prev.Export.WriteBinary(prev);
+                            continue;
+                        }
                         field.Export.WriteBinary(field);
                     }
                 }
@@ -370,6 +437,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private static void CompileState(State stateAST, IEntry parent, ref UState stateObj, UnrealScriptOptionsPackage usop)
         {
+            //TODO: lambdas in state functions
+            //bool hasLambdas = stateAST.Functions.Any(f => f.Lambdas.Count > 0);
             var finishStateCompilation = CreateStateStub(stateAST, parent, ref stateObj, usop);
             finishStateCompilation(usop);
         }
@@ -463,8 +532,91 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         private static void CompileFunction(Function funcAST, IEntry parent, ref UFunction funcObj, UnrealScriptOptionsPackage usop)
         {
+            IMEPackage pcc = parent.FileRef;
+            bool hasLambdas = funcAST.Lambdas.Count > 0;
+            string lambdaName = $"__lambda__{parent.ObjectName.Instanced}__{funcObj?.Export.ObjectName.Instanced}";
+            bool hadLambdas = pcc.TryGetUExport(funcObj?.Next ?? 0, out ExportEntry nextExport) && nextExport.ObjectName.Name.CaseInsensitiveEquals(lambdaName);
+            var lambdaCompletions = new List<Action<UnrealScriptOptionsPackage>>();
+            UClass classToSave = null;
+            var lambdas = new List<UFunction>();
+            if (hasLambdas || hadLambdas)
+            {
+                if (parent is not ExportEntry parentExport) throw new Exception("Cannot compile lambdas on a function with an Imported class!");
+                if (ObjectBinary.From(parentExport) is not UClass classObj) throw new NotImplementedException("Compilation of lambdas inside a State function is not implemented yet.");
+
+                if (hadLambdas)
+                {
+                    funcObj.Lambdas ??= [];
+                    do
+                    {
+                        var objBin = ObjectBinary.From(nextExport);
+                        if (objBin is not UFunction lambdaFunc || !nextExport.ObjectName.Name.CaseInsensitiveEquals(lambdaName))
+                        {
+                            break;
+                        }
+                        funcObj.Lambdas.Add(lambdaFunc);
+                        pcc.TryGetUExport(lambdaFunc.Next, out nextExport);
+                    } while (nextExport is not null);
+                }
+                if (funcObj?.Lambdas?.Count is > 0)
+                {
+                    // always remove existing lambdas from the link chain, they will be re-added in order later as-needed
+                    funcObj.Next = funcObj.Lambdas[^1].Next;
+                }
+                if (funcObj?.Lambdas?.Count > funcAST.Lambdas.Count)
+                {
+                    //trash any extra lambdas that are no longer needed
+                    int newLambdaCount = funcAST.Lambdas.Count;
+                    int existingLambdaCount = funcObj.Lambdas.Count;
+                    for (int i = newLambdaCount; i < existingLambdaCount; i++)
+                    {
+                        classObj.LocalFunctionMap.Remove(funcObj.Lambdas[i].Export.ObjectName);
+                        EntryPruner.TrashEntryAndDescendants(funcObj.Lambdas[i].Export);
+                    }
+                    funcObj.Lambdas.RemoveRange(newLambdaCount, existingLambdaCount - newLambdaCount);
+                    classToSave = classObj;
+                }
+                foreach (Function lambda in funcAST.Lambdas)
+                {
+                    UFunction uLambda = null;
+                    bool addToClass = true;
+                    if (funcObj?.Lambdas?.Count > 0)
+                    {
+                        uLambda = funcObj.Lambdas[0];
+                        funcObj.Lambdas.RemoveAt(0);
+                        addToClass = false;
+                    }
+                    lambdaCompletions.Add(CreateFunctionStub(lambda, parentExport, ref uLambda, usop));
+                    lambdas.Add(uLambda);
+                    if (addToClass)
+                    {
+                        classObj.LocalFunctionMap.Add(uLambda.Export.ObjectName, uLambda.Export.UIndex);
+                        classToSave = classObj;
+                    }
+                }
+            }
             Action<UnrealScriptOptionsPackage> finishFunctionCompilation = CreateFunctionStub(funcAST, parent, ref funcObj, usop);
+            UFunction prev = funcObj;
+            int finalLink = funcObj.Next;
+            foreach (UFunction lambda in lambdas)
+            {
+                prev.Next = lambda.Export.UIndex;
+                lambda.Next = finalLink;
+                prev = lambda;
+            }
+            foreach (Action<UnrealScriptOptionsPackage> completion in lambdaCompletions)
+            {
+                completion(usop);
+            }
+            foreach (UFunction lambda in lambdas)
+            {
+                lambda.Export.WriteBinary(lambda);
+            }
             finishFunctionCompilation(usop);
+            if (classToSave is not null)
+            {
+                classToSave.Export.WriteBinary(classToSave);
+            }
         }
 
         private static Action<UnrealScriptOptionsPackage> CreateFunctionStub(Function funcAST, IEntry parent, ref UFunction refFuncObj, UnrealScriptOptionsPackage usop)
@@ -927,7 +1079,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             var stateMembers = new CaseInsensitiveDictionary<UState>();
 
             var nextItem = obj.Children;
-
+            UField prevItem = null;
             while (nextItem is not 0 && pcc.TryGetUExport(nextItem, out ExportEntry nextChild))
             {
                 var objBin = ObjectBinary.From(nextChild);
@@ -935,7 +1087,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 if (objBin is UField uField)
                 {
                     nextItem = uField.Next;
-                    switch (objBin)
+                    switch (uField)
                     {
                         case UConst uConst:
                             constMembers.Add(objName, uConst);
@@ -950,12 +1102,19 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                             propMembers.Add(objName, uProperty);
                             break;
                         case UFunction uFunction:
+                            if (objName.StartsWith("__lambda__", StringComparison.OrdinalIgnoreCase) && prevItem is UFunction funcWithLambdas)
+                            {
+                                funcWithLambdas.Lambdas ??= [];
+                                funcWithLambdas.Lambdas.Add(uFunction);
+                                continue;
+                            }
                             funcMembers.Add(objName, uFunction);
                             break;
                         case UState uState:
                             stateMembers.Add(objName, uState);
                             break;
                     }
+                    prevItem = uField;
                 }
                 else
                 {

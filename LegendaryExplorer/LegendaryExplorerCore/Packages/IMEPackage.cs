@@ -283,25 +283,25 @@ namespace LegendaryExplorerCore.Packages
         /// <returns></returns>
         List<EntryStringPair> CompareToPackage(Stream stream);
         /// <summary>
-        /// Looks for an export with the same instanced name
+        /// Looks for an export with the same instanced path
         /// </summary>
-        /// <param name="instancedname"></param>
+        /// <param name="instancedPath"></param>
         /// <returns></returns>
-        ExportEntry FindExport(string instancedname);
+        ExportEntry FindExport(string instancedPath);
         /// <summary>
-        /// Looks for an export with the same instanced name and classname
+        /// Looks for an export with the same instanced path and classname
         /// </summary>
-        /// <param name="instancedname"></param>
+        /// <param name="instancedPath"></param>
         /// <param name="className">Optional class name that has to match. If an object is found with a different class, it will return null instead.</param>
         /// <returns></returns>
-        ExportEntry FindExport(string instancedname, string className);
+        ExportEntry FindExport(string instancedPath, string className);
         /// <summary>
-        /// Looks for an import with the same instanced name.
+        /// Looks for an import with the same instanced path.
         /// </summary>
-        /// <param name="instancedname"></param>
+        /// <param name="instancedPath"></param>
         /// <param name="className">Optional class name that has to match. If an object is found with a different class, it will return null instead.</param>
         /// <returns></returns>
-        ImportEntry FindImport(string instancedname, string className = null);
+        ImportEntry FindImport(string instancedPath, string className = null);
         /// <summary>
         /// Looks for an entry with the same instanced path.
         /// </summary>

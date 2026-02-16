@@ -9,7 +9,6 @@ using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE;
@@ -68,11 +67,7 @@ public sealed class ArrayFunctionCompletion : ICompletionData
         {
             if (_description is null)
             {
-                var textBlock = new TextBlock();
-                textBlock.Inlines.AddRange(XamlCodeBuilder.GetFunctionSignature(FauxFunction));
-
-                textBlock.Background = SyntaxInfo.BackgroundBrush;
-                _description = textBlock;
+                _description = CompletionHelper.CreateDescriptionBlock(XamlCodeBuilder.GetFunctionSignature(FauxFunction));
             }
             return _description;
         }

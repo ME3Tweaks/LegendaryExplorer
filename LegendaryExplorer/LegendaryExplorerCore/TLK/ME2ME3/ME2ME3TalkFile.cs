@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using LegendaryExplorerCore.Gammtek.IO;
+using LegendaryExplorerCore.Gammtek.Paths;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.TLK.ME1;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
-using LegendaryExplorerCore.Gammtek.IO;
-using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.TLK.ME1;
 
 namespace LegendaryExplorerCore.TLK.ME2ME3
 {
@@ -32,15 +33,17 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         public ME2ME3TalkFile(string filepath)
         {
             LoadTlkData(filepath);
+            Source = filepath;
         }
 
         /// <summary>
         /// Loads a ME2ME3TalkFile from the specified <see cref="Stream"/>. The position must be properly set.
         /// </summary>
         /// <param name="stream">Stream to read from</param>
-        public ME2ME3TalkFile(Stream stream)
+        public ME2ME3TalkFile(Stream stream, string source)
         {
             LoadTlkDataFromStream(stream);
+            Source = source;
         }
 
         /// <inheritdoc/>
@@ -308,6 +311,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
         /// If the TLK instance has been modified by <see cref="ReplaceString"/> or <see cref="AddString"/>
         /// </summary>
         public bool IsModified { get; set; }
+        public string Source { get; init; }
 
         /// <summary>
         /// Replaces a string in the list of StringRefs. Does not work for Female strings as they share the same string ID (all instances will be replaced)

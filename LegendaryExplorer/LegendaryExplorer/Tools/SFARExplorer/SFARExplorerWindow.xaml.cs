@@ -150,7 +150,7 @@ namespace LegendaryExplorer.Tools.SFARExplorer
                 var tlkStream = LoadedDLCPackage.DecompressEntry(fes);
                 var tlkEd = new TLKEditorExportLoader();
                 var elhw = new ExportLoaderHostedWindow(tlkEd);
-                tlkEd.LoadFileFromStream(tlkStream);
+                tlkEd.LoadFileFromStream(tlkStream, fes.FileName + " (SFAR)");
                 elhw.Show();
                 elhw.Activate();
             }

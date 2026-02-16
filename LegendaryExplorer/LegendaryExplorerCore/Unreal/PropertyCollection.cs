@@ -2290,4 +2290,48 @@ namespace LegendaryExplorerCore.Unreal
         ///<inheritdoc/>
         public override bool Equivalent(Property other, Func<int, int, bool> objectComparer = null) => false;
     }
+
+    public static class PropertyCollectionExtensions
+    {
+        /// <summary>
+        /// Resolves the propertys in this array to Exports. If the object is an import, it will attempt to resolve it from another package.
+        /// Any null values or unresolved imports will be filtered out of the returned collection
+        /// </summary>
+        /// <param name="pcc">Package this property resides in</param>
+        /// <param name="cache">Cache to use if resolving an import</param>
+        public static IEnumerable<ExportEntry> ResolveToExports(this ArrayProperty<ObjectProperty> objArray, IMEPackage pcc, PackageCache cache)
+        {
+            foreach (var objProp in objArray)
+            {
+                if (objProp.ResolveToExport(pcc, cache) is ExportEntry export)
+                {
+                    yield return export;
+                }
+            }
+        }
+        /// <summary>
+        /// Resolves the propertys in this array to IEntries.
+        /// Any null values or invalid uIndexes will be filtered out of the returned collection
+        /// </summary>
+        /// <param name="pcc">Package this property resides in</param>
+        public static IEnumerable<IEntry> ResolveToEntries(this ArrayProperty<ObjectProperty> objArray, IMEPackage pcc)
+        {
+            foreach (var objProp in objArray)
+            {
+                if (objProp.ResolveToEntry(pcc) is {} entry)
+                {
+                    yield return entry;
+                }
+            }
+        }
+
+        public static T GetEnumValOrDefault<T>(this EnumProperty enumProp, T defaultVal) where T : struct, Enum
+        {
+            if (enumProp?.Value is NameReference valName && Enum.TryParse(valName.Instanced, true, out T enumVal))
+            {
+                return enumVal;
+            }
+            return defaultVal;
+        }
+    }
 }

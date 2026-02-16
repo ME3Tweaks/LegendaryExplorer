@@ -63,7 +63,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     verts.Clear();
                     foreach (StructProperty vertProp in vertexDataProp)
                     {
-                        verts.Add(CommonStructs.GetVector3(vertProp) * scale * 0.02f);
+                        verts.Add(CommonStructs.GetVector3(vertProp) * scale * PhysXSDK.UnrealtoPhysXScale);
                     }
                     CachedPhysBrushData.CachedConvexElements[i] = new KCachedConvexDataElement
                     {

@@ -59,6 +59,10 @@
                     <MenuItem Header="Convert Skeletal Mesh to Static Mesh" Command="{Binding ConvertToStaticMeshCommand}"/>
                     <MenuItem Header="Export Mesh to PSK with UModel" Command="{Binding ExportToPSKUModelCommand}"/>
                     <MenuItem Header="Export Mesh to PSK (Experimental)" Command="{Binding ExportToPSKCommand}"/>
+                    <MenuItem Header="Export as glTF wihtout textures (Experimental)" Command="{Binding ExportToGltfCommand}"/>
+                    <MenuItem Header="Export as glTF with textures (Experimental)" Command="{Binding ExportToGltfTexturesCommand}"/>
+                    <MenuItem Header="Replace from glTF (Experimental)" Command="{Binding ReplaceFromGltfCommand}"/>
+                    <MenuItem Header="Import new mesh(es) from glTF (Experimental)" Command="{Binding ImportNewFromGltfCommand}"/>
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -186,6 +190,10 @@
                                 </MenuItem>
                                 <MenuItem Header="Export Mesh to PSK (Experimental)" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportToPSKCommand}"/>
                                 <MenuItem Header="Convert ME3 Skeletal Mesh to ME3 Static Mesh" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ConvertToStaticMeshCommand}"/>
+                                <MenuItem Header="Export as glTF without textures (Experimental)" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportToGltfCommand}"/>
+                                <MenuItem Header="Export as glTF with textures (Experimental)" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportToGltfTexturesCommand}"/>
+                                <MenuItem Header="Replace from glTF (Experimental)" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ReplaceFromGltfCommand}"/>
+                                <MenuItem Header="Import new mesh(es) from glTF (Experimental)" Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ImportNewFromGltfCommand}"/>
                             </ContextMenu>
                             <Style TargetType="{x:Type ListBoxItem}">
                                 <Setter Property="ContextMenu" Value="{StaticResource MyMenu}"/>

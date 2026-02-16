@@ -13,10 +13,7 @@ namespace LegendaryExplorerCore.Coalesced
 
 		private Namespace(string nameOnLevel, Namespace parent = null)
 		{
-			if (string.IsNullOrWhiteSpace(nameOnLevel))
-			{
-				throw new ArgumentException("nameOfLevel");
-			}
+			ArgumentException.ThrowIfNullOrWhiteSpace(nameOnLevel);
 
 			Parent = parent;
 			NameOnLevel = nameOnLevel;
@@ -82,10 +79,7 @@ namespace LegendaryExplorerCore.Coalesced
 
 		public static IEnumerable<Namespace> FromSplitStrings(Namespace root, IEnumerable<IEnumerable<string>> splitSubNamespaces)
 		{
-			if (splitSubNamespaces == null)
-			{
-				throw new ArgumentNullException(nameof(splitSubNamespaces));
-			}
+			ArgumentNullException.ThrowIfNull(splitSubNamespaces);
 
 			return splitSubNamespaces
 				// Remove those split sequences that have no elements

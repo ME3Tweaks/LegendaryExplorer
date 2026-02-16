@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -19,9 +20,10 @@ namespace LegendaryExplorerCore.Unreal
         public static readonly GameObjectInfo ObjectInfo = new UDKObjectInfo();
         
 
-        private static readonly string[] ImmutableStructs = { "Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
+        private static readonly FrozenSet<string> ImmutableStructs = FrozenSet.ToFrozenSet(
+            ["Vector", "Color", "LinearColor", "TwoVectors", "Vector4", "Vector2D", "Rotator", "Guid", "Plane", "Box",
             "Quat", "Matrix", "IntPoint", "ActorReference", "ActorReference", "ActorReference", "PolyReference", "AimComponent", "AimTransform", "AimOffsetProfile", "FontCharacter",
-            "CoverReference", "CoverInfo", "CoverSlot", "RwVector2", "RwVector3", "RwVector4" };
+            "CoverReference", "CoverInfo", "CoverSlot", "RwVector2", "RwVector3", "RwVector4"]);
 
         public static bool IsImmutableStruct(string structName)
         {

@@ -4,8 +4,6 @@ using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
 using System;
-using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Media;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
@@ -29,11 +27,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             {
                 if (_description is null && descriptionText is not null)
                 {
-                    var textBlock = new TextBlock();
-                    textBlock.Inlines.Add(new Run(descriptionText) { Foreground = SyntaxInfo.ColorBrushes[LegendaryExplorerCore.UnrealScript.Analysis.Visitors.ST.None] });
-
-                    textBlock.Background = SyntaxInfo.BackgroundBrush;
-                    _description = textBlock;
+                    _description = CompletionHelper.CreateDescriptionBlock(descriptionText);
                 }
                 return _description;
             }

@@ -551,10 +551,7 @@ namespace LegendaryExplorerCore.Helpers
         /// <returns>The data read from the stream</returns>
         public static byte[] ReadFully(this Stream input, IBuffer buffer)
         {
-            if (buffer == null)
-            {
-                throw new ArgumentNullException(nameof(buffer));
-            }
+            ArgumentNullException.ThrowIfNull(buffer);
             return ReadFully(input, buffer.Bytes);
         }
 
@@ -573,14 +570,8 @@ namespace LegendaryExplorerCore.Helpers
         /// <returns>The data read from the stream</returns>
         public static byte[] ReadFully(this Stream input, byte[] buffer)
         {
-            if (buffer == null)
-            {
-                throw new ArgumentNullException(nameof(buffer));
-            }
-            if (input == null)
-            {
-                throw new ArgumentNullException(nameof(input));
-            }
+            ArgumentNullException.ThrowIfNull(buffer);
+            ArgumentNullException.ThrowIfNull(input);
             if (buffer.Length == 0)
             {
                 throw new ArgumentException("Buffer has length of 0");
@@ -613,20 +604,9 @@ namespace LegendaryExplorerCore.Helpers
         /// <exception cref="IOException">An error occurs while reading or writing</exception>
         public static void Copy(this Stream input, Stream output, byte[] buffer)
         {
-            if (buffer == null)
-            {
-                throw new ArgumentNullException(nameof(buffer));
-            }
-
-            if (input == null)
-            {
-                throw new ArgumentNullException(nameof(input));
-            }
-
-            if (output == null)
-            {
-                throw new ArgumentNullException(nameof(output));
-            }
+            ArgumentNullException.ThrowIfNull(buffer);
+            ArgumentNullException.ThrowIfNull(input);
+            ArgumentNullException.ThrowIfNull(output);
 
             if (buffer.Length == 0)
             {

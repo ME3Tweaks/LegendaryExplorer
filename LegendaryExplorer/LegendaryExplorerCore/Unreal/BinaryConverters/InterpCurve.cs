@@ -138,7 +138,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     //ONLY WORKS WHEN T is float, System.Numerics.Vector3 or System.Numerics.Vector2
     public class InterpCurve<T>
     {
-        public readonly List<InterpCurvePoint<T>> Points = new();
+        public readonly List<InterpCurvePoint<T>> Points = [];
         public EInterpMethodType InterpMethod = EInterpMethodType.IMT_UseFixedTangentEvalAndNewAutoTangents;
 
         public int AddPoint(float inVal, T outVal)
@@ -282,7 +282,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 result.Points.AddRange(pointProps.Select(InterpCurvePoint<T>.FromStructProperty));
             }
-            if (prop.GetProp<EnumProperty>("InterpMethod") is { } interpMethodProp 
+            if (prop.GetProp<EnumProperty>("InterpMethod") is { } interpMethodProp
                 && Enum.TryParse(interpMethodProp.Value.Name, out EInterpMethodType interpMethodType))
             {
                 result.InterpMethod = interpMethodType;

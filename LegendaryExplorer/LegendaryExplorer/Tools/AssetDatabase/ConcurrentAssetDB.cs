@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LegendaryExplorer.Tools.AssetDatabase.Filters;
+using System.Threading;
 
 namespace LegendaryExplorer.Tools.AssetDatabase
 {
@@ -73,7 +74,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         /// <summary>
         /// Used to do per-class locking during generation
         /// </summary>
-        public ConcurrentDictionary<string, object> ClassLocks = new();
+        public ConcurrentDictionary<string, Lock> ClassLocks = new();
 
         public void Clear()
         {

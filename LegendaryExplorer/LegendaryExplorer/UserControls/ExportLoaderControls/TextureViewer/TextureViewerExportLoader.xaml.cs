@@ -20,7 +20,7 @@ using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorer.Tools.TFCCompactor;
 using LegendaryExplorer.UserControls.ExportLoaderControls.TextureViewer;
 using LegendaryExplorer.UserControls.Interfaces;
-using LegendaryExplorer.UserControls.SharedToolControls.Scene3D;
+using LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;

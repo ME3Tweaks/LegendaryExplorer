@@ -11,17 +11,18 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
+using System.Threading;
 
 namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 {
     public class ReferenceCheckPackage
     {
         // The list of generated warnings, errors, and blocking errors
-        private List<EntryStringPair> BlockingErrors { get; } = new();
-        private List<EntryStringPair> SignificantIssues { get; } = new();
-        private List<EntryStringPair> InfoWarnings { get; } = new();
+        private List<EntryStringPair> BlockingErrors { get; } = [];
+        private List<EntryStringPair> SignificantIssues { get; } = [];
+        private List<EntryStringPair> InfoWarnings { get; } = [];
 
-        private object syncLock = new object();
+        private Lock syncLock = new();
 
         public IReadOnlyCollection<EntryStringPair> GetBlockingErrors() => BlockingErrors;
         public IReadOnlyCollection<EntryStringPair> GetSignificantIssues() => SignificantIssues;

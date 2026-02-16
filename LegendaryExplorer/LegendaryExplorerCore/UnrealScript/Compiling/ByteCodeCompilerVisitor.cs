@@ -936,7 +936,16 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         public bool VisitNode(FunctionCall node)
         {
             var func = (Function)node.Function.Node;
-            if (func.NativeIndex > 0)
+            if (func.Flags.Has(EFunctionFlags.Delegate))
+            {
+                //If we're here instead of DelegateCall, it's because we're directly calling a delegate function
+                //Calls to delegate functions should be emitted as a DelegateCall on the auto-generated delegate variable
+                WriteOpCode(OpCodes.DelegateFunction);
+                WriteByte(0); //auto-generated delegate variables are always instance variables
+                WriteObjectRef(ResolveDelegateProperty(func));
+                WriteName(func.Name);
+            }
+            else if (func.NativeIndex > 0)
             {
                 WriteNativeOpCode(func.NativeIndex);
             }
@@ -976,8 +985,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
         public bool VisitNode(DelegateCall node)
         {
-            WriteOpCode(OpCodes.DelegateFunction);
             var varDecl = (VariableDeclaration)node.DelegateReference.Node;
+            WriteOpCode(OpCodes.DelegateFunction);
             if (varDecl.Outer is Function)
             {
                 WriteByte(1);
@@ -1141,12 +1150,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     WriteName(func.Name);
                     return true;
                 case Function func:
-                    WriteOpCode(OpCodes.DelegateProperty);
-                    WriteName(func.Name);
-                    if (Game >= MEGame.ME3)
-                    {
-                        WriteObjectRef(func.Flags.Has(EFunctionFlags.Delegate) ? ResolveDelegateProperty(func) : null);
-                    }
+                    WriteDelegateProperty(func);
                     return true;
             }
 
@@ -1224,6 +1228,16 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return true;
         }
 
+        private void WriteDelegateProperty(Function func)
+        {
+            WriteOpCode(OpCodes.DelegateProperty);
+            WriteName(func.Name);
+            if (Game >= MEGame.ME3)
+            {
+                WriteObjectRef(func.Flags.Has(EFunctionFlags.Delegate) ? ResolveDelegateProperty(func) : null);
+            }
+        }
+
         public bool VisitNode(DefaultReference node)
         {
             if (node.Node is VariableDeclaration decl && decl.VarType == SymbolTable.BoolType)
@@ -1278,6 +1292,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteObjectRef(CompilerUtils.ResolveClass((Class)node.CastType, Pcc, USOP));
             }
             Emit(node.CastTarget);
+            return true;
+        }
+
+        public bool VisitNode(LambdaExpression node)
+        {
+            WriteDelegateProperty(node.Lambda);
             return true;
         }
 

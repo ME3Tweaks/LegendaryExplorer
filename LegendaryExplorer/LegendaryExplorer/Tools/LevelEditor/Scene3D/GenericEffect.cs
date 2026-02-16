@@ -60,7 +60,7 @@ public sealed class GenericEffect<ConstantBufferData> : IDisposable where Consta
         context.UpdateSubresource(ref constantData, ConstantBuffer);
     }
 
-    public void RenderObject(DeviceContext context, Mesh<WorldVertex> mesh, int indexstart, int indexcount, params Span<ShaderResourceView> textures)
+    public void RenderObject(DeviceContext context, Mesh<WorldVertex> mesh, int indexstart, int indexcount, params ReadOnlySpan<ShaderResourceView> textures)
     {
 
         // Setup buffers for rendering
@@ -78,7 +78,7 @@ public sealed class GenericEffect<ConstantBufferData> : IDisposable where Consta
         context.DrawIndexed(indexcount, indexstart, 0);
     }
 
-    public void RenderObject(DeviceContext context, Mesh<WorldVertex> mesh, params Span<ShaderResourceView> textures)
+    public void RenderObject(DeviceContext context, Mesh<WorldVertex> mesh, params ReadOnlySpan<ShaderResourceView> textures)
     {
         RenderObject(context, mesh, 0, mesh.Triangles.Count * 3, textures);
     }

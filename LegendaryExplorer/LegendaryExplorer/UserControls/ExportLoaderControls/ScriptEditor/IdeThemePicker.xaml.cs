@@ -10,6 +10,7 @@ using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ST = LegendaryExplorerCore.UnrealScript.Analysis.Visitors.ST;
@@ -104,6 +105,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
             // Apply live preview for the initially selected theme
             ApplyCurrentColorsToSyntaxInfo();
             UpdateDirtyIndicators();
+
+            Closed += (_, _) =>
+            {
+                //ensure singleton is cleared even if Closing was bypassed
+                Instance = null;
+            };
         }
 
         private static IdeThemePicker Instance;
@@ -484,11 +491,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor
                 string colorStr = prop.Value.ToString();
                 if (prop.Name == "Background")
                 {
-                    try { bg = (Color)ColorConverter.ConvertFromString(colorStr); } catch { }
+                    try { bg = (Color)ColorConverter.ConvertFromString(colorStr); }
+                    catch (FormatException ex) { Debug.WriteLine($"Failed to parse background color '{colorStr}': {ex.Message}"); }
                 }
                 else if (Enum.TryParse<ST>(prop.Name, out var ef))
                 {
-                    try { colors[ef] = (Color)ColorConverter.ConvertFromString(colorStr); } catch { }
+                    try { colors[ef] = (Color)ColorConverter.ConvertFromString(colorStr); }
+                    catch (FormatException ex) { Debug.WriteLine($"Failed to parse color '{prop.Name}' = '{colorStr}': {ex.Message}"); }
                 }
             }
             return new ThemeData(bg, colors);

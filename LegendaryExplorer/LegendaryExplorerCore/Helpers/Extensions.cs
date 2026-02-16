@@ -242,6 +242,18 @@ namespace LegendaryExplorerCore.Helpers
             return src.Where(obj => obj != null);
         }
 
+        public static IEnumerable<TOut> SelectWhereNonNull<TIn, TOut>(this IEnumerable<TIn> src, Func<TIn, TOut> selector) where TOut : class
+        {
+            foreach (TIn obj in src)
+            {
+                TOut selected = selector(obj);
+                if (selected is not null)
+                {
+                    yield return selected;
+                }
+            }
+        }
+
         public static string StringJoin<T>(this IEnumerable<T> values, string separator)
         {
             return string.Join(separator, values);
@@ -780,7 +792,7 @@ namespace LegendaryExplorerCore.Helpers
         /// <summary>
         /// Converts Degrees to Unreal rotation units
         /// </summary>
-        public static int DegreesToUnrealRotationUnits(this float degrees) => Convert.ToInt32(degrees * 65536f / 360f);
+        public static int DegreesToUnrealRotationUnits(this float degrees) => Convert.ToInt32(degrees * (65536f / 360f));
 
         /// <summary>
         /// Converts Radians to Unreal rotation units

@@ -429,11 +429,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             editBox.Text = NO_STRING_SELECTED; //Reset ability to save, reset edit box if export changed.
         }
 
-        public void LoadFileFromStream(Stream stream)
+        public void LoadFileFromStream(Stream stream, string source)
         {
             UnloadExport();
             CurrentLoadedFile = null;
-            _currentMe2Me3Me2Me3TalkFile = new ME2ME3TalkFile(stream);
+            _currentMe2Me3Me2Me3TalkFile = new ME2ME3TalkFile(stream, source);
 
             // Need way to load a file without having it show up in the recents
 

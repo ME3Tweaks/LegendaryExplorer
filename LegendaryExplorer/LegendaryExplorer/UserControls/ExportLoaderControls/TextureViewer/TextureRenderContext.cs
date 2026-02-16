@@ -4,12 +4,12 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using LegendaryExplorer.UserControls.SharedToolControls.Scene3D;
+using LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D;
 using SharpDX.Direct3D11;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.TextureViewer
 {
-    public class TextureRenderContext : RenderContext
+    public class TextureRenderContext : LegacyRenderContext
     {
         [Flags]
         public enum TextureViewFlags : int

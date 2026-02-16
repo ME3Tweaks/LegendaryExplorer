@@ -6,8 +6,11 @@ using System.Xml.Linq;
 
 namespace LegendaryExplorerCore.Coalesced
 {
-	public class CoalesceSettings
+	public partial class CoalesceSettings
 	{
+		[GeneratedRegex(@"\s+")]
+		private static partial Regex WhitespaceRegex { get; }
+
 		public CoalesceSettings(IEnumerable<int> compileTypes = null, int overrideCompileValueTypes = -1)
 		{
 			CompileTypes = compileTypes ?? new []{0, 1, 2, 3, 4};
@@ -20,10 +23,7 @@ namespace LegendaryExplorerCore.Coalesced
 
 		public static CoalesceSettings FromDictionary(Dictionary<string, string> settings)
 		{
-			if (settings == null)
-			{
-				throw new ArgumentNullException(nameof(settings));
-			}
+			ArgumentNullException.ThrowIfNull(settings);
 
 			var result = new CoalesceSettings();
 
@@ -34,10 +34,7 @@ namespace LegendaryExplorerCore.Coalesced
 
 		public static CoalesceSettings FromXml(IEnumerable<XElement> settings)
 		{
-			if (settings == null)
-			{
-				throw new ArgumentNullException(nameof(settings));
-			}
+			ArgumentNullException.ThrowIfNull(settings);
 
 			var result = new CoalesceSettings();
 
@@ -48,10 +45,7 @@ namespace LegendaryExplorerCore.Coalesced
 
 		public void Parse(Dictionary<string, string> settings)
 		{
-			if (settings == null)
-			{
-				throw new ArgumentNullException(nameof(settings));
-			}
+			ArgumentNullException.ThrowIfNull(settings);
 
 			foreach (var setting in settings)
 			{
@@ -61,10 +55,7 @@ namespace LegendaryExplorerCore.Coalesced
 
 		public void Parse(IEnumerable<XElement> settings)
 		{
-			if (settings == null)
-			{
-				throw new ArgumentNullException(nameof(settings));
-			}
+			ArgumentNullException.ThrowIfNull(settings);
 
 			foreach (var setting in settings)
 			{
@@ -93,15 +84,8 @@ namespace LegendaryExplorerCore.Coalesced
 
 		public void SetValue(string name, object value)
 		{
-			if (string.IsNullOrEmpty(name))
-			{
-				throw new ArgumentNullException(nameof(name));
-			}
-
-			if (value == null)
-			{
-				throw new ArgumentNullException(nameof(value));
-			}
+			ArgumentException.ThrowIfNullOrEmpty(name);
+			ArgumentNullException.ThrowIfNull(value);
 
 			switch (name)
 			{
@@ -114,10 +98,10 @@ namespace LegendaryExplorerCore.Coalesced
 						return;
 					}
 
-					str = Regex.Replace(str, @"\s+", "");
+					str = WhitespaceRegex.Replace(str, "");
 
 					//CompileTypes = str.Split(',').Select(n => Convert.ToInt32(n)).ToArray();
-					CompileTypes = str.Split(new []{ ',' }, StringSplitOptions.RemoveEmptyEntries).Select(n => Convert.ToInt32(n)).ToArray();
+					CompileTypes = str.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(n => Convert.ToInt32(n)).ToArray();
 
 					break;
 				}
@@ -132,15 +116,8 @@ namespace LegendaryExplorerCore.Coalesced
 
 		public bool TrySetValue(string name, object value)
 		{
-			if (string.IsNullOrEmpty(name))
-			{
-				throw new ArgumentNullException(nameof(name));
-			}
-
-			if (value == null)
-			{
-				throw new ArgumentNullException(nameof(value));
-			}
+			ArgumentException.ThrowIfNullOrEmpty(name);
+			ArgumentNullException.ThrowIfNull(value);
 
 			switch (name)
 			{
@@ -153,10 +130,10 @@ namespace LegendaryExplorerCore.Coalesced
 						return false;
 					}
 
-					str = Regex.Replace(str, @"\s+", "");
+					str = WhitespaceRegex.Replace(str, "");
 
 					//CompileTypes = str.Split(',').Select(n => Convert.ToInt32(n)).ToArray(); 
-					CompileTypes = str.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(n => Convert.ToInt32(n)).ToArray(); 
+					CompileTypes = str.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(n => Convert.ToInt32(n)).ToArray(); 
 					
 					break;
 				}

@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Unreal
 {
@@ -19,6 +21,7 @@ namespace LegendaryExplorerCore.Unreal
         public List<Vector3> VertexNormals;
         public List<MorphInfo> Morphs;
         public List<MorphDelta> MorphData;
+        public List<Vector2> ExtraUVs;
 
         private const int version = 1999801;
 
@@ -127,6 +130,19 @@ namespace LegendaryExplorerCore.Unreal
                     sc.Serialize(ref morphDataHeader);
                     sc.Serialize(ref MorphData, morphDataHeader.DataCount, sc.Serialize);
                 }
+
+                if (ExtraUVs != null && ExtraUVs.Count != 0)
+                {
+                    var extraUVsHeader = new PSA.ChunkHeader
+                    {
+                        ChunkID = "EXTRAUVS",
+                        Version = version,
+                        DataSize = 0x8,
+                        DataCount = ExtraUVs.Count
+                    };
+                    sc.Serialize(ref extraUVsHeader);
+                    sc.Serialize(ref ExtraUVs, extraUVsHeader.DataCount, sc.Serialize);
+                }
             }
         }
 
@@ -157,6 +173,119 @@ namespace LegendaryExplorerCore.Unreal
             return psk;
         }
 
+        public static PSK CreateFromStaticMesh(StaticMesh staticMesh, int lodIdx = 0)
+        {
+            var lod = staticMesh.LODModels[lodIdx];
+
+            var numVertices = lod.NumVertices;
+
+            var psk = new PSK
+            {
+                Points = [],
+                Wedges = [],
+                Faces = [],
+                Materials = [],
+                VertexNormals = [],
+                ExtraUVs = []
+             };
+
+            int numTriangles = 0;
+            var matIndices = new byte[numVertices];
+            var useFullPrecisionUVs = lod.VertexBuffer.bUseFullPrecisionUVs;
+
+            // account for any weirdness in the materials and indices, or multiple elements with the same material
+            int[] mats = [.. lod.Elements.Select(x => x.Material).Distinct()];
+            foreach (var element in lod.Elements)
+            {
+                element.MaterialIndex = mats.IndexOf(element.Material);
+            }
+
+            foreach (var matUIndex in mats)
+            {
+                psk.Materials.Add(new PSKMaterial
+                {
+                    Name = staticMesh.Export.FileRef.GetEntry(matUIndex)?.ObjectName.Instanced ?? ""
+                });
+            }
+
+            // allocate the space we need for all extra UVs
+            var numberExtraUvs = lod.VertexBuffer.NumTexCoords - 1;
+            Vector2[] tempExtraUVs = [];
+            if (numberExtraUvs > 0)
+            {
+                tempExtraUVs = new Vector2[(int)numVertices * (int)numberExtraUvs];
+            }
+
+
+            foreach (var element in lod.Elements)
+            {
+                numTriangles += (int)element.NumTriangles;
+                for (uint t = 0; t < element.NumTriangles; t++)
+                {
+                    // FirstIndex is the index within the index buffer. divide by three to get the triangle number
+                    uint baseIndex = element.FirstIndex;
+                    // TODO sometimes the index buffer might not be there (according to other comments in LEX) in which case we have to look at triangles in KDOPS
+                    int i1 = lod.IndexBuffer[baseIndex + t * 3];
+                    int i2 = lod.IndexBuffer[baseIndex + t * 3 + 1];
+                    int i3 = lod.IndexBuffer[baseIndex + t * 3 + 2];
+                    byte materialIndex = (byte)element.MaterialIndex;
+                    matIndices[i1] = materialIndex;
+                    matIndices[i2] = materialIndex;
+                    matIndices[i3] = materialIndex;
+                    psk.Faces.Add(new PSKTriangle
+                    {
+                        // intentionally flipped; corner ordering determines normal direction, and flipped normals will mess everything up
+                        WedgeIdx1 = (ushort)i1,
+                        WedgeIdx0 = (ushort)i2,
+                        WedgeIdx2 = (ushort)i3,
+                        MatIndex = materialIndex
+                    });
+                }
+            }
+
+            foreach (var pos in lod.PositionVertexBuffer.VertexData)
+            {
+                psk.Points.Add(new Vector3(pos.X, pos.Y * -1, pos.Z));
+            }
+
+            for (int i = 0; i < lod.VertexBuffer.VertexData.Length; i++)
+            {
+                var vert = lod.VertexBuffer.VertexData[i];
+
+                // vertex normal
+                var vertNorm = (Vector3)vert.TangentZ;
+                vertNorm = vertNorm with { Y = -vertNorm.Y };
+                vertNorm = Vector3.Normalize(vertNorm);
+                psk.VertexNormals.Add(vertNorm);
+
+                // wedges
+                psk.Wedges.Add(new PSKWedge
+                {
+                    MatIndex = matIndices[i],
+                    PointIndex = (ushort)i,
+                    U = useFullPrecisionUVs ? vert.HalfPrecisionUVs[0].X : vert.HalfPrecisionUVs[0].X,
+                    V = useFullPrecisionUVs ? vert.HalfPrecisionUVs[0].Y : vert.HalfPrecisionUVs[0].Y
+                });
+
+                // extra UVs in the pskx are laid out with all of UV1, then all of UV2, with the length matching the number of wedges, which in this case is the same as the number of points
+                for (int j = 1; j < lod.VertexBuffer.NumTexCoords; j++)
+                {
+                    var extraUV = new Vector2(useFullPrecisionUVs ? vert.HalfPrecisionUVs[j].X : vert.HalfPrecisionUVs[j].X, useFullPrecisionUVs ? vert.HalfPrecisionUVs[j].Y : vert.HalfPrecisionUVs[j].Y);
+                    tempExtraUVs[i + ((j - 1) * (int)numVertices)] = extraUV;
+                }
+            }
+
+            psk.ExtraUVs = [.. tempExtraUVs];
+
+            return psk;
+        }
+
+        // used for static mesh collision, among other things
+        public static PSK CreateFromAggGeom(StructProperty aggGeom)
+        {
+            throw new NotImplementedException();
+        }
+
         public static PSK CreateFromSkeletalMesh(SkeletalMesh skelMesh, int lodIdx = 0, bool includeVertexNormals = false)
         {
             var lod = skelMesh.LODModels[lodIdx];
@@ -176,6 +305,19 @@ namespace LegendaryExplorerCore.Unreal
             };
             int numTriangles = 0;
             var matIndices = new byte[numVertices];
+            int[] materialMapping = [.. Enumerable.Range(0, skelMesh.Materials.Length)];
+            if (skelMesh.Export != null)
+            {
+                var LODInfo =  skelMesh.Export.GetProperty<ArrayProperty<StructProperty>>("LODInfo");
+                if (LODInfo != null && LODInfo.Count > lodIdx)
+                {
+                    var matMap = LODInfo[lodIdx].GetProp<ArrayProperty<IntProperty>>("LODMaterialMap");
+                    if (matMap != null && matMap.Count > 0)
+                    {
+                        materialMapping = [.. matMap.Select(x => x.Value)];
+                    }
+                }
+            }
             foreach (SkelMeshSection section in lod.Sections)
             {
                 numTriangles += section.NumTriangles;
@@ -185,7 +327,7 @@ namespace LegendaryExplorerCore.Unreal
                     int i1 = lod.IndexBuffer[baseIndex + t * 3];
                     int i2 = lod.IndexBuffer[baseIndex + t * 3 + 1];
                     int i3 = lod.IndexBuffer[baseIndex + t * 3 + 2];
-                    byte materialIndex = (byte)section.MaterialIndex;
+                    byte materialIndex = (byte)materialMapping[section.MaterialIndex];
                     matIndices[i1] = materialIndex;
                     matIndices[i2] = materialIndex;
                     matIndices[i3] = materialIndex;

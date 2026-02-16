@@ -6,12 +6,10 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 {
-    public sealed class ASTHighlighter : IHighlighter, ILineTracker
+    public sealed class ASTHighlighter : IHighlighter
     {
         public IDocument Document { get; }
         public HighlightingColor DefaultTextColor => SyntaxInfo.HighlightingColors[ST.None];
-        private readonly WeakLineTracker weakLineTracker;
-
         private readonly SyntaxInfo SyntaxInfo;
 
         public ASTHighlighter(TextDocument document, SyntaxInfo syntaxInfo)
@@ -19,7 +17,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             SyntaxInfo = syntaxInfo ?? throw new ArgumentNullException(nameof(syntaxInfo));
             Document = document ?? throw new ArgumentNullException(nameof(document));
             document.VerifyAccess();
-            //weakLineTracker = WeakLineTracker.Register(document, this);
         }
 
         public HighlightedLine HighlightLine(int lineNumber)
@@ -93,41 +90,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 
         public void Dispose()
         {
-            weakLineTracker?.Deregister();
         }
-
-        #region ILineTracker
-
-        void ILineTracker.BeforeRemoveLine(DocumentLine line)
-        {
-            throw new NotImplementedException();
-        }
-
-        void ILineTracker.SetLineLength(DocumentLine line, int newTotalLength)
-        {
-            throw new NotImplementedException();
-        }
-
-        void ILineTracker.LineInserted(DocumentLine insertionPos, DocumentLine newLine)
-        {
-            throw new NotImplementedException();
-        }
-
-        void ILineTracker.RebuildDocument()
-        {
-            throw new NotImplementedException();
-        }
-
-        void ILineTracker.ChangeComplete(DocumentChangeEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
 
         public void BeginHighlighting() {}
         public void EndHighlighting() {}
-        public HighlightingColor GetNamedColor(string name) => throw new NotImplementedException();
-        public IEnumerable<HighlightingColor> GetColorStack(int lineNumber) => throw new NotImplementedException();
+        public HighlightingColor GetNamedColor(string name) => null;
+        public IEnumerable<HighlightingColor> GetColorStack(int lineNumber) => Array.Empty<HighlightingColor>();
     }
 }

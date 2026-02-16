@@ -19,12 +19,12 @@ using Texture2D = SharpDX.Direct3D11.Texture2D;
 using D2D = SharpDX.Direct2D1;
 using DW = SharpDX.DirectWrite;
 
-namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D;
+namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D;
 
 /// <summary>
 /// Handles rendering of mesh data
 /// </summary>
-public class MeshRenderContext : RenderContext
+public class MeshRenderContext : LegacyRenderContext
 {
     /// <summary>
     /// The current flags for rendering textures. This renderer does not support 'SetAlphaAsBlack' or 'ReconstructZ'
@@ -438,7 +438,7 @@ public class MeshRenderContext : RenderContext
 
     public override bool MouseUp(MouseButtons button, int x, int y)
     {
-        bool handled = Orbiting | Panning | Zooming;
+        bool handled = Orbiting || Panning || Zooming;
 
         Orbiting = false;
         Panning = false;
@@ -537,8 +537,8 @@ file class BlendDescComparer : IEqualityComparer<RenderTargetBlendDescription>
     public bool Equals(RenderTargetBlendDescription x, RenderTargetBlendDescription y)
     {
         return x.IsBlendEnabled.Equals(y.IsBlendEnabled)
-               && x.SourceBlend == y.SourceBlend 
-               && x.DestinationBlend == y.DestinationBlend 
+               && x.SourceBlend == y.SourceBlend
+               && x.DestinationBlend == y.DestinationBlend
                && x.BlendOperation == y.BlendOperation
                && x.SourceAlphaBlend == y.SourceAlphaBlend
                && x.DestinationAlphaBlend == y.DestinationAlphaBlend
@@ -549,7 +549,7 @@ file class BlendDescComparer : IEqualityComparer<RenderTargetBlendDescription>
     public int GetHashCode(RenderTargetBlendDescription obj)
     {
         return HashCode.Combine(obj.IsBlendEnabled, (int)obj.SourceBlend,
-            (int)obj.DestinationBlend, (int)obj.BlendOperation, 
+            (int)obj.DestinationBlend, (int)obj.BlendOperation,
             (int)obj.SourceAlphaBlend, (int)obj.DestinationAlphaBlend,
             (int)obj.AlphaBlendOperation, (int)obj.RenderTargetWriteMask);
     }

@@ -4624,5 +4624,20 @@ defaultproperties
             var hosted = new ExportLoaderHostedWindow(loader);
             hosted.Show();
         }
+
+        internal static void TestTLKSystem(PackageEditorWindow packageEditorWindow)
+        {
+            MEGame[] games = [MEGame.ME1, MEGame.ME2, MEGame.ME3, MEGame.LE1, MEGame.LE2, MEGame.LE3];
+            bool male = true;
+            foreach (var game in games)
+            {
+                Debug.WriteLine(game);
+                var tlks = TLKSystem.LoadTLKs(game, MELocalization.INT, true);
+                foreach (var tlk in tlks)
+                {
+                    Debug.WriteLine(tlk.Source);
+                }
+            }
+        }
     }
 }

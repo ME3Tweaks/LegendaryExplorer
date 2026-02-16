@@ -13,7 +13,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
     public class AnimSequence : ObjectBinary
     {
-        public static readonly AnimationCompressionFormat[] ValidRotationCompressionFormats = { AnimationCompressionFormat.ACF_None, AnimationCompressionFormat.ACF_Float96NoW, AnimationCompressionFormat.ACF_BioFixed48, AnimationCompressionFormat.ACF_Fixed48NoW };
+        public static readonly AnimationCompressionFormat[] ValidRotationCompressionFormats =
+            [AnimationCompressionFormat.ACF_None, AnimationCompressionFormat.ACF_Float96NoW, AnimationCompressionFormat.ACF_BioFixed48, AnimationCompressionFormat.ACF_Fixed48NoW];
 
         public List<AnimTrack> RawAnimationData;
         public byte[] CompressedAnimationData;
@@ -118,7 +119,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return;
             }
             var ms = new MemoryStream(CompressedAnimationData);
-            RawAnimationData = new List<AnimTrack>();
+            RawAnimationData = [];
 
             for (int i = 0; i < Bones.Count; i++)
             {
@@ -305,7 +306,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         private void CompressAnimationData(MEGame game, AnimationCompressionFormat newRotationCompression)
         {
             /* SirCxyrtyx 8/12/24: Always decompress, do not use pre-existing RawAnimationData if from a upk.
-             * In same cases, the RawAnimationData is wrong for unknown reasons ¯\_(ツ)_/¯
+             * In some cases, the RawAnimationData is wrong for unknown reasons ¯\_(ツ)_/¯
              * The compressed data should be regarded as the source of truth
              */
             DecompressAnimationData();

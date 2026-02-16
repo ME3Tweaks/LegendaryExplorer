@@ -345,10 +345,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
 			{
 				throw new ArgumentOutOfRangeException(nameof(position), "Index outside of the buffer scope");
 			}
-			if (buf == null)
-			{
-				throw new ArgumentNullException(nameof(buf));
-			}
+			ArgumentNullException.ThrowIfNull(buf);
 			if (position == 0)
 			{
 				Prepend(buf);

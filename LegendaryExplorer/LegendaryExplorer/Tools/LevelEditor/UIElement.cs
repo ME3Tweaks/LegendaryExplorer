@@ -49,6 +49,7 @@ public class Widget : UIElement
     public bool IsDragging;
     private Vector2 DragStart;
     private Vector2 PrevDragPos;
+    private TransformSnapshot _dragStartSnapshot;
 
     Vector2 Origin, XAxisEnd, YAxisEnd, ZAxisEnd;
 
@@ -76,6 +77,7 @@ public class Widget : UIElement
 
         if (Mode is EWidgetMode.Rotate)
         {
+            //currently disabled in UI because the rotation math is wrong and causes incorrect rotations when the widget is dragged
             DrawRotator(context, ltw, origin);
         }
         else
@@ -369,14 +371,32 @@ public class Widget : UIElement
         PrevDragPos = new Vector2(x, y);
     }
 
+    /// <summary>
+    /// Called when a drag completes with the before and after transform snapshots.
+    /// Wired by LevelEditor to push undo actions.
+    /// </summary>
+    public Action<ActorProxy, TransformSnapshot, TransformSnapshot> OnDragComplete;
+
     public void BeginDrag(int x, int y)
     {
         IsDragging = true;
         PrevDragPos = DragStart = new Vector2(x, y);
+        if (Attach is not null)
+        {
+            _dragStartSnapshot = Attach.SnapshotTransform();
+        }
     }
 
     public void EndDrag()
     {
+        if (IsDragging && Attach is not null)
+        {
+            var afterSnapshot = Attach.SnapshotTransform();
+            if (!_dragStartSnapshot.Equals(afterSnapshot))
+            {
+                OnDragComplete?.Invoke(Attach, _dragStartSnapshot, afterSnapshot);
+            }
+        }
         IsDragging = false;
     }
 }

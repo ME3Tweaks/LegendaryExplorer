@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.Misc;
+using System.Threading;
 
 namespace LegendaryExplorerCore.Packages
 {
@@ -22,7 +23,7 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Object used for synchronizing for threads
         /// </summary>
-        public readonly object syncObj = new();
+        public readonly Lock syncObj = new();
         /// <summary>
         /// Cache that should only be accessed read-only. Subclasses of this can reference this shared cache object
         /// </summary>

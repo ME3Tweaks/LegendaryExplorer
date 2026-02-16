@@ -345,7 +345,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
                         }
                     }
 
-                    pos = new Vector3(floats[0], floats[1], floats[2]);
+                    pos = new Vector3(floats);
                 }
                 noUpdate = true;
                 XPos = (int)pos.X;
@@ -615,7 +615,7 @@ namespace LegendaryExplorer.Tools.AssetViewer
                     // Object Instance DB doesn't include class name, and AssetDB doesn't store name of usage
                     // Object -> Package containing it
                     var foundActorTypes = new CaseInsensitiveConcurrentDictionary<string>();
-                    object syncObj = new object();
+                    var syncObj = new Lock();
                     foreach (var cr in db.ClassRecords)
                     {
                         if (GlobalUnrealObjectInfo.IsA(cr.Class, "SFXPawn", MEGame.LE3))

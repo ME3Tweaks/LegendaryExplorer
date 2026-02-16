@@ -2258,7 +2258,7 @@ namespace Be.Windows.Forms
         }
 
         [GeneratedRegex("[^0-9A-Fa-f]")]
-        private static partial Regex ValidHexRegex();
+        private static partial Regex ValidHexRegex { get; }
 
         /// <summary>
         /// Replaces the current selection in the hex box with the contents of the Clipboard.
@@ -2281,12 +2281,11 @@ namespace Be.Windows.Forms
             else if (da.GetDataPresent(typeof(string)))
             {
                 string sBuffer = (string)da.GetData(typeof(string));
-                Regex invalidHex = ValidHexRegex();
-                bool hexString = !invalidHex.IsMatch(sBuffer) && sBuffer.Length % 2 == 0;
+                bool hexString = !ValidHexRegex.IsMatch(sBuffer) && sBuffer.Length % 2 == 0;
                 if (!hexString)
                 {
                     string spaceLess = sBuffer.Replace(" ", "");
-                    if (!invalidHex.IsMatch(spaceLess) && spaceLess.Length % 2 == 0)
+                    if (!ValidHexRegex.IsMatch(spaceLess) && spaceLess.Length % 2 == 0)
                     {
                         hexString = true;
                         sBuffer = spaceLess;
@@ -3232,6 +3231,7 @@ namespace Be.Windows.Forms
         #region Properties
 
         private int _minWidth;
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int MinWidth
         {
             get => (int)Math.Ceiling(_minWidth / ScalingFactor);
@@ -3239,6 +3239,7 @@ namespace Be.Windows.Forms
         }
 
         private int _maxWidth;
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int MaxWidth
         {
             get => (int)Math.Ceiling(_maxWidth / ScalingFactor);
@@ -3712,6 +3713,7 @@ namespace Be.Windows.Forms
         /// Default alpha = 100
         /// </remarks>
         [Category("Hex"), Description("Gets or sets the color of the shadow selection.")]
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color ShadowSelectionColor
         {
             get { return _shadowSelectionColor; }
@@ -4324,18 +4326,22 @@ namespace Be.Windows.Forms
                 }));
         }
         #endregion
-
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public System.Drawing.Font BoldFont { get; set; }
-        /// <summary>
+        
+        // <summary>
         /// Sets the minimum amount of bytes per row that can be displayed.
         /// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] 
         public int MinBytesPerLine { get; set; }
 
         /// <summary>
         /// Sets the maximum amount of bytes per row that can be displayed.
         /// </summary>
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)] 
         public int MaxBytesPerLine { get; set; }
 
+        [Browsable(false), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Color LineInfoForeColor { get; set; }
 
         #region DarkModeSupport

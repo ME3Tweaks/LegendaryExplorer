@@ -16,6 +16,7 @@ using System.Diagnostics;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.Packages;
 using Newtonsoft.Json.Linq;
+using System.Threading;
 using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor;
 
 namespace LegendaryExplorer.Misc.AppSettings
@@ -25,7 +26,7 @@ namespace LegendaryExplorer.Misc.AppSettings
     /// </summary>
     public static partial class Settings
     {
-        private static readonly object settingsSyncObj = new();
+        private static readonly Lock settingsSyncObj = new();
 <# // This code runs in the text template:
     // Can't use named tuples it seems
     string[] MEGame = new[] {"ME1", "ME2", "ME3", "LE1", "LE2", "LE3", "UDK"}; // It's not worth importing LEC

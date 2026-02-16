@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using LegendaryExplorerCore.Helpers;
+﻿using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Language.ByteCode;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
 namespace LegendaryExplorerCore.UnrealScript.Decompiling
@@ -848,7 +849,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
         private Expression DecompileDelegateFunction()
         {
             PopByte(); //opcode
-            PopByte(); //IsLocalVariable. irrelevant to decompilation
+            bool isLocal = ReadByte() == 1;
             StartPositions.Push((ushort)Position);
             var delegateProp = DecompileObjectLookup();
             if (delegateProp is not SymbolReference symRef) return null;
@@ -859,6 +860,10 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             if (args == null) return null;
 
             StartPositions.Pop();
+            if (symRef.Name.Equals($"__{delegateTypeName.Instanced}__Delegate", StringComparison.OrdinalIgnoreCase))
+            {
+                return new FunctionCall(new SymbolReference(null, delegateTypeName.Instanced), args, -1, -1);
+            }
             return new DelegateCall(symRef, args);
         }
 
@@ -875,6 +880,13 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             if (string.Equals(name.Name, "None", StringComparison.OrdinalIgnoreCase))
             {
                 return new NoneLiteral();
+            }
+            if (name.Name.StartsWith("__lambda__", StringComparison.OrdinalIgnoreCase) && ContainingClass.LocalFunctionMap.TryGetValue(name, out int lambdaUIdx) && Function is not null
+                && Pcc.TryGetUExport(lambdaUIdx, out ExportEntry lambdaExport) && FileLib.GetCachedObjectBinary<UFunction>(lambdaExport, Usop) is UFunction uFunction)
+            {
+                Function lambda = ScriptObjectToASTConverter.ConvertFunction(uFunction, FileLib, Usop, ContainingClass, true);
+                Function.Lambdas.Add(lambda);
+                return new LambdaExpression(null, lambda);
             }
             return new SymbolReference(null, name);
         }

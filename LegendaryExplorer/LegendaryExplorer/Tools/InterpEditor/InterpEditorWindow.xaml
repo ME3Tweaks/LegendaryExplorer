@@ -50,6 +50,13 @@
                 <MenuItem Header="Tools" Padding="4">
                     <MenuItem Header="Goto #" Command="{Binding GotoCommand}" InputGestureText="Ctrl+G" />
                     <MenuItem Header="Rename Track" Command="{Binding RenameTrackCommand}" InputGestureText="F2" />
+                    <Separator />
+                    <MenuItem Header="Insert Key at Time..." Command="{Binding InsertKeyCommand}" ToolTip="Inserts a key with default values at a specified time on the selected track." />
+                    <MenuItem Header="Add Preset Group">
+                        <MenuItem Header="Director Group" Command="{Binding AddPresetDirectorGroupCommand}" ToolTip="Add an InterpGroupDirector with Director and DOF tracks." />
+                        <MenuItem Header="Camera Group" Command="{Binding AddPresetCameraGroupCommand}" ToolTip="Add a Camera InterpGroup with Move and FOV tracks." />
+                        <MenuItem Header="Actor Group" Command="{Binding AddPresetActorGroupCommand}" ToolTip="Add an Actor InterpGroup with Move and Gesture tracks." />
+                    </MenuItem>
                 </MenuItem>
 
                 <interpExperiments:InterpExperimentsMenuControl x:Name="InterpExperimentsMenu"  Visibility="{Binding ShowExperiments, Converter={StaticResource BoolToVisibilityConverter}}"/>
@@ -89,11 +96,11 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel Grid.Column="0" Grid.ColumnSpan="3"
                                 Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, ConverterParameter='Reversed'}">
-                        <TextBlock Margin="5" Text="Welcome to Interp Viewer" FontWeight="Bold" />
+                        <TextBlock Margin="5" Text="Welcome to Interp Editor" FontWeight="Bold" />
                         <TextBlock Margin="5">
-                            This tool allows you to visualize Unreal's Matinee Sequences
+                            This tool allows you to visualize and edit Unreal's Matinee Sequences.
                             <LineBreak />
-                            You can add groups and tracks, and edit those tracks in the Properties and Curve Editor tabs.
+                            You can add groups and tracks, insert and delete keys, and edit properties in the Properties and Curve Editor tabs.
                             <LineBreak />
                         </TextBlock>
 

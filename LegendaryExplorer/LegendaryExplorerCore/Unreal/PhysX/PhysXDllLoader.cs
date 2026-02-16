@@ -10,19 +10,30 @@ namespace LegendaryExplorerCore.Unreal.PhysX
     internal static class PhysXDllLoader
     {
         internal const string PHYSXCOOKING64_DLL = "PhysXCooking64.dll";
+        internal const string PHYSXCORE64_DLL = "PhysXCore64.dll";
+        internal const string PHYSXLOADER64_DLL = "PhysXLoader64.dll";
 
         private static bool cookingDllLoaded;
+        private static bool coreDllLoaded;
+        private static bool loaderDllLoaded;
 
-        private static void LoadCookingDll(string dllPath)
+        public static bool EnsureCookingDll() => EnsureDll(PHYSXCOOKING64_DLL, ref cookingDllLoaded);
+
+        public static bool EnsureCoreDll() => EnsureDll(PHYSXCORE64_DLL, ref coreDllLoaded);
+
+        public static bool EnsureLoaderDll() => EnsureDll(PHYSXLOADER64_DLL, ref loaderDllLoaded, "PhysXLocal");
+
+        private static void LoadDll(string dllPath, ref bool dllLoaded)
         {
-            if (!cookingDllLoaded)
+            if (!dllLoaded)
             {
-                LECLog.Information($@"Loading physx cooking library into memory from {dllPath}");
+                LECLog.Information($@"Loading physx library into memory from {dllPath}");
                 NativeLibrary.Load(dllPath);
-                cookingDllLoaded = true;
+                dllLoaded = true;
             }
         }
-        public static bool EnsureCookingDll()
+
+        private static bool EnsureDll(string filename, ref bool dllLoaded, string srcRelativePath = null)
         {
             if (cookingDllLoaded)
             {
@@ -40,10 +51,10 @@ namespace LegendaryExplorerCore.Unreal.PhysX
                     string tpath = null;
                     try
                     {
-                        tpath = Path.Combine(path, PHYSXCOOKING64_DLL);
+                        tpath = Path.Combine(path, filename);
                         if (File.Exists(tpath))
                         {
-                            LoadCookingDll(tpath);
+                            LoadDll(tpath, ref dllLoaded);
                             return true;
                         }
                     }
@@ -57,21 +68,21 @@ namespace LegendaryExplorerCore.Unreal.PhysX
                 string anLEExecutableFolder = LE3Directory.ExecutableFolder ?? LE2Directory.ExecutableFolder ?? LE1Directory.ExecutableFolder;
                 if (anLEExecutableFolder is not null)
                 {
-                    string dllPath = Path.Combine(anLEExecutableFolder, PHYSXCOOKING64_DLL);
+                    string dllPath = srcRelativePath is null ? Path.Combine(anLEExecutableFolder, filename) : Path.Combine(anLEExecutableFolder, srcRelativePath, filename);
                     if (File.Exists(dllPath) && paths.Length > 0)
                     {
                         try
                         {
-                            string destPath = Path.Combine(paths.First(), PHYSXCOOKING64_DLL);
-                            LECLog.Information($@"Caching physx cooking dll: {dllPath} -> {destPath}");
+                            string destPath = Path.Combine(paths.First(), filename);
+                            LECLog.Information($@"Caching {filename}: {dllPath} -> {destPath}");
                             File.Copy(dllPath, destPath, true);
-                            LoadCookingDll(destPath);
+                            LoadDll(destPath, ref dllLoaded);
                         }
                         catch (UnauthorizedAccessException)
                         {
                             // I guess just try to load it... might lock the folder :(
-                            LECLog.Error($@"Could not copy physx cooking dll to native dll directory, loading directly out of game dir instead: {dllPath}");
-                            LoadCookingDll(dllPath);
+                            LECLog.Error($@"Could not copy {filename} to native dll directory, loading directly out of game dir instead: {dllPath}");
+                            LoadDll(dllPath, ref dllLoaded);
                         }
 
                         return true;
@@ -79,7 +90,7 @@ namespace LegendaryExplorerCore.Unreal.PhysX
                 }
             }
 
-            LECLog.Warning(@"Failed to source physx cooking dll from filesystem");
+            LECLog.Warning($@"Failed to source {filename} from filesystem");
             return false;
         }
     }

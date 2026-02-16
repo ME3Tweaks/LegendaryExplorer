@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 
 namespace LegendaryExplorer.Misc
 {
@@ -8,7 +9,7 @@ namespace LegendaryExplorer.Misc
     /// </summary>
     public static partial class HLSLDecompiler
     {
-        private static readonly object DecompileShaderLock = new(); 
+        private static readonly Lock DecompileShaderLock = new();
 
         private const int MAX_SHADER_LEN = 65535; // 64KB
 

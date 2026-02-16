@@ -354,7 +354,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 if (needsAdd)
                 {
-                    if (node.VarType is not PrimitiveType)
+                    if (node.VarType is not PrimitiveType && node.Outer is not Function { IsLambda: true })
                     {
                         node.VarType.Outer = node;
                         var typeStub = node.VarType;
@@ -362,7 +362,6 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             return Error($"No type named '{node.VarType.DisplayName()}' exists!", node.VarType.StartPos, node.VarType.EndPos);
                         }
-
                         //Tokens will only be set when parsing source code, not when linking up a decompiled AST
                         if (Log.Tokens is not null)
                         {
@@ -1182,6 +1181,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DefaultPropertiesBlock node)
         { throw new NotImplementedException(); }
         public bool VisitNode(Subobject node)
+        { throw new NotImplementedException(); }
+
+        public bool VisitNode(LambdaExpression lambdaExpression)
         { throw new NotImplementedException(); }
         #endregion
     }

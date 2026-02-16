@@ -10,6 +10,8 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.GameFilesystem;
+using System.IO;
 
 namespace LegendaryExplorerCore.Kismet
 {
@@ -1307,6 +1309,149 @@ namespace LegendaryExplorerCore.Kismet
                 }
                 KismetHelper.WriteEventLinksToNode(incomingEventLinkNode, eventLinks);
             }
+        }
+
+        public static ExportEntry GetNamedVar(ExportEntry sequence, NameReference varName, bool searchParents)
+        {
+            foreach (var entry in GetSequenceObjects(sequence))
+            {
+                if (entry is ExportEntry seqObj && seqObj.IsA("SequenceVariable")
+                    && seqObj.GetProperty<NameProperty>("VarName")?.Value == varName)
+                {
+                    return seqObj;
+                }
+            }
+            if (searchParents)
+            {
+                var parentSeq = GetParentSequence(sequence);
+                if (parentSeq != null)
+                {
+                    return GetNamedVar(parentSeq, varName, searchParents);
+                }
+            }
+            return null;
+        }
+
+        public static ExportEntry ResolveSeqVar_External(ExportEntry seqVarExternal)
+        {
+            if (seqVarExternal.GetProperty<StrProperty>("VariableLabel")?.Value is string varLabel
+                && seqVarExternal.GetProperty<ObjectProperty>("ParentSequence")?.ResolveToEntry(seqVarExternal.FileRef) is ExportEntry parentSeq
+                && GetVariableLinksOfNode(parentSeq).FirstOrDefault(link => link.PropertyName == varLabel) is VarLinkInfo varLink
+                && varLink.LinkedNodes.Count > 0 && varLink.LinkedNodes[0] is ExportEntry externalVar)
+            {
+                return externalVar;
+            }
+            return null;
+        }
+
+        public static ExportEntry ResolveSeqVar_Named(ExportEntry seqVarNamed)
+        {
+            if (seqVarNamed.GetProperty<NameProperty>("FindVarName")?.Value is NameReference varName
+                && seqVarNamed.GetProperty<ObjectProperty>("ParentSequence")?.ResolveToEntry(seqVarNamed.FileRef) is ExportEntry parentSeq)
+            {
+                //I'm assuming that the scoped version only checks the current sequence, but it appears to be a BW addition so I'm not sure
+                return GetNamedVar(parentSeq, varName, seqVarNamed.ClassName is not "SeqVar_ScopedNamed");
+            }
+            return null;
+        }
+
+        public static IEntry ResolveObjectVarValue(ExportEntry seqVar, bool searchRelatedFiles = false, bool femShep = true)
+        {
+            var pcc = seqVar.FileRef;
+            var props = seqVar.GetCondensedProperties();
+            string className = seqVar.ClassName;
+            MEGame game = pcc.Game;
+            switch (className)
+            {
+                case "SeqVar_Object":
+                    return props.GetProp<ObjectProperty>("ObjValue")?.ResolveToEntry(pcc);
+                case "BioSeqVar_ObjectFindByTag":
+                    NameReference tag;
+                    if (game.IsGame3())
+                    {
+                        tag = props.GetProp<NameProperty>("m_sObjectTagToFind")?.Value ?? NameReference.None;
+                    }
+                    else
+                    {
+                        tag = NameReference.FromInstancedString(props.GetProp<StrProperty>("m_sActorTagToFind")?.Value ?? "None");
+                    }
+                    return pcc.FindActorByTag(tag, searchRelatedFiles);
+                case "SeqVar_External":
+                    if (ResolveSeqVar_External(seqVar) is ExportEntry externalVar)
+                    {
+                        return ResolveObjectVarValue(externalVar, searchRelatedFiles);
+                    }
+                    break;
+                case "SeqVar_Named":
+                case "SeqVar_ScopedNamed":
+                    if (ResolveSeqVar_Named(seqVar) is ExportEntry namedVar)
+                    {
+                        return ResolveObjectVarValue(namedVar, searchRelatedFiles);
+                    }
+                    break;
+                //todo
+                case "SeqVar_Player":
+                    string playerPawnName = femShep ? "BioPawn_1" : "BioPawn_0";
+                    string playerFileName = game.IsGame1() ? $"EntryMenu.{(game is MEGame.ME1 ? "SFM" : "pcc")}" : "BioP_Char.pcc";
+                    if (MELoadedFiles.TryGetHighestMountedFile(game, playerFileName, out string playerFilePath)
+                        && File.Exists(playerFilePath))
+                    {
+                        using var playerFile = MEPackageHandler.OpenMEPackage(playerFilePath);
+                        return playerFile.FindExport("TheWorld.PersistentLevel." + playerPawnName);
+                    }
+                    break;
+                //ME3/LE3 only
+                case "SFXSeqVar_Hench":
+                    ReadOnlySpan<string> henchTags = ["hench_liara", "hench_garrus", "hench_tali", "hench_edi", "hench_marine", "hench_kaidan", "hench_ashley", "hench_prothean"];
+                    string henchTag = henchTags[Random.Shared.Next(0, henchTags.Length - 1)];
+                    if (props.GetProp<ArrayProperty<NameProperty>>("m_aRealPriorities") is { Count: > 0 } priorities
+                        && henchTags.Contains(priorities[0].Value.Name))
+                    {
+                        henchTag = priorities[0].Value.Name;
+                    }
+                    else if (props.GetProp<BoolProperty>("m_bBiggest")?.Value is true)
+                    {
+                        henchTag = "hench_garrus";
+                    }
+                    else if (props.GetProp<BoolProperty>("m_bSmallest")?.Value is true)
+                    {
+                        henchTag = "hench_tali";
+                    }
+                    else if (props.GetProp<BoolProperty>("m_bFirst")?.Value is true)
+                    {
+                        henchTag = "hench_liara";
+                    }
+                    else if (props.GetProp<BoolProperty>("m_bSecond")?.Value is true)
+                    {
+                        henchTag = "hench_kaidan";
+                    }
+                    (string henchFileName, string henchIFP) = henchTag switch
+                    {
+                        "hench_liara" => ("BioH_Liara_01.pcc", "TheWorld.PersistentLevel.SFXPawn_Liara_2"),
+                        "hench_garrus" => ("BioH_Garrus_01.pcc","TheWorld.PersistentLevel.SFXPawn_Garrus_2"),
+                        "hench_tali" => ("BioH_Tali_00.pcc", "TheWorld.PersistentLevel.SFXPawn_Tali_1"),
+                        "hench_edi" => ("BioH_EDI_00.pcc", "TheWorld.PersistentLevel.SFXPawn_EDI_0"),
+                        "hench_marine" => ("BioH_Marine_00_Explore.pcc", "TheWorld.PersistentLevel.SFXPawn_Marine_1"),
+                        "hench_kaidan" => ("BioH_Kaidan_00_Explore.pcc", "TheWorld.PersistentLevel.SFXPawn_Kaidan_1"),
+                        "hench_ashley" => ("BioH_Ashley_00_Explore.pcc", "TheWorld.PersistentLevel.SFXPawn_Ashley_2"),
+                        "hench_prothean" => ("BioH_Prothean_00.pcc", "TheWorld.PersistentLevel.SFXPawn_Prothean_1"),
+                        _ => throw new NotImplementedException(),
+                    };
+                    if (MELoadedFiles.TryGetHighestMountedFile(game, henchFileName, out string henchFilePath)
+                        && File.Exists(henchFilePath))
+                    {
+                        using var henchFile = MEPackageHandler.OpenMEPackage(henchFilePath);
+                        return henchFile.FindExport(henchIFP);
+                    }
+                    break;
+                //todo: add support for object lists
+                case "SeqVar_ObjectList":
+                case "BioSeqVar_ObjectListFindByTag":
+                default:
+                    break;
+            }
+            // Not an object var, can't resolve
+            return null;
         }
     }
 }

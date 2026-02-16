@@ -23,6 +23,23 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
     /// </summary>
     public partial class Timeline : ExportLoaderControl
     {
+        /// <summary>
+        /// Zoom scale thresholds and their corresponding timeline guide-line intervals (in seconds).
+        /// Each entry is (minScale, lineSpacingInSeconds). Checked in order from highest to lowest scale.
+        /// </summary>
+        private static readonly (double MinScale, double Spacing)[] GuideLineIntervals =
+        {
+            (1400, 0.05),
+            (400, 0.1),
+            (200, 0.25),
+            (110, 0.5),
+            (35, 1),
+            (7, 5),
+        };
+
+        private const double DefaultGuideLineSpacing = 10;
+        private const double DefaultScale = 100.0;
+        private const double DefaultOffset = 1.0;
         public override bool CanParse(ExportEntry exportEntry) => CanParseStatic(exportEntry);
 
         public static bool CanParseStatic(ExportEntry exportEntry) => exportEntry.ClassName == "InterpData";
@@ -36,6 +53,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void UnloadExport()
         {
             CurrentLoadedExport = null;
+            InterpData = null;
             InterpGroups.ClearEx();
             ResetView();
         }
@@ -66,7 +84,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public event Action<ExportEntry> SelectionChanged;
         public bool HasSelection(object obj) { return MatineeTree.SelectedItem != null; }
         public bool HasData(object obj) { return CurrentLoadedExport != null; }
-        public ObservableCollectionExtended<InterpGroup> InterpGroups { get; } = new();
+        public InterpData InterpData { get; private set; }
+        public ObservableCollectionExtended<InterpGroup> InterpGroups { get; } = [];
 
         public Timeline() : base("Timeline")
         {
@@ -80,6 +99,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand AddInterpGroupCmd { get; set; }
         public ICommand AddTrackCmd { get; set; }
         public ICommand RenameTrackCommand { get; set; }
+        public ICommand InsertKeyCmd { get; set; }
 
         private void LoadCommands()
         {
@@ -88,6 +108,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             AddInterpGroupCmd = new RelayCommand(AddInterpGroup, CanAddInterpGroup);
             AddTrackCmd = new GenericCommand(AddTrack, CanAddTrack);
             RenameTrackCommand = new GenericCommand(RenameTrack, CanRenameTrack);
+            InsertKeyCmd = new GenericCommand(InsertKeyAtTime, () => MatineeTree.SelectedItem is InterpTrack);
         }
 
         private void AddTrack()
@@ -103,6 +124,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         private bool CanAddTrack() => MatineeTree.SelectedItem is InterpGroup;
+
+        public void InsertKeyAtTime()
+        {
+            if (MatineeTree.SelectedItem is InterpTrack track)
+            {
+                string result = PromptDialog.Prompt(this, "Enter time for new key:", "Insert Key");
+                if (!string.IsNullOrEmpty(result) && float.TryParse(result, out float time))
+                {
+                    track.InsertKey(time);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Select a track in the timeline first.", "Insert Key", MessageBoxButton.OK);
+            }
+        }
 
         public void RenameTrack()
         {
@@ -195,14 +232,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void LoadGroups()
         {
-            ResetView();
+            InterpData = new InterpData(CurrentLoadedExport);
             InterpGroups.ClearEx();
-            var groupsProp = CurrentLoadedExport?.GetProperty<ArrayProperty<ObjectProperty>>("InterpGroups");
-            if (groupsProp != null)
-            {
-                var groupExports = groupsProp.Where(prop => Pcc.IsUExport(prop.Value)).Select(prop => Pcc.GetUExport(prop.Value));
-                InterpGroups.AddRange(groupExports.Select(exp => new InterpGroup(exp)));
-            }
+            InterpGroups.AddRange(InterpData.Groups);
 
             int? strRef = InterpGroups.Select(g => g.TryGetStrRefId()).FirstOrDefault(id => id != null);
             if (strRef != null)
@@ -211,11 +243,53 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 LineStrRef = TLKManagerWPF.GlobalFindStrRefbyID(strRef.GetValueOrDefault(), CurrentLoadedExport?.Game ?? MEGame.ME3, me1PackageOrNull);
             }
             else LineStrRef = "";
+
+            FitToView();
+        }
+
+        /// <summary>
+        /// Sets Scale and Offset so that all keys fit within the visible timeline area.
+        /// Falls back to default view if there are no keys.
+        /// </summary>
+        private void FitToView()
+        {
+            var allTimes = InterpGroups
+                .SelectMany(g => g.Tracks)
+                .SelectMany(t => t.Keys)
+                .Select(k => k.Time)
+                .ToList();
+
+            if (allTimes.Count == 0)
+            {
+                ResetView();
+                return;
+            }
+
+            float firstKey = allTimes.Min();
+            float lastKey = allTimes.Max();
+            double timeSpan = lastKey - firstKey;
+
+            double width = Guide.ActualWidth;
+            if (width <= 0) width = 800; // fallback if not yet rendered
+
+            if (timeSpan <= 0)
+            {
+                // Single key or all keys at the same time — center on it
+                Scale = DefaultScale;
+                Offset = -firstKey + width / (2 * Scale);
+            }
+            else
+            {
+                double padding = timeSpan * 0.1;
+                Scale = width / (timeSpan + 2 * padding);
+                Offset = -firstKey + padding;
+            }
+
+            DrawGuideLines();
         }
 
         public void RefreshInterpData(ExportEntry changedExport, PackageChange change)
         {
-            //var selection = MatineeTree.SelectedItem;
             if (changedExport.ClassName is "InterpGroup" or "InterpGroupDirector")
             {
                 if (change is PackageChange.ExportAdd)
@@ -263,20 +337,34 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
 
-            //if (selection is InterpTrack strk) //Reselect item post edit
-            //{
-            //    foreach (var grp in InterpGroups)
-            //    {
-            //        foreach (var trk in grp.Tracks)
-            //        {
-            //            if (trk.Export.UIndex == strk.Export.UIndex)
-            //            {
-            //                MatineeTree.SelectItem(trk); //???
-            //                return;
-            //            }
-            //        }
-            //    }
-            //}
+        }
+
+        /// <summary>
+        /// Selects an export in the timeline tree by matching UIndex against groups and tracks.
+        /// </summary>
+        public void SelectExport(ExportEntry export)
+        {
+            foreach (var group in InterpGroups)
+            {
+                if (group.Export.UIndex == export.UIndex)
+                {
+                    group.IsSelected = true;
+                    group.IsExpanded = true;
+                    SelectionChanged?.Invoke(group.Export);
+                    return;
+                }
+
+                foreach (var track in group.Tracks)
+                {
+                    if (track.Export.UIndex == export.UIndex)
+                    {
+                        group.IsExpanded = true;
+                        track.IsSelected = true;
+                        SelectionChanged?.Invoke(track.Export);
+                        return;
+                    }
+                }
+            }
         }
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -294,50 +382,26 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void ResetView()
         {
-            Scale = 100.0;
-            Offset = 1.0;
+            Scale = DefaultScale;
+            Offset = DefaultOffset;
             DrawGuideLines();
         }
 
-        private void DrawGuideLines(bool autoSize = false)
+        private void DrawGuideLines()
         {
             double ToPosition(double time) => (time + Offset) * Scale;
             double ToTime(double position) => position / Scale - Offset;
 
             Guide.Children.Clear();
 
-            if (autoSize && InterpGroups.Any(group => group.Tracks.Any(track => track.Keys.Any())))
+            double lineSpacing = DefaultGuideLineSpacing;
+            foreach (var (minScale, spacing) in GuideLineIntervals)
             {
-                double firstKey = InterpGroups.Min(group => group.Tracks.Min(track => track.Keys.FirstOrDefault()?.Time ?? float.MaxValue));
-                double LastKey = InterpGroups.Max(group => group.Tracks.Max(track => track.Keys.LastOrDefault()?.Time ?? 0));
-                double timeSpan = LastKey - firstKey;
-                timeSpan = timeSpan > 0 ? timeSpan : 2;
-            }
-
-            double lineSpacing = 10;
-            if (Scale > 1400)
-            {
-                lineSpacing = 0.05;
-            }
-            else if (Scale > 400)
-            {
-                lineSpacing = 0.1;
-            }
-            else if (Scale > 200)
-            {
-                lineSpacing = 0.25;
-            }
-            else if (Scale > 110)
-            {
-                lineSpacing = 0.5;
-            }
-            else if (Scale > 35)
-            {
-                lineSpacing = 1;
-            }
-            else if (Scale > 7)
-            {
-                lineSpacing = 5;
+                if (Scale > minScale)
+                {
+                    lineSpacing = spacing;
+                    break;
+                }
             }
             int numLines = (int)Math.Ceiling(Guide.ActualWidth / Scale / lineSpacing) + 1;
             double firstLinePos = (Math.Ceiling(ToTime(0) / lineSpacing) - 1) * lineSpacing;
