@@ -45,6 +45,7 @@ var dir_ae6fee5e9224c7717ab2b41089d86ad6 =
     [ "InOpReference.cs", "_in_op_reference_8cs.html", "_in_op_reference_8cs" ],
     [ "IntegerLiteral.cs", "_integer_literal_8cs.html", "_integer_literal_8cs" ],
     [ "Label.cs", "_label_8cs.html", "_label_8cs" ],
+    [ "LambdaExpression.cs", "_lambda_expression_8cs.html", "_lambda_expression_8cs" ],
     [ "NameLiteral.cs", "_name_literal_8cs.html", "_name_literal_8cs" ],
     [ "NewOperator.cs", "_new_operator_8cs.html", "_new_operator_8cs" ],
     [ "NoneLiteral.cs", "_none_literal_8cs.html", "_none_literal_8cs" ],

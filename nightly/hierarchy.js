@@ -381,6 +381,7 @@ var hierarchy =
           [ "LegendaryExplorerCore.UnrealScript.Language.Tree.FunctionCall", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function_call.html", null ],
           [ "LegendaryExplorerCore.UnrealScript.Language.Tree.InOpReference", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_in_op_reference.html", null ],
           [ "LegendaryExplorerCore.UnrealScript.Language.Tree.IntegerLiteral", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_integer_literal.html", null ],
+          [ "LegendaryExplorerCore.UnrealScript.Language.Tree.LambdaExpression", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_lambda_expression.html", null ],
           [ "LegendaryExplorerCore.UnrealScript.Language.Tree.NameLiteral", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_name_literal.html", null ],
           [ "LegendaryExplorerCore.UnrealScript.Language.Tree.NewOperator", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_new_operator.html", null ],
           [ "LegendaryExplorerCore.UnrealScript.Language.Tree.NoneLiteral", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_none_literal.html", null ],

@@ -1,5 +1,6 @@
 var NAVTREEINDEX6 =
 {
+"_u_struct_8cs.html#a31ccc8e63558d15b93826f6ed881ead5":[2,0,0,0,26,1,71,1],
 "_u_texture2_d_8cs.html":[2,0,0,0,26,1,72],
 "_u_texture2_d_8cs.html#aebc6b5cea41e712950ea8515ee2f17ac":[2,0,0,0,26,1,72,7],
 "_u_value_property_8cs.html":[2,0,0,0,26,1,73],
@@ -24,18 +25,18 @@ var NAVTREEINDEX6 =
 "_value_tuple_equality_comparer_8cs.html":[2,0,0,0,14,11],
 "_var_int_8cs.html":[2,0,0,0,7,6,23],
 "_var_link_info_8cs.html":[2,0,0,0,9,7],
-"_variable_declaration_8cs.html":[2,0,0,0,27,4,1,74],
-"_variable_identifier_8cs.html":[2,0,0,0,27,4,1,75],
+"_variable_declaration_8cs.html":[2,0,0,0,27,4,1,75],
+"_variable_identifier_8cs.html":[2,0,0,0,27,4,1,76],
 "_variable_path_resolving_status_8cs.html":[2,0,0,0,7,7,23],
 "_variable_path_resolving_status_8cs.html#afd4065d0a3bde827daf59ff904374ff8":[2,0,0,0,7,7,23,0],
-"_variable_type_8cs.html":[2,0,0,0,27,4,1,76],
-"_vector_literal_8cs.html":[2,0,0,0,27,4,1,77],
+"_variable_type_8cs.html":[2,0,0,0,27,4,1,77],
+"_vector_literal_8cs.html":[2,0,0,0,27,4,1,78],
 "_verbose_format_info_8cs.html":[2,0,0,0,7,8,0,10],
 "_verbose_format_info_base_8cs.html":[2,0,0,0,7,8,0,11],
 "_vertex_factories_8cs.html":[2,0,0,0,26,1,0,4],
 "_warning_8cs.html":[2,0,0,0,27,1,0,8],
 "_weak_collection_8cs.html":[2,0,0,0,7,0,2,2],
-"_while_loop_8cs.html":[2,0,0,0,27,4,1,78],
+"_while_loop_8cs.html":[2,0,0,0,27,4,1,79],
 "_wildcard_matcher_8cs.html":[2,0,0,0,7,8,1,5],
 "_win_azure_test_2net10_80_2_8_n_e_t_core_app_00_version_0av10_80_8_assembly_attributes_8cs.html":[2,0,0,0,15,0,0,0],
 "_win_azure_test_2net10_80_2_legendary_explorer_core_8_assembly_info_8cs.html":[2,0,0,0,15,0,0,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX6 =
 "class_f_filter_v_s_m_pixel_shader.html":[1,0,35],
 "class_f_filter_v_s_m_pixel_shader.html#a8903435269dda3c7468dd3768860aa01":[1,0,35,0],
 "class_f_filter_v_s_m_pixel_shader.html#ac9aac832982d3f960ad9017ddc4a5d55":[1,0,35,1],
-"class_f_fluid_apply_pixel_shader.html":[1,0,36],
-"class_f_fluid_apply_pixel_shader.html#ac8b34d68b9f349e78ecf795a479993dd":[1,0,36,1]
+"class_f_fluid_apply_pixel_shader.html":[1,0,36]
 };

@@ -10,6 +10,8 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_fu
     [ "Parameters", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a949539c5913b2c590052dfe0145a7e5e", null ],
     [ "NativeIndex", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a8d1c5cd90c0ca814048087483ba3362a", null ],
     [ "VarType", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#add368f09f8a1ecf8085aac1b127c6006", null ],
+    [ "IsLambda", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a60f814f0476f182fccd24a27ce3947b5", null ],
+    [ "Lambdas", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#af1f74d86ee334838d656f0d97001b922", null ],
     [ "RetValNeedsDestruction", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a5a28a290c92680ed74eef62f5c864a72", null ],
     [ "OperatorPrecedence", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#a8e4e1d08a5f683da65c2a84287fc2734", null ],
     [ "FriendlyName", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_function.html#aec487d41a3b1d792c2f132bc1b93c60c", null ],

@@ -922,6 +922,7 @@ var annotated_dup =
             [ "InOpReference", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_in_op_reference.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_in_op_reference" ],
             [ "IntegerLiteral", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_integer_literal.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_integer_literal" ],
             [ "Label", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_label.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_label" ],
+            [ "LambdaExpression", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_lambda_expression.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_lambda_expression" ],
             [ "NameLiteral", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_name_literal.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_name_literal" ],
             [ "NewOperator", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_new_operator.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_new_operator" ],
             [ "NoneLiteral", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_none_literal.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_none_literal" ],

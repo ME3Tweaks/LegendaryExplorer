@@ -15,9 +15,12 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream
     [ "GetEnumerator", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#ae2671ee923ff6a0fc3542ef06ec7eff8", null ],
     [ "AddDefinitionLink", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#a01dac91f707dccd1fe972499bf910702", null ],
     [ "AddDefinitionLink", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#a126410c2593c001eba601b8dae9429b4", null ],
+    [ "Slice", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#a383da60b76f98ee264ffc6346cd8f175", null ],
+    [ "Remaining", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#a74667ca2abb5005b6f78e3a9005fbf82", null ],
     [ "Comments", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#a6195629a3ceaf3c01ad50a38d56285de", null ],
     [ "DefinitionLinks", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#ae98dc7c9307443e96260853c5866a04d", null ],
     [ "LineLookup", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#addedbba850bf9a068810af39fae42d05", null ],
     [ "TokensSpan", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#a46e1391aec3db2e3ac940b6a3fe5bafe", null ],
+    [ "Count", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#a5ef9a0a32f4fca110d08cbfa41d3fb19", null ],
     [ "CurrentItem", "class_legendary_explorer_core_1_1_unreal_script_1_1_parsing_1_1_token_stream.html#abd83f6e5f348599e7bdc4833422b5a50", null ]
 ];
