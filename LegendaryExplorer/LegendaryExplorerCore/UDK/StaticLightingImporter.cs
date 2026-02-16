@@ -66,7 +66,7 @@ namespace LegendaryExplorerCore.UDK
                 {
                     var mePath = Path.Combine(basePath, subLevel + ".pcc");
                     using var mePackage = (MEPackage)MEPackageHandler.OpenMEPackage(mePath);
-                    using var udkPackage = GetUDKMapPackage(subLevel);
+                    using var udkPackage = GetUDKMapPackage(subLevel, setup.UDKMapsBasePath);
                     AssignStaticLighting(mePackage, udkPackage, setup);
                     if (mePackage.IsModified)
                         mePackage.Save();
