@@ -671,7 +671,7 @@ namespace LegendaryExplorerCore.UDK
             assetInfo.SourcePackage = pcc;
 
             var originalName = pcc.FilePath;
-            pcc.SetInternalFilepath($"ForceExportsResolver_{pcc.FileNameNoExtension}.pcc");
+            pcc.SetInternalFilepath(Path.Combine(Directory.GetParent(pcc.FilePath).FullName,$"ForceExportsResolver_{pcc.FileNameNoExtension}.pcc"));
 
             string meshFile = Path.Combine(assetsOutputPath ?? UDKDirectory.SharedPath, $"{assetInfo.MeshAssetPackageName}.upk");
             MEPackageHandler.CreateAndSavePackage(meshFile, MEGame.UDK);
