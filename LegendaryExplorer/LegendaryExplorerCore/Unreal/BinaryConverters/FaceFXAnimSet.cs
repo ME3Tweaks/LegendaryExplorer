@@ -8,7 +8,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class FaceFXAnimSet : ObjectBinary
     {
         public int Version;
-        private FaceFXAsset.HNode[] HNodes;
+        private FaceFXAsset.ClassVersionBin[] ClassVersions;
         public List<string> Names;
         public List<FaceFXLine> Lines;
 
@@ -22,49 +22,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             int int0 = 0;
             int int1 = 1;
 
-            sc.SerializeFaceFXHeader(ref Version);
+            sc.SerializeFaceFXHeader(ref Version, ref ClassVersions, ref Names);
 
-            if (sc.Game != MEGame.ME2)
-            {
-                if (sc.IsSaving && HNodes is null)
-                {
-                    FixNodeTable();
-                }
-                sc.Serialize(ref HNodes, sc.Serialize);
-            }
-
-            if (sc.Game == MEGame.ME2)
-            {
-                int count = Names?.Count ?? 0;
-                sc.Serialize(ref count);
-                int unk = 65536;
-                if (sc.IsLoading)
-                {
-                    Names = new List<string>(count);
-                    for (int i = 0; i < count; i++)
-                    {
-                        sc.Serialize(ref unk);
-                        string tmp = default;
-                        sc.SerializeFaceFXString(ref tmp);
-                        Names.Add(tmp);
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < count; i++)
-                    {
-                        sc.Serialize(ref unk);
-                        string tmp = Names[i];
-                        sc.SerializeFaceFXString(ref tmp);
-                    }
-                }
-            }
-            else
-            {
-                sc.Serialize(ref Names, sc.SerializeFaceFXString);
-            }
-
-            sc.Serialize(ref int0);
             sc.Serialize(ref int0);
             sc.Serialize(ref int1);
             sc.Serialize(ref int0);
@@ -105,9 +64,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             return new()
             {
-                HNodes = FaceFXAsset.HNode.GetFXANodeTable(),
-                Names = new List<string>(),
-                Lines = new List<FaceFXLine>(),
+                ClassVersions = FaceFXAsset.ClassVersionBin.GetFXAClassVersions(),
+                Names = [],
+                Lines = [],
                 Version = game switch
                 {
                     MEGame.ME1 => 1710,
@@ -119,7 +78,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public void FixNodeTable()
         {
-            HNodes = FaceFXAsset.HNode.GetFXANodeTable();
+            ClassVersions = FaceFXAsset.ClassVersionBin.GetFXAClassVersions();
         }
     }
 
@@ -154,6 +113,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public float leaveTangent;
     }
 
+    public enum FxInterpolationType
+    {
+        Hermite = 0,
+        Linear = 1
+    };
+
     public partial class SerializingContainer
     {
         public void SerializeFaceFXString(ref string str)
@@ -169,7 +134,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-        public void SerializeFaceFXHeader(ref int version)
+        public void SerializeFaceFXHeader(ref int version, ref FaceFXAsset.ClassVersionBin[] classVersions, ref List<string> names)
         {
             int int0 = 0;
             short short1 = 1;
@@ -213,6 +178,47 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 Serialize(ref short1);
             }
+
+            if (Game != MEGame.ME2)
+            {
+                if (IsSaving && classVersions is null)
+                {
+                    classVersions = FaceFXAsset.ClassVersionBin.GetFXAClassVersions();
+                }
+                Serialize(ref classVersions, Serialize);
+            }
+
+            if (Game == MEGame.ME2)
+            {
+                int count = names?.Count ?? 0;
+                Serialize(ref count);
+                int unk = 65536;
+                if (IsLoading)
+                {
+                    names = new List<string>(count);
+                    for (int i = 0; i < count; i++)
+                    {
+                        Serialize(ref unk);
+                        string tmp = default;
+                        SerializeFaceFXString(ref tmp);
+                        names.Add(tmp);
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        Serialize(ref unk);
+                        string tmp = names[i];
+                        SerializeFaceFXString(ref tmp);
+                    }
+                }
+            }
+            else
+            {
+                Serialize(ref names, SerializeFaceFXString);
+            }
+            Serialize(ref int0);
         }
 
         public void Serialize(ref FaceFXControlPoint point)

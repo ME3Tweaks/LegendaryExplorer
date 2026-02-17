@@ -231,7 +231,7 @@ public partial class AnimationPreviewControl : NotifyPropertyChangedControlBase
         if (_skinnedRenderer == null || _meshPreview == null || _animPlayer == null) return;
         if (!_meshContext.IsReady || _meshPreview.LODs.Count == 0) return;
 
-        _skinnedRenderer.UpdateSkinning(_meshContext.Device, _meshPreview.LODs[0].Mesh, _animPlayer);
+        _skinnedRenderer.UpdateSkinning(_meshContext.ImmediateContext, _meshPreview.LODs[0].Mesh, _animPlayer);
     }
 
     private void OnUpdateScene(object sender, float timestep)
@@ -239,7 +239,7 @@ public partial class AnimationPreviewControl : NotifyPropertyChangedControlBase
         if (_animPlayer is { IsPlaying: true } && _skinnedRenderer != null && _meshPreview is { LODs.Count: > 0 })
         {
             _animPlayer.AdvanceTime(timestep);
-            _skinnedRenderer.UpdateSkinning(_meshContext.Device, _meshPreview.LODs[0].Mesh, _animPlayer);
+            _skinnedRenderer.UpdateSkinning(_meshContext.ImmediateContext, _meshPreview.LODs[0].Mesh, _animPlayer);
 
             // Update frame slider without triggering setter logic
             _animCurrentFrame = _animPlayer.CurrentFrame;

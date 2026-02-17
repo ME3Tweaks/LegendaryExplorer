@@ -3,7 +3,7 @@ using System.Numerics;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.Animation;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using Device = SharpDX.Direct3D11.Device;
+using DeviceContext = SharpDX.Direct3D11.DeviceContext;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 
@@ -113,7 +113,7 @@ public class SkinnedMeshRenderer
     /// writes results to the mesh vertex list with Unreal-to-renderer coordinate conversion,
     /// then rebuilds the D3D vertex buffer.
     /// </summary>
-    public void UpdateSkinning(Device device, Mesh<WorldVertex> mesh, SkeletonAnimPlayer animPlayer)
+    public void UpdateSkinning(DeviceContext context, Mesh<WorldVertex> mesh, SkeletonAnimPlayer animPlayer)
     {
         NeedsUpdate = false;
         if (_skinVertices == null || mesh == null) return;
@@ -142,7 +142,7 @@ public class SkinnedMeshRenderer
             mesh.Vertices[i] = new WorldVertex(skinnedPos, rendererNormal, sv.UV);
         }
 
-        mesh.RebuildBuffer(device);
+        mesh.UpdateVertices(context);
     }
 
     private static Matrix4x4 BlendMatrix(Matrix4x4[] matrices, int b0, float w0, int b1, float w1, int b2, float w2, int b3, float w3)

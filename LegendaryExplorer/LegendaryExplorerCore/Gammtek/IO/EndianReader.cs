@@ -541,16 +541,13 @@ namespace LegendaryExplorerCore.Gammtek.IO
         /// <summary>
         /// Reads a FaceFX string
         /// </summary>
-        /// <param name="er"></param>
-        /// <param name="game"></param>
         /// <returns></returns>
-        public string ReadFaceFXString(MEGame game, bool extended = false)
+        public string ReadFaceFXString(int sdkVersion)
         {
-            if (game == MEGame.ME2)
+            if (sdkVersion < 1700)
             {
-                // ME2 strings appear to have a Int16 before the actual string.
-                // This appears to be the 'version' of the object.
-                if (extended) ReadInt16(); //It's 4 bytes
+                // ME2 strings have a Int16 before the actual string.
+                // This is the 'version' of the FxString.
                 var objectVersion = ReadInt16(); // This seems like it's always 1. Older versions set it to zero. Looks like some sort of parser flag but it's on every string
                 if (objectVersion != 1)
                 {

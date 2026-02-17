@@ -19,6 +19,8 @@ public class Mesh<TVertex> : IDisposable where TVertex : IVertexBase
     public SharpDX.Direct3D11.Buffer VertexBuffer { get; private set; }
     public SharpDX.Direct3D11.Buffer IndexBuffer { get; private set; }
 
+    private bool _isDynamic;
+
     public BoxSphereBounds BaseBounds;
 
     public BoxSphereBounds TransformedBounds;
@@ -42,10 +44,11 @@ public class Mesh<TVertex> : IDisposable where TVertex : IVertexBase
     // Creates a new blank mesh.
 
     // Creates a blank mesh with the given data.
-    public Mesh(Device device, List<Triangle> triangles, List<TVertex> vertices)
+    public Mesh(Device device, List<Triangle> triangles, List<TVertex> vertices, bool isDynamic = false)
     {
         Triangles = triangles;
         Vertices = vertices;
+        _isDynamic = isDynamic;
         RebuildBuffer(device);
     }
     public void RebuildBuffer(Device device)
@@ -55,29 +58,62 @@ public class Mesh<TVertex> : IDisposable where TVertex : IVertexBase
         IndexBuffer?.Dispose();
         if (Triangles.Count == 0 || Vertices.Count == 0) return; // Why build and empty buffer?
 
-
         // Update the AABB
         Box boundingBox = new();
         foreach (TVertex v in Vertices)
         {
-            Vector3 pos = v.Position;
-            boundingBox.Add(pos);
+            boundingBox.Add(v.Position);
         }
-
         TransformedBounds = BaseBounds = new BoxSphereBounds(boundingBox);
 
-        int floatsPerVertex = TVertex.Stride / 4;
-        int numFloats = floatsPerVertex * Vertices.Count;
-        float[] vertexdata = new float[numFloats];
-        Span<float> vertexDataSpan = vertexdata.AsSpan();
-        for (int vertIdx = 0, floatIdx = 0; vertIdx < Vertices.Count; vertIdx++, floatIdx += floatsPerVertex)
-        {
-            Vertices[vertIdx].ToFloats(vertexDataSpan[floatIdx..]);
-        }
-
-        // Create and populate the vertex and index buffers
-        VertexBuffer = SharpDX.Direct3D11.Buffer.Create(device, BindFlags.VertexBuffer, vertexdata);
         IndexBuffer = SharpDX.Direct3D11.Buffer.Create(device, BindFlags.IndexBuffer, Triangles.ToArray());
+
+        int stride = TVertex.Stride;
+        if (!_isDynamic)
+        {
+            int floatsPerVertex = stride / 4;
+            float[] vertexdata = new float[floatsPerVertex * Vertices.Count];
+            Span<float> vertexDataSpan = vertexdata.AsSpan();
+            for (int vertIdx = 0, floatIdx = 0; vertIdx < Vertices.Count; vertIdx++, floatIdx += floatsPerVertex)
+            {
+                Vertices[vertIdx].ToFloats(vertexDataSpan[floatIdx..]);
+            }
+            VertexBuffer = SharpDX.Direct3D11.Buffer.Create(device, BindFlags.VertexBuffer, vertexdata);
+        }
+        else
+        {
+            VertexBuffer = new SharpDX.Direct3D11.Buffer(device, new BufferDescription(
+                stride * Vertices.Count,
+                ResourceUsage.Dynamic,
+                BindFlags.VertexBuffer,
+                CpuAccessFlags.Write,
+                ResourceOptionFlags.None,
+                stride));
+            UpdateVertices(device.ImmediateContext);
+        }
+    }
+
+    public unsafe void UpdateVertices(DeviceContext context)
+    {
+        if (!_isDynamic || Vertices.Count == 0) return;
+
+        int stride = TVertex.Stride;
+        int floatsPerVertex = stride / 4;
+
+        var dataBox = context.MapSubresource(VertexBuffer, 0, MapMode.WriteDiscard, SharpDX.Direct3D11.MapFlags.None);
+        var dest = new Span<float>((void*)dataBox.DataPointer, Vertices.Count * floatsPerVertex);
+
+        Box boundingBox = new();
+        for (int vi = 0, fi = 0; vi < Vertices.Count; vi++, fi += floatsPerVertex)
+        {
+            TVertex v = Vertices[vi];
+            boundingBox.Add(v.Position);
+            v.ToFloats(dest[fi..]);
+        }
+        context.UnmapSubresource(VertexBuffer, 0);
+
+        BaseBounds = new BoxSphereBounds(boundingBox);
+        TransformedBounds = BaseBounds.TransformBy(localToWorld);
     }
 
     public void Dispose()
