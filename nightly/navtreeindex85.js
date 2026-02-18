@@ -1,5 +1,17 @@
 var NAVTREEINDEX85 =
 {
+"struct_u_sparse_array.html#ac7714e40636ecc1f5c0036be2addab80":[1,0,194,8],
+"struct_u_sparse_array.html#aceb3d2757e7a74bf7dedf86e48b91879":[1,0,194,13],
+"struct_u_sparse_array.html#ad228e571c1a3f6ae0a02c3aa8f5393ac":[1,0,194,6],
+"struct_u_sparse_array.html#adcb4ef75356d6c4e0eab2d4710290db1":[1,0,194,12],
+"struct_u_sparse_array.html#afc57897b597413ba1a2ddfb74b33efd1":[1,0,194,4],
+"struct_u_sparse_array_1_1_sparse_array_enumerator.html":[1,0,194,0],
+"struct_u_sparse_array_1_1_sparse_array_enumerator.html#a158d31f6f5a742812db2ce14010de9f3":[1,0,194,0,5],
+"struct_u_sparse_array_1_1_sparse_array_enumerator.html#a231fb6a274e76f915e00ec3a2cf5c5b9":[1,0,194,0,7],
+"struct_u_sparse_array_1_1_sparse_array_enumerator.html#a2d9893c22dcd9fe4408b62fadacf5220":[1,0,194,0,4],
+"struct_u_sparse_array_1_1_sparse_array_enumerator.html#a331b026e7944b5c55cc79970cf1ee210":[1,0,194,0,3],
+"struct_u_sparse_array_1_1_sparse_array_enumerator.html#a4bb2fa549be97e0fd7463d7c73952767":[1,0,194,0,1],
+"struct_u_sparse_array_1_1_sparse_array_enumerator.html#a6b9af9a467333774b404304740ee7842":[1,0,194,0,2],
 "struct_u_sparse_array_1_1_sparse_array_enumerator.html#a951c498c32a7eeb78d8de9c2a7409f5b":[1,0,194,0,0],
 "struct_u_sparse_array_1_1_sparse_array_enumerator.html#aff78b03fb46aa3588b73159a461f28cc":[1,0,194,0,6],
 "x64_2_win_azure_release_2net10_80_2_8_n_e_t_core_app_00_version_0av10_80_8_assembly_attributes_8cs.html":[2,0,0,0,15,1,0,0,0],

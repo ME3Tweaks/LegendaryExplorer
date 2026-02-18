@@ -179,9 +179,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8c9fed388695fff618fa62b10ef63b7e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a8c9fed388695fff618fa62b10ef63b7e">ReadBoolInt</a> ()</td></tr>
 <tr class="memdesc:a8c9fed388695fff618fa62b10ef63b7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads boolean integer from the stream. 0 is false, &gt; 0 is true   <a href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a8c9fed388695fff618fa62b10ef63b7e">More...</a><br /></td></tr>
 <tr class="separator:a8c9fed388695fff618fa62b10ef63b7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9232244557a208a6bdf4b84f0c70ed7a"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a9232244557a208a6bdf4b84f0c70ed7a">ReadFaceFXString</a> (<a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a> game, bool extended=false)</td></tr>
-<tr class="memdesc:a9232244557a208a6bdf4b84f0c70ed7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a FaceFX string   <a href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a9232244557a208a6bdf4b84f0c70ed7a">More...</a><br /></td></tr>
-<tr class="separator:a9232244557a208a6bdf4b84f0c70ed7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a391ae0cf343635df8ba8d8cab76da326"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a391ae0cf343635df8ba8d8cab76da326">ReadFaceFXString</a> (int sdkVersion)</td></tr>
+<tr class="memdesc:a391ae0cf343635df8ba8d8cab76da326"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a FaceFX string   <a href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a391ae0cf343635df8ba8d8cab76da326">More...</a><br /></td></tr>
+<tr class="separator:a391ae0cf343635df8ba8d8cab76da326"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d271257be749ed35cc4643c4f5a4c6d"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a5d271257be749ed35cc4643c4f5a4c6d">ReadFloat16</a> ()</td></tr>
 <tr class="separator:a5d271257be749ed35cc4643c4f5a4c6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0d2003443ac39136fa1d5eb94af6ddb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#af0d2003443ac39136fa1d5eb94af6ddb">ReadBoolByte</a> ()</td></tr>
@@ -1105,8 +1105,8 @@ Properties</h2></td></tr>
 
 </div>
 </div>
-<a id="a9232244557a208a6bdf4b84f0c70ed7a" name="a9232244557a208a6bdf4b84f0c70ed7a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9232244557a208a6bdf4b84f0c70ed7a">&#9670;&#160;</a></span>ReadFaceFXString()</h2>
+<a id="a391ae0cf343635df8ba8d8cab76da326" name="a391ae0cf343635df8ba8d8cab76da326"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a391ae0cf343635df8ba8d8cab76da326">&#9670;&#160;</a></span>ReadFaceFXString()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1117,19 +1117,9 @@ Properties</h2></td></tr>
         <tr>
           <td class="memname">string LegendaryExplorerCore.Gammtek.IO.EndianReader.ReadFaceFXString </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespace_legendary_explorer_core_1_1_packages.html#a386a95aceb8dcc8725a8cb074fd0e6a8">MEGame</a>&#160;</td>
-          <td class="paramname"><em>game</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>sdkVersion</em></td><td>)</td>
           <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>extended</em> = <code>false</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -1140,13 +1130,6 @@ Properties</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Reads a FaceFX string  </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">er</td><td></td></tr>
-    <tr><td class="paramname">game</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
 <dl class="section return"><dt>Returns</dt><dd></dd></dl>
 
 </div>

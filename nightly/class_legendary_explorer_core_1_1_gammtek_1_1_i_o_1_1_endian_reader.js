@@ -27,7 +27,7 @@ var class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader =
     [ "SetupForReading", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#ad1c142fdbdf23bd96c147b49c4c1d125", null ],
     [ "SetupForPackageReading", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a8e638629107d80f4057f76e26d278858", null ],
     [ "ReadBoolInt", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a8c9fed388695fff618fa62b10ef63b7e", null ],
-    [ "ReadFaceFXString", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a9232244557a208a6bdf4b84f0c70ed7a", null ],
+    [ "ReadFaceFXString", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a391ae0cf343635df8ba8d8cab76da326", null ],
     [ "ReadFloat16", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#a5d271257be749ed35cc4643c4f5a4c6d", null ],
     [ "ReadBoolByte", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#af0d2003443ac39136fa1d5eb94af6ddb", null ],
     [ "JumpTo", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html#ae599988c4ab954e5308085e84cee1814", null ],
