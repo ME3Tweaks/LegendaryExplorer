@@ -13,6 +13,16 @@ namespace LegendaryExplorerCore.Misc
     [Localizable(false)]
     public class DuplicatingIni
     {
+        public List<Section> Sections = new List<Section>();
+
+        /// <summary>
+        /// If true, enables the same restrictions as 'IniParser.Parser.IniDataParser' default
+        /// configuration: throws on duplicate keys, duplicate sections, empty section names, and
+        /// invalid lines. Comment lines (starting with ';') are skipped rather than treated as errors.
+        /// </summary>
+        public bool RestrictiveParsing { get; set; } = false;
+
+
         public Section this[string sectionName]
         {
             get
@@ -37,7 +47,6 @@ namespace LegendaryExplorerCore.Misc
             }
         }
 
-        public List<Section> Sections = new List<Section>();
 
         public IniEntry GetValue(string sectionname, string key)
         {
@@ -79,14 +88,15 @@ namespace LegendaryExplorerCore.Misc
         /// </summary>
         /// <param name="iniFile"></param>
         /// <returns></returns>
-        public static DuplicatingIni LoadIni(string iniFile)
+        public static DuplicatingIni LoadIni(string iniFile, bool restrictiveParsing = false)
         {
-            return ParseIni(File.ReadAllText(iniFile));
+            return ParseIni(File.ReadAllText(iniFile), restrictiveParsing);
         }
 
-        public static DuplicatingIni ParseIni(string iniText)
+        public static DuplicatingIni ParseIni(string iniText, bool restrictiveParsing = false)
         {
             DuplicatingIni di = new DuplicatingIni();
+            di.RestrictiveParsing = restrictiveParsing;
 
             var splits = iniText.Split('\n');
             Section currentSection = null;
@@ -96,10 +106,20 @@ namespace LegendaryExplorerCore.Misc
                 if (string.IsNullOrWhiteSpace(trimmed)) continue; //blank line
                 if (trimmed.StartsWith("[") && trimmed.EndsWith("]"))
                 {
+                    var header = trimmed.Trim('[', ']');
+                    if (restrictiveParsing)
+                    {
+                        // Todo: These need to use the localization shim
+                        if (header == string.Empty)
+                            throw new InvalidOperationException("Section name is empty.");
+                        if (di.Sections.Any(x => x.Header == header))
+                            throw new InvalidOperationException($"Duplicate section '[{header}]' found.");
+                    }
                     //New section
                     currentSection = new Section()
                     {
-                        Header = trimmed.Trim('[', ']')
+                        Header = header,
+                        RestrictiveParsing = di.RestrictiveParsing
                     };
                     di.Sections.Add(currentSection);
                 }
@@ -109,7 +129,14 @@ namespace LegendaryExplorerCore.Misc
                 }
                 else
                 {
-                    currentSection.Entries.Add(new IniEntry(trimmed));
+                    // Todo: These need to use the localization shim
+                    if (restrictiveParsing && trimmed.StartsWith(";")) continue; //skip comment lines
+                    var entry = new IniEntry(trimmed);
+                    if (restrictiveParsing && entry.Key == null)
+                        throw new InvalidOperationException($"Invalid line '{trimmed}' in section '[{currentSection.Header}]'.");
+                    if (restrictiveParsing && currentSection.Entries.Any(x => x.Key == entry.Key))
+                        throw new InvalidOperationException($"Duplicate key '{entry.Key}' found in section '[{currentSection.Header}]'.");
+                    currentSection.Entries.Add(entry);
                 }
             }
             return di;
@@ -192,6 +219,8 @@ namespace LegendaryExplorerCore.Misc
         {
             public string Header;
             public List<IniEntry> Entries = new List<IniEntry>();
+
+            public bool RestrictiveParsing { get; init; }
 
             public IniEntry GetValue(string key)
             {
