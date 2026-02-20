@@ -35,8 +35,10 @@
                     <StackPanel Orientation="Horizontal">
                         <CheckBox Name="Solid_Checkbox" IsChecked="{Binding RenderSolid}"  Content="Solid"  VerticalAlignment="Center"  Margin="2,0"/>
                         <CheckBox Name="Wireframe_Checkbox" IsChecked="{Binding RenderWireframe}" Content="Wireframe"  VerticalAlignment="Center" Margin="2,0"/>
-                        <CheckBox Name="CollisionMesh_Checkbox" IsChecked="{Binding ShowCollisionMesh}" Content="Collision Mesh" 
+                        <CheckBox Name="CollisionMesh_Checkbox" IsChecked="{Binding ShowCollisionMesh}" Content="Collision Mesh"
                                   Visibility="{Binding IsStaticMesh, Converter={StaticResource BoolToVisibilityConverter}}"  VerticalAlignment="Center" Margin="2,0"/>
+                        <CheckBox Name="Skeleton_Checkbox" IsChecked="{Binding ShowSkeleton}" Content="Skeleton"
+                                  Visibility="{Binding IsSkeletalMesh, Converter={StaticResource BoolToVisibilityConverter}}"  VerticalAlignment="Center" Margin="2,0"/>
                         <CheckBox Name="Shader_Checkbox" IsChecked="{Binding RenderGameShader}"  Content="In-Game Shader (Experimental)"  VerticalAlignment="Center"  Margin="2,0"
                                   Visibility="{Binding CanUseGameShaders, Converter={StaticResource BoolToVisibilityConverter}}"/>
                     </StackPanel>
