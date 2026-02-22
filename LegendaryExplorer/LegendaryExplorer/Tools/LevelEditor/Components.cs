@@ -330,7 +330,7 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
     {
         if (Mesh is not null && skinnedMeshRenderer.NeedsUpdate)
         {
-            skinnedMeshRenderer.UpdateSkinning(context.Device, Mesh.LODs[LOD].Mesh, animPlayer);
+            skinnedMeshRenderer.UpdateSkinning(context.ImmediateContext, Mesh.LODs[LOD].Mesh, animPlayer);
         }
     }
 

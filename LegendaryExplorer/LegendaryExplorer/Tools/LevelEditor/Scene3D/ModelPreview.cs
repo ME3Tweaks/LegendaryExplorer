@@ -547,7 +547,7 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
             {
                 triangles.Add(new Triangle(lodmodel.IndexBuffer[i], lodmodel.IndexBuffer[i + 1], lodmodel.IndexBuffer[i + 2]));
             }
-            var mesh = new Mesh<TVertex>(renderContext.Device, triangles, vertices);
+            var mesh = new Mesh<TVertex>(renderContext.Device, triangles, vertices, isDynamic: true);
             // Sections
             var sections = new List<ModelPreviewSection>();
             foreach (var section in lodmodel.Sections)

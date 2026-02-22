@@ -248,6 +248,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// </summary>
         private bool ControlIsLoaded;
         private WorldMesh STMCollisionMesh;
+        private SharpDX.Direct3D11.Buffer SkeletonVertexBuffer;
+        private int SkeletonVertexCount;
+        private Vector3[] SkeletonBonePositions; // Renderer-space positions for all bones (for label projection)
         private Action ViewportLoadAction = null;
 
         private void SceneContext_RenderScene(object sender, EventArgs e)
@@ -279,6 +282,57 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 var viewConstants = new MeshRenderContext.WorldConstants(Matrix4x4.Transpose(MeshContext.Camera.ProjectionMatrix), Matrix4x4.Transpose(MeshContext.Camera.ViewMatrix), Matrix4x4.Identity, MeshContext.CurrentTextureViewFlags);
                 MeshContext.DefaultEffect.PrepDraw(SceneViewer.Context.ImmediateContext, MeshContext.AlphaBlendState);
                 MeshContext.DefaultEffect.RenderObject(SceneViewer.Context.ImmediateContext, viewConstants, STMCollisionMesh, [null]);
+            }
+            if (IsSkeletalMesh && ShowSkeleton && SkeletonVertexBuffer != null && SkeletonVertexCount > 0)
+            {
+                RenderSkeleton();
+            }
+        }
+
+        private void RenderSkeleton()
+        {
+            var ctx = SceneViewer.Context.ImmediateContext;
+
+            // Clear depth buffer so skeleton renders on top of the mesh
+            ctx.ClearDepthStencilView(MeshContext.DepthBufferView, SharpDX.Direct3D11.DepthStencilClearFlags.Depth, 1.0f, 0);
+
+            MeshContext.Wireframe = false;
+            var viewConstants = new MeshRenderContext.WorldConstants(Matrix4x4.Transpose(MeshContext.Camera.ProjectionMatrix), Matrix4x4.Transpose(MeshContext.Camera.ViewMatrix), Matrix4x4.Identity, MeshContext.CurrentTextureViewFlags);
+            MeshContext.DefaultEffect.PrepDraw(ctx, MeshContext.AlphaBlendState);
+            ctx.UpdateSubresource(ref viewConstants, MeshContext.DefaultEffect.ConstantBuffer);
+
+            // Bind skeleton vertex buffer and switch to line topology
+            ctx.InputAssembler.SetVertexBuffers(0, new SharpDX.Direct3D11.VertexBufferBinding(SkeletonVertexBuffer, WorldVertex.Stride, 0));
+            ctx.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.LineList;
+            ctx.PixelShader.SetShaderResource(0, MeshContext.WhiteTexView);
+
+            // Draw skeleton lines (non-indexed)
+            ctx.Draw(SkeletonVertexCount, 0);
+
+            // Restore triangle topology
+            ctx.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
+
+            // Project bone positions to screen space for index labels
+            if (SkeletonBonePositions != null)
+            {
+                var viewProj = MeshContext.Camera.ViewMatrix * MeshContext.Camera.ProjectionMatrix;
+                float halfW = MeshContext.Width * 0.5f;
+                float halfH = MeshContext.Height * 0.5f;
+
+                for (int i = 0; i < SkeletonBonePositions.Length; i++)
+                {
+                    var clip = Vector4.Transform(new Vector4(SkeletonBonePositions[i], 1.0f), viewProj);
+                    if (clip.W <= 0) continue; // Behind camera
+
+                    float ndcX = clip.X / clip.W;
+                    float ndcY = clip.Y / clip.W;
+
+                    // NDC to screen: X maps [-1,1] -> [0,Width], Y maps [1,-1] -> [0,Height]
+                    float screenX = (ndcX + 1.0f) * halfW;
+                    float screenY = (1.0f - ndcY) * halfH;
+
+                    MeshContext.ScreenLabels.Add(new ScreenLabel(screenX, screenY, i.ToString()));
+                }
             }
         }
 
@@ -410,6 +464,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             get => _showCollisionMesh;
             set => SetProperty(ref _showCollisionMesh, value);
+        }
+
+        private bool _showSkeleton;
+        public bool ShowSkeleton
+        {
+            get => _showSkeleton;
+            set => SetProperty(ref _showSkeleton, value);
         }
 
         private float _cameraPitch, _cameraYaw, _cameraX, _cameraY, _cameraZ, _cameraFOV, _cameraZNear, _cameraZFar;
@@ -854,6 +915,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         GameShaderPreview = null;
                         STMCollisionMesh?.Dispose();
                         STMCollisionMesh = null;
+                        SkeletonVertexBuffer?.Dispose();
+                        SkeletonVertexBuffer = null;
+                        SkeletonVertexCount = 0;
+                        SkeletonBonePositions = null;
                         switch (pmd.meshObject)
                         {
                             case StaticMesh statM:
@@ -866,6 +931,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 if (CanUseGameShaders && RenderGameShader) GameShaderPreview = new ModelPreview<LEVertex>(MeshContext.Device, skm, MeshContext.TextureCache, assetCache, pmd);
                                 LEXPreview = new ModelPreview<WorldVertex>(MeshContext.Device, skm, MeshContext.TextureCache, assetCache, pmd);
                                 MeshContext.Camera.FocusDepth = skm.Bounds.SphereRadius * 1.2f;
+                                BuildSkeletonLineBuffer(skm);
                                 break;
                             case StructProperty structProp: //BrushComponent
                                 LEXPreview = new ModelPreview<WorldVertex>(MeshContext.Device, GetMeshFromAggGeom(structProp), MeshContext.TextureCache, assetCache, pmd);
@@ -1109,6 +1175,75 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return new WorldMesh(SceneViewer.Context.Device, triangles, vertices);
         }
 
+        private void BuildSkeletonLineBuffer(SkeletalMesh skm)
+        {
+            SkeletonVertexBuffer?.Dispose();
+            SkeletonVertexBuffer = null;
+            SkeletonVertexCount = 0;
+            SkeletonBonePositions = null;
+
+            MeshBone[] bones = skm.RefSkeleton;
+            if (bones == null || bones.Length == 0) return;
+
+            // Compute bind-pose world positions by walking the bone hierarchy
+            // Same algorithm as AnimPlayer constructor
+            var bindPose = new Matrix4x4[bones.Length];
+            var worldPositions = new Vector3[bones.Length];
+
+            for (int i = 0; i < bones.Length; i++)
+            {
+                var bone = bones[i];
+                var localTransform = Matrix4x4.CreateFromQuaternion(bone.Orientation)
+                                   * Matrix4x4.CreateTranslation(bone.Position);
+
+                if (bone.ParentIndex >= 0 && bone.ParentIndex < i)
+                {
+                    bindPose[i] = localTransform * bindPose[bone.ParentIndex];
+                }
+                else
+                {
+                    bindPose[i] = localTransform;
+                }
+
+                // Extract world position and convert Unreal (X,Y,Z) -> Renderer (-X, Z, Y)
+                worldPositions[i] = new Vector3(-bindPose[i].M41, bindPose[i].M43, bindPose[i].M42);
+            }
+
+            SkeletonBonePositions = worldPositions;
+
+            // Build line vertex pairs: each bone draws a line to its parent
+            var lineVertices = new List<WorldVertex>();
+            var boneNormal = new Vector3(1, 1, 1); // Max brightness in shader lambert calculation
+
+            for (int i = 1; i < bones.Length; i++)
+            {
+                int parentIdx = bones[i].ParentIndex;
+                if (parentIdx >= 0 && parentIdx < i)
+                {
+                    lineVertices.Add(new WorldVertex(worldPositions[parentIdx], boneNormal, Vector2.Zero));
+                    lineVertices.Add(new WorldVertex(worldPositions[i], boneNormal, Vector2.Zero));
+                }
+            }
+
+            if (lineVertices.Count == 0) return;
+
+            SkeletonVertexCount = lineVertices.Count;
+
+            // Serialize vertices into a float array for the GPU buffer
+            int floatsPerVertex = WorldVertex.Stride / 4;
+            float[] vertexData = new float[floatsPerVertex * lineVertices.Count];
+            Span<float> dataSpan = vertexData.AsSpan();
+            for (int i = 0, fi = 0; i < lineVertices.Count; i++, fi += floatsPerVertex)
+            {
+                lineVertices[i].ToFloats(dataSpan[fi..]);
+            }
+
+            SkeletonVertexBuffer = SharpDX.Direct3D11.Buffer.Create(
+                MeshContext.Device,
+                SharpDX.Direct3D11.BindFlags.VertexBuffer,
+                vertexData);
+        }
+
         private static void AddMaterialBackgroundThreadTextures(List<PreloadedTextureData> texturePreviewMaterials, ExportEntry entry, PackageCache assetCache)
         {
             if (texturePreviewMaterials.Any(x => x.MaterialExport.InstancedFullPath == entry.InstancedFullPath))
@@ -1229,6 +1364,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             CurrentLoadedExport = null;
             STMCollisionMesh?.Dispose();
             STMCollisionMesh = null;
+            SkeletonVertexBuffer?.Dispose();
+            SkeletonVertexBuffer = null;
+            SkeletonVertexCount = 0;
+            SkeletonBonePositions = null;
             LEXPreview?.Dispose();
             LEXPreview = null;
             GameShaderPreview?.Dispose();
@@ -1256,6 +1395,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
             STMCollisionMesh?.Dispose();
             STMCollisionMesh = null;
+            SkeletonVertexBuffer?.Dispose();
+            SkeletonVertexBuffer = null;
+            SkeletonBonePositions = null;
             LEXPreview?.Dispose();
             LEXPreview = null;
             GameShaderPreview?.Dispose();
