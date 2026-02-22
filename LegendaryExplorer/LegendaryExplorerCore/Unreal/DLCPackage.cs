@@ -1013,7 +1013,7 @@ namespace LegendaryExplorerCore.Unreal
                         if (!hasBegunReading && (position <= uncompressedOffsetInEntry) && (position + uncompressedAmountToRead > uncompressedOffsetInEntry))
                         {
                             // We have found the first block we must decompress
-                            Debug.WriteLine($@"Begin read at 0x{position:X8}");
+                            //Debug.WriteLine($@"Begin read at 0x{position:X8}");
                             startUncompPosition = position;
                             hasBegunReading = true;
                         }
@@ -1021,7 +1021,7 @@ namespace LegendaryExplorerCore.Unreal
                         // If position (uncomp) > uncompressedoffset + size, we no longer need to read anything.
                         if (position >= uncompressedOffsetInEntry + uncompressedAmountToRead)
                         {
-                            Debug.WriteLine($@"End read at 0x{position:X8}");
+                            //Debug.WriteLine($@"End read at 0x{position:X8}");
                             break;
                         }
 
