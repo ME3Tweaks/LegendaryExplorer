@@ -1141,8 +1141,9 @@ namespace LegendaryExplorerCore.Unreal
         /// </summary>
         /// <param name="package">Package this property resides in</param>
         /// <param name="cache">Cache to use if resolving an import</param>
+        /// <param name="fileResolver">Optional: A function to resolve a file path to a package, used if resolving an import. If not provided, the cache's default resolver will be used.</param>
         /// <returns></returns>
-        public ExportEntry ResolveToExport(IMEPackage package, PackageCache cache)
+        public ExportEntry ResolveToExport(IMEPackage package, PackageCache cache, Func<string, PackageCache, IMEPackage> fileResolver = null)
         {
             var entry = ResolveToEntry(package);
             if (entry is ExportEntry exp)
@@ -1151,7 +1152,7 @@ namespace LegendaryExplorerCore.Unreal
             }
             if (entry is ImportEntry imp)
             {
-                return EntryImporter.ResolveImport(imp, cache);
+                return EntryImporter.ResolveImport(imp, cache, fileResolver: fileResolver);
             }
 
             return null;
