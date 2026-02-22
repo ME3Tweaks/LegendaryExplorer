@@ -1803,10 +1803,20 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // Parents are allowed to have localizations
             associatedFiles.AddRange(GetBioXParentFiles(package.Game, filenameWithoutExtension, true, true, bioFileExt, localization));
 
-            if (package.Game == MEGame.ME3 && filenameWithoutExtension.Contains("MP", StringComparison.OrdinalIgnoreCase) && !filenameWithoutExtension.CaseInsensitiveEquals("BIOP_MP_COMMON"))
+            if (package.Game == MEGame.ME3)
             {
+                if (filenameWithoutExtension.Contains("MP", StringComparison.OrdinalIgnoreCase) && !filenameWithoutExtension.CaseInsensitiveEquals("BIOP_MP_COMMON"))
+                {
+                    associatedFiles.Add("BIOP_MP_COMMON.pcc");
+                }
+                else if (package.FilePath.Contains("DLC_CON_MP"))
+            {
+                    // Files here should be able to link to the MP_COMMON package
+                    // This isn't 100% bulletproof
                 associatedFiles.Add("BIOP_MP_COMMON.pcc");
             }
+            } 
+
 
             return associatedFiles;
         }
