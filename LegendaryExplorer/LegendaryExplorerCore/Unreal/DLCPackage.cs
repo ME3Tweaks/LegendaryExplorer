@@ -989,7 +989,7 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                MemoryStream decompressedData = MemoryManager.GetMemoryStream();
+                MemoryStream decompressedData = MemoryManager.GetMemoryStream(uncompressedAmountToRead);
                 fs.Seek(entry.BlockOffsets[0], SeekOrigin.Begin);
 
                 // Seek to the first block we must decompress that contains the data offset we are looking for
@@ -1048,7 +1048,7 @@ namespace LegendaryExplorerCore.Unreal
                         if (!hasBegunReading && (position <= uncompressedOffsetInEntry) && (position + uncompressedBlockSize > uncompressedOffsetInEntry))
                         {
                             // We have found the first block we must decompress
-                            Debug.WriteLine($@"Begin read at 0x{position:X8}");
+                            //Debug.WriteLine($@"Begin read at 0x{position:X8}");
                             startUncompPosition = position;
                             hasBegunReading = true;
                         }
@@ -1056,7 +1056,7 @@ namespace LegendaryExplorerCore.Unreal
                         // If position (uncomp) > uncompressedoffset + size, we no longer need to read anything.
                         if (position >= uncompressedOffsetInEntry + uncompressedAmountToRead)
                         {
-                            Debug.WriteLine($@"End read at 0x{position:X8}");
+                            //Debug.WriteLine($@"End read at 0x{position:X8}");
                             break;
                         }
 
