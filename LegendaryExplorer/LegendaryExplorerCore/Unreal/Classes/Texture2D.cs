@@ -59,7 +59,6 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     LightMapStreamingFlag = Export.DataReadOnly[^4];
                 }
                 TextureGuid = new Guid(Export.DataReadOnly.Slice(Export.DataSize - guidOffsetFromEnd, 16));
-
             }
         }
 
@@ -290,28 +289,30 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 else
                 {
                     string archive = textureCacheName + @".tfc";
-
-                    var localDirectoryTFCPath = Path.Combine(Path.GetDirectoryName(packagePathForLocalLookup), archive);
-                    if (File.Exists(localDirectoryTFCPath))
+                    if (packagePathForLocalLookup != null)
                     {
-                        filename = localDirectoryTFCPath;
-                    }
-
-                    if (filename == null && localDirectoryTFCPath.Contains(@"\CookedPCConsole")
-                        && !string.Equals(Path.GetFileName(Path.GetDirectoryName(packagePathForLocalLookup)), "CookedPCConsole", StringComparison.OrdinalIgnoreCase))
-                    {
-                        // Package is in a subfolder of CookedPCConsole - walk up to find the CookedPCConsole parent and try it
-                        var dir = Path.GetDirectoryName(packagePathForLocalLookup);
-                        while (dir != null && !string.Equals(Path.GetFileName(dir), "CookedPCConsole", StringComparison.OrdinalIgnoreCase))
+                        var localDirectoryTFCPath = Path.Combine(Path.GetDirectoryName(packagePathForLocalLookup), archive);
+                        if (File.Exists(localDirectoryTFCPath))
                         {
-                            dir = Path.GetDirectoryName(dir);
+                            filename = localDirectoryTFCPath;
                         }
-                        if (dir != null)
+
+                        if (filename == null && localDirectoryTFCPath.Contains(@"\CookedPCConsole")
+                            && !string.Equals(Path.GetFileName(Path.GetDirectoryName(packagePathForLocalLookup)), "CookedPCConsole", StringComparison.OrdinalIgnoreCase))
                         {
-                            var cookedTFCPath = Path.Combine(dir, archive);
-                            if (File.Exists(cookedTFCPath))
+                            // Package is in a subfolder of CookedPCConsole - walk up to find the CookedPCConsole parent and try it
+                            var dir = Path.GetDirectoryName(packagePathForLocalLookup);
+                            while (dir != null && !string.Equals(Path.GetFileName(dir), "CookedPCConsole", StringComparison.OrdinalIgnoreCase))
                             {
-                                filename = cookedTFCPath;
+                                dir = Path.GetDirectoryName(dir);
+                            }
+                            if (dir != null)
+                            {
+                                var cookedTFCPath = Path.Combine(dir, archive);
+                                if (File.Exists(cookedTFCPath))
+                                {
+                                    filename = cookedTFCPath;
+                                }
                             }
                         }
                     }
@@ -1047,7 +1048,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                 {
                     // Adjust LOD Bias
                     export.WriteProperty(new IntProperty(lodBias, @"InternalFormatLODBias"));
-                } 
+                }
                 else
                 {
                     // Do not set
