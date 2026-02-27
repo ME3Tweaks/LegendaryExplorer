@@ -986,6 +986,7 @@ var annotated_dup =
       [ "LegendaryExplorerCoreLib", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib" ],
       [ "LegendaryExplorerCoreLibSettings", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings" ]
     ] ],
+    [ "AnimPlayer", "class_anim_player.html", "class_anim_player" ],
     [ "BankChunk", "class_bank_chunk.html", "class_bank_chunk" ],
     [ "BufferDistanceBankChunk", "class_buffer_distance_bank_chunk.html", "class_buffer_distance_bank_chunk" ],
     [ "BufferSoundDistanceBankChunk", "class_buffer_sound_distance_bank_chunk.html", "class_buffer_sound_distance_bank_chunk" ],
@@ -995,6 +996,7 @@ var annotated_dup =
     [ "DataBankChunk", "class_data_bank_chunk.html", "class_data_bank_chunk" ],
     [ "DefaultKeyFuncs", "struct_default_key_funcs.html", "struct_default_key_funcs" ],
     [ "EventLinkInfo", "class_event_link_info.html", "class_event_link_info" ],
+    [ "FaceFxPlayer", "class_face_fx_player.html", "class_face_fx_player" ],
     [ "FAmbientOcclusionVertexShader", "class_f_ambient_occlusion_vertex_shader.html", "class_f_ambient_occlusion_vertex_shader" ],
     [ "FApplyForcePixelShader", "class_f_apply_force_pixel_shader.html", "class_f_apply_force_pixel_shader" ],
     [ "FApplyLightShaftsPixelShader", "class_f_apply_light_shafts_pixel_shader.html", "class_f_apply_light_shafts_pixel_shader" ],
@@ -1138,7 +1140,6 @@ var annotated_dup =
     [ "SampleOffsetBankChunk", "class_sample_offset_bank_chunk.html", "class_sample_offset_bank_chunk" ],
     [ "Shader", "class_shader.html", "class_shader" ],
     [ "SingleTextureShader", "class_single_texture_shader.html", "class_single_texture_shader" ],
-    [ "SkeletonAnimPlayer", "class_skeleton_anim_player.html", "class_skeleton_anim_player" ],
     [ "SoundConeBankChunk", "class_sound_cone_bank_chunk.html", "class_sound_cone_bank_chunk" ],
     [ "SoundEventInfoBankChunk", "class_sound_event_info_bank_chunk.html", "class_sound_event_info_bank_chunk" ],
     [ "SoundEventSoundTracks", "class_sound_event_sound_tracks.html", "class_sound_event_sound_tracks" ],

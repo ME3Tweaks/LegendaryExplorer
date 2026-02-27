@@ -15,7 +15,7 @@ var searchData=
   ['allvariables_12',['AllVariables',['../interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_variable_path.html#a6799d0b504fc9bd4d5dd14f02b8ba3d1',1,'LegendaryExplorerCore::Gammtek::Paths::IVariablePath']]],
   ['allwarnings_13',['AllWarnings',['../class_legendary_explorer_core_1_1_unreal_script_1_1_compiling_1_1_errors_1_1_message_log.html#ace1ca00828a9e517c49fa4947834d8c7',1,'LegendaryExplorerCore::UnrealScript::Compiling::Errors::MessageLog']]],
   ['alwaysopenfromdisk_14',['AlwaysOpenFromDisk',['../class_legendary_explorer_core_1_1_packages_1_1_package_cache.html#accede661db51e02040eaaa098b787005',1,'LegendaryExplorerCore::Packages::PackageCache']]],
-  ['animname_15',['AnimName',['../class_skeleton_anim_player.html#a1fe7e53b1de024d7957e6658648b04a8',1,'SkeletonAnimPlayer']]],
+  ['animset_15',['AnimSet',['../class_face_fx_player.html#af51846431a189454325b5f0ed351988f',1,'FaceFxPlayer']]],
   ['any_16',['Any',['../class_legendary_explorer_core_1_1_misc_1_1_observable_collection_extended.html#a4868e5ffce558120824fb83ae251b497',1,'LegendaryExplorerCore::Misc::ObservableCollectionExtended']]],
   ['archetype_17',['Archetype',['../class_legendary_explorer_core_1_1_packages_1_1_export_entry.html#a6206a32e079df96cf0bd451abea1db6c',1,'LegendaryExplorerCore::Packages::ExportEntry']]],
   ['argument_18',['Argument',['../class_legendary_explorer_core_1_1_plot_database_1_1_plot_elements_1_1_plot_transition.html#af9a3e88690ef2e4efb1509a6a57af153',1,'LegendaryExplorerCore::PlotDatabase::PlotElements::PlotTransition']]],

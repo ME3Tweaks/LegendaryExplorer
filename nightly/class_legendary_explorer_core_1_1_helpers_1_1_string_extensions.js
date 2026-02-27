@@ -11,6 +11,7 @@ var class_legendary_explorer_core_1_1_helpers_1_1_string_extensions =
     [ "ToGuid", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a766bef1e1365713ecb76f8ad64fd9ab4", null ],
     [ "Contains", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a791b28da0a9eec3c2e3d27dfe40b136b", null ],
     [ "CaseInsensitiveEquals", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a4fb79a09361bbcf733b503333a16765f", null ],
+    [ "CaseInsensitiveContains", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#afcde36f5803fc4de663a2ab31795ede4", null ],
     [ "GetPathWithoutInvalids", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#a53825ab9ca2917026de2a8cc2ba6658e", null ],
     [ "IsLatin1", "class_legendary_explorer_core_1_1_helpers_1_1_string_extensions.html#ae86fee3c7f87165895000371f35684d8", null ]
 ];

@@ -3,6 +3,9 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.ActorUtils", "class_legendary_explorer_core_1_1_unreal_1_1_actor_utils.html", null ],
     [ "LegendaryExplorerCore.Audio.AFCCompactor", "class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.AlphaMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_alpha_map.html", null ],
+    [ "AnimPlayer", "class_anim_player.html", [
+      [ "FaceFxPlayer", "class_face_fx_player.html", null ]
+    ] ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.AnimTrack", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_track.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Argument", "class_legendary_explorer_core_1_1_gammtek_1_1_argument.html", null ],
     [ "LegendaryExplorerCore.Misc.ME3Tweaks.ASIModIDs", "class_legendary_explorer_core_1_1_misc_1_1_m_e3_tweaks_1_1_a_s_i_mod_i_ds.html", null ],
@@ -1245,7 +1248,6 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.ShaderReference", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_reference.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.SingleExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_single_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SkeletalMeshVertexBuffer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh_vertex_buffer.html", null ],
-    [ "SkeletonAnimPlayer", "class_skeleton_anim_player.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SkelMeshChunk", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skel_mesh_chunk.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SkelMeshSection", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skel_mesh_section.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SoftSkinVertex", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_soft_skin_vertex.html", null ],
