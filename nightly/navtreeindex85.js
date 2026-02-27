@@ -1,5 +1,11 @@
 var NAVTREEINDEX85 =
 {
+"struct_u_sparse_array.html#a7f8b5af91e5ce3fc7845ea84acd192ac":[1,0,194,2],
+"struct_u_sparse_array.html#a9491e0d303b071f4229451696761350c":[1,0,194,16],
+"struct_u_sparse_array.html#a96497a3f0f95467be66774e69562f752":[1,0,194,7],
+"struct_u_sparse_array.html#a96bf2b1317b36ed92bb76d9db9ee5440":[1,0,194,17],
+"struct_u_sparse_array.html#ab92d2258b1082028b0437f1ac15f4348":[1,0,194,9],
+"struct_u_sparse_array.html#ac42b6e91c6c987d709082420311f7d9c":[1,0,194,5],
 "struct_u_sparse_array.html#ac7714e40636ecc1f5c0036be2addab80":[1,0,194,8],
 "struct_u_sparse_array.html#aceb3d2757e7a74bf7dedf86e48b91879":[1,0,194,13],
 "struct_u_sparse_array.html#ad228e571c1a3f6ae0a02c3aa8f5393ac":[1,0,194,6],

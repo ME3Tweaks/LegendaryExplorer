@@ -1,5 +1,11 @@
 var NAVTREEINDEX80 =
 {
+"namespace_legendary_explorer_core_1_1_unreal.html#ae1cb4ad038317d31495c53e83d1aad6c":[0,5,1,25,743],
+"namespace_legendary_explorer_core_1_1_unreal.html#ae1d02059f63ff13e44c92cd365ec6e15":[0,5,1,25,487],
+"namespace_legendary_explorer_core_1_1_unreal.html#ae241143cfd9f375b608093de78c37bfd":[0,5,1,25,576],
+"namespace_legendary_explorer_core_1_1_unreal.html#ae2a6f169907a3a0bd1fe42f8e3c5be23":[0,5,1,25,107],
+"namespace_legendary_explorer_core_1_1_unreal.html#ae43ec835ab6e2e6df3eaeab4245cd9dc":[0,5,1,25,57],
+"namespace_legendary_explorer_core_1_1_unreal.html#ae4417f7776784444e6a874712ef47e8d":[0,5,1,25,559],
 "namespace_legendary_explorer_core_1_1_unreal.html#ae570690edab55daa29545b463f2e0d16":[0,5,1,25,481],
 "namespace_legendary_explorer_core_1_1_unreal.html#ae5de475006461b54e1b7628363f1e1c7":[0,5,1,25,752],
 "namespace_legendary_explorer_core_1_1_unreal.html#ae60fb100cd0121c46c6f0acdcb103887":[0,5,1,25,347],
@@ -243,11 +249,5 @@ var NAVTREEINDEX80 =
 "struct_f_shadow_texture_policy_1_1_pixel_parameters_type.html#a559808b98a57c2277bb5138506e8617c":[1,0,103,0,1],
 "struct_f_shadow_texture_policy_1_1_pixel_parameters_type.html#ae3789336f44ec8f4a486c6a366d69172":[1,0,103,0,0],
 "struct_f_shadow_texture_policy_1_1_vertex_parameters_type.html":[1,0,103,1],
-"struct_f_shadow_texture_policy_1_1_vertex_parameters_type.html#a7488e9172f33bf9aec9a04a2641daf70":[1,0,103,1,1],
-"struct_f_shadow_texture_policy_1_1_vertex_parameters_type.html#a7f311c3270a2755b41e2807ef3c99830":[1,0,103,1,0],
-"struct_f_signed_distance_field_shadow_texture_policy_1_1_pixel_parameters_type.html":[1,0,106,0],
-"struct_f_signed_distance_field_shadow_texture_policy_1_1_pixel_parameters_type.html#a4d1f0c1a3cc401c406f45a82b72c5718":[1,0,106,0,2],
-"struct_f_signed_distance_field_shadow_texture_policy_1_1_pixel_parameters_type.html#abefc7ff79552e7bedc659362634d4535":[1,0,106,0,1],
-"struct_f_signed_distance_field_shadow_texture_policy_1_1_pixel_parameters_type.html#affb70c08a20f81bc2d740a87908be852":[1,0,106,0,0],
-"struct_f_spherical_harmonic_light_policy_1_1_pixel_parameters_type.html":[1,0,112,0]
+"struct_f_shadow_texture_policy_1_1_vertex_parameters_type.html#a7488e9172f33bf9aec9a04a2641daf70":[1,0,103,1,1]
 };
