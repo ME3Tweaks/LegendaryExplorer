@@ -255,6 +255,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Coalesced.FileEntry", "class_legendary_explorer_core_1_1_coalesced_1_1_file_entry.html", null ],
     [ "LegendaryExplorerCore.Unreal.DLCPackage.FileEntryStruct", "struct_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package_1_1_file_entry_struct.html", null ],
     [ "LegendaryExplorerCore.Helpers.FileSize", "class_legendary_explorer_core_1_1_helpers_1_1_file_size.html", null ],
+    [ "FileSystemExtensions", "class_file_system_extensions.html", null ],
     [ "Fixed1< T >", "struct_fixed1.html", null ],
     [ "Fixed10< T >", "struct_fixed10.html", null ],
     [ "Fixed1< FShaderResourceParameter >", "struct_fixed1.html", null ],

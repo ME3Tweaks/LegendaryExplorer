@@ -94,6 +94,7 @@ var NAVTREEINDEX1 =
 "_file_entry_8cs.html":[2,0,0,0,1,14],
 "_file_lib_8cs.html":[2,0,0,0,27,8],
 "_file_size_8cs.html":[2,0,0,0,8,4],
+"_file_system_extensions_8cs.html":[2,0,0,0,7,6,17],
 "_flag_set_8cs.html":[2,0,0,0,12,0,0,1],
 "_float_literal_8cs.html":[2,0,0,0,27,4,1,32],
 "_fluid_surface_component_8cs.html":[2,0,0,0,26,1,27],
@@ -127,12 +128,12 @@ var NAVTREEINDEX1 =
 "_i_absolute_file_path_8cs.html":[2,0,0,0,7,7,3],
 "_i_absolute_path_8cs.html":[2,0,0,0,7,7,4],
 "_i_accept_a_s_t_visitor_8cs.html":[2,0,0,0,27,0,1,2],
-"_i_buffer_8cs.html":[2,0,0,0,7,6,17],
-"_i_buffer_manager_8cs.html":[2,0,0,0,7,6,18],
+"_i_buffer_8cs.html":[2,0,0,0,7,6,18],
+"_i_buffer_manager_8cs.html":[2,0,0,0,7,6,19],
 "_i_byte_provider_8cs.html":[2,0,0,0,14,4],
 "_i_contains_byte_code_8cs.html":[2,0,0,0,27,4,2,0],
 "_i_contains_functions_8cs.html":[2,0,0,0,27,4,2,1],
-"_i_data_stream_8cs.html":[2,0,0,0,7,6,19],
+"_i_data_stream_8cs.html":[2,0,0,0,7,6,20],
 "_i_directory_path_8cs.html":[2,0,0,0,7,7,5],
 "_i_drive_letter_8cs.html":[2,0,0,0,7,7,6],
 "_i_elastic_hierarchy_wrapper_8cs.html":[2,0,0,0,7,3,4],
@@ -248,6 +249,5 @@ var NAVTREEINDEX1 =
 "_m_e3_enums_8cs.html#a0120c88f5b0c38b81dc0a75c94115154":[2,0,0,0,26,16,524],
 "_m_e3_enums_8cs.html#a0167e3a174539e49deb17383ed523be3":[2,0,0,0,26,16,452],
 "_m_e3_enums_8cs.html#a01ecdb26d6de57cec27f383ad7ac9abd":[2,0,0,0,26,16,708],
-"_m_e3_enums_8cs.html#a01fe7eb1092f83aab4c271732c0fc05b":[2,0,0,0,26,16,151],
-"_m_e3_enums_8cs.html#a0274fab3380d0338225512869d6d17f6":[2,0,0,0,26,16,476]
+"_m_e3_enums_8cs.html#a01fe7eb1092f83aab4c271732c0fc05b":[2,0,0,0,26,16,151]
 };

@@ -17,6 +17,7 @@ var dir_b67164f93e9e65eff1cfb348f2408a5e =
     [ "Endian.cs", "_endian_8cs.html", "_endian_8cs" ],
     [ "EndianReader.cs", "_endian_reader_8cs.html", "_endian_reader_8cs" ],
     [ "EndianWriter.cs", "_endian_writer_8cs.html", "_endian_writer_8cs" ],
+    [ "FileSystemExtensions.cs", "_file_system_extensions_8cs.html", "_file_system_extensions_8cs" ],
     [ "IBuffer.cs", "_i_buffer_8cs.html", "_i_buffer_8cs" ],
     [ "IBufferManager.cs", "_i_buffer_manager_8cs.html", "_i_buffer_manager_8cs" ],
     [ "IDataStream.cs", "_i_data_stream_8cs.html", "_i_data_stream_8cs" ],

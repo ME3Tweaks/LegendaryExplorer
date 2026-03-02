@@ -1,5 +1,6 @@
 var NAVTREEINDEX6 =
 {
+"_u_sparse_array_8cs.html":[2,0,0,0,26,3,2],
 "_u_sparse_array_8cs.html#a7b185436bd4cbd1c7a9f68ecb07fb356":[2,0,0,0,26,3,2,2],
 "_u_state_8cs.html":[2,0,0,0,26,1,70],
 "_u_state_8cs.html#a31ccc8e63558d15b93826f6ed881ead5":[2,0,0,0,26,1,70,3],
@@ -27,7 +28,7 @@ var NAVTREEINDEX6 =
 "_update_actions_8cs.html#a3ab317d10ab0166386eba7fc66e745a1":[2,0,0,0,1,17,0],
 "_value_list_8cs.html":[2,0,0,0,7,0,2,1],
 "_value_tuple_equality_comparer_8cs.html":[2,0,0,0,14,11],
-"_var_int_8cs.html":[2,0,0,0,7,6,23],
+"_var_int_8cs.html":[2,0,0,0,7,6,24],
 "_var_link_info_8cs.html":[2,0,0,0,9,7],
 "_variable_declaration_8cs.html":[2,0,0,0,27,4,1,75],
 "_variable_identifier_8cs.html":[2,0,0,0,27,4,1,76],
@@ -248,6 +249,5 @@ var NAVTREEINDEX6 =
 "class_f_f_x_a_a3_blend_pixel_shader.html#a4863d2cca86df61ff971f9a3b60a447e":[1,0,44,2],
 "class_f_f_x_a_a3_blend_pixel_shader.html#a6e1d2510378df4090921584f24624f4f":[1,0,44,1],
 "class_f_f_x_a_a3_blend_pixel_shader.html#af0acd8625e37ca02791c3c617523bd94":[1,0,44,0],
-"class_f_f_x_a_a3_vertex_shader.html":[1,0,45],
-"class_f_f_x_a_a3_vertex_shader.html#a4ff5ed0a90fdec5a91fea8e3b664c6b9":[1,0,45,1]
+"class_f_f_x_a_a3_vertex_shader.html":[1,0,45]
 };

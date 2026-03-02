@@ -1048,6 +1048,7 @@ var annotated_dup =
     [ "FHitMaskPixelShader", "class_f_hit_mask_pixel_shader.html", "class_f_hit_mask_pixel_shader" ],
     [ "FHitMaskVertexShader", "class_f_hit_mask_vertex_shader.html", "class_f_hit_mask_vertex_shader" ],
     [ "FHitProxyPixelShader", "class_f_hit_proxy_pixel_shader.html", "class_f_hit_proxy_pixel_shader" ],
+    [ "FileSystemExtensions", "class_file_system_extensions.html", null ],
     [ "FInstancedStaticMeshVertexFactoryShaderParameters", "class_f_instanced_static_mesh_vertex_factory_shader_parameters.html", "class_f_instanced_static_mesh_vertex_factory_shader_parameters" ],
     [ "Fixed1", "struct_fixed1.html", "struct_fixed1" ],
     [ "Fixed10", "struct_fixed10.html", "struct_fixed10" ],
