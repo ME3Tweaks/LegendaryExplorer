@@ -405,9 +405,14 @@ namespace LegendaryExplorerCore.Unreal
                     if (LODInfo != null && LODInfo.Count > i)
                     {
                         var matMap = LODInfo[i].GetProp<ArrayProperty<IntProperty>>("LODMaterialMap");
-                        if (matMap != null && matMap.Count > 0)
+                        if (matMap != null)
                         {
-                            materialMapping = [.. matMap.Select(x => x.Value)];
+                            int j = 0;
+                            foreach (var idx in matMap.Select(x => x.Value))
+                            {
+                                materialMapping[j] = idx;
+                                j++;
+                            }
                         }
                     }
                 }
@@ -505,32 +510,48 @@ namespace LegendaryExplorerCore.Unreal
                     // TODO the whole texture thing is very slow. Should look into making it faster. 
                     if (intermediateMat.DiffTexture != null)
                     {
-                        var imageBytes = intermediateMat.DiffTexture.GetPNG(intermediateMat.DiffTexture.GetTopMip());
-                        var diffImage = ImageBuilder.From(imageBytes, intermediateMat.DiffTexture.Export.ObjectNameString);
-                        diffImage.AlternateWriteFileName = $"{intermediateMat.DiffTexture.Export.ObjectNameString}.*";
-                        mat.WithBaseColor(diffImage);
+                        try
+                        {
+                            var imageBytes = intermediateMat.DiffTexture.GetPNG(intermediateMat.DiffTexture.GetTopMip());
+                            var diffImage = ImageBuilder.From(imageBytes, intermediateMat.DiffTexture.Export.ObjectNameString);
+                            diffImage.AlternateWriteFileName = $"{intermediateMat.DiffTexture.Export.ObjectNameString}.*";
+                            mat.WithBaseColor(diffImage);
+                        }
+                        catch (FileNotFoundException)
+                        {
+                            // tfc not found; default to black
+                            mat.WithBaseColor(new Vector4(0, 0, 0, 1));
+                        }
+                        
                     }
                     if (intermediateMat.NormalTexture != null)
                     {
-                        var normalMapBytes = intermediateMat.NormalTexture.GetPNG(intermediateMat.NormalTexture.GetTopMip());
-                        // flip the green channel to match the convention glTF uses
-                        var img = IsImage.Load<Rgba32>(normalMapBytes);
-                        var colorMatrix = new ColorMatrix(
-                            1, 0, 0, 0,
-                            0, -1, 0, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1,
-                            0, 1, 0, 0
-                        );
-                        img.Mutate(x => x.ApplyProcessor(new FilterProcessor(colorMatrix)));
-                        using (var ms = new MemoryStream())
+                        try
                         {
-                            img.SaveAsPng(ms);
-                            normalMapBytes = ms.ToArray();
+                            var normalMapBytes = intermediateMat.NormalTexture.GetPNG(intermediateMat.NormalTexture.GetTopMip());
+                            // flip the green channel to match the convention glTF uses
+                            var img = IsImage.Load<Rgba32>(normalMapBytes);
+                            var colorMatrix = new ColorMatrix(
+                                1, 0, 0, 0,
+                                0, -1, 0, 0,
+                                0, 0, 1, 0,
+                                0, 0, 0, 1,
+                                0, 1, 0, 0
+                            );
+                            img.Mutate(x => x.ApplyProcessor(new FilterProcessor(colorMatrix)));
+                            using (var ms = new MemoryStream())
+                            {
+                                img.SaveAsPng(ms);
+                                normalMapBytes = ms.ToArray();
+                            }
+                            var normImage = ImageBuilder.From(normalMapBytes, $"{intermediateMat.NormalTexture.Export.ObjectNameString}_flipped");
+                            normImage.AlternateWriteFileName = $"{intermediateMat.NormalTexture.Export.ObjectNameString}_flipped.*";
+                            mat.WithNormal(normImage);
                         }
-                        var normImage = ImageBuilder.From(normalMapBytes, $"{intermediateMat.NormalTexture.Export.ObjectNameString}_flipped");
-                        normImage.AlternateWriteFileName = $"{intermediateMat.NormalTexture.Export.ObjectNameString}_flipped.*";
-                        mat.WithNormal(normImage);
+                        catch (FileNotFoundException)
+                        {
+                            // tfc not found; just don't put a normal on this material in this case
+                        }
                     }
                     mats.Add(mat);
                 }

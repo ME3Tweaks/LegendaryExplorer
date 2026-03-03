@@ -1,6 +1,9 @@
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 
 namespace LegendaryExplorerCore.Unreal.Animation;
@@ -9,26 +12,28 @@ namespace LegendaryExplorerCore.Unreal.Animation;
 /// Pure math class that handles skeleton bind-pose computation, animation track mapping,
 /// and per-frame skinning matrix computation. No rendering dependency.
 /// </summary>
-public class SkeletonAnimPlayer
+/// <remarks>
+/// Builds bind-pose transforms from a SkeletalMesh's RefSkeleton.
+/// </remarks>
+public class AnimSequencePlayer(SkeletalMesh skeletalMesh) : AnimPlayer(skeletalMesh)
 {
-    private MeshBone[] _bones;
-    private Matrix4x4[] _inverseBindPose;
-    private Matrix4x4[] _skinningMatrices;
-
     // Animation state
     private AnimSequence _animSequence;
     private int[] _animToSkelMap; // animTrack[i] -> skeleton bone index
     private int[] _skelToAnimMap; // skeleton bone index -> animTrack[i] or -1 if no track
-    private float _currentTime;
+    private bool _animRotationOnly = true; // animSequence => animSetData.bAnimRotationOnly; default true; if true, bones will ignore position tracks, only using the rotation
+    private HashSet<string> _useTranslationBones = []; // animSequence => animSetData.UseTranslationBoneNames; these bones will use the positions from the animation even if _animRotationOnly in true
+    private HashSet<string> _forceMeshTranslationBoneNames = []; // animSequence => animSetData.ForceMeshTranslationBoneNames; these bones will use the position from the mesh even if _animRotationOnly is false
 
     public NameReference AnimName => _animSequence?.Name ?? "None";
     public int TotalFrames => _animSequence?.NumFrames ?? 0;
-    public float Duration => _animSequence?.SequenceLength ?? 0f;
-    public bool IsPlaying { get; set; }
-    public bool IsLooping { get; set; } = true;
-    public float PlaybackSpeed { get; set; } = 1f;
+    public override float Duration => _animSequence?.SequenceLength ?? 0f;
 
-    public bool HasAnimation => _animSequence != null;
+    public override float StartTime => 0;
+
+    public override float EndTime => Duration;
+
+    public override bool HasAnimation => _animSequence != null;
 
     public int CurrentFrame
     {
@@ -36,60 +41,21 @@ public class SkeletonAnimPlayer
         {
             if (_animSequence == null || TotalFrames <= 1) return 0;
             float frameRate = (TotalFrames - 1) / Duration;
-            return Math.Clamp((int)(_currentTime * frameRate), 0, TotalFrames - 1);
+            return Math.Clamp((int)(CurrentTime * frameRate), 0, TotalFrames - 1);
         }
         set
         {
             if (_animSequence == null || TotalFrames <= 1)
             {
-                _currentTime = 0;
+                CurrentTime = 0;
                 return;
             }
             float frameRate = (TotalFrames - 1) / Duration;
-            _currentTime = Math.Clamp(value / frameRate, 0, Duration);
+            CurrentTime = Math.Clamp(value / frameRate, 0, Duration);
         }
     }
 
     public int BoneCount => _bones?.Length ?? 0;
-
-    /// <summary>
-    /// Builds bind-pose transforms from a SkeletalMesh's RefSkeleton.
-    /// </summary>
-    public void SetSkeleton(SkeletalMesh skeletalMesh)
-    {
-        _bones = skeletalMesh.RefSkeleton;
-        int numBones = _bones.Length;
-        var bindPose = new Matrix4x4[numBones];
-        _inverseBindPose = new Matrix4x4[numBones];
-        _skinningMatrices = new Matrix4x4[numBones];
-
-        for (int i = 0; i < numBones; i++)
-        {
-            var bone = _bones[i];
-            // bone.Orientation is used directly (not conjugated) as the bind pose convention.
-            // Animation rotations from tracks are conjugated at sample time to match this convention.
-            // (UE3 stores animation rotations conjugated relative to RefSkeleton orientations.)
-            var localTransform = Matrix4x4.CreateFromQuaternion(bone.Orientation) * Matrix4x4.CreateTranslation(bone.Position);
-
-            if (bone.ParentIndex >= 0 && bone.ParentIndex < i)
-            {
-                bindPose[i] = localTransform * bindPose[bone.ParentIndex];
-            }
-            else
-            {
-                bindPose[i] = localTransform;
-            }
-
-            Matrix4x4.Invert(bindPose[i], out _inverseBindPose[i]);
-            _skinningMatrices[i] = Matrix4x4.Identity;
-        }
-
-        // Reset animation state
-        _animSequence = null;
-        _animToSkelMap = null;
-        _skelToAnimMap = null;
-        _currentTime = 0;
-    }
 
     /// <summary>
     /// Maps animation bone names to skeleton bone indices and prepares for playback.
@@ -97,7 +63,7 @@ public class SkeletonAnimPlayer
     public void SetAnimation(AnimSequence animSequence)
     {
         _animSequence = animSequence;
-        _currentTime = 0;
+        CurrentTime = 0;
 
         if (animSequence == null || _bones == null)
         {
@@ -145,54 +111,62 @@ public class SkeletonAnimPlayer
                 _animToSkelMap[i] = -1; // no match
             }
         }
+
+        // look up the animData from the AnimSequence, look up the UseTranslationBoneNames property, save it
+        var animSetData = GetAnimSetData(animSequence);
+        _animRotationOnly = animSetData?.GetProperty<BoolProperty>("bAnimRotationOnly")?.Value ?? true;
+        _useTranslationBones = [.. animSetData?.GetProperty<ArrayProperty<NameProperty>>("UseTranslationBoneNames")?.Select(np => np.Value.Instanced) ?? []];
+        _forceMeshTranslationBoneNames = [.. animSetData?.GetProperty<ArrayProperty<NameProperty>>("ForceMeshTranslationBoneNames")?.Select(np => np.Value.Instanced) ?? []];
     }
 
-    /// <summary>
-    /// Advances playback time by the given delta in seconds.
-    /// </summary>
-    public void AdvanceTime(float dt)
+    private static ExportEntry GetAnimSetData(AnimSequence animSequence)
     {
-        if (_animSequence == null || Duration <= 0) return;
-
-        _currentTime += dt * PlaybackSpeed;
-
-        if (IsLooping)
-        {
-            while (_currentTime >= Duration) _currentTime -= Duration;
-            while (_currentTime < 0) _currentTime += Duration;
-        }
-        else
-        {
-            _currentTime = Math.Clamp(_currentTime, 0, Duration);
-        }
+        var animDataEntry = animSequence?.Export.GetProperty<ObjectProperty>("m_pBioAnimSetData").ResolveToEntry(animSequence.Export.FileRef);
+        return animDataEntry is ExportEntry ? animDataEntry as ExportEntry : EntryImporter.ResolveImport(animDataEntry as ImportEntry, new PackageCache());
     }
 
-    public void SetCurrentTime(float time)
+    private bool ShouldBoneUsePositionTrack(string boneName)
+    {
+        // anything in this list should always use the mesh position rather than the animation position
+        if (_forceMeshTranslationBoneNames.Contains(boneName))
+        {
+            return false;
+        }
+        // if animRotationOnly is set (it almost always will be)
+        if (_animRotationOnly)
+        {
+            // then return false unless it is in the list of UseTranslationBoneNames
+            return _useTranslationBones.Contains(boneName);
+        }
+        // otherwise, return true
+        return true;
+    }
+
+    public override void SetCurrentTime(float time)
     {
         if (_animSequence == null || Duration <= 0)
         {
-            _currentTime = 0;
+            CurrentTime = 0;
             return;
         }
-        _currentTime = Math.Clamp(time, 0, Duration);
+        CurrentTime = Math.Clamp(time, 0, Duration);
     }
 
     /// <summary>
     /// Computes skinning matrices for the current frame.
     /// Returns the array of skinning matrices (InverseBindPose * AnimatedComponentSpace).
     /// </summary>
-    public Matrix4x4[] ComputeSkinningMatrices()
+    public override Matrix4x4[] ComputeSkinningMatrices()
     {
         if (_bones == null || _skinningMatrices == null) return null;
 
         int numBones = _bones.Length;
-        var animatedCS = new Matrix4x4[numBones];
 
         float frame = 0;
         if (TotalFrames > 1 && Duration > 0)
         {
             float frameRate = (TotalFrames - 1) / Duration;
-            frame = _currentTime * frameRate;
+            frame = CurrentTime * frameRate;
             frame = Math.Clamp(frame, 0, TotalFrames - 1);
         }
 
@@ -206,10 +180,8 @@ public class SkeletonAnimPlayer
             {
                 var track = _animSequence.RawAnimationData[trackIdx];
 
-                // Use animation position if track has keys, otherwise fall back to bind pose position.
-                // Many bones only have rotation animation, so position tracks are often empty.
-                var pos = (track.Positions is { Count: > 0 })
-                    ? SamplePosition(track, frame)
+                var pos = ShouldBoneUsePositionTrack(bone.Name)
+                    ? SamplePosition(track, frame, bone.Position)
                     : bone.Position;
 
                 // UE3 stores animation rotations conjugated relative to RefSkeleton bone orientations.
@@ -218,7 +190,7 @@ public class SkeletonAnimPlayer
                 // (which uses bone.Orientation directly). This ensures InvBindPose * AnimatedCS = Identity
                 // at rest pose. Fallback uses bone.Orientation directly (already in bind pose convention).
                 var rot = (track.Rotations is { Count: > 0 })
-                    ? Quaternion.Conjugate(SampleRotation(track, frame))
+                    ? -Quaternion.Conjugate(SampleRotation(track, frame))
                     : bone.Orientation;
 
                 localTransform = Matrix4x4.CreateFromQuaternion(rot) * Matrix4x4.CreateTranslation(pos);
@@ -231,23 +203,25 @@ public class SkeletonAnimPlayer
 
             if (bone.ParentIndex >= 0 && bone.ParentIndex < i)
             {
-                animatedCS[i] = localTransform * animatedCS[bone.ParentIndex];
+                _boneComponentSpace[i] = localTransform * _boneComponentSpace[bone.ParentIndex];
             }
             else
             {
-                animatedCS[i] = localTransform;
+                _boneComponentSpace[i] = localTransform;
             }
 
-            _skinningMatrices[i] = _inverseBindPose[i] * animatedCS[i];
+            _skinningMatrices[i] = _inverseBindPose[i] * _boneComponentSpace[i];
         }
 
         return _skinningMatrices;
     }
 
-    private static Vector3 SamplePosition(AnimTrack track, float frame)
+    private static Vector3 SamplePosition(AnimTrack track, float frame, Vector3 bonePosition)
     {
+        // Use animation position if track has keys, otherwise fall back to bind pose position.
+        // Many bones only have rotation animation, so position tracks are often empty.
         if (track.Positions == null || track.Positions.Count == 0)
-            return Vector3.Zero;
+            return bonePosition;
         if (track.Positions.Count == 1)
             return track.Positions[0];
 

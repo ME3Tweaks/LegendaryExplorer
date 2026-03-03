@@ -211,7 +211,8 @@ public partial class BinaryInterpreterWPF
             for (int i = 0; i < materialShaderMapcount; i++)
             {
                 var nodes = new List<ITreeItem>();
-                materialShaderMaps.Items.Add(new BinInterpNode(bin.Position, $"Material Shader Map {i}") { Items = nodes });
+                var rootNode = new BinInterpNode(bin.Position, $"Material Shader Map {i}") { Items = nodes };
+                materialShaderMaps.Items.Add(rootNode);
                 nodes.Add(ReadFStaticParameterSet(bin));
 
                 if (Pcc.Game >= MEGame.ME3)
@@ -262,7 +263,10 @@ public partial class BinaryInterpreterWPF
 
                 nodes.Add(new BinInterpNode(bin.Position, $"MaterialId: {bin.ReadGuid()}") { Length = 16 });
 
-                nodes.Add(MakeStringNode(bin, "Friendly Name"));
+                var pos = bin.Position;
+                var friendlyName = bin.ReadUnrealString();
+                nodes.Add(new BinInterpNode(pos, $"Friendly Name: {friendlyName}"));
+                rootNode.Header += $" ({friendlyName})";
 
                 nodes.Add(ReadFStaticParameterSet(bin));
 
@@ -336,7 +340,7 @@ public partial class BinaryInterpreterWPF
         return subnodes;
     }
 
-    private BinInterpNode ReadShaderParameters(EndianReader bin, string shaderType, out Exception exception)
+    public BinInterpNode ReadShaderParameters(EndianReader bin, string shaderType, out Exception exception)
     {
         exception = null;
         if (!CurrentLoadedExport.Game.IsLEGame())

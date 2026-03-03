@@ -1,4 +1,4 @@
-<bases:WPFBase
+<misc:NotifyPropertyChangedWindowBase
         x:Class="LegendaryExplorer.Tools.LevelEditor.LevelEditor"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -105,9 +105,9 @@
                     <RadioButton GroupName="WidgetMode" ToolTip="Translate" Command="{Binding ToggleTranslateCommand}" IsChecked="True">
                         Translate
                     </RadioButton>
-                    <!--<RadioButton GroupName="WidgetMode" ToolTip="Rotate" Command="{Binding ToggleRotateCommand}">
+                    <RadioButton GroupName="WidgetMode" ToolTip="Rotate" Command="{Binding ToggleRotateCommand}">
                         Rotate
-                    </RadioButton>-->
+                    </RadioButton>
                     <RadioButton GroupName="WidgetMode" ToolTip="Scale" Command="{Binding ToggleScaleCommand}">
                         Scale
                     </RadioButton>
@@ -116,7 +116,6 @@
                     </RadioButton>
                     <Separator Name="SaveToggle_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                     <ToggleButton Content="Local Coords" ToolTip="Use local coordinates for the transform widget" IsChecked="{Binding UseLocalCoordsForWidget}"/>
-
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                     <ToggleButton Content="Show Collision" ToolTip="Show collision meshes" IsChecked="{Binding ShowCollision}"/>
                     <ToggleButton Content="Show Volumes" ToolTip="Show volume wireframes" IsChecked="{Binding ShowVolumes}"/>
@@ -177,7 +176,17 @@
                                             <Button DockPanel.Dock="Right" Content="Commit" Padding="4,0" Margin="2,0"
                                                     Command="{Binding Data.CommitSingleFileCommand, Source={StaticResource bindingProxy}}"
                                                     CommandParameter="{Binding Name}" ToolTip="Commit Level Editor changes for this file" FontSize="10"/>
-                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" Padding="4,2" VerticalAlignment="Center"/>
+                                            <ToggleButton DockPanel.Dock="Right" Padding="2,0" Margin="2,0"
+                                                          IsChecked="{Binding Name.IsReadOnly, Mode=TwoWay}"
+                                                          ToolTip="Toggle read-only — actors cannot be edited when enabled">
+                                                <Grid Width="12" Height="12">
+                                                    <fa:ImageAwesome Icon="Solid_Lock" Width="12"
+                                                                     Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                    <fa:ImageAwesome Icon="Solid_LockOpen" Width="12"
+                                                                     Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='Not'}"/>
+                                                </Grid>
+                                            </ToggleButton>
+                                            <TextBlock Text="{Binding Name.FileName, Mode=OneTime}" FontWeight="Bold" Padding="4,2" VerticalAlignment="Center"/>
                                         </DockPanel>
                                     </DataTemplate>
                                 </GroupStyle.HeaderTemplate>
@@ -214,7 +223,44 @@
                 <scene3D:SceneRenderControl Grid.Column="2" x:Name="SceneViewer" />
 
 
-                <WrapPanel x:Name="wrapPanel" Grid.Column="4" IsEnabled="{Binding ., Converter={StaticResource NullEnabledConverter}}" DataContext="{Binding SelectedActor}">
+                <DockPanel Grid.Column="4">
+                    <GroupBox DockPanel.Dock="Bottom" Header="Snap" Margin="5,5,5,0" BorderThickness="2" Padding="5"
+                              DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:LevelEditor}}}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <!-- Translate -->
+                            <CheckBox Grid.Row="0" Grid.Column="0" Content="Translate" VerticalAlignment="Center"
+                                      IsChecked="{Binding TranslateSnapEnabled}" Margin="0,2,0,2"/>
+                            <xctk:SingleUpDown Grid.Row="0" Grid.Column="1" Value="{Binding TranslateSnapValue}"
+                                               Minimum="0.001" FormatString="F1" ButtonSpinnerLocation="Left"
+                                               ToolTip="Snap step in world units" Margin="5,2,0,2"/>
+                            <TextBlock Grid.Row="0" Grid.Column="2" Text="units" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                            <!-- Rotation -->
+                            <CheckBox Grid.Row="1" Grid.Column="0" Content="Rotation" VerticalAlignment="Center"
+                                      IsChecked="{Binding RotateSnapEnabled}" Margin="0,2,0,2"/>
+                            <xctk:SingleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding RotateSnapValue}"
+                                               Minimum="0.1" Maximum="180" FormatString="F1" ButtonSpinnerLocation="Left"
+                                               ToolTip="Snap step in degrees" Margin="5,2,0,2"/>
+                            <TextBlock Grid.Row="1" Grid.Column="2" Text="°" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                            <!-- Scale -->
+                            <CheckBox Grid.Row="2" Grid.Column="0" Content="Scale" VerticalAlignment="Center"
+                                      IsChecked="{Binding ScaleSnapEnabled}" Margin="0,2,0,2"/>
+                            <xctk:SingleUpDown Grid.Row="2" Grid.Column="1" Value="{Binding ScaleSnapValue}"
+                                               Minimum="0.01" FormatString="F1" ButtonSpinnerLocation="Left"
+                                               ToolTip="Snap step as percent (10 = 0.1 per step)" Margin="5,2,0,2"/>
+                            <TextBlock Grid.Row="2" Grid.Column="2" Text="%" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                        </Grid>
+                    </GroupBox>
+                    <WrapPanel x:Name="wrapPanel" IsEnabled="{Binding ., Converter={StaticResource NullEnabledConverter}}" DataContext="{Binding SelectedActor}">
                     <GroupBox Header="Actor Position" Margin="5,0,5,5" BorderThickness="2" Padding="5">
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
@@ -284,7 +330,8 @@
                             </StackPanel>
                         </StackPanel>
                     </GroupBox>
-                </WrapPanel>
+                    </WrapPanel>
+                </DockPanel>
 
                 <StackPanel Grid.Column="0" Grid.ColumnSpan="5" Visibility="{Binding HasAnyFileOpen, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='Not'}"
                             Background="#FFBFBFBF">
@@ -327,4 +374,4 @@
             </Grid>
         </DockPanel>
     </xctk:BusyIndicator>
-</bases:WPFBase>
+</misc:NotifyPropertyChangedWindowBase>

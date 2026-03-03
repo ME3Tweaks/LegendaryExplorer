@@ -304,7 +304,7 @@ public class StaticMeshComponentProxy : MeshComponentProxy
 public class SkeletalMeshComponentProxy : MeshComponentProxy
 {
     SkinnedMeshRenderer skinnedMeshRenderer;
-    SkeletonAnimPlayer animPlayer;
+    AnimSequencePlayer animPlayer;
 
     public SkeletalMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent) : base(context, componentExport, parent)
     {
@@ -319,8 +319,7 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
                 MeshIFP = meshExport.InstancedFullPath;
                 skinnedMeshRenderer = new SkinnedMeshRenderer();
                 skinnedMeshRenderer.BuildFromSkeletalMesh(meshExport.FileRef.Game, skm.LODModels[0]);
-                animPlayer = new SkeletonAnimPlayer();
-                animPlayer.SetSkeleton(skm);
+                animPlayer = new AnimSequencePlayer(skm);
             }
             UpdateSelfLocalToWorld();
         }

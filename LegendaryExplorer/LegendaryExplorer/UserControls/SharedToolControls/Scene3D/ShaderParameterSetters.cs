@@ -144,12 +144,12 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
             }
             if (p.ScreenDoorNoiseTexture.IsBound())
             {
-                Debugger.Break();
+                //Debugger.Break();
                 context.ImmediateContext.PixelShader.SetShaderResource(p.ScreenDoorNoiseTexture.BaseIndex, null);
             }
             if (p.WrapLightingParameters.IsBound())
             {
-                Debugger.Break();
+                //Debugger.Break();
             }
         }
 
@@ -157,12 +157,12 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
         {
             if (p.SceneColorTexture.IsBound())
             {
-                Debugger.Break();
+                //Debugger.Break();
                 context.ImmediateContext.PixelShader.SetShaderResource(p.SceneColorTexture.BaseIndex, null);
             }
             if (p.SceneDepthTexture.IsBound())
             {
-                Debugger.Break();
+                //Debugger.Break();
                 context.ImmediateContext.PixelShader.SetShaderResource(p.SceneDepthTexture.BaseIndex, null);
             }
 

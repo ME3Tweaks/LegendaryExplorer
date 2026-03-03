@@ -116,7 +116,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
             foreach (var param in func.Parameters)
             {
-                func.Tokens.AddDefinitionLink(param, param.StartPos, param.TextLength);
+                func.Tokens?.AddDefinitionLink(param, param.StartPos, param.TextLength);
             }
             if (hasStructDefaults)
             {
@@ -729,7 +729,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private VariableDeclaration ParseLocalVarDecl()
         {
             var startPos = CurrentPosition;
-            if (!Matches(LOCAL, ST.Keyword)) return null;
+            if (!MatchesKeyword(LOCAL)) return null;
 
             VariableType type = ParseTypeRef();
             if (type == null) throw ParseError($"Expected variable type after '{LOCAL}'!", CurrentPosition);
@@ -1760,7 +1760,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                     bool isConst = false;
                     bool isStaticAccess = false;
-                    if (Matches(CONST, ST.Keyword))
+                    if (MatchesKeyword(CONST))
                     {
                         if (lhsType is not ClassType || lhs is not ObjectLiteral)
                         {
@@ -2526,7 +2526,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             ScriptToken token = CurrentToken;
             if (NotInContext)
             {
-                if (Matches(SELF, ST.Keyword))
+                if (MatchesKeyword(SELF))
                 {
                     Tokens.AddDefinitionLink(Self, PrevToken);
                     if (InStaticFunction)
@@ -2536,17 +2536,17 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     return new SymbolReference(SelfDeclaration, SELF, token.StartPos, token.EndPos);
                 }
 
-                if (Matches(NEW, ST.Keyword))
+                if (MatchesKeyword(NEW))
                 {
                     return ParseNew();
                 }
 
-                if (Matches(SUPER, ST.Keyword))
+                if (MatchesKeyword(SUPER))
                 {
                     return ParseSuper();
                 }
 
-                if (Matches(GLOBAL, ST.Keyword))
+                if (MatchesKeyword(GLOBAL))
                 {
                     Tokens.AddDefinitionLink(Self, PrevToken);
                     if (!Matches(TokenType.Dot))
@@ -2589,7 +2589,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
 
             bool isDefaultRef = false;
-            if (Matches(DEFAULT, ST.Keyword))
+            if (MatchesKeyword(DEFAULT))
             {
                 if (NotInContext)
                 {
@@ -2682,7 +2682,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         {
             var startPos = CurrentPosition;
             var args = new List<ScriptToken>();
-            bool isStatic = Matches(STATIC, ST.Keyword);
+            bool isStatic = MatchesKeyword(STATIC);
             if (Matches(TokenType.LeftParenth))
             {
                 if (!Matches(TokenType.RightParenth))

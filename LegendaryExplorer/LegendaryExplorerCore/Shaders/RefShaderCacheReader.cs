@@ -5,6 +5,7 @@ using System.IO;
 using JetBrains.Annotations;
 using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -44,6 +45,7 @@ namespace LegendaryExplorerCore.Shaders
 
         private static int[] OffsetOfShaderTypeCRCMap = new int[7];
         private static int[] OffsetOfVertexFactoryTypeCRCMap = new int[7];
+        private static long[] CachedRefShaderCacheSize = new long[7];
 
         private static Dictionary<Guid, int> ShaderOffsets(MEGame game) => game switch
         {
@@ -66,9 +68,24 @@ namespace LegendaryExplorerCore.Shaders
         private static int LE2MaterialShaderMapsOffset = 1014140890;
         private static int LE1MaterialShaderMapsOffset = 720539980;
 
+        private static long ME3RefShaderCacheSize = 232355586;
+        private static long ME2RefShaderCacheSize = 151649957;
+        private static long ME1RefShaderCacheSize = 76618220;
+
         private static long LE3RefShaderCacheSize = 1296009525;
         private static long LE2RefShaderCacheSize = 1035352391;
         private static long LE1RefShaderCacheSize = 731880291;
+
+        private static long VanillaRefShaderCacheSize(MEGame game) => game switch
+        {
+            MEGame.ME3 => ME3RefShaderCacheSize,
+            MEGame.ME2 => ME2RefShaderCacheSize,
+            MEGame.ME1 => ME1RefShaderCacheSize,
+            MEGame.LE3 => LE3RefShaderCacheSize,
+            MEGame.LE2 => LE2RefShaderCacheSize,
+            MEGame.LE1 => LE1RefShaderCacheSize,
+            _ => 0
+        };
 
         private static int MaterialShaderMapsOffset(MEGame game, string gamePathOverride)
         {
@@ -99,18 +116,23 @@ namespace LegendaryExplorerCore.Shaders
             {
                 Dictionary<Guid, int> offsetDict = game switch
                 {
-                    MEGame.ME3 => ME3ShaderOffsets ??= new Dictionary<Guid, int>(),
-                    MEGame.ME2 => ME2ShaderOffsets ??= new Dictionary<Guid, int>(),
-                    MEGame.ME1 => ME1ShaderOffsets ??= new Dictionary<Guid, int>(),
-                    MEGame.LE3 => LE3ShaderOffsets ??= new Dictionary<Guid, int>(),
-                    MEGame.LE2 => LE2ShaderOffsets ??= new Dictionary<Guid, int>(),
-                    MEGame.LE1 => LE1ShaderOffsets ??= new Dictionary<Guid, int>(),
+                    MEGame.ME3 => ME3ShaderOffsets ??= [],
+                    MEGame.ME2 => ME2ShaderOffsets ??= [],
+                    MEGame.ME1 => ME1ShaderOffsets ??= [],
+                    MEGame.LE3 => LE3ShaderOffsets ??= [],
+                    MEGame.LE2 => LE2ShaderOffsets ??= [],
+                    MEGame.LE1 => LE1ShaderOffsets ??= [],
                     _ => null
                 };
                 if (offsetDict == null) return;
                 lock (offsetDict)
                 {
-                    if (offsetDict.Count > 0) return;
+                    long fileSize = File.GetSize(filePath);
+
+                    if (offsetDict.Count > 0 && fileSize == CachedRefShaderCacheSize[(int)game])
+                    {
+                        return;
+                    }
                     //do not change the filestream creation options without testing what effect it has on the runtime of this method
                     //default File.OpenRead is 10x slower than this. (keep in mind OS file caching when testing)
                     using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 1024 * 100, FileOptions.SequentialScan);
@@ -168,6 +190,7 @@ namespace LegendaryExplorerCore.Shaders
                             LE1MaterialShaderMapsOffset = (int)fs.Position;
                             break;
                     }
+                    CachedRefShaderCacheSize[(int)game] = fileSize;
                 }
             }
         }
@@ -218,8 +241,16 @@ namespace LegendaryExplorerCore.Shaders
             return null;
         }
 
-        public static string GetShaderDissasembly(MEGame game, Guid shaderGuid)
+        public static string GetD3D9ShaderDissasembly(MEGame game, Guid shaderGuid)
         {
+            if (!game.IsMEGame())
+            {
+                throw new InvalidOperationException("This method is invalid for LE games, as they use D3D11");
+            }
+            if (!IsShaderOffsetsDictInitialized(game))
+            {
+                PopulateOffsets(game);
+            }
             var offsets = ShaderOffsets(game);
             if (offsets != null && offsets.TryGetValue(shaderGuid, out int offset))
             {
@@ -235,6 +266,10 @@ namespace LegendaryExplorerCore.Shaders
 
         public static byte[] GetShaderBytecode(MEGame game, Guid shaderGuid)
         {
+            if (!IsShaderOffsetsDictInitialized(game))
+            {
+                PopulateOffsets(game);
+            }
             var offsets = ShaderOffsets(game);
             if (offsets != null && offsets.TryGetValue(shaderGuid, out int offset))
             {
@@ -257,6 +292,17 @@ namespace LegendaryExplorerCore.Shaders
                 using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad: true);
                 ReadNames(fs, shaderCachePackage);
                 var sc = new SerializingContainer(fs, shaderCachePackage, true);
+
+
+                long fileSize = File.GetSize(filePath);
+                //this method does not normally require populating the offsets, as we hardcode the offset to the MaterialShaderMaps.
+                //It is only neccesary in the very rare case that the RefShaderCache is in a non-vanilla state
+                if (fileSize != CachedRefShaderCacheSize[(int)game] && fileSize != VanillaRefShaderCacheSize(game))
+                {
+                    int offsetOfShaderCacheOffset = shaderCachePackage.ExportOffset + 36;
+                    PopulateOffsets(game, offsetOfShaderCacheOffset);
+                }
+
                 sc.ms.JumpTo(MaterialShaderMapsOffset(game, gamePathOverride));
 
                 int count = fs.ReadInt32();
@@ -305,8 +351,8 @@ namespace LegendaryExplorerCore.Shaders
         /// <param name="cache"></param>
         public static void PopulateCRCMaps(MEGame game, ShaderCache cache)
         {
-            UMultiMap<NameReference, uint> shaderTypeCRCMap = new();
-            UMultiMap<NameReference, uint> vertexFactoryTypeCRCMap = new();
+            UMultiMap<NameReference, uint> shaderTypeCRCMap = [];
+            UMultiMap<NameReference, uint> vertexFactoryTypeCRCMap = [];
 
             PopulateOffsets(game);
 
@@ -318,6 +364,9 @@ namespace LegendaryExplorerCore.Shaders
                 using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad: true);
                 ReadNames(fs, shaderCachePackage);
                 var sc = new SerializingContainer(fs, shaderCachePackage, true);
+
+                int offsetOfShaderCacheOffset = shaderCachePackage.ExportOffset + 36;
+                PopulateOffsets(game, offsetOfShaderCacheOffset);
 
                 sc.ms.JumpTo(OffsetOfShaderTypeCRCMap[(int)game]);
                 sc.Serialize(ref shaderTypeCRCMap, sc.Serialize, sc.Serialize);
@@ -345,6 +394,9 @@ namespace LegendaryExplorerCore.Shaders
                 using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad: true);
                 ReadNames(fs, shaderCachePackage);
                 var sc = new SerializingContainer(fs, shaderCachePackage, true);
+
+                int offsetOfShaderCacheOffset = shaderCachePackage.ExportOffset + 36;
+                PopulateOffsets(game, offsetOfShaderCacheOffset);
 
                 sc.ms.JumpTo(OffsetOfShaderTypeCRCMap[(int)game]);
                 sc.Serialize(ref shaderTypeCRCMap, sc.Serialize, sc.Serialize);

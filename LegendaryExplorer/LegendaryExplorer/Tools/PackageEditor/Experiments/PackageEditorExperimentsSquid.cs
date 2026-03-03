@@ -1106,7 +1106,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     });
                 }
 
-                psa.ToFile(Path.ChangeExtension(d.FileName, "psa"));
+                psa.ToFile(Path.ChangeExtension(d.FileName, "psa"), false);
 
                 // also output a config file next to this to tell it to skip rotations for every sequence and every bone, and skip everythig for bones that aren't part of the pose
                 File.WriteAllText(Path.ChangeExtension(d.FileName, "config"), config.ToString());

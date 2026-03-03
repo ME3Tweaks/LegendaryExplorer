@@ -267,7 +267,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
                 // Skip to parent
                 LoadMaterialData(GetMatParent(material, cache), cache);
             }
-            else if (MaterialExport.IsA("MaterialInstanceConstant"))
+            else if (MaterialExport.IsA("MaterialInstance"))
             {
                 ReadMaterialInstanceConstant(material, cache);
             }

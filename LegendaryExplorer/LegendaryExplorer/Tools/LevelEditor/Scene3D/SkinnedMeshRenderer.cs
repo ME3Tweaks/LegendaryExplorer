@@ -113,7 +113,7 @@ public class SkinnedMeshRenderer
     /// writes results to the mesh vertex list with Unreal-to-renderer coordinate conversion,
     /// then rebuilds the D3D vertex buffer.
     /// </summary>
-    public void UpdateSkinning(DeviceContext context, Mesh<WorldVertex> mesh, SkeletonAnimPlayer animPlayer)
+    public void UpdateSkinning(DeviceContext context, Mesh<WorldVertex> mesh, AnimPlayer animPlayer)
     {
         NeedsUpdate = false;
         if (_skinVertices == null || mesh == null) return;

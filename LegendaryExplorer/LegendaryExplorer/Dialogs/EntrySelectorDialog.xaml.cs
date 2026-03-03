@@ -155,6 +155,10 @@ namespace LegendaryExplorer.Dialogs
             {
                 dlg.EntrySelectorComboBox.SelectedItem = defaultItem;
             }
+            else if (dlg.EntrySelectorComboBox.HasItems)
+            {
+                dlg.EntrySelectorComboBox.SelectedIndex = 0;
+            }
             if (dlg.ShowDialog() == true)
             {
                 return dlg.ChosenEntry as T;

@@ -83,6 +83,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             Paused
         }
 
+        public bool IsPlaying => _playbackState == PlaybackState.Playing;
+        public bool IsPaused => _playbackState == PlaybackState.Paused;
+
         private PlaybackState _playbackState;
         private bool RestartingDueToLoop;
 
@@ -398,6 +401,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 ExportInformationList.ClearEx();
                 AllWems.Clear();
                 CurrentLoadedWwisebank = null;
+                StopPlaying();
                 if (exportEntry.ClassName == "WwiseStream")
                 {
                     ExportInformationList.Add($"#{exportEntry.UIndex} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced}");
@@ -887,83 +891,98 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             bool playToggle = true;
             if (_playbackState == PlaybackState.Stopped)
             {
-                if (audioStream == null)
-                {
-                    UpdateAudioStream();
-                }
-                else
-                {
-                    if (!RestartingDueToLoop)
-                    {
-                        if ((CurrentLoadedISACTEntry != null && CachedStreamSource != CurrentLoadedISACTEntry) || (CurrentLoadedAFCFileEntry != null && CachedStreamSource != CurrentLoadedAFCFileEntry))
-                        {
-                            //invalidate the cache
-                            UpdateAudioStream();
-                        }
-
-                        if (CurrentLoadedExport != null)
-                        {
-                            //check if cached is the same as what we want to play
-                            if (CurrentLoadedExport.ClassName == "WwiseStream" && CachedStreamSource != CurrentLoadedExport)
-                            {
-                                //invalidate the cache
-                                UpdateAudioStream();
-                            }
-                            else if (CurrentLoadedExport.ClassName == "WwiseBank" && CachedStreamSource != ExportInfoListBox.SelectedItem)
-                            {
-                                //Invalidate the cache
-                                UpdateAudioStream();
-                            }
-                            else if (CurrentLoadedExport.ClassName == "SoundNodeWave" && CachedStreamSource != ExportInfoListBox.SelectedItem)
-                            {
-                                //Invalidate the cache
-                                UpdateAudioStream();
-                            }
-                        }
-                    }
-                }
-
-                //check to make sure stream has loaded before we attempt to play it
-                if (audioStream != null)
-                {
-                    try
-                    {
-                        audioStream.Position = 0;
-                        _audioPlayer = new SoundpanelAudioPlayer(audioStream, CurrentVolume)
-                        {
-                            PlaybackStopType = SoundpanelAudioPlayer.PlaybackStopTypes.PlaybackStoppedReachingEndOfFile
-                        };
-                        _audioPlayer.SetPosition(startPos);
-                        _audioPlayer.PlaybackPaused += _audioPlayer_PlaybackPaused;
-                        _audioPlayer.PlaybackResumed += _audioPlayer_PlaybackResumed;
-                        _audioPlayer.PlaybackStopped += _audioPlayer_PlaybackStopped;
-                        CurrentTrackLength = _audioPlayer.GetLengthInSeconds();
-                        playToggle = true;
-
-                        // Start the timer.  Note that this call can be made from any thread.
-                        seekbarUpdateTimer.Start();
-                        // Timer callback code here...
-                    }
-                    catch (Exception)
-                    {
-                        //error playing audio or initializing
-                        audioStream = null;
-                        playToggle = false;
-                    }
-
-                    //_audioPlayer.Play(NAudio.Wave.PlaybackState.Stopped, CurrentVolume);
-                    //CurrentlyPlayingTrack = CurrentlySelectedTrack;
-                }
-                else
-                {
-                    playToggle = false;
-                }
+                playToggle = InitAudio();
             }
 
             if (playToggle)
             {
+                if (_playbackState is not PlaybackState.Playing)
+                {
+                    _audioPlayer.SetPosition(startPos);
+                }
                 _audioPlayer.TogglePlayPause(CurrentVolume);
             }
+        }
+
+        public bool InitAudio()
+        {
+            bool success;
+            if (audioStream == null)
+            {
+                UpdateAudioStream();
+            }
+            else
+            {
+                if (!RestartingDueToLoop)
+                {
+                    if ((CurrentLoadedISACTEntry != null && CachedStreamSource != CurrentLoadedISACTEntry) || (CurrentLoadedAFCFileEntry != null && CachedStreamSource != CurrentLoadedAFCFileEntry))
+                    {
+                        //invalidate the cache
+                        UpdateAudioStream();
+                    }
+
+                    if (CurrentLoadedExport != null)
+                    {
+                        //check if cached is the same as what we want to play
+                        if (CurrentLoadedExport.ClassName == "WwiseStream" && CachedStreamSource != CurrentLoadedExport)
+                        {
+                            //invalidate the cache
+                            UpdateAudioStream();
+                        }
+                        else if (CurrentLoadedExport.ClassName == "WwiseBank" && CachedStreamSource != ExportInfoListBox.SelectedItem)
+                        {
+                            //Invalidate the cache
+                            UpdateAudioStream();
+                        }
+                        else if (CurrentLoadedExport.ClassName == "SoundNodeWave" && CachedStreamSource != ExportInfoListBox.SelectedItem)
+                        {
+                            //Invalidate the cache
+                            UpdateAudioStream();
+                        }
+                    }
+                }
+            }
+
+            //check to make sure stream has loaded before we attempt to play it
+            if (audioStream != null)
+            {
+                try
+                {
+                    audioStream.Position = 0;
+                    _audioPlayer = new SoundpanelAudioPlayer(audioStream, CurrentVolume)
+                    {
+                        PlaybackStopType = SoundpanelAudioPlayer.PlaybackStopTypes.PlaybackStoppedReachingEndOfFile
+                    };
+                    _audioPlayer.PlaybackPaused += _audioPlayer_PlaybackPaused;
+                    _audioPlayer.PlaybackResumed += _audioPlayer_PlaybackResumed;
+                    _audioPlayer.PlaybackStopped += _audioPlayer_PlaybackStopped;
+                    CurrentTrackLength = _audioPlayer.GetLengthInSeconds();
+                    success = true;
+
+                    // Start the timer.  Note that this call can be made from any thread.
+                    seekbarUpdateTimer.Start();
+                    // Timer callback code here...
+                }
+                catch (Exception)
+                {
+                    //error playing audio or initializing
+                    audioStream = null;
+                    success = false;
+                }
+
+                //_audioPlayer.Play(NAudio.Wave.PlaybackState.Stopped, CurrentVolume);
+                //CurrentlyPlayingTrack = CurrentlySelectedTrack;
+            }
+            else
+            {
+                success = false;
+            }
+            if (success)
+            {
+                _playbackState = PlaybackState.Paused;
+            }
+
+            return success;
         }
 
         private void UpdateAudioStream()
@@ -1692,16 +1711,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void ExportInfoListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             object currentSelectedItem = ExportInfoListBox.SelectedItem;
-            if (Settings.Soundpanel_LoopAudio && _playbackState == PlaybackState.Playing)
+            if (_playbackState == PlaybackState.Playing && 
+                (currentSelectedItem is EmbeddedWEMFile || currentSelectedItem is ISACTListBankChunk bankEntry && bankEntry.SampleData != null))
             {
-                if (currentSelectedItem is EmbeddedWEMFile)
+                if (Settings.Soundpanel_LoopAudio)
                 {
                     StartPlayingCurrentSelection();
                 }
-
-                if (currentSelectedItem is ISACTListBankChunk bankEntry && bankEntry.SampleData != null)
+                else
                 {
-                    StartPlayingCurrentSelection();
+                    StopPlaying();
                 }
             }
         }
@@ -2165,6 +2184,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <param name="waveStream">PCM data stream</param>
         private void GenerateWaveform(Stream waveStream)
         {
+            if (waveStream == null)
+                return;
             if (!GenerateWaveformGraph)
                 return;
             waveStream.Position = 0;

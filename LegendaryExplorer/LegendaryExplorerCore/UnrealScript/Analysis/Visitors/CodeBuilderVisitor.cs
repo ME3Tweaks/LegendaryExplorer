@@ -1,15 +1,16 @@
-﻿using System;
+﻿using LegendaryExplorerCore.Gammtek.Extensions;
+using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Lexing;
+using LegendaryExplorerCore.UnrealScript.Parsing;
+using LegendaryExplorerCore.UnrealScript.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorerCore.UnrealScript.Lexing;
-using LegendaryExplorerCore.UnrealScript.Parsing;
-using LegendaryExplorerCore.UnrealScript.Utilities;
 using static LegendaryExplorerCore.Unreal.UnrealFlags;
 using static LegendaryExplorerCore.UnrealScript.Utilities.Keywords;
 
@@ -108,21 +109,21 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             AppendToNewLine(CLASS, ST.Keyword);
             Space();
-            Append(node.Name, ST.Class);
+            Append(EncodeIdentifier(node.Name), ST.Class);
 
             if (node.Parent != null && !node.Parent.Name.Equals("Object", StringComparison.OrdinalIgnoreCase))
             {
                 Space();
                 Append(EXTENDS, ST.Keyword);
                 Space();
-                Append(node.Parent.Name, ST.Class);
+                Append(EncodeIdentifier(node.Parent.Name), ST.Class);
             }
             if (node.OuterClass != null && !node.OuterClass.Name.Equals("Object", StringComparison.OrdinalIgnoreCase))
             {
                 Space();
                 Append(WITHIN, ST.Keyword);
                 Space();
-                Append(node.OuterClass.Name, ST.Class);
+                Append(EncodeIdentifier(node.OuterClass.Name), ST.Class);
             }
 
             NestingLevel++;
@@ -131,7 +132,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 AppendToNewLine("implements", ST.Keyword);
                 Append("(");
-                Join(node.Interfaces.Select(i => i.Name).ToList(), ", ", ST.Class);
+                Join(node.Interfaces.Select(i => EncodeIdentifier(i.Name)).ToList(), ", ", ST.Class);
                 Append(")");
             }
 
@@ -259,7 +260,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(VariableDeclaration node)
         {
-            if (node.Outer?.Type is ASTNodeType.Class && node.VarType is DelegateType 
+            if (node.Outer?.Type is ASTNodeType.Class && node.VarType is DelegateType
                 && node.Name.EndsWith("__Delegate", StringComparison.OrdinalIgnoreCase) && node.Name.StartsWith("__"))
             {
                 //implementation detail
@@ -292,7 +293,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             AppendTypeName(node.VarType);
             Space();
-            Append(node.Name);
+            Append(EncodeIdentifier(node.Name));
             if (node.IsStaticArray)
             {
                 Append("[");
@@ -307,10 +308,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Space();
             if (node.Outer is ObjectType outer)
             {
-                Append(outer.Name, outer is Struct ? ST.Struct : ST.Class);
+                Append(EncodeIdentifier(outer.Name), outer is Struct ? ST.Struct : ST.Class);
                 Append(".");
             }
-            Append(node.Name);
+            Append(EncodeIdentifier(node.Name));
             if (node.IsStaticArray)
             {
                 Append("[");
@@ -330,27 +331,27 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     node.AcceptVisitor(this);
                     break;
                 case Enumeration:
-                    Append(node.Name, ST.Enum);
+                    Append(EncodeIdentifier(node.Name), ST.Enum);
                     break;
                 case Const:
-                    Append(node.Name);
+                    Append(EncodeIdentifier(node.Name));
                     break;
                 case PrimitiveType:
                     Append(node.Name, ST.Keyword);
                     break;
                 case Struct:
-                    Append(node.Name, ST.Struct);
+                    Append(EncodeIdentifier(node.Name), ST.Struct);
                     break;
                 case Class:
                 default:
-                    Append(node.Name, ST.Class);
+                    Append(EncodeIdentifier(node.Name), ST.Class);
                     break;
             }
         }
 
         public bool VisitNode(VariableType node)
         {
-            Append(node.Name);
+            Append(EncodeIdentifier(node.Name));
             return true;
         }
 
@@ -373,7 +374,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             Append(DELEGATE, ST.Keyword);
             Append("<");
-            Append(node.DefaultFunction.Name, ST.Function);
+            Append(EncodeIdentifier(node.DefaultFunction.Name), ST.Function);
             Append(">");
             return true;
         }
@@ -382,7 +383,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             Append(CLASS, ST.Keyword);
             Append("<");
-            Append(node.ClassLimiter.Name, ST.Class);
+            Append(EncodeIdentifier(node.ClassLimiter.Name), ST.Class);
             Append(">");
             return true;
         }
@@ -439,7 +440,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 Append(EXTENDS, ST.Keyword);
                 Space();
-                Append(node.Parent.Name, ST.Struct);
+                Append(EncodeIdentifier(node.Parent.Name), ST.Struct);
                 Space();
             }
 
@@ -471,13 +472,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             // enum enumname { \n contents \n };
             AppendToNewLine(ENUM, ST.Keyword);
             Space();
-            Append(node.Name, ST.Enum);
+            Append(EncodeIdentifier(node.Name), ST.Enum);
             AppendToNewLine("{");
             NestingLevel++;
 
             foreach (EnumValue value in node.Values)
             {
-                AppendToNewLine($"{value.Name},");
+                AppendToNewLine($"{EncodeIdentifier(value.Name)},");
             }
 
             NestingLevel--;
@@ -488,7 +489,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(EnumValue node)
         {
-            Append(node.Name);
+            Append(EncodeIdentifier(node.Name));
             return true;
         }
 
@@ -496,7 +497,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             AppendToNewLine(CONST, ST.Keyword);
             Space();
-            Append(node.Name);
+            Append(EncodeIdentifier(node.Name));
             Space();
             Append("=", ST.Operator);
             Space();
@@ -685,16 +686,16 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     }
                     if (outer is Class containingClass)
                     {
-                        Append(containingClass.Name, ST.Class);
+                        Append(EncodeIdentifier(containingClass.Name), ST.Class);
                         Append(".");
                     }
                     if (state is not null)
                     {
-                        Append(state.Name, ST.State);
+                        Append(EncodeIdentifier(state.Name), ST.State);
                         Append(".");
                     }
                 }
-                Append(node.Name, ST.Function);
+                Append(EncodeIdentifier(node.Name), ST.Function);
             }
             Append("(");
             if (node.Parameters.Any())
@@ -756,13 +757,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 Append("()");
             }
             Space();
-            Append(node.Name, ST.State);
+            Append(EncodeIdentifier(node.Name), ST.State);
             Space();
             if (node.Parent != null)
             {
                 Append(EXTENDS, ST.Keyword);
                 Space();
-                Append(node.Parent.Name, ST.State);
+                Append(EncodeIdentifier(node.Parent.Name), ST.State);
                 Space();
             }
 
@@ -834,7 +835,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             Space();
             Append("Class", ST.Keyword);
             Append("=", ST.Operator);
-            Append(node.Class.Name, ST.Class);
+            Append(EncodeIdentifier(node.Class.Name), ST.Class);
             Space();
             Append("Name", ST.Keyword);
             Append("=", ST.Operator);
@@ -1373,12 +1374,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                 if (node.Function.SuperSpecifier is { } superSpecifier)
                 {
                     Append("(");
-                    Append(superSpecifier.Name, ST.Class);
+                    Append(EncodeIdentifier(superSpecifier.Name), ST.Class);
                     Append(")");
                 }
                 Append(".", ST.Operator);
             }
-            Append(node.Function.Name, ST.Function);
+            Append(EncodeIdentifier(node.Function.Name), ST.Function);
             Append("(");
             int countOfNonNullArgs = node.Arguments.FindLastIndex(arg => arg is not null) + 1;
             for (int i = 0; i < countOfNonNullArgs; i++)
@@ -1401,7 +1402,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             ExpressionPrescedence.Push(NOPRESCEDENCE);
             // functionName( parameter1, parameter2.. )
-            Append(node.DelegateReference.Name);
+            Append(EncodeIdentifier(node.DelegateReference.Name));
             Append("(");
             for (int i = 0; i < node.Arguments.Count; i++)
             {
@@ -1473,17 +1474,17 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             if (node.Node is EnumValue ev)
             {
-                Append(ev.Enum.Name, ST.Enum);
+                Append(EncodeIdentifier(ev.Enum.Name), ST.Enum);
                 Append(".", ST.Operator);
-                Append(ev.Name);
+                Append(EncodeIdentifier(ev.Name));
                 return true;
             }
-            if (node.Name.StartsWith("__", StringComparison.Ordinal) && DelegatePropRegex().Match(node.Name) is { Success: true } match)
+            if (node.Name.StartsWith("__", StringComparison.Ordinal) && DelegatePropRegex().Match(node.Name) is { Success: true } match && match.Groups[1].Value != "lambda")
             {
-                Append(match.Groups[1].Value, ST.Function);
+                Append(EncodeIdentifier(match.Groups[1].Value), ST.Function);
                 return true;
             }
-            Append(node.Name);
+            Append(EncodeIdentifier(node.Name));
             return true;
         }
 
@@ -1492,7 +1493,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             // symbolname
             Append(DEFAULT, ST.Keyword);
             Append(".", ST.Operator);
-            Append(node.Name);
+            Append(EncodeIdentifier(node.Name));
             return true;
         }
 
@@ -1501,14 +1502,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             var func = lambdaExpression.Lambda;
             if (func.Parameters.Count is 1)
             {
-                Append(func.Parameters[0].Name);
+                Append(EncodeIdentifier(func.Parameters[0].Name));
             }
             else
             {
                 Append("(");
                 for (int i = 0; i < func.Parameters.Count; i++)
                 {
-                    Append(func.Parameters[i].Name);
+                    Append(EncodeIdentifier(func.Parameters[i].Name));
                     if (i < func.Parameters.Count - 1)
                     {
                         Append(",");
@@ -1704,15 +1705,13 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(NameLiteral node)
         {
-            //commented version is unrealscript compliant, but harder to parse
-            //Append(node.Outer is StructLiteral ? "\"{EncodeName(node.Value)}\"" : "'{EncodeName(node.Value)}'");
             Append($"'{EncodeName(node.Value)}'", ST.Name);
             return true;
         }
 
         public bool VisitNode(ObjectLiteral node)
         {
-            Append(node.Class.Name, ST.Class);
+            Append(EncodeIdentifier(node.Class.Name), ST.Class);
             node.Name.AcceptVisitor(this);
             return true;
         }
@@ -2152,6 +2151,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
 
             return floatString;
+        }
+
+        public static string EncodeIdentifier(string ident)
+        {
+            if (!string.IsNullOrEmpty(ident) && (Keywords.ReservedWords.Contains(ident) || ident[0].IsDigit()))
+            {
+                return $"@{ident}";
+            }
+            return ident;
         }
 
         public static string EncodeString(string original)

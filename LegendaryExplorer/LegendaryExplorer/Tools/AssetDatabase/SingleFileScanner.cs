@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Windows;
 using LegendaryExplorer.Tools.AssetDatabase.Scanners;
 using LegendaryExplorerCore.GameFilesystem;
@@ -70,8 +71,8 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         public string ShortFileName { get; }
         public bool DumpCanceled;
 
-        private static readonly List<AssetScanner> Scanners = new()
-        {
+        private static readonly List<AssetScanner> Scanners =
+        [
             new ClassScanner(),
             new MaterialScanner(),
             new AnimationScanner(),
@@ -81,7 +82,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             new GUIScanner(),
             new ConversationScanner(),
             new PlotUsageScanner()
-        };
+        ];
 
         private readonly int _fileKey;
         private readonly string _file;
@@ -95,7 +96,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             _options = options;
         }
 
-        private static object syncObj = new object();
+        private static Lock syncObj = new();
 
         /// <summary>
         /// Dumps Property data to concurrent dictionary

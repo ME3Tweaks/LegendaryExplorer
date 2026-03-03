@@ -1507,9 +1507,26 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var anim = (AnimationRecord)lstbx_Anims.SelectedItem;
             if (!anim.Usages.Any()) return;
 
-            var (fileListIndex, animUIndex, _) = anim.Usages[0];
-            string filePath = GetFilePath(fileListIndex);
-            if (filePath == null) return;
+            int animUIndex = 0;
+            string filePath = null;
+
+            // find the first usage that we can actually resolve to a file; this will skip over mods that were uninstalled since the database was generated
+            foreach (var usage in anim.Usages)
+            {
+                int fileListIndex;
+                (fileListIndex, animUIndex, _) = usage;
+                filePath = GetFilePath(fileListIndex);
+                if (filePath != null)
+                {
+                    break;
+                }
+            }
+
+            if (filePath == null)
+            {
+                AnimPreviewControl.Clear();
+                return;
+            }
 
             animPcc?.Dispose();
             animPcc = MEPackageHandler.OpenMEPackage(filePath);
@@ -1532,14 +1549,30 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         {
             if (cbx_AnimPreviewMesh.SelectedItem is MeshRecord meshRecord && meshRecord.Usages.Any())
             {
-                var usage = meshRecord.Usages[0];
-                string filePath = GetFilePath(usage.FileKey);
-                if (filePath == null) return;
+                string filePath = null;
+                int uIndex = 0;
+                // find the first usage that we can actually resolve. This will skip over mods that have been removed since the database was generated
+                foreach (var (fileKey, tempUIndex, _) in meshRecord.Usages)
+                {
+                    filePath = GetFilePath(fileKey);
+                    if (filePath != null)
+                    {
+                        uIndex = tempUIndex;
+                        break;
+                    }
+                }
+
+                // in case we can't find a resolvable usage, clear the animation preview
+                if (filePath == null)
+                {
+                    AnimPreviewControl.Clear();
+                    return;
+                }
 
                 using var meshPackage = MEPackageHandler.OpenMEPackage(filePath);
-                if (meshPackage.IsUExport(usage.UIndex))
+                if (meshPackage.IsUExport(uIndex))
                 {
-                    AnimPreviewControl.LoadSkeletalMesh(meshPackage.GetUExport(usage.UIndex));
+                    AnimPreviewControl.LoadSkeletalMesh(meshPackage.GetUExport(uIndex));
                 }
             }
         }

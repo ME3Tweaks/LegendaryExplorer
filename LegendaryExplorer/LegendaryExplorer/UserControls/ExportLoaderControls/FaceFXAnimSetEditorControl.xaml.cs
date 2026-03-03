@@ -87,6 +87,25 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public IFaceFXBinary FaceFX;
 
+        /// <summary>
+        /// The FaceFXAsset (face graph actor) used to drive the animation preview.
+        /// </summary>
+        private FaceFXAsset _fxActorForPreview;
+
+        private string _previewFxAssetLabel = "(none)";
+        public string PreviewFxAssetLabel
+        {
+            get => _previewFxAssetLabel;
+            set => SetProperty(ref _previewFxAssetLabel, value);
+        }
+
+        private string _previewSkelMeshLabel = "(none)";
+        public string PreviewSkelMeshLabel
+        {
+            get => _previewSkelMeshLabel;
+            set => SetProperty(ref _previewSkelMeshLabel, value);
+        }
+
         public ObservableCollectionExtended<FaceFXLineEntry> Lines { get; } = new();
 
         FaceFXLineEntry _selectedLineEntry;
@@ -101,6 +120,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     SelectedLineEntry.UpdateLength();
                     UpdateAnimListBox();
                     UpdateAudioPlayer();
+                    UpdateAnimationPreview();
                     UpdateTreeItems(FaceFX, SelectedLineEntry.Line);
                 }
             }
@@ -134,9 +154,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// The extra playhead position line in the curve graph
         /// </summary>
-        private readonly ExtraCurveGraphLine PlayheadPositionLine = new() { Label = "Playhead", LabelOffset = 15, Color = new SolidColorBrush(Colors.Aqua) };
+        private readonly ExtraCurveGraphLine PlayheadPositionLine = new() { LabelOffset = 15, Color = new SolidColorBrush(Colors.Aqua) };
 
-        public ObservableCollectionExtended<Animation> Animations { get; } = new();
+        public ObservableCollectionExtended<Animation> Animations { get; } = [];
 
         Animation _selectedAnimation;
         public Animation SelectedAnimation
@@ -168,7 +188,27 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (CurrentLoadedExport != exportEntry || !IsKeyboardFocusWithin)
             {
+                bool samePackage = CurrentLoadedExport?.FileRef == exportEntry.FileRef;
+                if (!samePackage)
+                {
+                    // Discard manual preview selections from the previous file
+                    _fxActorForPreview = null;
+                    animPreview?.Clear();
+                    PreviewFxAssetLabel = "(none)";
+                    PreviewSkelMeshLabel = "(none)";
+                }
+
+                // UnloadExport clears _fxActorForPreview; save manual selections so they survive it
+                var savedFxActor = _fxActorForPreview;
+                var savedFxAssetLabel = PreviewFxAssetLabel;
+                var savedSkelMeshLabel = PreviewSkelMeshLabel;
+
                 UnloadExport();
+
+                _fxActorForPreview = savedFxActor;
+                PreviewFxAssetLabel = savedFxAssetLabel;
+                PreviewSkelMeshLabel = savedSkelMeshLabel;
+
                 CurrentLoadedExport = exportEntry;
                 LoadFaceFXAnimset();
             }
@@ -178,8 +218,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             audioPlayer?.StopPlaying();
             audioPlayer?.UnloadExport();
+            animPreview?.ClearAnimation();
             CurrentLoadedExport = null;
             FaceFX = null;
+            _fxActorForPreview = null;
             Lines.Clear();
             Animations.Clear();
             TreeNodes.ClearEx();
@@ -203,9 +245,48 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             UnloadExport();
             graph.Dispose();
             audioPlayer?.Dispose();
+            animPreview?.Dispose();
         }
 
         #endregion
+
+        private void BrowseFxAsset_Click(object sender, RoutedEventArgs e)
+        {
+            var ofd = AppDirectories.GetOpenPackageDialog();
+            if (ofd.ShowDialog() != true) return;
+
+            using var pkg = MEPackageHandler.OpenMEPackage(ofd.FileName);
+            var export = EntrySelector.GetEntry<ExportEntry>(
+                Window.GetWindow(this), pkg,
+                "Select FaceFX Asset",
+                x => x.ClassName == "FaceFXAsset" && !x.IsDefaultObject);
+
+            if (export != null)
+            {
+                _fxActorForPreview = export.GetBinaryData<FaceFXAsset>();
+                PreviewFxAssetLabel = $"{Path.GetFileName(ofd.FileName)}: {export.ObjectNameString}";
+                UpdateAnimationPreview();
+            }
+        }
+
+        private void BrowseSkelMesh_Click(object sender, RoutedEventArgs e)
+        {
+            var ofd = AppDirectories.GetOpenPackageDialog();
+            if (ofd.ShowDialog() != true) return;
+
+            using var pkg = MEPackageHandler.OpenMEPackage(ofd.FileName);
+            var export = EntrySelector.GetEntry<ExportEntry>(
+                Window.GetWindow(this), pkg,
+                "Select Skeletal Mesh",
+                x => x.ClassName == "SkeletalMesh" && !x.IsDefaultObject);
+
+            if (export != null)
+            {
+                animPreview?.LoadSkeletalMesh(export);
+                PreviewSkelMeshLabel = $"{Path.GetFileName(ofd.FileName)}: {export.ObjectNameString}";
+                UpdateAnimationPreview();
+            }
+        }
 
         private void LoadFaceFXAnimset()
         {
@@ -214,12 +295,43 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 case "FaceFXAnimSet":
                     FaceFX = new FaceFXAnimSetHandler(CurrentLoadedExport);
+                    // Auto-detect only if no manual selection is active.
+                    if (_fxActorForPreview == null)
+                    {
+                        var fxAssetExport = CurrentLoadedExport.FileRef.Exports
+                            .FirstOrDefault(exp => exp.ClassName == "FaceFXAsset" && !exp.IsDefaultObject);
+                        if (fxAssetExport != null)
+                        {
+                            _fxActorForPreview = fxAssetExport.GetBinaryData<FaceFXAsset>();
+                            PreviewFxAssetLabel = fxAssetExport.ObjectNameString;
+                        }
+                    }
                     break;
                 case "FaceFXAsset":
                     FaceFX = new FaceFXAssetHandler(CurrentLoadedExport);
+                    // The loaded export itself is the face actor.
+                    _fxActorForPreview = (FaceFXAsset)FaceFX.Binary;
+                    PreviewFxAssetLabel = CurrentLoadedExport.ObjectNameString;
                     break;
-
             }
+
+            // Auto-detect SkeletalMesh only if no external mesh was manually picked.
+            if (animPreview?.CurrentMesh == null)
+            {
+                var skelMeshExport = CurrentLoadedExport.FileRef.Exports
+                    .FirstOrDefault(exp => exp.ClassName == "SkeletalMesh" && exp.ObjectNameString.Contains("HED"));
+                if (skelMeshExport != null)
+                {
+                    animPreview?.LoadSkeletalMesh(skelMeshExport);
+                    PreviewSkelMeshLabel = skelMeshExport.ObjectNameString;
+                }
+                else
+                {
+                    animPreview?.Clear();
+                    PreviewSkelMeshLabel = "(none)";
+                }
+            }
+
             foreach (var faceFXLine in FaceFX.Lines)
             {
                 var LineEntry = new FaceFXLineEntry(faceFXLine);
@@ -231,7 +343,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     // Cut off the start of the string
                     idStr = idStr.Substring(voPos + 3);
 
-                    idStr = idStr.TrimEnd('M', 'F').TrimEnd('_'); // Hack
+                    idStr = idStr.TrimEnd('M', 'F').TrimEnd('_'); // strips trailing gender indicator (M/F) and separator
                 }
                 LineEntry.IsMale = !isFemale;
                 if (int.TryParse(idStr, out int tlkID))
@@ -1299,10 +1411,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             // Called when the control is no longer visible.
             graph?.ExtraXLines.Remove(PlayheadPositionLine);
-
+            PlayheadPositionLine.existingLine = null;
+            PlayheadPositionLine.existingLabel = null;
             if (audioPlayer != null)
                 audioPlayer.SeekbarPositionChanged -= AudioPositionChanged;
             audioPlayer?.StopPlaying();
+            if (animPreview != null)
+            {
+                animPreview.AnimTimeChanged -= OnAnimPreviewTimeChanged;
+                animPreview.IsPlayingChanged -= OnAnimPreviewIsPlayingChanged;
+            }
         }
 
         private void FaceFXAnimSetEditorControl_OnLoaded(object sender, RoutedEventArgs e)
@@ -1314,12 +1432,67 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
             if (audioPlayer != null)
                 audioPlayer.SeekbarPositionChanged += AudioPositionChanged;
+
+            if (animPreview != null)
+            {
+                animPreview.AnimTimeChanged += OnAnimPreviewTimeChanged;
+                animPreview.IsPlayingChanged += OnAnimPreviewIsPlayingChanged;
+            }
         }
 
         private void AudioPositionChanged(object sender, AudioPlayheadEventArgs e)
         {
-            PlayheadPositionLine.Position = e.PlayheadTime;
-            graph.Paint();
+            UpdatePlayheadLine(e.PlayheadTime);
+        }
+
+        private void OnAnimPreviewTimeChanged(float time)
+        {
+            UpdatePlayheadLine(time);
+            if (audioPlayer.IsPaused && time >= 0 && time < audioPlayer.CurrentTrackLength)
+            {
+                audioPlayer.StartOrPausePlaying(time);
+            }
+        }
+
+        private void OnAnimPreviewIsPlayingChanged(bool isPlaying)
+        {
+            if (isPlaying)
+            {
+                if (!audioPlayer.IsPlaying && audioPlayer.CanStartPlayback())
+                {
+                    audioPlayer.InitAudio();
+                }
+            }
+            else
+            {
+                audioPlayer.StopPlaying();
+            }
+        }
+
+        private void UpdateAnimationPreview()
+        {
+            if (animPreview == null || SelectedLineEntry == null || _fxActorForPreview == null)
+            {
+                animPreview?.ClearAnimation();
+                return;
+            }
+
+            animPreview.LoadFaceFxAnimation(_fxActorForPreview, FaceFX.Binary as FaceFXAnimSet, SelectedLineEntry.Line);
+        }
+
+        private void UpdatePlayheadLine(double position)
+        {
+            PlayheadPositionLine.Position = position;
+            if (PlayheadPositionLine.existingLabel is not null && PlayheadPositionLine.existingLine is not null)
+            {
+                Canvas.SetLeft(PlayheadPositionLine.existingLine, graph.toLocalX(PlayheadPositionLine.Position));
+                Canvas.SetLeft(PlayheadPositionLine.existingLabel, graph.toLocalX(PlayheadPositionLine.Position));
+                PlayheadPositionLine.existingLabel.Content = PlayheadPositionLine.Position.ToString("0.00");
+            }
+            else
+            {
+                graph.Paint();
+            }
         }
 
         private void NameDoubleClick()

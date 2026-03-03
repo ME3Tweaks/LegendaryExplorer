@@ -161,7 +161,39 @@
                 <RowDefinition/>
                 <RowDefinition Name="lineTextRowDef" Height="40"/>
             </Grid.RowDefinitions>
-            <sharedToolControls:CurveGraph x:Name="graph" DockPanel.Dock="Right" KeyDown="Graph_KeyDown"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="250"/>
+            </Grid.ColumnDefinitions>
+            <sharedToolControls:CurveGraph Grid.Column="0" x:Name="graph" KeyDown="Graph_KeyDown"/>
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            <DockPanel Grid.Column="2">
+                <Grid DockPanel.Dock="Top" Margin="0,0,0,2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="22"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="FaceFxAsset:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                    <TextBlock Text="{Binding PreviewFxAssetLabel}" Grid.Row="0" Grid.Column="1"
+                               VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                               ToolTip="{Binding PreviewFxAssetLabel}"/>
+                    <Button Content="..." Grid.Row="0" Grid.Column="2" Padding="0"
+                            Click="BrowseFxAsset_Click"/>
+                    <TextBlock Text="Mesh:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                    <TextBlock Text="{Binding PreviewSkelMeshLabel}" Grid.Row="1" Grid.Column="1"
+                               VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                               ToolTip="{Binding PreviewSkelMeshLabel}"/>
+                    <Button Content="..." Grid.Row="1" Grid.Column="2" Padding="0"
+                            Click="BrowseSkelMesh_Click"/>
+                </Grid>
+                <sharedToolControls:AnimationPreviewControl x:Name="animPreview"/>
+            </DockPanel>
             <TextBlock Text="{Binding SelectedLineEntry.TLKString}" Grid.Row="1" TextWrapping="Wrap"/>
         </Grid>
         <exportLoaderControls:Soundpanel x:Name="audioPlayer" Grid.Row="2" Grid.Column="4" MiniPlayerMode="True" GenerateWaveformGraph="True" SeekbarUpdatePeriod="66"/>
