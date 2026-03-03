@@ -190,12 +190,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             ShaderCache portingCache = null;
 
             // Allow LE1 <-> LE3 for now
-            if ((destPcc.Game == MEGame.LE1 && sourcePcc.Game == MEGame.LE3) ||
+            /*if ((destPcc.Game == MEGame.LE1 && sourcePcc.Game == MEGame.LE3) ||
                 (destPcc.Game == MEGame.LE3 && sourcePcc.Game == MEGame.LE1))
             {
                 portingCache = ShaderCacheManipulator.GetAllShadersForMaterials(rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList(), rop.GamePathOverride);
                 allowedToPortShaders = true;
-            }
+            }*/
 
             if (portingCache == null && !isCrossGame)
             {
