@@ -44,6 +44,8 @@ public abstract class FVertexFactoryShaderParameters
                 "FSplineMeshVertexFactory" => new FSplineMeshVertexFactoryShaderParameters(),
                 "FTerrainFullMorphDecalVertexFactory" or "FTerrainMorphDecalVertexFactory" or "FTerrainDecalVertexFactory" => new FTerrainDecalVertexFactoryShaderParameters(),
                 "FTerrainFullMorphVertexFactory" or "FTerrainMorphVertexFactory" or "FTerrainVertexFactory" => new FTerrainVertexFactoryShaderParameters(),
+                
+                "FFluidVertexFactory" => new FFluidTessellationVertexFactoryShaderParameters(),
                 _ => throw new InvalidDataException($"Unexpected VertexFactory type: '{vertexFactoryType}'")
             };
         }
