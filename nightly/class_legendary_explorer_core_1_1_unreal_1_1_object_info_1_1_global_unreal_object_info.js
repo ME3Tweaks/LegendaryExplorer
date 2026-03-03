@@ -6,6 +6,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_o
     [ "IsA", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#ace671932022c19c91c0ad873a5877e0e", null ],
     [ "IsA", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#ac9ebbdd69a599f791400d3e2890601fa", null ],
     [ "IsA", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a1860aee02e4e016bca53acf1a9610d26", null ],
+    [ "IsA", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#ae9f66756bab83e423699361452df4b81", null ],
     [ "IsAKnownNativeClass", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#afdd051512b8a9c58d0b03aac1d262a95", null ],
     [ "IsAKnownNativeClass", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a612299e8230327ce73a1282a25d97798", null ],
     [ "IsAKnownNativeClassGlobally", "class_legendary_explorer_core_1_1_unreal_1_1_object_info_1_1_global_unreal_object_info.html#a1f89846f1237989a7ae886b751a961ef", null ],

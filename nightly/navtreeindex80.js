@@ -1,5 +1,13 @@
 var NAVTREEINDEX80 =
 {
+"namespace_legendary_explorer_core_1_1_unreal.html#ad84aeed30451ad7fcae1c2ff076d82c5":[0,5,1,25,703],
+"namespace_legendary_explorer_core_1_1_unreal.html#ad879c1130456c04e8e8fa8c3cb6a5f5b":[0,5,1,25,292],
+"namespace_legendary_explorer_core_1_1_unreal.html#ad8fd512e4738acfae4d41902eea7e8eb":[0,5,1,25,124],
+"namespace_legendary_explorer_core_1_1_unreal.html#ad9040e2094665f5989944dd065e15a49":[0,5,1,25,686],
+"namespace_legendary_explorer_core_1_1_unreal.html#ad963d20452a2595317246976b92a8965":[0,5,1,25,324],
+"namespace_legendary_explorer_core_1_1_unreal.html#ad984ef0837b2fb71150382e30a6aa111":[0,5,1,25,764],
+"namespace_legendary_explorer_core_1_1_unreal.html#ad98da94996b6961051d02a013abc8b19":[0,5,1,25,553],
+"namespace_legendary_explorer_core_1_1_unreal.html#ad9aaa469f57041976c117e7e19d64db7":[0,5,1,25,75],
 "namespace_legendary_explorer_core_1_1_unreal.html#ad9b6bfccf1d23b9fd9bfd5f8b365d073":[0,5,1,25,104],
 "namespace_legendary_explorer_core_1_1_unreal.html#ad9ee6667b3fdfdff62d736663ffa0754":[0,5,1,25,307],
 "namespace_legendary_explorer_core_1_1_unreal.html#ada9f16a120f6eb3951fcb1b4f0a93827":[0,5,1,25,786],
@@ -241,13 +249,5 @@ var NAVTREEINDEX80 =
 "struct_f_light_map_texture_policy_1_1_vertex_parameters_type.html#a900083526f3cd94b7758cac6f021c2fe":[1,0,77,1,1],
 "struct_f_null_policy.html":[1,0,90],
 "struct_f_null_policy.html#aba949a63fd1b5f014e383d60b5e9e72e":[1,0,90,0],
-"struct_f_point_light_policy_1_1_mod_shadow_pixel_params_type.html":[1,0,95,0],
-"struct_f_point_light_policy_1_1_mod_shadow_pixel_params_type.html#a55d5de146983096596a8b13d2af3f89c":[1,0,95,0,0],
-"struct_f_point_light_policy_1_1_mod_shadow_pixel_params_type.html#a94125f4fff0370a1b92afadcd2efb47f":[1,0,95,0,2],
-"struct_f_point_light_policy_1_1_mod_shadow_pixel_params_type.html#ade43d2db6eb6d5bbbdb25be8c6120736":[1,0,95,0,1],
-"struct_f_point_light_policy_1_1_pixel_parameters_type.html":[1,0,95,1],
-"struct_f_point_light_policy_1_1_pixel_parameters_type.html#a6f3d1b9e09e391647ef92174b22bede1":[1,0,95,1,1],
-"struct_f_point_light_policy_1_1_pixel_parameters_type.html#abb4c52ce338126599dc31b18f686c82c":[1,0,95,1,0],
-"struct_f_point_light_policy_1_1_vertex_parameters_type.html":[1,0,95,2],
-"struct_f_point_light_policy_1_1_vertex_parameters_type.html#a1b30819162b188e4c8fcf99a999ba14c":[1,0,95,2,0]
+"struct_f_point_light_policy_1_1_mod_shadow_pixel_params_type.html":[1,0,95,0]
 };

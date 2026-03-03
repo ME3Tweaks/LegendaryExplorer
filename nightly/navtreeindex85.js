@@ -1,5 +1,13 @@
 var NAVTREEINDEX85 =
 {
+"struct_legendary_explorer_core_1_1_unreal_1_1_vertex_texture_n_original_index.html#ae6f9e18ac16795428447736cba5f4c02":[0,5,1,25,47,0],
+"struct_legendary_explorer_core_1_1_unreal_1_1_vertex_texture_n_original_index.html#af25b3abe29c8183b6b69ea87575fd462":[0,5,1,25,47,15],
+"struct_legendary_explorer_core_1_1_unreal_1_1_vertex_texture_n_original_index.html#af25b3abe29c8183b6b69ea87575fd462":[1,0,0,25,47,15],
+"struct_legendary_explorer_core_1_1_unreal_1_1_vertex_texture_n_original_index.html#af3eee09f1f51642beed84cecd770b52f":[1,0,0,25,47,3],
+"struct_legendary_explorer_core_1_1_unreal_1_1_vertex_texture_n_original_index.html#af3eee09f1f51642beed84cecd770b52f":[0,5,1,25,47,3],
+"struct_legendary_explorer_core_1_1_unreal_1_1_vertex_texture_n_original_index.html#af4dd1d942e5fee207047414b92c18324":[1,0,0,25,47,4],
+"struct_legendary_explorer_core_1_1_unreal_1_1_vertex_texture_n_original_index.html#af4dd1d942e5fee207047414b92c18324":[0,5,1,25,47,4],
+"struct_map_key_funcs.html":[1,0,146],
 "struct_map_key_funcs.html#a08c3e74814054809909f4bfe3eac7a55":[1,0,146,3],
 "struct_map_key_funcs.html#a4ce5dcb66a869f9c171d7eb478dab84b":[1,0,146,1],
 "struct_map_key_funcs.html#aadabd8eb90a01588aa1f2e4710d708ab":[1,0,146,0],
