@@ -71,7 +71,6 @@
             </StatusBar>
             <Grid Name="ContentGrid">
                 <sharedToolControls:RecentsControl x:Name="RecentsController" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.ZIndex="5" Visibility="{Binding ShouldShowRecentsController, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type exportLoaderControls:ExportLoaderHostedWindow}}, Converter={StaticResource BoolToVisibilityConverter}}"/>
-
             </Grid>
         </DockPanel>
     </xctk:BusyIndicator>

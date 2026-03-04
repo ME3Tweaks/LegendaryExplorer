@@ -153,4 +153,12 @@ public class SkinnedMeshRenderer
         if (w3 > 0 && b3 < matrices.Length) m += matrices[b3] * w3;
         return m;
     }
+
+    public void UpdateVertexPositions(Vector3[] positions)
+    {
+        for (int i = 0; i < _skinVertices.Length && i < positions.Length; i++)
+        {
+            _skinVertices[i].BindPosition = positions[i];
+        }
+    }
 }

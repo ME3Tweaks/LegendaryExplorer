@@ -1,7 +1,7 @@
 using LegendaryExplorer.Tools.LevelEditor;
 using LegendaryExplorer.Tools.LevelEditor.Scene3D;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Unreal.ObjectInfo;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -107,17 +107,26 @@ public partial class ActorPreviewControl : ExportLoaderControl, IActorEditorCont
 
     private void LoadActor()
     {
-        _actor = ActorProxy.Create(this, CurrentLoadedExport);
-        if (_actor is null)
+        IsBusy = true;
+        try
         {
-            RenderContext.ErrorText = $"Could not create preview object of type: '{CurrentLoadedExport.ClassName}'";
+            _actor = ActorProxy.Create(this, CurrentLoadedExport);
+            if (_actor is null)
+            {
+                RenderContext.ErrorText = $"Could not create preview object of type: '{CurrentLoadedExport.ClassName}'";
+            }
+            else
+            {
+                RenderContext.ErrorText = null;
+                RenderContext.LoadActors([_actor]);
+                RenderContext.Camera.Position = _actor.GetBounds().Origin;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            RenderContext.ErrorText = null;
-            RenderContext.LoadActors([_actor]);
-            RenderContext.Camera.Position = _actor.GetBounds().Origin;
+            RenderContext.ErrorText = ex.FlattenException();
         }
+        IsBusy = false;
     }
 
     public override void UnloadExport()
@@ -141,6 +150,26 @@ public partial class ActorPreviewControl : ExportLoaderControl, IActorEditorCont
         RenderContext.RenderScene -= OnRenderScene;
         _actor?.Dispose();
         _actor = null;
-        RenderContext.DisposeResources();
+        SceneViewer?.Dispose();
     }
+
+
+    #region Busy variables
+    private bool _isBusy;
+
+    public bool IsBusy
+    {
+        get => _isBusy;
+        set => SetProperty(ref _isBusy, value);
+    }
+
+    private string _busyText;
+
+    public string BusyText
+    {
+        get => _busyText;
+        set => SetProperty(ref _busyText, value);
+    }
+
+    #endregion
 }

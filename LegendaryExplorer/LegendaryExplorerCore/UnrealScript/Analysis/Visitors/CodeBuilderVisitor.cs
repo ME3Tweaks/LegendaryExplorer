@@ -1711,7 +1711,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
 
         public bool VisitNode(ObjectLiteral node)
         {
-            Append(EncodeIdentifier(node.Class.Name), ST.Class);
+            string className = node.Class.Name;
+            if (!className.CaseInsensitiveEquals("class"))
+            {
+                className = EncodeIdentifier(className);
+            }
+            Append(className, ST.Class);
             node.Name.AcceptVisitor(this);
             return true;
         }

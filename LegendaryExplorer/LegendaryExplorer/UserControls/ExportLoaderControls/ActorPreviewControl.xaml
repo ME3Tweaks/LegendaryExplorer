@@ -6,13 +6,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:scene3D="clr-namespace:LegendaryExplorer.Tools.LevelEditor.Scene3D"
     xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     mc:Ignorable="d"
     d:DesignHeight="450" d:DesignWidth="800">
-    <DockPanel>
-        <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
-            <CheckBox Content="Wireframe" IsChecked="{Binding ShowWireframe}" VerticalAlignment="Center" Margin="4,0"/>
-            <CheckBox Content="Collision" IsChecked="{Binding ShowCollision}" VerticalAlignment="Center" Margin="4,0"/>
-        </ToolBar>
-        <scene3D:SceneRenderControl x:Name="SceneViewer"/>
-    </DockPanel>
+    <xctk:BusyIndicator IsBusy="{Binding IsBusy}" BusyContent="{Binding BusyText}">
+        <DockPanel>
+            <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
+                <CheckBox Content="Wireframe" IsChecked="{Binding ShowWireframe}" VerticalAlignment="Center" Margin="4,0"/>
+                <CheckBox Content="Collision" IsChecked="{Binding ShowCollision}" VerticalAlignment="Center" Margin="4,0"/>
+            </ToolBar>
+            <scene3D:SceneRenderControl x:Name="SceneViewer"/>
+        </DockPanel>
+    </xctk:BusyIndicator>
 </exportLoaderControls:ExportLoaderControl>

@@ -4,6 +4,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using System;
 using System.Collections.Frozen;
@@ -229,6 +230,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     {
         "StaticMeshActor",
         "SkeletalMeshActor",
+        "SFXSkeletalMeshActor",
         "DynamicSMActor",
         "Brush",
         "SFXStuntActor",
@@ -236,6 +238,9 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         "BioPawn",
         "Pawn",
         "PrefabInstance",
+        "SFXDroppedGrenade",
+        "SFXDroppedAmmo",
+        "SFXDroppedPickup"
     }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
     public static bool CanCreate(ExportEntry actorExport)
@@ -250,6 +255,10 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         if (GlobalUnrealObjectInfo.IsA(className, "StaticMeshActor", actorExport.Game))
         {
             return new StaticMeshActorProxy(context, actorExport);
+        }
+        if (GlobalUnrealObjectInfo.IsA(className, "SFXSkeletalMeshActor", actorExport.Game))
+        {
+            return new SFXSkeletalMeshActorProxy(context, actorExport);
         }
         if (GlobalUnrealObjectInfo.IsA(className, "SkeletalMeshActor", actorExport.Game))
         {
@@ -282,6 +291,18 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         if (GlobalUnrealObjectInfo.IsA(className, "PrefabInstance", actorExport.Game))
         {
             return new PrefabInstanceProxy(context, actorExport);
+        }
+        if (GlobalUnrealObjectInfo.IsA(className, "SFXDroppedGrenade", actorExport.Game))
+        {
+            return new SFXDroppedGrenadeProxy(context, actorExport);
+        }
+        if (GlobalUnrealObjectInfo.IsA(className, "SFXDroppedAmmo", actorExport.Game))
+        {
+            return new SFXDroppedAmmoProxy(context, actorExport);
+        }
+        if (GlobalUnrealObjectInfo.IsA(className, "SFXDroppedPickup", actorExport.Game))
+        {
+            return new SFXDroppedPickupProxy(context, actorExport);
         }
         return null;
         //return new ActorProxy(context, actorExport);
@@ -404,6 +425,15 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         }
     }
 
+    protected void ApplyMorphFace(SkeletalMeshComponentProxy skeletalMeshComponent)
+    {
+        if (Properties.GetProp<ObjectProperty>("MorphHead")?.ResolveToExport(Export.FileRef, Editor?.PackageCache) is ExportEntry morphHead)
+        {
+            (BonePosition[] bonePositions, Vector3[][] vertexOffsets) = LegendaryExplorerCore.Unreal.Classes.BioMorphFace.GetBoneAndVertexPositions(morphHead);
+            skeletalMeshComponent.ApplyMorph(bonePositions, vertexOffsets);
+        }
+    }
+
     #region IDisposable
     protected bool isDisposed;
 
@@ -455,6 +485,28 @@ public class SkeletalMeshActorProxy : ActorProxy
     }
 }
 
+public class SFXSkeletalMeshActorProxy : SkeletalMeshActorProxy
+{
+    public SkeletalMeshComponentProxy HeadMesh;
+    public SkeletalMeshComponentProxy HairMesh;
+    public SkeletalMeshComponentProxy HeadGearMesh;
+    public SFXSkeletalMeshActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
+    {
+        AddComponent(context.RenderContext, ref HeadMesh);
+        ApplyMorphFace(HeadMesh);
+        AddComponent(context.RenderContext, ref HairMesh);
+        AddComponent(context.RenderContext, ref HeadGearMesh);
+    }
+
+    public override void SetAnimation(AnimSequence animSequence, float pos)
+    {
+        base.SetAnimation(animSequence, pos);
+        HeadMesh?.SetAnimation(animSequence, pos);
+        HairMesh?.SetAnimation(animSequence, pos);
+        HeadGearMesh?.SetAnimation(animSequence, pos);
+    }
+}
+
 //interpactor, placeables
 public class DynamicSMActorProxy : ActorProxy
 {
@@ -487,7 +539,13 @@ public class SFXStuntActorProxy : ActorProxy
     public SFXStuntActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         AddComponent(context.RenderContext, ref BodyMesh);
+        if (BodyMesh.Translation == Vector3.Zero)
+        {
+            //from the defaultproperties, which condenseproperties currently does not fetch
+            BodyMesh.Translation = new Vector3(0, 0, -88);
+        }
         AddComponent(context.RenderContext, ref HeadMesh);
+        ApplyMorphFace(HeadMesh);
         AddComponent(context.RenderContext, ref HairMesh);
         AddComponent(context.RenderContext, ref HeadGearMesh);
     }
@@ -539,6 +597,7 @@ public class BioPawnProxy : PawnProxy
     public BioPawnProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         AddComponent(context.RenderContext, ref HeadMesh);
+        ApplyMorphFace(HeadMesh);
         AddComponent(context.RenderContext, ref m_oHairMesh);
         AddComponent(context.RenderContext, ref m_oHeadGearMesh);
         AddComponent(context.RenderContext, ref m_oVisorMesh);
@@ -730,5 +789,32 @@ public class PrefabInstanceProxy : ActorProxy
             }
             isDisposed = true;
         }
+    }
+
+}
+public class SFXDroppedPickupProxy : ActorProxy
+{
+    public SkeletalMeshComponentProxy PickupMesh;
+    public SFXDroppedPickupProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
+    {
+        AddComponent(context.RenderContext, ref PickupMesh);
+    }
+}
+
+public class SFXDroppedAmmoProxy : ActorProxy
+{
+    public StaticMeshComponentProxy AmmoMesh;
+    public SFXDroppedAmmoProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
+    {
+        AddComponent(context.RenderContext, ref AmmoMesh);
+    }
+}
+
+public class SFXDroppedGrenadeProxy : ActorProxy
+{
+    public StaticMeshComponentProxy GrenadeMesh;
+    public SFXDroppedGrenadeProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
+    {
+        AddComponent(context.RenderContext, ref GrenadeMesh);
     }
 }

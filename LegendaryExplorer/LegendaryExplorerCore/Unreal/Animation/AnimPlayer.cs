@@ -1,4 +1,5 @@
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +16,6 @@ public abstract class AnimPlayer
     protected Matrix4x4[] _boneComponentSpace;
 
     public Matrix4x4[] BoneComponentSpaceTransforms => _boneComponentSpace;
-
-    public string[] GetBoneNames() => _bones.Select(b => b.Name.Instanced).ToArray();
 
     public float CurrentTime { get; set; }
     public bool IsPlaying { get; set; }
@@ -52,11 +51,17 @@ public abstract class AnimPlayer
     {
         _bones = skeletalMesh.RefSkeleton;
         int numBones = _bones.Length;
-        var bindPose = new Matrix4x4[numBones];
         _inverseBindPose = new Matrix4x4[numBones];
         _skinningMatrices = new Matrix4x4[numBones];
         _boneComponentSpace = new Matrix4x4[numBones];
 
+        ComputeBindPose();
+    }
+
+    private void ComputeBindPose()
+    {
+        int numBones = _bones.Length;
+        var bindPose = new Matrix4x4[numBones];
         for (int i = 0; i < numBones; i++)
         {
             var bone = _bones[i];
@@ -77,5 +82,19 @@ public abstract class AnimPlayer
             Matrix4x4.Invert(bindPose[i], out _inverseBindPose[i]);
             _skinningMatrices[i] = Matrix4x4.Identity;
         }
+    }
+
+    public void ApplyBonePositions(BonePosition[] bonePosition)
+    {
+        var boneNameToIndex = _bones.Select((b, i) => (b.Name.Instanced, i))
+                                    .ToDictionary(x => x.Instanced, x => x.i, StringComparer.OrdinalIgnoreCase);
+        foreach (var pos in bonePosition)
+        {
+            if (boneNameToIndex.TryGetValue(pos.Name, out int boneIndex))
+            {
+                _bones[boneIndex].Position = pos.Position;
+            }
+        }
+        ComputeBindPose();
     }
 }

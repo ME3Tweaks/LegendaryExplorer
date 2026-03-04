@@ -15,15 +15,19 @@ namespace LegendaryExplorerCore.Unreal.Animation;
 /// <remarks>
 /// Builds bind-pose transforms from a SkeletalMesh's RefSkeleton.
 /// </remarks>
-public class AnimSequencePlayer(SkeletalMesh skeletalMesh) : AnimPlayer(skeletalMesh)
+public class AnimSequencePlayer : AnimPlayer
 {
     // Animation state
     private AnimSequence _animSequence;
-    private int[] _animToSkelMap; // animTrack[i] -> skeleton bone index
     private int[] _skelToAnimMap; // skeleton bone index -> animTrack[i] or -1 if no track
     private bool _animRotationOnly = true; // animSequence => animSetData.bAnimRotationOnly; default true; if true, bones will ignore position tracks, only using the rotation
     private HashSet<string> _useTranslationBones = []; // animSequence => animSetData.UseTranslationBoneNames; these bones will use the positions from the animation even if _animRotationOnly in true
     private HashSet<string> _forceMeshTranslationBoneNames = []; // animSequence => animSetData.ForceMeshTranslationBoneNames; these bones will use the position from the mesh even if _animRotationOnly is false
+
+    public AnimSequencePlayer(SkeletalMesh skeletalMesh) : base(skeletalMesh)
+    {
+        _skelToAnimMap = new int[_bones.Length];
+    }
 
     public NameReference AnimName => _animSequence?.Name ?? "None";
     public int TotalFrames => _animSequence?.NumFrames ?? 0;
@@ -64,11 +68,10 @@ public class AnimSequencePlayer(SkeletalMesh skeletalMesh) : AnimPlayer(skeletal
     {
         _animSequence = animSequence;
         CurrentTime = 0;
+        _skelToAnimMap.AsSpan().Fill(-1);
 
         if (animSequence == null || _bones == null)
         {
-            _animToSkelMap = null;
-            _skelToAnimMap = null;
             // Reset to bind pose
             if (_skinningMatrices != null)
             {
@@ -94,21 +97,11 @@ public class AnimSequencePlayer(SkeletalMesh skeletalMesh) : AnimPlayer(skeletal
         }
 
         // Build reverse lookup: skeleton bone index -> anim track index
-        _skelToAnimMap = new int[_bones.Length];
-        _skelToAnimMap.AsSpan().Fill(-1);
-
-        // Map each animation track to a skeleton bone
-        _animToSkelMap = new int[animSequence.Bones.Count];
-        for (int i = 0; i < _animToSkelMap.Length; i++)
+        for (int i = 0; i < animSequence.Bones.Count; i++)
         {
             if (nameToIndex.TryGetValue(animSequence.Bones[i], out int skelIdx))
             {
-                _animToSkelMap[i] = skelIdx;
                 _skelToAnimMap[skelIdx] = i;
-            }
-            else
-            {
-                _animToSkelMap[i] = -1; // no match
             }
         }
 

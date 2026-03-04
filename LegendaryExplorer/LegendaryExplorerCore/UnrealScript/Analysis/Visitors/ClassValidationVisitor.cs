@@ -363,7 +363,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                             return Error($"No type named '{node.VarType.DisplayName()}' exists!", node.VarType.StartPos, node.VarType.EndPos);
                         }
                         //Tokens will only be set when parsing source code, not when linking up a decompiled AST
-                        if (Log.Tokens is not null)
+                        if (Log.Tokens is not null && typeStub.StartPos > 0)
                         {
                             Log.Tokens.AddDefinitionLink(node.VarType, typeStub.StartPos, typeStub.TextLength);
                             //disgusting hack...

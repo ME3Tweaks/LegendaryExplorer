@@ -56,7 +56,6 @@ public class Mesh<TVertex> : IDisposable where TVertex : IVertexBase
         // Dispose all the old stuff
         VertexBuffer?.Dispose();
         IndexBuffer?.Dispose();
-        if (Triangles.Count == 0 || Vertices.Count == 0) return; // Why build and empty buffer?
 
         // Update the AABB
         Box boundingBox = new();
