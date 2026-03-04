@@ -25,7 +25,7 @@ var searchData=
   ['bldclrrmp_22',['BldClrRmp',['../_compressonator_x_codec_8cpp.html#a235bb6d4f56af9dde0e77f1ef972a80a',1,'CompressonatorXCodec.cpp']]],
   ['bldrmp_23',['BldRmp',['../_compressonator_x_codec_8cpp.html#ad77cc717415ddc10a47d414207e0b0dd',1,'CompressonatorXCodec.cpp']]],
   ['bldrmp1_24',['BldRmp1',['../_compressonator_x_codec_8cpp.html#ac0cadc13541732d18e812801d16c48fb',1,'CompressonatorXCodec.cpp']]],
-  ['boneoffset_25',['BoneOffset',['../struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bone_offset.html#a880d53ff4aefd908b41069b936cf5631',1,'LegendaryExplorerCore::Unreal::Classes::BoneOffset']]],
+  ['boneposition_25',['BonePosition',['../struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bone_position.html#abea0177e641279b8c08fb7ee0d92030c',1,'LegendaryExplorerCore::Unreal::Classes::BonePosition']]],
   ['booleanliteral_26',['BooleanLiteral',['../class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_boolean_literal.html#a2e9a8f1f9af0f4efff6b28f018404b44',1,'LegendaryExplorerCore::UnrealScript::Language::Tree::BooleanLiteral']]],
   ['boolproperty_27',['BoolProperty',['../class_legendary_explorer_core_1_1_unreal_1_1_bool_property.html#a2d0582c8570f712eed231060a46d2689',1,'LegendaryExplorerCore::Unreal::BoolProperty']]],
   ['box_28',['Box',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html#aa241c75f171aa3191b120b200aad64fa',1,'LegendaryExplorerCore.Unreal.BinaryConverters.Box.Box()'],['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html#a4d7407da7c9a49ae9f8e2889a8e96400',1,'LegendaryExplorerCore.Unreal.BinaryConverters.Box.Box(Vector3 min, Vector3 max)']]],

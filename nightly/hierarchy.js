@@ -4,6 +4,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Audio.AFCCompactor", "class_legendary_explorer_core_1_1_audio_1_1_a_f_c_compactor.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.AlphaMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_alpha_map.html", null ],
     [ "AnimPlayer", "class_anim_player.html", [
+      [ "AnimSequencePlayer", "class_anim_sequence_player.html", null ],
       [ "FaceFxPlayer", "class_face_fx_player.html", null ]
     ] ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.AnimTrack", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_track.html", null ],
@@ -80,7 +81,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Gammtek.IO.BitRingBuffer", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_bit_ring_buffer.html", null ],
     [ "LegendaryExplorerCore.Packages.CompressionHelper.Block", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper_1_1_block.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.MorphTarget.BoneOffset", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_morph_target_1_1_bone_offset.html", null ],
-    [ "LegendaryExplorerCore.Unreal.Classes.BoneOffset", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bone_offset.html", null ],
+    [ "LegendaryExplorerCore.Unreal.Classes.BonePosition", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bone_position.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.BooleanExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_boolean_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Box", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.Box< int >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box.html", null ],

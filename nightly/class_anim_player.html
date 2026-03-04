@@ -108,20 +108,21 @@ Inheritance diagram for AnimPlayer:</div>
  <div class="center">
   <img src="class_anim_player.png" usemap="#AnimPlayer_map" alt=""/>
   <map id="AnimPlayer_map" name="AnimPlayer_map">
-<area href="class_face_fx_player.html" alt="FaceFxPlayer" shape="rect" coords="0,56,92,80"/>
+<area href="class_anim_sequence_player.html" title="Pure math class that handles skeleton bind-pose computation, animation track mapping,..." alt="AnimSequencePlayer" shape="rect" coords="0,56,133,80"/>
+<area href="class_face_fx_player.html" alt="FaceFxPlayer" shape="rect" coords="143,56,276,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad36102e5caafe35ce9049ffa68d817a2"><td class="memItemLeft" align="right" valign="top">string[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_player.html#ad36102e5caafe35ce9049ffa68d817a2">GetBoneNames</a> ()</td></tr>
-<tr class="separator:ad36102e5caafe35ce9049ffa68d817a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aae1bc6e1e568e17ca18ba90861c58ce8"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_player.html#aae1bc6e1e568e17ca18ba90861c58ce8">SetCurrentTime</a> (float time)</td></tr>
 <tr class="separator:aae1bc6e1e568e17ca18ba90861c58ce8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75067aae9523564f883ded2db95f1f7e"><td class="memItemLeft" align="right" valign="top">abstract Matrix4x4[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_player.html#a75067aae9523564f883ded2db95f1f7e">ComputeSkinningMatrices</a> ()</td></tr>
 <tr class="separator:a75067aae9523564f883ded2db95f1f7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a824e15f626b3b4f713584bcb2bca6cc7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_player.html#a824e15f626b3b4f713584bcb2bca6cc7">AdvanceTime</a> (float dt)</td></tr>
 <tr class="separator:a824e15f626b3b4f713584bcb2bca6cc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac932dcfee6230b279699e9b0af27d626"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_player.html#ac932dcfee6230b279699e9b0af27d626">ApplyBonePositions</a> (<a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bone_position.html">BonePosition</a>[] bonePosition)</td></tr>
+<tr class="separator:ac932dcfee6230b279699e9b0af27d626"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -188,23 +189,6 @@ Properties</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad36102e5caafe35ce9049ffa68d817a2" name="ad36102e5caafe35ce9049ffa68d817a2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad36102e5caafe35ce9049ffa68d817a2">&#9670;&#160;</a></span>GetBoneNames()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">string[] AnimPlayer.GetBoneNames </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="aae1bc6e1e568e17ca18ba90861c58ce8" name="aae1bc6e1e568e17ca18ba90861c58ce8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aae1bc6e1e568e17ca18ba90861c58ce8">&#9670;&#160;</a></span>SetCurrentTime()</h2>
 
@@ -229,7 +213,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="class_face_fx_player.html#a0c4fbb2433988db04749d5961f692c34">FaceFxPlayer</a>.</p>
+<p>Implemented in <a class="el" href="class_anim_sequence_player.html#af140c967986af7b610c6920304c3e1a5">AnimSequencePlayer</a>, and <a class="el" href="class_face_fx_player.html#a0c4fbb2433988db04749d5961f692c34">FaceFxPlayer</a>.</p>
 
 </div>
 </div>
@@ -256,7 +240,7 @@ Properties</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implemented in <a class="el" href="class_face_fx_player.html#a61d197280096b7cc07db3abfbcfef8c2">FaceFxPlayer</a>.</p>
+<p>Implemented in <a class="el" href="class_anim_sequence_player.html#aabe13c1d48eb7fb197ec19142eb7a840">AnimSequencePlayer</a>, and <a class="el" href="class_face_fx_player.html#a61d197280096b7cc07db3abfbcfef8c2">FaceFxPlayer</a>.</p>
 
 </div>
 </div>
@@ -274,6 +258,32 @@ Properties</h2></td></tr>
           <td>(</td>
           <td class="paramtype">float&#160;</td>
           <td class="paramname"><em>dt</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ac932dcfee6230b279699e9b0af27d626" name="ac932dcfee6230b279699e9b0af27d626"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac932dcfee6230b279699e9b0af27d626">&#9670;&#160;</a></span>ApplyBonePositions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void AnimPlayer.ApplyBonePositions </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bone_position.html">BonePosition</a>[]&#160;</td>
+          <td class="paramname"><em>bonePosition</em></td><td>)</td>
           <td></td>
         </tr>
       </table>

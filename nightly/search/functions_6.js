@@ -51,7 +51,7 @@ var searchData=
   ['getbioxparentfiles_48',['GetBioXParentFiles',['../class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a3c5ad045c0bd478e14cfc69409c3dcfa',1,'LegendaryExplorerCore::Packages::CloningImportingAndRelinking::EntryImporter']]],
   ['getblockingerrors_49',['GetBlockingErrors',['../class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_reference_check_package.html#a53be1c6b4725d6a3ab35477da32bfa75',1,'LegendaryExplorerCore::Packages::CloningImportingAndRelinking::ReferenceCheckPackage']]],
   ['getblocks_50',['GetBlocks',['../class_legendary_explorer_core_1_1_unreal_1_1_d_l_c_package.html#a689f2fce2762261049127269a568d97a',1,'LegendaryExplorerCore::Unreal::DLCPackage']]],
-  ['getbonenames_51',['GetBoneNames',['../class_anim_player.html#ad36102e5caafe35ce9049ffa68d817a2',1,'AnimPlayer']]],
+  ['getboneandvertexpositions_51',['GetBoneAndVertexPositions',['../class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio_morph_face.html#a137d0174e4f4f46b43930d9ea83478cf',1,'LegendaryExplorerCore::Unreal::Classes::BioMorphFace']]],
   ['getbrightness_52',['GetBrightness',['../struct_legendary_explorer_core_1_1_sharp_d_x_1_1_color.html#a552eb48c12c1674dc57cd8c892220369',1,'LegendaryExplorerCore::SharpDX::Color']]],
   ['getbrokenmaterials_53',['GetBrokenMaterials',['../class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#a5a17a09610595137749ce899b1ca6fd7',1,'LegendaryExplorerCore::Shaders::ShaderCacheManipulator']]],
   ['getbuffer_54',['GetBuffer',['../interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_buffer_manager.html#a9dcbe9a347d3c4843fd29c2638dac60c',1,'LegendaryExplorerCore::Gammtek::IO::IBufferManager']]],

@@ -1,10 +1,10 @@
 var class_anim_player =
 [
     [ "AnimPlayer", "class_anim_player.html#ae1231dcbf5eeb5312c8aa15650770650", null ],
-    [ "GetBoneNames", "class_anim_player.html#ad36102e5caafe35ce9049ffa68d817a2", null ],
     [ "SetCurrentTime", "class_anim_player.html#aae1bc6e1e568e17ca18ba90861c58ce8", null ],
     [ "ComputeSkinningMatrices", "class_anim_player.html#a75067aae9523564f883ded2db95f1f7e", null ],
     [ "AdvanceTime", "class_anim_player.html#a824e15f626b3b4f713584bcb2bca6cc7", null ],
+    [ "ApplyBonePositions", "class_anim_player.html#ac932dcfee6230b279699e9b0af27d626", null ],
     [ "_bones", "class_anim_player.html#abf5683050ad34446bbc8dd0940bc3345", null ],
     [ "_inverseBindPose", "class_anim_player.html#a07cf481f3d3cef4a9b735601d8f8eb55", null ],
     [ "_skinningMatrices", "class_anim_player.html#a0a6e98f5a62d906cea574b40209153f9", null ],

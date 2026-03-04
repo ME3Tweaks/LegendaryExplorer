@@ -3,7 +3,7 @@ var namespace_legendary_explorer_core_1_1_unreal_1_1_classes =
     [ "Bio2DA", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a" ],
     [ "Bio2DACell", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a_cell.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a_cell" ],
     [ "BioMorphFace", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio_morph_face.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio_morph_face" ],
-    [ "BoneOffset", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bone_offset.html", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bone_offset" ],
+    [ "BonePosition", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bone_position.html", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bone_position" ],
     [ "Function", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_function.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_function" ],
     [ "MaterialInstanceConstant", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant" ],
     [ "MaterialInstanceConstantLevelEditor", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant_level_editor.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant_level_editor" ],

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.5"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Legendary Explorer Core: FaceFxPlayer Class Reference</title>
+<title>Legendary Explorer Core: AnimSequencePlayer Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -67,7 +67,7 @@ $(function() {
 </div>
 <script type="text/javascript">
 /* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
-$(document).ready(function(){initNavTree('class_face_fx_player.html',''); initResizable(); });
+$(document).ready(function(){initNavTree('class_anim_sequence_player.html',''); initResizable(); });
 /* @license-end */
 </script>
 <div id="doc-content">
@@ -96,30 +96,35 @@ $(document).ready(function(){initNavTree('class_face_fx_player.html',''); initRe
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#properties">Properties</a> &#124;
-<a href="class_face_fx_player-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">FaceFxPlayer Class Reference</div></div>
+<a href="class_anim_sequence_player-members.html">List of all members</a>  </div>
+  <div class="headertitle"><div class="title">AnimSequencePlayer Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Pure math class that handles skeleton bind-pose computation, animation track mapping, and per-frame skinning matrix computation. No rendering dependency.   
+ <a href="class_anim_sequence_player.html#details">More...</a></p>
 <div class="dynheader">
-Inheritance diagram for FaceFxPlayer:</div>
+Inheritance diagram for AnimSequencePlayer:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="class_face_fx_player.png" usemap="#FaceFxPlayer_map" alt=""/>
-  <map id="FaceFxPlayer_map" name="FaceFxPlayer_map">
-<area href="class_anim_player.html" alt="AnimPlayer" shape="rect" coords="0,0,92,24"/>
+  <img src="class_anim_sequence_player.png" usemap="#AnimSequencePlayer_map" alt=""/>
+  <map id="AnimSequencePlayer_map" name="AnimSequencePlayer_map">
+<area href="class_anim_player.html" alt="AnimPlayer" shape="rect" coords="0,0,133,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a050fcf19997e340e652ad32c1e110184"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_face_fx_player.html#a050fcf19997e340e652ad32c1e110184">FaceFxPlayer</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html">SkeletalMesh</a> skeletalMesh)</td></tr>
-<tr class="separator:a050fcf19997e340e652ad32c1e110184"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3abb8299af233fbad66beea4ff5f1630"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_face_fx_player.html#a3abb8299af233fbad66beea4ff5f1630">SetFaceFXLine</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_face_f_x_line.html">FaceFXLine</a> line)</td></tr>
-<tr class="separator:a3abb8299af233fbad66beea4ff5f1630"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c4fbb2433988db04749d5961f692c34"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_face_fx_player.html#a0c4fbb2433988db04749d5961f692c34">SetCurrentTime</a> (float time)</td></tr>
-<tr class="separator:a0c4fbb2433988db04749d5961f692c34"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61d197280096b7cc07db3abfbcfef8c2"><td class="memItemLeft" align="right" valign="top">override Matrix4x4[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_face_fx_player.html#a61d197280096b7cc07db3abfbcfef8c2">ComputeSkinningMatrices</a> ()</td></tr>
-<tr class="separator:a61d197280096b7cc07db3abfbcfef8c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a434c18e46cbe0354e4b1a74b2b8b6e7b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_sequence_player.html#a434c18e46cbe0354e4b1a74b2b8b6e7b">AnimSequencePlayer</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html">SkeletalMesh</a> skeletalMesh)</td></tr>
+<tr class="separator:a434c18e46cbe0354e4b1a74b2b8b6e7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6f431263aae6d543d131e06e644171b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_sequence_player.html#ae6f431263aae6d543d131e06e644171b">SetAnimation</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html">AnimSequence</a> animSequence)</td></tr>
+<tr class="memdesc:ae6f431263aae6d543d131e06e644171b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maps animation bone names to skeleton bone indices and prepares for playback.   <a href="class_anim_sequence_player.html#ae6f431263aae6d543d131e06e644171b">More...</a><br /></td></tr>
+<tr class="separator:ae6f431263aae6d543d131e06e644171b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af140c967986af7b610c6920304c3e1a5"><td class="memItemLeft" align="right" valign="top">override void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_sequence_player.html#af140c967986af7b610c6920304c3e1a5">SetCurrentTime</a> (float time)</td></tr>
+<tr class="separator:af140c967986af7b610c6920304c3e1a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aabe13c1d48eb7fb197ec19142eb7a840"><td class="memItemLeft" align="right" valign="top">override Matrix4x4[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_sequence_player.html#aabe13c1d48eb7fb197ec19142eb7a840">ComputeSkinningMatrices</a> ()</td></tr>
+<tr class="memdesc:aabe13c1d48eb7fb197ec19142eb7a840"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes skinning matrices for the current frame. Returns the array of skinning matrices (InverseBindPose * AnimatedComponentSpace).   <a href="class_anim_sequence_player.html#aabe13c1d48eb7fb197ec19142eb7a840">More...</a><br /></td></tr>
+<tr class="separator:aabe13c1d48eb7fb197ec19142eb7a840"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_anim_player"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_anim_player')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_anim_player.html">AnimPlayer</a></td></tr>
 <tr class="memitem:aae1bc6e1e568e17ca18ba90861c58ce8 inherit pub_methods_class_anim_player"><td class="memItemLeft" align="right" valign="top">abstract void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_player.html#aae1bc6e1e568e17ca18ba90861c58ce8">SetCurrentTime</a> (float time)</td></tr>
 <tr class="separator:aae1bc6e1e568e17ca18ba90861c58ce8 inherit pub_methods_class_anim_player"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -132,18 +137,22 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="properties" name="properties"></a>
 Properties</h2></td></tr>
-<tr class="memitem:a617855ee51b83362ddcbe4068aec7370"><td class="memItemLeft" align="right" valign="top">override bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_face_fx_player.html#a617855ee51b83362ddcbe4068aec7370">HasAnimation</a><code> [get]</code></td></tr>
-<tr class="separator:a617855ee51b83362ddcbe4068aec7370"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30b25bb67477d26aa7fc95f7449f79fe"><td class="memItemLeft" align="right" valign="top">override float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_face_fx_player.html#a30b25bb67477d26aa7fc95f7449f79fe">Duration</a><code> [get]</code></td></tr>
-<tr class="separator:a30b25bb67477d26aa7fc95f7449f79fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3aa20041876cb2cfb12f34ee5561c929"><td class="memItemLeft" align="right" valign="top">override float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_face_fx_player.html#a3aa20041876cb2cfb12f34ee5561c929">StartTime</a><code> [get]</code></td></tr>
-<tr class="separator:a3aa20041876cb2cfb12f34ee5561c929"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae1f2d8691063df4c9497b9fc99f134dc"><td class="memItemLeft" align="right" valign="top">override float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_face_fx_player.html#ae1f2d8691063df4c9497b9fc99f134dc">EndTime</a><code> [get]</code></td></tr>
-<tr class="separator:ae1f2d8691063df4c9497b9fc99f134dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3da93a396ea3c3be5bda51b3b48a0c6e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_face_f_x_asset.html">FaceFXAsset</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_face_fx_player.html#a3da93a396ea3c3be5bda51b3b48a0c6e">FxActor</a><code> [get, set]</code></td></tr>
-<tr class="separator:a3da93a396ea3c3be5bda51b3b48a0c6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af51846431a189454325b5f0ed351988f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_face_f_x_anim_set.html">FaceFXAnimSet</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_face_fx_player.html#af51846431a189454325b5f0ed351988f">AnimSet</a><code> [get, set]</code></td></tr>
-<tr class="separator:af51846431a189454325b5f0ed351988f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1286ca487b2abdfd2acf7987951eac76"><td class="memItemLeft" align="right" valign="top">NameReference&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_sequence_player.html#a1286ca487b2abdfd2acf7987951eac76">AnimName</a><code> [get]</code></td></tr>
+<tr class="separator:a1286ca487b2abdfd2acf7987951eac76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab29e35154b730cbd00fd06bab425b6e8"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_sequence_player.html#ab29e35154b730cbd00fd06bab425b6e8">TotalFrames</a><code> [get]</code></td></tr>
+<tr class="separator:ab29e35154b730cbd00fd06bab425b6e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a5c5123b3a1c6d123b406b483905fc1"><td class="memItemLeft" align="right" valign="top">override float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_sequence_player.html#a7a5c5123b3a1c6d123b406b483905fc1">Duration</a><code> [get]</code></td></tr>
+<tr class="separator:a7a5c5123b3a1c6d123b406b483905fc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abbb680f205ea6a9bb9d811d85a309611"><td class="memItemLeft" align="right" valign="top">override float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_sequence_player.html#abbb680f205ea6a9bb9d811d85a309611">StartTime</a><code> [get]</code></td></tr>
+<tr class="separator:abbb680f205ea6a9bb9d811d85a309611"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e6e0c71ae10a6a287d596586e4403b9"><td class="memItemLeft" align="right" valign="top">override float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_sequence_player.html#a0e6e0c71ae10a6a287d596586e4403b9">EndTime</a><code> [get]</code></td></tr>
+<tr class="separator:a0e6e0c71ae10a6a287d596586e4403b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10130128cdf9f2ee7e0cfff4e20b1a13"><td class="memItemLeft" align="right" valign="top">override bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_sequence_player.html#a10130128cdf9f2ee7e0cfff4e20b1a13">HasAnimation</a><code> [get]</code></td></tr>
+<tr class="separator:a10130128cdf9f2ee7e0cfff4e20b1a13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b26d00a7064747db036bc304d9ee0c4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_sequence_player.html#a8b26d00a7064747db036bc304d9ee0c4">CurrentFrame</a><code> [get, set]</code></td></tr>
+<tr class="separator:a8b26d00a7064747db036bc304d9ee0c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac45309ccbccd5653120d8c8edb3b9301"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_sequence_player.html#ac45309ccbccd5653120d8c8edb3b9301">BoneCount</a><code> [get]</code></td></tr>
+<tr class="separator:ac45309ccbccd5653120d8c8edb3b9301"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header properties_class_anim_player"><td colspan="2" onclick="javascript:toggleInherit('properties_class_anim_player')"><img src="closed.png" alt="-"/>&#160;Properties inherited from <a class="el" href="class_anim_player.html">AnimPlayer</a></td></tr>
 <tr class="memitem:a7d8e4bb70548b1f94920781e759b4bb4 inherit properties_class_anim_player"><td class="memItemLeft" align="right" valign="top">Matrix4x4[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_player.html#a7d8e4bb70548b1f94920781e759b4bb4">BoneComponentSpaceTransforms</a><code> [get]</code></td></tr>
 <tr class="separator:a7d8e4bb70548b1f94920781e759b4bb4 inherit properties_class_anim_player"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -179,9 +188,12 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:ab205ebd7cd04346c04b1e1bdf3de4592 inherit pro_attribs_class_anim_player"><td class="memItemLeft" align="right" valign="top">Matrix4x4[]&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_anim_player.html#ab205ebd7cd04346c04b1e1bdf3de4592">_boneComponentSpace</a></td></tr>
 <tr class="separator:ab205ebd7cd04346c04b1e1bdf3de4592 inherit pro_attribs_class_anim_player"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a050fcf19997e340e652ad32c1e110184" name="a050fcf19997e340e652ad32c1e110184"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a050fcf19997e340e652ad32c1e110184">&#9670;&#160;</a></span>FaceFxPlayer()</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p >Pure math class that handles skeleton bind-pose computation, animation track mapping, and per-frame skinning matrix computation. No rendering dependency.  </p>
+<p >Builds bind-pose transforms from a SkeletalMesh's RefSkeleton. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a434c18e46cbe0354e4b1a74b2b8b6e7b" name="a434c18e46cbe0354e4b1a74b2b8b6e7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a434c18e46cbe0354e4b1a74b2b8b6e7b">&#9670;&#160;</a></span>AnimSequencePlayer()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -190,7 +202,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">FaceFxPlayer.FaceFxPlayer </td>
+          <td class="memname">AnimSequencePlayer.AnimSequencePlayer </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html">SkeletalMesh</a>&#160;</td>
           <td class="paramname"><em>skeletalMesh</em></td><td>)</td>
@@ -207,8 +219,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a3abb8299af233fbad66beea4ff5f1630" name="a3abb8299af233fbad66beea4ff5f1630"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3abb8299af233fbad66beea4ff5f1630">&#9670;&#160;</a></span>SetFaceFXLine()</h2>
+<a id="ae6f431263aae6d543d131e06e644171b" name="ae6f431263aae6d543d131e06e644171b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6f431263aae6d543d131e06e644171b">&#9670;&#160;</a></span>SetAnimation()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -217,10 +229,10 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void FaceFxPlayer.SetFaceFXLine </td>
+          <td class="memname">void AnimSequencePlayer.SetAnimation </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_face_f_x_line.html">FaceFXLine</a>&#160;</td>
-          <td class="paramname"><em>line</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html">AnimSequence</a>&#160;</td>
+          <td class="paramname"><em>animSequence</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -231,10 +243,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Maps animation bone names to skeleton bone indices and prepares for playback.  </p>
+
 </div>
 </div>
-<a id="a0c4fbb2433988db04749d5961f692c34" name="a0c4fbb2433988db04749d5961f692c34"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0c4fbb2433988db04749d5961f692c34">&#9670;&#160;</a></span>SetCurrentTime()</h2>
+<a id="af140c967986af7b610c6920304c3e1a5" name="af140c967986af7b610c6920304c3e1a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af140c967986af7b610c6920304c3e1a5">&#9670;&#160;</a></span>SetCurrentTime()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -243,7 +257,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">override void FaceFxPlayer.SetCurrentTime </td>
+          <td class="memname">override void AnimSequencePlayer.SetCurrentTime </td>
           <td>(</td>
           <td class="paramtype">float&#160;</td>
           <td class="paramname"><em>time</em></td><td>)</td>
@@ -261,8 +275,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a61d197280096b7cc07db3abfbcfef8c2" name="a61d197280096b7cc07db3abfbcfef8c2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a61d197280096b7cc07db3abfbcfef8c2">&#9670;&#160;</a></span>ComputeSkinningMatrices()</h2>
+<a id="aabe13c1d48eb7fb197ec19142eb7a840" name="aabe13c1d48eb7fb197ec19142eb7a840"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aabe13c1d48eb7fb197ec19142eb7a840">&#9670;&#160;</a></span>ComputeSkinningMatrices()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -271,7 +285,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">override Matrix4x4[] FaceFxPlayer.ComputeSkinningMatrices </td>
+          <td class="memname">override Matrix4x4[] AnimSequencePlayer.ComputeSkinningMatrices </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -284,13 +298,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Computes skinning matrices for the current frame. Returns the array of skinning matrices (InverseBindPose * AnimatedComponentSpace).  </p>
+
 <p>Implements <a class="el" href="class_anim_player.html#a75067aae9523564f883ded2db95f1f7e">AnimPlayer</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Property Documentation</h2>
-<a id="a617855ee51b83362ddcbe4068aec7370" name="a617855ee51b83362ddcbe4068aec7370"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a617855ee51b83362ddcbe4068aec7370">&#9670;&#160;</a></span>HasAnimation</h2>
+<a id="a1286ca487b2abdfd2acf7987951eac76" name="a1286ca487b2abdfd2acf7987951eac76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1286ca487b2abdfd2acf7987951eac76">&#9670;&#160;</a></span>AnimName</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -299,7 +315,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">override bool FaceFxPlayer.HasAnimation</td>
+          <td class="memname">NameReference AnimSequencePlayer.AnimName</td>
         </tr>
       </table>
   </td>
@@ -311,8 +327,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a30b25bb67477d26aa7fc95f7449f79fe" name="a30b25bb67477d26aa7fc95f7449f79fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a30b25bb67477d26aa7fc95f7449f79fe">&#9670;&#160;</a></span>Duration</h2>
+<a id="ab29e35154b730cbd00fd06bab425b6e8" name="ab29e35154b730cbd00fd06bab425b6e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab29e35154b730cbd00fd06bab425b6e8">&#9670;&#160;</a></span>TotalFrames</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -321,7 +337,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">override float FaceFxPlayer.Duration</td>
+          <td class="memname">int AnimSequencePlayer.TotalFrames</td>
         </tr>
       </table>
   </td>
@@ -333,8 +349,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a3aa20041876cb2cfb12f34ee5561c929" name="a3aa20041876cb2cfb12f34ee5561c929"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3aa20041876cb2cfb12f34ee5561c929">&#9670;&#160;</a></span>StartTime</h2>
+<a id="a7a5c5123b3a1c6d123b406b483905fc1" name="a7a5c5123b3a1c6d123b406b483905fc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a5c5123b3a1c6d123b406b483905fc1">&#9670;&#160;</a></span>Duration</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -343,7 +359,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">override float FaceFxPlayer.StartTime</td>
+          <td class="memname">override float AnimSequencePlayer.Duration</td>
         </tr>
       </table>
   </td>
@@ -355,8 +371,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="ae1f2d8691063df4c9497b9fc99f134dc" name="ae1f2d8691063df4c9497b9fc99f134dc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae1f2d8691063df4c9497b9fc99f134dc">&#9670;&#160;</a></span>EndTime</h2>
+<a id="abbb680f205ea6a9bb9d811d85a309611" name="abbb680f205ea6a9bb9d811d85a309611"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abbb680f205ea6a9bb9d811d85a309611">&#9670;&#160;</a></span>StartTime</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -365,7 +381,7 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">override float FaceFxPlayer.EndTime</td>
+          <td class="memname">override float AnimSequencePlayer.StartTime</td>
         </tr>
       </table>
   </td>
@@ -377,8 +393,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="a3da93a396ea3c3be5bda51b3b48a0c6e" name="a3da93a396ea3c3be5bda51b3b48a0c6e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3da93a396ea3c3be5bda51b3b48a0c6e">&#9670;&#160;</a></span>FxActor</h2>
+<a id="a0e6e0c71ae10a6a287d596586e4403b9" name="a0e6e0c71ae10a6a287d596586e4403b9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e6e0c71ae10a6a287d596586e4403b9">&#9670;&#160;</a></span>EndTime</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -387,7 +403,51 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_face_f_x_asset.html">FaceFXAsset</a> FaceFxPlayer.FxActor</td>
+          <td class="memname">override float AnimSequencePlayer.EndTime</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a10130128cdf9f2ee7e0cfff4e20b1a13" name="a10130128cdf9f2ee7e0cfff4e20b1a13"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10130128cdf9f2ee7e0cfff4e20b1a13">&#9670;&#160;</a></span>HasAnimation</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">override bool AnimSequencePlayer.HasAnimation</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a8b26d00a7064747db036bc304d9ee0c4" name="a8b26d00a7064747db036bc304d9ee0c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b26d00a7064747db036bc304d9ee0c4">&#9670;&#160;</a></span>CurrentFrame</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">int AnimSequencePlayer.CurrentFrame</td>
         </tr>
       </table>
   </td>
@@ -399,8 +459,8 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
-<a id="af51846431a189454325b5f0ed351988f" name="af51846431a189454325b5f0ed351988f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af51846431a189454325b5f0ed351988f">&#9670;&#160;</a></span>AnimSet</h2>
+<a id="ac45309ccbccd5653120d8c8edb3b9301" name="ac45309ccbccd5653120d8c8edb3b9301"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac45309ccbccd5653120d8c8edb3b9301">&#9670;&#160;</a></span>BoneCount</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -409,12 +469,12 @@ Additional Inherited Members</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_face_f_x_anim_set.html">FaceFXAnimSet</a> FaceFxPlayer.AnimSet</td>
+          <td class="memname">int AnimSequencePlayer.BoneCount</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">get</span><span class="mlabel">set</span></span>  </td>
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -422,7 +482,7 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>LegendaryExplorer/LegendaryExplorerCore/Unreal/Animation/<a class="el" href="_face_fx_player_8cs.html">FaceFxPlayer.cs</a></li>
+<li>LegendaryExplorer/LegendaryExplorerCore/Unreal/Animation/<a class="el" href="_anim_sequence_player_8cs.html">AnimSequencePlayer.cs</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->
@@ -430,7 +490,7 @@ Additional Inherited Members</h2></td></tr>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a class="el" href="class_face_fx_player.html">FaceFxPlayer</a></li>
+    <li class="navelem"><a class="el" href="class_anim_sequence_player.html">AnimSequencePlayer</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.5 </li>
   </ul>
 </div>

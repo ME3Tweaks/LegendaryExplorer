@@ -743,7 +743,7 @@ var annotated_dup =
           [ "Bio2DA", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a" ],
           [ "Bio2DACell", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a_cell.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio2_d_a_cell" ],
           [ "BioMorphFace", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio_morph_face.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bio_morph_face" ],
-          [ "BoneOffset", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bone_offset.html", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bone_offset" ],
+          [ "BonePosition", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bone_position.html", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_bone_position" ],
           [ "Function", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_function.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_function" ],
           [ "MaterialInstanceConstant", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant" ],
           [ "MaterialInstanceConstantLevelEditor", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant_level_editor.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_material_instance_constant_level_editor" ],
@@ -987,6 +987,7 @@ var annotated_dup =
       [ "LegendaryExplorerCoreLibSettings", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings.html", "class_legendary_explorer_core_1_1_legendary_explorer_core_lib_settings" ]
     ] ],
     [ "AnimPlayer", "class_anim_player.html", "class_anim_player" ],
+    [ "AnimSequencePlayer", "class_anim_sequence_player.html", "class_anim_sequence_player" ],
     [ "BankChunk", "class_bank_chunk.html", "class_bank_chunk" ],
     [ "BufferDistanceBankChunk", "class_buffer_distance_bank_chunk.html", "class_buffer_distance_bank_chunk" ],
     [ "BufferSoundDistanceBankChunk", "class_buffer_sound_distance_bank_chunk.html", "class_buffer_sound_distance_bank_chunk" ],
