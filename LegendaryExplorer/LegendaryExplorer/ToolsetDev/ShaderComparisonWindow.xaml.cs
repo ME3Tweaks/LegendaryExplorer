@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using System.Windows;
 using System.Windows.Media;
 using Be.Windows.Forms;
 using ICSharpCode.AvalonEdit.Document;
+using ICSharpCode.AvalonEdit.Rendering;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.ToolsetDev.ShaderComparer;
@@ -32,6 +34,11 @@ namespace LegendaryExplorer.ToolsetDev;
 /// </summary>
 public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
 {
+    private static readonly SolidColorBrush HlslDiffBrush = new(Color.FromArgb(0x60, 0xFF, 0x66, 0x66));
+
+    private readonly LineDiffColorizer _leftLineDiffColorizer = new();
+    private readonly LineDiffColorizer _rightLineDiffColorizer = new();
+
     #region Busy
 
     private bool _isBusy;
@@ -93,7 +100,13 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
     public TextDocument LeftDocument
     {
         get => _leftDocument;
-        set => SetProperty(ref _leftDocument, value);
+        set
+        {
+            if (_leftDocument != null)
+                _leftDocument.Changed -= OnDocumentTextChanged;
+            if (SetProperty(ref _leftDocument, value) && _leftDocument != null)
+                _leftDocument.Changed += OnDocumentTextChanged;
+        }
     }
 
     public ObservableCollectionExtended<BinInterpNode> LeftParameterNodes { get; } = [];
@@ -143,7 +156,13 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
     public TextDocument RightDocument
     {
         get => _rightDocument;
-        set => SetProperty(ref _rightDocument, value);
+        set
+        {
+            if (_rightDocument != null)
+                _rightDocument.Changed -= OnDocumentTextChanged;
+            if (SetProperty(ref _rightDocument, value) && _rightDocument != null)
+                _rightDocument.Changed += OnDocumentTextChanged;
+        }
     }
 
     public ObservableCollectionExtended<BinInterpNode> RightParameterNodes { get; } = [];
@@ -182,12 +201,52 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
 
     #endregion
 
+    #region HLSL Match Properties
+
+    private string _hlslMatchText = "";
+    public string HlslMatchText
+    {
+        get => _hlslMatchText;
+        set => SetProperty(ref _hlslMatchText, value);
+    }
+
+    private Brush _hlslMatchBrush = Brushes.Green;
+    public Brush HlslMatchBrush
+    {
+        get => _hlslMatchBrush;
+        set => SetProperty(ref _hlslMatchBrush, value);
+    }
+
+    private Visibility _hlslMatchVisibility = Visibility.Collapsed;
+    public Visibility HlslMatchVisibility
+    {
+        get => _hlslMatchVisibility;
+        set => SetProperty(ref _hlslMatchVisibility, value);
+    }
+
+    #endregion
+
     /// <summary>
-    /// Hidden BinaryInterpreterWPF instances used to call ReadShaderParameters.
+    /// Hidden BinaryInterpreterWPF instances
     /// They need CurrentLoadedExport set to the ShaderCache export.
     /// </summary>
     private BinaryInterpreterWPF _leftBinInterp;
     private BinaryInterpreterWPF _rightBinInterp;
+
+    /// <summary>
+    /// Effective shader cache export used for parameter reading. When the material's shaders are in the
+    /// local SeekFreeShaderCache this is the same as _leftShaderCacheExport/_rightShaderCacheExport;
+    /// when they come from the ref shader cache it points into a temporary in-memory package.
+    /// </summary>
+    private ExportEntry _leftEffectiveShaderCacheExport;
+    private ExportEntry _rightEffectiveShaderCacheExport;
+
+    /// <summary>
+    /// Temporary in-memory packages that hold a copy of the ref shaders for the currently selected material.
+    /// Disposed whenever a new material is selected or the window is closed.
+    /// </summary>
+    private IMEPackage _leftTempRefPackage;
+    private IMEPackage _rightTempRefPackage;
 
     /// <summary>
     /// HexBox controls hosted via WindowsFormsHost for displaying raw shader bytecode.
@@ -211,6 +270,9 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
         _rightBinInterp = new BinaryInterpreterWPF();
         _leftHexBox = (HexBox)LeftHexBoxHost.Child;
         _rightHexBox = (HexBox)RightHexBoxHost.Child;
+
+        LeftShaderTextEditor.TextArea.TextView.LineTransformers.Add(_leftLineDiffColorizer);
+        RightShaderTextEditor.TextArea.TextView.LineTransformers.Add(_rightLineDiffColorizer);
     }
 
     private void LoadLeftPackage_Click(object sender, RoutedEventArgs e) => LoadPackage(Side.Left);
@@ -333,7 +395,24 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
         }
 
         if (material == null || package == null)
+        {
+            // Clean up any temp ref package for this side when the material is cleared
+            if (side == Side.Left)
+            {
+                _leftTempRefPackage?.Dispose();
+                _leftTempRefPackage = null;
+                _leftEffectiveShaderCacheExport = null;
+            }
+            else
+            {
+                _rightTempRefPackage?.Dispose();
+                _rightTempRefPackage = null;
+                _rightEffectiveShaderCacheExport = null;
+            }
+
+            UpdateHlslDiffHighlights();
             return;
+        }
 
         // When the left material changes, try to find and load a matching right package via the ObjectInstanceDB
         if (side == Side.Left)
@@ -362,6 +441,8 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
             };
 
             var shaderList = new List<TreeViewShader>();
+            IMEPackage tempPackage = null;
+            ExportEntry tempShaderCacheExport = null;
 
             // Try local shader cache first
             if (shaderCache != null && shaderCache.MaterialShaderMaps.TryGetValue(sps, out MaterialShaderMap msm))
@@ -375,6 +456,7 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
                             Id = shaderReference.Id,
                             ShaderType = shaderReference.ShaderType,
                             Game = package.Game,
+                            VertexFactoryType = meshShaderMap.VertexFactoryType
                         };
                         if (shaderCache.Shaders.TryGetValue(shaderReference.Id, out Shader shader))
                         {
@@ -401,19 +483,31 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
                                     Id = shaderReference.Id,
                                     ShaderType = shaderReference.ShaderType,
                                     Game = package.Game,
+                                    VertexFactoryType = meshShaderMap.VertexFactoryType
                                 });
                             }
                         }
+
+                        // Build a temporary in-memory package containing the ref shaders so that
+                        // FindShaderParameterOffset can scan its binary for parameter data.
+                        var staticParamSets = new HashSet<StaticParameterSet> { sps };
+                        ShaderCache refShaderCache = ShaderCacheManipulator.GetRefShaders(package.Game, staticParamSets);
+                        tempPackage = MEPackageHandler.CreateMemoryEmptyLevel("TempRefShaderCache", package.Game);
+                        ShaderCacheManipulator.AddShadersToFile(tempPackage, refShaderCache);
+                        tempShaderCacheExport = tempPackage.FindExport("SeekFreeShaderCache");
                     }
                 }
                 catch
                 {
                     // RefShaderCache not available
+                    tempPackage?.Dispose();
+                    tempPackage = null;
+                    tempShaderCacheExport = null;
                 }
             }
 
-            return shaderList;
-        }).ContinueWithOnUIThread((Task<List<TreeViewShader>> prevTask) =>
+            return (shaderList, tempShaderCacheExport, tempPackage);
+        }).ContinueWithOnUIThread((Task<(List<TreeViewShader>, ExportEntry, IMEPackage)> prevTask) =>
         {
             if (prevTask.Exception is AggregateException ex)
             {
@@ -422,7 +516,27 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
                 return;
             }
 
-            shaders.ReplaceAll(prevTask.Result);
+            var (shaderList, refCacheExport, tempPkg) = prevTask.Result;
+
+            if (side == Side.Left)
+            {
+                _leftTempRefPackage?.Dispose();
+                _leftTempRefPackage = tempPkg;
+                // If we got a temp export (ref cache), use it; otherwise fall back to the local one
+                _leftEffectiveShaderCacheExport = refCacheExport ?? _leftShaderCacheExport;
+                if (_leftEffectiveShaderCacheExport != null)
+                    SetCurrentLoadedExport(_leftBinInterp, _leftEffectiveShaderCacheExport);
+            }
+            else
+            {
+                _rightTempRefPackage?.Dispose();
+                _rightTempRefPackage = tempPkg;
+                _rightEffectiveShaderCacheExport = refCacheExport ?? _rightShaderCacheExport;
+                if (_rightEffectiveShaderCacheExport != null)
+                    SetCurrentLoadedExport(_rightBinInterp, _rightEffectiveShaderCacheExport);
+            }
+
+            shaders.ReplaceAll(shaderList);
             IsBusy = false;
         });
     }
@@ -614,11 +728,11 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
         try
         {
             var leftEntries = ShaderInfoReader.GetShaderInfo(leftBytecode, out int leftInstructions);
-            var rightEntries = ShaderInfoReader.GetShaderInfo(rightBytecode, out int rightInstructions);
+            //var rightEntries = ShaderInfoReader.GetShaderInfo(rightBytecode, out int rightInstructions);
 
             var window = new ShaderInfoWindow(
                 $"Left: {SelectedLeftShader.ShaderType}", leftEntries, leftInstructions,
-                $"Right: {SelectedRightShader.ShaderType}", rightEntries, rightInstructions)
+                $"Right: {SelectedRightShader.ShaderType}", [], 32) //rightEntries, rightInstructions)
             {
                 Owner = this
             };
@@ -718,7 +832,7 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
     {
         var shader = side == Side.Left ? SelectedLeftShader : SelectedRightShader;
         var parameterNodes = side == Side.Left ? LeftParameterNodes : RightParameterNodes;
-        var shaderCacheExport = side == Side.Left ? _leftShaderCacheExport : _rightShaderCacheExport;
+        var shaderCacheExport = side == Side.Left ? _leftEffectiveShaderCacheExport : _rightEffectiveShaderCacheExport;
         var binInterp = side == Side.Left ? _leftBinInterp : _rightBinInterp;
         var hexBox = side == Side.Left ? _leftHexBox : _rightHexBox;
 
@@ -737,6 +851,7 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
                 RightBytecodeMatchText = "";
             }
             hexBox.ByteProvider = null;
+            UpdateHlslDiffHighlights();
             return;
         }
 
@@ -795,6 +910,119 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
 
         // Compare both trees and highlight differences when both sides have data
         HighlightParameterDifferences();
+        UpdateHlslDiffHighlights();
+
+        // When the left shader changes, auto-select the matching shader on the right side
+        // if both panels are showing the same material (by name).
+        if (side == Side.Left && shader != null &&
+            SelectedLeftMaterial != null && SelectedRightMaterial != null &&
+            string.Equals(SelectedLeftMaterial.ObjectName.Name, SelectedRightMaterial.ObjectName.Name, StringComparison.OrdinalIgnoreCase))
+        {
+            var matchingRight = RightShaders.FirstOrDefault(s => s.ShaderType == shader.ShaderType && s.VertexFactoryType == shader.VertexFactoryType);
+            if (matchingRight != null && !ReferenceEquals(matchingRight, SelectedRightShader))
+            {
+                SelectedRightShader = matchingRight;
+            } else
+            {
+                SelectedRightShader = null;
+            }
+        }
+    }
+
+    private void OnDocumentTextChanged(object sender, DocumentChangeEventArgs e)
+    {
+        UpdateHlslDiffHighlights();
+    }
+
+    private void UpdateHlslDiffHighlights()
+    {
+        _leftLineDiffColorizer.DiffLines.Clear();
+        _rightLineDiffColorizer.DiffLines.Clear();
+
+        var leftLines = LeftDocument?.Text?.Split(["\r\n", "\n"], StringSplitOptions.None);
+        var rightLines = RightDocument?.Text?.Split(["\r\n", "\n"], StringSplitOptions.None);
+
+        if (leftLines == null || rightLines == null || leftLines.Length == 0 || rightLines.Length == 0
+            || string.IsNullOrEmpty(LeftDocument?.Text) || string.IsNullOrEmpty(RightDocument?.Text))
+        {
+            HlslMatchVisibility = Visibility.Collapsed;
+            LeftShaderTextEditor.TextArea.TextView.Redraw();
+            RightShaderTextEditor.TextArea.TextView.Redraw();
+            return;
+        }
+
+        int maxLines = Math.Max(leftLines.Length, rightLines.Length);
+        for (int i = 0; i < maxLines; i++)
+        {
+            string leftLine = i < leftLines.Length ? leftLines[i] : null;
+            string rightLine = i < rightLines.Length ? rightLines[i] : null;
+
+            bool leftIgnored = IsIgnoredDiffLine(leftLine);
+            bool rightIgnored = IsIgnoredDiffLine(rightLine);
+
+            if (leftLine == null)
+            {
+                if (!rightIgnored)
+                    _rightLineDiffColorizer.DiffLines.Add(i + 1);
+                continue;
+            }
+
+            if (rightLine == null)
+            {
+                if (!leftIgnored)
+                    _leftLineDiffColorizer.DiffLines.Add(i + 1);
+                continue;
+            }
+
+            if (leftIgnored || rightIgnored)
+                continue;
+
+            if (!string.Equals(leftLine, rightLine, StringComparison.Ordinal))
+            {
+                _leftLineDiffColorizer.DiffLines.Add(i + 1);
+                _rightLineDiffColorizer.DiffLines.Add(i + 1);
+            }
+        }
+
+        LeftShaderTextEditor.TextArea.TextView.Redraw();
+        RightShaderTextEditor.TextArea.TextView.Redraw();
+
+        bool hasDiffs = _leftLineDiffColorizer.DiffLines.Count > 0 || _rightLineDiffColorizer.DiffLines.Count > 0;
+        HlslMatchVisibility = Visibility.Visible;
+        if (hasDiffs)
+        {
+            HlslMatchText = "HLSL - DIFFERENT!";
+            HlslMatchBrush = Brushes.Red;
+        }
+        else
+        {
+            HlslMatchText = "HLSL - identical";
+            HlslMatchBrush = Brushes.Green;
+        }
+    }
+
+    private static bool IsIgnoredDiffLine(string line)
+    {
+        if (line == null)
+            return true;
+
+        return line.TrimStart().StartsWith("//", StringComparison.Ordinal);
+    }
+
+    private sealed class LineDiffColorizer : DocumentColorizingTransformer
+    {
+        public HashSet<int> DiffLines { get; } = [];
+
+        protected override void ColorizeLine(DocumentLine line)
+        {
+            if (!DiffLines.Contains(line.LineNumber))
+                return;
+
+            ChangeLinePart(line.Offset, line.EndOffset, element =>
+            {
+                element.TextRunProperties.SetBackgroundBrush(HlslDiffBrush);
+            });
+        }
     }
 
     /// <summary>
@@ -886,6 +1114,7 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
 
     static ShaderComparisonWindow()
     {
+        HlslDiffBrush.Freeze();
         DiffLightRedBrush.Freeze();
         DiffDarkRedBrush.Freeze();
     }
@@ -923,44 +1152,75 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
     /// <summary>
     /// Compares two lists of nodes at the same tree level and marks differences.
     /// Returns true if any differences were found.
+    /// <para>
+    /// For non-leaf nodes (nodes that have children), a branch is only compared when at least
+    /// one of its direct children has a header containing "NumBytes" and that value is greater
+    /// than zero. Branches without a NumBytes child are structural/resource nodes that carry no
+    /// scalar data; branches whose NumBytes equals zero hold garbage data and should be ignored.
+    /// Leaf nodes (no children) are always compared directly.
+    /// </para>
     /// </summary>
     private static bool CompareNodeLists(IList<BinInterpNode> leftNodes, IList<BinInterpNode> rightNodes)
     {
         bool hasDifferences = false;
         int maxCount = Math.Max(leftNodes.Count, rightNodes.Count);
-        bool countMismatch = leftNodes.Count != rightNodes.Count;
 
         for (int i = 0; i < maxCount; i++)
         {
             if (i >= leftNodes.Count)
             {
-                // Extra node on the right side only
-                MarkSubtree(rightNodes[i], DiffDarkRedBrush);
-                hasDifferences = true;
+                // Extra node on the right side only — only flag it if the branch has valid data
+                var rightChildren = rightNodes[i].Items.OfType<BinInterpNode>().ToList();
+                if (rightChildren.Count == 0 || (TryFindValidCount(rightNodes[i], rightChildren, out int nb) && nb > 0))
+                {
+                    MarkSubtree(rightNodes[i], DiffDarkRedBrush);
+                    hasDifferences = true;
+                }
                 continue;
             }
 
             if (i >= rightNodes.Count)
             {
-                // Extra node on the left side only
-                MarkSubtree(leftNodes[i], DiffDarkRedBrush);
-                hasDifferences = true;
+                // Extra node on the left side only — only flag it if the branch has valid data
+                var leftChildren = leftNodes[i].Items.OfType<BinInterpNode>().ToList();
+                if (leftChildren.Count == 0 || (TryFindValidCount(leftNodes[i], leftChildren, out int nb) && nb > 0))
+                {
+                    MarkSubtree(leftNodes[i], DiffDarkRedBrush);
+                    hasDifferences = true;
+                }
                 continue;
             }
 
             var leftNode = leftNodes[i];
             var rightNode = rightNodes[i];
 
-            // Compare children recursively
-            var leftChildren = leftNode.Items.OfType<BinInterpNode>().ToList();
-            var rightChildren = rightNode.Items.OfType<BinInterpNode>().ToList();
+            var leftChildren2 = leftNode.Items.OfType<BinInterpNode>().ToList();
+            var rightChildren2 = rightNode.Items.OfType<BinInterpNode>().ToList();
 
-            bool childCountMismatch = leftChildren.Count != rightChildren.Count;
-            bool childrenDiffer = CompareNodeLists(leftChildren, rightChildren);
+            // For non-leaf nodes apply the NumBytes filter before comparing children
+            bool bothLeaves = leftChildren2.Count == 0 && rightChildren2.Count == 0;
+            if (!bothLeaves)
+            {
+                bool leftHasCount = TryFindValidCount(leftNode, leftChildren2, out int leftCount);
+                bool rightHasCount = TryFindValidCount(rightNode, rightChildren2, out int rightCount);
+
+                // Count is 0 on either side (when a count node IS present) — uninitialised data, skip entirely
+                if ((leftHasCount || rightHasCount) && (leftCount == 0 || rightCount == 0))
+                    continue;
+                // If neither side has a count child at this level, this is a structural container node —
+                // fall through and recurse so that deeper NumBytes/NumResources nodes are still evaluated.
+            }
+
+            // Compare children recursively (highlights differences within the valid branch)
+            bool childCountMismatch = leftChildren2.Count != rightChildren2.Count;
+            bool childrenDiffer = CompareNodeLists(leftChildren2, rightChildren2);
 
             // Compare this node's own header
             bool headersDiffer = !string.Equals(leftNode.Header, rightNode.Header, StringComparison.Ordinal);
-
+            if (headersDiffer && leftNode.Header.Contains("File offset") && rightNode.Header.Contains("File offset"))
+            {
+                headersDiffer = false;
+            }
             if (childCountMismatch)
             {
                 leftNode.DiffBackground = DiffDarkRedBrush;
@@ -976,6 +1236,77 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
         }
 
         return hasDifferences;
+    }
+
+    /// <summary>
+    /// Searches <paramref name="children"/> for the first node whose header contains the text
+    /// "NumBytes" and attempts to parse its value from the " = &lt;value&gt;" portion of the header.
+    /// Returns <see langword="true"/> and sets <paramref name="numBytes"/> when a parseable
+    /// NumBytes node is found; returns <see langword="false"/> otherwise.
+    /// </summary>
+    private static bool TryFindNumBytes(IList<BinInterpNode> children, out int numBytes)
+    {
+        numBytes = 0;
+        foreach (var child in children)
+        {
+            if (child.Header != null && child.Header.Contains("NumBytes", StringComparison.Ordinal))
+            {
+                int eqIdx = child.Header.IndexOf("NumBytes: ", StringComparison.Ordinal);
+                if (eqIdx >= 0)
+                {
+                    string valueStr = child.Header[(eqIdx + 10)..];
+                    int digitEnd = 0;
+                    while (digitEnd < valueStr.Length && char.IsAsciiDigit(valueStr[digitEnd]))
+                        digitEnd++;
+                    if (digitEnd > 0 && int.TryParse(valueStr[..digitEnd], out numBytes))
+                        return true;
+                }
+                return false; // NumBytes node found but value could not be parsed
+            }
+        }
+        return false; // No NumBytes child found
+    }
+
+    /// <summary>
+    /// Searches <paramref name="children"/> for the first node whose header contains the text
+    /// "NumResources" and attempts to parse its value from the " = &lt;value&gt;" portion of the header.
+    /// Returns <see langword="true"/> and sets <paramref name="numResources"/> when a parseable
+    /// NumResources node is found; returns <see langword="false"/> otherwise.
+    /// </summary>
+    private static bool TryFindNumResources(IList<BinInterpNode> children, out int numResources)
+    {
+        numResources = 0;
+        foreach (var child in children)
+        {
+            if (child.Header != null && child.Header.Contains("NumResources", StringComparison.Ordinal))
+            {
+                int eqIdx = child.Header.IndexOf("NumResources: ", StringComparison.Ordinal);
+                if (eqIdx >= 0)
+                {
+                    string valueStr = child.Header[(eqIdx + 14)..];
+                    int digitEnd = 0;
+                    while (digitEnd < valueStr.Length && char.IsAsciiDigit(valueStr[digitEnd]))
+                        digitEnd++;
+                    if (digitEnd > 0 && int.TryParse(valueStr[..digitEnd], out numResources))
+                        return true;
+                }
+                return false; // NumResources node found but value could not be parsed
+            }
+        }
+        return false; // No NumResources child found
+    }
+
+    /// <summary>
+    /// Dispatches to <see cref="TryFindNumResources"/> when <paramref name="parentNode"/>'s header
+    /// indicates an <c>FShaderResourceParameter</c>, and to <see cref="TryFindNumBytes"/> otherwise
+    /// (including <c>FShaderParameter</c>).
+    /// </summary>
+    private static bool TryFindValidCount(BinInterpNode parentNode, IList<BinInterpNode> children, out int count)
+    {
+        Debug.WriteLine(parentNode.Header);
+        if (parentNode.Header != null && parentNode.Header.Contains("FShaderResourceParameter", StringComparison.Ordinal))
+            return TryFindNumResources(children, out count);
+        return TryFindNumBytes(children, out count);
     }
 
     /// <summary>
@@ -1102,6 +1433,8 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
         base.OnClosed(e);
         _leftPackage?.Dispose();
         _rightPackage?.Dispose();
+        _leftTempRefPackage?.Dispose();
+        _rightTempRefPackage?.Dispose();
         _leftBinInterp?.Dispose();
         _rightBinInterp?.Dispose();
         LeftHexBoxHost?.Dispose();

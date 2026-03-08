@@ -944,6 +944,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public MEGame Game;
         public Guid Id { get; set; }
         public string Description => $"{ShaderType} ({Index})";
+
+        public string DescriptionWithVF => $"{ShaderType} {VertexFactoryType} ({Index})";
         public string ShaderType { get; set; }
         public int Index { get; set; }
 
@@ -988,6 +990,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public bool IsSelected { get; set; }
         public bool IsExpanded { get; set; }
         public ITreeItem Parent { get; set; }
+        public NameReference VertexFactoryType { get; set; }
 
         public void PrintPretty(string indent, TextWriter str, bool last, ExportEntry associatedExport)
         {

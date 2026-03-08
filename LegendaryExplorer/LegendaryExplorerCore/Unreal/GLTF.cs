@@ -83,7 +83,7 @@ namespace LegendaryExplorerCore.Unreal
                     intermediateMeshes.AddRange(BioPawnToIntermediateMeshes(export, materialSetting));
                 }
             }
-            
+
             var gltf = ToGltf(intermediateMeshes, versionInfo);
             gltf?.Save(filePath);
         }
@@ -295,7 +295,9 @@ namespace LegendaryExplorerCore.Unreal
             }
             else
             {
-                intermediateMat.Name = material.MemoryFullPath;
+                // Blender (prior to 5.x) truncates material names to 63 characters, which screws up my re-importing
+                // try the shorter just object name in that case
+                intermediateMat.Name = material.MemoryFullPath.Length < 63 ? material.MemoryFullPath : material.ObjectNameString;
                 if (materialSetting == MaterialExportLevel.Basic)
                 {
                     if (material is ImportEntry imp)
@@ -522,7 +524,7 @@ namespace LegendaryExplorerCore.Unreal
                             // tfc not found; default to black
                             mat.WithBaseColor(new Vector4(0, 0, 0, 1));
                         }
-                        
+
                     }
                     if (intermediateMat.NormalTexture != null)
                     {
@@ -913,7 +915,8 @@ namespace LegendaryExplorerCore.Unreal
             {
                 var intermediateMesh = ToIntermediateMesh(skelMesh.Item1, skelMesh.Item2);
                 CleanUpIntermediateMesh(intermediateMesh);
-                ToSkeletalMesh(intermediateMesh, pcc, existingMesh);
+                var exportEntry = ToSkeletalMesh(intermediateMesh, pcc, existingMesh);
+                CalculateClothData(intermediateMesh, exportEntry);
             }
             foreach (var statMesh in staticMeshes)
             {
@@ -922,6 +925,173 @@ namespace LegendaryExplorerCore.Unreal
                 ToStaticMesh(intermediateMesh, pcc, existingMesh);
             }
         }
+
+        private static void CalculateClothData(IntermediateMesh intermediateMesh, ExportEntry skelMeshExport)
+        {
+            // any vertex with any weight on any bone that begins with "cloth" is a free cloth vertex
+            // any triangle that contains a free cloth vertex or is part of a material starting with
+            var lod0 = intermediateMesh.LODs[0];
+
+            // direct outputs to the mesh properties
+            List<int> clothToGraphicsVertMap = [];
+            List<float> clothMovementScale = [];
+            List<int> clothWeldingMap = [];
+            int clothWeldingDomain = 0;
+            List<int> clothWeldedIndices = [];
+            int numFreeClothVerts = 0;
+            List<int> clothIndexBuffer = [];
+            List<NameReference> clothBones = [];
+
+            // temp things
+            List<Vector3> uniquePositions = [];
+            List<int> clothBoneIndices = [];
+
+            // go through the bones to see which ones start with "cloth" (case insensitive)
+            foreach (var bone in intermediateMesh.Skeleton)
+            {
+                if (bone.Name.StartsWith("cloth", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    clothBones.Add(bone.Name);
+                    clothBoneIndices.Add(bone.Index);
+                }
+            }
+
+            void ClearClothSimData()
+            {
+                // clear all this stuff if importing over a mesh that used to have cloth sim but now doesn't; if you have garbage data here, you will likely crash your game
+                skelMeshExport.RemoveProperty("ClothToGraphicsVertMap");
+                skelMeshExport.RemoveProperty("ClothMovementScale");
+                skelMeshExport.RemoveProperty("ClothIndexBuffer");
+                skelMeshExport.RemoveProperty("ClothWeldingMap");
+                skelMeshExport.RemoveProperty("ClothWeldedIndices");
+                skelMeshExport.RemoveProperty("ClothWeldingDomain");
+                skelMeshExport.RemoveProperty("NumFreeClothVerts");
+                skelMeshExport.RemoveProperty("bForceCPUSkinning");
+                skelMeshExport.RemoveProperty("ClothBones");
+                skelMeshExport.RemoveProperty("bEnableClothSelfCollision");
+            }
+
+            if (clothBones.Count == 0)
+            {
+                // there are no cloth bones, so there is no cloth sim
+                ClearClothSimData();
+                return;
+            }
+
+            for(int i = 0; i <  lod0.Sections[0].Vertices.Count; i++)
+            {
+                var vertex = lod0.Sections[0].Vertices[i];
+                // we need to find all vertices that have any weight in any cloth bone and add them as cloth sim vertices, with the weight determining how stringly they are in the cloth sim
+                var clothStrength = 0f;
+                foreach (var (influenceBone, weight) in vertex.Influences)
+                {
+                    if (clothBoneIndices.Contains(influenceBone))
+                    {
+                        clothStrength += weight;
+                    }
+                }
+                if (clothStrength > 0f)
+                {
+                    clothToGraphicsVertMap.Add(i);
+                    // add this index or the index (within this list) of of the first vertex this shares a position with
+                    var weldIndex = uniquePositions.FindIndex(x => x == vertex.Position);
+                    if (weldIndex == -1)
+                    {
+                        weldIndex = uniquePositions.Count;
+                        uniquePositions.Add(vertex.Position);
+                    }
+                    clothWeldingDomain = Math.Max(clothWeldingDomain, weldIndex + 1);
+                    clothWeldingMap.Add(weldIndex);
+
+                    clothMovementScale.Add(clothStrength);
+                    
+                }
+            }
+
+            if (clothToGraphicsVertMap.Count == 0)
+            {
+                // there are no vertices weighted to any cloth bones, so no cloth sim
+                ClearClothSimData();
+                return;
+            }
+
+            // at this point, we have all of the vertices that will move as part of the simulation
+            numFreeClothVerts = clothToGraphicsVertMap.Count;
+
+            bool hasCollisionMaterial = false;
+
+            foreach (var section in lod0.Sections)
+            {
+                var sectionIsCollision = intermediateMesh.Materials[section.MaterialIndex].Name.Contains("Invis");
+                if (sectionIsCollision)
+                {
+                    hasCollisionMaterial = true;
+                }
+                foreach (var triangle in section.Triangles)
+                {
+                    bool isClothVert(int vertIndex, out int clothIndex)
+                    {
+                        clothIndex = clothToGraphicsVertMap.IndexOf(vertIndex);
+                        return clothIndex != -1 && clothIndex < numFreeClothVerts;
+                    }
+                    void AddTriVert(int meshIndex, int clothIndex)
+                    {
+                        // if it is not already in the cloth mapping array
+                        if (clothIndex == -1)
+                        {
+                            // add it
+                            clothToGraphicsVertMap.Add(meshIndex);
+                            clothMovementScale.Add(0);
+                            // we don't need to do any welding for fixed vertices
+                            clothWeldingMap.Add(clothWeldingDomain++);
+                            clothIndex = clothToGraphicsVertMap.Count - 1;
+                        }
+                        // add it to the triangle vertex buffer
+                        clothIndexBuffer.Add(clothIndex);
+                    }
+                    var v1IsCloth = isClothVert(triangle.VertIndex1, out var clothIndex1);
+                    var v2IsCloth = isClothVert(triangle.VertIndex2, out var clothIndex2);
+                    var v3IsCloth = isClothVert(triangle.VertIndex3, out var clothIndex3);
+
+                    if (clothIndex2 == 2382)
+                    {
+                        Console.WriteLine("debug");
+                    }
+
+                    // we need to add any triangles that include at least one cloth sim vertex (so they get attached to the adjacent fixed vertices)
+                    // or if they are part of a section intended to be part of the cloth collision
+                    if (sectionIsCollision || v1IsCloth || v2IsCloth || v3IsCloth)
+                    {
+                        // change the winding order for PhysX
+                        AddTriVert(triangle.VertIndex1, clothIndex1);
+                        AddTriVert(triangle.VertIndex3, clothIndex3);
+                        AddTriVert(triangle.VertIndex2, clothIndex2);
+                    }
+                }
+            }
+
+            foreach (var index in clothIndexBuffer)
+            {
+                clothWeldedIndices.Add(clothWeldingMap[index]);
+            }
+
+            // TODO cloth special bones?
+            // TODO cloth sim params?
+            skelMeshExport.WriteProperty(new ArrayProperty<IntProperty>(clothToGraphicsVertMap.Select(x => new IntProperty(x)), "ClothToGraphicsVertMap"));
+            skelMeshExport.WriteProperty(new ArrayProperty<FloatProperty>(clothMovementScale.Select(x => new FloatProperty(x)), "ClothMovementScale"));
+            skelMeshExport.WriteProperty(new ArrayProperty<IntProperty>(clothIndexBuffer.Select(x => new IntProperty(x)), "ClothIndexBuffer"));
+            skelMeshExport.WriteProperty(new ArrayProperty<IntProperty>(clothWeldingMap.Select(x => new IntProperty(x)), "ClothWeldingMap"));
+            skelMeshExport.WriteProperty(new ArrayProperty<IntProperty>(clothWeldedIndices.Select(x => new IntProperty(x)), "ClothWeldedIndices"));
+            skelMeshExport.WriteProperty(new IntProperty(clothWeldingDomain, "ClothWeldingDomain"));
+            skelMeshExport.WriteProperty(new IntProperty(numFreeClothVerts, "NumFreeClothVerts"));
+            skelMeshExport.WriteProperty(new BoolProperty(true, "bForceCPUSkinning"));
+            skelMeshExport.WriteProperty(new ArrayProperty<NameProperty>(clothBones.Select(x => new NameProperty(x)), "ClothBones"));
+            if (hasCollisionMaterial)
+            {
+                skelMeshExport.WriteProperty(new BoolProperty(true, "bEnableClothSelfCollision"));
+            }
+        }
+
 
         private static IEntry GetMaterialEntry(IMEPackage package, string materialName)
         {
@@ -1404,7 +1574,7 @@ namespace LegendaryExplorerCore.Unreal
                         var tanX = new Vector3(rawTangent.X, rawTangent.Y, rawTangent.Z);
                         vert.Tangent = TranformDirectionFromGltf(tanX);
                         vert.BiTangentDirection = rawTangent.W;
-                        
+
 
                         // UVs
                         void AddUV(IList<Vector2>? column)
@@ -1508,7 +1678,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 intermediateMesh.CollisionMeshElements.Add(ToIntermediateCollisionElement(collisionNode));
             }
-            
+
             return intermediateMesh;
         }
 
@@ -2034,15 +2204,17 @@ namespace LegendaryExplorerCore.Unreal
 
             static void WriteSockets(IntermediateMesh mesh, ExportEntry export)
             {
+                // if there are no sockets to import, do nothing, including leaving the old sockets if they are there
+                // this allows people to mix workflows better. 
+                if (!mesh.Sockets.Any())
+                {
+                    return;
+                }
                 var oldSocketsProp = export.GetProperty<ArrayProperty<ObjectProperty>>("Sockets");
                 if (oldSocketsProp != null)
                 {
                     EntryPruner.TrashEntries(export.FileRef, oldSocketsProp.Select(x => x.ResolveToEntry(export.FileRef)).Where(x => x != null));
                     export.RemoveProperty("Sockets");
-                }
-                if (!mesh.Sockets.Any())
-                {
-                    return;
                 }
                 var meshSocketProp = new ArrayProperty<ObjectProperty>("Sockets");
                 foreach (var socket in mesh.Sockets)

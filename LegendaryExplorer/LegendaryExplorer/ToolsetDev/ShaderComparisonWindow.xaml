@@ -35,8 +35,11 @@
 
                 <!-- Left Panel -->
                 <DockPanel Grid.Column="0">
-                    <TextBlock DockPanel.Dock="Top" Text="{Binding LeftPackageName, FallbackValue='No package loaded'}" 
-                               FontWeight="Bold" Margin="4" />
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="4">
+                        <TextBlock Text="{Binding LeftPackageName, FallbackValue='No package loaded'}" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding HlslMatchText}" Foreground="{Binding HlslMatchBrush}"
+                                   Visibility="{Binding HlslMatchVisibility}" FontWeight="Bold" Margin="8,0,0,0"/>
+                    </StackPanel>
                     <DockPanel DockPanel.Dock="Top" Margin="4,0,4,4">
                         <TextBlock Text="Material: " VerticalAlignment="Center"/>
                         <ComboBox ItemsSource="{Binding LeftMaterials}" 
@@ -47,7 +50,7 @@
                         <TextBlock Text="Shader: " VerticalAlignment="Center"/>
                         <ComboBox ItemsSource="{Binding LeftShaders}" 
                                   SelectedItem="{Binding SelectedLeftShader}"
-                                  DisplayMemberPath="Description" />
+                                  DisplayMemberPath="DescriptionWithVF" />
                     </DockPanel>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -58,10 +61,10 @@
                         <TabControl Grid.Row="0">
                             <TabItem Header="HLSL">
                                 <materialViewer:HlslTextEditor x:Name="LeftShaderTextEditor"
-                                                               Document="{Binding LeftDocument}"
-                                                               Background="#1F1F1F" Foreground="#CCCCCC" 
-                                                               LineNumbersForeground="#6E7681"
-                                                               FontFamily="Consolas" IsReadOnly="True"/>
+                                                                   Document="{Binding LeftDocument}"
+                                                                   Background="#1F1F1F" Foreground="#CCCCCC" 
+                                                                   LineNumbersForeground="#6E7681"
+                                                                   FontFamily="Consolas"/>
                             </TabItem>
                             <TabItem Header="Bytecode">
                                 <DockPanel>
@@ -105,7 +108,7 @@
                         <TextBlock Text="Shader: " VerticalAlignment="Center"/>
                         <ComboBox ItemsSource="{Binding RightShaders}" 
                                   SelectedItem="{Binding SelectedRightShader}"
-                                  DisplayMemberPath="Description" />
+                                  DisplayMemberPath="DescriptionWithVF" />
                     </DockPanel>
                     <Grid>
                         <Grid.RowDefinitions>
@@ -116,10 +119,10 @@
                         <TabControl Grid.Row="0">
                             <TabItem Header="HLSL">
                                 <materialViewer:HlslTextEditor x:Name="RightShaderTextEditor"
-                                                               Document="{Binding RightDocument}"
-                                                               Background="#1F1F1F" Foreground="#CCCCCC" 
-                                                               LineNumbersForeground="#6E7681"
-                                                               FontFamily="Consolas" IsReadOnly="True"/>
+                                                                   Document="{Binding RightDocument}"
+                                                                   Background="#1F1F1F" Foreground="#CCCCCC" 
+                                                                   LineNumbersForeground="#6E7681"
+                                                                   FontFamily="Consolas"/>
                             </TabItem>
                             <TabItem Header="Bytecode">
                                 <DockPanel>

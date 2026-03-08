@@ -36,6 +36,46 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         // the Mass Effect binary mesh format enforces there be a maximum of 4 bone influences per vertex
         const int MaxBoneInfluences = 4;
 
+        public static void TexturesToTfc(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null)
+            {
+                return;
+            }
+            string tfcName = null;
+            var containingFolderInfo = Directory.GetParent(pew.Pcc.FilePath);
+            if (Path.GetFileName(containingFolderInfo.FullName).StartsWith("CookedPC"))
+            {
+                //Check next level up.
+                containingFolderInfo = containingFolderInfo.Parent;
+                if (containingFolderInfo != null &&
+                    Path.GetFileName(containingFolderInfo.FullName).StartsWith("DLC_"))
+                {
+                    var possibleDLCName = Path.GetFileName(containingFolderInfo.FullName);
+                    if (!MEDirectories.OfficialDLC(pew.Pcc.Game).Contains(possibleDLCName))
+                    {
+                        tfcName = $"Textures_{possibleDLCName}";
+                    }
+                }
+            }
+            if (tfcName == null)
+            {
+                // we were not able to determine the tfc name
+                ShowError("unable to determine tfc name");
+                return;
+            }
+            foreach (var textureExport in pew.Pcc.Exports.Where(x => x.ClassName == "Texture2D"))
+            {
+                var texture = new Texture2D(textureExport);
+                if (texture.GetTopMip().IsPackageStored)
+                {
+                    var img = texture.ToImage(LegendaryExplorerCore.Textures.Image.getPixelFormatType(texture.TextureFormat));
+                    var props = textureExport.GetProperties();
+                    texture.Replace(img, props, forcedTFCName: tfcName);
+                }
+            }
+        }
+
         public static void MakeLODs(PackageEditorWindow pew)
         {
             if (GetSelectedMeshBinary(pew, out var meshExport, out var meshBin))
@@ -48,7 +88,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 {
                     LODs.Add(worstLod);
                 }
-                meshBin.LODModels = [..LODs];
+                meshBin.LODModels = [.. LODs];
                 meshExport.WriteBinary(meshBin);
                 var lodInfo = MeshHelper.GetLodInfoForSkeletalMesh(meshBin, meshExport.Game);
                 meshExport.WriteProperty(lodInfo);
@@ -153,7 +193,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             {
                 GltfHelper.ReplaceFromGltf(pew, pew.SelectedItem.Entry);
             }
-            else 
+            else
             {
                 GltfHelper.ImportNewFromGltf(pew);
             }
@@ -1009,7 +1049,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
-            var d = new SaveFileDialog { Filter = "PSKX|*.pskx" , FileName = bmf.ObjectNameString};
+            var d = new SaveFileDialog { Filter = "PSKX|*.pskx", FileName = bmf.ObjectNameString };
             if (d.ShowDialog() == true)
             {
                 var baseHeadMesh = SharedMethods.ResolveEntryToExport(pew.Pcc.GetEntry(bmf.GetProperty<ObjectProperty>("m_oBaseHead").Value), new PackageCache());
@@ -2295,7 +2335,7 @@ defaultproperties
             var I = v.Y * t.X / v.Z;
             var J = (H * B + I) / (1 - (F * B));
             var K = (E + (F * C)) / (1 - (H * C));
-            
+
             var Y = (D + (F * A) + (K * G) + (K * H * A)) / (1 - (F * B) - (K * H * B) - (K * I));
             var Z = (G + (H * A) + (J * D) + (J * F * A)) / (1 - (H * C) - (J * E) - (J * F * C));
             var X = A + (B * Y) + C * Z;

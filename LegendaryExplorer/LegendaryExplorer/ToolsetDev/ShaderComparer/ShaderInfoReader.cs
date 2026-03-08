@@ -1,6 +1,9 @@
-﻿using SharpDX.D3DCompiler;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using SharpDX.D3DCompiler;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using TerraFX.Interop.Windows;
 
 namespace LegendaryExplorer.ToolsetDev.ShaderComparer;
 
@@ -46,6 +49,7 @@ public static class ShaderInfoReader
 
     public static List<ResourceBindingEntry> GetShaderInfo(byte[] shaderBytes, out int instructionCount)
     {
+        Debug.WriteLine("============");
         instructionCount = 0;
         var parameterMap = new List<ResourceBindingEntry>();
 
@@ -57,7 +61,7 @@ public static class ShaderInfoReader
         for (int resourceIndex = 0; resourceIndex < shaderDesc.BoundResources; resourceIndex++)
         {
             var bindDesc = reflection.GetResourceBindingDescription(resourceIndex);
-
+            Debug.WriteLine($"{bindDesc.Type} {bindDesc.Name}");
             // Constant buffer / Texture Buffer
             if (bindDesc.Type == ShaderInputType.ConstantBuffer || bindDesc.Type == ShaderInputType.TextureBuffer)
             {
@@ -69,7 +73,9 @@ public static class ShaderInfoReader
                 {
                     var variable = constantBuffer.GetVariable(cIndex);
                     var varDesc = variable.Description;
-                    if ((varDesc.Flags & ShaderVariableFlags.Used) != 0)
+                    var used = (varDesc.Flags & ShaderVariableFlags.Used) != 0;
+                    // Debug.WriteLine($"ConstantBufferVar {varDesc.Name} | {(used ? ">>Used<<" : "Unused")}");
+                    if (used)
                     {
                         parameterMap.Add(new ResourceBindingEntry
                         {
@@ -89,12 +95,32 @@ public static class ShaderInfoReader
                 bool hasSampler = false;
                 for (int i = 0; i < shaderDesc.BoundResources; i++)
                 {
+                    // Enumerate bound resources.
                     var otherDesc = reflection.GetResourceBindingDescription(i);
-                    if (otherDesc.Type == ShaderInputType.Sampler &&
-                        SamplerMatchesTexture(otherDesc.Name, bindDesc.Name))
+                    if (otherDesc.Type == ShaderInputType.Sampler)
                     {
-                        hasSampler = true;
-                        break;
+                        Debug.WriteLine($"\tSampler test: {otherDesc.Name} = {bindDesc.Name}");
+                        if (SamplerMatchesTexture(otherDesc.Name, bindDesc.Name))
+                        {
+                            /*
+                            string name = bindDesc.Name;
+                            int samplerBindingPoint = otherDesc.BindPoint;
+                            int textureBindingPoint = bindDesc.BindPoint;
+                            int actualNumBinds = 0;
+
+                            parameterMap.Add(new ResourceBindingEntry
+                            {
+                                Name = name,
+                                BufferIndex = 0,
+                                BaseIndex = (ushort)textureBindingPoint,
+                                Size = (ushort)actualNumBinds,
+                                SamplerIndex = ((ushort)samplerBindingPoint).ToString(),
+                            });*/
+
+                            Debug.WriteLine($"\t\tSampler match - nothing to else to do here!");
+                            hasSampler = true;
+                            break;
+                        }
                     }
                 }
 
@@ -149,7 +175,6 @@ public static class ShaderInfoReader
             else if (bindDesc.Type == ShaderInputType.Sampler)
             {
                 bool foundTexture = false;
-
                 for (int i = 0; i < shaderDesc.BoundResources; i++)
                 {
                     var textureDesc = reflection.GetResourceBindingDescription(i);
@@ -176,17 +201,18 @@ public static class ShaderInfoReader
                     while (i + resourceOffset < shaderDesc.BoundResources &&
                            resourceIndex + resourceOffset < shaderDesc.BoundResources)
                     {
-                        var iterTextureDesc = reflection.GetResourceBindingDescription(i + resourceOffset);
+                        //var iterTextureDesc = reflection.GetResourceBindingDescription(i + resourceOffset);
                         var iterSampleDesc = reflection.GetResourceBindingDescription(resourceIndex + resourceOffset);
 
-                        if (iterTextureDesc.Type != ShaderInputType.Texture ||
+                        if (//iterTextureDesc.Type != ShaderInputType.Texture ||
                             iterSampleDesc.Type != ShaderInputType.Sampler ||
-                            !SamplerMatchesTexture(iterSampleDesc.Name, iterTextureDesc.Name))
+                            //!SamplerMatchesTexture(iterSampleDesc.Name, iterTextureDesc.Name))
+                            !SamplerMatchesTexture(iterSampleDesc.Name, name))
                         {
-                            break;
+            break;
                         }
 
-                        textureBindingPoint = Math.Min(textureBindingPoint, iterTextureDesc.BindPoint);
+                        //textureBindingPoint = Math.Min(textureBindingPoint, iterTextureDesc.BindPoint);
                         samplerBindingPoint = Math.Min(samplerBindingPoint, iterSampleDesc.BindPoint);
                         actualNumBinds++;
                         resourceOffset++;
