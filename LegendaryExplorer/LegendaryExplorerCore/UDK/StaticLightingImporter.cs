@@ -400,7 +400,7 @@ namespace LegendaryExplorerCore.UDK
                     for (int i = 0; i < udkModel.Surfs.Length; i++) // Relink
                     {
                         udkModel.Surfs[i].Material = mePackage.FindEntry(udkPackage.GetEntry(udkModel.Surfs[i].Material).InstancedFullPath)?.UIndex ?? 0; 
-                        udkModel.Surfs[i].Actor = mePackage.FindEntry(udkPackage.GetEntry(udkModel.Surfs[i].Actor).InstancedFullPath)?.UIndex ?? 0; 
+                        udkModel.Surfs[i].Actor = mePackage.FindEntry(udkPackage.GetEntry(udkModel.Surfs[i].Actor)?.InstancedFullPath)?.UIndex ?? 0; 
                     }
 
                     // Write relinked UDK model to ours
