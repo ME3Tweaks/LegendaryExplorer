@@ -194,7 +194,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Serialize(ref mres.bUsesMaterialVertexPositionOffset);
                 if (Game == MEGame.ME3 || Game.IsLEGame())
                 {
-                    Serialize(ref mres.unkBool1);
+                    Serialize(ref mres.bUsesVertexColor);
                 }
             }
             Serialize(ref mres.UsingTransforms);
