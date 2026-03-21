@@ -14,16 +14,12 @@ using SharpGLTF.Runtime;
 using SharpGLTF.Scenes;
 using SharpGLTF.Schema2;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Processing.Processors.Filters;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
-using IsImage = SixLabors.ImageSharp.Image;
 
 namespace LegendaryExplorerCore.Unreal
 {
@@ -530,22 +526,35 @@ namespace LegendaryExplorerCore.Unreal
                     {
                         try
                         {
-                            var normalMapBytes = intermediateMat.NormalTexture.GetPNG(intermediateMat.NormalTexture.GetTopMip());
-                            // flip the green channel to match the convention glTF uses
-                            var img = IsImage.Load<Rgba32>(normalMapBytes);
-                            var colorMatrix = new ColorMatrix(
-                                1, 0, 0, 0,
-                                0, -1, 0, 0,
-                                0, 0, 1, 0,
-                                0, 0, 0, 1,
-                                0, 1, 0, 0
-                            );
-                            img.Mutate(x => x.ApplyProcessor(new FilterProcessor(colorMatrix)));
-                            using (var ms = new MemoryStream())
+                            var topMip = intermediateMat.NormalTexture.GetTopMip();
+                            var w = topMip.width;
+                            var h = topMip.height;
+                            var rawBytes = Textures.Image.convertRawToARGB(
+                                Texture2D.GetTextureData(topMip, intermediateMat.NormalTexture.Export.Game),
+                                ref w,
+                                ref h,
+                                Textures.Image.getPixelFormatType(intermediateMat.NormalTexture.TextureFormat));
+
+                            for (int i = 0; i < w * h; i++)
                             {
-                                img.SaveAsPng(ms);
-                                normalMapBytes = ms.ToArray();
+                                var baseIndex = 4 * i;
+                                // invert G
+                                rawBytes[baseIndex + 1] = (byte)(256 - rawBytes[baseIndex + 1]);
+                                
+                                // calculate B and store it
+                                // R
+                                var x = ((float)rawBytes[baseIndex + 2] / 128f) - 1f;
+                                // G
+                                var y = ((float)rawBytes[baseIndex + 1] / 128f) - 1f;
+                                var z = Math.Sqrt(1 - (x * x + y * y));
+
+                                // store the calculated B value
+                                rawBytes[baseIndex] = (byte)((z + 1) * 128 - 1);
+                                // clear alpha
+                                rawBytes[baseIndex + 3] = 255;
                             }
+                            var normalMapBytes = Textures.Image.convertToPng(rawBytes, w, h, Textures.PixelFormat.ARGB).ToArray();
+
                             var normImage = ImageBuilder.From(normalMapBytes, $"{intermediateMat.NormalTexture.Export.ObjectNameString}_flipped");
                             normImage.AlternateWriteFileName = $"{intermediateMat.NormalTexture.Export.ObjectNameString}_flipped.*";
                             mat.WithNormal(normImage);
@@ -1953,7 +1962,7 @@ namespace LegendaryExplorerCore.Unreal
             SetupSkeleton(intermediateMesh.Skeleton, meshBin);
 
             meshBin.Bounds = GetBounds(intermediateMesh);
-            SetupMaterials(intermediateMesh.Materials, meshBin, package);
+            SetupMaterials(intermediateMesh.Materials, meshBin, package, existingEntry);
             meshBin.LODModels = [.. intermediateMesh.LODs.Select(lod => SetupLOD(intermediateMesh, lod, meshBin))];
 
             // we now have the complete binary; get or create the export and write out properties
@@ -2017,9 +2026,10 @@ namespace LegendaryExplorerCore.Unreal
                 meshBin.SkeletalDepth = skeletalDepth.Max();
             }
 
-            static void SetupMaterials(IList<IntermediateMaterial> materials, SkeletalMesh meshBin, IMEPackage package)
+            static void SetupMaterials(IList<IntermediateMaterial> materials, SkeletalMesh meshBin, IMEPackage package, ExportEntry? existingExport)
             {
                 SetNumMaterialSlots(meshBin, materials.Count);
+                var anyMissingMaterials = false;
                 for (int i = 0; i < materials.Count; i++)
                 {
                     if (materials[i].Name == "null")
@@ -2031,6 +2041,22 @@ namespace LegendaryExplorerCore.Unreal
                     if (entry != null)
                     {
                         meshBin.Materials[i] = entry.UIndex;
+                    }
+                    else
+                    {
+                        anyMissingMaterials = true;
+                    }
+                }
+                if (anyMissingMaterials && existingExport != null)
+                {
+                    // material not found by name; fall back to existing mesh materials if possible
+                    var existingMeshBin = ObjectBinary.From<SkeletalMesh>(existingExport);
+                    for (int i = 0; i < materials.Count && i < existingMeshBin.Materials.Length; i++)
+                    {
+                        if (meshBin.Materials[i] == 0)
+                        {
+                            meshBin.Materials[i] = existingMeshBin.Materials[i];
+                        }
                     }
                 }
             }
