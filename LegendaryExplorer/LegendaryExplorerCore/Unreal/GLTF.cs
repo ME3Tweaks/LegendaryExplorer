@@ -1118,12 +1118,166 @@ namespace LegendaryExplorerCore.Unreal
             // TODO make sure everything is normalized properly?
             foreach (var lod in mesh.LODs)
             {
+                // ensure there are tangents present
+                EnsureTangents(lod);
                 // reorder the vertices to match the original order, if possible
                 ReconstructVertexOrder(lod);
                 // make the data much easier to process
                 MergeVertexLists(lod);
             }
             return mesh;
+        }
+
+        private static void EnsureTangents(IntermediateLOD lod)
+        {
+            if (!lod.Sections[0].Vertices.Any(x => !x.Tangent.HasValue))
+            {
+                // it already has tangents
+                return;
+            }
+            List<IntermediateVertex> dupes = [];
+            List<(int dupeIndex, int sectionIndex, int faceIndex, int cornerIndex)> dupeIndices = [];
+            CalculateTangents();
+            if(dupes.Any())
+            {
+                // there are discontinuities in the tangents, and we need to add some new vertices.
+                var dupeGroups = dupeIndices.GroupBy(x => x.dupeIndex);
+                foreach (var dupeGroup in dupeGroups)
+                {
+                    var sectionGroups = dupeGroup.GroupBy(x => x.sectionIndex);
+                    foreach (var sectionGroup in sectionGroups)
+                    {
+                        var newVertIndex = lod.Sections[sectionGroup.Key].Vertices.Count;
+                        lod.Sections[sectionGroup.Key].Vertices.Add(dupes[dupeGroup.Key]);
+                        foreach (var (_, _, triIndex, cornerIndex) in sectionGroup)
+                        {
+                            var tri = lod.Sections[sectionGroup.Key].Triangles[triIndex];
+                            switch (cornerIndex)
+                            {
+                                case 0:
+                                    tri.VertIndex1 = newVertIndex;
+                                    break;
+                                case 1:
+                                    tri.VertIndex3 = newVertIndex;
+                                    break;
+                                case 2:
+                                    tri.VertIndex2 = newVertIndex;
+                                    break;
+                                default:
+                                    throw new IndexOutOfRangeException();
+                            }
+                            lod.Sections[sectionGroup.Key].Triangles[triIndex] = tri;
+                        }
+                    }
+                }
+            }
+            void CalculateTangents(int UVMap = 0)
+            {
+                // generate tangents using the MikkTSpace algorithm which is used by most tools these days
+                //var vertices = lod.Sections[0].Vertices;
+                //var triangles = lod.Sections.Select(x )
+                // callback to get vertex positions
+                IntermediateVertex GetVert(int face, int corner, out int sectionIndex, out int triIndex, out int vertIndex)
+                {
+                    IntermediateTriangle? tri = null;
+                    sectionIndex = -1;
+                    triIndex = -1;
+                    for (int i = 0; i < lod.Sections.Count; i++)
+                    {
+                        var section = lod.Sections[i];
+                        if (section.Triangles.Count > face)
+                        {
+                            tri = section.Triangles[face];
+                            sectionIndex = i;
+                            triIndex = face;
+                            break;
+                        }
+                        face -= section.Triangles.Count;
+                    }
+                    if (tri == null)
+                    {
+                        throw new IndexOutOfRangeException();
+                    }
+                    // intentionally swapped; this package expects different winding order than ME
+                    vertIndex = corner switch
+                    {
+                        0 => tri.Value.VertIndex1,
+                        1 => tri.Value.VertIndex3,
+                        2 => tri.Value.VertIndex2,
+                        _ => throw new IndexOutOfRangeException()
+                    };
+                    return lod.Sections[sectionIndex].Vertices[vertIndex];
+                }
+                void vertPositionHandler(int face, int vertex, out float x, out float y, out float z)
+                {
+                    var vert = GetVert(face, vertex, out _, out _, out _);
+
+                    x = vert.Position.X; y = vert.Position.Y; z = vert.Position.Z;
+                }
+                // callback to get vertex normals
+                void VertNormHandler(int face, int vertex, out float x, out float y, out float z)
+                {
+                    var vert = GetVert(face, vertex, out _, out _, out _);
+
+                    x = vert.Normal.Value.X; y = vert.Normal.Value.Y; z = vert.Normal.Value.Z;
+                }
+                void VertUVHandler(int face, int vertex, out float u, out float v)
+                {
+                    var vert = GetVert(face, vertex, out _, out _, out _);
+
+                    u = vert.UVs[UVMap].X; v = vert.UVs[UVMap].Y;
+                }
+                void BasicTangentHandler(int face, int corner, float x, float y, float z, float sign)
+                {
+                    var vert = GetVert(face, corner, out var sectionIndex, out var triIndex, out var  vertIndex);
+
+                    var newTangent = new Vector3(x, y, z);
+                    var needsDupe = false;
+
+                    if (vert.Tangent.HasValue && (vert.Tangent.Value != newTangent || vert.BiTangentDirection != sign))
+                    {
+                        // this means there is a discontinuity in the tangents, and we have to split the vertice here or we will get shading artifacts.
+                        needsDupe = true;
+                    }
+
+                    // this is needed to store the bitangent sign in the Vertex Normal W component. It is important
+                    // it is basically whether the UV mapping at this part of the mesh is mirrored, and everything will look bad if it's not set correctly.
+                    vert.BiTangentDirection = sign;
+
+                    // this is the tangent vector for this vertex
+                    vert.Tangent = newTangent;
+
+                    if (needsDupe)
+                    {
+                        var dupeIndex = dupes.IndexOf(vert);
+                        if (dupeIndex >= 0)
+                        {
+                            dupeIndices.Add(dupeIndex, sectionIndex, triIndex, corner);
+                        }
+                        else
+                        {
+                            dupeIndices.Add(dupes.Count, sectionIndex, triIndex, corner);
+                            dupes.Add(vert);
+                        }
+                    }
+                    else
+                    {
+                        // this is a struct, so we have to store it back in the array
+                        lod.Sections[sectionIndex].Vertices[vertIndex] = vert;
+                    }
+                }
+                Mikktspace.NET.MikkGenerator.GenerateTangentSpace(
+                    // number of faces
+                    lod.Sections.Sum(x => x.Triangles.Count),
+                    // number of verts per face; the algorithm supports quads, but it will always be triangles in a glTF
+                    _ => 3,
+                    // callbacks to get the position, normal, and UV coordinates of a vertex
+                    vertPositionHandler,
+                    VertNormHandler,
+                    VertUVHandler,
+                    // callback to recieve the results: a tangent and BiNormal sign per vertex
+                    BasicTangentHandler);
+            }
         }
 
         private static void MergeVertexLists(IntermediateLOD lod)
@@ -1540,7 +1694,7 @@ namespace LegendaryExplorerCore.Unreal
 
             foreach (var node in lodNodes)
             {
-                // this API allows us to generate normals and tangents if needed
+                // this API allows us to generate normals if needed
                 var decoder = node.Mesh.Decode();
 
                 var LOD = new IntermediateLOD() { Index = lodIndex++ };
@@ -1571,19 +1725,20 @@ namespace LegendaryExplorerCore.Unreal
                         var vert = new IntermediateVertex
                         {
                             Position = TransformVertexPositionFromGltf(vertColumns.Positions[i]),
+                            // Normals
+                            // get the value it was exported with or the generated one if that is not present
+                            Normal = TranformDirectionFromGltf(vertColumns.Normals?[i] ?? primitiveDecoder.GetNormal(i))
                         };
 
-                        // Normals
-                        // get the value it was exported with or the generated one if that is not present
-                        vert.Normal = TranformDirectionFromGltf(vertColumns.Normals?[i] ?? primitiveDecoder.GetNormal(i));
-
                         // Tangents
-                        // get the value it was imported with, or the generated one if nopresent
-                        var rawTangent = vertColumns.Tangents?[i] ?? primitiveDecoder.GetTangent(i);
-                        var tanX = new Vector3(rawTangent.X, rawTangent.Y, rawTangent.Z);
-                        vert.Tangent = TranformDirectionFromGltf(tanX);
-                        vert.BiTangentDirection = rawTangent.W;
-
+                        // get the value it was imported with, or null; it will be calculated later
+                        var rawTangent = vertColumns.Tangents?[i];
+                        if (rawTangent.HasValue)
+                        {
+                            var tanX = new Vector3(rawTangent.Value.X, rawTangent.Value.Y, rawTangent.Value.Z);
+                            vert.Tangent = TranformDirectionFromGltf(tanX);
+                            vert.BiTangentDirection = rawTangent.Value.W;
+                        }
 
                         // UVs
                         void AddUV(IList<Vector2>? column)
