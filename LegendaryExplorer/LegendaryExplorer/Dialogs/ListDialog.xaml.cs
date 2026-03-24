@@ -13,7 +13,10 @@ namespace LegendaryExplorer.Dialogs
     public partial class ListDialog : TrackingNotifyPropertyChangedWindowBase
     {
         public ObservableCollectionExtended<object> Items { get; } = new();
+        // Backwards-compatible handler for EntryStringPair items
         public Action<EntryStringPair> DoubleClickEntryHandler { get; set; }
+        // General-purpose handler for arbitrary list items (strings, etc.)
+        public Action<object> DoubleClickItemHandler { get; set; }
         private string topText;
 
         public string TopText
@@ -66,7 +69,8 @@ namespace LegendaryExplorer.Dialogs
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (((FrameworkElement)e.OriginalSource).DataContext is EntryStringPair item && (item.Entry is not null || item.Openable is not null))
+            var ctx = ((FrameworkElement)e.OriginalSource).DataContext;
+            if (ctx is EntryStringPair esp && (esp.Entry is not null || esp.Openable is not null))
             {
                 if (DoubleClickEntryHandler == null)
                 {
@@ -74,7 +78,18 @@ namespace LegendaryExplorer.Dialogs
                 }
                 else
                 {
-                    DoubleClickEntryHandler.Invoke(item);
+                    DoubleClickEntryHandler.Invoke(esp);
+                }
+            }
+            else if (ctx != null)
+            {
+                if (DoubleClickItemHandler == null)
+                {
+                    // No-op: dialog may be used just for display
+                }
+                else
+                {
+                    DoubleClickItemHandler.Invoke(ctx);
                 }
             }
         }

@@ -22,6 +22,12 @@
                     <MenuItem Header="Close" Click="Close_Click"/>
                 </MenuItem>
                 <MenuItem Header="Operations" Padding="4">
+                    <MenuItem Header="Compare all shader in material" Click="CompareAllShaders_Click"/>
+                    <MenuItem Header="Compare all shaders in all materials" Click="CompareAllMaterials_Click"/>
+                    <MenuItem Header="Open in Shader Research Tool" Click="OpenInShaderResearchTool_Click"/>
+                    <Separator/>
+                    <MenuItem x:Name="OpenLeftInPackageEditorMenuItem" Header="Open Left Package In Package Editor"/>
+                    <MenuItem x:Name="OpenRightInPackageEditorMenuItem" Header="Open Right Package in Package Editor"/>
                     <MenuItem Header="Copy shader parameters" Click="CopyShaderParameters_Click"/>
                     <MenuItem Header="Get shader info" Click="GetShaderInfo_Click"/>
                 </MenuItem>

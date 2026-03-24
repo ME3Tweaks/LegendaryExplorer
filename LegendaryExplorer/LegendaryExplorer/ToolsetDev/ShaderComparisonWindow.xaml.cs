@@ -5,6 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.IO.Pipes;
+using System.Security.Cryptography;
+using System.Text;
 using System.Windows.Media;
 using Be.Windows.Forms;
 using ICSharpCode.AvalonEdit.Document;
@@ -12,8 +15,10 @@ using ICSharpCode.AvalonEdit.Rendering;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.ToolsetDev.ShaderComparer;
+using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -25,6 +30,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.BinaryConverters.Shaders;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.Win32;
+using System.Text.RegularExpressions;
 
 namespace LegendaryExplorer.ToolsetDev;
 
@@ -46,6 +52,324 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
     {
         get => _isBusy;
         set => SetProperty(ref _isBusy, value);
+    }
+
+    private List<TreeViewShader> GetShadersForMaterialSync(ExportEntry material, IMEPackage package, ShaderCache shaderCache)
+    {
+        try
+        {
+            StaticParameterSet sps = material.ClassName switch
+            {
+                "Material" => (StaticParameterSet)ObjectBinary.From<Material>(material).SM3MaterialResource.ID,
+                _ => ObjectBinary.From<MaterialInstance>(material).SM3StaticParameterSet
+            };
+
+            var shaderList = new List<TreeViewShader>();
+
+            // Try local shader cache first
+            if (shaderCache != null && shaderCache.MaterialShaderMaps.TryGetValue(sps, out MaterialShaderMap msm))
+            {
+                foreach (MeshShaderMap meshShaderMap in msm.MeshShaderMaps)
+                {
+                    foreach ((NameReference _, ShaderReference shaderReference) in meshShaderMap.Shaders)
+                    {
+                        var tvs = new TreeViewShader
+                        {
+                            Id = shaderReference.Id,
+                            ShaderType = shaderReference.ShaderType,
+                            Game = package.Game,
+                            VertexFactoryType = meshShaderMap.VertexFactoryType
+                        };
+                        if (shaderCache.Shaders.TryGetValue(shaderReference.Id, out Shader shader))
+                        {
+                            tvs.Bytecode = shader.ShaderByteCode;
+                        }
+                        shaderList.Add(tvs);
+                    }
+                }
+            }
+            else
+            {
+                try
+                {
+                    MaterialShaderMap msmFromGlobal = RefShaderCacheReader.GetMaterialShaderMap(package.Game, sps, out _);
+                    if (msmFromGlobal != null)
+                    {
+                        foreach (MeshShaderMap meshShaderMap in msmFromGlobal.MeshShaderMaps)
+                        {
+                            foreach ((NameReference _, ShaderReference shaderReference) in meshShaderMap.Shaders)
+                            {
+                                shaderList.Add(new TreeViewShader
+                                {
+                                    Id = shaderReference.Id,
+                                    ShaderType = shaderReference.ShaderType,
+                                    Game = package.Game,
+                                    VertexFactoryType = meshShaderMap.VertexFactoryType
+                                });
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    // ignore ref cache failures
+                }
+            }
+
+            return shaderList;
+        }
+        catch
+        {
+            return new List<TreeViewShader>();
+        }
+    }
+
+    class GamePackageCache : PackageCache
+    {
+        private string gamePath;
+        public GamePackageCache(string gamePath)
+        {
+            this.gamePath = gamePath;
+        }
+
+        public override IMEPackage GetCachedPackage(string packagePath, bool openIfNotInCache = true, Func<string, IMEPackage> openPackageMethod = null)
+        {
+            var path = Path.Combine(gamePath, packagePath);
+            return base.GetCachedPackage(path, openIfNotInCache, openPackageMethod);
+        }
+    }
+
+    public void CompareAllMaterials_Click(object sender, RoutedEventArgs e)
+    {
+        if (_leftPackage == null)
+        {
+            MessageBox.Show(this, "Please load a package on left panel.", "Compare All Materials");
+            return;
+        }
+
+        var diffs = new List<string>();
+        TreeViewShader firstLeftShaderToSelect = null;
+        ExportEntry firstLeftMaterialToSelect = null;
+
+        using var cache = new GamePackageCache(MEDirectories.GetDefaultGamePath(_leftPackage.Game));
+        foreach (var leftMat in LeftMaterials)
+        {
+            // try to find matching material on right
+            var containingPackages = _objectInstanceDB.GetFilesContainingObject(leftMat.InstancedFullPath);
+            if (containingPackages == null)
+            {
+                // no matching material exists
+                continue;
+            }
+
+            var cached = cache.GetFirstCachedPackage(containingPackages);
+            if (cached == null)
+            {
+                cached = cache.GetCachedPackage(containingPackages[0]);
+            }
+            var rightMat = cached.FindExport(leftMat.InstancedFullPath, "Material");
+            var rightShaderCacheEx = cached.FindExport("SeekFreeShaderCache");
+            ShaderCache rightShaderCache = rightShaderCacheEx != null ? ObjectBinary.From<ShaderCache>(rightShaderCacheEx) : null;
+
+            var leftShadersList = GetShadersForMaterialSync(leftMat, _leftPackage, _leftShaderCache);
+            var rightShadersList = GetShadersForMaterialSync(rightMat, cached, rightShaderCache);
+
+            foreach (var leftShader in leftShadersList)
+            {
+                var rightShader = rightShadersList.FirstOrDefault(s => s.ShaderType == leftShader.ShaderType && s.VertexFactoryType == leftShader.VertexFactoryType);
+
+                string leftHlsl = leftShader?.DissassembledShader;
+                string rightHlsl = rightShader?.DissassembledShader;
+
+                if (!string.IsNullOrWhiteSpace(rightHlsl))
+                {
+                    bool equal = AreHlslEquivalent(leftHlsl, rightHlsl);
+                    if (!equal)
+                    {
+                        string entry = $"{leftMat.InstancedFullPath}: {leftShader.ShaderType} ({leftShader.VertexFactoryType})";
+                        diffs.Add(entry);
+                        if (firstLeftShaderToSelect == null)
+                        {
+                            firstLeftShaderToSelect = leftShader;
+                            firstLeftMaterialToSelect = leftMat;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (diffs.Count > 0)
+        {
+            // select first differing material/shader
+            if (firstLeftMaterialToSelect != null && firstLeftShaderToSelect != null)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    SelectedLeftMaterial = firstLeftMaterialToSelect;
+                    SelectedLeftShader = firstLeftShaderToSelect;
+                });
+            }
+
+            // Use ListDialog to show differing materials/shaders and allow double-click selection
+            var diffWindow = new ListDialog(diffs, "Differing Materials/Shaders", "Double-click an entry to select it", this)
+            {
+                Owner = this
+            };
+            diffWindow.DoubleClickItemHandler = obj =>
+            {
+                if (obj is string selected)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        // selected string is in the format "MaterialPath: ShaderType (VF)"
+                        var parts = selected.Split(new[] { ':' }, 2);
+                        if (parts.Length < 2) return;
+                        string matPath = parts[0].Trim();
+                        string shaderPart = parts[1].Trim();
+
+                        var mat = LeftMaterials.FirstOrDefault(m => string.Equals(m.InstancedFullPath, matPath, StringComparison.OrdinalIgnoreCase));
+                        if (mat != null)
+                        {
+                            SelectedLeftMaterial = mat;
+                            // find shader matching the right side of the string
+                            var toSelect = LeftShaders.FirstOrDefault(sh => $"{sh.ShaderType} ({sh.VertexFactoryType})" == shaderPart);
+                            if (toSelect != null)
+                                SelectedLeftShader = toSelect;
+                        }
+                    });
+                }
+            };
+
+            diffWindow.Show();
+        }
+        else
+        {
+            MessageBox.Show(this, "All shaders' HLSL are identical between the packages for matched materials.", "Compare All Materials");
+        }
+    }
+
+    private static string ComputeDecompiledHlslMd5(string? hlsl)
+    {
+        if (string.IsNullOrEmpty(hlsl))
+            return string.Empty;
+
+        // Strip block comments, then line comments, then blank lines
+        var noBlock = Regex.Replace(hlsl, @"/\*.*?\*/", "", RegexOptions.Singleline);
+        var noLine = Regex.Replace(noBlock, @"//[^\r\n]*", "");
+        var normalized = string.Join("\n",
+            noLine.Split('\n').Select(l => l.Trim()).Where(l => l.Length > 0));
+        Debug.WriteLine(normalized);
+        var hash = MD5.HashData(Encoding.UTF8.GetBytes(normalized));
+        return Convert.ToHexString(hash).ToLowerInvariant();
+    }
+
+    private void OpenInShaderResearchTool_Click(object sender, RoutedEventArgs e)
+    {
+        // Use the left selection as the source for sending to the research tool
+        if (SelectedLeftMaterial == null || SelectedLeftShader == null)
+        {
+            MessageBox.Show(this, "Please select a material and shader on the left panel.", "Open in Shader Research Tool");
+            return;
+        }
+
+        if (SelectedRightShader == null)
+        {
+            MessageBox.Show(this, "Please select a shader on the right panel (for hash computation).", "Open in Shader Research Tool");
+            return;
+        }
+
+
+        // Compute MD5 of the right shader bytecode (fall back to ref cache if needed)
+        string expectedHash = string.Empty;
+        try
+        {
+            byte[] rightBytes = SelectedRightShader.Bytecode ?? RefShaderCacheReader.GetShaderBytecode(SelectedRightShader.Game, SelectedRightShader.Id);
+            if (rightBytes != null && rightBytes.Length > 0)
+            {
+                var hash = MD5.HashData(rightBytes);
+                expectedHash = Convert.ToHexString(hash).ToLowerInvariant();
+            }
+        }
+        catch
+        {
+            expectedHash = string.Empty;
+        }
+        string packageName = Path.GetFileNameWithoutExtension(LeftPackageName);
+        string materialName = SelectedLeftMaterial.MemoryFullPath.Substring(packageName.Length + 1);
+        string vertexFactory = SelectedLeftShader.VertexFactoryType.ToString() ?? "";
+        string shaderName = SelectedLeftShader.ShaderType.ToString() ?? "";
+
+        // Concatenate with a delimiter
+        string payload = $"DEBUGPACKAGE|{expectedHash}|{packageName}|{materialName}|{vertexFactory}|{shaderName}";
+
+        try
+        {
+            using var client = new NamedPipeClientStream(".", "shaderresearchtool", PipeDirection.Out);
+            client.Connect(1000); // 1s timeout
+            using var sw = new StreamWriter(client) { AutoFlush = true };
+            sw.Write(payload);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"Failed to send to Shader Research Tool:\n{ex.Message}", "Open in Shader Research Tool");
+        }
+    }
+
+    public void OpenLeftInPackageEditor_Click(object sender, RoutedEventArgs e)
+    {
+        if (_leftPackage == null)
+        {
+            MessageBox.Show(this, "No left package is loaded.", "Open Package Editor");
+            return;
+        }
+
+        var pe = new PackageEditorWindow();
+        // If a material is selected, attempt to navigate to that export
+        string goTo = SelectedLeftMaterial?.InstancedFullPath;
+        try
+        {
+            if (!string.IsNullOrEmpty(_leftPackage.FilePath))
+            {
+                pe.LoadFile(_leftPackage.FilePath, goToEntry: goTo);
+            }
+            else
+            {
+                pe.LoadPackage(_leftPackage, goToEntry: goTo);
+            }
+            pe.Show();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"Failed to open package in Package Editor:\n{ex.Message}", "Open Package Editor");
+        }
+    }
+
+    public void OpenRightInPackageEditor_Click(object sender, RoutedEventArgs e)
+    {
+        if (_rightPackage == null)
+        {
+            MessageBox.Show(this, "No right package is loaded.", "Open Package Editor");
+            return;
+        }
+
+        var pe = new PackageEditorWindow();
+        string goTo = SelectedRightMaterial?.InstancedFullPath;
+        try
+        {
+            if (!string.IsNullOrEmpty(_rightPackage.FilePath))
+            {
+                pe.LoadFile(_rightPackage.FilePath, goToEntry: goTo);
+            }
+            else
+            {
+                pe.LoadPackage(_rightPackage, goToEntry: goTo);
+            }
+            pe.Show();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"Failed to open package in Package Editor:\n{ex.Message}", "Open Package Editor");
+        }
     }
 
     private string _busyText;
@@ -81,6 +405,109 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
             if (SetProperty(ref _selectedLeftMaterial, value))
                 OnMaterialChanged(Side.Left);
         }
+    }
+
+    private void CompareAllShaders_Click(object sender, RoutedEventArgs e)
+    {
+        if (SelectedLeftMaterial == null)
+        {
+            MessageBox.Show(this, "Please select a material on both the left and right panels.", "Compare Shaders");
+            return;
+        }
+
+        var differing = new List<string>();
+
+        foreach (var left in LeftShaders)
+        {
+            // Find a matching shader on the right by shader type and vertex factory
+            var right = RightShaders.FirstOrDefault(s => s.ShaderType == left.ShaderType && s.VertexFactoryType == left.VertexFactoryType);
+
+            string leftHlsl = left?.DissassembledShader;
+            string rightHlsl = right?.DissassembledShader;
+
+            if (!string.IsNullOrWhiteSpace(rightHlsl))
+            {
+                bool equal = AreHlslEquivalent(leftHlsl, rightHlsl);
+                if (!equal)
+                {
+                    differing.Add($"{left.ShaderType} ({left.VertexFactoryType})");
+                }
+            }
+        }
+
+        if (differing.Count > 0)
+        {
+            // Select the first non-matching left shader
+            var firstDiff = LeftShaders.FirstOrDefault(s => differing.Contains($"{s.ShaderType} ({s.VertexFactoryType})"));
+            if (firstDiff != null)
+            {
+                SelectedLeftShader = firstDiff;
+            }
+
+            // Open a non-modal ListDialog that lists differing shaders and allows selecting them
+            var diffWindow = new ListDialog(differing, "Differing Shaders", "Double-click an entry to select it", this)
+            {
+                Owner = this
+            };
+            diffWindow.DoubleClickItemHandler = obj =>
+            {
+                if (obj is string selected)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        var toSelect = LeftShaders.FirstOrDefault(sh => $"{sh.ShaderType} ({sh.VertexFactoryType})" == selected);
+                        if (toSelect != null)
+                            SelectedLeftShader = toSelect;
+                    });
+                }
+            };
+
+            diffWindow.Show();
+        }
+        else
+        {
+            MessageBox.Show(this, "All shaders' HLSL are identical between the selected materials.", "Compare Shaders");
+        }
+    }
+
+    private static bool AreHlslEquivalent(string left, string right)
+    {
+        // Treat both null/empty as equal
+        if (string.IsNullOrEmpty(left) && string.IsNullOrEmpty(right))
+            return true;
+        // If one is empty and the other is not, not equal
+        if (string.IsNullOrEmpty(left) || string.IsNullOrEmpty(right))
+            return false;
+
+        var leftLines = left.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+        var rightLines = right.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+
+        int max = Math.Max(leftLines.Length, rightLines.Length);
+        for (int i = 0; i < max; i++)
+        {
+            string l = i < leftLines.Length ? leftLines[i] : null;
+            string r = i < rightLines.Length ? rightLines[i] : null;
+
+            bool lIgnored = IsIgnoredDiffLine(l);
+            bool rIgnored = IsIgnoredDiffLine(r);
+
+            if (l == null && r == null)
+                continue;
+            if (l == null || r == null)
+            {
+                if (lIgnored || rIgnored)
+                    continue;
+                return false;
+            }
+
+            if (lIgnored || rIgnored)
+                continue;
+
+            if (!string.Equals(l, r, StringComparison.Ordinal))
+                return false;
+        }
+
+        return true;
     }
 
     public ObservableCollectionExtended<TreeViewShader> LeftShaders { get; } = [];
@@ -266,6 +693,20 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
     {
         DataContext = this;
         InitializeComponent();
+        // Attach menu handlers defined in code-behind to avoid XAML hot-reload lookup issues
+        try
+        {
+            var leftMi = FindName("OpenLeftInPackageEditorMenuItem") as System.Windows.Controls.MenuItem;
+            var rightMi = FindName("OpenRightInPackageEditorMenuItem") as System.Windows.Controls.MenuItem;
+            if (leftMi != null)
+                leftMi.Click += OpenLeftInPackageEditor_Click;
+            if (rightMi != null)
+                rightMi.Click += OpenRightInPackageEditor_Click;
+        }
+        catch
+        {
+            // Ignore if not available at design time
+        }
         _leftBinInterp = new BinaryInterpreterWPF();
         _rightBinInterp = new BinaryInterpreterWPF();
         _leftHexBox = (HexBox)LeftHexBoxHost.Child;
@@ -922,7 +1363,8 @@ public partial class ShaderComparisonWindow : NotifyPropertyChangedWindowBase
             if (matchingRight != null && !ReferenceEquals(matchingRight, SelectedRightShader))
             {
                 SelectedRightShader = matchingRight;
-            } else
+            }
+            else
             {
                 SelectedRightShader = null;
             }

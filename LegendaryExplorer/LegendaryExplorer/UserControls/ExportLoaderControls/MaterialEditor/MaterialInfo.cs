@@ -320,9 +320,31 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
             GetAllTextureParameters(MaterialExport, false, cache, parameters);
 
             var props = material.GetProperties();
+            // Should probably check this against OT as well....
+            if (MaterialExport.Game is MEGame.LE1 or MEGame.LE2)
+            {
+                WorksOn.Add("StaticLighting");
+            }
             foreach (var prop in props.OfType<BoolProperty>())
             {
-                if (prop.Name.Name.StartsWith("bUsedWith", StringComparison.OrdinalIgnoreCase) && prop.Value)
+                bool parse = true;
+                if (MaterialExport.Game is MEGame.LE1 or MEGame.LE2)
+                {
+                    if (prop.Name.Name == "bUsedWithStaticLighting")
+                    {
+                        // By default Material sets bUsedWithStaticLighting = true in the defaults so it won't appear here.
+                        if (prop.Value == false)
+                        {
+                            WorksOn.Remove("StaticLighting");
+                        }
+
+                        // Don't do the next branch.
+                        parse = false;
+                    }
+                }
+                
+                
+                if (parse && prop.Name.Name.StartsWith("bUsedWith", StringComparison.OrdinalIgnoreCase) && prop.Value)
                 {
                     WorksOn.Add(prop.Name.Name.Substring(9));
                 }

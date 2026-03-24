@@ -92,7 +92,7 @@
         </StatusBar>
         <TextBlock Text="SHADER WAS NOT FOUND - THIS MATERIAL WILL NOT WORK IN GAME" Foreground="Red" FontWeight="Bold" DockPanel.Dock="Top" Visibility="{Binding MaterialHasNoShader, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         <WrapPanel DockPanel.Dock="Top" Orientation="Horizontal">
-            <TextBlock Text="This material can be used on:" FontWeight="Bold" DockPanel.Dock="Top" Margin="5,0"/>
+            <TextBlock Text="This material can be used with:" FontWeight="Bold" DockPanel.Dock="Top" Margin="5,0"/>
             <ItemsControl ItemsSource="{Binding MatInfo.WorksOn}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
