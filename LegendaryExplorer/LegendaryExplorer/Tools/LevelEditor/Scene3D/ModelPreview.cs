@@ -160,7 +160,7 @@ public class TexturedPreviewMaterial : ModelPreviewMaterial<WorldVertex>
             }
         }
 
-        foreach (var textureEntry in mat.Textures)
+        foreach (var textureEntry in mat.Textures.Reverse())
         {
             var texObjectName = textureEntry.ObjectName.Name.ToLower();
             if (texObjectName.Contains("diff") || texObjectName.Contains("tex"))

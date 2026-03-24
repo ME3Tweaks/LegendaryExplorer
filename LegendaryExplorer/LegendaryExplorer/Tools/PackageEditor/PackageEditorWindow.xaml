@@ -620,6 +620,12 @@
                         </TabItem.Header>
                         <exportLoaderControls:AnimNodeExportLoader x:Name="AnimNodeTab_AnimNodeLoader" NavigateToEntryCommand="{Binding NavigateToEntryCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>
+                    <TabItem Name="ActorPreview_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                        <TabItem.Header>
+                            <TextBlock Text="Actor Preview" ToolTip="Preview Actor in 3D"/>
+                        </TabItem.Header>
+                        <exportLoaderControls:ActorPreviewControl x:Name="ActorPreviewTab_ActorPreviewControl"/>
+                    </TabItem>
                 </TabControl>
             </Grid>
         </DockPanel>

@@ -33,11 +33,14 @@ public class LevelEditorRenderContext : MeshRenderContext
     public bool ShowVolumes;
     public bool ShowVolumetrics;
 
-    public LevelEditorRenderContext() : base()
+    private bool IsReadOnly;
+
+    public LevelEditorRenderContext(bool readOnly = false) : base()
     {
         BackgroundColor = System.Windows.Media.Color.FromRgb(0x99, 0x99, 0x99);
         Camera.FirstPerson = true;
         TransformWidget = new Widget();
+        IsReadOnly = readOnly;
     }
 
     const int HitTestSize = 3;
@@ -201,17 +204,6 @@ public class LevelEditorRenderContext : MeshRenderContext
         Primitives.Render(this);
     }
 
-    public void LoadLevel(IList<ActorProxy> actors)
-    {
-        DrawList_3D.AddRange(actors);
-        foreach (var actor in actors)
-        {
-            actor.HitID = HitProxies.Add(actor);
-        }
-        DrawList_UI.Add(TransformWidget);
-        TransformWidget.GetAxisHitProxies(ref HitProxies);
-    }
-
     public void LoadActors(IList<ActorProxy> actors)
     {
         DrawList_3D.AddRange(actors);
@@ -219,7 +211,7 @@ public class LevelEditorRenderContext : MeshRenderContext
         {
             actor.HitID = HitProxies.Add(actor);
         }
-        if (!DrawList_UI.Contains(TransformWidget))
+        if (!IsReadOnly && !DrawList_UI.Contains(TransformWidget))
         {
             DrawList_UI.Add(TransformWidget);
             TransformWidget.GetAxisHitProxies(ref HitProxies);

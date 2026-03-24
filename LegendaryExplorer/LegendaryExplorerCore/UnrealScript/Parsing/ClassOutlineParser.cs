@@ -122,7 +122,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private Class TryParseClass()
         {
             var startPos = CurrentPosition;
-            if (!Matches(CLASS, ST.Keyword)) throw ParseError("Expected class declaration!");
+            if (!MatchesKeyword(CLASS)) throw ParseError("Expected class declaration!");
 
             var name = Consume(TokenType.Word);
             if (name == null) throw ParseError("Expected class name!");
@@ -349,7 +349,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private Const ParseConstant()
         {
             var startPos = CurrentPosition;
-            if (!Matches(CONST, ST.Keyword)) return null;
+            if (!MatchesKeyword(CONST)) return null;
             if (Consume(TokenType.Word) is ScriptToken constName)
             {
                 if (!Matches(TokenType.Assign, ST.Operator))
@@ -394,7 +394,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private VariableDeclaration ParseVarDecl()
         {
             var startPos = CurrentPosition;
-            if (!Matches(VAR, ST.Keyword)) return null;
+            if (!MatchesKeyword(VAR)) return null;
             string category = null;
             if (CurrentTokenType == TokenType.LeftParenth)
             {
@@ -444,7 +444,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private Struct ParseStruct()
         {
             var startPos = CurrentToken.StartPos;
-            if (!Matches(STRUCT, ST.Keyword)) return null;
+            if (!MatchesKeyword(STRUCT)) return null;
 
             ScriptStructFlags flags = 0;
             while (CurrentTokenType == TokenType.Word)
@@ -557,7 +557,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private Enumeration ParseEnum()
         {
             var startPos = CurrentToken.StartPos;
-            if (!Matches(ENUM, ST.Keyword)) return null;
+            if (!MatchesKeyword(ENUM)) return null;
 
             var name = Consume(TokenType.Word);
             if (name == null) throw ParseError("Expected enumeration name!", CurrentPosition);
@@ -605,7 +605,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             var start = CurrentPosition;
             (int nativeIndex, byte operatorPrecedence, bool isPostfixOperator) = ParseFunctionSpecifiers(out EFunctionFlags flags);
 
-            bool hasFunctionKeyword = Matches(FUNCTION, ST.Keyword);
+            bool hasFunctionKeyword = MatchesKeyword(FUNCTION);
             if (!flags.Has(EFunctionFlags.Operator) && !hasFunctionKeyword)
             {
                 Tokens.PopSnapshot();
@@ -905,7 +905,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
             }
 
-            if (!Matches(STATE, ST.Keyword)) return null;
+            if (!MatchesKeyword(STATE)) return null;
             if (Consume(TokenType.LeftParenth) != null)
             {
                 if (Consume(TokenType.RightParenth) is null)
@@ -925,7 +925,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (Consume(TokenType.LeftBracket) == null) throw ParseError("Expected '{'!", CurrentPosition);
 
             var ignoreMask = (EProbeFunctions)ulong.MaxValue;
-            if (Matches(IGNORES, ST.Keyword))
+            if (MatchesKeyword(IGNORES))
             {
                 do
                 {
@@ -984,7 +984,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public DefaultPropertiesBlock ParseDefaultProperties()
         {
-            if (!Matches(DEFAULTPROPERTIES, ST.Keyword) && !Matches("properties", ST.Keyword)) return null;
+            if (!MatchesKeyword(DEFAULTPROPERTIES) && !Matches("properties", ST.Keyword)) return null;
 
             if (!ParseScopeSpan(false, out int bodyStart, out int bodyEnd, out List<ScriptToken> scopeTokens))
             {
@@ -999,7 +999,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private CodeBody ParseReplicationBlock()
         {
-            if (!Matches(REPLICATION, ST.Keyword)) return null;
+            if (!MatchesKeyword(REPLICATION)) return null;
 
             if (!ParseScopeSpan(false, out int bodyStart, out int bodyEnd, out List<ScriptToken> scopeTokens))
             {
@@ -1087,7 +1087,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private VariableType ParseTheExtendsSpecifier(ST syntaxType)
         {
-            if (!Matches(EXTENDS, ST.Keyword)) return null;
+            if (!MatchesKeyword(EXTENDS)) return null;
             var parentName = Consume(TokenType.Word);
             if (parentName == null)
             {
@@ -1101,7 +1101,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         private VariableType ParseTheWithinSpecifier()
         {
-            if (!Matches(WITHIN, ST.Keyword)) return null;
+            if (!MatchesKeyword(WITHIN)) return null;
             var outerName = Consume(TokenType.Word);
             if (outerName == null)
             {

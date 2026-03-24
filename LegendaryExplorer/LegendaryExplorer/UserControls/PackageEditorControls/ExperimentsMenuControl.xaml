@@ -229,7 +229,7 @@
             <MenuItem Header="Make Custom Morph Target Set" Click="MakeCustomMorphTargetSet_Click" ToolTip="Makes a new CustomMorphTargetSet and BioMorphFace for use in mods that dynamically change appearance from MorphTargetSet or SkeletalMesh. currently only for AMM LE3. "/>
         </MenuItem>
         <MenuItem Header="Even more experimental than usual">
-            <MenuItem Header="Fill in LODs" Click="MakeLODs_Click" ToolTip="Duplicates the first LOD into the other LOD slots. This will allow you to not lock the pawn LOD to 0 and allow other meshes that have proper LODs to work as intended. Can fix face melting. It would still be better to generate proper LODs."/>
+            <MenuItem Header="Move All Package Stored Textures to tfc" Click="TexturesToTfc_Click"/>
             <MenuItem Header="Remove LODs" Click="RemoveLODs_Click" ToolTip="Removes all but the first LOD."/>
             <MenuItem Header="Calculate normal map blue channel" Click="CalculateNormalBlue_Click" ToolTip="Calculates the blue channel of a normal map from the red and green channels. some engines do this at runtime to save space or pack other data into the blue and alpha channels."/>
             <MenuItem Header="Invert Green Channel of normal map" Click="InvertGreenChannel_Click" ToolTip="Inverts the green channel of a normal map. useful for converting from engines that have the opposite convention."/>

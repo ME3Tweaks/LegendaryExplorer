@@ -178,8 +178,8 @@ namespace LegendaryExplorerCore.Shaders
                 }
             }
 
-            var shader = RefShaderCacheReader.GetShaders(game, shaderGuids, out var stcrc, out var vfcrc);
-            foreach (var sh in shader)
+            var shaders = RefShaderCacheReader.GetShaders(game, shaderGuids, out var stcrc, out var vfcrc);
+            foreach (var sh in shaders)
             {
                 tempCache.Shaders.TryAdd(sh.Guid, sh);
             }

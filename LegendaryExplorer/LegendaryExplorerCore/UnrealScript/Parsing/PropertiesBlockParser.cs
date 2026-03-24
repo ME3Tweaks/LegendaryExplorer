@@ -4,6 +4,7 @@ using LegendaryExplorerCore.UnrealScript.Analysis.Symbols;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using System;
@@ -910,6 +911,13 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             if (scopeObject.LookupVariable(token.Value) is { } decl)
             {
                 symbol = decl;
+            }
+            else if (scopeObject is Class scopeClass 
+                && scopeClass.LookupFunction(token.Value) is Function func
+                && func.Flags.HasFlag(Unreal.UnrealFlags.EFunctionFlags.Delegate)
+                && scopeObject.LookupVariable($"__{token.Value}__delegate") is { } delDecl)
+            {
+                symbol = delDecl;
             }
             else
             {

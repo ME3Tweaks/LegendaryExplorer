@@ -130,7 +130,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public VariableType ParseTypeRef()
         {
-            if (Matches(ARRAY, ST.Keyword))
+            if (MatchesKeyword(ARRAY))
             {
                 var arrayToken = Tokens.Prev();
                 if (Consume(TokenType.LeftArrow) is null)
@@ -154,7 +154,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 return new DynamicArrayType(elementType, arrayToken.StartPos, CurrentPosition);
             }
 
-            if (Matches(DELEGATE, ST.Keyword))
+            if (MatchesKeyword(DELEGATE))
             {
                 var delegateToken = Tokens.Prev();
                 if (Consume(TokenType.LeftArrow) is null)
@@ -229,6 +229,22 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     CurrentToken.SyntaxType = syntaxType;
                 }
+                Tokens.Advance();
+            }
+            return matches;
+        }
+
+        public bool MatchesKeyword(string str)
+        {
+            bool matches = CurrentIs(str);
+            if (matches)
+            {
+                var token = CurrentToken;
+                if (token.IsLiteralIdentifier)
+                {
+                    return false;
+                }
+                token.SyntaxType = ST.Keyword;
                 Tokens.Advance();
             }
             return matches;
@@ -426,7 +442,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 return new BooleanLiteral(bool.Parse(token.Value), token.StartPos, token.EndPos);
             }
 
-            if (Matches(NONE, ST.Keyword))
+            if (MatchesKeyword(NONE))
             {
                 return new NoneLiteral(token.StartPos, token.EndPos);
             }

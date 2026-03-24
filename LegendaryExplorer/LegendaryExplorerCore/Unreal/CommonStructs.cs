@@ -149,5 +149,13 @@ namespace LegendaryExplorerCore.Unreal
                 prop.GetProp<FloatProperty>("G").Value,
                 prop.GetProp<FloatProperty>("B").Value,
                 prop.GetProp<FloatProperty>("A").Value);
+
+        public static StructProperty CylinderProp(float radius, float height, NameReference? name = null)
+        {
+            return new StructProperty("Cylinder", [
+                new FloatProperty(radius, "Radius"),
+                new FloatProperty(height, "Height"),
+            ], name);
+        }
     }
 }

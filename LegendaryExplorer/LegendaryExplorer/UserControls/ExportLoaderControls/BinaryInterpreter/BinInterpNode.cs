@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Windows.Media;
 using System.Windows.Threading;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Interfaces;
@@ -44,6 +45,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public int Length { get; set; }
         public BinaryInterpreterWPF.NodeType Tag { get; set; }
         public ArrayPropertyChildAddAlgorithm ArrayAddAlgorithm;
+
+        private Brush _diffBackground;
+        /// <summary>
+        /// Background brush used to highlight differences when comparing parameter trees.
+        /// </summary>
+        public Brush DiffBackground
+        {
+            get => _diffBackground;
+            set => SetProperty(ref _diffBackground, value);
+        }
 
         protected bool _isExpanded;
         public virtual bool IsExpanded

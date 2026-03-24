@@ -1,5 +1,5 @@
-﻿using LegendaryExplorerCore.Helpers;
-using LegendaryExplorerCore.ME1.Unreal.UnhoodBytecode;
+﻿using LegendaryExplorerCore.Gammtek.Extensions;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Language.ByteCode;

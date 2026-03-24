@@ -84,20 +84,6 @@ public static class ToolSet
 #if DEBUG
         set.Add(new Tool
         {
-            name = "Hex Editor Test",
-            type = typeof(Tools.HexEditorTest.HexEditorTestWindow),
-            icon = Application.Current.FindResource("iconFileHexAnalyzer") as ImageSource,
-            open = () =>
-            {
-                (new Tools.HexEditorTest.HexEditorTestWindow()).Show();
-            },
-            tags = ["utility", "toolsetdev", "hex", "test"],
-            category = "Toolset Devs",
-            description = "Hex Editor Test is a test harness for the WPF HexEditorControl. Load any file to view and edit its bytes in hex format with dynamic resizing support."
-        });
-
-        set.Add(new Tool
-        {
             name = "AutoTOC",
             type = typeof(Tools.AutoTOC.AutoTOCWindow),
             icon = Application.Current.FindResource("iconAutoTOC") as ImageSource,
@@ -164,6 +150,20 @@ public static class ToolSet
             tags = ["developer", "dlc"],
             category = "Toolset Devs",
             description = "SFAR Explorer allows you to explore and extract ME3 DLC archive files (SFAR).",
+        });
+
+        set.Add(new Tool
+        {
+            name = "Shader Comparison",
+            type = typeof(ToolsetDev.ShaderComparisonWindow),
+            icon = Application.Current.FindResource("iconPlaceholder") as ImageSource,
+            open = () =>
+            {
+                (new ToolsetDev.ShaderComparisonWindow()).Show();
+            },
+            tags = ["utility", "toolsetdev", "shader", "compare", "material", "hlsl"],
+            category = "Toolset Devs",
+            description = "Shader Comparison allows you to compare shaders from two different package files side-by-side, showing decompiled HLSL and parameter bindings from the shader cache."
         });
 #endif
         #endregion

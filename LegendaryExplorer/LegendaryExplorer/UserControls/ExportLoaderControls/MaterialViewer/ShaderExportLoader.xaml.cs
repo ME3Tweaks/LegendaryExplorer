@@ -233,8 +233,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void LoadExport(ExportEntry exportEntry)
         {
             CurrentLoadedExport = exportEntry;
+            ForceHideRecents = true;
             OnDemand_Panel.Visibility = Visibility.Visible;
             LoadedContent_Panel.Visibility = Visibility.Collapsed;
+            if (AutoLoad)
+            {
+                LoadShaders();
+            }
         }
 
         public IEnumerable<TreeViewMeshShaderMap> GetMeshShaderMaps(MaterialShaderMap msm, ShaderCache localShaderCache = null)
@@ -273,6 +278,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void UnloadExport()
         {
             CurrentLoadedExport = null;
+            ForceHideRecents = false;
             MeshShaderMaps.ClearEx();
             ShaderText = "";
             TopInfoText = "";
@@ -868,7 +874,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (!ControlLoaded)
             {
                 ControlLoaded = true;
-                if (AutoLoad)
+                // the export may not be loaded if this is a file hosted window
+                if (AutoLoad && CurrentLoadedExport != null)
                 {
                     LoadShaders();
                     AutoLoad = false;
@@ -937,6 +944,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public MEGame Game;
         public Guid Id { get; set; }
         public string Description => $"{ShaderType} ({Index})";
+
+        public string DescriptionWithVF => $"{ShaderType} {VertexFactoryType} ({Index})";
         public string ShaderType { get; set; }
         public int Index { get; set; }
 
@@ -981,6 +990,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public bool IsSelected { get; set; }
         public bool IsExpanded { get; set; }
         public ITreeItem Parent { get; set; }
+        public NameReference VertexFactoryType { get; set; }
 
         public void PrintPretty(string indent, TextWriter str, bool last, ExportEntry associatedExport)
         {

@@ -4,8 +4,10 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
@@ -15,8 +17,8 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 
 public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 {
-    public LevelEditor Editor;
-    public OpenLevelFile OwningFile;
+    public IActorEditorContext Editor;
+    public OpenLevelFile OwningFile { get; set; }
 
     public Matrix4x4 LocalToWorld;
 
@@ -69,6 +71,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         get => rotation;
         set
         {
+            if (IsReadOnly) return;
             var oldValue = rotation;
             if (rotation != value)
             {
@@ -90,6 +93,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         get => location;
         set
         {
+            if (IsReadOnly) return;
             var oldValue = location;
             if (location != value)
             {
@@ -112,6 +116,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         get => drawScale3D;
         set
         {
+            if (IsReadOnly) return;
             var oldValue = drawScale3D;
             if (drawScale3D != value)
             {
@@ -133,6 +138,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         get => drawScale;
         set
         {
+            if (IsReadOnly) return;
             if (SetProperty(ref drawScale, value))
             {
                 UpdateLocalToWorld();
@@ -145,6 +151,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         get => prePivot;
         set
         {
+            if (IsReadOnly) return;
             if (SetProperty(ref prePivot, value))
             {
                 UpdateLocalToWorld();
@@ -152,6 +159,9 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
             }
         }
     }
+
+    public bool IsReadOnly => (OwningFile is null || OwningFile.IsReadOnly)
+                           && !(Editor?.IsApplyingUndoRedo ?? false);
 
     public virtual bool IsVolume => false;
     public bool IsVolumetricMesh { get; protected set; }
@@ -166,7 +176,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         DrawScale3D = snapshot.DrawScale3D;
     }
 
-    protected ActorProxy(LevelEditor context, ExportEntry actorExport)
+    protected ActorProxy(IActorEditorContext context, ExportEntry actorExport)
     {
         Editor = context;
         Export = actorExport;
@@ -216,12 +226,39 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         }
     }
 
-    public static ActorProxy Create(LevelEditor context, ExportEntry actorExport)
+    private static readonly FrozenSet<string> SupportedClasses = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    {
+        "StaticMeshActor",
+        "SkeletalMeshActor",
+        "SFXSkeletalMeshActor",
+        "DynamicSMActor",
+        "Brush",
+        "SFXStuntActor",
+        "BioArtPlaceable",
+        "BioPawn",
+        "Pawn",
+        "PrefabInstance",
+        "SFXDroppedGrenade",
+        "SFXDroppedAmmo",
+        "SFXDroppedPickup"
+    }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
+
+    public static bool CanCreate(ExportEntry actorExport)
+    {
+        return actorExport.IsA(SupportedClasses);
+    }
+
+    //KEEP IN SYNC WITH CanCreate!
+    public static ActorProxy Create(IActorEditorContext context, ExportEntry actorExport)
     {
         string className = actorExport.ClassName;
         if (GlobalUnrealObjectInfo.IsA(className, "StaticMeshActor", actorExport.Game))
         {
             return new StaticMeshActorProxy(context, actorExport);
+        }
+        if (GlobalUnrealObjectInfo.IsA(className, "SFXSkeletalMeshActor", actorExport.Game))
+        {
+            return new SFXSkeletalMeshActorProxy(context, actorExport);
         }
         if (GlobalUnrealObjectInfo.IsA(className, "SkeletalMeshActor", actorExport.Game))
         {
@@ -254,6 +291,18 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         if (GlobalUnrealObjectInfo.IsA(className, "PrefabInstance", actorExport.Game))
         {
             return new PrefabInstanceProxy(context, actorExport);
+        }
+        if (GlobalUnrealObjectInfo.IsA(className, "SFXDroppedGrenade", actorExport.Game))
+        {
+            return new SFXDroppedGrenadeProxy(context, actorExport);
+        }
+        if (GlobalUnrealObjectInfo.IsA(className, "SFXDroppedAmmo", actorExport.Game))
+        {
+            return new SFXDroppedAmmoProxy(context, actorExport);
+        }
+        if (GlobalUnrealObjectInfo.IsA(className, "SFXDroppedPickup", actorExport.Game))
+        {
+            return new SFXDroppedPickupProxy(context, actorExport);
         }
         return null;
         //return new ActorProxy(context, actorExport);
@@ -376,6 +425,15 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         }
     }
 
+    protected void ApplyMorphFace(SkeletalMeshComponentProxy skeletalMeshComponent)
+    {
+        if (Properties.GetProp<ObjectProperty>("MorphHead")?.ResolveToExport(Export.FileRef, Editor?.PackageCache) is ExportEntry morphHead)
+        {
+            (BonePosition[] bonePositions, Vector3[][] vertexOffsets) = LegendaryExplorerCore.Unreal.Classes.BioMorphFace.GetBoneAndVertexPositions(morphHead);
+            skeletalMeshComponent.ApplyMorph(bonePositions, vertexOffsets);
+        }
+    }
+
     #region IDisposable
     protected bool isDisposed;
 
@@ -389,24 +447,14 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
                 {
                     cmp.Dispose();
                 }
+                Components.Clear();
             }
-
-            // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-            // TODO: set large fields to null
             isDisposed = true;
         }
     }
 
-    // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-    // ~ActorProxy()
-    // {
-    //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-    //     Dispose(disposing: false);
-    // }
-
     public void Dispose()
     {
-        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
@@ -416,7 +464,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 public class StaticMeshActorProxy : ActorProxy
 {
     public StaticMeshComponentProxy StaticMeshComponent;
-    public StaticMeshActorProxy(LevelEditor context, ExportEntry actorExport) : base(context, actorExport)
+    public StaticMeshActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         AddComponent(context.RenderContext, ref StaticMeshComponent);
         IsVolumetricMesh = StaticMeshComponent.IsVolumetric;
@@ -426,7 +474,7 @@ public class StaticMeshActorProxy : ActorProxy
 public class SkeletalMeshActorProxy : ActorProxy
 {
     public SkeletalMeshComponentProxy SkeletalMeshComponent;
-    public SkeletalMeshActorProxy(LevelEditor context, ExportEntry actorExport) : base(context, actorExport)
+    public SkeletalMeshActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         AddComponent(context.RenderContext, ref SkeletalMeshComponent);
     }
@@ -437,12 +485,34 @@ public class SkeletalMeshActorProxy : ActorProxy
     }
 }
 
+public class SFXSkeletalMeshActorProxy : SkeletalMeshActorProxy
+{
+    public SkeletalMeshComponentProxy HeadMesh;
+    public SkeletalMeshComponentProxy HairMesh;
+    public SkeletalMeshComponentProxy HeadGearMesh;
+    public SFXSkeletalMeshActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
+    {
+        AddComponent(context.RenderContext, ref HeadMesh);
+        ApplyMorphFace(HeadMesh);
+        AddComponent(context.RenderContext, ref HairMesh);
+        AddComponent(context.RenderContext, ref HeadGearMesh);
+    }
+
+    public override void SetAnimation(AnimSequence animSequence, float pos)
+    {
+        base.SetAnimation(animSequence, pos);
+        HeadMesh?.SetAnimation(animSequence, pos);
+        HairMesh?.SetAnimation(animSequence, pos);
+        HeadGearMesh?.SetAnimation(animSequence, pos);
+    }
+}
+
 //interpactor, placeables
 public class DynamicSMActorProxy : ActorProxy
 {
     public StaticMeshComponentProxy StaticMeshComponent;
 
-    public DynamicSMActorProxy(LevelEditor context, ExportEntry actorExport) : base(context, actorExport)
+    public DynamicSMActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         AddComponent(context.RenderContext, ref StaticMeshComponent);
     }
@@ -454,7 +524,7 @@ public class BrushProxy : ActorProxy
     public BrushComponentProxy BrushComponent;
     public override bool IsVolume => true;
 
-    public BrushProxy(LevelEditor context, ExportEntry actorExport) : base(context, actorExport)
+    public BrushProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         AddComponent(context.RenderContext, ref BrushComponent);
     }
@@ -466,10 +536,16 @@ public class SFXStuntActorProxy : ActorProxy
     public SkeletalMeshComponentProxy HeadMesh;
     public SkeletalMeshComponentProxy HairMesh;
     public SkeletalMeshComponentProxy HeadGearMesh;
-    public SFXStuntActorProxy(LevelEditor context, ExportEntry actorExport) : base(context, actorExport)
+    public SFXStuntActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         AddComponent(context.RenderContext, ref BodyMesh);
+        if (BodyMesh.Translation == Vector3.Zero)
+        {
+            //from the defaultproperties, which condenseproperties currently does not fetch
+            BodyMesh.Translation = new Vector3(0, 0, -88);
+        }
         AddComponent(context.RenderContext, ref HeadMesh);
+        ApplyMorphFace(HeadMesh);
         AddComponent(context.RenderContext, ref HairMesh);
         AddComponent(context.RenderContext, ref HeadGearMesh);
     }
@@ -486,7 +562,7 @@ public class BioArtPlaceableProxy : ActorProxy
 {
     public MeshComponentProxy PlaceableMesh;
     public MeshComponentProxy DestroyedMesh;
-    public BioArtPlaceableProxy(LevelEditor context, ExportEntry actorExport) : base(context, actorExport)
+    public BioArtPlaceableProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         AddComponent(context.RenderContext, ref PlaceableMesh);
         AddComponent(context.RenderContext, ref DestroyedMesh);
@@ -499,7 +575,7 @@ public class BioArtPlaceableProxy : ActorProxy
 public class PawnProxy : ActorProxy
 {
     public SkeletalMeshComponentProxy Mesh;
-    public PawnProxy(LevelEditor context, ExportEntry actorExport) : base(context, actorExport)
+    public PawnProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         AddComponent(context.RenderContext, ref Mesh);
     }
@@ -518,9 +594,10 @@ public class BioPawnProxy : PawnProxy
     public SkeletalMeshComponentProxy m_oFacePlateMesh;
     public List<SkeletalMeshComponentProxy> m_aoAccessories = [];
 
-    public BioPawnProxy(LevelEditor context, ExportEntry actorExport) : base(context, actorExport)
+    public BioPawnProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         AddComponent(context.RenderContext, ref HeadMesh);
+        ApplyMorphFace(HeadMesh);
         AddComponent(context.RenderContext, ref m_oHairMesh);
         AddComponent(context.RenderContext, ref m_oHeadGearMesh);
         AddComponent(context.RenderContext, ref m_oVisorMesh);
@@ -547,7 +624,7 @@ public abstract class CollectionActorComponentProxy : ActorProxy
 {
     public ExportEntry CollectionActorExport { get; }
 
-    protected CollectionActorComponentProxy(LevelEditor context, StaticCollectionActor collectionActor, ExportEntry componentActor, int index) : base(componentActor)
+    protected CollectionActorComponentProxy(IActorEditorContext context, StaticCollectionActor collectionActor, ExportEntry componentActor, int index) : base(componentActor)
     {
         Editor = context;
         CollectionActorExport = collectionActor.Export;
@@ -585,7 +662,7 @@ public abstract class CollectionActorComponentProxy : ActorProxy
 
 public class StaticMeshComponentActorProxy : CollectionActorComponentProxy
 {
-    public StaticMeshComponentActorProxy(LevelEditor context, ExportEntry smcExport, StaticMeshCollectionActor smca, int smcaIndex) : base(context, smca, smcExport, smcaIndex)
+    public StaticMeshComponentActorProxy(IActorEditorContext context, ExportEntry smcExport, StaticMeshCollectionActor smca, int smcaIndex) : base(context, smca, smcExport, smcaIndex)
     {
         var staticMeshComponentProxy = PrimitiveComponentProxy.Create(context.RenderContext, smcExport, this);
         Components.Add(staticMeshComponentProxy);
@@ -598,7 +675,7 @@ public class PrefabInstanceProxy : ActorProxy
     private readonly List<ActorProxy> Actors = [];
     private readonly List<Matrix4x4> RelativeMatrices = [];
 
-    public PrefabInstanceProxy(LevelEditor context, ExportEntry actorExport) : base(context, actorExport)
+    public PrefabInstanceProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         PackageCache packageCache = context.RenderContext.PackageCache;
         if (Properties.GetProp<ObjectProperty>("TemplatePrefab")?
@@ -712,5 +789,32 @@ public class PrefabInstanceProxy : ActorProxy
             }
             isDisposed = true;
         }
+    }
+
+}
+public class SFXDroppedPickupProxy : ActorProxy
+{
+    public SkeletalMeshComponentProxy PickupMesh;
+    public SFXDroppedPickupProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
+    {
+        AddComponent(context.RenderContext, ref PickupMesh);
+    }
+}
+
+public class SFXDroppedAmmoProxy : ActorProxy
+{
+    public StaticMeshComponentProxy AmmoMesh;
+    public SFXDroppedAmmoProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
+    {
+        AddComponent(context.RenderContext, ref AmmoMesh);
+    }
+}
+
+public class SFXDroppedGrenadeProxy : ActorProxy
+{
+    public StaticMeshComponentProxy GrenadeMesh;
+    public SFXDroppedGrenadeProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
+    {
+        AddComponent(context.RenderContext, ref GrenadeMesh);
     }
 }

@@ -182,7 +182,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public bool bUsesDynamicParameter;
         public bool bUsesLightmapUVs;
         public bool bUsesMaterialVertexPositionOffset;
-        public bool unkBool1;
+        public bool bUsesVertexColor; //full use unknown, might be a bitfield according to decomp
         //end >= ME3
         public uint UsingTransforms; //ECoordTransformUsage
         public TextureLookup[] TextureLookups; //not ME1
@@ -402,7 +402,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 mat.bUsesDynamicParameter = reader.ReadBoolProp(nameof(bUsesDynamicParameter));
                 mat.bUsesLightmapUVs = reader.ReadBoolProp(nameof(bUsesLightmapUVs));
                 mat.bUsesMaterialVertexPositionOffset = reader.ReadBoolProp(nameof(bUsesMaterialVertexPositionOffset));
-                mat.unkBool1 = reader.ReadBoolProp(nameof(unkBool1));
+                mat.bUsesVertexColor = reader.ReadBoolProp(nameof(bUsesVertexColor));
                 reader.ReadNumProp(out mat.UsingTransforms, nameof(UsingTransforms));
                 mat.TextureLookups = reader.ReadList(nameof(TextureLookups), static (ref Utf8JsonReader reader) =>
                 {
@@ -466,7 +466,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 writer.WriteBoolean(nameof(bUsesDynamicParameter), value.bUsesDynamicParameter);
                 writer.WriteBoolean(nameof(bUsesLightmapUVs), value.bUsesLightmapUVs);
                 writer.WriteBoolean(nameof(bUsesMaterialVertexPositionOffset), value.bUsesMaterialVertexPositionOffset);
-                writer.WriteBoolean(nameof(unkBool1), value.unkBool1);
+                writer.WriteBoolean(nameof(bUsesVertexColor), value.bUsesVertexColor);
                 writer.WriteNumber(nameof(UsingTransforms), value.UsingTransforms);
                 writer.WriteStartArray(nameof(TextureLookups));
                 foreach (TextureLookup texLookup in value.TextureLookups)
@@ -1289,7 +1289,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Serialize(ref mres.bUsesMaterialVertexPositionOffset);
                 if (Game == MEGame.ME3 || Game.IsLEGame())
                 {
-                    Serialize(ref mres.unkBool1);
+                    Serialize(ref mres.bUsesVertexColor);
                 }
             }
             Serialize(ref mres.UsingTransforms);

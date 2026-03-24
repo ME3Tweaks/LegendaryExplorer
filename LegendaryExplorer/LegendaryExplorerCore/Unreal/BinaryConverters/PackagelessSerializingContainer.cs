@@ -79,7 +79,8 @@ public class PackagelessWithObjectsSerializingContainer(Stream stream, IMEPackag
             throw new Exception(nameof(PackagelessSerializingContainer) + " cannot be used to serialize object references when saving.");
         }
 
-        var objectIfp = stream.ReadUnrealString();
+        var len = stream.ReadInt32();
+        var objectIfp = stream.ReadStringUnicode(len * 2);
         var foundEntry = pcc.FindEntry(objectIfp);
         if (foundEntry == null)
         {

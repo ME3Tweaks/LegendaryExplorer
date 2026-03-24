@@ -312,9 +312,14 @@ namespace LegendaryExplorerCore.Unreal
                 if (LODInfo != null && LODInfo.Count > lodIdx)
                 {
                     var matMap = LODInfo[lodIdx].GetProp<ArrayProperty<IntProperty>>("LODMaterialMap");
-                    if (matMap != null && matMap.Count > 0)
+                    if (matMap != null)
                     {
-                        materialMapping = [.. matMap.Select(x => x.Value)];
+                        int i = 0;
+                        foreach (var idx in matMap.Select(x => x.Value))
+                        {
+                            materialMapping[i] = idx;
+                            i++;
+                        }
                     }
                 }
             }

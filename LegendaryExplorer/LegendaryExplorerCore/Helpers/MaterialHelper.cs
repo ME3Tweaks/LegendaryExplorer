@@ -200,7 +200,7 @@ namespace LegendaryExplorerCore.Helpers
             diffuseTexture = null;
             normalTexture = null;
             var paramTextures = material.GetMaterialTextures(out var baseTextures);
-            var baseMaterial = material.GetBaseMaterial().ObjectNameString;
+            var baseMaterial = material.GetBaseMaterial()?.ObjectNameString;
             // for specific materials, we know which parameter to look at for norm and diff, and matching by name sometimes picks the wrong one or can't find it at all
             // but we can't just blindly go by parameter name either, or we will grab things like Teeth Diff instead of Scalp Diff. 
             switch (baseMaterial)

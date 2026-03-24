@@ -154,11 +154,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
                     '^' => MakeSymbolToken(TokenType.Xor, "^^"),
                     _ => MakeSymbolToken(TokenType.BinaryXor, "^")
                 },
-                '@' => nextPeek switch
-                {
-                    '=' => MakeSymbolToken(TokenType.StrConcAssSpace, "@="),
-                    _ => MakeSymbolToken(TokenType.AtSign, "@")
-                },
+                '@' => MakeAtSymbolToken(nextPeek),
                 '?' => MakeSymbolToken(TokenType.QuestionMark, "?"),
                 ':' => MakeSymbolToken(TokenType.Colon, ":"),
                 '/' => nextPeek switch
@@ -213,6 +209,20 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
         }
 
         #region MatchTokenMethods
+
+        private ScriptToken MakeAtSymbolToken(char nextPeek)
+        {
+            if (nextPeek == '=')
+            {
+                return MakeSymbolToken(TokenType.StrConcAssSpace, "@=");
+            }
+            if (nextPeek < ASCII_TABLE_LENGTH && IdentifierCharLookup[nextPeek])
+            {
+                return MatchWord('@');
+            }
+
+            return MakeSymbolToken(TokenType.AtSign, "@");
+        }
 
         private ScriptToken MatchNumber()
         {
@@ -344,8 +354,13 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
 
         private ScriptToken MatchWord(char peek)
         {
+            bool literalIdent = false;
+            if (peek is '@')
+            {
+                literalIdent = true;
+                CurrentIndex++;
+            }
             int startIndex = CurrentIndex;
-
         loopStart:
             while (CurrentIndex < Text.Length)
             {
@@ -367,7 +382,10 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             int length = CurrentIndex - startIndex;
             if (length > 0)
             {
-                return new ScriptToken(TokenType.Word, Text.Substring(startIndex, length), startIndex, CurrentIndex);
+                return new ScriptToken(TokenType.Word, Text.Substring(startIndex, length), startIndex, CurrentIndex)
+                {
+                    IsLiteralIdentifier = literalIdent
+                };
             }
             return null;
         }

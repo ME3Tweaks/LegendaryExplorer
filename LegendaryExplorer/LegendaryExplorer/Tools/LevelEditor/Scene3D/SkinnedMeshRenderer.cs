@@ -113,7 +113,7 @@ public class SkinnedMeshRenderer
     /// writes results to the mesh vertex list with Unreal-to-renderer coordinate conversion,
     /// then rebuilds the D3D vertex buffer.
     /// </summary>
-    public void UpdateSkinning(DeviceContext context, Mesh<WorldVertex> mesh, SkeletonAnimPlayer animPlayer)
+    public void UpdateSkinning(DeviceContext context, Mesh<WorldVertex> mesh, AnimPlayer animPlayer)
     {
         NeedsUpdate = false;
         if (_skinVertices == null || mesh == null) return;
@@ -152,5 +152,13 @@ public class SkinnedMeshRenderer
         if (w2 > 0 && b2 < matrices.Length) m += matrices[b2] * w2;
         if (w3 > 0 && b3 < matrices.Length) m += matrices[b3] * w3;
         return m;
+    }
+
+    public void UpdateVertexPositions(Vector3[] positions)
+    {
+        for (int i = 0; i < _skinVertices.Length && i < positions.Length; i++)
+        {
+            _skinVertices[i].BindPosition = positions[i];
+        }
     }
 }

@@ -1355,6 +1355,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         // EXPERIMENTS: DropTheSquid
         #region DropTheSquid's Experiments
 
+        private void TexturesToTfc_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.TexturesToTfc(GetPEWindow());
+        }
+
         private void MakeLODs_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsSquid.MakeLODs(GetPEWindow());

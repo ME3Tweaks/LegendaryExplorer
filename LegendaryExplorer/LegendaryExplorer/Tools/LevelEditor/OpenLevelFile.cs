@@ -43,6 +43,13 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
         IsDirty = Actors.Any(a => a.IsDirty);
     }
 
+    private bool isReadOnly;
+    public bool IsReadOnly
+    {
+        get => isReadOnly;
+        set => SetProperty(ref isReadOnly, value);
+    }
+
     public OpenLevelFile(LevelEditor owner, IMEPackage package, ExportEntry levelExport)
     {
         Owner = owner;

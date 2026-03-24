@@ -22,7 +22,7 @@ namespace LegendaryExplorer.Tools.AssetDatabase.Scanners
                 bool modernEngineVersion = pcc.Game >= MEGame.ME3 || pcc.Platform == MEPackage.GamePlatform.PS3;
                 var classUsage = new ClassUsage(e.FileKey, e.Export.UIndex, e.IsDefault, e.IsMod);
 
-                //providing a lambda that returns a new Lock prevents 100s of MBs of allocations
+                //providing a lambda that returns a new Lock prevents 100s of MBs of allocations,
                 //since a static lambda is allocated once, then cached
                 lock (db.ClassLocks.GetOrAdd(e.ClassName, static _ => new Lock()))
                 {

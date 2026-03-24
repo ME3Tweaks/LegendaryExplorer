@@ -100,17 +100,22 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Curves
 
         public static void BezierTo(CurveGraph graph, StreamGeometryContext ctxt, double X1, double Y1, double Slope1, double X2, double Y2, double Slope2)
         {
-            double handleLength = (graph.toUnrealX(X2) - graph.toUnrealX(X1)) / 3;
-            double h1x = handleLength;// / Math.Sqrt(Math.Pow(Slope1, 2) + 1);
-            double h1y = Slope1 * h1x;
-            h1x = graph.HorizontalScale * h1x + X1;
-            h1y = graph.ActualHeight - (graph.VerticalScale * h1y + Y1);
-            double h2x = -handleLength;// / Math.Sqrt(Math.Pow(Slope2, 2) + 1);
-            double h2y = Slope2 * h2x;
-            h2x = graph.HorizontalScale * h2x + X2;
-            h2y = graph.ActualHeight - (graph.VerticalScale * h2y + Y2);
+            double x2 = graph.toUnrealX(X2);
+            double x1 = graph.toUnrealX(X1);
+            double y2 = graph.toUnrealY(Y2);
+            double y1 = graph.toUnrealY(Y1);
 
-            ctxt.BezierTo(new Point(h1x, h1y), new Point(h2x, h2y), new Point(X2, graph.ActualHeight - Y2), true, true);
+            double dx = x2 - x1;
+            double h1x = x1 + dx / 3.0f;
+            double h1y = y1 + (dx * Slope1) / 3.0f;
+            h1x = graph.toLocalX(h1x);
+            h1y = graph.toLocalY(h1y);
+            double h2x = x2 - dx / 3.0f;
+            double h2y = y2 - (dx * Slope2) / 3.0f;
+            h2x = graph.toLocalX(h2x);
+            h2y = graph.toLocalY(h2y);
+
+            ctxt.BezierTo(new Point(h1x, graph.ActualHeight - h1y), new Point(h2x, graph.ActualHeight - h2y), new Point(X2, graph.ActualHeight - Y2), true, true);
         }
     }
 }

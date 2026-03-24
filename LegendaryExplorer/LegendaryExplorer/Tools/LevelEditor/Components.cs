@@ -304,10 +304,17 @@ public class StaticMeshComponentProxy : MeshComponentProxy
 public class SkeletalMeshComponentProxy : MeshComponentProxy
 {
     SkinnedMeshRenderer skinnedMeshRenderer;
-    SkeletonAnimPlayer animPlayer;
+    AnimSequencePlayer animPlayer;
 
     public SkeletalMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent) : base(context, componentExport, parent)
     {
+        bool bTransformFromAnimParent = Properties.GetProp<BoolProperty>("bTransformFromAnimParent")?.Value ?? true;
+        if (bTransformFromAnimParent
+            && Properties.GetProp<ObjectProperty>("ParentAnimComponent")?.ResolveToEntry(Export.FileRef) is ExportEntry parentAnimExport
+            && parent.Components.FirstOrDefault(cmp => cmp.Export == parentAnimExport) is { } parentAnimComponent)
+        {
+            LocalToWorld = parentAnimComponent.LocalToWorld;
+        }
         if (Properties.GetProp<ObjectProperty>("SkeletalMesh")?.ResolveToExport(Export.FileRef, context.PackageCache) is ExportEntry meshExport)
         {
             SkeletalMesh skm = meshExport.GetBinaryData<SkeletalMesh>();
@@ -318,9 +325,8 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
                 Mesh = new ModelPreview<VertexType>(context, skm);
                 MeshIFP = meshExport.InstancedFullPath;
                 skinnedMeshRenderer = new SkinnedMeshRenderer();
-                skinnedMeshRenderer.BuildFromSkeletalMesh(meshExport.FileRef.Game, skm.LODModels[0]);
-                animPlayer = new SkeletonAnimPlayer();
-                animPlayer.SetSkeleton(skm);
+                skinnedMeshRenderer.BuildFromSkeletalMesh(meshExport.FileRef.Game, skm.LODModels[LOD]);
+                animPlayer = new AnimSequencePlayer(skm);
             }
             UpdateSelfLocalToWorld();
         }
@@ -359,6 +365,21 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
         }
         animPlayer.SetCurrentTime(pos);
         skinnedMeshRenderer.NeedsUpdate = true;
+    }
+
+    public void ApplyMorph(LegendaryExplorerCore.Unreal.Classes.BonePosition[] bonePositions, Vector3[][] morphLods)
+    {
+        if (Mesh is null) return;
+        if (morphLods?.Length > LOD)
+        {
+            skinnedMeshRenderer.UpdateVertexPositions(morphLods[LOD]);
+            skinnedMeshRenderer.NeedsUpdate = true;
+        }
+        if (bonePositions is not null && animPlayer is not null)
+        {
+            animPlayer.ApplyBonePositions(bonePositions);
+            skinnedMeshRenderer.NeedsUpdate = true;
+        }
     }
 
     public override void UpdateLocalToWorld()

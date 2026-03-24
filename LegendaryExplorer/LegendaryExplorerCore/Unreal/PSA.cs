@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
+using System.Text;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorerCore.Unreal
@@ -13,6 +15,10 @@ namespace LegendaryExplorerCore.Unreal
         public List<PSABone> Bones;
         public List<PSAAnimInfo> Infos;
         public List<PSAAnimKeys> Keys;
+        // populated from properties on the BioAnimSetData or the .config file
+        public bool RotationOnly;
+        public HashSet<string> UseTranslationBones;
+        public HashSet<string> ForceMeshTranslationBones;
 
         private const int version = 1999801;
 
@@ -119,10 +125,31 @@ namespace LegendaryExplorerCore.Unreal
 
             var data = animSeqs.Select(x => x.Export.GetProperty<ObjectProperty>("m_pBioAnimSetData").Value);
             var first = data.First();
+
+            var package = animSeqs[0].Export.FileRef;
+            if (!animSeqs.All(x => x.Export.FileRef == package))
+            {
+                throw new ArgumentException("AnimSequences are not all in the same package!", nameof(animSeqs));
+            }
             if (!data.All(x => x == first))
             {
                 throw new ArgumentException("AnimSequences do not all have matching animSet data!", nameof(animSeqs));
             }
+
+            var animDataEntry = package.GetEntry(first);
+            ExportEntry animDataExport;
+            if (animDataEntry is ExportEntry entry)
+            {
+                animDataExport = entry;
+            }
+            else
+            {
+                animDataExport = EntryImporter.ResolveImport((ImportEntry)animDataEntry, new PackageCache());
+            }
+
+            psa.RotationOnly = animDataExport.GetProperty<BoolProperty>("bAnimRotationOnly")?.Value ?? true;
+            psa.UseTranslationBones = [.. animDataExport?.GetProperty<ArrayProperty<NameProperty>>("UseTranslationBoneNames")?.Select(np => np.Value.Instanced) ?? []];
+            psa.ForceMeshTranslationBones = [.. animDataExport?.GetProperty<ArrayProperty<NameProperty>>("ForceMeshTranslationBoneNames")?.Select(np => np.Value.Instanced) ?? []];
 
             int numBones = animSeqs[0].Bones.Count;
             for (int i = 0; i < numBones; i++)
@@ -246,10 +273,45 @@ namespace LegendaryExplorerCore.Unreal
             return animSeqs;
         }
 
-        public void ToFile(string filePath)
+        public void ToFile(string filePath, bool outputConfig = true)
         {
             using var fs = new FileStream(filePath, FileMode.Create);
             Serialize(new SerializingContainer(fs, null));
+
+            if (outputConfig)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine("[RemoveTracks]");
+                if (RotationOnly)
+                {
+                    foreach (var (index, boneName) in Bones.Select((x, i) => (i, x.Name)))
+                    {
+                        if (!UseTranslationBones.Contains(boneName))
+                        {
+                            foreach (var anim in Infos)
+                            {
+                                // tell it to not import the translation track for this bone on this animation
+                                sb.AppendLine($"{anim.Name}.{index}=trans");
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var (index, boneName) in Bones.Select((x, i) => (i, x.Name)))
+                    {
+                        if (ForceMeshTranslationBones.Contains(boneName))
+                        {
+                            foreach (var anim in Infos)
+                            {
+                                // tell it to not import the translation track for this bone on this animation
+                                sb.AppendLine($"{anim.Name}.{index}=trans");
+                            }
+                        }
+                    }
+                }
+                File.WriteAllText(Path.ChangeExtension(filePath, "config"), sb.ToString());
+            }
         }
 
         public static PSA FromFile(string filePath)
