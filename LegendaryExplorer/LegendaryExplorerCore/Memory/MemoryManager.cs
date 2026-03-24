@@ -81,12 +81,12 @@ namespace LegendaryExplorerCore.Memory
         /// Gets a memory stream for use. If UsePooledMemory is false, this simply returns a new MemoryStream object.
         /// </summary>
         /// <returns></returns>
-        public static MemoryStream GetMemoryStream()
+        public static MemoryStream GetMemoryStream(int requestedSize = 0)
         {
             if (UsePooledMemory)
                 return MemManager.GetStream();
 
-            return new MemoryStream();
+            return new MemoryStream(requestedSize);
         }
 
         internal static MemoryStream GetMemoryStream(int bufferSize, string memoryStreamTag = null)
