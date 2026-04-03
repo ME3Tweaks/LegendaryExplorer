@@ -3,6 +3,7 @@ var class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini =
     [ "IniEntry", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini_1_1_ini_entry.html", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini_1_1_ini_entry" ],
     [ "Section", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini_1_1_section.html", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini_1_1_section" ],
     [ "GetValue", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html#a1c073b65a5b75f7258c01fa2d885f12b", null ],
+    [ "GetGlobalSection", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html#a1787dfe45c8e818bb05788e73ad61bdc", null ],
     [ "GetSection", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html#ae23cc7386124f9e307d8659a5e821f41", null ],
     [ "GetOrAddSection", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html#ab2323a34b9f9f8bd7a1036d7169b96a2", null ],
     [ "GetSection", "class_legendary_explorer_core_1_1_misc_1_1_duplicating_ini.html#a869c220e652961ba97fc6490864057cf", null ],

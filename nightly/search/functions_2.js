@@ -292,5 +292,6 @@ var searchData=
   ['ctoolexception_289',['CToolException',['../class_legendary_explorer_core_1_1_coalesced_1_1_exceptions_1_1_c_tool_exception.html#a9910be9a9ae709655e930344a2eeb4e5',1,'LegendaryExplorerCore::Coalesced::Exceptions::CToolException']]],
   ['customimportdependencydelegate_290',['CustomImportDependencyDelegate',['../class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a27fe942e4e1c257ddfcaa3d519b8bd65',1,'LegendaryExplorerCore::Packages::CloningImportingAndRelinking::RelinkerOptionsPackage']]],
   ['customrelinkuindexdelegate_291',['CustomRelinkUIndexDelegate',['../class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_relinker_options_package.html#a8d0b7c65e6617e07a18af0d9ac6979c7',1,'LegendaryExplorerCore::Packages::CloningImportingAndRelinking::RelinkerOptionsPackage']]],
-  ['customresourcefilename_292',['CustomResourceFileName',['../class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a0e1fd13eb12808fdff9ba69503c1db6f',1,'LegendaryExplorerCore::LegendaryExplorerCoreLib']]]
+  ['customresourcefilename_292',['CustomResourceFileName',['../class_legendary_explorer_core_1_1_legendary_explorer_core_lib.html#a0e1fd13eb12808fdff9ba69503c1db6f',1,'LegendaryExplorerCore::LegendaryExplorerCoreLib']]],
+  ['cylinder_293',['Cylinder',['../class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a198812e7c824c7599b500fda7b819804',1,'LegendaryExplorerCore::Unreal::CommonStructs']]]
 ];
