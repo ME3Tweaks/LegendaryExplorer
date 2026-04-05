@@ -5,10 +5,12 @@ using LegendaryExplorer.Misc.ExperimentsTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Save;
+using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
@@ -27,6 +29,7 @@ using System.Text;
 using System.Windows;
 using static LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter;
 using static LegendaryExplorerCore.Unreal.PSA;
+using Image = LegendaryExplorerCore.Textures.Image;
 using Texture2D = LegendaryExplorerCore.Unreal.Classes.Texture2D;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
@@ -36,28 +39,412 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
         // the Mass Effect binary mesh format enforces there be a maximum of 4 bone influences per vertex
         const int MaxBoneInfluences = 4;
 
+        public static void BulkImportTextures(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null)
+            {
+                return;
+            }
+
+         
+            var d = new OpenFileDialog
+            {
+                Filter = "All supported types|*.png;*.dds;*.tga;*.jpg;*.txt|text config file|*.txt|PNG files (*.png)|*.png|DDS files (*.dds)|*.dds|TGA files (*.tga)|*.tga|JPEG files (*.jpg)|*.jpg",
+                Title = "Select a texture or text config file. all textures in the directory will be imported if you select a texture"
+            };
+            if (d.ShowDialog() == true)
+            {
+                string configPath = null;
+                if (Path.GetExtension(d.FileName).Equals(".txt", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    configPath = d.FileName;
+                }
+                var directoryPath = Path.GetDirectoryName(d.FileName);
+
+                string[] textureExtensions = [".dds", ".png", ".bmp", ".tga", ".jpg"];
+                var files = Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories);
+
+                var excludeNonConfigImages = false;
+                CaseInsensitiveDictionary<List<string>> renames = [];
+                if (configPath != null)
+                {
+                    var lines = File.ReadAllLines(configPath);
+                    foreach (var line in lines)
+                    {
+                        var trimmedLine = line.Trim();
+                        if (trimmedLine == "*=")
+                        {
+                            excludeNonConfigImages = true;
+                            continue;
+                        }
+                        if (trimmedLine.StartsWith(';'))
+                        {
+                            continue;
+                        }
+                        var split = trimmedLine.Split('=');
+                        if (split.Length != 2)
+                        {
+                            continue;
+                        }
+                        var fileName = split[0].Trim();
+                        var exportName = split[1].Trim();
+                        if (renames.TryGetValue(fileName, out List<string> values))
+                        {
+                            if (exportName != "")
+                            {
+                                values.Add(exportName);
+                            }
+                        }
+                        else
+                        {
+                            if (exportName == "")
+                            {
+                                renames.Add(fileName, []);
+                            }
+                            else
+                            {
+                                renames.Add(fileName, [split[1]]);
+                            }
+                        }
+                    }
+                }
+
+                foreach (var file in files)
+                {
+                    var extension = Path.GetExtension(file);
+                    if (textureExtensions.Contains(extension.ToLower()))
+                    {
+                        var rawName = Path.GetFileNameWithoutExtension(file);
+                        // these will be combined with the diffs
+                        if (rawName.EndsWith("_spec"))
+                        {
+                            continue;
+                        }
+                        IEnumerable<string> names = [];
+                        // if it appears to be a normal map, import it as bc5 and non srgb
+                        // if it appears to be a diff, import it as dxt5 and srgb
+                        // it will be treated as a diff by default
+                        // if it is replacing a texture, the pixelFormat will be whatever it was before
+                        var isNorm = rawName.Contains("norm", StringComparison.InvariantCultureIgnoreCase) || rawName.Contains("nrm", StringComparison.InvariantCultureIgnoreCase);
+
+                        if (renames.TryGetValue(rawName, out List<string> values))
+                        {
+                            if (values.IsEmpty())
+                            {
+                                continue;
+                            }
+                            names = values;
+                        }
+                        else if (!excludeNonConfigImages)
+                        {
+                            rawName = rawName.Replace(" ", "_");
+                            names = [rawName];
+                        }
+                        else
+                        {
+                            continue;
+                        }
+
+                        var pixelFormat = isNorm ? PixelFormat.BC5 : PixelFormat.DXT5;
+                        var img = Image.LoadFromFile(file, isNorm? PixelFormat.BC5 : PixelFormat.ARGB);
+
+                        if (!isNorm)
+                        {
+                            var specFile = file.Replace("_Diff", "_Spec");
+                            // assume this file exists
+                            var specImg = Image.LoadFromFile(specFile, PixelFormat.G8);
+                            var diffData = img.mipMaps.First().data;
+                            var specData = specImg.mipMaps.First().data;
+                            // assume the dimensions match
+                            for (var i = 0; i < img.mipMaps.First().width * img.mipMaps.First().height; i++)
+                            {
+                                // convert the RGB channels from linear color to SRGB
+                                diffData[4 * i + 0] = LinearToSrgb(diffData[4 * i + 0]);
+                                diffData[4 * i + 1] = LinearToSrgb(diffData[4 * i + 1]);
+                                diffData[4 * i + 2] = LinearToSrgb(diffData[4 * i + 2]);
+                                // write the single channel from the spec to the alpha of the diff
+                                diffData[4 * i + 3] = specData[i];
+                            }
+                        }
+
+                        foreach (var name in names)
+                        {
+                            var textureExport = pew.Pcc.Exports.FirstOrDefault(x => x.ClassName == "Texture2D" && x.ObjectNameString.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+                            if (textureExport == null)
+                            {
+                                textureExport = Texture2D.CreateTexture(pew.Pcc, name, img.mipMaps.First().width, img.mipMaps.First().height, pixelFormat, true);
+                            }
+                            var props = textureExport.GetProperties();
+                            props.RemoveNamedProperty("TFCFileGuidHiRes");
+                            props.RemoveNamedProperty("TextureFileCacheName");
+                            if (isNorm)
+                            {
+                                props.AddOrReplaceProp(new BoolProperty(false, "SRGB"));
+                                props.AddOrReplaceProp(new EnumProperty("TC_NormalmapBC5", "TextureCompressionSettings", pew.Pcc.Game, "CompressionSettings"));
+                                props.AddOrReplaceProp(new EnumProperty("TEXTUREGROUP_Character_Norm", "TextureGroup", pew.Pcc.Game, "LODGroup"));
+                            }
+                            else
+                            {
+                                props.AddOrReplaceProp(new BoolProperty(true, "SRGB"));
+                                props.AddOrReplaceProp(new EnumProperty("TEXTUREGROUP_Character_Diff", "TextureGroup", pew.Pcc.Game, "LODGroup"));
+                            }
+                            new Texture2D(textureExport).Replace(img, props, isPackageStored: true, forcedNewFormat: isNorm? PixelFormat.BC5 : PixelFormat.DXT5);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static byte LinearToSrgb(byte input)
+        {
+            // normalize it a float 0-1
+            float linear = input / 255.0f;
+            float srgb;
+
+            // do the sRGB transformation
+            if (linear <= 0.0031308f)
+            {
+                srgb = linear * 12.92f;
+            }
+            else
+            {
+                srgb = 1.055f * MathF.Pow(linear, 1.0f / 2.4f) - 0.055f;
+            }
+
+            // put it back to byte format
+            return (byte)Math.Clamp(srgb * 255.0f, 0, 255);
+        }
+
+        //private static byte SrgbToLinear(byte input)
+        //{
+
+        //}
+
+        public static void GreenToAlpha(PackageEditorWindow pew)
+        {
+            if (GetSelectedItem(pew, "Texture2D", out var textureExport))
+            {
+                var existingTexture = new Texture2D(textureExport);
+                var existingTopMip = existingTexture.GetTopMip();
+                var w = existingTopMip.width;
+                var h = existingTopMip.height;
+                if (GetTextureFromFile(pew, out var image, out var _))
+                {
+                    if (image.mipMaps[0].width != w || image.mipMaps[0].height != h)
+                    {
+                        MessageBox.Show("Cannot replace texture: dimensions must exactly match.");
+                        return;
+                    }
+
+                    var oldBytes = Image.convertRawToARGB(Texture2D.GetTextureData(existingTopMip, pew.Pcc.Game), ref w, ref h, Image.getPixelFormatType(existingTexture.TextureFormat));
+
+                    // transfer the green channel of the new image to the alpha of the existing image
+                    for (int i = 0; i < w * h; i++)
+                    {
+                        // A
+                        image.mipMaps[0].data[4 * i + 3] = image.mipMaps[0].data[4 * i + 1];
+                        image.mipMaps[0].data[4 * i] = oldBytes[4 * i]; // R
+                        image.mipMaps[0].data[4 * i + 1] = oldBytes[4 * i + 1]; // G
+                        image.mipMaps[0].data[4 * i + 2] = oldBytes[4 * i + 2]; // B
+                    }
+
+                    var props = textureExport.GetProperties();
+                    existingTexture.Replace(image, props, isPackageStored: true);
+                }
+            }
+        }
+
+        public static void FixMorphTargets(PackageEditorWindow pew)
+        {
+            if (GetSelectedItem(pew, "MorphTargetSet", out var entry))
+            {
+                int[] neckSeamVertexIndices;
+                if (entry.ObjectNameString.Contains("hmf", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    neckSeamVertexIndices = pew.Pcc.Game switch
+                    {
+                        MEGame.LE1 or MEGame.LE2 => [97, 96, 150, 99, 98, 101, 100, 113, 114, 139, 213, 212, 186, 187, 172, 173, 170, 171, 223, 169, 140],
+                        _ => throw new NotImplementedException()
+                    };
+                }
+                else if (entry.ObjectNameString.Contains("hmm", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    neckSeamVertexIndices = pew.Pcc.Game switch
+                    {
+                        MEGame.LE1 or MEGame.LE2 => [1739, 1738, 1718, 1717, 1705, 1704, 1703, 1702, 1748, 1701, 1641, 1640, 1688, 1643, 1642, 1645, 1644, 1657, 1658, 1678, 1679],
+                        _ => throw new NotImplementedException()
+                    };
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+                var morphTargets = entry.GetProperty<ArrayProperty<ObjectProperty>>("Targets").Select(x => x.ResolveToEntry(pew.Pcc));
+                foreach (var target in morphTargets)
+                {
+                    if (target is ExportEntry targetExport)
+                    {
+                        var targetBin = ObjectBinary.From<MorphTarget>(targetExport);
+                        var lod = targetBin.MorphLODModels[0];
+                        //foreach (var lod in targetBin.MorphLODModels)
+                        //{
+                            // filter out the ones where it moves a neck seam vertex
+                            lod.Vertices = [.. lod.Vertices.Where(x => !neckSeamVertexIndices.Contains(x.SourceIdx))];
+                        //}
+                        targetExport.WriteBinary(targetBin);
+                    }
+                }
+            }
+
+        }
+
+        public static void GenerateM3to(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null)
+            {
+                return;
+            }
+            var sb = new StringBuilder(
+$@"{{
+    ""Game"": ""{pew.Pcc.Game}"",
+    ""Textures"": [
+");
+            var first = true;
+            foreach (var textureExport in pew.Pcc.Exports.Where(x => x.ClassName == "Texture2D"))
+            {
+                if (!first)
+                {
+                    sb.Append(',');
+                }
+                first = false;
+                sb.Append(
+$@"        {{
+            ""sourcepackage"": ""{pew.Pcc.FileNameNoExtension}.pcc"",
+            ""textureifp"": ""{textureExport.InstancedFullPath}""
+         }}");
+            }
+
+            sb.Append(@"
+    ]
+}
+");
+            Clipboard.SetText(sb.ToString());
+        }
+
+        public static void LazyDiffImport(PackageEditorWindow pew)
+        {
+            if (GetSelectedItem(pew, "Texture2D", out var textureExport))
+            {
+                var existingTexture = new Texture2D(textureExport);
+                var existingTopMip = existingTexture.GetTopMip();
+                var w = existingTopMip.width;
+                var h = existingTopMip.height;
+                if (GetTextureFromFile(pew, out var image, out var _))
+                {
+                    if (image.mipMaps[0].width != w || image.mipMaps[0].height != h)
+                    {
+                        MessageBox.Show("Cannot replace texture: dimensions must exactly match.");
+                        return;
+                    }
+
+                    var oldBytes = Image.convertRawToARGB(Texture2D.GetTextureData(existingTopMip, pew.Pcc.Game), ref w, ref h, Image.getPixelFormatType(existingTexture.TextureFormat));
+
+                    // transfer the alpha from the existing image to the new one
+                    for (int i = 0; i < w * h; i++)
+                    {
+                        image.mipMaps[0].data[4 * i + 3] = oldBytes[4 * i + 3];
+                    }
+
+                    var props = textureExport.GetProperties();
+                    existingTexture.Replace(image, props, isPackageStored: true);
+                }
+            }
+        }
+
+        public static void LazyNormImport(PackageEditorWindow pew)
+        {
+            if (GetSelectedItem(pew, "Texture2D", out var textureExport))
+            {
+                var existingTexture = new Texture2D(textureExport);
+                var existingTopMip = existingTexture.GetTopMip();
+                var w = existingTopMip.width;
+                var h = existingTopMip.height;
+                if (GetTextureFromFile(pew, out var image, out var _))
+                {
+                    if (image.mipMaps[0].origWidth / image.mipMaps[0].origHeight != w / h)
+                    {
+                        MessageBox.Show("Cannot replace texture: Aspect ratios must be the same.");
+                        return;
+                    }
+
+                    // invert the green channel
+                    for (int i = 0; i < w * h; i++)
+                    {
+                        image.mipMaps[0].data[4 * i + 1] = (byte)(255 - image.mipMaps[0].data[4 * i + 1]);
+                    }
+
+                    var props = textureExport.GetProperties();
+                    existingTexture.Replace(image, props, isPackageStored: true);
+                }
+            }
+        }
+
+        public static void FixLE2LockerBug(PackageEditorWindow pew)
+        {
+            //TODO
+            //if (GetSelectedMeshBinary(pew, out var meshExport, out var meshBin))
+            //{
+            //    meshBin.ClothingAssets = new int[meshBin.Materials.Length];
+            //    meshExport.WriteBinary(meshBin);
+            //}
+        }
+
+        public static void TexturesToPackageStored(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null)
+            {
+                return;
+            }
+            foreach (var textureExport in pew.Pcc.Exports.Where(x => x.ClassName == "Texture2D"))
+            {
+                var texture = new Texture2D(textureExport);
+                if (!texture.GetTopMip().IsPackageStored)
+                {
+                    var img = texture.ToImage(LegendaryExplorerCore.Textures.Image.getPixelFormatType(texture.TextureFormat));
+                    var props = textureExport.GetProperties();
+                    texture.Replace(img, props, isPackageStored: true);
+                }
+            }
+        }
+
+        public static void SelectedTextureToTfc(PackageEditorWindow pew)
+        {
+            if (GetSelectedItem(pew, "Texture2D", out var textureExport))
+            {
+                var texture = new Texture2D(textureExport);
+                if (texture.GetTopMip().IsPackageStored)
+                {
+                    string tfcName = GetTfcName(pew);
+                    if (tfcName == null)
+                    {
+                        // we were not able to determine the tfc name
+                        ShowError("unable to determine tfc name");
+                        return;
+                    }
+                    var img = texture.ToImage(LegendaryExplorerCore.Textures.Image.getPixelFormatType(texture.TextureFormat));
+                    var props = textureExport.GetProperties();
+                    texture.Replace(img, props, forcedTFCName: tfcName);
+                }
+            }
+        }
+
         public static void TexturesToTfc(PackageEditorWindow pew)
         {
             if (pew.Pcc == null)
             {
                 return;
             }
-            string tfcName = null;
-            var containingFolderInfo = Directory.GetParent(pew.Pcc.FilePath);
-            if (Path.GetFileName(containingFolderInfo.FullName).StartsWith("CookedPC"))
-            {
-                //Check next level up.
-                containingFolderInfo = containingFolderInfo.Parent;
-                if (containingFolderInfo != null &&
-                    Path.GetFileName(containingFolderInfo.FullName).StartsWith("DLC_"))
-                {
-                    var possibleDLCName = Path.GetFileName(containingFolderInfo.FullName);
-                    if (!MEDirectories.OfficialDLC(pew.Pcc.Game).Contains(possibleDLCName))
-                    {
-                        tfcName = $"Textures_{possibleDLCName}";
-                    }
-                }
-            }
+            string tfcName = GetTfcName(pew);
             if (tfcName == null)
             {
                 // we were not able to determine the tfc name
@@ -74,6 +461,27 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     texture.Replace(img, props, forcedTFCName: tfcName);
                 }
             }
+        }
+
+        private static string GetTfcName(PackageEditorWindow pew)
+        {
+            string tfcName = null;
+            var containingFolderInfo = Directory.GetParent(pew.Pcc.FilePath);
+            if (Path.GetFileName(containingFolderInfo.FullName).StartsWith("CookedPC"))
+            {
+                //Check next level up.
+                containingFolderInfo = containingFolderInfo.Parent;
+                if (containingFolderInfo != null &&
+                    Path.GetFileName(containingFolderInfo.FullName).StartsWith("DLC_"))
+                {
+                    var possibleDLCName = Path.GetFileName(containingFolderInfo.FullName);
+                    if (!MEDirectories.OfficialDLC(pew.Pcc.Game).Contains(possibleDLCName))
+                    {
+                        tfcName = $"Textures_{possibleDLCName}";
+                    }
+                }
+            }
+            return tfcName;
         }
 
         public static void MakeLODs(PackageEditorWindow pew)
@@ -2301,7 +2709,7 @@ defaultproperties
         private static Image<Rgba32> ToIsImage(Texture2D tex)
         {
             var rawPng = tex.GetPNG(tex.GetTopMip());
-            return Image.Load<Rgba32>(rawPng);
+            return SixLabors.ImageSharp.Image.Load<Rgba32>(rawPng);
         }
 
         private static Vector3 ToNormalVector(Rgba32 pixelValue)
@@ -2364,6 +2772,51 @@ defaultproperties
             {
                 return 0;
             }
+        }
+
+        private static bool GetTextureFromFile(PackageEditorWindow pew, out Image image, out string filePath)
+        {
+            OpenFileDialog selectImage = new()
+            {
+                Title = "Select texture file",
+#if WINDOWS
+                Filter = "All supported types|*.png;*.dds;*.tga;*.jpg|PNG files (*.png)|*.png|DDS files (*.dds)|*.dds|TGA files (*.tga)|*.tga|JPEG files (*.jpg)|*.jpg",
+#else
+                Filter = "Texture (DDS PNG BMP TGA)|*.dds;*.png;*.bmp;*.tga",
+#endif
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
+            var result = selectImage.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                filePath = selectImage.FileName;
+                try
+                {
+#if WINDOWS
+                    image = Image.LoadFromFile(filePath, PixelFormat.ARGB);
+#else
+                    image = new Image(filePath);
+#endif
+                    return true;
+                }
+                catch (TextureSizeNotPowerOf2Exception)
+                {
+                    MessageBox.Show("The width and height of a texture must both be a power of 2\n" +
+                                    "(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192 (LE only))", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    image = null;
+                    return false;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show($"Error: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    image = null;
+                    return false;
+                }
+            }
+
+            image = null;
+            filePath = null;
+            return false;
         }
 
         private static bool GetPsaFromFile(PackageEditorWindow pew, out PSA psa, out string filePath)
