@@ -183,20 +183,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             //}
             //else
             //{
-                if (sc.IsLoading)
-                {
-                    ReadChunks(sc);
-                }
-            //    else
-            //    {
-            //        // Commented out
-            //        //WriteChunks(sc);
-            //        //var endPos = sc.ms.Position;
-            //        //sc.ms.JumpTo(dataSizePos);
-            //        //sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
-            //        //sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
-            //        //sc.ms.JumpTo(endPos);
-            //    }
+            if (sc.IsLoading)
+            {
+                ReadChunks(sc);
+            }
+            else
+            {
+                // When saving, write all chunks (embedded files, HIRC, etc.) so changes are persisted.
+                WriteChunks(sc);
+            }
             //}
         }
 
