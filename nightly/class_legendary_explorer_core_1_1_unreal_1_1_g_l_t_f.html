@@ -113,6 +113,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a2f93eb4e77de87708f0b2a655e454f15"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a896eb81450730c61c7d33286747396c5"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f.html#a896eb81450730c61c7d33286747396c5">ExportMeshesToGltf</a> (IEnumerable&lt; <a class="el" href="class_legendary_explorer_core_1_1_packages_1_1_export_entry.html">ExportEntry</a> &gt; exports, string filePath, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f.html#ad55c8495511b0b999007af622fb3992e">MaterialExportLevel</a> materialSetting, string versionInfo=null)</td></tr>
 <tr class="separator:a896eb81450730c61c7d33286747396c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48cb8121b87d91f014c32a410a3fc08a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f.html#a48cb8121b87d91f014c32a410a3fc08a">ExportAnimSequenceToGltf</a> (<a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html">AnimSequence</a> animSeq, <a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_mesh_bone.html">MeshBone</a>[] refSkeleton, string filePath, string versionInfo=null)</td></tr>
+<tr class="separator:a48cb8121b87d91f014c32a410a3fc08a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8f160a0be6c1fd9405c32258909ff4e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f.html#ae8f160a0be6c1fd9405c32258909ff4e">QueryMeshes</a> (ModelRoot gltf, out IEnumerable&lt; string &gt; skeletalMeshes, out IEnumerable&lt; string &gt; staticMeshes)</td></tr>
 <tr class="memdesc:ae8f160a0be6c1fd9405c32258909ff4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find out what meshes are inside a glTF, if any.   <a href="class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f.html#ae8f160a0be6c1fd9405c32258909ff4e">More...</a><br /></td></tr>
 <tr class="separator:ae8f160a0be6c1fd9405c32258909ff4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -210,6 +212,54 @@ Static Public Member Functions</h2></td></tr>
           <td></td>
           <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f.html#ad55c8495511b0b999007af622fb3992e">MaterialExportLevel</a>&#160;</td>
           <td class="paramname"><em>materialSetting</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>versionInfo</em> = <code>null</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a48cb8121b87d91f014c32a410a3fc08a" name="a48cb8121b87d91f014c32a410a3fc08a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48cb8121b87d91f014c32a410a3fc08a">&#9670;&#160;</a></span>ExportAnimSequenceToGltf()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void LegendaryExplorerCore.Unreal.GLTF.ExportAnimSequenceToGltf </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html">AnimSequence</a>&#160;</td>
+          <td class="paramname"><em>animSeq</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_mesh_bone.html">MeshBone</a>[]&#160;</td>
+          <td class="paramname"><em>refSkeleton</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>filePath</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

@@ -88,6 +88,7 @@ var hierarchy =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.BoxSphereBounds", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_box_sphere_bounds.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.BspNode", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_node.html", null ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.BspSurf", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_surf.html", null ],
+    [ "LegendaryExplorerCore.Unreal.BVH", "class_legendary_explorer_core_1_1_unreal_1_1_b_v_h.html", null ],
     [ "LegendaryExplorerCore.Gammtek.Extensions.Collections.ByteArrayExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_extensions_1_1_collections_1_1_byte_array_extensions.html", null ],
     [ "LegendaryExplorerCore.Helpers.ByteArrayExtensions", "class_legendary_explorer_core_1_1_helpers_1_1_byte_array_extensions.html", null ],
     [ "LegendaryExplorerCore.Unreal.Bytecode", "class_legendary_explorer_core_1_1_unreal_1_1_bytecode.html", null ],

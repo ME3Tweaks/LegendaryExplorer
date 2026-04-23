@@ -8,6 +8,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequ
     [ "DecompressBioFixed48", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#a7aa11a5dcac547c1ee2357f73242e370", null ],
     [ "CompressAnimationDataAndUpdateProperties", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#a26595375cd050c41b98332b9cd1a0f4a", null ],
     [ "ReconstructQuaternionComponent", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#ac2d0511fe94b4b4dc7412d0a61b375ec", null ],
+    [ "GetPositionTrackFilter", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#a1a6535cf94a0239269db0ec555dc4c80", null ],
     [ "ValidRotationCompressionFormats", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#a1949fe020a591eb8f5075d81d02289ce", null ],
     [ "RawAnimationData", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#ab867ddd815e64e58199612cc1f082178", null ],
     [ "CompressedAnimationData", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_anim_sequence.html#ace803eee0f1d140e33d9e1d7b17ad34e", null ],
