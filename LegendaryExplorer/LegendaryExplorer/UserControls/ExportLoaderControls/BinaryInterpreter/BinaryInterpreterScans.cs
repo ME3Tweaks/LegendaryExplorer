@@ -49,7 +49,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private BinInterpNode ReadMaterialUniformExpression(EndianReader bin, string prefix = "")
         {
             NameReference expressionType = bin.ReadNameReference(Pcc);
-            var node = new BinInterpNode(bin.Position - 8, $"{prefix}{(string.IsNullOrEmpty(prefix) ? "" : ": ")}{expressionType.Instanced}");
+            string parameterName;
+            var node = new BinInterpNode(bin.Position - 8, $"{prefix}{(string.IsNullOrEmpty(prefix) ? "" : ": ")}{expressionType.Instanced}") { Length = 8 };
 
             switch (expressionType.Name)
             {
@@ -93,7 +94,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     //intentionally left blank. outputs current real-time, has no parameters
                     break;
                 case "FMaterialUniformExpressionScalarParameter":
-                    node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}"));
+                    parameterName = bin.ReadNameReference(Pcc).Instanced;
+                    node.Header += $" ({parameterName})";
+                    node.Items.Add(new BinInterpNode(bin.Position - 8, $"ParameterName: {parameterName}") { Length = 8 });
                     node.Items.Add(MakeFloatNode(bin, "DefaultValue"));
                     break;
                 case "FMaterialUniformExpressionSine":
@@ -116,14 +119,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     node.Items.Add(MakeEntryNode(bin, "TextureIndex"));
                     break;
                 case "FMaterialUniformExpressionTextureParameter":
-                    node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}"));
+                    parameterName = bin.ReadNameReference(Pcc).Instanced;
+                    node.Header += $" ({parameterName})";
+                    node.Items.Add(new BinInterpNode(bin.Position - 8, $"ParameterName: {parameterName}") { Length = 8 });
                     node.Items.Add(MakeInt32Node(bin, "TextureIndex"));
                     break;
                 case "FMaterialUniformExpressionTime":
                     //intentionally left blank. outputs current scene time, has no parameters
                     break;
                 case "FMaterialUniformExpressionVectorParameter":
-                    node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}"));
+                    parameterName = bin.ReadNameReference(Pcc).Instanced;
+                    node.Header += $" ({parameterName})";
+                    node.Items.Add(new BinInterpNode(bin.Position - 8, $"ParameterName: {parameterName}") { Length = 8 });
                     node.Items.Add(MakeFloatNode(bin, "Default R"));
                     node.Items.Add(MakeFloatNode(bin, "Default G"));
                     node.Items.Add(MakeFloatNode(bin, "Default B"));
