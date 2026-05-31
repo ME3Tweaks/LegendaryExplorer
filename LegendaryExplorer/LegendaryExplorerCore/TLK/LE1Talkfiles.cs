@@ -39,7 +39,7 @@ namespace LegendaryExplorerCore.TLK
         {
             string s = "No Data";
 
-            if (package.Game == MEGame.LE1)
+            if (package?.Game == MEGame.LE1)
             {
                 // LE1 - First check override TLKs in priority order (highest to lowest priority)
                 // LoadedTlks is in mount priority order (lowest to highest), so iterate in reverse
