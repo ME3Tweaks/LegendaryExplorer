@@ -1,86 +1,46 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.Primitives;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows;
-using ClosedXML.Excel;
-using LegendaryExplorer.Tools.TlkManagerNS;
-using LegendaryExplorerCore.Gammtek.Extensions;
-using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Unreal;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
     public static class Bio2DAExtended
     {
-        public static void Write2DAToExcel(this Bio2DA twoDA, string path)
+        public static void Write2DAToCSV(this Bio2DA twoDA, string path)
         {
-            var workbook = new XLWorkbook();
-            var worksheet = workbook.Worksheets.Add(twoDA.Export.ObjectName.Name.Truncate(30));
+            using StreamWriter writer = new StreamWriter(path, false, new UTF8Encoding(true));
 
-            //write labels
+            writer.WriteLine(string.Join(",", new[] { "" }.Concat(twoDA.ColumnNames).Select(EscapeCsvField)));
+
+            // Write row labels in the first column, followed by the 2DA cell values.
             for (int rowindex = 0; rowindex < twoDA.RowCount; rowindex++)
             {
-                worksheet.Cell(rowindex + 2, 1).Value = twoDA.RowNames[rowindex];
-            }
+                var fields = new List<string>(twoDA.ColumnCount + 1)
+                {
+                    twoDA.RowNames[rowindex]
+                };
 
-            for (int colindex = 0; colindex < twoDA.ColumnCount; colindex++)
-            {
-                worksheet.Cell(1, colindex + 2).Value = twoDA.ColumnNames[colindex];
-            }
-
-            //write data
-            for (int rowindex = 0; rowindex < twoDA.RowCount; rowindex++)
-            {
                 for (int colindex = 0; colindex < twoDA.ColumnCount; colindex++)
                 {
-                    if (twoDA.Cells[rowindex, colindex] != null)
-                    {
-                        var cell = twoDA.Cells[rowindex, colindex];
-                        worksheet.Cell(rowindex + 2, colindex + 2).Value = cell.DisplayableValue;
-                        if (cell.Type == Bio2DACell.Bio2DADataType.TYPE_INT && cell.IntValue > 0)
-                        {
-                            int stringId = cell.IntValue;
-                            //Unsure if we will have reference to filerefs here depending on which constructor was used. Hopefully we will.
-                            string tlkLookup = TLKManagerWPF.GlobalFindStrRefbyID(stringId, twoDA.Export.FileRef.Game, twoDA.Export.FileRef);
-                            if (tlkLookup != "No Data" && tlkLookup != "")
-                            {
-                                worksheet.Cell(rowindex + 2, colindex + 2).GetComment().AddText(tlkLookup);
-                            }
-                        }
-                    }
+                    fields.Add(twoDA.Cells[rowindex, colindex]?.DisplayableValue ?? "");
                 }
-            }
 
-            worksheet.SheetView.FreezeRows(1);
-            worksheet.SheetView.FreezeColumns(1);
-            worksheet.Columns().AdjustToContents();
-            workbook.SaveAs(path);
+                writer.WriteLine(string.Join(",", fields.Select(EscapeCsvField)));
+            }
         }
 
-        public static Bio2DA ReadExcelTo2DA(ExportEntry export, string Filename)
+        public static Bio2DA ReadCSVTo2DA(ExportEntry export, string filename)
         {
-            var Workbook = new XLWorkbook(Filename);
-            IXLWorksheet iWorksheet;
-            if (Workbook.Worksheets.Count() > 1)
+            var csvRows = ReadCsvRows(filename);
+            if (csvRows.Count == 0)
             {
-                try
-                {
-                    iWorksheet = Workbook.Worksheet("Import");
-                }
-                catch
-                {
-                    MessageBox.Show("Import Sheet not found");
-                    return null;
-                }
-            }
-            else
-            {
-                iWorksheet = Workbook.Worksheet(1);
+                MessageBox.Show("CSV file is empty");
+                return null;
             }
 
             //STEP 1 Clear existing data
@@ -92,24 +52,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //STEP 2 Read columns and row names
 
             //Column names
-            IXLRow hRow = iWorksheet.Row(1);
             var colNames = new List<string>();
             var rowNames = new List<string>();
-            foreach (IXLCell cell in hRow.Cells(hRow.FirstCellUsed().Address.ColumnNumber, hRow.LastCellUsed().Address.ColumnNumber))
+            for (int columnIndex = 1; columnIndex < csvRows[0].Count; columnIndex++)
             {
-                if (cell.Address.ColumnNumber > 1) //ignore excel column 1
-                {
-                    colNames.Add(cell.Value.ToString());
-                }
+                colNames.Add(csvRows[0][columnIndex]);
             }
 
             //Row names 
-            IXLColumn column = iWorksheet.Column(1);
-            foreach (IXLCell cell in column.Cells())
+            for (int rowIndex = 1; rowIndex < csvRows.Count; rowIndex++)
             {
-                if (cell.Address.RowNumber > 1) //ignore excel row 1
+                if (csvRows[rowIndex].Count > 0)
                 {
-                    rowNames.Add(cell.Value.ToString());
+                    rowNames.Add(csvRows[rowIndex][0]);
                 }
             }
 
@@ -132,29 +87,29 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 bio2da.AddRow(row);
 
             //Step 3 Populate the table.
-            //indices here are excel based. Subtract two to get Bio2DA based.
-            for (int rowIndex = 2; rowIndex < (bio2da.RowCount + 2); rowIndex++)
+            //indices here are CSV based. Subtract one to get Bio2DA based.
+            for (int rowIndex = 1; rowIndex < bio2da.RowCount + 1; rowIndex++)
             {
-                for (int columnIndex = 2; columnIndex < bio2da.ColumnCount + 2; columnIndex++)
+                List<string> csvRow = csvRows[rowIndex];
+                for (int columnIndex = 1; columnIndex < bio2da.ColumnCount + 1; columnIndex++)
                 {
-                    IXLCell xlCell = iWorksheet.Cell(rowIndex, columnIndex);
-                    string xlCellContents = xlCell.Value.ToString();
-                    if (!string.IsNullOrEmpty(xlCellContents))
+                    string csvCellContents = columnIndex < csvRow.Count ? csvRow[columnIndex] : "";
+                    if (!string.IsNullOrEmpty(csvCellContents))
                     {
                         Bio2DACell newCell;
-                        if (int.TryParse(xlCellContents, out int intVal))
+                        if (int.TryParse(csvCellContents, out int intVal))
                         {
                             newCell = new Bio2DACell(intVal) { package = export.FileRef };
                         }
-                        else if (float.TryParse(xlCellContents, out float floatVal))
+                        else if (float.TryParse(csvCellContents, out float floatVal))
                         {
                             newCell = new Bio2DACell(floatVal) { package = export.FileRef };
                         }
                         else
                         {
-                            newCell = new Bio2DACell(xlCellContents, export.FileRef) { package = export.FileRef };
+                            newCell = new Bio2DACell(csvCellContents, export.FileRef) { package = export.FileRef };
                         }
-                        bio2da[rowIndex - 2, columnIndex - 2] = newCell;
+                        bio2da[rowIndex - 1, columnIndex - 1] = newCell;
                     }
                     else
                     {
@@ -163,6 +118,88 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 }
             }
             return bio2da;
+        }
+
+        private static string EscapeCsvField(string field)
+        {
+            field ??= "";
+            return field.IndexOfAny(new[] { ',', '"', '\r', '\n' }) >= 0
+                       ? $"\"{field.Replace("\"", "\"\"")}\""
+                       : field;
+        }
+
+        private static List<List<string>> ReadCsvRows(string filename)
+        {
+            string csv = File.ReadAllText(filename);
+            var rows = new List<List<string>>();
+            var row = new List<string>();
+            var field = new StringBuilder();
+            bool inQuotes = false;
+
+            for (int i = 0; i < csv.Length; i++)
+            {
+                char c = csv[i];
+
+                if (inQuotes)
+                {
+                    if (c == '"')
+                    {
+                        if (i + 1 < csv.Length && csv[i + 1] == '"')
+                        {
+                            field.Append('"');
+                            i++;
+                        }
+                        else
+                        {
+                            inQuotes = false;
+                        }
+                    }
+                    else
+                    {
+                        field.Append(c);
+                    }
+                }
+                else
+                {
+                    switch (c)
+                    {
+                        case '"':
+                            inQuotes = true;
+                            break;
+                        case ',':
+                            row.Add(field.ToString());
+                            field.Clear();
+                            break;
+                        case '\r':
+                            if (i + 1 < csv.Length && csv[i + 1] == '\n')
+                            {
+                                i++;
+                            }
+                            row.Add(field.ToString());
+                            field.Clear();
+                            rows.Add(row);
+                            row = new List<string>();
+                            break;
+                        case '\n':
+                            row.Add(field.ToString());
+                            field.Clear();
+                            rows.Add(row);
+                            row = new List<string>();
+                            break;
+                        default:
+                            field.Append(c);
+                            break;
+                    }
+                }
+            }
+
+            if (field.Length > 0 || row.Count > 0)
+            {
+                row.Add(field.ToString());
+                rows.Add(row);
+            }
+
+            return rows;
         }
     }
 }

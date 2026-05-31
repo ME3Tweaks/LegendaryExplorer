@@ -170,16 +170,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanCommit2DA() => Table2DA?.IsModified ?? false;
 
-        private void ExportToExcel_Click(object sender, RoutedEventArgs e)
+        private void ExportToCSV_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog d = new SaveFileDialog
             {
-                Filter = "Excel spreadsheet|*.xlsx",
+                Filter = "CSV files (*.csv)|*.csv",
+                DefaultExt = ".csv",
                 FileName = CurrentLoadedExport.ObjectName
             };
             if (d.ShowDialog() == true)
             {
-                Table2DA.Write2DAToExcel(d.FileName);
+                Table2DA.Write2DAToCSV(d.FileName);
                 MessageBox.Show("Done");
             }
         }
@@ -194,13 +195,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //Nothing to dispose in this control
         }
 
-        private void ImportToExcel_Click(object sender, RoutedEventArgs e)
+        private void ImportFromCSV_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Excel sheet must be formatted so: \r\nFIRST ROW must have the same column headings as current sheet. \r\nFIRST COLUMN has row numbers. \r\nIf using a multisheet excel file, the sheet tab must be named 'Import'.", "IMPORTANT INFORMATION:");
+            MessageBox.Show("CSV file must be formatted so: \r\nFIRST ROW must have the same column headings as current sheet. \r\nFIRST COLUMN has row numbers.", "IMPORTANT INFORMATION:");
             OpenFileDialog oDlg = new OpenFileDialog
             {
-                Filter = "Excel Files (*.xlsx)|*.xlsx",
-                Title = "Import Excel table",
+                Filter = "CSV files (*.csv)|*.csv",
+                Title = "Import CSV table",
                 CustomPlaces = AppDirectories.GameCustomPlaces
             };
 
@@ -208,7 +209,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 if (MessageBox.Show("This will overwrite the existing 2DA table.", "WARNING", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
-                    Bio2DA resulting2DA = Bio2DAExtended.ReadExcelTo2DA(CurrentLoadedExport, oDlg.FileName);
+                    Bio2DA resulting2DA = Bio2DAExtended.ReadCSVTo2DA(CurrentLoadedExport, oDlg.FileName);
                     if (resulting2DA != null)
                     {
                         if (resulting2DA.IsIndexed != Table2DA.IsIndexed)
