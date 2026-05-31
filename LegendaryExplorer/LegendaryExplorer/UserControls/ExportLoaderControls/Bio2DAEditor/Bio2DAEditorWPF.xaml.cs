@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -170,6 +171,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanCommit2DA() => Table2DA?.IsModified ?? false;
 
+        private void ExportToExcel_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog d = new SaveFileDialog
+            {
+                Filter = "Excel spreadsheet|*.xlsx",
+                FileName = CurrentLoadedExport.ObjectName
+            };
+            if (d.ShowDialog() == true)
+            {
+                Table2DA.Write2DAToExcel(d.FileName);
+                MessageBox.Show("Done");
+            }
+        }
+
         private void ExportToCSV_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog d = new SaveFileDialog
@@ -195,21 +210,33 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //Nothing to dispose in this control
         }
 
-        private void ImportFromCSV_Click(object sender, RoutedEventArgs e)
+        private void ImportFromExcelOrCSV_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("CSV file must be formatted so: \r\nFIRST ROW must have the same column headings as current sheet. \r\nFIRST COLUMN has row numbers.", "IMPORTANT INFORMATION:");
+            MessageBox.Show("File must be formatted so: \r\nFIRST ROW must have the same column headings as current sheet. \r\nFIRST COLUMN has row numbers. \r\nIf using a multisheet excel file, the sheet tab must be named 'Import'.", "IMPORTANT INFORMATION:");
             OpenFileDialog oDlg = new OpenFileDialog
             {
-                Filter = "CSV files (*.csv)|*.csv",
-                Title = "Import CSV table",
+                Filter = "CSV files (*.csv)|*.csv|Excel spreadsheet (*.xlsx)|*.xlsx",
+                Title = "Import data table",
                 CustomPlaces = AppDirectories.GameCustomPlaces
             };
 
             if (oDlg.ShowDialog() == true)
             {
+                string fileName = oDlg.FileName;
+                string extension = Path.GetExtension(fileName).ToLowerInvariant();
+
                 if (MessageBox.Show("This will overwrite the existing 2DA table.", "WARNING", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
-                    Bio2DA resulting2DA = Bio2DAExtended.ReadCSVTo2DA(CurrentLoadedExport, oDlg.FileName);
+                    Bio2DA resulting2DA = null;
+                    if (extension == ".csv")
+                    {
+                        resulting2DA = Bio2DAExtended.ReadCSVTo2DA(CurrentLoadedExport, fileName);
+                    }
+                    else if (extension == ".xlsx")
+                    {
+                        resulting2DA = Bio2DAExtended.ReadExcelTo2DA(CurrentLoadedExport, fileName);
+                    }
+
                     if (resulting2DA != null)
                     {
                         if (resulting2DA.IsIndexed != Table2DA.IsIndexed)
