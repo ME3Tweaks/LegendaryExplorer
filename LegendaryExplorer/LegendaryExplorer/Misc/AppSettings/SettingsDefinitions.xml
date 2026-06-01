@@ -25,6 +25,7 @@
            friendlyName="Show metadata in tree (if available)"/>
   <setting name="PackageEditor_ShowExperiments" type="bool" defaultvalue="false" category="Package Editor"
            friendlyName="Show experimental features"/>
+  <setting name="PackageEditor_BoundExperimentShortcuts" type="Dictionary&lt;string, string&gt;" defaultvalue="new Dictionary&lt;string, string&gt;()"/>
 
 
   <!-- Sequence Editor specific settings -->
