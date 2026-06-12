@@ -62,6 +62,11 @@ namespace LegendaryExplorer.Misc.AppSettings
             get => _packageeditor_showexperiments;
             set => SetProperty(ref _packageeditor_showexperiments, value);
         }
+        private static Dictionary<string, string> _packageeditor_boundexperimentshortcuts = new Dictionary<string, string>();
+        public static Dictionary<string, string> PackageEditor_BoundExperimentShortcuts {
+            get => _packageeditor_boundexperimentshortcuts;
+            set => SetProperty(ref _packageeditor_boundexperimentshortcuts, value);
+        }
         private static int _sequenceeditor_maxvarstringlength = 40;
         public static int SequenceEditor_MaxVarStringLength {
             get => _sequenceeditor_maxvarstringlength;
@@ -383,11 +388,11 @@ namespace LegendaryExplorer.Misc.AppSettings
         public static bool TryGetSetting(Dictionary<string, object> settings, string key, bool defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue && bool.TryParse(svalue, out var bvalue) ? bvalue : defaultValue;
         public static string TryGetSetting(Dictionary<string, object> settings, string key, string defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue ? svalue : defaultValue;
         public static List<string> TryGetSetting(Dictionary<string, object> settings, string key, List<string> defaultValue) => settings.TryGetValue(key, out var value) && value is JArray listValue ? listValue.ToObject<List<string>>() : defaultValue;
-        public static Dictionary<string, ThemeData> TryGetSetting(Dictionary<string, object> settings, string key, Dictionary<string, ThemeData> defaultValue)
+        public static Dictionary<string, T> TryGetSetting<T>(Dictionary<string, object> settings, string key, Dictionary<string, T> defaultValue)
         {
             if (settings.TryGetValue(key, out var value) && value is JObject jObj)
             {
-                try { return jObj.ToObject<Dictionary<string, ThemeData>>() ?? defaultValue; }
+                try { return jObj.ToObject<Dictionary<string, T>>() ?? defaultValue; }
                 catch { return defaultValue; }
             }
             return defaultValue;
@@ -419,6 +424,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             PackageEditor_ShowExportTypeIcons = TryGetSetting(settingsJson, "packageeditor_showexporttypeicons", true);
             PackageEditor_ShowTreeEntrySubText = TryGetSetting(settingsJson, "packageeditor_showtreeentrysubtext", true);
             PackageEditor_ShowExperiments = TryGetSetting(settingsJson, "packageeditor_showexperiments", false);
+            PackageEditor_BoundExperimentShortcuts = TryGetSetting(settingsJson, "packageeditor_boundexperimentshortcuts", new Dictionary<string, string>());
             SequenceEditor_MaxVarStringLength = TryGetSetting(settingsJson, "sequenceeditor_maxvarstringlength", 40);
             SequenceEditor_ShowParsedInfo = TryGetSetting(settingsJson, "sequenceeditor_showparsedinfo", true);
             SequenceEditor_AutoSaveViewV2 = TryGetSetting(settingsJson, "sequenceeditor_autosaveviewv2", true);
@@ -502,6 +508,7 @@ namespace LegendaryExplorer.Misc.AppSettings
                     settingsJson["packageeditor_showexporttypeicons"] = PackageEditor_ShowExportTypeIcons.ToString();
                     settingsJson["packageeditor_showtreeentrysubtext"] = PackageEditor_ShowTreeEntrySubText.ToString();
                     settingsJson["packageeditor_showexperiments"] = PackageEditor_ShowExperiments.ToString();
+                    settingsJson["packageeditor_boundexperimentshortcuts"] = PackageEditor_BoundExperimentShortcuts;
                     settingsJson["sequenceeditor_maxvarstringlength"] = SequenceEditor_MaxVarStringLength.ToString();
                     settingsJson["sequenceeditor_showparsedinfo"] = SequenceEditor_ShowParsedInfo.ToString();
                     settingsJson["sequenceeditor_autosaveviewv2"] = SequenceEditor_AutoSaveViewV2.ToString();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.Tools.CustomFilesManager;
 using LegendaryExplorer.Tools.LiveLevelEditor;
@@ -38,10 +40,15 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
     /// </summary>
     public partial class ExperimentsMenuControl : MenuItem
     {
+        private readonly KeyGestureConverter keyGestureConverter = new();
+        private readonly Dictionary<KeyBinding, MenuItem> boundExperimentKeyBindings = [];
+
         public ExperimentsMenuControl()
         {
             LoadCommands();
             InitializeComponent();
+            Loaded += ExperimentsMenuControl_Loaded;
+            Unloaded += ExperimentsMenuControl_Unloaded;
         }
 
         public ICommand ForceReloadPackageCommand { get; set; }
@@ -49,6 +56,204 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void LoadCommands()
         {
             ForceReloadPackageCommand = new GenericCommand(ForceReloadPackageWithoutSharing, CanForceReload);
+        }
+
+        private void ExperimentsMenuControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            ApplyBoundExperimentKeyBindings();
+        }
+
+        private void ExperimentsMenuControl_Unloaded(object sender, RoutedEventArgs e)
+        {
+            RemoveBoundExperimentKeyBindings();
+        }
+
+        private void BindExperimentToKey_Click(object sender, RoutedEventArgs e)
+        {
+            var experiments = GetExperimentShortcutTargets();
+            if (!experiments.Any())
+            {
+                MessageBox.Show(GetPEWindow(), "No bindable experiments were found.", "Bind Experiment to Key", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var dialog = ExperimentKeyBindingDialog.Show(this, experiments, Settings.PackageEditor_BoundExperimentShortcuts);
+            if (!dialog.ShouldSaveBindings)
+            {
+                return;
+            }
+
+            var conflictingShortcut = dialog.Bindings.Values.FirstOrDefault(IsShortcutAlreadyUsed);
+            if (conflictingShortcut != null)
+            {
+                MessageBox.Show(GetPEWindow(), $"{conflictingShortcut} is already used by Package Editor.", "Bind Experiment to Key", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            Settings.PackageEditor_BoundExperimentShortcuts = new Dictionary<string, string>(dialog.Bindings);
+            Settings.Save();
+            ApplyBoundExperimentKeyBindings();
+        }
+
+        private void ApplyBoundExperimentKeyBindings()
+        {
+            RemoveBoundExperimentKeyBindings();
+
+            var experiments = GetExperimentShortcutTargets();
+            foreach (var binding in Settings.PackageEditor_BoundExperimentShortcuts)
+            {
+                var target = experiments.FirstOrDefault(x => x.StoredPath == binding.Key);
+                if (target == null || !TryParseKeyGesture(binding.Value, out var gesture))
+                {
+                    continue;
+                }
+
+                target.MenuItem.InputGestureText = binding.Value;
+                var menuItem = target.MenuItem;
+                var keyBinding = new KeyBinding(new GenericCommand(() => ExecuteBoundExperiment(menuItem), () => CanExecuteBoundExperiment(menuItem)), gesture);
+                GetPEWindow()?.InputBindings.Add(keyBinding);
+                boundExperimentKeyBindings[keyBinding] = menuItem;
+            }
+        }
+
+        private void RemoveBoundExperimentKeyBindings()
+        {
+            if (GetPEWindow() is { } peWindow)
+            {
+                foreach (var keyBinding in boundExperimentKeyBindings.Keys)
+                {
+                    peWindow.InputBindings.Remove(keyBinding);
+                }
+            }
+
+            boundExperimentKeyBindings.Clear();
+
+            foreach (var target in GetExperimentShortcutTargets())
+            {
+                target.MenuItem.InputGestureText = "";
+            }
+        }
+
+        private bool CanExecuteBoundExperiment(MenuItem menuItem)
+        {
+            return GetPEWindow()?.ShowExperiments == true
+                   && menuItem?.IsEnabled == true
+                   && (menuItem.Command == null || menuItem.Command.CanExecute(menuItem.CommandParameter));
+        }
+
+        private static void ExecuteBoundExperiment(MenuItem menuItem)
+        {
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            if (menuItem.Command != null)
+            {
+                var parameter = menuItem.CommandParameter;
+                if (menuItem.Command.CanExecute(parameter))
+                {
+                    menuItem.Command.Execute(parameter);
+                }
+
+                return;
+            }
+
+            menuItem.RaiseEvent(new RoutedEventArgs(ClickEvent, menuItem));
+        }
+
+        private List<ExperimentShortcutTarget> GetExperimentShortcutTargets()
+        {
+            var targets = new List<ExperimentShortcutTarget>();
+            foreach (var item in Items.OfType<MenuItem>())
+            {
+                CollectExperimentShortcutTargets(item, [], targets);
+            }
+
+            return targets;
+        }
+
+        private void CollectExperimentShortcutTargets(MenuItem item, List<string> parentPath, List<ExperimentShortcutTarget> targets)
+        {
+            if (item == BindExperimentToKey_MenuItem || item.Visibility != Visibility.Visible || (!item.IsEnabled && item.Command == null))
+            {
+                return;
+            }
+
+            var header = GetMenuItemHeader(item);
+            if (string.IsNullOrWhiteSpace(header))
+            {
+                return;
+            }
+
+            var path = parentPath.Append(header).ToList();
+            var childMenuItems = item.Items.OfType<MenuItem>().Where(x => x.Visibility == Visibility.Visible).ToList();
+            if (childMenuItems.Any())
+            {
+                foreach (var child in childMenuItems)
+                {
+                    CollectExperimentShortcutTargets(child, path, targets);
+                }
+            }
+            else
+            {
+                targets.Add(new ExperimentShortcutTarget(string.Join(" > ", path), JsonConvert.SerializeObject(path), item));
+            }
+        }
+
+        private static string GetMenuItemHeader(MenuItem item)
+        {
+            return item.Header?.ToString();
+        }
+
+        private bool TryParseKeyGesture(string gestureText, out KeyGesture gesture)
+        {
+            gesture = null;
+            if (string.IsNullOrWhiteSpace(gestureText))
+            {
+                return false;
+            }
+
+            try
+            {
+                gesture = keyGestureConverter.ConvertFromString(null, CultureInfo.InvariantCulture, gestureText) as KeyGesture;
+                return gesture != null;
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+        }
+
+        private bool IsShortcutAlreadyUsed(string gestureText)
+        {
+            if (!TryParseKeyGesture(gestureText, out var newGesture) || GetPEWindow() is not { } peWindow)
+            {
+                return false;
+            }
+
+            foreach (var keyBinding in peWindow.InputBindings.OfType<KeyBinding>())
+            {
+                if (boundExperimentKeyBindings.ContainsKey(keyBinding) || keyBinding.Gesture is not KeyGesture existingGesture)
+                {
+                    continue;
+                }
+
+                if (existingGesture.Key == newGesture.Key && existingGesture.Modifiers == newGesture.Modifiers)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private static bool warnedOfReload = false;
