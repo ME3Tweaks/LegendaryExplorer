@@ -195,6 +195,36 @@ namespace LegendaryExplorerCore.Shaders
             }
         }
 
+        public static HashSet<StaticParameterSet> GetAllStaticParameterSets(MEGame game, string gamePathOverride = null)
+        {
+            var paramSets = new HashSet<StaticParameterSet>();
+            string filePath = ShaderFilePath(game);
+            if (File.Exists(filePath))
+            {
+                using FileStream fs = File.OpenRead(filePath);
+                using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad: true);
+                ReadNames(fs, shaderCachePackage);
+                int offsetOfShaderCacheOffset = shaderCachePackage.ExportOffset + 36;
+                PopulateOffsets(game, offsetOfShaderCacheOffset);
+                var sc = new SerializingContainer(fs, shaderCachePackage, true);
+                sc.ms.JumpTo(MaterialShaderMapsOffset(game, gamePathOverride));
+                int count = fs.ReadInt32();
+                for (int i = 0; i < count; i++)
+                {
+                    StaticParameterSet sps = null;
+                    sc.Serialize(ref sps);
+                    paramSets.Add(sps);
+                    if (game >= MEGame.ME3)
+                    {
+                        sc.ms.Skip(8);
+                    }
+                    int nextMSMOffset = sc.ms.ReadInt32();
+                    sc.ms.Skip(nextMSMOffset - sc.ms.Position);
+                }
+            }
+            return paramSets;
+        }
+
         public static MaterialShaderMap GetMaterialShaderMap(MEGame game, StaticParameterSet staticParameterSet, out int fileOffset, string gamePathOverride = null)
         {
             fileOffset = -1;

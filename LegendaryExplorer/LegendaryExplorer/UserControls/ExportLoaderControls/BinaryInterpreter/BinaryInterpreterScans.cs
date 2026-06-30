@@ -235,6 +235,236 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return subnodes;
         }
 
+
+        private List<ITreeItem> StartBioPersistentCookerDataScan(byte[] data, ref int binarystart)
+        {
+            // 6/30/26 - verified against LE3 only
+
+            var subnodes = new List<ITreeItem>();
+
+            if (binarystart >= data.Length)
+            {
+                return subnodes;
+            }
+
+            int pos = binarystart;
+            var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+            bin.JumpTo(binarystart);
+            try
+            {
+                var unkList = MakeInt32Node(bin, "unk list 0 count", out int count);
+                subnodes.Add(unkList);
+
+                for (int i = 0; i < count; i++)
+                {
+                    unkList.Items.Add(MakeStringNode(bin, $"[{i}] string"));
+                    unkList.Items.Add(MakeInt32Node(bin, $"[{i}] unk1"));
+                    unkList.Items.Add(MakeInt32Node(bin, $"[{i}] unk2"));
+                    unkList.Items.Add(MakeInt32Node(bin, $"[{i}] unk3"));
+                    unkList.Items.Add(MakeInt32Node(bin, $"[{i}] unk4"));
+                    unkList.Items.Add(MakeNameNode(bin, $"[{i}] name"));
+                }
+
+                var unkList1 = MakeInt32Node(bin, "unk list 1 count", out count);
+                subnodes.Add(unkList1);
+
+                for (int i = 0; i < count; i++)
+                {
+                    unkList1.Items.Add(MakeStringNode(bin, $"[{i}] string"));
+                    unkList1.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                    unkList1.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                }
+
+                subnodes.Add(MakeInt32Node(bin, "unk1"));
+                subnodes.Add(MakeInt32Node(bin, "unk2"));
+                subnodes.Add(MakeInt32Node(bin, "unk3"));
+                subnodes.Add(MakeInt32Node(bin, "unk4"));
+
+                var filepathList = MakeInt32Node(bin, "file path list? count", out count);
+                subnodes.Add(filepathList);
+                for (int i = 0; i < count; i++)
+                {
+                    filepathList.Items.Add(MakeStringNode(bin, $"[{i}] string"));
+                    filepathList.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                }
+
+                var texAndWavMap = MakeInt32Node(bin, "tex and wav map? count", out count);
+                subnodes.Add(texAndWavMap);
+
+                for (int i = 0; i < count; i++)
+                {
+                    texAndWavMap.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                    texAndWavMap.Items.Add(MakeGuidNode(bin, $"[{i}]"));
+                    texAndWavMap.Items.Add(MakeNameNode(bin, $"[{i}]"));
+                    texAndWavMap.Items.Add(MakeInt32Node(bin, $"[{i}]"));
+                    texAndWavMap.Items.Add(MakeInt32Node(bin, $"[{i}]"));
+                }
+                var unkList2 = MakeInt32Node(bin, "unk list 2 count", out count);
+                subnodes.Add(unkList2);
+
+                for (int i = 0; i < count; i++)
+                {
+                    unkList2.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                    var subList = MakeInt32Node(bin, $"[{i}] sublist count", out int subCount);
+                    unkList2.Items.Add(subList);
+                    for (int j = 0; j < subCount; j++)
+                    {
+                        subList.Items.Add(MakeStringNode(bin, $"[{j}]"));
+                    }
+                    unkList2.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                    unkList2.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                    unkList2.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                    unkList2.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                    unkList2.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                    unkList2.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                    unkList2.Items.Add(MakeInt16Node(bin, $"[{i}] unk"));
+                    unkList2.Items.Add(MakeByteNode(bin, $"[{i}] unk"));
+                }
+
+                var unkList5 = MakeInt32Node(bin, "unk list 5 count", out count);
+                subnodes.Add(unkList5);
+                for (int i = 0; i < count; i++)
+                {
+                    unkList5.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                }
+
+                var unkList6 = MakeInt32Node(bin, "unk list 6 count", out count);
+                subnodes.Add(unkList6);
+
+                for (int i = 0; i < count; i++)
+                {
+                    unkList6.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                    unkList6.Items.Add(MakeInt32Node(bin, $"[{i}]"));
+                }
+
+                var unkList3 = MakeInt32Node(bin, "unk list 3 count", out count);
+                subnodes.Add(unkList3);
+
+                for (int i = 0; i < count; i++)
+                {
+                    unkList3.Items.Add(MakeNameNode(bin, $"[{i}]"));
+                    unkList3.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                }
+
+                var unkList4 = MakeInt32Node(bin, "unk list 4 count", out count);
+                subnodes.Add(unkList4);
+
+                for (int i = 0; i < count; i++)
+                {
+                    unkList4.Items.Add(MakeNameNode(bin, $"[{i}]"));
+                    unkList4.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                }
+
+                var unkList7 = MakeInt32Node(bin, "unk list 7 count", out count);
+                subnodes.Add(unkList7);
+
+                for (int i = 0; i < count; i++)
+                {
+                    unkList7.Items.Add(MakeNameNode(bin, $"[{i}]"));
+                    unkList7.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                }
+
+                var unkList8 = MakeInt32Node(bin, "unk list 8 count", out count);
+                subnodes.Add(unkList8);
+
+                for (int i = 0; i < count; i++)
+                {
+                    unkList8.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                    unkList8.Items.Add(MakeInt32Node(bin, $"[{i}]"));
+                }
+
+                if (count > 0)
+                {
+                    subnodes.Add(MakeInt32Node(bin, "unk3"));
+                    subnodes.Add(MakeInt32Node(bin, "unk4"));
+
+                    var unkList9 = MakeInt32Node(bin, "unk list 9 count", out count);
+                    subnodes.Add(unkList9);
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        unkList9.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                        unkList9.Items.Add(MakeInt32Node(bin, $"[{i}]"));
+                    }
+                }
+
+                BinInterpNode fileToLevelMap = MakeInt32Node(bin, "FilenameToLevelMap? count", out count);
+                subnodes.Add(fileToLevelMap);
+
+                for (int i = 0; i < count; i++)
+                {
+                    fileToLevelMap.Items.Add(MakeNameNode(bin, $"[{i}] name1"));
+                    fileToLevelMap.Items.Add(MakeNameNode(bin, $"[{i}] name2"));
+                }
+
+                BinInterpNode fileToSomethingMap = MakeInt32Node(bin, "FilenameTo??Map? count", out count);
+                subnodes.Add(fileToSomethingMap);
+
+                for (int i = 0; i < count; i++)
+                {
+                    fileToSomethingMap.Items.Add(MakeNameNode(bin, $"[{i}] name"));
+                    fileToSomethingMap.Items.Add(MakeInt16Node(bin, $"[{i}] unk1"));
+                    fileToSomethingMap.Items.Add(MakeInt16Node(bin, $"[{i}] unk2"));
+                    fileToSomethingMap.Items.Add(MakeInt16Node(bin, $"[{i}] unk3"));
+                    fileToSomethingMap.Items.Add(MakeInt16Node(bin, $"[{i}] unk4"));
+                }
+
+                BinInterpNode levelList = MakeInt32Node(bin, "level list? count", out count);
+                subnodes.Add(levelList);
+
+                for (int i = 0; i < count; i++)
+                {
+                    levelList.Items.Add(MakeNameNode(bin, $"[{i}]"));
+                }
+
+                BinInterpNode tfcList = MakeInt32Node(bin, "tfc list? count", out count);
+                subnodes.Add(tfcList);
+                for (int i = 0; i < count; i++)
+                {
+                    tfcList.Items.Add(MakeNameNode(bin, $"[{i}]"));
+                    tfcList.Items.Add(MakeGuidNode(bin, $"[{i}]"));
+                }
+
+                var wwiseList = MakeInt32Node(bin, "wwise list? count", out count);
+                subnodes.Add(wwiseList);
+
+                for (int i = 0; i < count; i++)
+                {
+                    wwiseList.Items.Add(MakeNameNode(bin, $"[{i}]"));
+                    var subList = MakeInt32Node(bin, $"[{i}] sublist count", out int subCount);
+                    wwiseList.Items.Add(subList);
+                    for (int j = 0; j < subCount; j++)
+                    {
+                        subList.Items.Add(MakeNameNode(bin, $"[{j}]"));
+                        subList.Items.Add(MakeGuidNode(bin, $"[{j}]"));
+                        subList.Items.Add(MakeInt32Node(bin, $"[{j}]"));
+                    }
+                }
+
+                BinInterpNode animMap = MakeInt32Node(bin, "BioAnimSetData map? count", out count);
+                subnodes.Add(animMap);
+                for (int i = 0; i < count; i++)
+                {
+                    animMap.Items.Add(MakeNameNode(bin, $"[{i}] name"));
+                    animMap.Items.Add(MakeStringNode(bin, $"[{i}] string"));
+                }
+
+                BinInterpNode animMap2 = MakeInt32Node(bin, "animation map? count", out count);
+                subnodes.Add(animMap2);
+                for (int i = 0; i < count; i++)
+                {
+                    animMap2.Items.Add(MakeNameNode(bin, $"[{i}] name"));
+                    animMap2.Items.Add(MakeStringNode(bin, $"[{i}] string"));
+                }
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
         private List<ITreeItem> StartForceFeedbackWaveformScan(byte[] data, ref int binarystart)
         {
             var subnodes = new List<ITreeItem>();

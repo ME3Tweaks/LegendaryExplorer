@@ -874,6 +874,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         case "BioGestureRulesData":
                             subNodes.AddRange(StartBioGestureRulesDataScan(data, ref binarystart));
                             break;
+                        case "BioPersistentCookerData":
+                            subNodes.AddRange(StartBioPersistentCookerDataScan(data, ref binarystart));
+                            break;
                         default:
                             if (!CurrentLoadedExport.HasStack)
                             {
