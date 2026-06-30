@@ -14,6 +14,7 @@
     <MenuItem Header=" &gt;&gt; THIS STUFF CAN BREAK GAMES/TOOLSET FUNCTIONALITY &lt;&lt;" IsEnabled="False"/>
     <MenuItem Header=" &gt;&gt; DO NOT USE IF YOU DON'T KNOW WHAT YOU'RE DOING &gt;&lt;" IsEnabled="False"/>
     <MenuItem Header=" &gt;&gt; Text may not reflect actual functionality &lt;&lt;" IsEnabled="False"/>
+    <MenuItem x:Name="BindExperimentToKey_MenuItem" Header="Bind Experiment to Key" Click="BindExperimentToKey_Click"/>
     <MenuItem Header="Force reload package*" Command="{Binding ForceReloadPackageCommand}" sharedUi:Bindings.VisibilityToEnabled="True" InputGestureText="Ctrl+Shift+R" ToolTip="Forcibly reloads this package file, if it was loaded from disk.&#10;This operation will drop this package out of the package sharing system across tools, be careful as edits will not sync across tools!"/>
 
     <MenuItem Header="Trigger GetProperties() on current export" Click="RefreshProperties_Clicked"/>
