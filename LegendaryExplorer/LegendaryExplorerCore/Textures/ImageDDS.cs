@@ -196,10 +196,9 @@ namespace LegendaryExplorerCore.Textures
                 w = origW;
                 h = origH;
 
-                if (pixelFormat == PixelFormat.DXT1 ||
-                    pixelFormat == PixelFormat.DXT3 ||
-                    pixelFormat == PixelFormat.DXT5)
+                if (pixelFormat is PixelFormat.DXT1 or PixelFormat.DXT3 or PixelFormat.DXT5 or PixelFormat.ATI2)
                 {
+                    // Block-compressed mips are stored as whole 4x4 blocks even below 4x4 dimensions
                     if (w < 4)
                         w = 4;
                     if (h < 4)
