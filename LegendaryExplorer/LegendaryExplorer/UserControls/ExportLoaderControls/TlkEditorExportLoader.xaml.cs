@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.IO;
 using Microsoft.Win32;
 using System.Media;
 using LegendaryExplorer.Dialogs;
@@ -60,6 +60,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand SearchCommand { get; set; }
         public ICommand AddStringCommand { get; set; }
         public ICommand AddStringRangeCommand { get; set; }
+        public ICommand SynchronizeToOtherLanguagesCommand { get; set; }
+
+        private bool isFileBackedTlkLoaded;
+        public bool IsFileBackedTlkLoaded
+        {
+            get => isFileBackedTlkLoaded;
+            private set => SetProperty(ref isFileBackedTlkLoaded, value);
+        }
 
         private void LoadCommands()
         {
@@ -75,6 +83,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             ExportXmlCommand = new GenericCommand(ExportToXml, HasTLKLoaded);
             ImportXmlCommand = new GenericCommand(ImportFromXml, HasTLKLoaded);
             ViewXmlCommand = new GenericCommand(ViewAsXml, HasTLKLoaded);
+            SynchronizeToOtherLanguagesCommand = new GenericCommand(SynchronizeToOtherLanguages, CanSynchronizeToOtherLanguages);
         }
 
         private void DeleteString(object obj)
@@ -154,6 +163,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void Dispose()
         {
             CurrentLoadedExport = null;
+            IsFileBackedTlkLoaded = false;
             _currentMe2Me3Me2Me3TalkFile = null;
             LoadedStrings?.Clear();
             CleanedStrings?.ClearEx();
@@ -162,6 +172,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void LoadExport(ExportEntry exportEntry)
         {
             CurrentLoadedFile = null;
+            IsFileBackedTlkLoaded = false;
             var tlkFile = new ME1TalkFile(exportEntry); // Setup object as TalkFile
             LoadedStrings = tlkFile.StringRefs.ToList(); //This is not binded to so reassigning is fine
             CleanedStrings.ClearEx(); //clear strings Ex does this in bulk (faster)
@@ -175,10 +186,198 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override void UnloadExport()
         {
+            IsFileBackedTlkLoaded = false;
             FileModified = false;
         }
 
         public bool HasTLKLoaded() => CurrentLoadedFile != null || CurrentLoadedExport != null;
+
+        private bool CanSynchronizeToOtherLanguages()
+        {
+            return IsFileBackedTlkLoaded && !string.IsNullOrWhiteSpace(CurrentLoadedFile) && LoadedStrings is not null;
+        }
+
+        private sealed class SynchronizationTarget
+        {
+            public string FilePath { get; init; }
+            public string LanguageCode { get; init; }
+            public List<TLKStringRef> MissingEntries { get; init; }
+        }
+
+        private void SynchronizeToOtherLanguages()
+        {
+            if (!CanSynchronizeToOtherLanguages())
+            {
+                return;
+            }
+
+            if (!TryParseLanguageSuffix(CurrentLoadedFile, out var filePrefix, out var loadedLanguageCode))
+            {
+                MessageBox.Show("Unable to determine the language suffix for this TLK file. Expected a filename ending in _XXX.tlk.", "TLK Editor", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var sourceStringsById = LoadedStrings
+                .Where(x => x.StringID > 0)
+                .GroupBy(x => x.StringID)
+                .ToDictionary(g => g.Key, g => g.First());
+
+            if (sourceStringsById.Count == 0)
+            {
+                MessageBox.Show("The currently loaded TLK contains no valid StringRefs to synchronize.", "TLK Editor", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var sourceFolder = Path.GetDirectoryName(CurrentLoadedFile);
+            if (string.IsNullOrWhiteSpace(sourceFolder) || !Directory.Exists(sourceFolder))
+            {
+                MessageBox.Show("Unable to locate the source TLK folder.", "TLK Editor", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var candidateTargets = Directory
+                .EnumerateFiles(sourceFolder, $"{filePrefix}_*.tlk", SearchOption.TopDirectoryOnly)
+                .Where(path => !path.Equals(CurrentLoadedFile, StringComparison.OrdinalIgnoreCase))
+                .Where(path => TryParseLanguageSuffix(path, out var candidatePrefix, out var candidateLanguageCode)
+                               && candidatePrefix.Equals(filePrefix, StringComparison.OrdinalIgnoreCase)
+                               && !candidateLanguageCode.Equals(loadedLanguageCode, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (candidateTargets.Count == 0)
+            {
+                MessageBox.Show("No sibling language TLKs were found in the same folder.", "TLK Editor", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var synchronizationTargets = new List<SynchronizationTarget>();
+            foreach (var targetPath in candidateTargets)
+            {
+                if (!TryParseLanguageSuffix(targetPath, out _, out var targetLanguageCode))
+                {
+                    continue;
+                }
+
+                var targetTalkFile = new ME2ME3TalkFile(targetPath);
+                var targetIds = targetTalkFile.StringRefs
+                    .Where(x => x.StringID > 0)
+                    .Select(x => x.StringID)
+                    .ToHashSet();
+
+                var missingEntries = sourceStringsById
+                    .Where(pair => !targetIds.Contains(pair.Key))
+                    .Select(pair => new TLKStringRef(pair.Value.StringID, pair.Value.Data, pair.Value.Flags))
+                    .ToList();
+
+                if (missingEntries.Count > 0)
+                {
+                    synchronizationTargets.Add(new SynchronizationTarget
+                    {
+                        FilePath = targetPath,
+                        LanguageCode = targetLanguageCode,
+                        MissingEntries = missingEntries
+                    });
+                }
+            }
+
+            if (synchronizationTargets.Count == 0)
+            {
+                MessageBox.Show("All sibling language TLKs already contain every StringRef from this file.", "TLK Editor", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var selectionItems = synchronizationTargets
+                .OrderBy(target => target.LanguageCode)
+                .ThenBy(target => target.FilePath, StringComparer.OrdinalIgnoreCase)
+                .Select(target => new CheckedListItem
+                {
+                    DisplayName = $"{target.LanguageCode} ({target.MissingEntries.Count} missing) - {Path.GetFileName(target.FilePath)}",
+                    IsSelected = true,
+                    Tag = target
+                })
+                .ToList();
+
+            var selectionDialog = new CheckedListDialog(
+                selectionItems,
+                "Synchronize to other languages",
+                "Select the language TLKs that should receive missing StringRefs from the currently loaded file.",
+                Window.GetWindow(this));
+
+            if (selectionDialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            var selectedTargets = selectionDialog.GetSelectedItems()
+                .Select(item => item.Tag as SynchronizationTarget)
+                .Where(target => target is not null)
+                .ToList();
+
+            if (selectedTargets.Count == 0)
+            {
+                MessageBox.Show("No target language TLKs were selected.", "TLK Editor", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            int updatedCount = 0;
+            var failedSaves = new List<string>();
+
+            foreach (var selectedTarget in selectedTargets)
+            {
+                try
+                {
+                    var targetTalkFile = new ME2ME3TalkFile(selectedTarget.FilePath);
+                    var mergedStringRefs = targetTalkFile.StringRefs
+                        .Concat(selectedTarget.MissingEntries)
+                        .GroupBy(x => x.StringID)
+                        .Select(group => group.First())
+                        .OrderBy(x => x.StringID)
+                        .ToList();
+
+                    ME2ME3HuffmanCompression.SaveToTlkFile(selectedTarget.FilePath, mergedStringRefs);
+                    updatedCount++;
+                }
+                catch
+                {
+                    failedSaves.Add(Path.GetFileName(selectedTarget.FilePath));
+                }
+            }
+
+            if (failedSaves.Count > 0)
+            {
+                MessageBox.Show($"Updated {updatedCount} TLK file(s). Failed to update: {string.Join(", ", failedSaves)}", "TLK Editor", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            MessageBox.Show($"Synchronized missing StringRefs to {updatedCount} TLK file(s).", "TLK Editor", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private static bool TryParseLanguageSuffix(string filePath, out string filePrefix, out string languageCode)
+        {
+            filePrefix = null;
+            languageCode = null;
+
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
+            if (string.IsNullOrWhiteSpace(fileNameWithoutExtension))
+            {
+                return false;
+            }
+
+            var separatorIndex = fileNameWithoutExtension.LastIndexOf('_');
+            if (separatorIndex <= 0 || separatorIndex >= fileNameWithoutExtension.Length - 1)
+            {
+                return false;
+            }
+
+            var suffix = fileNameWithoutExtension[(separatorIndex + 1)..];
+            if (suffix.Length is < 2 or > 5 || suffix.Any(ch => !char.IsLetter(ch)))
+            {
+                return false;
+            }
+
+            filePrefix = fileNameWithoutExtension[..separatorIndex];
+            languageCode = suffix.ToUpperInvariant();
+            return true;
+        }
 
         private void DisplayedString_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -414,6 +613,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             UnloadExport();
             CurrentLoadedFile = filepath;
+            IsFileBackedTlkLoaded = true;
             _currentMe2Me3Me2Me3TalkFile = new ME2ME3TalkFile(filepath);
             LoadedFile = filepath;
             RefreshME2ME3TLK();
@@ -433,6 +633,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             UnloadExport();
             CurrentLoadedFile = null;
+            IsFileBackedTlkLoaded = false;
             _currentMe2Me3Me2Me3TalkFile = new ME2ME3TalkFile(stream, source);
 
             // Need way to load a file without having it show up in the recents
