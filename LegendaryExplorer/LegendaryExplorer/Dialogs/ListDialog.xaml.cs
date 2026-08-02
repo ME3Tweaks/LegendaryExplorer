@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorerCore.Misc;
@@ -25,10 +27,26 @@ namespace LegendaryExplorer.Dialogs
             set => SetProperty(ref topText, value);
         }
 
+        private string filterText;
+        public string FilterText
+        {
+            get => filterText;
+            set
+            {
+                if (SetProperty(ref filterText, value))
+                {
+                    ItemsView.Refresh();
+                }
+            }
+        }
+
+        public ICollectionView ItemsView => CollectionViewSource.GetDefaultView(Items);
+
         private ListDialog(string title, string message, Window owner, int width = 0, int height = 0) : base("List Dialog", false)
         {
             DataContext = this;
             InitializeComponent();
+            ItemsView.Filter = FilterItem;
             Title = title;
             if (width != 0)
             {
@@ -65,6 +83,27 @@ namespace LegendaryExplorer.Dialogs
                 //yes, this actually happens sometimes...
                 MessageBox.Show("Could not set data to clipboard:\n" + ex.Message);
             }
+        }
+
+        private bool FilterItem(object item)
+        {
+            if (string.IsNullOrWhiteSpace(FilterText))
+            {
+                return true;
+            }
+
+            if (item is string str)
+            {
+                return str.IndexOf(FilterText, StringComparison.InvariantCultureIgnoreCase) >= 0;
+            }
+
+            if (item is EntryStringPair pair)
+            {
+                return !string.IsNullOrWhiteSpace(pair.Message) &&
+                       pair.Message.IndexOf(FilterText, StringComparison.InvariantCultureIgnoreCase) >= 0;
+            }
+
+            return item?.ToString()?.IndexOf(FilterText, StringComparison.InvariantCultureIgnoreCase) >= 0;
         }
 
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
