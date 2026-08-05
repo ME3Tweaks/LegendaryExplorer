@@ -230,7 +230,16 @@
             <MenuItem Header="Make Custom Morph Target Set" Click="MakeCustomMorphTargetSet_Click" ToolTip="Makes a new CustomMorphTargetSet and BioMorphFace for use in mods that dynamically change appearance from MorphTargetSet or SkeletalMesh. currently only for AMM LE3. "/>
         </MenuItem>
         <MenuItem Header="Even more experimental than usual">
+            <MenuItem Header="bulk import textures" Click="BulkImportTextures_Click" ToolTip="bulk imports textures into a package file, with a few sensible defaults."/>
+            <MenuItem Header="Import green channel as alpha" Click="GreenToAlpha_Click" ToolTip="Imports an image's green channel as the new alpha channel on the selected texture."/>
+            <MenuItem Header="Stop deforming the necks, Bioware" Click="FixMorphTargets_Click" ToolTip="Makes the morph targets stop deforming the neck seam and reintroducing the gap (probably only useful for Squid)"/>
+            <MenuItem Header="Generate m3to text for package" Click="GenerateM3to_Click" ToolTip="Given a package, generates the json for an m3to file that overrides all textures by path with the ones in that pacakge."/>
+            <MenuItem Header="Squid's lazy texture import button" Click="LazyDiffImport_Click" ToolTip="Imports a texture over an existing one while keeping the alpha channel of the existing one. Useful for when you re baked the color channels and need to add back on the alpha channel"/>
+            <MenuItem Header="Squid's lazy Normal Map import button" Click="LazyNormImport_Click" ToolTip="Imports a normal map texture (over an existing one or new, depending on what is selected) and flips the green channel for you. Useful for when you forgot to bake it for unreal conventions"/>
+            <MenuItem Header="Fix LE2 Locker bug" Click="FixLE2LockerBug_Click"/>
             <MenuItem Header="Move All Package Stored Textures to tfc" Click="TexturesToTfc_Click"/>
+            <MenuItem Header="Make Selected Texture tfc stored" Click="SelectedTextureToTfc_Click"/>
+            <MenuItem Header="Move All Externally Stored Textures to package stored" Click="TexturesToPackageStored_Click"/>
             <MenuItem Header="Remove LODs" Click="RemoveLODs_Click" ToolTip="Removes all but the first LOD."/>
             <MenuItem Header="Calculate normal map blue channel" Click="CalculateNormalBlue_Click" ToolTip="Calculates the blue channel of a normal map from the red and green channels. some engines do this at runtime to save space or pack other data into the blue and alpha channels."/>
             <MenuItem Header="Invert Green Channel of normal map" Click="InvertGreenChannel_Click" ToolTip="Inverts the green channel of a normal map. useful for converting from engines that have the opposite convention."/>

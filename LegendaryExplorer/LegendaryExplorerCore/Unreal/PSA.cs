@@ -17,8 +17,8 @@ namespace LegendaryExplorerCore.Unreal
         public List<PSAAnimKeys> Keys;
         // populated from properties on the BioAnimSetData or the .config file
         public bool RotationOnly;
-        public HashSet<string> UseTranslationBones;
-        public HashSet<string> ForceMeshTranslationBones;
+        public HashSet<string> UseTranslationBones = [];
+        public HashSet<string> ForceMeshTranslationBones = [];
 
         private const int version = 1999801;
 

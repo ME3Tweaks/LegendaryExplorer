@@ -1560,9 +1560,48 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         // EXPERIMENTS: DropTheSquid
         #region DropTheSquid's Experiments
 
+        private void BulkImportTextures_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.BulkImportTextures(GetPEWindow());
+        }
+
+        private void GreenToAlpha_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.GreenToAlpha(GetPEWindow());
+        }
+        private void FixMorphTargets_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.FixMorphTargets(GetPEWindow());
+        }
+
+        private void GenerateM3to_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.GenerateM3to(GetPEWindow());
+        }
+        private void LazyDiffImport_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.LazyDiffImport(GetPEWindow());
+        }
+
+        private void LazyNormImport_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.LazyNormImport(GetPEWindow());
+        }
+        private void FixLE2LockerBug_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.FixLE2LockerBug(GetPEWindow());
+        }
         private void TexturesToTfc_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsSquid.TexturesToTfc(GetPEWindow());
+        }
+        private void SelectedTextureToTfc_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.SelectedTextureToTfc(GetPEWindow());
+        }
+        private void TexturesToPackageStored_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsSquid.TexturesToPackageStored(GetPEWindow());
         }
 
         private void MakeLODs_Click(object sender, RoutedEventArgs e)
