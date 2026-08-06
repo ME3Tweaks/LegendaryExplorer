@@ -1,6 +1,5 @@
 var NAVTREEINDEX7 =
 {
-"class_f_downsample_scene_depth_and_normals_pixel_shader.html#a392e0dddd5c34460c5492789b09001f1":[1,0,35,1],
 "class_f_downsample_scene_depth_and_normals_pixel_shader.html#a986fb353ba737c70a4f59ebe74c3d108":[1,0,35,5],
 "class_f_downsample_scene_depth_and_normals_pixel_shader.html#af9a14d60786750c0eeae66b2141441bf":[1,0,35,0],
 "class_f_downsample_scene_depth_and_normals_pixel_shader.html#afb4455405cd425c4c8c8a3c20eb77052":[1,0,35,2],
@@ -249,5 +248,6 @@ var NAVTREEINDEX7 =
 "class_f_resolve_single_sample_pixel_shader.html#a0fe211a048d7aaeaba6313d3a862aeb0":[1,0,101,1],
 "class_f_resolve_single_sample_pixel_shader.html#add37e39a0b017594cfe348d2b5734166":[1,0,101,0],
 "class_f_s_f_x_point_light_policy.html":[1,0,102],
-"class_f_s_f_x_uber_post_process_blend_pixel_shader.html":[1,0,103]
+"class_f_s_f_x_uber_post_process_blend_pixel_shader.html":[1,0,103],
+"class_f_s_f_x_uber_post_process_blend_pixel_shader.html#a030126be5c573112581aa1a3b3d3c74a":[1,0,103,3]
 };
