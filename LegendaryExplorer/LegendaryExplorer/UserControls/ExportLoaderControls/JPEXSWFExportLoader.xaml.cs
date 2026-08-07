@@ -53,12 +53,17 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (JPEXIsInstalled) return;
             try
             {
-                using RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{E618D276-6596-41F4-8A98-447D442A77DB}_is1");
-                if (key?.GetValue("InstallLocation") is string InstallDir)
+                using RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Software\JPEXS\FFDec");
+                if (Convert.ToInt32(key?.GetValue("installed", 0)) == 1 &&
+                    key?.GetValue("installDir") is string installDir)
                 {
-                    JPEXExecutableLocation = Path.Combine(InstallDir, "ffdec.exe");
-                    JPEXIsInstalled = true;
-                    return;
+                    string executable = Path.Combine(installDir, "ffdec.exe");
+                    if (File.Exists(executable))
+                    {
+                        JPEXExecutableLocation = executable;
+                        JPEXIsInstalled = true;
+                        return;
+                    }
                 }
             }
             catch
