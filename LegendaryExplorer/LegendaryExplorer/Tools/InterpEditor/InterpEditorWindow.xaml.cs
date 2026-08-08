@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
@@ -12,9 +10,9 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools.InterpEditor.InterpExperiments;
-using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
 using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using Microsoft.Win32;
@@ -36,6 +34,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
 
             TimelineControl.SelectionChanged += TimelineControlOnSelectionChanged;
+            TimelineControl.SetGroupActorRequested += OnSetGroupActorRequested;
         }
 
         private void TimelineControlOnSelectionChanged(ExportEntry export)
@@ -73,6 +72,41 @@ namespace LegendaryExplorer.Tools.InterpEditor
         public ICommand AddPresetCameraGroupCommand { get; set; }
         public ICommand AddPresetActorGroupCommand { get; set; }
 
+        // Playback commands
+        public ICommand PlayCommand { get; set; }
+        public ICommand PauseCommand { get; set; }
+        public ICommand StopCommand { get; set; }
+        public ICommand ConnectLevelEditorCommand { get; set; }
+
+        // Playback state
+        private float _currentTime;
+        private float _prevTime;
+        private float _duration;
+        private bool _isPlaying;
+        private LevelEditor.LevelEditor _connectedLevelEditor;
+        private SeqAct_Interp _currentlyPlayingInterp;
+
+        public float CurrentTime
+        {
+            get => _currentTime;
+            set { SetProperty(ref _currentTime, value); UpdatePlayhead(); }
+        }
+
+        public float Duration
+        {
+            get => _duration;
+            set => SetProperty(ref _duration, value);
+        }
+
+        public bool IsPlaying
+        {
+            get => _isPlaying;
+            set => SetProperty(ref _isPlaying, value);
+        }
+
+        public string ConnectedLevelEditorText =>
+            _connectedLevelEditor is null ? "Not connected" : "Connected";
+
         private void LoadCommands()
         {
             OpenCommand = new GenericCommand(OpenPackage);
@@ -85,6 +119,11 @@ namespace LegendaryExplorer.Tools.InterpEditor
             AddPresetDirectorGroupCommand = new GenericCommand(() => InterpEditorExperimentsE.AddPresetGroup("Director", this), PackageIsLoaded);
             AddPresetCameraGroupCommand = new GenericCommand(() => InterpEditorExperimentsE.AddPresetGroup("Camera", this), PackageIsLoaded);
             AddPresetActorGroupCommand = new GenericCommand(() => InterpEditorExperimentsE.AddPresetGroup("Actor", this), PackageIsLoaded);
+
+            PlayCommand = new GenericCommand(Play, () => !_isPlaying && PackageIsLoaded());
+            PauseCommand = new GenericCommand(Pause, () => _isPlaying);
+            StopCommand = new GenericCommand(Stop, PackageIsLoaded);
+            ConnectLevelEditorCommand = new GenericCommand(ConnectToLevelEditor, PackageIsLoaded);
         }
 
         private void GoTo()
@@ -205,6 +244,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
 
         public void LoadFile(string fileName)
         {
+            Stop();
             Properties_InterpreterWPF?.UnloadExport();
             InterpDataExports.ClearEx();
             Animations.ClearEx();
@@ -220,10 +260,139 @@ namespace LegendaryExplorer.Tools.InterpEditor
 
         private void LoadInterpData(ExportEntry value)
         {
+            Stop();
+            Duration = value.GetProperty<LegendaryExplorerCore.Unreal.FloatProperty>("InterpLength")?.Value ?? 0f;
             TimelineControl.LoadExport(value);
             Properties_InterpreterWPF.LoadExport(value);
             OnPropertyChanged(nameof(LoadedExportIsCurve));
         }
+
+        #region Playback
+
+        private void Play()
+        {
+            if (TimelineControl.InterpData is null)
+            {
+                return;
+            }
+            if (_connectedLevelEditor is null)
+            {
+                ConnectToLevelEditor();
+            }
+            if (_connectedLevelEditor is null) return;
+            if (TimelineControl.InterpData.Parent is null)
+            {
+                ExportEntry seqActInterp = KismetHelper.FindVariableConnectionsToNode(TimelineControl.InterpData.Export).FirstOrDefault(exp => exp.ClassName == "SeqAct_Interp");
+                if (seqActInterp is not null)
+                {
+                    _currentlyPlayingInterp = new SeqAct_Interp(seqActInterp, TimelineControl.InterpData);
+                }
+            }
+            TimelineControl.InterpData.AttachToLevelEditor(_connectedLevelEditor);
+            IsPlaying = true;
+        }
+
+        private void Pause()
+        {
+            IsPlaying = false;
+        }
+
+        private void Stop()
+        {
+            bool wasPlaying = IsPlaying;
+            Pause();
+            _prevTime = 0f;
+            CurrentTime = 0f;
+            if (wasPlaying)
+            {
+                TimelineControl.InterpData?.StopMatinee();
+            }
+            TimelineControl.ClearPlayhead();
+        }
+
+        private void OnUpdateScene(object sender, float deltaTime)
+        {
+            if (!IsPlaying)
+            {
+                return;
+            }
+            float newTime = Math.Min(_currentTime + deltaTime, _duration);
+            TimelineControl.InterpData?.Step(newTime, _prevTime);
+            _prevTime = newTime;
+            CurrentTime = newTime;
+            if (newTime >= _duration)
+            {
+                Stop();
+            }
+        }
+
+        private void ConnectToLevelEditor()
+        {
+            var openEditors = Application.Current.Windows.OfType<LevelEditor.LevelEditor>().ToList();
+            if (openEditors.Count == 0)
+            {
+                MessageBox.Show("Open a Level Editor window first, then connect.", "No Level Editor", MessageBoxButton.OK);
+                return;
+            }
+
+            LevelEditor.LevelEditor chosen;
+            if (openEditors.Count == 1)
+            {
+                chosen = openEditors[0];
+            }
+            else
+            {
+                var dlg = new Dialogs.DropdownPromptDialog(
+                    "Multiple Level Editors are open. Choose one:",
+                    "Select Level Editor", "Level Editor",
+                    openEditors.Select(e => e.Title), this);
+                if (dlg.ShowDialog() != true || dlg.Response is null) return;
+                chosen = openEditors.First(e => e.Title == dlg.Response);
+            }
+
+            _connectedLevelEditor = chosen;
+            _connectedLevelEditor.RenderContext.UpdateScene += OnUpdateScene;
+            _connectedLevelEditor.Closed += OnLevelEditorClosed;
+            TimelineControl.IsLevelEditorConnected = true;
+            OnPropertyChanged(nameof(ConnectedLevelEditorText));
+        }
+
+        private void DisconnectLevelEditor()
+        {
+            if (_connectedLevelEditor is null) return;
+            if (_isPlaying) Pause();
+            TimelineControl.InterpData?.StopMatinee();
+            _connectedLevelEditor.RenderContext.UpdateScene -= OnUpdateScene;
+            _connectedLevelEditor.Closed -= OnLevelEditorClosed;
+            _connectedLevelEditor = null;
+            TimelineControl.IsLevelEditorConnected = false;
+            OnPropertyChanged(nameof(ConnectedLevelEditorText));
+        }
+
+        private void OnLevelEditorClosed(object sender, EventArgs e) => DisconnectLevelEditor();
+
+        private void OnSetGroupActorRequested(InterpGroup group)
+        {
+            if (_connectedLevelEditor is null) return;
+            var actor = ActorPickerDialog.PickActor(this, _connectedLevelEditor);
+            if (actor is not null)
+                group.ManualGroupActor = actor;
+        }
+
+        public void Scrub(float time)
+        {
+            float newTime = Math.Clamp(time, 0f, _duration);
+            TimelineControl.InterpData?.Step(newTime, _prevTime);
+            _prevTime = newTime;
+            CurrentTime = newTime;
+        }
+
+        private void UpdatePlayhead()
+        {
+            TimelineControl.SetPlayheadTime(_currentTime);
+        }
+
+        #endregion Playback
 
         public override void HandleUpdate(List<PackageUpdate> updates)
         {
@@ -269,6 +438,9 @@ namespace LegendaryExplorer.Tools.InterpEditor
             if (e.Cancel)
                 return;
 
+            Stop();
+            DisconnectLevelEditor();
+            TimelineControl.SetGroupActorRequested -= OnSetGroupActorRequested;
             TimelineControl.SelectionChanged -= TimelineControlOnSelectionChanged;
             TimelineControl.Dispose();
             Properties_InterpreterWPF?.Dispose();
@@ -282,6 +454,19 @@ namespace LegendaryExplorer.Tools.InterpEditor
         }
 
         public string Toolname => "InterpEditor";
+
+        private bool _programmaticScrub;
+
+        private void PlaybackScrubber_ValueChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<double> e)
+        {
+            // Only apply scrub when the user drags the slider; skip during engine-driven time updates.
+            if (!_isPlaying && !_programmaticScrub && TimelineControl.InterpData is not null)
+            {
+                _programmaticScrub = true;
+                Scrub((float)e.NewValue);
+                _programmaticScrub = false;
+            }
+        }
 
         private void Window_DragOver(object sender, DragEventArgs e)
         {

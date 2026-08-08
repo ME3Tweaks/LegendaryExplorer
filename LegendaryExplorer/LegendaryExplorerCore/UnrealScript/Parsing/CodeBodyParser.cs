@@ -2371,7 +2371,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     if (token.StartPos.Equals(expr.StartPos) && token.EndPos.Equals(expr.EndPos))
                     {
                         typeToken = token;
-                        typeToken.SyntaxType = destType is Struct ? ST.Struct : ST.Class;
+                        typeToken.SyntaxType = destType switch
+                        {
+                            Class => ST.Class,
+                            Struct => ST.Struct,
+                            PrimitiveType => ST.Keyword,
+                            Enumeration => ST.Enum,
+                            _ => ST.None,
+                        };
                         Tokens.AddDefinitionLink(destType, typeToken);
                     }
                 }

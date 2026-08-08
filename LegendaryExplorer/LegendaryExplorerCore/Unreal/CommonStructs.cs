@@ -109,6 +109,11 @@ namespace LegendaryExplorerCore.Unreal
 
         public static Guid GetGuid(StructProperty guidProp)
         {
+            if (guidProp == null)
+            {
+                return Guid.Empty;
+            }
+
             int a = guidProp.GetProp<IntProperty>("A");
             int b = guidProp.GetProp<IntProperty>("B");
             int c = guidProp.GetProp<IntProperty>("C");
@@ -119,6 +124,19 @@ namespace LegendaryExplorerCore.Unreal
             ms.WriteInt32(c);
             ms.WriteInt32(d);
             return new Guid(ms.ToArray());
+        }
+
+        public record Cylinder(float Radius, float Height);
+        public static Cylinder GetCylinder(StructProperty cylinderProp)
+        {
+            if (cylinderProp == null)
+            {
+                return new Cylinder(0, 0);
+            }
+
+            var radius = cylinderProp.GetProp<FloatProperty>("Radius");
+            var height = cylinderProp.GetProp<FloatProperty>("Height");
+            return new Cylinder(radius.Value, height.Value);
         }
 
         public static StructProperty ColorProp(System.Drawing.Color color, NameReference? name = null)

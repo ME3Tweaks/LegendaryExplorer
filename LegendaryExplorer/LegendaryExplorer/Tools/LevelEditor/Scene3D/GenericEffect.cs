@@ -62,6 +62,10 @@ public sealed class GenericEffect<ConstantBufferData> : IDisposable where Consta
 
     public void RenderObject(DeviceContext context, Mesh<WorldVertex> mesh, int indexstart, int indexcount, params ReadOnlySpan<ShaderResourceView> textures)
     {
+        if (mesh.Vertices.Count is 0)
+        {
+            return;
+        }
 
         // Setup buffers for rendering
         context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(mesh.VertexBuffer, WorldVertex.Stride, 0));

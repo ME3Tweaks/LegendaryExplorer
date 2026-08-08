@@ -8,6 +8,7 @@
         xmlns:misc="clr-namespace:LegendaryExplorerCore.Misc;assembly=LegendaryExplorerCore"
         xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
         xmlns:converters1="clr-namespace:LegendaryExplorer.SharedUI.Converters"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         Title="List Dialog" Width="640" Height="480">
@@ -34,13 +35,20 @@
             </Style>
         </DockPanel.Resources>
         <TextBlock Text="{Binding TopText}" TextWrapping="Wrap" DockPanel.Dock="Top" Margin="0,5,0,5"/>
-        <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" DockPanel.Dock="Bottom" Margin="0,5,0,0">
-            <Button FlowDirection="LeftToRight" Click="CopyItemsToClipBoard_Click" Content="Copy items to clipboard" Padding="3"/>
-            <Label Name="ListDialog_Status" FlowDirection="LeftToRight" Content="Copied to clipboard" Margin="8,0,0,0" Visibility="Collapsed" VerticalAlignment="Center"/>
-        </StackPanel>
+        <DockPanel DockPanel.Dock="Bottom" Margin="0,5,0,0" LastChildFill="False">
+            <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" DockPanel.Dock="Right">
+                <Button FlowDirection="LeftToRight" Click="CopyItemsToClipBoard_Click" Content="Copy items to clipboard" Padding="3"/>
+                <Label Name="ListDialog_Status" FlowDirection="LeftToRight" Content="Copied to clipboard" Margin="8,0,0,0" Visibility="Collapsed" VerticalAlignment="Center"/>
+            </StackPanel>
+            <xctk:WatermarkTextBox Watermark="Type to filter"
+                                   Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"
+                                   HorizontalAlignment="Left"
+                                   Width="200"
+                                   Name="SearchBox"/>
+        </DockPanel>
         <ListView Name="ListDialog_List" HorizontalAlignment="Stretch" AlternationCount="2" 
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                  ItemContainerStyle="{DynamicResource CustomListViewItemStyle}" MouseDoubleClick="ListView_MouseDoubleClick" ItemsSource="{Binding Items}">
+                  ItemContainerStyle="{DynamicResource CustomListViewItemStyle}" MouseDoubleClick="ListView_MouseDoubleClick" ItemsSource="{Binding ItemsView}">
             <!-- here set the itemTemplate to a TextBlock that can wraps-->
             <ListView.Resources>
                 <DataTemplate DataType="{x:Type System:String}">

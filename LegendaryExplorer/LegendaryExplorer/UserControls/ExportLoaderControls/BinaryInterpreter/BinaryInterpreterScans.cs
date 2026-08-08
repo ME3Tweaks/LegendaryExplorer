@@ -49,7 +49,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private BinInterpNode ReadMaterialUniformExpression(EndianReader bin, string prefix = "")
         {
             NameReference expressionType = bin.ReadNameReference(Pcc);
-            var node = new BinInterpNode(bin.Position - 8, $"{prefix}{(string.IsNullOrEmpty(prefix) ? "" : ": ")}{expressionType.Instanced}");
+            string parameterName;
+            var node = new BinInterpNode(bin.Position - 8, $"{prefix}{(string.IsNullOrEmpty(prefix) ? "" : ": ")}{expressionType.Instanced}") { Length = 8 };
 
             switch (expressionType.Name)
             {
@@ -93,7 +94,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     //intentionally left blank. outputs current real-time, has no parameters
                     break;
                 case "FMaterialUniformExpressionScalarParameter":
-                    node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}"));
+                    parameterName = bin.ReadNameReference(Pcc).Instanced;
+                    node.Header += $" ({parameterName})";
+                    node.Items.Add(new BinInterpNode(bin.Position - 8, $"ParameterName: {parameterName}") { Length = 8 });
                     node.Items.Add(MakeFloatNode(bin, "DefaultValue"));
                     break;
                 case "FMaterialUniformExpressionSine":
@@ -116,14 +119,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     node.Items.Add(MakeEntryNode(bin, "TextureIndex"));
                     break;
                 case "FMaterialUniformExpressionTextureParameter":
-                    node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}"));
+                    parameterName = bin.ReadNameReference(Pcc).Instanced;
+                    node.Header += $" ({parameterName})";
+                    node.Items.Add(new BinInterpNode(bin.Position - 8, $"ParameterName: {parameterName}") { Length = 8 });
                     node.Items.Add(MakeInt32Node(bin, "TextureIndex"));
                     break;
                 case "FMaterialUniformExpressionTime":
                     //intentionally left blank. outputs current scene time, has no parameters
                     break;
                 case "FMaterialUniformExpressionVectorParameter":
-                    node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}"));
+                    parameterName = bin.ReadNameReference(Pcc).Instanced;
+                    node.Header += $" ({parameterName})";
+                    node.Items.Add(new BinInterpNode(bin.Position - 8, $"ParameterName: {parameterName}") { Length = 8 });
                     node.Items.Add(MakeFloatNode(bin, "Default R"));
                     node.Items.Add(MakeFloatNode(bin, "Default G"));
                     node.Items.Add(MakeFloatNode(bin, "Default B"));
@@ -230,6 +237,236 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             catch (Exception ex)
             {
                 subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
+
+        private List<ITreeItem> StartBioPersistentCookerDataScan(byte[] data, ref int binarystart)
+        {
+            // 6/30/26 - verified against LE3 only
+
+            var subnodes = new List<ITreeItem>();
+
+            if (binarystart >= data.Length)
+            {
+                return subnodes;
+            }
+
+            int pos = binarystart;
+            var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+            bin.JumpTo(binarystart);
+            try
+            {
+                var unkList = MakeInt32Node(bin, "unk list 0 count", out int count);
+                subnodes.Add(unkList);
+
+                for (int i = 0; i < count; i++)
+                {
+                    unkList.Items.Add(MakeStringNode(bin, $"[{i}] string"));
+                    unkList.Items.Add(MakeInt32Node(bin, $"[{i}] unk1"));
+                    unkList.Items.Add(MakeInt32Node(bin, $"[{i}] unk2"));
+                    unkList.Items.Add(MakeInt32Node(bin, $"[{i}] unk3"));
+                    unkList.Items.Add(MakeInt32Node(bin, $"[{i}] unk4"));
+                    unkList.Items.Add(MakeNameNode(bin, $"[{i}] name"));
+                }
+
+                var unkList1 = MakeInt32Node(bin, "unk list 1 count", out count);
+                subnodes.Add(unkList1);
+
+                for (int i = 0; i < count; i++)
+                {
+                    unkList1.Items.Add(MakeStringNode(bin, $"[{i}] string"));
+                    unkList1.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                    unkList1.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                }
+
+                subnodes.Add(MakeInt32Node(bin, "unk1"));
+                subnodes.Add(MakeInt32Node(bin, "unk2"));
+                subnodes.Add(MakeInt32Node(bin, "unk3"));
+                subnodes.Add(MakeInt32Node(bin, "unk4"));
+
+                var filepathList = MakeInt32Node(bin, "file path list? count", out count);
+                subnodes.Add(filepathList);
+                for (int i = 0; i < count; i++)
+                {
+                    filepathList.Items.Add(MakeStringNode(bin, $"[{i}] string"));
+                    filepathList.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                }
+
+                var texAndWavMap = MakeInt32Node(bin, "tex and wav map? count", out count);
+                subnodes.Add(texAndWavMap);
+
+                for (int i = 0; i < count; i++)
+                {
+                    texAndWavMap.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                    texAndWavMap.Items.Add(MakeGuidNode(bin, $"[{i}]"));
+                    texAndWavMap.Items.Add(MakeNameNode(bin, $"[{i}]"));
+                    texAndWavMap.Items.Add(MakeInt32Node(bin, $"[{i}]"));
+                    texAndWavMap.Items.Add(MakeInt32Node(bin, $"[{i}]"));
+                }
+                var unkList2 = MakeInt32Node(bin, "unk list 2 count", out count);
+                subnodes.Add(unkList2);
+
+                for (int i = 0; i < count; i++)
+                {
+                    unkList2.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                    var subList = MakeInt32Node(bin, $"[{i}] sublist count", out int subCount);
+                    unkList2.Items.Add(subList);
+                    for (int j = 0; j < subCount; j++)
+                    {
+                        subList.Items.Add(MakeStringNode(bin, $"[{j}]"));
+                    }
+                    unkList2.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                    unkList2.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                    unkList2.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                    unkList2.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                    unkList2.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                    unkList2.Items.Add(MakeInt32Node(bin, $"[{i}] unk"));
+                    unkList2.Items.Add(MakeInt16Node(bin, $"[{i}] unk"));
+                    unkList2.Items.Add(MakeByteNode(bin, $"[{i}] unk"));
+                }
+
+                var unkList5 = MakeInt32Node(bin, "unk list 5 count", out count);
+                subnodes.Add(unkList5);
+                for (int i = 0; i < count; i++)
+                {
+                    unkList5.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                }
+
+                var unkList6 = MakeInt32Node(bin, "unk list 6 count", out count);
+                subnodes.Add(unkList6);
+
+                for (int i = 0; i < count; i++)
+                {
+                    unkList6.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                    unkList6.Items.Add(MakeInt32Node(bin, $"[{i}]"));
+                }
+
+                var unkList3 = MakeInt32Node(bin, "unk list 3 count", out count);
+                subnodes.Add(unkList3);
+
+                for (int i = 0; i < count; i++)
+                {
+                    unkList3.Items.Add(MakeNameNode(bin, $"[{i}]"));
+                    unkList3.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                }
+
+                var unkList4 = MakeInt32Node(bin, "unk list 4 count", out count);
+                subnodes.Add(unkList4);
+
+                for (int i = 0; i < count; i++)
+                {
+                    unkList4.Items.Add(MakeNameNode(bin, $"[{i}]"));
+                    unkList4.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                }
+
+                var unkList7 = MakeInt32Node(bin, "unk list 7 count", out count);
+                subnodes.Add(unkList7);
+
+                for (int i = 0; i < count; i++)
+                {
+                    unkList7.Items.Add(MakeNameNode(bin, $"[{i}]"));
+                    unkList7.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                }
+
+                var unkList8 = MakeInt32Node(bin, "unk list 8 count", out count);
+                subnodes.Add(unkList8);
+
+                for (int i = 0; i < count; i++)
+                {
+                    unkList8.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                    unkList8.Items.Add(MakeInt32Node(bin, $"[{i}]"));
+                }
+
+                if (count > 0)
+                {
+                    subnodes.Add(MakeInt32Node(bin, "unk3"));
+                    subnodes.Add(MakeInt32Node(bin, "unk4"));
+
+                    var unkList9 = MakeInt32Node(bin, "unk list 9 count", out count);
+                    subnodes.Add(unkList9);
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        unkList9.Items.Add(MakeStringNode(bin, $"[{i}]"));
+                        unkList9.Items.Add(MakeInt32Node(bin, $"[{i}]"));
+                    }
+                }
+
+                BinInterpNode fileToLevelMap = MakeInt32Node(bin, "FilenameToLevelMap? count", out count);
+                subnodes.Add(fileToLevelMap);
+
+                for (int i = 0; i < count; i++)
+                {
+                    fileToLevelMap.Items.Add(MakeNameNode(bin, $"[{i}] name1"));
+                    fileToLevelMap.Items.Add(MakeNameNode(bin, $"[{i}] name2"));
+                }
+
+                BinInterpNode fileToSomethingMap = MakeInt32Node(bin, "FilenameTo??Map? count", out count);
+                subnodes.Add(fileToSomethingMap);
+
+                for (int i = 0; i < count; i++)
+                {
+                    fileToSomethingMap.Items.Add(MakeNameNode(bin, $"[{i}] name"));
+                    fileToSomethingMap.Items.Add(MakeInt16Node(bin, $"[{i}] unk1"));
+                    fileToSomethingMap.Items.Add(MakeInt16Node(bin, $"[{i}] unk2"));
+                    fileToSomethingMap.Items.Add(MakeInt16Node(bin, $"[{i}] unk3"));
+                    fileToSomethingMap.Items.Add(MakeInt16Node(bin, $"[{i}] unk4"));
+                }
+
+                BinInterpNode levelList = MakeInt32Node(bin, "level list? count", out count);
+                subnodes.Add(levelList);
+
+                for (int i = 0; i < count; i++)
+                {
+                    levelList.Items.Add(MakeNameNode(bin, $"[{i}]"));
+                }
+
+                BinInterpNode tfcList = MakeInt32Node(bin, "tfc list? count", out count);
+                subnodes.Add(tfcList);
+                for (int i = 0; i < count; i++)
+                {
+                    tfcList.Items.Add(MakeNameNode(bin, $"[{i}]"));
+                    tfcList.Items.Add(MakeGuidNode(bin, $"[{i}]"));
+                }
+
+                var wwiseList = MakeInt32Node(bin, "wwise list? count", out count);
+                subnodes.Add(wwiseList);
+
+                for (int i = 0; i < count; i++)
+                {
+                    wwiseList.Items.Add(MakeNameNode(bin, $"[{i}]"));
+                    var subList = MakeInt32Node(bin, $"[{i}] sublist count", out int subCount);
+                    wwiseList.Items.Add(subList);
+                    for (int j = 0; j < subCount; j++)
+                    {
+                        subList.Items.Add(MakeNameNode(bin, $"[{j}]"));
+                        subList.Items.Add(MakeGuidNode(bin, $"[{j}]"));
+                        subList.Items.Add(MakeInt32Node(bin, $"[{j}]"));
+                    }
+                }
+
+                BinInterpNode animMap = MakeInt32Node(bin, "BioAnimSetData map? count", out count);
+                subnodes.Add(animMap);
+                for (int i = 0; i < count; i++)
+                {
+                    animMap.Items.Add(MakeNameNode(bin, $"[{i}] name"));
+                    animMap.Items.Add(MakeStringNode(bin, $"[{i}] string"));
+                }
+
+                BinInterpNode animMap2 = MakeInt32Node(bin, "animation map? count", out count);
+                subnodes.Add(animMap2);
+                for (int i = 0; i < count; i++)
+                {
+                    animMap2.Items.Add(MakeNameNode(bin, $"[{i}] name"));
+                    animMap2.Items.Add(MakeStringNode(bin, $"[{i}] string"));
+                }
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
             }
 
             return subnodes;
@@ -1381,7 +1618,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             try
             {
                 var bin = new EndianReader(CurrentLoadedExport.GetReadOnlyDataStream()) { Endian = CurrentLoadedExport.FileRef.Endian };
-                
+
                 var item = new BinInterpNode(bin.Position, "Stack")
                 {
                     IsExpanded = true
@@ -3614,7 +3851,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 for (int a = 0; a < bonesCount; a++)
                 {
                     var boneNodeItems = new List<ITreeItem>();
-                    if (sdkVersion  < 1700)
+                    if (sdkVersion < 1700)
                     {
                         boneNodeItems.Add(MakeUInt16Node(bin, "FxObject Version"));
                         boneNodeItems.Add(MakeUInt16Node(bin, "FxNamedObject Version"));
@@ -3782,7 +4019,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         Items = unkListCitems
                     });
                     unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Bin Index: {binIndex}") { Length = 4 });
-                    
+
                     int kvpCount = bin.ReadInt32();
                     unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Num KeyValuePairs: {kvpCount}") { Length = 4 });
                     for (int i = 0; i < kvpCount; i++)
@@ -4068,7 +4305,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 for (int i = 0; i < columnCount; i++)
                 {
-                    subnodes.Add(new BinInterpNode(bin.Position, $"Name: {bin.ReadNameReference(Pcc)}, Index: {bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 12 });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Name: {bin.ReadNameReference(Pcc).Instanced}, Index: {bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 12 });
                 }
             }
             catch (Exception ex)
@@ -4508,7 +4745,13 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     int guidToIntMapCount;
                     subnodes.Add(new BinInterpNode(bin.Position, $"CrossLevelCoverGuidRefs: ({guidToIntMapCount = bin.ReadInt32()})")
                     {
-                        Items = ReadList(guidToIntMapCount, i => MakeInt32Node(bin, $"{bin.ReadGuid()}"))
+                        Items = ReadList(guidToIntMapCount, i =>
+                        {
+                            var pos = bin.Position;
+                            var guid = bin.ReadGuid();
+                            var navRefIndex = bin.ReadInt32();
+                            return new BinInterpNode(pos, $"{navRefIndex}: {guid}", NodeType.IntProperty);
+                        })
                     });
 
                     int coverListCount;
@@ -4530,43 +4773,49 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         int guidToIntMap2Count;
                         subnodes.Add(new BinInterpNode(bin.Position, $"CrossLevelNavGuidRefs: ({guidToIntMap2Count = bin.ReadInt32()})")
                         {
-                            Items = ReadList(guidToIntMap2Count, i => MakeInt32Node(bin, $"{bin.ReadGuid()}"))
+                            Items = ReadList(guidToIntMap2Count, i =>
+                            {
+                                var pos = bin.Position;
+                                var guid = bin.ReadGuid();
+                                var navRefIndex = bin.ReadInt32();
+                                return new BinInterpNode(pos, $"{navRefIndex}: {guid}", NodeType.IntProperty);
+                            })
                         });
 
-                        int navListCount;
-                        subnodes.Add(new BinInterpNode(bin.Position, $"NavRefs: ({navListCount = bin.ReadInt32()})")
-                        {
-                            Items = ReadList(navListCount, i => MakeEntryNode(bin, $"{i}"))
-                        });
+                    int navListCount;
+                    subnodes.Add(new BinInterpNode(bin.Position, $"NavRefs: ({navListCount = bin.ReadInt32()})")
+                    {
+                        Items = ReadList(navListCount, i => MakeEntryNode(bin, $"{i}"))
+                    });
 
-                        int numbersCount;
-                        subnodes.Add(new BinInterpNode(bin.Position,
-                            $"NavRefIndices: ({numbersCount = bin.ReadInt32()})")
-                        {
-                            Items = ReadList(numbersCount, i => MakeInt32Node(bin, $"{i}"))
-                        });
-                    }
+                    int numbersCount;
+                    subnodes.Add(new BinInterpNode(bin.Position,
+                        $"NavRefIndices: ({numbersCount = bin.ReadInt32()})")
+                    {
+                        Items = ReadList(numbersCount, i => MakeInt32Node(bin, $"{i}"))
+                    });
                 }
+            }
 
                 int crossLevelActorsCount;
-                subnodes.Add(new BinInterpNode(bin.Position, $"CrossLevelActors?: ({crossLevelActorsCount = bin.ReadInt32()})")
-                {
-                    Items = ReadList(crossLevelActorsCount, i => MakeEntryNode(bin, $"{i}"))
-                });
+            subnodes.Add(new BinInterpNode(bin.Position, $"CrossLevelActors?: ({crossLevelActorsCount = bin.ReadInt32()})")
+            {
+                Items = ReadList(crossLevelActorsCount, i => MakeEntryNode(bin, $"{i}"))
+            });
 
-                if (Pcc.Game is MEGame.ME1 or MEGame.LE1)
-                {
-                    subnodes.Add(MakeEntryNode(bin, "BioArtPlaceable 1?"));
-                    subnodes.Add(MakeEntryNode(bin, "BioArtPlaceable 2?"));
-                }
+            if (Pcc.Game is MEGame.ME1 or MEGame.LE1)
+            {
+                subnodes.Add(MakeEntryNode(bin, "BioArtPlaceable 1?"));
+                subnodes.Add(MakeEntryNode(bin, "BioArtPlaceable 2?"));
+            }
 
-                if (Pcc.Game >= MEGame.ME3)
+            if (Pcc.Game >= MEGame.ME3)
+            {
+                bool bInitialized;
+                int samplesCount;
+                subnodes.Add(new BinInterpNode(bin.Position, "PrecomputedLightVolume")
                 {
-                    bool bInitialized;
-                    int samplesCount;
-                    subnodes.Add(new BinInterpNode(bin.Position, "PrecomputedLightVolume")
-                    {
-                        Items =
+                    Items =
                         {
                             new BinInterpNode(bin.Position, $"bInitialized: ({bInitialized = bin.ReadBoolInt()})"),
                             ListInitHelper.ConditionalAdd(bInitialized, () => new ITreeItem[]
@@ -4602,39 +4851,39 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 }
                             })
                         }
-                    });
-                }
-                if (Pcc.Game == MEGame.UDK)
-                {
-                    BinInterpNode item = new BinInterpNode(bin.Position, "PrecomputedVisibilityHandler")
-                    {
-                        IsExpanded = true
-                    };
-                    subnodes.Add(item);
-                    item.Items.Add(MakeVector2DNode(bin, "PrecomputedVisibilityCellBucketOriginXY"));
-                    item.Items.Add(MakeFloatNode(bin, "PrecomputedVisibilityCellSizeXY"));
-                    item.Items.Add(MakeFloatNode(bin, "PrecomputedVisibilityCellSizeZ"));
-                    item.Items.Add(MakeInt32Node(bin, "PrecomputedVisibilityCellBucketSizeXY"));
-                    item.Items.Add(MakeInt32Node(bin, "PrecomputedVisibilityNumCellBuckets"));
-
-                    item = new BinInterpNode(bin.Position, "PrecomputedVolumeDistanceField")
-                    {
-                        IsExpanded = true
-                    };
-
-                    subnodes.Add(item);
-                    item.Items.Add(MakeFloatNode(bin, "VolumeMaxDistance"));
-                    item.Items.Add(MakeBoxNode(bin, "VolumeBox"));
-                    item.Items.Add(MakeInt32Node(bin, "VolumeSizeX"));
-                    item.Items.Add(MakeInt32Node(bin, "VolumeSizeY"));
-                    item.Items.Add(MakeInt32Node(bin, "VolumeSizeZ"));
-                    item.Items.Add(MakeArrayNode(bin, "Data", x=> MakeColorNode(bin, $"Color[{x}]")));
-                    item.Items.Add(MakeInt32Node(bin, "UDKUnknown"));
-
-                }
-
-                binarystart = (int)bin.Position;
+                });
             }
+            if (Pcc.Game == MEGame.UDK)
+            {
+                BinInterpNode item = new BinInterpNode(bin.Position, "PrecomputedVisibilityHandler")
+                {
+                    IsExpanded = true
+                };
+                subnodes.Add(item);
+                item.Items.Add(MakeVector2DNode(bin, "PrecomputedVisibilityCellBucketOriginXY"));
+                item.Items.Add(MakeFloatNode(bin, "PrecomputedVisibilityCellSizeXY"));
+                item.Items.Add(MakeFloatNode(bin, "PrecomputedVisibilityCellSizeZ"));
+                item.Items.Add(MakeInt32Node(bin, "PrecomputedVisibilityCellBucketSizeXY"));
+                item.Items.Add(MakeInt32Node(bin, "PrecomputedVisibilityNumCellBuckets"));
+
+                item = new BinInterpNode(bin.Position, "PrecomputedVolumeDistanceField")
+                {
+                    IsExpanded = true
+                };
+
+                subnodes.Add(item);
+                item.Items.Add(MakeFloatNode(bin, "VolumeMaxDistance"));
+                item.Items.Add(MakeBoxNode(bin, "VolumeBox"));
+                item.Items.Add(MakeInt32Node(bin, "VolumeSizeX"));
+                item.Items.Add(MakeInt32Node(bin, "VolumeSizeY"));
+                item.Items.Add(MakeInt32Node(bin, "VolumeSizeZ"));
+                item.Items.Add(MakeArrayNode(bin, "Data", x => MakeColorNode(bin, $"Color[{x}]")));
+                item.Items.Add(MakeInt32Node(bin, "UDKUnknown"));
+
+            }
+
+            binarystart = (int)bin.Position;
+        }
             catch (Exception ex)
             {
                 subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
@@ -4643,353 +4892,353 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return subnodes;
         }
 
-        private static BinInterpNode MakeBoolIntNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolInt()}", NodeType.StructLeafBool) { Length = 4 };
+private static BinInterpNode MakeBoolIntNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolInt()}", NodeType.StructLeafBool) { Length = 4 };
 
-        private static BinInterpNode MakeBoolIntNode(EndianReader bin, string name, out bool boolVal)
+private static BinInterpNode MakeBoolIntNode(EndianReader bin, string name, out bool boolVal)
+{
+    return new BinInterpNode(bin.Position, $"{name}: {boolVal = bin.ReadBoolInt()}", NodeType.StructLeafBool) { Length = 4 };
+}
+
+private static BinInterpNode MakeBoolByteNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolByte()}") { Length = 1 };
+
+private static BinInterpNode MakeFloatNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadFloat()}", NodeType.StructLeafFloat) { Length = 4 };
+
+private static BinInterpNode MakeFloatNodeConditional(EndianReader bin, string name, bool create)
+{
+    if (create)
+    {
+        return new BinInterpNode(bin.Position, $"{name}: {bin.ReadFloat()}", NodeType.StructLeafFloat) { Length = 4 };
+    }
+    return null;
+}
+
+private static BinInterpNode MakeUInt32Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32()}") { Length = 4 };
+
+private static BinInterpNode MakeUInt64Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt64()}") { Length = 8 };
+
+private static BinInterpNode MakeInt64Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt64()}") { Length = 8 };
+
+private static BinInterpNode MakeUInt32HexNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32():X8}") { Length = 4 };
+
+private static BinInterpNode MakeInt32Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 };
+
+private static BinInterpNode MakeInt32Node(EndianReader bin, string name, out int val)
+{
+    return new BinInterpNode(bin.Position, $"{name}: {val = bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 };
+}
+
+private static BinInterpNode MakeUInt16Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt16()}") { Length = 2 };
+
+private static BinInterpNode MakeInt16Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt16()}") { Length = 2 };
+
+private static BinInterpNode MakeByteNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadByte()}") { Length = 1 };
+
+private static BinInterpNode MakeSByteNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadSByte()}") { Length = 1 };
+
+private BinInterpNode MakeNameNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadNameReference(Pcc).Instanced}", NodeType.StructLeafName) { Length = 8 };
+
+private BinInterpNode MakeNameNode(EndianReader bin, string name, out NameReference nameRef) =>
+    new BinInterpNode(bin.Position, $"{name}: {nameRef = bin.ReadNameReference(Pcc).Instanced}", NodeType.StructLeafName) { Length = 8 };
+
+private BinInterpNode MakeEntryNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin)}", NodeType.StructLeafObject) { Length = 4 };
+private BinInterpNode MakeEntryNode(EndianReader bin, string name, out int uIndex)
+{
+    long binPosition = bin.Position;
+    uIndex = bin.ReadInt32();
+    string refString = $"#{uIndex} {CurrentLoadedExport.FileRef.GetEntryString(uIndex)}";
+    return new BinInterpNode(binPosition, $"{name}: {refString}", NodeType.StructLeafObject) { Length = 4 };
+}
+
+private static BinInterpNode MakePackedNormalNode(EndianReader bin, string name) =>
+    new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadByte() / 127.5f - 1}, Y: {bin.ReadByte() / 127.5f - 1}, Z: {bin.ReadByte() / 127.5f - 1}, W: {bin.ReadByte() / 127.5f - 1})")
+    {
+        Length = 4
+    };
+
+private static BinInterpNode MakeVectorNodeEditable(EndianReader bin, string name, bool expanded = false)
+{
+    var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 12 };
+    bin.Position -= 12;
+    node.Items.Add(MakeFloatNode(bin, "X"));
+    node.Items.Add(MakeFloatNode(bin, "Y"));
+    node.Items.Add(MakeFloatNode(bin, "Z"));
+    node.IsExpanded = expanded;
+    return node;
+}
+
+private static BinInterpNode MakeVector2DNodeEditable(EndianReader bin, string name, bool expanded = false)
+{
+    var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()})") { Length = 8 };
+    bin.Position -= 8;
+    node.Items.Add(MakeFloatNode(bin, "X"));
+    node.Items.Add(MakeFloatNode(bin, "Y"));
+    node.IsExpanded = expanded;
+    return node;
+}
+
+private static BinInterpNode MakeVectorNode(EndianReader bin, string name)
+{
+    var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 12 };
+    bin.Position -= 12;
+    node.Items.Add(MakeFloatNode(bin, "X"));
+    node.Items.Add(MakeFloatNode(bin, "Y"));
+    node.Items.Add(MakeFloatNode(bin, "Z"));
+    return node;
+}
+
+private static BinInterpNode MakeFxQuatNode(EndianReader bin, string name)
+{
+    var node = new BinInterpNode(bin.Position, $"{name}: (W: {bin.ReadFloat()}, X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 16 };
+    bin.Position -= 16;
+    node.Items.Add(MakeFloatNode(bin, "W"));
+    node.Items.Add(MakeFloatNode(bin, "X"));
+    node.Items.Add(MakeFloatNode(bin, "Y"));
+    node.Items.Add(MakeFloatNode(bin, "Z"));
+    return node;
+}
+
+private static BinInterpNode MakeQuatNode(EndianReader bin, string name)
+{
+    var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()}, W: {bin.ReadFloat()})") { Length = 16 };
+    bin.Position -= 16;
+    node.Items.Add(MakeFloatNode(bin, "X"));
+    node.Items.Add(MakeFloatNode(bin, "Y"));
+    node.Items.Add(MakeFloatNode(bin, "Z"));
+    node.Items.Add(MakeFloatNode(bin, "W"));
+    return node;
+}
+
+private static BinInterpNode MakeRotatorNode(EndianReader bin, string name)
+{
+    var node = new BinInterpNode(bin.Position, $"{name}: (Pitch: {bin.ReadInt32()}, Yaw: {bin.ReadInt32()}, Roll: {bin.ReadInt32()})") { Length = 12 };
+    bin.Position -= 12;
+    node.Items.Add(MakeInt32Node(bin, "Pitch"));
+    node.Items.Add(MakeInt32Node(bin, "Yaw"));
+    node.Items.Add(MakeInt32Node(bin, "Roll"));
+    return node;
+}
+
+private static BinInterpNode MakeBoxNode(EndianReader bin, string name) =>
+    new BinInterpNode(bin.Position, name)
+    {
+        IsExpanded = true,
+        Items =
         {
-            return new BinInterpNode(bin.Position, $"{name}: {boolVal = bin.ReadBoolInt()}", NodeType.StructLeafBool) { Length = 4 };
-        }
-
-        private static BinInterpNode MakeBoolByteNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadBoolByte()}") { Length = 1 };
-
-        private static BinInterpNode MakeFloatNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadFloat()}", NodeType.StructLeafFloat) { Length = 4 };
-
-        private static BinInterpNode MakeFloatNodeConditional(EndianReader bin, string name, bool create)
-        {
-            if (create)
-            {
-                return new BinInterpNode(bin.Position, $"{name}: {bin.ReadFloat()}", NodeType.StructLeafFloat) { Length = 4 };
-            }
-            return null;
-        }
-
-        private static BinInterpNode MakeUInt32Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32()}") { Length = 4 };
-
-        private static BinInterpNode MakeUInt64Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt64()}") { Length = 8 };
-
-        private static BinInterpNode MakeInt64Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt64()}") { Length = 8 };
-
-        private static BinInterpNode MakeUInt32HexNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt32():X8}") { Length = 4 };
-
-        private static BinInterpNode MakeInt32Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 };
-
-        private static BinInterpNode MakeInt32Node(EndianReader bin, string name, out int val)
-        {
-            return new BinInterpNode(bin.Position, $"{name}: {val = bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 };
-        }
-
-        private static BinInterpNode MakeUInt16Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadUInt16()}") { Length = 2 };
-
-        private static BinInterpNode MakeInt16Node(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadInt16()}") { Length = 2 };
-
-        private static BinInterpNode MakeByteNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadByte()}") { Length = 1 };
-
-        private static BinInterpNode MakeSByteNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadSByte()}") { Length = 1 };
-
-        private BinInterpNode MakeNameNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadNameReference(Pcc).Instanced}", NodeType.StructLeafName) { Length = 8 };
-
-        private BinInterpNode MakeNameNode(EndianReader bin, string name, out NameReference nameRef) =>
-            new BinInterpNode(bin.Position, $"{name}: {nameRef = bin.ReadNameReference(Pcc).Instanced}", NodeType.StructLeafName) { Length = 8 };
-
-        private BinInterpNode MakeEntryNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {entryRefString(bin)}", NodeType.StructLeafObject) { Length = 4 };
-        private BinInterpNode MakeEntryNode(EndianReader bin, string name, out int uIndex)
-        {
-            long binPosition = bin.Position;
-            uIndex = bin.ReadInt32();
-            string refString = $"#{uIndex} {CurrentLoadedExport.FileRef.GetEntryString(uIndex)}";
-            return new BinInterpNode(binPosition, $"{name}: {refString}", NodeType.StructLeafObject) { Length = 4 };
-        }
-
-        private static BinInterpNode MakePackedNormalNode(EndianReader bin, string name) =>
-            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadByte() / 127.5f - 1}, Y: {bin.ReadByte() / 127.5f - 1}, Z: {bin.ReadByte() / 127.5f - 1}, W: {bin.ReadByte() / 127.5f - 1})")
-            {
-                Length = 4
-            };
-
-        private static BinInterpNode MakeVectorNodeEditable(EndianReader bin, string name, bool expanded = false)
-        {
-            var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 12 };
-            bin.Position -= 12;
-            node.Items.Add(MakeFloatNode(bin, "X"));
-            node.Items.Add(MakeFloatNode(bin, "Y"));
-            node.Items.Add(MakeFloatNode(bin, "Z"));
-            node.IsExpanded = expanded;
-            return node;
-        }
-
-        private static BinInterpNode MakeVector2DNodeEditable(EndianReader bin, string name, bool expanded = false)
-        {
-            var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()})") { Length = 8 };
-            bin.Position -= 8;
-            node.Items.Add(MakeFloatNode(bin, "X"));
-            node.Items.Add(MakeFloatNode(bin, "Y"));
-            node.IsExpanded = expanded;
-            return node;
-        }
-
-        private static BinInterpNode MakeVectorNode(EndianReader bin, string name)
-        {
-            var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 12 };
-            bin.Position -= 12;
-            node.Items.Add(MakeFloatNode(bin, "X"));
-            node.Items.Add(MakeFloatNode(bin, "Y"));
-            node.Items.Add(MakeFloatNode(bin, "Z"));
-            return node;
-        }
-
-        private static BinInterpNode MakeFxQuatNode(EndianReader bin, string name)
-        {
-            var node = new BinInterpNode(bin.Position, $"{name}: (W: {bin.ReadFloat()}, X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()})") { Length = 16 };
-            bin.Position -= 16;
-            node.Items.Add(MakeFloatNode(bin, "W"));
-            node.Items.Add(MakeFloatNode(bin, "X"));
-            node.Items.Add(MakeFloatNode(bin, "Y"));
-            node.Items.Add(MakeFloatNode(bin, "Z"));
-            return node;
-        }
-
-        private static BinInterpNode MakeQuatNode(EndianReader bin, string name)
-        {
-            var node = new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()}, Z: {bin.ReadFloat()}, W: {bin.ReadFloat()})") { Length = 16 };
-            bin.Position -= 16;
-            node.Items.Add(MakeFloatNode(bin, "X"));
-            node.Items.Add(MakeFloatNode(bin, "Y"));
-            node.Items.Add(MakeFloatNode(bin, "Z"));
-            node.Items.Add(MakeFloatNode(bin, "W"));
-            return node;
-        }
-
-        private static BinInterpNode MakeRotatorNode(EndianReader bin, string name)
-        {
-            var node = new BinInterpNode(bin.Position, $"{name}: (Pitch: {bin.ReadInt32()}, Yaw: {bin.ReadInt32()}, Roll: {bin.ReadInt32()})") { Length = 12 };
-            bin.Position -= 12;
-            node.Items.Add(MakeInt32Node(bin, "Pitch"));
-            node.Items.Add(MakeInt32Node(bin, "Yaw"));
-            node.Items.Add(MakeInt32Node(bin, "Roll"));
-            return node;
-        }
-
-        private static BinInterpNode MakeBoxNode(EndianReader bin, string name) =>
-            new BinInterpNode(bin.Position, name)
-            {
-                IsExpanded = true,
-                Items =
-                {
                     MakeVectorNode(bin, "Min"),
                     MakeVectorNode(bin, "Max"),
                     new BinInterpNode(bin.Position, $"IsValid: {bin.ReadBoolByte()}")
-                },
-                Length = 25
-            };
+        },
+        Length = 25
+    };
 
-        private static BinInterpNode MakeVector2DNode(EndianReader bin, string name) =>
-            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()})") { Length = 8 };
+private static BinInterpNode MakeVector2DNode(EndianReader bin, string name) =>
+    new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat()}, Y: {bin.ReadFloat()})") { Length = 8 };
 
-        private static BinInterpNode MakeVector2DHalfNode(EndianReader bin, string name) =>
-            new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat16()}, Y: {bin.ReadFloat16()})") { Length = 4 };
+private static BinInterpNode MakeVector2DHalfNode(EndianReader bin, string name) =>
+    new BinInterpNode(bin.Position, $"{name}: (X: {bin.ReadFloat16()}, Y: {bin.ReadFloat16()})") { Length = 4 };
 
-        private static BinInterpNode MakeColorNode(EndianReader bin, string name)
-        {
-            return new BinInterpNode(bin.Position, $"{name}")
-            {
-                Length = 4,
-                Items =
+private static BinInterpNode MakeColorNode(EndianReader bin, string name)
+{
+    return new BinInterpNode(bin.Position, $"{name}")
+    {
+        Length = 4,
+        Items =
                 {
                     new BinInterpNode(bin.Position, $"B: {bin.ReadByte()}"),
                     new BinInterpNode(bin.Position, $"G: {bin.ReadByte()}"),
                     new BinInterpNode(bin.Position, $"R: {bin.ReadByte()}"),
                     new BinInterpNode(bin.Position, $"A: {bin.ReadByte()}"),
                 }
-            };
-        }
+    };
+}
 
-        private static BinInterpNode MakeBoxSphereBoundsNode(EndianReader bin, string name)
-        {
-            return new BinInterpNode(bin.Position, $"{name}")
-            {
-                Items =
+private static BinInterpNode MakeBoxSphereBoundsNode(EndianReader bin, string name)
+{
+    return new BinInterpNode(bin.Position, $"{name}")
+    {
+        Items =
                 {
                     MakeVectorNode(bin, "Origin"),
                     MakeVectorNode(bin, "BoxExtent"),
                     MakeFloatNode(bin, "SphereRadius")
                 }
-            };
-        }
+    };
+}
 
-        private static BinInterpNode MakeMaterialGuidNode(EndianReader bin, string name, Dictionary<Guid, string> materialGuidMap = null)
-        {
-            var guid = bin.ReadGuid();
-            var node = new BinInterpNode(bin.Position - 16, $"{name}: {guid}") { Length = 16 };
+private static BinInterpNode MakeMaterialGuidNode(EndianReader bin, string name, Dictionary<Guid, string> materialGuidMap = null)
+{
+    var guid = bin.ReadGuid();
+    var node = new BinInterpNode(bin.Position - 16, $"{name}: {guid}") { Length = 16 };
 
 #if DEBUG
-            if (materialGuidMap != null && materialGuidMap.TryGetValue(guid, out var matName))
-            {
-                node.Header += " " + matName;
-            }
+    if (materialGuidMap != null && materialGuidMap.TryGetValue(guid, out var matName))
+    {
+        node.Header += " " + matName;
+    }
 #endif
 
-            node.Tag = NodeType.Guid;
-            return node;
-        }
+    node.Tag = NodeType.Guid;
+    return node;
+}
 
-        private static BinInterpNode MakeGuidNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadGuid()}", NodeType.Guid) { Length = 16 };
+private static BinInterpNode MakeGuidNode(EndianReader bin, string name) => new BinInterpNode(bin.Position, $"{name}: {bin.ReadGuid()}", NodeType.Guid) { Length = 16 };
 
-        private static BinInterpNode MakeArrayNode(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false,
-                                                   BinInterpNode.ArrayPropertyChildAddAlgorithm arrayAddAlgo = BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
-        {
-            int count;
-            return new BinInterpNode(bin.Position, $"{name} ({count = bin.ReadInt32()})")
-            {
-                IsExpanded = IsExpanded,
-                Items = ReadList(count, selector),
-                ArrayAddAlgorithm = arrayAddAlgo,
-                Length = 4
-            };
-        }
-
-        private static BinInterpNode MakeArrayNodeInt16Count(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false,
+private static BinInterpNode MakeArrayNode(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false,
                                            BinInterpNode.ArrayPropertyChildAddAlgorithm arrayAddAlgo = BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
+{
+    int count;
+    return new BinInterpNode(bin.Position, $"{name} ({count = bin.ReadInt32()})")
+    {
+        IsExpanded = IsExpanded,
+        Items = ReadList(count, selector),
+        ArrayAddAlgorithm = arrayAddAlgo,
+        Length = 4
+    };
+}
+
+private static BinInterpNode MakeArrayNodeInt16Count(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false,
+                                   BinInterpNode.ArrayPropertyChildAddAlgorithm arrayAddAlgo = BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
+{
+    int count;
+    return new BinInterpNode(bin.Position, $"{name} ({count = bin.ReadInt16()})")
+    {
+        IsExpanded = IsExpanded,
+        Items = ReadList(count, selector),
+        ArrayAddAlgorithm = arrayAddAlgo,
+        Length = 2
+    };
+}
+
+private static BinInterpNode MakeArrayNodeByteCount(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false,
+                                   BinInterpNode.ArrayPropertyChildAddAlgorithm arrayAddAlgo = BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
+{
+    int count;
+    return new BinInterpNode(bin.Position, $"{name} ({count = bin.ReadByte()})")
+    {
+        IsExpanded = IsExpanded,
+        Items = ReadList(count, selector),
+        ArrayAddAlgorithm = arrayAddAlgo,
+        Length = 1
+    };
+}
+
+private static BinInterpNode MakeByteArrayNode(EndianReader bin, string name)
+{
+    int pos = (int)bin.Position;
+    int count = bin.ReadInt32();
+    bin.Skip(count);
+    return new BinInterpNode(pos, $"{name} ({count} bytes)");
+}
+
+private static BinInterpNode MakeArrayNode(int count, EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false)
+{
+    return new BinInterpNode(bin.Position, $"{name} ({count})")
+    {
+        IsExpanded = IsExpanded,
+        Items = ReadList(count, selector)
+    };
+}
+
+
+
+
+[Flags]
+public enum ECoordTransformUsage : uint
+{
+    // no transforms used
+    UsedCoord_None = 0,
+    // local to world used
+    UsedCoord_World = 1 << 0,
+    // local to view used
+    UsedCoord_View = 1 << 1,
+    // local to local used
+    UsedCoord_Local = 1 << 2,
+    // World Position used
+    UsedCoord_WorldPos = 1 << 3
+}
+
+private List<ITreeItem> StartPrefabInstanceScan(byte[] data, ref int binarystart)
+{
+    /*
+     *  count: 4 bytes 
+     *      Prefab ref : 4 bytes
+     *      Level Object : 4 bytes
+     *  0: 4 bytes
+     *  
+     */
+    var subnodes = new List<ITreeItem>();
+    if (!CurrentLoadedExport.HasStack)
+    {
+        return subnodes;
+    }
+
+    try
+    {
+        var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+        bin.JumpTo(binarystart);
+        subnodes.Add(MakeArrayNode(bin, "ArchetypeToInstanceMap", i => new BinInterpNode(bin.Position, $"{i}")
         {
-            int count;
-            return new BinInterpNode(bin.Position, $"{name} ({count = bin.ReadInt16()})")
-            {
-                IsExpanded = IsExpanded,
-                Items = ReadList(count, selector),
-                ArrayAddAlgorithm = arrayAddAlgo,
-                Length = 2
-            };
-        }
-
-        private static BinInterpNode MakeArrayNodeByteCount(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false,
-                                           BinInterpNode.ArrayPropertyChildAddAlgorithm arrayAddAlgo = BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
-        {
-            int count;
-            return new BinInterpNode(bin.Position, $"{name} ({count = bin.ReadByte()})")
-            {
-                IsExpanded = IsExpanded,
-                Items = ReadList(count, selector),
-                ArrayAddAlgorithm = arrayAddAlgo,
-                Length = 1
-            };
-        }
-
-        private static BinInterpNode MakeByteArrayNode(EndianReader bin, string name)
-        {
-            int pos = (int)bin.Position;
-            int count = bin.ReadInt32();
-            bin.Skip(count);
-            return new BinInterpNode(pos, $"{name} ({count} bytes)");
-        }
-
-        private static BinInterpNode MakeArrayNode(int count, EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false)
-        {
-            return new BinInterpNode(bin.Position, $"{name} ({count})")
-            {
-                IsExpanded = IsExpanded,
-                Items = ReadList(count, selector)
-            };
-        }
-
-
-
-
-        [Flags]
-        public enum ECoordTransformUsage : uint
-        {
-            // no transforms used
-            UsedCoord_None = 0,
-            // local to world used
-            UsedCoord_World = 1 << 0,
-            // local to view used
-            UsedCoord_View = 1 << 1,
-            // local to local used
-            UsedCoord_Local = 1 << 2,
-            // World Position used
-            UsedCoord_WorldPos = 1 << 3
-        }
-
-        private List<ITreeItem> StartPrefabInstanceScan(byte[] data, ref int binarystart)
-        {
-            /*
-             *  count: 4 bytes 
-             *      Prefab ref : 4 bytes
-             *      Level Object : 4 bytes
-             *  0: 4 bytes
-             *  
-             */
-            var subnodes = new List<ITreeItem>();
-            if (!CurrentLoadedExport.HasStack)
-            {
-                return subnodes;
-            }
-
-            try
-            {
-                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
-                bin.JumpTo(binarystart);
-                subnodes.Add(MakeArrayNode(bin, "ArchetypeToInstanceMap", i => new BinInterpNode(bin.Position, $"{i}")
-                {
-                    IsExpanded = true,
-                    Items =
+            IsExpanded = true,
+            Items =
                     {
                         MakeEntryNode(bin, "Archetype"),
                         MakeEntryNode(bin, "Instance")
                     }
-                }, true));
-                subnodes.Add(MakeArrayNode(bin, "PrefabInstance_ObjectMap", i => new BinInterpNode(bin.Position, $"{i}")
-                {
-                    IsExpanded = true,
-                    Items =
+        }, true));
+        subnodes.Add(MakeArrayNode(bin, "PrefabInstance_ObjectMap", i => new BinInterpNode(bin.Position, $"{i}")
+        {
+            IsExpanded = true,
+            Items =
                     {
                         MakeEntryNode(bin, "Object:"),
                         MakeInt32Node(bin, "int")
                     }
-                }, true));
-            }
-            catch (Exception ex)
-            {
-                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
-            }
-            return subnodes;
-        }
+        }, true));
+    }
+    catch (Exception ex)
+    {
+        subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+    }
+    return subnodes;
+}
 
-        private List<ITreeItem> StartSkeletalMeshScan(byte[] data, ref int binarystart)
+private List<ITreeItem> StartSkeletalMeshScan(byte[] data, ref int binarystart)
+{
+    var subnodes = new List<ITreeItem>();
+    var game = CurrentLoadedExport.FileRef.Game;
+    try
+    {
+        PackageCache cache = new PackageCache();
+        var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+        bin.JumpTo(binarystart);
+
+        subnodes.Add(MakeBoxSphereBoundsNode(bin, "Bounds"));
+        subnodes.Add(MakeArrayNode(bin, "Materials", i =>
         {
-            var subnodes = new List<ITreeItem>();
-            var game = CurrentLoadedExport.FileRef.Game;
+            var matNode = MakeEntryNode(bin, $"{i}");
             try
             {
-                PackageCache cache = new PackageCache();
-                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
-                bin.JumpTo(binarystart);
-
-                subnodes.Add(MakeBoxSphereBoundsNode(bin, "Bounds"));
-                subnodes.Add(MakeArrayNode(bin, "Materials", i =>
+                var value = bin.Skip(-4).ReadInt32();
+                if (value != 0 && Pcc.GetEntry(value) is ExportEntry matExport)
                 {
-                    var matNode = MakeEntryNode(bin, $"{i}");
-                    try
+                    foreach (IEntry texture in MaterialInstanceConstant.GetTextures(matExport, cache))
                     {
-                        var value = bin.Skip(-4).ReadInt32();
-                        if (value != 0 && Pcc.GetEntry(value) is ExportEntry matExport)
-                        {
-                            foreach (IEntry texture in MaterialInstanceConstant.GetTextures(matExport, cache))
-                            {
-                                matNode.Items.Add(new BinInterpNode(-1, $"#{texture.UIndex} {texture.FileRef.GetEntryString(texture.UIndex)}", NodeType.StructLeafObject) { UIndexValue = texture.UIndex });
-                            }
-                        }
+                        matNode.Items.Add(new BinInterpNode(-1, $"#{texture.UIndex} {texture.FileRef.GetEntryString(texture.UIndex)}", NodeType.StructLeafObject) { UIndexValue = texture.UIndex });
                     }
-                    catch
-                    {
-                        matNode.Items.Add(new BinInterpNode("Error reading Material!"));
-                    }
+                }
+            }
+            catch
+            {
+                matNode.Items.Add(new BinInterpNode("Error reading Material!"));
+            }
 
-                    return matNode;
-                }, true, BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes));
-                subnodes.Add(MakeVectorNode(bin, "Origin"));
-                subnodes.Add(MakeRotatorNode(bin, "Rotation Origin"));
-                subnodes.Add(MakeArrayNode(bin, "RefSkeleton", i => new BinInterpNode(bin.Position, $"{i}: {bin.ReadNameReference(Pcc).Instanced}")
-                {
-                    Items =
+            return matNode;
+        }, true, BinInterpNode.ArrayPropertyChildAddAlgorithm.FourBytes));
+        subnodes.Add(MakeVectorNode(bin, "Origin"));
+        subnodes.Add(MakeRotatorNode(bin, "Rotation Origin"));
+        subnodes.Add(MakeArrayNode(bin, "RefSkeleton", i => new BinInterpNode(bin.Position, $"{i}: {bin.ReadNameReference(Pcc).Instanced}")
+        {
+            Items =
                     {
                         MakeUInt32Node(bin, "Flags"),
                         MakeQuatNode(bin, "Bone Orientation (quaternion)"),
@@ -4998,20 +5247,20 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         MakeInt32Node(bin, "ParentIndex"),
                         ListInitHelper.ConditionalAddOne<ITreeItem>( Pcc.Game >= MEGame.ME3, () => MakeColorNode(bin, "BoneColor")),
                     }
-                }));
-                subnodes.Add(MakeInt32Node(bin, "SkeletalDepth"));
-                int rawPointIndicesCount;
-                bool useFullPrecisionUVs = true;
-                int numTexCoords = 1;
-                subnodes.Add(MakeArrayNode(bin, "LODModels", i =>
+        }));
+        subnodes.Add(MakeInt32Node(bin, "SkeletalDepth"));
+        int rawPointIndicesCount;
+        bool useFullPrecisionUVs = true;
+        int numTexCoords = 1;
+        subnodes.Add(MakeArrayNode(bin, "LODModels", i =>
+        {
+            BinInterpNode node = new BinInterpNode(bin.Position, $"{i}");
+            try
+            {
+                node.Items.Add(MakeArrayNode(bin, "Sections", j => new BinInterpNode(bin.Position, $"{j}")
                 {
-                    BinInterpNode node = new BinInterpNode(bin.Position, $"{i}");
-                    try
+                    Items =
                     {
-                        node.Items.Add(MakeArrayNode(bin, "Sections", j => new BinInterpNode(bin.Position, $"{j}")
-                        {
-                            Items =
-                            {
                                 MakeUInt16Node(bin, "MaterialIndex"),
                                 MakeUInt16Node(bin, "ChunkIndex"),
                                 MakeUInt32Node(bin, "BaseIndex"),
@@ -5019,29 +5268,29 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                                                             () => MakeUInt32Node(bin, "NumTriangles"),
                                                                             () => MakeUInt16Node(bin, "NumTriangles")),
                                 ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK, () => MakeByteNode(bin, "TriangleSorting"))
-                            }
-                        }));
-                        node.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.UDK, () => new ITreeItem[]
-                        {
+                    }
+                }));
+                node.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game == MEGame.UDK, () => new ITreeItem[]
+                {
                             MakeBoolIntNode(bin, "NeedsCPUAccess"),
                             MakeByteNode(bin, "Datatype size"),
-                        }));
-                        node.Items.Add(MakeInt32Node(bin, "Index size?"));
-                        if (Pcc.Game == MEGame.UDK && bin.Skip(-4).ReadInt32() == 4)
-                        {
-                            node.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt32Node(bin, $"{j}")));
-                        }
-                        else
-                        {
-                            node.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt16Node(bin, $"{j}")));
-                        }
-                        node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeArrayNode(bin, "ShadowIndices", j => MakeUInt16Node(bin, $"{j}"))));
-                        node.Items.Add(MakeArrayNode(bin, "ActiveBoneIndices", j => MakeUInt16Node(bin, $"{j}")));
-                        node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeArrayNode(bin, "ShadowTriangleDoubleSided", j => MakeByteNode(bin, $"{j}"))));
-                        node.Items.Add(MakeArrayNode(bin, "Chunks", j => new BinInterpNode(bin.Position, $"{j}")
-                        {
-                            Items =
-                            {
+                }));
+                node.Items.Add(MakeInt32Node(bin, "Index size?"));
+                if (Pcc.Game == MEGame.UDK && bin.Skip(-4).ReadInt32() == 4)
+                {
+                    node.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt32Node(bin, $"{j}")));
+                }
+                else
+                {
+                    node.Items.Add(MakeArrayNode(bin, "IndexBuffer", j => MakeUInt16Node(bin, $"{j}")));
+                }
+                node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeArrayNode(bin, "ShadowIndices", j => MakeUInt16Node(bin, $"{j}"))));
+                node.Items.Add(MakeArrayNode(bin, "ActiveBoneIndices", j => MakeUInt16Node(bin, $"{j}")));
+                node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeArrayNode(bin, "ShadowTriangleDoubleSided", j => MakeByteNode(bin, $"{j}"))));
+                node.Items.Add(MakeArrayNode(bin, "Chunks", j => new BinInterpNode(bin.Position, $"{j}")
+                {
+                    Items =
+                    {
                                 MakeUInt32Node(bin, "BaseVertexIndex"),
                                 MakeArrayNode(bin, "RigidVertices", k => new BinInterpNode(bin.Position, $"{k}")
                                 {
@@ -5086,36 +5335,36 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 MakeInt32Node(bin, "NumRigidVertices"),
                                 MakeInt32Node(bin, "NumSoftVertices"),
                                 MakeInt32Node(bin, "MaxBoneInfluences"),
-                            }
-                        }));
-                        node.Items.Add(MakeUInt32Node(bin, "Size"));
-                        node.Items.Add(MakeUInt32Node(bin, "NumVertices"));
-                        node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeArrayNode(bin, "Edges", j => new BinInterpNode(bin.Position, $"{j}")
-                        {
-                            Items =
-                            {
+                    }
+                }));
+                node.Items.Add(MakeUInt32Node(bin, "Size"));
+                node.Items.Add(MakeUInt32Node(bin, "NumVertices"));
+                node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game != MEGame.UDK, () => MakeArrayNode(bin, "Edges", j => new BinInterpNode(bin.Position, $"{j}")
+                {
+                    Items =
+                    {
                                 MakeInt32Node(bin, "Vertices[0]"),
                                 MakeInt32Node(bin, "Vertices[1]"),
                                 MakeInt32Node(bin, "Faces[0]"),
                                 MakeInt32Node(bin, "Faces[1]"),
-                            }
-                        })));
-                        node.Items.Add(MakeArrayNode(bin, "RequiredBones", j => MakeByteNode(bin, $"{j}")));
-                        node.Items.Add(MakeUInt32Node(bin, "RawPointIndices BulkDataFlags"));
-                        node.Items.Add(new BinInterpNode(bin.Position, $"RawPointIndices Count: {rawPointIndicesCount = bin.ReadInt32()}"));
-                        node.Items.Add(MakeUInt32Node(bin, "RawPointIndices size"));
-                        node.Items.Add(MakeUInt32Node(bin, "RawPointIndices file offset"));
-                        node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK,
-                                                                                   () => MakeArrayNode(rawPointIndicesCount, bin, "RawPointIndices", k => MakeInt32Node(bin, $"{k}")),
-                                                                                   () => MakeArrayNode(rawPointIndicesCount, bin, "RawPointIndices", k => MakeUInt16Node(bin, $"{k}"))));
-                        node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK, () => MakeInt32Node(bin, "NumTexCoords")));
-                        BinInterpNode item = new BinInterpNode(bin.Position, "VertexBufferGPUSkin")
-                        {
-                            IsExpanded = true
-                        };
-                        node.Items.Add(item);
-                        item.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME1, () => new List<ITreeItem>
-                        {
+                    }
+                })));
+                node.Items.Add(MakeArrayNode(bin, "RequiredBones", j => MakeByteNode(bin, $"{j}")));
+                node.Items.Add(MakeUInt32Node(bin, "RawPointIndices BulkDataFlags"));
+                node.Items.Add(new BinInterpNode(bin.Position, $"RawPointIndices Count: {rawPointIndicesCount = bin.ReadInt32()}"));
+                node.Items.Add(MakeUInt32Node(bin, "RawPointIndices size"));
+                node.Items.Add(MakeUInt32Node(bin, "RawPointIndices file offset"));
+                node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK,
+                                                                           () => MakeArrayNode(rawPointIndicesCount, bin, "RawPointIndices", k => MakeInt32Node(bin, $"{k}")),
+                                                                           () => MakeArrayNode(rawPointIndicesCount, bin, "RawPointIndices", k => MakeUInt16Node(bin, $"{k}"))));
+                node.Items.Add(ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK, () => MakeInt32Node(bin, "NumTexCoords")));
+                BinInterpNode item = new BinInterpNode(bin.Position, "VertexBufferGPUSkin")
+                {
+                    IsExpanded = true
+                };
+                node.Items.Add(item);
+                item.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game != MEGame.ME1, () => new List<ITreeItem>
+                {
                             ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.UDK, () => MakeInt32Node(bin, "NumTexCoords", out numTexCoords)),
                             MakeBoolIntNode(bin, "bUseFullPrecisionUVs", out useFullPrecisionUVs),
                             ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new ITreeItem[]
@@ -5124,12 +5373,12 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 MakeVectorNode(bin, "MeshExtension"),
                                 MakeVectorNode(bin, "MeshOrigin"),
                             }),
-                        }));
-                        item.Items.Add(MakeInt32Node(bin, "vertex size"));
-                        item.Items.Add(MakeArrayNode(bin, "VertexData", k => new BinInterpNode(bin.Position, $"{k}")
-                        {
-                            Items =
-                            {
+                }));
+                item.Items.Add(MakeInt32Node(bin, "vertex size"));
+                item.Items.Add(MakeArrayNode(bin, "VertexData", k => new BinInterpNode(bin.Position, $"{k}")
+                {
+                    Items =
+                    {
                                 ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game <= MEGame.ME2, () => MakeVectorNode(bin, "Position")),
                                 MakePackedNormalNode(bin, "TangentX"),
                                 ListInitHelper.ConditionalAddOne<ITreeItem>(Pcc.Game == MEGame.ME1, () =>  MakePackedNormalNode(bin, "TangentY")),
@@ -5144,499 +5393,499 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                                                                                                 () => MakeVector2DHalfNode(bin, "UV"))),
                                 ListInitHelper.ConditionalAddOne<ITreeItem>(numTexCoords > 1, () => MakeArrayNode(numTexCoords - 1, bin, "Additional UVs",
                                                                                                                          i => useFullPrecisionUVs ? MakeVector2DNode(bin, "UV") : MakeVector2DHalfNode(bin, "UV")))
-                            }
-                        }));
-                        int vertexInfluenceSize;
-                        node.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new List<ITreeItem>
-                        {
+                    }
+                }));
+                int vertexInfluenceSize;
+                node.Items.Add(ListInitHelper.ConditionalAdd(Pcc.Game >= MEGame.ME3, () => new List<ITreeItem>
+                {
                             new BinInterpNode(bin.Position, $"VertexInfluence size: {vertexInfluenceSize = bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 4 },
                             ListInitHelper.ConditionalAdd<ITreeItem>(vertexInfluenceSize > 0, () => new ITreeItem[]
                             {
                                 MakeArrayNode(bin, "VertexInfluences", i => MakeInt32Node(bin, $"{i}")),
                                 MakeInt32Node(bin, "Unknown")
                             })
-                        }));
-                        if (Pcc.Game is MEGame.UDK)
-                        {
-                            node.Items.Add(MakeBoolIntNode(bin, "NeedsCPUAccess"));
-                            node.Items.Add(MakeByteNode(bin, "Datatype size"));
-                            node.Items.Add(MakeInt32Node(bin, "index size", out int indexSize));
-                            if (indexSize == 4)
-                            {
-                                node.Items.Add(MakeArrayNode(bin, "Second IndexBuffer?", j => MakeUInt32Node(bin, $"{j}")));
-                            }
-                            else
-                            {
-                                node.Items.Add(MakeArrayNode(bin, "Second IndexBuffer?", j => MakeUInt16Node(bin, $"{j}")));
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        node.Items.Add(new BinInterpNode { Header = $"Error reading binary data: {e}" });
-                    }
-                    return node;
-                }, true));
-                subnodes.Add(MakeArrayNode(bin, "NameIndexMap", i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc).Instanced} => {bin.ReadInt32()}")));
-                subnodes.Add(MakeArrayNode(bin, "PerPolyBoneKDOPs", i => new BinInterpNode(bin.Position, $"{i}")
+                }));
+                if (Pcc.Game is MEGame.UDK)
                 {
-                    Items =
+                    node.Items.Add(MakeBoolIntNode(bin, "NeedsCPUAccess"));
+                    node.Items.Add(MakeByteNode(bin, "Datatype size"));
+                    node.Items.Add(MakeInt32Node(bin, "index size", out int indexSize));
+                    if (indexSize == 4)
+                    {
+                        node.Items.Add(MakeArrayNode(bin, "Second IndexBuffer?", j => MakeUInt32Node(bin, $"{j}")));
+                    }
+                    else
+                    {
+                        node.Items.Add(MakeArrayNode(bin, "Second IndexBuffer?", j => MakeUInt16Node(bin, $"{j}")));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                node.Items.Add(new BinInterpNode { Header = $"Error reading binary data: {e}" });
+            }
+            return node;
+        }, true));
+        subnodes.Add(MakeArrayNode(bin, "NameIndexMap", i => new BinInterpNode(bin.Position, $"{bin.ReadNameReference(Pcc).Instanced} => {bin.ReadInt32()}")));
+        subnodes.Add(MakeArrayNode(bin, "PerPolyBoneKDOPs", i => new BinInterpNode(bin.Position, $"{i}")
+        {
+            Items =
                     {
                         MakekDOPTreeNode(bin),
                         MakeArrayNode(bin, "CollisionVerts", j => MakeVectorNode(bin, $"{j}"))
                     }
-                }));
-                if (Pcc.Game >= MEGame.ME3)
-                {
-                    subnodes.Add(MakeArrayNode(bin, "BoneBreakNames", i => new BinInterpNode(bin.Position, $"{i}: {bin.ReadUnrealString()}")));
-                    subnodes.Add(MakeArrayNode(bin, "ClothingAssets", i => MakeEntryNode(bin, $"{i}")));
-                }
-            }
-            catch (Exception ex)
-            {
-                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
-            }
+        }));
+        if (Pcc.Game >= MEGame.ME3)
+        {
+            subnodes.Add(MakeArrayNode(bin, "BoneBreakNames", i => new BinInterpNode(bin.Position, $"{i}: {bin.ReadUnrealString()}")));
+            subnodes.Add(MakeArrayNode(bin, "ClothingAssets", i => MakeEntryNode(bin, $"{i}")));
+        }
+    }
+    catch (Exception ex)
+    {
+        subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+    }
 
+    return subnodes;
+}
+
+private List<ITreeItem> StartStaticMeshCollectionActorScan(byte[] data, ref int binarystart)
+{
+    var subnodes = new List<ITreeItem>();
+    try
+    {
+        //get a list of staticmesh stuff from the props.
+        var smacitems = new List<ExportEntry>();
+        var props = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
+
+        foreach (var prop in props)
+        {
+            if (prop.Value > 0)
+            {
+                smacitems.Add(Pcc.GetUExport(prop.Value));
+            }
+            else
+            {
+                smacitems.Add(null);
+            }
+        }
+
+        //find start of class binary (end of props)
+        int start = binarystart;
+
+        //Lets make sure this binary is divisible by 64.
+        if ((data.Length - start) % 64 != 0)
+        {
+            subnodes.Add(new BinInterpNode
+            {
+                Tag = NodeType.Unknown,
+                Header = $"{start:X4} Binary data is not divisible by 64 ({data.Length - start})! SMCA binary data should be a length divisible by 64.",
+                Offset = start
+            });
             return subnodes;
         }
 
-        private List<ITreeItem> StartStaticMeshCollectionActorScan(byte[] data, ref int binarystart)
+        int smcaindex = 0;
+        while (start < data.Length && smcaindex < smacitems.Count)
         {
-            var subnodes = new List<ITreeItem>();
-            try
+            BinInterpNode smcanode = new BinInterpNode
             {
-                //get a list of staticmesh stuff from the props.
-                var smacitems = new List<ExportEntry>();
-                var props = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("StaticMeshComponents");
+                Tag = NodeType.Unknown
+            };
+            ExportEntry associatedData = smacitems[smcaindex];
+            string staticmesh = "";
+            string objtext = "Null - unused data";
+            if (associatedData != null)
+            {
+                objtext = $"[Export {associatedData.UIndex}] {associatedData.ObjectName.Instanced}";
 
-                foreach (var prop in props)
+                //find associated static mesh value for display.
+                var smc_data = associatedData.DataReadOnly;
+                int staticmeshstart = 0x4;
+                bool found = false;
+                while (staticmeshstart < smc_data.Length && smc_data.Length - 8 >= staticmeshstart)
                 {
-                    if (prop.Value > 0)
+                    ulong nameindex = EndianReader.ToUInt64(smc_data, staticmeshstart, Pcc.Endian);
+                    if (nameindex < (ulong)CurrentLoadedExport.FileRef.Names.Count && CurrentLoadedExport.FileRef.Names[(int)nameindex] == "StaticMesh")
                     {
-                        smacitems.Add(Pcc.GetUExport(prop.Value));
+                        //found it
+                        found = true;
+                        break;
                     }
                     else
                     {
-                        smacitems.Add(null);
+                        staticmeshstart += 1;
                     }
                 }
 
-                //find start of class binary (end of props)
-                int start = binarystart;
-
-                //Lets make sure this binary is divisible by 64.
-                if ((data.Length - start) % 64 != 0)
+                if (found)
                 {
-                    subnodes.Add(new BinInterpNode
+                    int staticmeshexp = EndianReader.ToInt32(smc_data, staticmeshstart + 0x18, Pcc.Endian);
+                    if (staticmeshexp > 0 && staticmeshexp < CurrentLoadedExport.FileRef.ExportCount)
                     {
-                        Tag = NodeType.Unknown,
-                        Header = $"{start:X4} Binary data is not divisible by 64 ({data.Length - start})! SMCA binary data should be a length divisible by 64.",
-                        Offset = start
-                    });
-                    return subnodes;
-                }
-
-                int smcaindex = 0;
-                while (start < data.Length && smcaindex < smacitems.Count)
-                {
-                    BinInterpNode smcanode = new BinInterpNode
-                    {
-                        Tag = NodeType.Unknown
-                    };
-                    ExportEntry associatedData = smacitems[smcaindex];
-                    string staticmesh = "";
-                    string objtext = "Null - unused data";
-                    if (associatedData != null)
-                    {
-                        objtext = $"[Export {associatedData.UIndex}] {associatedData.ObjectName.Instanced}";
-
-                        //find associated static mesh value for display.
-                        var smc_data = associatedData.DataReadOnly;
-                        int staticmeshstart = 0x4;
-                        bool found = false;
-                        while (staticmeshstart < smc_data.Length && smc_data.Length - 8 >= staticmeshstart)
-                        {
-                            ulong nameindex = EndianReader.ToUInt64(smc_data, staticmeshstart, Pcc.Endian);
-                            if (nameindex < (ulong)CurrentLoadedExport.FileRef.Names.Count && CurrentLoadedExport.FileRef.Names[(int)nameindex] == "StaticMesh")
-                            {
-                                //found it
-                                found = true;
-                                break;
-                            }
-                            else
-                            {
-                                staticmeshstart += 1;
-                            }
-                        }
-
-                        if (found)
-                        {
-                            int staticmeshexp = EndianReader.ToInt32(smc_data, staticmeshstart + 0x18, Pcc.Endian);
-                            if (staticmeshexp > 0 && staticmeshexp < CurrentLoadedExport.FileRef.ExportCount)
-                            {
-                                staticmesh = Pcc.GetEntry(staticmeshexp).ObjectName.Instanced;
-                            }
-                        }
+                        staticmesh = Pcc.GetEntry(staticmeshexp).ObjectName.Instanced;
                     }
-
-                    smcanode.Header = $"{start:X4} [{smcaindex}] {objtext} {staticmesh}";
-                    smcanode.Offset = start;
-                    subnodes.Add(smcanode);
-
-                    //Read nodes
-                    for (int i = 0; i < 16; i++)
-                    {
-                        float smcadata = BitConverter.ToSingle(data, start);
-                        BinInterpNode node = new BinInterpNode
-                        {
-                            Tag = NodeType.StructLeafFloat,
-                            Header = start.ToString("X4")
-                        };
-
-                        //TODO: Figure out what the rest of these mean
-                        string label = i.ToString();
-                        switch (i)
-                        {
-                            case 0:
-                                label = "X1:";
-                                break;
-                            case 1:
-                                label = "X2: X-scaling-Axis: ";
-                                break;
-                            case 2:
-                                label = "X3:";
-                                break;
-                            case 3:
-                                label = "XT:";
-                                break;
-                            case 4:
-                                label = "Y1: Y-scaling axis";
-                                break;
-                            case 5:
-                                label = "Y2:";
-                                break;
-                            case 6:
-                                label = "Y3:";
-                                break;
-                            case 7:
-                                label = "YT:";
-                                break;
-                            case 8:
-                                label = "Z1:";
-                                break;
-                            case 9:
-                                label = "Z2:";
-                                break;
-                            case 10:
-                                label = "Z3: Z-scaling axis";
-                                break;
-                            case 11:
-                                label = "ZT:";
-                                break;
-                            case 12:
-                                label = "LocX:";
-                                break;
-                            case 13:
-                                label = "LocY:";
-                                break;
-                            case 14:
-                                label = "LocZ:";
-                                break;
-                            case 15:
-                                label = "CameraCollisionDistanceScalar:";
-                                break;
-                        }
-
-                        node.Header += $" {label} {smcadata}";
-
-                        //TODO: Lookup staticmeshcomponent so we can see what this actually is without changing to the export
-
-                        node.Offset = start;
-                        smcanode.Items.Add(node);
-                        start += 4;
-                    }
-
-                    smcaindex++;
                 }
-                //topLevelTree.ItemsSource = subnodes;
-                binarystart = start;
             }
-            catch (Exception ex)
+
+            smcanode.Header = $"{start:X4} [{smcaindex}] {objtext} {staticmesh}";
+            smcanode.Offset = start;
+            subnodes.Add(smcanode);
+
+            //Read nodes
+            for (int i = 0; i < 16; i++)
             {
-                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+                float smcadata = BitConverter.ToSingle(data, start);
+                BinInterpNode node = new BinInterpNode
+                {
+                    Tag = NodeType.StructLeafFloat,
+                    Header = start.ToString("X4")
+                };
+
+                //TODO: Figure out what the rest of these mean
+                string label = i.ToString();
+                switch (i)
+                {
+                    case 0:
+                        label = "X1:";
+                        break;
+                    case 1:
+                        label = "X2: X-scaling-Axis: ";
+                        break;
+                    case 2:
+                        label = "X3:";
+                        break;
+                    case 3:
+                        label = "XT:";
+                        break;
+                    case 4:
+                        label = "Y1: Y-scaling axis";
+                        break;
+                    case 5:
+                        label = "Y2:";
+                        break;
+                    case 6:
+                        label = "Y3:";
+                        break;
+                    case 7:
+                        label = "YT:";
+                        break;
+                    case 8:
+                        label = "Z1:";
+                        break;
+                    case 9:
+                        label = "Z2:";
+                        break;
+                    case 10:
+                        label = "Z3: Z-scaling axis";
+                        break;
+                    case 11:
+                        label = "ZT:";
+                        break;
+                    case 12:
+                        label = "LocX:";
+                        break;
+                    case 13:
+                        label = "LocY:";
+                        break;
+                    case 14:
+                        label = "LocZ:";
+                        break;
+                    case 15:
+                        label = "CameraCollisionDistanceScalar:";
+                        break;
+                }
+
+                node.Header += $" {label} {smcadata}";
+
+                //TODO: Lookup staticmeshcomponent so we can see what this actually is without changing to the export
+
+                node.Offset = start;
+                smcanode.Items.Add(node);
+                start += 4;
             }
+
+            smcaindex++;
+        }
+        //topLevelTree.ItemsSource = subnodes;
+        binarystart = start;
+    }
+    catch (Exception ex)
+    {
+        subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+    }
+    return subnodes;
+}
+
+private List<ITreeItem> StartStaticLightCollectionActorScan(byte[] data, ref int binarystart)
+{
+    var subnodes = new List<ITreeItem>();
+    try
+    {
+        //get a list of lightcomponents from the props.
+        var slcaitems = new List<ExportEntry>();
+        var props = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("LightComponents");
+
+        foreach (var prop in props)
+        {
+            if (prop.Value > 0)
+            {
+                slcaitems.Add(CurrentLoadedExport.FileRef.GetEntry(prop.Value) as ExportEntry);
+            }
+            else
+            {
+                slcaitems.Add(null);
+            }
+        }
+
+        //find start of class binary (end of props)
+        int start = binarystart;
+
+        //Lets make sure this binary is divisible by 64.
+        if ((data.Length - start) % 64 != 0)
+        {
+            subnodes.Add(new BinInterpNode
+            {
+                Tag = NodeType.Unknown,
+                Header = $"{start:X4} Binary data is not divisible by 64 ({data.Length - start})! SLCA binary data should be a length divisible by 64.",
+                Offset = start
+            });
             return subnodes;
         }
 
-        private List<ITreeItem> StartStaticLightCollectionActorScan(byte[] data, ref int binarystart)
+        int slcaindex = 0;
+        while (start < data.Length && slcaindex < slcaitems.Count)
         {
-            var subnodes = new List<ITreeItem>();
-            try
+            BinInterpNode slcanode = new BinInterpNode
             {
-                //get a list of lightcomponents from the props.
-                var slcaitems = new List<ExportEntry>();
-                var props = CurrentLoadedExport.GetProperty<ArrayProperty<ObjectProperty>>("LightComponents");
+                Tag = NodeType.Unknown
+            };
+            ExportEntry assossiateddata = slcaitems[slcaindex];
+            string objtext = "Null - unused data";
+            if (assossiateddata != null)
+            {
+                objtext = $"[Export {assossiateddata.UIndex}] {assossiateddata.ObjectName.Instanced}";
+            }
 
-                foreach (var prop in props)
+            slcanode.Header = $"{start:X4} [{slcaindex}] {objtext}";
+            slcanode.Offset = start;
+            subnodes.Add(slcanode);
+
+            //Read nodes
+            for (int i = 0; i < 16; i++)
+            {
+                float slcadata = BitConverter.ToSingle(data, start);
+                BinInterpNode node = new BinInterpNode
                 {
-                    if (prop.Value > 0)
-                    {
-                        slcaitems.Add(CurrentLoadedExport.FileRef.GetEntry(prop.Value) as ExportEntry);
-                    }
-                    else
-                    {
-                        slcaitems.Add(null);
-                    }
+                    Tag = NodeType.StructLeafFloat,
+                    Header = start.ToString("X4")
+                };
+
+                //TODO: Figure out what the rest of these mean
+                string label = i.ToString();
+                switch (i)
+                {
+                    case 1:
+                        label = "ScalingXorY1:";
+                        break;
+                    case 12:
+                        label = "LocX:";
+                        break;
+                    case 13:
+                        label = "LocY:";
+                        break;
+                    case 14:
+                        label = "LocZ:";
+                        break;
+                    case 15:
+                        label = "CameraLayerDistance?:";
+                        break;
                 }
 
-                //find start of class binary (end of props)
-                int start = binarystart;
+                node.Header += $" {label} {slcadata}";
 
-                //Lets make sure this binary is divisible by 64.
-                if ((data.Length - start) % 64 != 0)
-                {
-                    subnodes.Add(new BinInterpNode
-                    {
-                        Tag = NodeType.Unknown,
-                        Header = $"{start:X4} Binary data is not divisible by 64 ({data.Length - start})! SLCA binary data should be a length divisible by 64.",
-                        Offset = start
-                    });
-                    return subnodes;
-                }
+                node.Offset = start;
+                slcanode.Items.Add(node);
+                start += 4;
+            }
 
-                int slcaindex = 0;
-                while (start < data.Length && slcaindex < slcaitems.Count)
-                {
-                    BinInterpNode slcanode = new BinInterpNode
-                    {
-                        Tag = NodeType.Unknown
-                    };
-                    ExportEntry assossiateddata = slcaitems[slcaindex];
-                    string objtext = "Null - unused data";
-                    if (assossiateddata != null)
-                    {
-                        objtext = $"[Export {assossiateddata.UIndex}] {assossiateddata.ObjectName.Instanced}";
-                    }
+            slcaindex++;
+        }
 
-                    slcanode.Header = $"{start:X4} [{slcaindex}] {objtext}";
-                    slcanode.Offset = start;
-                    subnodes.Add(slcanode);
+        binarystart = start;
+    }
+    catch (Exception ex)
+    {
+        subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+    }
+    return subnodes;
+}
 
-                    //Read nodes
-                    for (int i = 0; i < 16; i++)
+[Flags]
+enum EBulkDataFlags
+{
+    BULKDATA_None = 0,
+    BULKDATA_StoreInSeparateFile = 1 << 0,
+    BULKDATA_SerializeCompressedZLIB = 1 << 1,
+    BULKDATA_ForceSingleElementSerialization = 1 << 2,
+    BULKDATA_SingleUse = 1 << 3,
+    BULKDATA_SerializeCompressedLZO = 1 << 4,
+    BULKDATA_Unused = 1 << 5,
+    BULKDATA_StoreOnlyPayload = 1 << 6,
+    BULKDATA_SerializeCompressedLZX = 1 << 7,
+    BULKDATA_SerializeCompressed = (BULKDATA_SerializeCompressedZLIB | BULKDATA_SerializeCompressedLZO | BULKDATA_SerializeCompressedLZX),
+}
+
+
+
+private List<ITreeItem> StartBioGestureRulesDataScan(byte[] data, ref int binarystart)
+{
+    var subnodes = new List<ITreeItem>();
+
+    if (binarystart >= data.Length)
+    {
+        return subnodes;
+    }
+
+    int pos = binarystart;
+    var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+    bin.JumpTo(binarystart);
+    try
+    {
+        var count = bin.ReadInt32();
+        bin.Position -= 4; // Set back so the node can be made
+        subnodes.Add(MakeInt32Node(bin, "Count"));
+
+        for (int i = 0; i < count; i++)
+        {
+            var node = new BinInterpNode(bin.Position, $"Rule {i}");
+            subnodes.Add(node);
+
+            node.Items.Add(MakeNameNode(bin, "Name"));
+
+            var subcount = bin.ReadInt32();
+            var subnode = new BinInterpNode(bin.Position - 4, $"Num somethings: {subcount}");
+            node.Items.Add(subnode);
+
+            for (int j = 0; j < subcount; j++)
+            {
+                // Read name, some integer
+                subnode.Items.Add(MakeNameNode(bin, "SomeName"));
+                subnode.Items.Add(MakeInt32Node(bin, "SomeNum"));
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+    }
+
+    return subnodes;
+}
+
+private List<ITreeItem> StartGenericScan(byte[] data, ref int binarystart)
+{
+    binarystart = ByteShiftUpDownValue.Value + binarystart;
+    var subnodes = new List<ITreeItem>();
+
+    if (binarystart >= data.Length)
+    {
+        return subnodes;
+    }
+    try
+    {
+        int binarypos = binarystart;
+
+        //binarypos += 0x1C; //Skip ??? and GUID
+        //int guid = BitConverter.ToInt32(data, binarypos);
+        /*int num1 = BitConverter.ToInt32(data, binarypos);
+        TreeNode node = new TreeNode($"0x{binarypos:X4} ???: {num1.ToString());
+        subnodes.Add(node);
+        binarypos += 4;
+        int num2 = BitConverter.ToInt32(data, binarypos);
+        node = new TreeNode($"0x{binarypos:X4} Count: {num2.ToString());
+        subnodes.Add(node);
+        binarypos += 4;
+        */
+        int datasize = 4;
+        if (interpreterMode == InterpreterMode.Names)
+        {
+            datasize = 8;
+        }
+
+        while (binarypos <= data.Length - datasize)
+        {
+            string nodeText = $"0x{binarypos:X4} : ";
+            var node = new BinInterpNode();
+
+            switch (interpreterMode)
+            {
+                case InterpreterMode.Objects:
                     {
-                        float slcadata = BitConverter.ToSingle(data, start);
-                        BinInterpNode node = new BinInterpNode
+                        int val = BitConverter.ToInt32(data, binarypos);
+                        string name = $"0x{binarypos:X6}: {val}";
+                        if (CurrentLoadedExport.FileRef.IsEntry(val) && CurrentLoadedExport.FileRef.GetEntry(val) is IEntry ent)
                         {
-                            Tag = NodeType.StructLeafFloat,
-                            Header = start.ToString("X4")
-                        };
-
-                        //TODO: Figure out what the rest of these mean
-                        string label = i.ToString();
-                        switch (i)
-                        {
-                            case 1:
-                                label = "ScalingXorY1:";
-                                break;
-                            case 12:
-                                label = "LocX:";
-                                break;
-                            case 13:
-                                label = "LocY:";
-                                break;
-                            case 14:
-                                label = "LocZ:";
-                                break;
-                            case 15:
-                                label = "CameraLayerDistance?:";
-                                break;
+                            name += " " + CurrentLoadedExport.FileRef.GetEntryString(val);
                         }
 
-                        node.Header += $" {label} {slcadata}";
-
-                        node.Offset = start;
-                        slcanode.Items.Add(node);
-                        start += 4;
+                        nodeText = name;
+                        node.Tag = NodeType.StructLeafObject;
+                        break;
                     }
-
-                    slcaindex++;
-                }
-
-                binarystart = start;
-            }
-            catch (Exception ex)
-            {
-                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
-            }
-            return subnodes;
-        }
-
-        [Flags]
-        enum EBulkDataFlags
-        {
-            BULKDATA_None = 0,
-            BULKDATA_StoreInSeparateFile = 1 << 0,
-            BULKDATA_SerializeCompressedZLIB = 1 << 1,
-            BULKDATA_ForceSingleElementSerialization = 1 << 2,
-            BULKDATA_SingleUse = 1 << 3,
-            BULKDATA_SerializeCompressedLZO = 1 << 4,
-            BULKDATA_Unused = 1 << 5,
-            BULKDATA_StoreOnlyPayload = 1 << 6,
-            BULKDATA_SerializeCompressedLZX = 1 << 7,
-            BULKDATA_SerializeCompressed = (BULKDATA_SerializeCompressedZLIB | BULKDATA_SerializeCompressedLZO | BULKDATA_SerializeCompressedLZX),
-        }
-
-
-
-        private List<ITreeItem> StartBioGestureRulesDataScan(byte[] data, ref int binarystart)
-        {
-            var subnodes = new List<ITreeItem>();
-
-            if (binarystart >= data.Length)
-            {
-                return subnodes;
-            }
-
-            int pos = binarystart;
-            var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
-            bin.JumpTo(binarystart);
-            try
-            {
-                var count = bin.ReadInt32();
-                bin.Position -= 4; // Set back so the node can be made
-                subnodes.Add(MakeInt32Node(bin, "Count"));
-
-                for (int i = 0; i < count; i++)
-                {
-                    var node = new BinInterpNode(bin.Position, $"Rule {i}");
-                    subnodes.Add(node);
-
-                    node.Items.Add(MakeNameNode(bin, "Name"));
-
-                    var subcount = bin.ReadInt32();
-                    var subnode = new BinInterpNode(bin.Position - 4, $"Num somethings: {subcount}");
-                    node.Items.Add(subnode);
-
-                    for (int j = 0; j < subcount; j++)
+                case InterpreterMode.Names:
                     {
-                        // Read name, some integer
-                        subnode.Items.Add(MakeNameNode(bin, "SomeName"));
-                        subnode.Items.Add(MakeInt32Node(bin, "SomeNum"));
+                        int val = BitConverter.ToInt32(data, binarypos);
+                        if (val > 0 && val <= CurrentLoadedExport.FileRef.NameCount)
+                        {
+                            nodeText += $"{val,-14}{CurrentLoadedExport.FileRef.GetNameEntry(val)}";
+                        }
+                        else
+                        {
+                            nodeText += $"              {val}"; //14 spaces
+                        }
+                        node.Tag = NodeType.StructLeafName;
+                        break;
                     }
-                }
-            }
-            catch (Exception ex)
-            {
-                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
-            }
-
-            return subnodes;
-        }
-
-        private List<ITreeItem> StartGenericScan(byte[] data, ref int binarystart)
-        {
-            binarystart = ByteShiftUpDownValue.Value + binarystart;
-            var subnodes = new List<ITreeItem>();
-
-            if (binarystart >= data.Length)
-            {
-                return subnodes;
-            }
-            try
-            {
-                int binarypos = binarystart;
-
-                //binarypos += 0x1C; //Skip ??? and GUID
-                //int guid = BitConverter.ToInt32(data, binarypos);
-                /*int num1 = BitConverter.ToInt32(data, binarypos);
-                TreeNode node = new TreeNode($"0x{binarypos:X4} ???: {num1.ToString());
-                subnodes.Add(node);
-                binarypos += 4;
-                int num2 = BitConverter.ToInt32(data, binarypos);
-                node = new TreeNode($"0x{binarypos:X4} Count: {num2.ToString());
-                subnodes.Add(node);
-                binarypos += 4;
-                */
-                int datasize = 4;
-                if (interpreterMode == InterpreterMode.Names)
-                {
-                    datasize = 8;
-                }
-
-                while (binarypos <= data.Length - datasize)
-                {
-                    string nodeText = $"0x{binarypos:X4} : ";
-                    var node = new BinInterpNode();
-
-                    switch (interpreterMode)
+                case InterpreterMode.Floats:
                     {
-                        case InterpreterMode.Objects:
-                            {
-                                int val = BitConverter.ToInt32(data, binarypos);
-                                string name = $"0x{binarypos:X6}: {val}";
-                                if (CurrentLoadedExport.FileRef.IsEntry(val) && CurrentLoadedExport.FileRef.GetEntry(val) is IEntry ent)
-                                {
-                                    name += " " + CurrentLoadedExport.FileRef.GetEntryString(val);
-                                }
-
-                                nodeText = name;
-                                node.Tag = NodeType.StructLeafObject;
-                                break;
-                            }
-                        case InterpreterMode.Names:
-                            {
-                                int val = BitConverter.ToInt32(data, binarypos);
-                                if (val > 0 && val <= CurrentLoadedExport.FileRef.NameCount)
-                                {
-                                    nodeText += $"{val,-14}{CurrentLoadedExport.FileRef.GetNameEntry(val)}";
-                                }
-                                else
-                                {
-                                    nodeText += $"              {val}"; //14 spaces
-                                }
-                                node.Tag = NodeType.StructLeafName;
-                                break;
-                            }
-                        case InterpreterMode.Floats:
-                            {
-                                float val = BitConverter.ToSingle(data, binarypos);
-                                nodeText += val.ToString();
-                                node.Tag = NodeType.StructLeafFloat;
-                                break;
-                            }
-                        case InterpreterMode.Integers:
-                            {
-                                int val = BitConverter.ToInt32(data, binarypos);
-                                nodeText += val.ToString();
-                                node.Tag = NodeType.StructLeafInt;
-                                break;
-                            }
+                        float val = BitConverter.ToSingle(data, binarypos);
+                        nodeText += val.ToString();
+                        node.Tag = NodeType.StructLeafFloat;
+                        break;
                     }
-                    node.Header = nodeText;
-                    node.Offset = binarypos;
-                    subnodes.Add(node);
-                    binarypos += 4;
-                }
+                case InterpreterMode.Integers:
+                    {
+                        int val = BitConverter.ToInt32(data, binarypos);
+                        nodeText += val.ToString();
+                        node.Tag = NodeType.StructLeafInt;
+                        break;
+                    }
             }
-            catch (Exception ex)
-            {
-                subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
-            }
-            return subnodes;
+            node.Header = nodeText;
+            node.Offset = binarypos;
+            subnodes.Add(node);
+            binarypos += 4;
         }
+    }
+    catch (Exception ex)
+    {
+        subnodes.Add(new BinInterpNode() { Header = $"Error reading binary data: {ex}" });
+    }
+    return subnodes;
+}
 
-        private List<ITreeItem> StartBioMorphFaceScan(byte[] data, ref int binarystart)
+private List<ITreeItem> StartBioMorphFaceScan(byte[] data, ref int binarystart)
+{
+    var subnodes = new List<ITreeItem>();
+    try
+    {
+        var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+        bin.JumpTo(binarystart);
+
+        subnodes.Add(MakeArrayNode(bin, "LOD Count:", k => new BinInterpNode(bin.Position, $"{k}")
         {
-            var subnodes = new List<ITreeItem>();
-            try
-            {
-                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
-                bin.JumpTo(binarystart);
-
-                subnodes.Add(MakeArrayNode(bin, "LOD Count:", k => new BinInterpNode(bin.Position, $"{k}")
-                {
-                    Items =
+            Items =
                     {
                         MakeInt32Node(bin, "Size of Vector"),
                         MakeArrayNode(bin, $"LOD {k} Vertex Positional Data", n => new BinInterpNode(bin.Position, $"{n}")
@@ -5647,26 +5896,26 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             }
                         }),
                     }
-                }, true));
-            }
-            catch (Exception ex)
-            {
-                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
-            }
-            return subnodes;
-        }
+        }, true));
+    }
+    catch (Exception ex)
+    {
+        subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+    }
+    return subnodes;
+}
 
-        private static BinInterpNode MakeSHANode(EndianReader bin, string name, out string sha)
-        {
-            var shaBytes = bin.ReadBytes(20);
-            StringBuilder sb = new StringBuilder();
-            foreach (var b in shaBytes)
-            {
-                sb.Append(b.ToString("x2"));
-            }
+private static BinInterpNode MakeSHANode(EndianReader bin, string name, out string sha)
+{
+    var shaBytes = bin.ReadBytes(20);
+    StringBuilder sb = new StringBuilder();
+    foreach (var b in shaBytes)
+    {
+        sb.Append(b.ToString("x2"));
+    }
 
-            sha = sb.ToString();
-            return new BinInterpNode(bin.Position, $"{name}: {sha}") { Length = 20 };
-        }
+    sha = sb.ToString();
+    return new BinInterpNode(bin.Position, $"{name}: {sha}") { Length = 20 };
+}
     }
 }

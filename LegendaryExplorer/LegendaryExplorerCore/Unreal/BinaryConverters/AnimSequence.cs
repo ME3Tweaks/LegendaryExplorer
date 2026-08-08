@@ -8,6 +8,7 @@ using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
@@ -113,7 +114,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
         public void DecompressAnimationData()
         {
-            if (CompressedAnimationData == null)
+            if (CompressedAnimationData == null || CompressedAnimationData.Length is 0)
             {
                 // 12/24/2024 - Nothing to decompress - Mgamerz
                 return;
@@ -321,8 +322,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 AnimTrack track = RawAnimationData[i];
 
+
                 TrackOffsets[i * 4] = (int)ms.Position;
                 int numPosKeys = track.Positions.Count;
+
+                //all the same
+                if (numPosKeys > 1 && !track.Positions.Distinct().Skip(1).Any())
+                {
+                    numPosKeys = 1;
+                }
+
                 TrackOffsets[i * 4 + 1] = numPosKeys;
 
                 if (numPosKeys > 0)
@@ -353,6 +362,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
                 TrackOffsets[i * 4 + 2] = (int)ms.Position;
                 int numRotKeys = track.Rotations.Count;
+                //all the same
+                if (numRotKeys > 1 && !track.Rotations.Distinct().Skip(1).Any())
+                {
+                    numRotKeys = 1;
+                }
                 TrackOffsets[i * 4 + 3] = numRotKeys;
 
                 if (numRotKeys > 0)
@@ -565,6 +579,47 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             float wSquared = 1.0f - (x * x + y * y + z * z);
             return (float)(wSquared > 0f ? Math.Sqrt(wSquared) : 0f);
+        }
+
+        /// <summary>
+        /// Returns a predicate that matches AnimSequencePlayer's ShouldBoneUsePositionTrack logic:
+        /// resolves m_pBioAnimSetData from the export and reads bAnimRotationOnly,
+        /// UseTranslationBoneNames, and ForceMeshTranslationBoneNames.
+        /// Falls back to animRotationOnly=true (all bones ignore position tracks) if the data
+        /// cannot be resolved.
+        /// </summary>
+        public Func<string, bool> GetPositionTrackFilter()
+        {
+            bool animRotationOnly = true;
+            HashSet<string> useTranslationBones = [];
+            HashSet<string> forceMeshTranslationBones = [];
+            try
+            {
+                var animDataEntry = Export?.GetProperty<ObjectProperty>("m_pBioAnimSetData")?.ResolveToEntry(Export.FileRef);
+                ExportEntry animSetData = animDataEntry switch
+                {
+                    ExportEntry exp => exp,
+                    ImportEntry imp => EntryImporter.ResolveImport(imp, new PackageCache()),
+                    _ => null,
+                };
+                if (animSetData != null)
+                {
+                    animRotationOnly = animSetData.GetProperty<BoolProperty>("bAnimRotationOnly")?.Value ?? true;
+                    useTranslationBones = [.. animSetData.GetProperty<ArrayProperty<NameProperty>>("UseTranslationBoneNames")?.Select(np => np.Value.Instanced) ?? []];
+                    forceMeshTranslationBones = [.. animSetData.GetProperty<ArrayProperty<NameProperty>>("ForceMeshTranslationBoneNames")?.Select(np => np.Value.Instanced) ?? []];
+                }
+            }
+            catch
+            {
+                // fall back to defaults if the lookup fails
+            }
+
+            return boneName =>
+            {
+                if (forceMeshTranslationBones.Contains(boneName)) return false;
+                if (animRotationOnly) return useTranslationBones.Contains(boneName);
+                return true;
+            };
         }
     }
 

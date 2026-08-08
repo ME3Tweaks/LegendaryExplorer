@@ -1080,9 +1080,18 @@ namespace LegendaryExplorerCore.Kismet
         /// <param name="sequenceElements">Sequence objects to search for connections</param>
         /// <param name="filteredLinkNames">Optional: Link desc of variable link that any sequence objects must match</param>
         /// <returns>List of any sequence objects that link to this node</returns>
-        public static List<ExportEntry> FindVariableConnectionsToNode(ExportEntry node, IEnumerable<ExportEntry> sequenceElements, List<string> filteredLinkNames = null)
+        public static List<ExportEntry> FindVariableConnectionsToNode(ExportEntry node, IEnumerable<ExportEntry> sequenceElements = null, List<string> filteredLinkNames = null)
         {
             List<ExportEntry> referencingNodes = [];
+
+            if (sequenceElements is null)
+            {
+                sequenceElements = GetAllSequenceElements(node)?.OfType<ExportEntry>();
+            }
+            if (sequenceElements is null)
+            {
+                return referencingNodes;
+            }
 
             foreach (var seqObj in sequenceElements)
             {
@@ -1389,7 +1398,6 @@ namespace LegendaryExplorerCore.Kismet
                         return ResolveObjectVarValue(namedVar, searchRelatedFiles);
                     }
                     break;
-                //todo
                 case "SeqVar_Player":
                     string playerPawnName = femShep ? "BioPawn_1" : "BioPawn_0";
                     string playerFileName = game.IsGame1() ? $"EntryMenu.{(game is MEGame.ME1 ? "SFM" : "pcc")}" : "BioP_Char.pcc";

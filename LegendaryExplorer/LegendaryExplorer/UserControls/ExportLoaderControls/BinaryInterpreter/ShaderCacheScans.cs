@@ -1679,7 +1679,7 @@ public partial class BinaryInterpreterWPF
                 [
                     MakeInt32Node(bin, "unk int 1"),
                     MakeBoolIntNode(bin, "UniformPixelShaderParameters is well formed?"),
-                    MakeInt32Node(bin, "unk int 2")
+                    MakeInt32Node(bin, "UniformPixelScalarShaderParameterCount")
                 ]);
             }
             super.Items.Add(FShaderParameter("WrapLightingParameters"));
@@ -1712,7 +1712,14 @@ public partial class BinaryInterpreterWPF
             }
             else
             {
-                return parameter($"(Type {bin.ReadByte()}) [{bin.ReadInt32()}]");
+                byte paramType = bin.ReadByte();
+                string paramTypePretty = $"(Type {paramType})";
+                if (paramType == 8) { paramTypePretty = "UniformPixelVectorShaderParameter"; }
+                else if (paramType == 15) { paramTypePretty = "UniformPixelScalarShaderParameter"; }
+                else if (paramType == 16) { paramTypePretty = "UniformPixel2DShaderResourceParameter"; }
+                else if (paramType == 32) { paramTypePretty = "UniformPixelCubeShaderResourceParameter"; }
+
+                return parameter($"{paramTypePretty} [{bin.ReadInt32()}]");
             }
         }
 

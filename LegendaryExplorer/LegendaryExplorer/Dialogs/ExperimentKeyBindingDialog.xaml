@@ -1,0 +1,46 @@
+<misc:NotifyPropertyChangedWindowBase
+    x:Class="LegendaryExplorer.Dialogs.ExperimentKeyBindingDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+    mc:Ignorable="d"
+    WindowStartupLocation="CenterOwner"
+    WindowStyle="ToolWindow"
+    ResizeMode="NoResize"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    Title="Bind Experiment to Key"
+    SizeToContent="Height"
+    Width="560">
+    <Grid Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="115"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Shortcut" Margin="0,0,8,6" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="0" Grid.Column="1" x:Name="ShortcutTextBox" Text="{Binding ShortcutText}" IsReadOnly="True"
+                 PreviewKeyDown="ShortcutTextBox_PreviewKeyDown" Margin="0,0,0,6"/>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Experiment" Margin="0,0,8,6" VerticalAlignment="Center"/>
+        <ComboBox Grid.Row="1" Grid.Column="1" x:Name="ExperimentComboBox" ItemsSource="{Binding Experiments}"
+                  SelectedItem="{Binding SelectedExperiment}" DisplayMemberPath="DisplayName"
+                  IsTextSearchEnabled="True" Margin="0,0,0,6"/>
+
+        <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ValidationText}" Foreground="Red" TextWrapping="Wrap"
+                   Margin="0,0,0,8"/>
+
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="OK" Width="55" Command="{Binding OKCommand}"/>
+            <Button Content="Clear" Width="55" Margin="5,0,0,0" Command="{Binding ClearCommand}"/>
+            <Button Content="Cancel" Padding="5,3" Margin="5,0,0,0" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</misc:NotifyPropertyChangedWindowBase>

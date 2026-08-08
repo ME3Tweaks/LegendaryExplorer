@@ -723,6 +723,10 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         return new IntegerLiteral(bioMask4Property.Value) { NumType = Keywords.BIOMASK4 };
                     case DelegateProperty delegateProperty:
                         string funcName = delegateProperty.Value.FunctionName.Instanced;
+                        if (funcName == NameReference.None)
+                        {
+                            return new NoneLiteral();
+                        }
                         var symRef = new SymbolReference(null, funcName);
                         if (pcc.TryGetEntry(delegateProperty.Value.ContainingObjectUIndex, out IEntry containingObject))
                         {
@@ -741,7 +745,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                         {
                             return new NoneLiteral();
                         }
-                        return new SymbolReference(new EnumValue(enumProperty.Value.Instanced, 0) { Enum = new Enumeration(enumProperty.EnumType.Instanced, new List<EnumValue>(), -1, -1) }, enumProperty.Value.Instanced);
+                        return new SymbolReference(new EnumValue(enumProperty.Value.Instanced, 0) { Enum = new Enumeration(enumProperty.EnumType.Instanced, [], -1, -1) }, enumProperty.Value.Instanced);
                     case FloatProperty floatProperty:
                         return new FloatLiteral(floatProperty.Value);
                     case IntProperty intProperty:

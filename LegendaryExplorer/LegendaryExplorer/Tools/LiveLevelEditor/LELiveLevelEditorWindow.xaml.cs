@@ -163,7 +163,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
         {
             GameInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsGameInstalled(Game), () => InteropHelper.SelectGamePath(Game));
             ASILoaderInstalledRequirementCommand = new Requirement.RequirementCommand(() => InteropHelper.IsASILoaderInstalled(Game), () => InteropHelper.OpenASILoaderDownload(Game));
-            InteropASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => App.IsDebug || InteropHelper.IsInteropASIInstalled(Game), () => InteropHelper.OpenInteropASIDownload(Game));
+            InteropASIInstalledRequirementCommand = new Requirement.RequirementCommand(() => /*App.IsDebug || */InteropHelper.IsInteropASIInstalled(Game), () => InteropHelper.OpenInteropASIDownload(Game));
             LoadLiveEditorCommand = new GenericCommand(LoadLiveEditor, CanLoadLiveEditor);
             OpenPackageCommand = new GenericCommand(OpenPackage, CanOpenPackage);
             OpenActorInPackEdCommand = new GenericCommand(OpenActorInPackEd, CanOpenInPackEd);
@@ -1195,11 +1195,11 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor
 
         private void InitializeCamPath()
         {
-            if (!App.IsDebug || Game is not MEGame.LE1)
+            if (!App.IsDebug)
             {
                 return;
             }
-            camPathPackage = MEPackageHandler.OpenMEPackage(Path.Combine(AppDirectories.ExecFolder, "LELiveEditorCamPath.pcc"));
+            camPathPackage = MEPackageHandler.OpenMEPackage(Path.Combine(AppDirectories.ExecFolder, $"{Game}LiveEditorCamPath.pcc"));
             interpTrackMove = camPathPackage.FindExport(CamPath_InterpTrackMove_IFP);
             fovTrackExport = camPathPackage.FindExport(CamPath_FOVTrack_IFP);
             ReloadCurveEdExports();

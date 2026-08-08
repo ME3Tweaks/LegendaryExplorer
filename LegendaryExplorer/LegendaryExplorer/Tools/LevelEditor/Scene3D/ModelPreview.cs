@@ -487,7 +487,7 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
         var sections = new List<ModelPreviewSection>();
         foreach (var element in lodModel.Elements)
         {
-            if (element.Material is 0)
+            if (element.Material is 0 || !m.Export.FileRef.IsEntry(element.Material))
             {
                 sections.Add(new ModelPreviewSection(null, element.FirstIndex, element.NumTriangles));
             }
