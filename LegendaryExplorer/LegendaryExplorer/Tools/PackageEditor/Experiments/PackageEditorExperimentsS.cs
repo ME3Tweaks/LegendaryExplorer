@@ -13,6 +13,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Shaders;
 using LegendaryExplorerCore.UDK;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -1197,6 +1198,7 @@ import java.util.*;"
 #if !DEBUG
             throw new Exception("Experiment has been disabled");
 #endif
+            var le3MSMs = RefShaderCacheReader.GetAllStaticParameterSets(MEGame.LE3);
 
             //var le1msm = RefShaderCacheReader.GetMaterialShaderMap(MEGame.LE1, (StaticParameterSet)Guid.Parse("69e67fce-5524-46d1-9218-cd8d066040e8"), out _);
             //var le3msm = RefShaderCacheReader.GetMaterialShaderMap(MEGame.LE3, (StaticParameterSet)Guid.Parse("aba571c7-abe5-42ea-925b-edabcc0a3e28"), out _);
@@ -1231,7 +1233,7 @@ import java.util.*;"
             pewpf.BusyText = "Scanning";
             Task.Run(() =>
             {
-                foreach (MEGame game in new[] { MEGame.LE3, MEGame.LE2, MEGame.LE1, /*MEGame.ME3, MEGame.ME2, MEGame.ME1*/ })
+                foreach (MEGame game in new[] { MEGame.LE3, /*MEGame.LE2, MEGame.LE1, MEGame.ME3, MEGame.ME2, MEGame.ME1*/ })
                 {
                     //preload base files for faster scanning
                     using (DisposableCollection<IMEPackage> baseFiles = MEPackageHandler.OpenMEPackages(EntryImporter.FilesSafeToImportFrom(game)
@@ -1246,7 +1248,7 @@ import java.util.*;"
                         foreach (string filePath in EnumerateOfficialFiles(game))
                         {
                             //ReserializeShaderCaches(filePath);
-                            //ScanShaderCache(filePath);
+                            ScanShaderCache(filePath, le3MSMs);
                             //ScanMaterials(filePath);
                             //ScanStaticMeshComponents(filePath);
                             //ScanLightComponents(filePath);
@@ -1257,14 +1259,14 @@ import java.util.*;"
                             //RecompileAllFunctions(filePath);
                             //RecompileAllStates(filePath);
                             //RecompileAllDefaults(filePath, packageCache);
-                            RecompileAllPropsOfNonScriptExports(filePath, packageCache);
+                            //RecompileAllPropsOfNonScriptExports(filePath, packageCache);
                             //RecompileAllStructs(filePath, packageCache);
                             //RecompileAllEnums(filePath, packageCache);
                             //RecompileAllClasses(filePath, packageCache);
-                            if (interestingExports.Any())
-                            {
-                                return;
-                            }
+                            //if (interestingExports.Any())
+                            //{
+                            //    return;
+                            //}
                         }
                     }
                     //the base files will have been in memory for so long at this point that they take a looong time to clear out automatically, so force it.
@@ -1410,12 +1412,24 @@ import java.util.*;"
                 }
             }
 
-            void ScanShaderCache(string filePath)
+            void ScanShaderCache(string filePath, HashSet<StaticParameterSet> refMSMs)
             {
                 using (IMEPackage pcc = MEPackageHandler.OpenMEPackage(filePath))
                 {
                     ExportEntry shaderCache = pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache");
                     if (shaderCache == null) return;
+
+                    var shaderBin = shaderCache.GetBinaryData<ShaderCache>();
+                    foreach (var msm in shaderBin.MaterialShaderMaps.Keys)
+                    {
+                        if (!refMSMs.Contains(msm))
+                        {
+                            interestingExports.Add(new EntryStringPair(shaderCache, $"{shaderCache.UIndex}: {filePath}\nMaterialShaderMap {msm} not found in reference list"));
+                            return;
+                        }
+                    }
+                    return;
+
                     int oldDataOffset = shaderCache.DataOffset;
 
                     try

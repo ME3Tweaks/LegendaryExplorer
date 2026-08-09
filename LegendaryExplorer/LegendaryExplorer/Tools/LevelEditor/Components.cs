@@ -251,7 +251,7 @@ public class StaticMeshComponentProxy : MeshComponentProxy
                 MaterialOverrides.Clear();
                 Mesh = new ModelPreview<VertexType>(context, stm, LOD);
                 MeshIFP = meshExport.InstancedFullPath;
-                if (MeshIFP.Contains("Volumetric", StringComparison.OrdinalIgnoreCase) 
+                if (MeshIFP.Contains("Volumetric", StringComparison.OrdinalIgnoreCase)
                     || Mesh.Materials.Keys.Any(matIFP => matIFP.Contains("VolumeLight", StringComparison.OrdinalIgnoreCase)))
                 {
                     IsVolumetric = true;

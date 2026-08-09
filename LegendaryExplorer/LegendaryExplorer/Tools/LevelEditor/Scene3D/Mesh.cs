@@ -57,8 +57,14 @@ public class Mesh<TVertex> : IDisposable where TVertex : IVertexBase
         VertexBuffer?.Dispose();
         IndexBuffer?.Dispose();
 
+
         // Update the AABB
         Box boundingBox = new();
+        if (Vertices.Count is 0 || Triangles.Count is 0)
+        {
+            return;
+        }
+
         foreach (TVertex v in Vertices)
         {
             boundingBox.Add(v.Position);

@@ -274,6 +274,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             LabelNests = [];
             LabelNests.Push([]);
+            if (tokens.Comments.FirstOrDefault(tup => tup.Item2.Value.StartsWith("ERROR")) is { Item2: ScriptToken tok})
+            {
+                log.LogError($"Error comment: {tok.Value}");
+            }
         }
 
         private void ParseReplicationBlock()
@@ -2371,7 +2375,14 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     if (token.StartPos.Equals(expr.StartPos) && token.EndPos.Equals(expr.EndPos))
                     {
                         typeToken = token;
-                        typeToken.SyntaxType = destType is Struct ? ST.Struct : ST.Class;
+                        typeToken.SyntaxType = destType switch
+                        {
+                            Class => ST.Class,
+                            Struct => ST.Struct,
+                            PrimitiveType => ST.Keyword,
+                            Enumeration => ST.Enum,
+                            _ => ST.None,
+                        };
                         Tokens.AddDefinitionLink(destType, typeToken);
                     }
                 }

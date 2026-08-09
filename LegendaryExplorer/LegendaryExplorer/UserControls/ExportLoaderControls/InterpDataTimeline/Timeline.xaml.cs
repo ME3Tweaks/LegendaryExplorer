@@ -52,6 +52,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public override void UnloadExport()
         {
+            ClearPlayhead();
             CurrentLoadedExport = null;
             InterpData = null;
             InterpGroups.ClearEx();
@@ -100,6 +101,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand AddTrackCmd { get; set; }
         public ICommand RenameTrackCommand { get; set; }
         public ICommand InsertKeyCmd { get; set; }
+        public ICommand SetGroupActorCmd { get; set; }
+
+        public event Action<InterpGroup> SetGroupActorRequested;
+
+        private bool _isLevelEditorConnected;
+        public bool IsLevelEditorConnected
+        {
+            get => _isLevelEditorConnected;
+            set => SetProperty(ref _isLevelEditorConnected, value);
+        }
 
         private void LoadCommands()
         {
@@ -109,6 +120,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             AddTrackCmd = new GenericCommand(AddTrack, CanAddTrack);
             RenameTrackCommand = new GenericCommand(RenameTrack, CanRenameTrack);
             InsertKeyCmd = new GenericCommand(InsertKeyAtTime, () => MatineeTree.SelectedItem is InterpTrack);
+            SetGroupActorCmd = new RelayCommand(obj => { if (obj is InterpGroup g) SetGroupActorRequested?.Invoke(g); });
         }
 
         private void AddTrack()
@@ -472,6 +484,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void Timeline_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             DrawGuideLines();
+        }
+
+        public void SetPlayheadTime(float time)
+        {
+            double x = (time + Offset) * Scale;
+            Canvas.SetLeft(PlayheadLine, x);
+            PlayheadLine.Visibility = Visibility.Visible;
+        }
+
+        public void ClearPlayhead()
+        {
+            PlayheadLine.Visibility = Visibility.Collapsed;
         }
 
         public override void PopOut()

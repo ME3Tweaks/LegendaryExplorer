@@ -175,7 +175,28 @@ public class MeshRenderContext : RenderContext
             FPS = MathF.Round(frameDelta / fpsDelta);
         }
 
-        if (Camera.FirstPerson)
+        if (Camera.IsOrthographic)
+        {
+            float panSpeed = Camera.OrthoWidth * 0.5f;
+            if (PressedKeys.HasFlag(KeyStates.W))
+                Camera.Position += Vector3.UnitY * timestep * panSpeed;
+            if (PressedKeys.HasFlag(KeyStates.S))
+                Camera.Position -= Vector3.UnitY * timestep * panSpeed;
+            if (PressedKeys.HasFlag(KeyStates.A))
+                Camera.Position -= Vector3.UnitX * timestep * panSpeed;
+            if (PressedKeys.HasFlag(KeyStates.D))
+                Camera.Position += Vector3.UnitX * timestep * panSpeed;
+            if (PressedKeys.HasFlag(KeyStates.Q))
+            {
+                Camera.OrthoWidth *= 1 + timestep;
+            }
+            if (PressedKeys.HasFlag(KeyStates.E))
+            {
+                Camera.OrthoWidth *= 1 - timestep;
+                Camera.OrthoWidth = MathF.Max(Camera.OrthoWidth, 1f);
+            }
+        }
+        else if (Camera.FirstPerson)
         {
             if (PressedKeys.HasFlag(KeyStates.W))
             {
@@ -557,7 +578,24 @@ public class MeshRenderContext : RenderContext
         bool handled = false;
         int xDiff = (x - lastMouse.X);
         int yDiff = (y - lastMouse.Y);
-        if (Camera.FirstPerson)
+        if (Camera.IsOrthographic)
+        {
+            switch (PressedMouseButton)
+            {
+                case MouseButtons.Left:
+                case MouseButtons.Middle:
+                    float worldPerPixel = Camera.OrthoWidth / Width;
+                    Camera.Position += new Vector3(-xDiff * worldPerPixel, yDiff * worldPerPixel, 0);
+                    handled = true;
+                    break;
+                case MouseButtons.Right:
+                    Camera.OrthoWidth *= MathF.Pow(1.01f, yDiff);
+                    Camera.OrthoWidth = MathF.Max(Camera.OrthoWidth, 1f);
+                    handled = true;
+                    break;
+            }
+        }
+        else if (Camera.FirstPerson)
         {
             switch (PressedMouseButton)
             {
@@ -609,7 +647,12 @@ public class MeshRenderContext : RenderContext
 
     public override bool MouseScroll(int delta)
     {
-        if (Camera.FirstPerson)
+        if (Camera.IsOrthographic)
+        {
+            Camera.OrthoWidth *= MathF.Pow(1.2f, -Math.Sign(delta));
+            Camera.OrthoWidth = MathF.Max(Camera.OrthoWidth, 1f);
+        }
+        else if (Camera.FirstPerson)
         {
             Camera.Position += Camera.CameraForward * (CameraSpeed / FPS ) * (delta / 10f);
         }

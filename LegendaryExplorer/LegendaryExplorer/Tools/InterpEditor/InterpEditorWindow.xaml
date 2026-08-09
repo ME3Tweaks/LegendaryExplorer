@@ -23,6 +23,7 @@
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
         <converters:NullVisibilityConverter x:Key="NullVisibilityConverter"/>
         <converters:GameTypeConverter x:Key="GameTypeConverter"/>
+        <converters:InverseBooleanConverter x:Key="InverseBoolConverter"/>
     </Window.Resources>
     <Window.InputBindings>
         <KeyBinding Key="O" Modifiers="Control" Command="{Binding OpenCommand}"/>
@@ -61,6 +62,27 @@
 
                 <interpExperiments:InterpExperimentsMenuControl x:Name="InterpExperimentsMenu"  Visibility="{Binding ShowExperiments, Converter={StaticResource BoolToVisibilityConverter}}"/>
             </Menu>
+            <ToolBar Visibility="Collapsed"  DockPanel.Dock="Top" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
+                <Button Content="⛓ Connect LevelEditor" Command="{Binding ConnectLevelEditorCommand}" />
+                <TextBlock Text="{Binding ConnectedLevelEditorText}" VerticalAlignment="Center" Margin="4,0" />
+                <Separator />
+                <Button Content="▶ Play"  Command="{Binding PlayCommand}"
+                        IsEnabled="{Binding IsPlaying, Converter={StaticResource InverseBoolConverter}}" />
+                <Button Content="⏸ Pause" Command="{Binding PauseCommand}"
+                        IsEnabled="{Binding IsPlaying}" />
+                <Button Content="⏹ Stop"  Command="{Binding StopCommand}" />
+                <Separator />
+                <Slider x:Name="PlaybackScrubber"
+                        Minimum="0" Maximum="{Binding Duration}"
+                        Value="{Binding CurrentTime, Mode=TwoWay}"
+                        Width="200" VerticalAlignment="Center"
+                        ValueChanged="PlaybackScrubber_ValueChanged" />
+                <TextBlock VerticalAlignment="Center" Margin="4,0">
+                    <Run Text="{Binding CurrentTime, StringFormat={}{0:0.00}s}" />
+                    <Run Text=" / " />
+                    <Run Text="{Binding Duration, StringFormat={}{0:0.00}s}" />
+                </TextBlock>
+            </ToolBar>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
                 <sharedToolControls:StatusBarGameIDIndicator
                     Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}"

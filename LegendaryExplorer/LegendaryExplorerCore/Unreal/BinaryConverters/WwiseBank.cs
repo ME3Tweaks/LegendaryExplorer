@@ -137,6 +137,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             base.Serialize(sc);
 
             sc.ms.Position -= BnkFile.Length; // Reset back to BnkFile offset for parsing.
+            long dataSizePos = sc.ms.Position - 12; // Position of the first bulk data size field.
 
             if (sc.IsLoading)
             {
@@ -183,20 +184,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             //}
             //else
             //{
-                if (sc.IsLoading)
-                {
-                    ReadChunks(sc);
-                }
-            //    else
-            //    {
-            //        // Commented out
-            //        //WriteChunks(sc);
-            //        //var endPos = sc.ms.Position;
-            //        //sc.ms.JumpTo(dataSizePos);
-            //        //sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
-            //        //sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
-            //        //sc.ms.JumpTo(endPos);
-            //    }
+            if (sc.IsLoading)
+            {
+                ReadChunks(sc);
+            }
+            else
+            {
+                WriteChunks(sc);
+
+                var endPos = sc.ms.Position;
+                sc.ms.JumpTo(dataSizePos);
+                sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
+                sc.ms.Writer.WriteInt32((int)(endPos - dataSizePos - 12));
+                sc.ms.JumpTo(endPos);
+            }
             //}
         }
 

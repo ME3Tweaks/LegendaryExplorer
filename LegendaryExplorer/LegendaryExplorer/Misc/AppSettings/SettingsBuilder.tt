@@ -103,11 +103,11 @@ namespace LegendaryExplorer.Misc.AppSettings
         public static bool TryGetSetting(Dictionary<string, object> settings, string key, bool defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue && bool.TryParse(svalue, out var bvalue) ? bvalue : defaultValue;
         public static string TryGetSetting(Dictionary<string, object> settings, string key, string defaultValue) => settings.TryGetValue(key, out var value) && value is string svalue ? svalue : defaultValue;
         public static List<string> TryGetSetting(Dictionary<string, object> settings, string key, List<string> defaultValue) => settings.TryGetValue(key, out var value) && value is JArray listValue ? listValue.ToObject<List<string>>() : defaultValue;
-        public static Dictionary<string, ThemeData> TryGetSetting(Dictionary<string, object> settings, string key, Dictionary<string, ThemeData> defaultValue)
+        public static Dictionary<string, T> TryGetSetting<T>(Dictionary<string, object> settings, string key, Dictionary<string, T> defaultValue)
         {
             if (settings.TryGetValue(key, out var value) && value is JObject jObj)
             {
-                try { return jObj.ToObject<Dictionary<string, ThemeData>>() ?? defaultValue; }
+                try { return jObj.ToObject<Dictionary<string, T>>() ?? defaultValue; }
                 catch { return defaultValue; }
             }
             return defaultValue;

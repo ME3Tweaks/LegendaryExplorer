@@ -89,9 +89,7 @@ namespace LegendaryExplorerCore.Textures
             width = origWidth = w;
             height = origHeight = h;
 
-            if (format == PixelFormat.DXT1 ||
-                format == PixelFormat.DXT3 ||
-                format == PixelFormat.DXT5)
+            if (format is PixelFormat.DXT1 or PixelFormat.DXT3 or PixelFormat.DXT5 or PixelFormat.ATI2 or PixelFormat.BC5 or PixelFormat.BC7)
             {
                 if (width < 4)
                     width = 4;
@@ -107,7 +105,7 @@ namespace LegendaryExplorerCore.Textures
             width = origWidth = w;
             height = origHeight = h;
 
-            if (format is PixelFormat.DXT1 or PixelFormat.DXT3 or PixelFormat.DXT5 or PixelFormat.BC7)
+            if (format is PixelFormat.DXT1 or PixelFormat.DXT3 or PixelFormat.DXT5 or PixelFormat.ATI2 or PixelFormat.BC5 or PixelFormat.BC7)
             {
                 if (width < 4)
                     width = 4;
@@ -305,21 +303,25 @@ namespace LegendaryExplorerCore.Textures
                 case PixelFormat.DXT3:
                 case PixelFormat.DXT5:
                     {
-                        if (w < 4 || h < 4)
-                        {
-                            if (w < 4)
-                                w = 4;
-                            if (h < 4)
-                                h = 4;
-                            return new byte[w * h * 4];
-                        }
+                        // Mips smaller than 4x4 are still stored as a full 4x4 block
+                        if (w < 4)
+                            w = 4;
+                        if (h < 4)
+                            h = 4;
+                        if (src.Length < MipMap.getBufferSize(w, h, format))
+                            return new byte[w * h * 4]; // Data written by old versions of LEX lacks block padding
                         tmpData = Image.decompressMipmap(format, src, w, h);
                         break;
                     }
                 case PixelFormat.BC5:
                 case PixelFormat.ATI2:
-                    if (w < 4 || h < 4)
-                        return new byte[w * h * 4];
+                    // Mips smaller than 4x4 are still stored as a full 4x4 block
+                    if (w < 4)
+                        w = 4;
+                    if (h < 4)
+                        h = 4;
+                    if (src.Length < MipMap.getBufferSize(w, h, format))
+                        return new byte[w * h * 4]; // Data written by old versions of LEX lacks block padding
                     tmpData = Image.decompressMipmap(format, src, w, h);
                     if (format == PixelFormat.BC5)
                     {
@@ -521,6 +523,40 @@ namespace LegendaryExplorerCore.Textures
             return tmpData;
         }
 
+        /// <summary>
+        /// Pads an ARGB image to block-aligned (multiple of 4) dimensions by replicating edge pixels,
+        /// so mips smaller than a 4x4 block can be block-compressed. Updates w and h to the padded dimensions.
+        /// </summary>
+        private static byte[] padARGBTo4(byte[] src, ref int w, ref int h)
+        {
+            int paddedW = (w + 3) & ~3;
+            int paddedH = (h + 3) & ~3;
+            byte[] dst = new byte[paddedW * paddedH * 4];
+            for (int y = 0; y < paddedH; y++)
+            {
+                int srcY = Math.Min(y, h - 1);
+                for (int x = 0; x < paddedW; x++)
+                {
+                    int srcX = Math.Min(x, w - 1);
+                    Array.Copy(src, (srcY * w + srcX) * 4, dst, (y * paddedW + x) * 4, 4);
+                }
+            }
+            w = paddedW;
+            h = paddedH;
+            return dst;
+        }
+
+        /// <summary>
+        /// Crops an ARGB image to the top-left w x h region.
+        /// </summary>
+        private static byte[] cropARGB(byte[] src, int srcW, int w, int h)
+        {
+            byte[] dst = new byte[w * h * 4];
+            for (int y = 0; y < h; y++)
+                Array.Copy(src, y * srcW * 4, dst, y * w * 4, w * 4);
+            return dst;
+        }
+
         private static byte[] downscaleRGB(byte[] src, int w, int h)
         {
             if (w == 1 && h == 1)
@@ -592,18 +628,12 @@ namespace LegendaryExplorerCore.Textures
                         // Swap R and G
                         //ShiftChannels(src, 1);
                     }
-                    if (dstFormat is PixelFormat.ATI2 or PixelFormat.BC5 && (w < 4 || h < 4))
-                        tempData = new byte[MipMap.getBufferSize(w, h, dstFormat)];
-                    else if (w < 4 || h < 4)
+                    if (w < 4 || h < 4)
                     {
-                        if (w < 4)
-                            w = 4;
-                        if (h < 4)
-                            h = 4;
-                        tempData = new byte[MipMap.getBufferSize(w, h, dstFormat)];
+                        // Block compression works on whole 4x4 blocks; pad undersized mips before compressing
+                        tempData = padARGBTo4(tempData, ref w, ref h);
                     }
-                    else
-                        tempData = Image.compressMipmap(dstFormat, tempData, w, h, dxt1HasAlpha, dxt1Threshold);
+                    tempData = Image.compressMipmap(dstFormat, tempData, w, h, dxt1HasAlpha, dxt1Threshold);
                     break;
                 case PixelFormat.ARGB:
                     tempData = convertRawToARGB(src, ref w, ref h, srcFormat);
@@ -639,6 +669,11 @@ namespace LegendaryExplorerCore.Textures
             // todo: Use native method on windows
 #endif
 
+            if (w < 4 || h < 4)
+            {
+                // Block compression works on whole 4x4 blocks; pad undersized mips before compressing
+                imageBytes = padARGBTo4(imageBytes, ref w, ref h);
+            }
             var i = SixLabors.ImageSharp.Image.LoadPixelData<Rgba32>(imageBytes, w, h);
             var encoder = new BcEncoder();
             encoder.OutputOptions.GenerateMipMaps = false;
@@ -656,6 +691,9 @@ namespace LegendaryExplorerCore.Textures
                 int w = mipMaps[0].width;
                 int h = mipMaps[0].height;
                 tempData = convertRawToARGB(mipMaps[0].data, ref w, ref h, pixelFormat);
+                // Sub-4x4 block-compressed mips decompress to a full 4x4 block; crop back to the real dimensions
+                if (w != mipMaps[0].origWidth || h != mipMaps[0].origHeight)
+                    tempData = cropARGB(tempData, w, mipMaps[0].origWidth, mipMaps[0].origHeight);
             }
             else
             {
@@ -693,25 +731,6 @@ namespace LegendaryExplorerCore.Textures
                     origH = 1;
                 width = origW;
                 height = origH;
-
-                if (pixelFormat is PixelFormat.ATI2 or PixelFormat.BC5 && (width < 4 || height < 4))
-                {
-                    mipMaps.Add(new MipMap(width, height, pixelFormat));
-                    continue;
-                }
-
-                if (pixelFormat is PixelFormat.DXT1 or PixelFormat.DXT3 or PixelFormat.DXT5)
-                {
-                    if (width < 4 || height < 4)
-                    {
-                        if (width < 4)
-                            width = 4;
-                        if (height < 4)
-                            height = 4;
-                        mipMaps.Add(new MipMap(origW, origH, pixelFormat));
-                        continue;
-                    }
-                }
 
                 tempData = downscaleARGB(tempData, prevW, prevH);
                 if (pixelFormat != PixelFormat.ARGB)

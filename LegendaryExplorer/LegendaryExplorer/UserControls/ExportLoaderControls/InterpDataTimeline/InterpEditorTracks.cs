@@ -286,6 +286,10 @@ namespace LegendaryExplorer.Tools.InterpEditor
             {
                 return new BioInterpTrack(trackExport, "m_aFacingKeys");
             }
+            else if (trackExport.IsA("InterpTrackParticleReplay"))
+            {
+                return new InterpTrackParticleReplay(trackExport);
+            }
             else
             {
                 throw new FormatException($"Unknown Track Type: {trackExport.ClassName}");
@@ -784,7 +788,7 @@ namespace LegendaryExplorer.Tools.InterpEditor
                 int i = 0;
                 foreach (var trackKey in trackKeys)
                 {
-                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("Time"), trackKey.GetProp<NameProperty>("EventName").Value.Name, index: i++, parentTrack: this));
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("Time"), trackKey.GetProp<NameProperty>("EventName")?.Value.Instanced, index: i++, parentTrack: this));
                 }
             }
         }
@@ -797,6 +801,35 @@ namespace LegendaryExplorer.Tools.InterpEditor
 
         public override void InsertKey(float time) =>
             InsertKeyInArray("EventTrack", time, "Time", Export.ClassName);
+    }
+    public class InterpTrackParticleReplay : InterpTrack
+    {
+        public InterpTrackParticleReplay(ExportEntry export) : base(export)
+        {
+        }
+
+        public override void LoadTrack()
+        {
+            Keys.ClearEx();
+            var trackKeys = Export.GetProperty<ArrayProperty<StructProperty>>("TrackKeys");
+            if (trackKeys != null)
+            {
+                int i = 0;
+                foreach (var trackKey in trackKeys)
+                {
+                    Keys.Add(new Key(trackKey.GetProp<FloatProperty>("Time"), $"{trackKey.GetProp<IntProperty>("ClipIDNumber")?.Value}", index: i++, parentTrack: this));
+                }
+            }
+        }
+
+        public override void UpdateKeyTime(int keyIndex, float newTime) =>
+            UpdateTimeInArray("TrackKeys", keyIndex, newTime, "Time");
+
+        public override void DeleteKey(int keyIndex) =>
+            DeleteKeyFromArray("TrackKeys", keyIndex);
+
+        public override void InsertKey(float time) =>
+            InsertKeyInArray("TrackKeys", time, "Time", Export.ClassName);
     }
     public class InterpTrackFaceFX : InterpTrack
     {

@@ -67,7 +67,6 @@ public sealed partial class InterpData : IDisposable
 {
     public SeqAct_Interp Parent;
     public LevelEditor.LevelEditor LevelEditor;
-    private readonly DisposableCollection<IMEPackage> AuxiliaryPackages = [];
 
     public void AttachToLevelEditor(LevelEditor.LevelEditor levelEditor)
     {
@@ -86,6 +85,12 @@ public sealed partial class InterpData : IDisposable
         }
     }
 
+    public void StopMatinee()
+    {
+        foreach (var group in Groups)
+            group.StopMatinee();
+    }
+
     public ActorProxy GetOrCreateTaggedActor(NameReference tag)
     {
         foreach (var actorProxy in LevelEditor.Actors)
@@ -98,10 +103,7 @@ public sealed partial class InterpData : IDisposable
         var actorExport = Export.FileRef.FindActorByTag(tag, true);
         if (actorExport != null)
         {
-            ConditionalAddToAuxiliaryPackages(actorExport);
-            var actor = ActorProxy.Create(LevelEditor, actorExport);
-            LevelEditor.AddActor(actor);
-            return actor;
+            GetOrCreateActor(actorExport);
         }
         return null;
     }
@@ -121,6 +123,7 @@ public sealed partial class InterpData : IDisposable
         return actor;
     }
 
+    private readonly DisposableCollection<IMEPackage> AuxiliaryPackages = [];
     private void ConditionalAddToAuxiliaryPackages(ExportEntry actorExport)
     {
         if (actorExport.FileRef != Export.FileRef && AuxiliaryPackages.All(pcc => pcc != actorExport.FileRef))
@@ -147,15 +150,38 @@ public partial class InterpGroup
     private ActorProxy _groupActor;
     public ActorProxy GroupActor => _groupActor;
 
+    public bool HasResolvedActor => _groupActor is not null;
+
+    private ActorProxy _manualGroupActor;
+    public ActorProxy ManualGroupActor
+    {
+        get => _manualGroupActor;
+        set
+        {
+            _manualGroupActor = value;
+            _groupActor = value;
+            _groupActors = null;
+            OnPropertyChanged(nameof(HasResolvedActor));
+        }
+    }
+
     private void ResolveGroupActor()
     {
         _groupActors = null;
+        _groupActor = null;
+        if (_manualGroupActor is not null)
+        {
+            _groupActor = _manualGroupActor;
+            OnPropertyChanged(nameof(HasResolvedActor));
+            return;
+        }
         var props = Export.GetCondensedProperties();
         ESFXFindByTagTypes findActorMode = props.GetProp<EnumProperty>("m_eSFXFindActorMode").GetEnumValOrDefault(ESFXFindByTagTypes.FindActorByTag);
         switch (findActorMode)
         {
             case ESFXFindByTagTypes.UseGroupActor:
-                if (props.GetProp<NameProperty>("GroupName")?.Value is NameReference groupName 
+                if (Parent.Parent is not null
+                    && props.GetProp<NameProperty>("GroupName")?.Value is NameReference groupName
                     && groupName != NameReference.None && Parent.Parent.GroupActorVars.TryGetValue(groupName, out List<ExportEntry> groupActorVars))
                 {
                     for (var i = 0; i < groupActorVars.Count; i++)
@@ -204,6 +230,8 @@ public partial class InterpGroup
     public void PrepMatinee()
     {
         ResolveGroupActor();
+        foreach (var actor in GroupActors)
+            actor.BeginMatineeControl();
         foreach (var track in Tracks)
         {
             track.PrepMatinee();
@@ -216,6 +244,12 @@ public partial class InterpGroup
         {
             track.ConditionalStep(newTime, prevTime);
         }
+    }
+
+    public void StopMatinee()
+    {
+        foreach (var actor in GroupActors)
+            actor.EndMatineeControl();
     }
 
     public AnimSequence GetAnim(NameReference name)
@@ -289,10 +323,35 @@ public partial class InterpTrackMove
         if (Group.GroupActor is not ActorProxy actor) return;
 
         var newPos = PosTrack.Eval(newTime, InitialActorPosition);
-        //todo: implement bUseQuatInterpolation
-        var newRot = Rotator.FromDegreesVector(EulerTrack.Eval(newTime, InitialActorRotation.GetDirectionalVector()));
 
+        Rotator newRot;
+        if (bUseQuatInterpolation && EulerTrack.Points.Count >= 2)
+        {
+            // Find the two keys bracketing newTime
+            var pts = EulerTrack.Points;
+            int hi = 1;
+            while (hi < pts.Count - 1 && pts[hi].InVal < newTime) hi++;
+            var prev = pts[hi - 1];
+            var next = pts[hi];
 
+            Quaternion qPrev = Rotator.FromDegreesVector(prev.OutVal).ToQuaternion();
+            Quaternion qNext = Rotator.FromDegreesVector(next.OutVal).ToQuaternion();
+
+            // Ensure shortest-arc SLERP
+            if (Quaternion.Dot(qPrev, qNext) < 0f) qNext = Quaternion.Negate(qNext);
+
+            float t = next.InVal > prev.InVal
+                ? Math.Clamp((newTime - prev.InVal) / (next.InVal - prev.InVal), 0f, 1f)
+                : 0f;
+            newRot = Rotator.FromQuaternion(Quaternion.Slerp(qPrev, qNext, t));
+        }
+        else
+        {
+            newRot = Rotator.FromDegreesVector(EulerTrack.Eval(newTime, InitialActorRotation.GetDegreesVector()));
+        }
+
+        actor.Location = newPos;
+        actor.Rotation = newRot;
     }
 
     public override void PrepMatinee()
@@ -301,14 +360,17 @@ public partial class InterpTrackMove
         var emptyProp = new StructProperty("InterpCurveVector", false);
         PosTrack = InterpCurveVector.FromStructProperty(Props.GetProp<StructProperty>("PosTrack") ?? emptyProp, Export.Game);
         EulerTrack = InterpCurveVector.FromStructProperty(Props.GetProp<StructProperty>("EulerTrack") ?? emptyProp, Export.Game);
-        //todo: LookupTrack
 
         bUseQuatInterpolation = Props.GetProp<BoolProperty>("bUseQuatInterpolation")?.Value ?? false;
         MoveFrame = Props.GetProp<EnumProperty>("MoveFrame").GetEnumValOrDefault(EInterpTrackMoveFrame.IMF_World);
         RotMode = Props.GetProp<EnumProperty>("RotMode").GetEnumValOrDefault(EInterpTrackMoveRotMode.IMR_Keyframed);
 
-        //preload actor
-        _ = Group.GroupActor;
+        //preload actor and capture its initial pose
+        if (Group.GroupActor is ActorProxy actor)
+        {
+            InitialActorPosition = actor.Location;
+            InitialActorRotation = actor.Rotation;
+        }
     }
 }
 

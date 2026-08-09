@@ -224,8 +224,10 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
             for (int i = 0; i < binary.ColumnNames.Count; i++)
             {
-                _columnNames.Add(binary.ColumnNames[i]);
-                mappedColumnNames[binary.ColumnNames[i]] = i;
+                // 07/17/2026 - Use .Instanced version instead as a few tables have instanced column names.
+                // Like MorphHairFemale.
+                _columnNames.Add(binary.ColumnNames[i].Instanced);
+                mappedColumnNames[binary.ColumnNames[i].Instanced] = i;
             }
 
             for (int i = 0; i < RowCount; i++)
@@ -298,7 +300,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
         {
             var binary = new Bio2DABinary
             {
-                ColumnNames = ColumnNames.Select(s => new NameReference(s)).ToList(),
+                ColumnNames = ColumnNames.Select(s => NameReference.FromInstancedString(s)).ToList(),
                 Cells = new(),
                 Export = Export,
                 IsIndexed = IsIndexed

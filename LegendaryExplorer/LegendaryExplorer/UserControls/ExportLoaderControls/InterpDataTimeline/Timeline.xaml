@@ -14,6 +14,7 @@
     <UserControl.Resources>
         <converters:TimeToPositionConverter x:Key="TimeToPositionConverter"/>
         <converters:NullOrEmptyStringVisibilityConverter x:Key="NullOrEmptyStringVisibilityConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <SolidColorBrush x:Key="KeyBrush" Color="#FF640000"/>
         <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
         <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
@@ -276,6 +277,14 @@
                 <RowDefinition Height="50" />
             </Grid.RowDefinitions>
             <Canvas Grid.Column="0" Grid.Row="0" Background="#FF3C3C3C" />
+            <!-- Playhead overlay: spans both rows of Column 1, sits above track content -->
+            <Canvas x:Name="PlayheadCanvas" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
+                    IsHitTestVisible="False" Panel.ZIndex="10">
+                <Line x:Name="PlayheadLine"
+                      Y1="0" Y2="{Binding ActualHeight, ElementName=PlayheadCanvas}"
+                      Stroke="Red" StrokeThickness="1.5"
+                      Visibility="Collapsed" />
+            </Canvas>
             <Canvas Grid.Column="1" Grid.Row="1" Background="#FF505050" Name="Guide" Cursor="ScrollWE"
                     ForceCursor="True"
                     PreviewMouseDown="Guide_OnPreviewMouseDown" PreviewMouseUp="Guide_OnPreviewMouseUp"
@@ -306,6 +315,29 @@
                                 </Grid.ColumnDefinitions>
                                 <Canvas Grid.Column="0">
                                     <TextBlock Text="{Binding GroupName}" Canvas.Left="25" Canvas.Top="3" Foreground="Black"/>
+                                    <StackPanel Canvas.Right="11" Canvas.Top="4" Orientation="Horizontal"
+                                                Visibility="{Binding IsLevelEditorConnected,
+                                                    RelativeSource={RelativeSource AncestorType=UserControl},
+                                                    Converter={StaticResource BoolToVisibilityConverter}}">
+                                        <Ellipse Width="8" Height="8" Margin="0,0,2,0"
+                                                 ToolTip="{Binding GroupActor.DisplayText, FallbackValue='No actor resolved'}">
+                                            <Ellipse.Style>
+                                                <Style TargetType="Ellipse">
+                                                    <Setter Property="Fill" Value="Red"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding HasResolvedActor}" Value="True">
+                                                            <Setter Property="Fill" Value="LimeGreen"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Ellipse.Style>
+                                        </Ellipse>
+                                        <Button Content="..." Width="14" Height="14" FontSize="9" Padding="0"
+                                                ToolTip="Set Group Actor"
+                                                Command="{Binding SetGroupActorCmd,
+                                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"/>
+                                    </StackPanel>
                                     <Rectangle Width="10" Height="24" Canvas.Right="0">
                                         <Rectangle.Fill>
                                             <SolidColorBrush Color="{Binding GroupColor}" />

@@ -1,0 +1,45 @@
+<Window x:Class="LegendaryExplorer.Tools.InterpEditor.ActorPickerDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Pick Group Actor" Width="600" Height="450"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False"
+        ResizeMode="CanResizeWithGrip">
+    <DockPanel Margin="8">
+        <TextBox x:Name="SearchBox" DockPanel.Dock="Top" Margin="0,0,0,6"
+                 TextChanged="SearchBox_TextChanged">
+            <TextBox.Style>
+                <Style TargetType="TextBox">
+                    <Style.Triggers>
+                        <Trigger Property="Text" Value="">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                                        <VisualBrush.Visual>
+                                            <TextBlock Foreground="Gray" Text="Search actors..." Margin="4,0,0,0"/>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,6,0,0">
+            <Button x:Name="OKButton" Content="OK" Width="80" Margin="0,0,6,0"
+                    IsDefault="True" IsEnabled="False" Click="OK_Click"/>
+            <Button Content="Cancel" Width="80" IsCancel="True" Click="Cancel_Click"/>
+        </StackPanel>
+        <DataGrid x:Name="ActorGrid" AutoGenerateColumns="False" CanUserSortColumns="True"
+                  IsReadOnly="True" SelectionMode="Single"
+                  SelectionChanged="ActorGrid_SelectionChanged"
+                  MouseDoubleClick="ActorGrid_MouseDoubleClick">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name"  Binding="{Binding DisplayText}" Width="*"/>
+                <DataGridTextColumn Header="Class" Binding="{Binding Export.ClassName}" Width="*"/>
+                <DataGridTextColumn Header="File"  Binding="{Binding OwningFileName}" Width="*"/>
+                <DataGridTextColumn Header="Tag"   Binding="{Binding Tag.Name}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>

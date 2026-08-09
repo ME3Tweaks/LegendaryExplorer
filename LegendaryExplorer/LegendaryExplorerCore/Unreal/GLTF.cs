@@ -14,16 +14,12 @@ using SharpGLTF.Runtime;
 using SharpGLTF.Scenes;
 using SharpGLTF.Schema2;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Processing.Processors.Filters;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
-using IsImage = SixLabors.ImageSharp.Image;
 
 namespace LegendaryExplorerCore.Unreal
 {
@@ -86,6 +82,70 @@ namespace LegendaryExplorerCore.Unreal
 
             var gltf = ToGltf(intermediateMeshes, versionInfo);
             gltf?.Save(filePath);
+        }
+
+        // export an AnimSequence as a skeleton-only glTF animation (no mesh geometry or textures),
+        // compatible with any identically-rigged mesh
+        public static void ExportAnimSequenceToGltf(AnimSequence animSeq, MeshBone[] refSkeleton, string filePath, string versionInfo = null)
+        {
+            ArgumentNullException.ThrowIfNull(animSeq);
+            ArgumentNullException.ThrowIfNull(refSkeleton);
+
+            // Convert MeshBone[] → List<IntermediateBone> (same mapping used by ToIntermediateMesh)
+            var bones = new List<IntermediateBone>(refSkeleton.Length);
+            for (int i = 0; i < refSkeleton.Length; i++)
+            {
+                var b = refSkeleton[i];
+                bones.Add(new IntermediateBone
+                {
+                    Index = i,
+                    Name = b.Name.Instanced,
+                    ParentIndex = b.ParentIndex,
+                    NumChildren = b.NumChildren,
+                    Position = b.Position,
+                    Rotation = b.Orientation,
+                });
+            }
+
+            // Build the skeleton NodeBuilders (same transforms as the mesh export path)
+            var skeletonNodes = new NodeBuilder[bones.Count];
+            for (int i = 0; i < bones.Count; i++)
+            {
+                var bone = bones[i];
+                var nb = new NodeBuilder(bone.Name);
+                if (bone.ParentIndex == -1 || bone.ParentIndex == i)
+                {
+                    nb.WithLocalTranslation(TransformRootBonePositionToGltf(bone.Position))
+                      .WithLocalRotation(TransformRootBoneRotationToGltf(bone.Rotation));
+                }
+                else
+                {
+                    nb.WithLocalTranslation(TransformBonePositionToGltf(bone.Position))
+                      .WithLocalRotation(TransformBoneRotationToGltf(bone.Rotation));
+                }
+                skeletonNodes[i] = nb;
+            }
+            // Wire the hierarchy
+            for (int i = 0; i < bones.Count; i++)
+            {
+                int parentIdx = bones[i].ParentIndex;
+                if (parentIdx >= 0 && parentIdx != i)
+                    skeletonNodes[parentIdx].AddNode(skeletonNodes[i]);
+            }
+
+            ApplyAnimationToSkeleton(skeletonNodes, bones, animSeq, animSeq.Name.Instanced);
+
+            var scene = new SceneBuilder();
+            // Add only the root bone(s) — children come along via the hierarchy
+            for (int i = 0; i < bones.Count; i++)
+            {
+                if (bones[i].ParentIndex == -1 || bones[i].ParentIndex == i)
+                    scene.AddNode(skeletonNodes[i]);
+            }
+
+            var gltf = scene.ToGltf2();
+            gltf.Asset.Generator = versionInfo ?? "Legendary Explorer Core";
+            gltf.Save(filePath);
         }
 
         private static IEnumerable<IntermediateMesh> BioPawnToIntermediateMeshes(ExportEntry export, MaterialExportLevel materialSetting, PackageCache cache = null)
@@ -530,22 +590,35 @@ namespace LegendaryExplorerCore.Unreal
                     {
                         try
                         {
-                            var normalMapBytes = intermediateMat.NormalTexture.GetPNG(intermediateMat.NormalTexture.GetTopMip());
-                            // flip the green channel to match the convention glTF uses
-                            var img = IsImage.Load<Rgba32>(normalMapBytes);
-                            var colorMatrix = new ColorMatrix(
-                                1, 0, 0, 0,
-                                0, -1, 0, 0,
-                                0, 0, 1, 0,
-                                0, 0, 0, 1,
-                                0, 1, 0, 0
-                            );
-                            img.Mutate(x => x.ApplyProcessor(new FilterProcessor(colorMatrix)));
-                            using (var ms = new MemoryStream())
+                            var topMip = intermediateMat.NormalTexture.GetTopMip();
+                            var w = topMip.width;
+                            var h = topMip.height;
+                            var rawBytes = Textures.Image.convertRawToARGB(
+                                Texture2D.GetTextureData(topMip, intermediateMat.NormalTexture.Export.Game),
+                                ref w,
+                                ref h,
+                                Textures.Image.getPixelFormatType(intermediateMat.NormalTexture.TextureFormat));
+
+                            for (int i = 0; i < w * h; i++)
                             {
-                                img.SaveAsPng(ms);
-                                normalMapBytes = ms.ToArray();
+                                var baseIndex = 4 * i;
+                                // invert G
+                                rawBytes[baseIndex + 1] = (byte)(256 - rawBytes[baseIndex + 1]);
+                                
+                                // calculate B and store it
+                                // R
+                                var x = ((float)rawBytes[baseIndex + 2] / 128f) - 1f;
+                                // G
+                                var y = ((float)rawBytes[baseIndex + 1] / 128f) - 1f;
+                                var z = Math.Sqrt(1 - (x * x + y * y));
+
+                                // store the calculated B value
+                                rawBytes[baseIndex] = (byte)((z + 1) * 128 - 1);
+                                // clear alpha
+                                rawBytes[baseIndex + 3] = 255;
                             }
+                            var normalMapBytes = Textures.Image.convertToPng(rawBytes, w, h, Textures.PixelFormat.ARGB).ToArray();
+
                             var normImage = ImageBuilder.From(normalMapBytes, $"{intermediateMat.NormalTexture.Export.ObjectNameString}_flipped");
                             normImage.AlternateWriteFileName = $"{intermediateMat.NormalTexture.Export.ObjectNameString}_flipped.*";
                             mat.WithNormal(normImage);
@@ -798,6 +871,63 @@ namespace LegendaryExplorerCore.Unreal
             // finally, we rotate the child in its local axes
             temp = temp * new Quaternion(Root2Over2, 0, 0, -Root2Over2);
             return Quaternion.Normalize(temp);
+        }
+
+        private static void ApplyAnimationToSkeleton(NodeBuilder[] skeletonNodes, List<IntermediateBone> bones, AnimSequence animSeq, string animName)
+        {
+            animSeq.DecompressAnimationData();
+
+            // same formula BVH export uses, with the same fallback
+            float frameTime = animSeq.NumFrames > 1 && animSeq.SequenceLength > 0f
+                ? animSeq.SequenceLength / (animSeq.NumFrames * animSeq.RateScale)
+                : 1f / 30f;
+
+            var shouldBoneUsePositionTrack = animSeq.GetPositionTrackFilter();
+
+            var boneToTrack = new Dictionary<string, AnimTrack>(StringComparer.OrdinalIgnoreCase);
+            for (int i = 0; i < animSeq.Bones.Count && i < animSeq.RawAnimationData.Count; i++)
+            {
+                boneToTrack[animSeq.Bones[i]] = animSeq.RawAnimationData[i];
+            }
+
+            for (int i = 0; i < bones.Count; i++)
+            {
+                var bone = bones[i];
+                if (!boneToTrack.TryGetValue(bone.Name, out AnimTrack track))
+                {
+                    continue;
+                }
+                bool isRoot = bone.ParentIndex == -1 || bone.ParentIndex == i;
+                var nb = skeletonNodes[i];
+
+                if (track.Positions is { Count: > 1 } && shouldBoneUsePositionTrack(bone.Name))
+                {
+                    var ch = nb.UseTranslation(animName);
+                    for (int f = 0; f < track.Positions.Count; f++)
+                    {
+                        var p = isRoot
+                            ? TransformRootBonePositionToGltf(track.Positions[f])
+                            : TransformBonePositionToGltf(track.Positions[f]);
+                        ch.WithPoint(f * frameTime, p);
+                    }
+                }
+
+                if (track.Rotations is { Count: > 1 })
+                {
+                    var ch = nb.UseRotation(animName);
+                    for (int f = 0; f < track.Rotations.Count; f++)
+                    {
+                        // UE3 stores animation rotations conjugated relative to RefSkeleton bone orientations
+                        // (see AnimSequencePlayer.ComputeSkinningMatrices). Undo that before applying the
+                        // same transform the bind pose uses so the rest-pose keyframe matches bone.Orientation.
+                        var raw = -Quaternion.Conjugate(track.Rotations[f]);
+                        var q = isRoot
+                            ? TransformRootBoneRotationToGltf(raw)
+                            : TransformBoneRotationToGltf(raw);
+                        ch.WithPoint(f * frameTime, q);
+                    }
+                }
+            }
         }
 
         static Quaternion FromYawPitchRoll(float yaw, float pitch, float roll)
@@ -1109,12 +1239,166 @@ namespace LegendaryExplorerCore.Unreal
             // TODO make sure everything is normalized properly?
             foreach (var lod in mesh.LODs)
             {
+                // ensure there are tangents present
+                EnsureTangents(lod);
                 // reorder the vertices to match the original order, if possible
                 ReconstructVertexOrder(lod);
                 // make the data much easier to process
                 MergeVertexLists(lod);
             }
             return mesh;
+        }
+
+        private static void EnsureTangents(IntermediateLOD lod)
+        {
+            if (!lod.Sections[0].Vertices.Any(x => !x.Tangent.HasValue))
+            {
+                // it already has tangents
+                return;
+            }
+            List<IntermediateVertex> dupes = [];
+            List<(int dupeIndex, int sectionIndex, int faceIndex, int cornerIndex)> dupeIndices = [];
+            CalculateTangents();
+            if(dupes.Any())
+            {
+                // there are discontinuities in the tangents, and we need to add some new vertices.
+                var dupeGroups = dupeIndices.GroupBy(x => x.dupeIndex);
+                foreach (var dupeGroup in dupeGroups)
+                {
+                    var sectionGroups = dupeGroup.GroupBy(x => x.sectionIndex);
+                    foreach (var sectionGroup in sectionGroups)
+                    {
+                        var newVertIndex = lod.Sections[sectionGroup.Key].Vertices.Count;
+                        lod.Sections[sectionGroup.Key].Vertices.Add(dupes[dupeGroup.Key]);
+                        foreach (var (_, _, triIndex, cornerIndex) in sectionGroup)
+                        {
+                            var tri = lod.Sections[sectionGroup.Key].Triangles[triIndex];
+                            switch (cornerIndex)
+                            {
+                                case 0:
+                                    tri.VertIndex1 = newVertIndex;
+                                    break;
+                                case 1:
+                                    tri.VertIndex3 = newVertIndex;
+                                    break;
+                                case 2:
+                                    tri.VertIndex2 = newVertIndex;
+                                    break;
+                                default:
+                                    throw new IndexOutOfRangeException();
+                            }
+                            lod.Sections[sectionGroup.Key].Triangles[triIndex] = tri;
+                        }
+                    }
+                }
+            }
+            void CalculateTangents(int UVMap = 0)
+            {
+                // generate tangents using the MikkTSpace algorithm which is used by most tools these days
+                //var vertices = lod.Sections[0].Vertices;
+                //var triangles = lod.Sections.Select(x )
+                // callback to get vertex positions
+                IntermediateVertex GetVert(int face, int corner, out int sectionIndex, out int triIndex, out int vertIndex)
+                {
+                    IntermediateTriangle? tri = null;
+                    sectionIndex = -1;
+                    triIndex = -1;
+                    for (int i = 0; i < lod.Sections.Count; i++)
+                    {
+                        var section = lod.Sections[i];
+                        if (section.Triangles.Count > face)
+                        {
+                            tri = section.Triangles[face];
+                            sectionIndex = i;
+                            triIndex = face;
+                            break;
+                        }
+                        face -= section.Triangles.Count;
+                    }
+                    if (tri == null)
+                    {
+                        throw new IndexOutOfRangeException();
+                    }
+                    // intentionally swapped; this package expects different winding order than ME
+                    vertIndex = corner switch
+                    {
+                        0 => tri.Value.VertIndex1,
+                        1 => tri.Value.VertIndex3,
+                        2 => tri.Value.VertIndex2,
+                        _ => throw new IndexOutOfRangeException()
+                    };
+                    return lod.Sections[sectionIndex].Vertices[vertIndex];
+                }
+                void vertPositionHandler(int face, int vertex, out float x, out float y, out float z)
+                {
+                    var vert = GetVert(face, vertex, out _, out _, out _);
+
+                    x = vert.Position.X; y = vert.Position.Y; z = vert.Position.Z;
+                }
+                // callback to get vertex normals
+                void VertNormHandler(int face, int vertex, out float x, out float y, out float z)
+                {
+                    var vert = GetVert(face, vertex, out _, out _, out _);
+
+                    x = vert.Normal.Value.X; y = vert.Normal.Value.Y; z = vert.Normal.Value.Z;
+                }
+                void VertUVHandler(int face, int vertex, out float u, out float v)
+                {
+                    var vert = GetVert(face, vertex, out _, out _, out _);
+
+                    u = vert.UVs[UVMap].X; v = vert.UVs[UVMap].Y;
+                }
+                void BasicTangentHandler(int face, int corner, float x, float y, float z, float sign)
+                {
+                    var vert = GetVert(face, corner, out var sectionIndex, out var triIndex, out var  vertIndex);
+
+                    var newTangent = new Vector3(x, y, z);
+                    var needsDupe = false;
+
+                    if (vert.Tangent.HasValue && (vert.Tangent.Value != newTangent || vert.BiTangentDirection != sign))
+                    {
+                        // this means there is a discontinuity in the tangents, and we have to split the vertice here or we will get shading artifacts.
+                        needsDupe = true;
+                    }
+
+                    // this is needed to store the bitangent sign in the Vertex Normal W component. It is important
+                    // it is basically whether the UV mapping at this part of the mesh is mirrored, and everything will look bad if it's not set correctly.
+                    vert.BiTangentDirection = sign;
+
+                    // this is the tangent vector for this vertex
+                    vert.Tangent = newTangent;
+
+                    if (needsDupe)
+                    {
+                        var dupeIndex = dupes.IndexOf(vert);
+                        if (dupeIndex >= 0)
+                        {
+                            dupeIndices.Add(dupeIndex, sectionIndex, triIndex, corner);
+                        }
+                        else
+                        {
+                            dupeIndices.Add(dupes.Count, sectionIndex, triIndex, corner);
+                            dupes.Add(vert);
+                        }
+                    }
+                    else
+                    {
+                        // this is a struct, so we have to store it back in the array
+                        lod.Sections[sectionIndex].Vertices[vertIndex] = vert;
+                    }
+                }
+                Mikktspace.NET.MikkGenerator.GenerateTangentSpace(
+                    // number of faces
+                    lod.Sections.Sum(x => x.Triangles.Count),
+                    // number of verts per face; the algorithm supports quads, but it will always be triangles in a glTF
+                    _ => 3,
+                    // callbacks to get the position, normal, and UV coordinates of a vertex
+                    vertPositionHandler,
+                    VertNormHandler,
+                    VertUVHandler,
+                    // callback to recieve the results: a tangent and BiNormal sign per vertex
+                    BasicTangentHandler);
+            }
         }
 
         private static void MergeVertexLists(IntermediateLOD lod)
@@ -1531,7 +1815,7 @@ namespace LegendaryExplorerCore.Unreal
 
             foreach (var node in lodNodes)
             {
-                // this API allows us to generate normals and tangents if needed
+                // this API allows us to generate normals if needed
                 var decoder = node.Mesh.Decode();
 
                 var LOD = new IntermediateLOD() { Index = lodIndex++ };
@@ -1562,19 +1846,20 @@ namespace LegendaryExplorerCore.Unreal
                         var vert = new IntermediateVertex
                         {
                             Position = TransformVertexPositionFromGltf(vertColumns.Positions[i]),
+                            // Normals
+                            // get the value it was exported with or the generated one if that is not present
+                            Normal = TranformDirectionFromGltf(vertColumns.Normals?[i] ?? primitiveDecoder.GetNormal(i))
                         };
 
-                        // Normals
-                        // get the value it was exported with or the generated one if that is not present
-                        vert.Normal = TranformDirectionFromGltf(vertColumns.Normals?[i] ?? primitiveDecoder.GetNormal(i));
-
                         // Tangents
-                        // get the value it was imported with, or the generated one if nopresent
-                        var rawTangent = vertColumns.Tangents?[i] ?? primitiveDecoder.GetTangent(i);
-                        var tanX = new Vector3(rawTangent.X, rawTangent.Y, rawTangent.Z);
-                        vert.Tangent = TranformDirectionFromGltf(tanX);
-                        vert.BiTangentDirection = rawTangent.W;
-
+                        // get the value it was imported with, or null; it will be calculated later
+                        var rawTangent = vertColumns.Tangents?[i];
+                        if (rawTangent.HasValue)
+                        {
+                            var tanX = new Vector3(rawTangent.Value.X, rawTangent.Value.Y, rawTangent.Value.Z);
+                            vert.Tangent = TranformDirectionFromGltf(tanX);
+                            vert.BiTangentDirection = rawTangent.Value.W;
+                        }
 
                         // UVs
                         void AddUV(IList<Vector2>? column)
@@ -1953,7 +2238,7 @@ namespace LegendaryExplorerCore.Unreal
             SetupSkeleton(intermediateMesh.Skeleton, meshBin);
 
             meshBin.Bounds = GetBounds(intermediateMesh);
-            SetupMaterials(intermediateMesh.Materials, meshBin, package);
+            SetupMaterials(intermediateMesh.Materials, meshBin, package, existingEntry);
             meshBin.LODModels = [.. intermediateMesh.LODs.Select(lod => SetupLOD(intermediateMesh, lod, meshBin))];
 
             // we now have the complete binary; get or create the export and write out properties
@@ -2017,9 +2302,10 @@ namespace LegendaryExplorerCore.Unreal
                 meshBin.SkeletalDepth = skeletalDepth.Max();
             }
 
-            static void SetupMaterials(IList<IntermediateMaterial> materials, SkeletalMesh meshBin, IMEPackage package)
+            static void SetupMaterials(IList<IntermediateMaterial> materials, SkeletalMesh meshBin, IMEPackage package, ExportEntry? existingExport)
             {
                 SetNumMaterialSlots(meshBin, materials.Count);
+                var anyMissingMaterials = false;
                 for (int i = 0; i < materials.Count; i++)
                 {
                     if (materials[i].Name == "null")
@@ -2031,6 +2317,22 @@ namespace LegendaryExplorerCore.Unreal
                     if (entry != null)
                     {
                         meshBin.Materials[i] = entry.UIndex;
+                    }
+                    else
+                    {
+                        anyMissingMaterials = true;
+                    }
+                }
+                if (anyMissingMaterials && existingExport != null)
+                {
+                    // material not found by name; fall back to existing mesh materials if possible
+                    var existingMeshBin = ObjectBinary.From<SkeletalMesh>(existingExport);
+                    for (int i = 0; i < materials.Count && i < existingMeshBin.Materials.Length; i++)
+                    {
+                        if (meshBin.Materials[i] == 0)
+                        {
+                            meshBin.Materials[i] = existingMeshBin.Materials[i];
+                        }
                     }
                 }
             }

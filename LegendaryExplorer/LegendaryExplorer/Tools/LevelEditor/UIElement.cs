@@ -127,6 +127,10 @@ public class Widget : UIElement
     private static float GetScale(LevelEditorRenderContext context, Vector3 origin)
     {
         const float scaleFactor = 4f;
+        if (context.Camera.IsOrthographic)
+        {
+            return context.Camera.OrthoWidth * scaleFactor / context.Width;
+        }
         return context.WorldToScreen(origin).W * (scaleFactor / context.Width / context.Camera.ProjectionMatrix[0, 0]);
     }
 

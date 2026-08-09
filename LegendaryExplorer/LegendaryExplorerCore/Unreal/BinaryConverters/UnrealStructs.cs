@@ -113,6 +113,30 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
 
         public override int GetHashCode() => HashCode.Combine(Pitch, Yaw, Roll);
+
+        public readonly Matrix4x4 ToRotationMatrix()
+        {
+            var pitchRad = Pitch.UnrealRotationUnitsToRadians();
+            var yawRad = Yaw.UnrealRotationUnitsToRadians();
+            var rollRad = Roll.UnrealRotationUnitsToRadians();
+            var cp = MathF.Cos(pitchRad);
+            var sp = MathF.Sin(pitchRad);
+            var cy = MathF.Cos(yawRad);
+            var sy = MathF.Sin(yawRad);
+            var cr = MathF.Cos(rollRad);
+            var sr = MathF.Sin(rollRad);
+            return new Matrix4x4(
+                cp * cy, cp * sy, sp, 0,
+                sr * sp * cy - cr * sy, sr * sp * sy + cr * cy, -sr * cp, 0,
+                -(cr * sp * cy + sr * sy), cy * sr - cr * sp * sy, cr * cp, 0,
+                0, 0, 0, 1
+                );
+        }
+
+        public readonly Quaternion ToQuaternion()
+        {
+            return Quaternion.CreateFromRotationMatrix(ToRotationMatrix());
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]
