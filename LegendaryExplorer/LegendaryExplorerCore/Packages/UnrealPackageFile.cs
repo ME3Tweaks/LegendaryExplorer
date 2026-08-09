@@ -360,6 +360,12 @@ namespace LegendaryExplorerCore.Packages
 
         public IEntry FindEntry(string instancedPath)
         {
+            if (instancedPath == null)
+            {
+                // Can't find null.
+                return null;
+            }
+
             IEntry matchingEntry;
             // START CRITICAL SECTION ---------------------------------
             lock (_findEntrySyncObj)

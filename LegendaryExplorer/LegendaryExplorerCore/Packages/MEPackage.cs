@@ -25,7 +25,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace LegendaryExplorerCore.Packages
 {
     [DebuggerDisplay("MEPackage {FilePath} | {Game}")]
-
     public sealed class MEPackage : UnrealPackageFile, IMEPackage, ILazyLoadPackage, IDisposable
     {
         /// <summary>
