@@ -333,14 +333,17 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             JumpPlaceholder jump = null;
             while (Comments.TryPeek(out ScriptToken commentToken) && commentToken.StartPos < nodePos)
             {
-                if (jump is null)
+                if (!commentToken.Value.StartsWith("ERROR"))
                 {
-                    WriteOpCode(OpCodes.Jump);
-                    jump = WriteJumpPlaceholder(JumpType.Conditional);
+                    if (jump is null)
+                    {
+                        WriteOpCode(OpCodes.Jump);
+                        jump = WriteJumpPlaceholder(JumpType.Conditional);
+                    }
+                    WriteOpCode(OpCodes.StringConst);
+                    WriteBytes(Encoding.ASCII.GetBytes(commentToken.Value));
+                    WriteByte(0);
                 }
-                WriteOpCode(OpCodes.StringConst);
-                WriteBytes(Encoding.ASCII.GetBytes(commentToken.Value));
-                WriteByte(0);
                 Comments.Dequeue();
             }
             jump?.End();

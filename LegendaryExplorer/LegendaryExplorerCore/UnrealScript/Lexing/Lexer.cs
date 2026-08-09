@@ -506,8 +506,10 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
             {
                 ++CurrentIndex;
             }
-            
-            return new ScriptToken(TokenType.SingleLineComment, Text.Substring(commentStart, CurrentIndex - commentStart), startPos, CurrentIndex) { SyntaxType = ST.Comment };
+
+            string commentText = Text.Substring(commentStart, CurrentIndex - commentStart);
+            var st = commentText.StartsWith("ERROR") ? ST.ERROR : ST.Comment;
+            return new ScriptToken(TokenType.SingleLineComment, commentText, startPos, CurrentIndex) { SyntaxType = st };
         }
         
         private ScriptToken MakeSymbolToken(TokenType type, string symbol)

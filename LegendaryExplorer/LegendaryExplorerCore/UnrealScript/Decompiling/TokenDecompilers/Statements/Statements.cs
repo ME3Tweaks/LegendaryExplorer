@@ -263,8 +263,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             var scopeEnd = ReadUInt16(); // MemOff
             ForEachScopes.Push(scopeEnd);
 
-            Scopes.Add(scopeStatements);
-            CurrentScope.Push(Scopes.Count - 1);
             IteratorNext finalIteratorNext = null;
             while (Position < Size)
             {
@@ -287,7 +285,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
                 scopeStatements.Add(current);
             }
-            CurrentScope.Pop();
             ForEachScopes.Pop();
 
             var statement = new ForEachLoop(iteratorFunc, new CodeBody(scopeStatements))

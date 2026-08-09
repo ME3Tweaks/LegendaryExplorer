@@ -274,6 +274,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
             LabelNests = [];
             LabelNests.Push([]);
+            if (tokens.Comments.FirstOrDefault(tup => tup.Item2.Value.StartsWith("ERROR")) is { Item2: ScriptToken tok})
+            {
+                log.LogError($"Error comment: {tok.Value}");
+            }
         }
 
         private void ParseReplicationBlock()
