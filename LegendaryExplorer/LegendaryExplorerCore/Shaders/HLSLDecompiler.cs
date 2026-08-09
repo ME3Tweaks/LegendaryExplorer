@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 
@@ -57,7 +58,9 @@ namespace LegendaryExplorerCore.Shaders
                 return DecompileShader(bytecode, includeCreatedBy, resCode);
             }
 
-            var sr = Encoding.ASCII.GetString(buffer, 0, buffer.Length);
+            int nullIdx = Array.IndexOf(buffer, (byte)0);
+            int len = nullIdx >= 0 ? nullIdx : buffer.Length;
+            var sr = Encoding.ASCII.GetString(buffer, 0, len);
             return sr;
         }
     }

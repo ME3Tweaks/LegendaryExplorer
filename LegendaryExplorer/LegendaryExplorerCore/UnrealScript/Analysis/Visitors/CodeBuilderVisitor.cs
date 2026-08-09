@@ -1678,6 +1678,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         {
             foreach (string comment in node.CommentLines)
             {
+                var syntaxType = comment.StartsWith("ERROR") ? ST.ERROR : ST.Comment;
                 AppendToNewLine($"//{comment}", ST.Comment);
             }
             return true;

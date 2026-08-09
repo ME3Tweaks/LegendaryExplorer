@@ -4,6 +4,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.UnrealScript.Language.ByteCode;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
+using LegendaryExplorerCore.UnrealScript.Language.Util;
 using LegendaryExplorerCore.UnrealScript.Lexing;
 using LegendaryExplorerCore.UnrealScript.Utilities;
 using System;
@@ -314,7 +315,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             //attempt to resolve Enum references so that byte constants can be converted to enum values
             ASTNode node = ResolveEnumReference(obj);
 
-            return new SymbolReference(node, obj.ObjectName.Instanced);
+            var symRef = new SymbolReference(node, obj.ObjectName.Instanced);
+            symbolRefsToEntries[symRef] = obj;
+            return symRef;
         }
 
         private ASTNode ResolveEnumReference(IEntry obj)
@@ -368,7 +371,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 return null; // ERROR
 
             StartPositions.Pop();
-            return new DefaultReference(ResolveEnumReference(obj), obj.ObjectName.Instanced);
+            var defaultRef = new DefaultReference(ResolveEnumReference(obj), obj.ObjectName.Instanced);
+            symbolRefsToEntries[defaultRef] = obj;
+            return defaultRef;
         }
 
         private Expression DecompileContext(bool isClass = false)
@@ -386,6 +391,8 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
             var propType = ReadByte(); // discard propType.
 
+            //if the context is immediately followed by a virtual function call, the class of the context object is needed to validate the call's vtable index
+            contextClassForVTableValidation = CurrentIs(OpCodes.NamedFunction) ? ResolveClassOfExpression(left, isClass) : null;
             isInContextExpression = true;
             var right = DecompileExpression();
             if (right == null)
@@ -682,7 +689,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             VariableType superSpecifier = null;
             if (byName)
             {
-                funcName = ReadNameReference();
+                funcName = ReadNameReference().Instanced;
             }
             else
             {
@@ -744,7 +751,10 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
 
             if (withFuncListIdx)
-                ReadInt16();
+            {
+                var vtableIdx = ReadInt16();
+                ValidateVTableIdx(funcName, vtableIdx);
+            }
 
             List<Expression> parameters = DecompileArgumentList();
             if (parameters is null)
@@ -777,6 +787,182 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             };
             return new FunctionCall(func, parameters, -1, -1);
         }
+
+        private void ValidateVTableIdx(string funcName, short vtableIdx)
+        {
+            string errorMessage = null;
+            if (isInContextExpression)
+            {
+                //the index is into the vtable of the context object's class, which DecompileContext will have resolved if it was able to
+                Class contextClass = contextClassForVTableValidation;
+                contextClassForVTableValidation = null;
+                if (contextClass?.VirtualFunctionNames is { } vTableNames)
+                {
+                    if (vTableNames.Count <= (ushort)vtableIdx)
+                    {
+                        errorMessage = $"ERROR: Function {funcName} has vtable index {vtableIdx}, but the class {contextClass.Name} only has {vTableNames.Count} virtual functions.";
+                    }
+                    else if (!funcName.CaseInsensitiveEquals(vTableNames[vtableIdx]))
+                    {
+                        errorMessage = $"ERROR: Function {funcName} has vtable index {vtableIdx}, but the function at that index in class {contextClass.Name} is {vTableNames[vtableIdx]}.";
+                    }
+                }
+            }
+            else if (ContainingClass.VirtualFunctionTable is { } vTable)
+            {
+                //not in a context, so look up on the containing class
+                var classExp = ContainingClass.Export;
+                if (vTable.Length <= (ushort)vtableIdx)
+                {
+                    errorMessage = $"ERROR: Function {funcName} has vtable index {vtableIdx}, but the class {classExp.ObjectName.Instanced} only has {vTable.Length} virtual functions.";
+                }
+                else
+                {
+                    string vTableFuncName = classExp.FileRef.GetEntry(vTable[vtableIdx])?.ObjectName.Instanced;
+                    if (!funcName.CaseInsensitiveEquals(vTableFuncName))
+                    {
+                        errorMessage = $"ERROR: Function {funcName} has vtable index {vtableIdx}, but the function at that index is {vTableFuncName ?? "##ERROR_INVALID_UINDEX"}.";
+                    }
+                }
+            }
+            if (errorMessage != null)
+            {
+                decompilationErrors.Add(errorMessage);
+            }
+        }
+
+        //Attempts to determine the class of the object an expression evaluates to. Returns null if it cannot be determined.
+        //scopeClass is the class the expression is evaluated on (for resolving function return types); null means the containing class.
+        private Class ResolveClassOfExpression(Expression expr, bool isClassContext, Class scopeClass = null)
+        {
+            if (!LibInitialized)
+            {
+                return null;
+            }
+            switch (expr)
+            {
+                case CompositeSymbolRef csr:
+                    return ResolveClassOfExpression(csr.InnerSymbol, csr.IsClassContext, ResolveClassOfExpression(csr.OuterSymbol, isClassContext, scopeClass));
+                case ArraySymbolRef asr:
+                    if (asr.Array is SymbolReference arrayRef && symbolRefsToEntries.TryGetValue(arrayRef, out IEntry arrayPropEntry))
+                    {
+                        if (arrayPropEntry.ClassName == "ArrayProperty")
+                        {
+                            if (arrayPropEntry is ExportEntry arrayPropExport)
+                            {
+                                return FileLib.GetCachedObjectBinary<UArrayProperty>(arrayPropExport, Usop) is { } uArrayProp
+                                    && Pcc.GetEntry(uArrayProp.ElementType) is { } elementProp
+                                    ? ResolveClassOfProperty(elementProp)
+                                    : null;
+                            }
+                            //imported dynamic array: get the element type from its declaration in the symbol table
+                            return ResolveDeclaredTypeOfImportedProperty(arrayPropEntry) is DynamicArrayType dynArrType
+                                ? dynArrType.ElementType as Class ?? ResolveClassByName(dynArrType.ElementType?.Name)
+                                : null;
+                        }
+                        //a static array is just the property itself
+                        return ResolveClassOfProperty(arrayPropEntry);
+                    }
+                    return null;
+                case SymbolReference { Name: SELF }:
+                    return ResolveClassByName(ContainingClass.Export.ObjectName.Instanced);
+                case SymbolReference symRef:
+                    if (symbolRefsToEntries.TryGetValue(symRef, out IEntry propEntry))
+                    {
+                        //Object.Outer is declared as type Object, but for classes with a 'within' specifier its effective type is the within class
+                        if (propEntry.ObjectName.Instanced.CaseInsensitiveEquals("Outer")
+                            && propEntry.Parent is { } declarer && declarer.ObjectName.Instanced.CaseInsensitiveEquals("Object")
+                            && (scopeClass ?? ResolveClassByName(ContainingClass.Export.ObjectName.Instanced)) is { } outerScope)
+                        {
+                            return outerScope.OuterClass as Class ?? ResolveClassByName(outerScope.OuterClass?.Name);
+                        }
+                        return ResolveClassOfProperty(propEntry, isClassContext);
+                    }
+                    return null;
+                case CastExpression { CastType: ClassType metaClass }:
+                    //class<X> cast: a class context on it is a static call into X's vtable
+                    return isClassContext ? metaClass.ClassLimiter as Class ?? ResolveClassByName(metaClass.ClassLimiter?.Name) : null;
+                case CastExpression cast:
+                    return ResolveClassByName(cast.CastType?.Name);
+                case ObjectLiteral { Class.Name: { } objClassName } objLiteral:
+                    if (objClassName.CaseInsensitiveEquals("Class"))
+                    {
+                        //a class literal: a class context on it is a static call into that class's vtable
+                        return isClassContext ? ResolveClassByName(objLiteral.Name.Value) : null;
+                    }
+                    return ResolveClassByName(objClassName);
+                case FunctionCall functionCall:
+                {
+                    Function function = (scopeClass ?? ResolveClassByName(ContainingClass.Export.ObjectName.Instanced))?.LookupFunction(functionCall.Function.Name);
+                    if (function is null)
+                    {
+                        return null;
+                    }
+                    if (function.CoerceReturn && function.ReturnType is Class)
+                    {
+                        //the actual return type of a coerce-return function is the class limiter of its first argument (see FunctionCall.ResolveType)
+                        return functionCall.Arguments is [{ } firstArg, ..] ? ResolveClassLimiterOfExpression(firstArg) : null;
+                    }
+                    return function.ReturnType as Class;
+                }
+                default:
+                    return null;
+            }
+        }
+
+        //Attempts to determine the class limiter of a class<X>-typed expression. Returns null if it cannot be determined.
+        private Class ResolveClassLimiterOfExpression(Expression expr) => expr switch
+        {
+            ObjectLiteral { Class.Name: { } objClassName } objLiteral when objClassName.CaseInsensitiveEquals("Class") => ResolveClassByName(objLiteral.Name.Value),
+            CastExpression { CastType: ClassType classType } => classType.ClassLimiter as Class ?? ResolveClassByName(classType.ClassLimiter?.Name),
+            SymbolReference symRef when symbolRefsToEntries.TryGetValue(symRef, out IEntry entry) && entry.ClassName == "ClassProperty" => ResolveClassOfProperty(entry, isClassContext: true),
+            _ => null,
+        };
+
+        //Attempts to determine the class of the object a property holds. Returns null if it cannot be determined.
+        private Class ResolveClassOfProperty(IEntry propEntry, bool isClassContext = false)
+        {
+            switch (propEntry.ClassName)
+            {
+                case "ObjectProperty":
+                case "ComponentProperty":
+                    if (propEntry is ExportEntry propExport)
+                    {
+                        return FileLib.GetCachedObjectBinary<UObjectProperty>(propExport, Usop) is { } uObjectProp
+                            ? ResolveClassByName(Pcc.GetEntry(uObjectProp.ObjectRef)?.ObjectName.Instanced)
+                            : null;
+                    }
+                    return ResolveDeclaredTypeOfImportedProperty(propEntry) as Class;
+                case "ClassProperty":
+                    //class<X> variable: a class context on it is a static call into X's vtable
+                    if (!isClassContext)
+                    {
+                        return null;
+                    }
+                    if (propEntry is ExportEntry classPropExport)
+                    {
+                        return FileLib.GetCachedObjectBinary<UClassProperty>(classPropExport, Usop) is { } uClassProp
+                            ? ResolveClassByName(Pcc.GetEntry(uClassProp.ClassRef)?.ObjectName.Instanced)
+                            : null;
+                    }
+                    return ResolveDeclaredTypeOfImportedProperty(propEntry) is ClassType classType
+                        ? classType.ClassLimiter as Class ?? ResolveClassByName(classType.ClassLimiter?.Name)
+                        : null;
+                default:
+                    return null;
+            }
+        }
+
+        //Looks up an imported property's declared type from its declaration in the symbol table. Returns null if it cannot be found.
+        private VariableType ResolveDeclaredTypeOfImportedProperty(IEntry propEntry) =>
+            propEntry.Parent is { } declaringType
+            && ReadOnlySymbolTable.TryGetType(declaringType.ObjectName.Instanced, out VariableType outerType)
+            && outerType is ObjectType objectType
+                ? objectType.LookupVariable(propEntry.ObjectName.Instanced)?.VarType
+                : null;
+
+        private Class ResolveClassByName(string className) =>
+            className is not null && ReadOnlySymbolTable.TryGetType(className, out Class cls) ? cls : null;
 
         private List<Expression> DecompileArgumentList()
         {

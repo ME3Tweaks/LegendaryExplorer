@@ -349,6 +349,37 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
 
         //TODO: implement serialization support in UMapBase to make this more efficient
+        public void Serialize<TKey, TValue>(ref UReverseMap<TKey, TValue> dict, SerializeDelegate<TKey> serializeKey, SerializeDelegate<TValue> serializeValue)
+        {
+            // Serializes data in reverse order: Read value then key.
+            // This is so in LEC we can use more efficient keys.
+            int count = dict?.Count ?? 0;
+            Serialize(ref count);
+            if (IsLoading)
+            {
+                dict = new UReverseMap<TKey, TValue>(count);
+                for (int i = 0; i < count; i++)
+                {
+                    TValue value = default;
+                    serializeValue(ref value);
+                    TKey key = default;
+                    serializeKey(ref key);
+                    dict.Add(key, value);
+                }
+            }
+            else
+            {
+                foreach (var kvp in dict)
+                {
+                    TValue value = kvp.Value;
+                    serializeValue(ref value);
+                    TKey key = kvp.Key;
+                    serializeKey(ref key);
+                }
+            }
+        }
+
+        //TODO: implement serialization support in UMapBase to make this more efficient
         public void Serialize<TKey, TValue>(ref UMultiMap<TKey, TValue> dict, SerializeDelegate<TKey> serializeKey, SerializeDelegate<TValue> serializeValue)
         {
             int count = dict?.Count ?? 0;
