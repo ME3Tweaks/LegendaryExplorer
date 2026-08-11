@@ -59,7 +59,7 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
         new(ISACTBankBuilder.AuthoringMode.Conversation, "BioConversation",
             "Names must end in a numeric string reference, optionally followed by _M or _F."),
         new(ISACTBankBuilder.AuthoringMode.Codex, "Codex",
-            "The filename becomes the event name and must begin with vo_codex_."),
+            "Names use vo_codex_, optionally preceded by an LE1 audio locale such as EN_."),
         new(ISACTBankBuilder.AuthoringMode.Soundset, "Soundset",
             "Names end in a three-letter cue plus two digits; racial abilities use sb + variant + two digits, such as sb100."),
         new(ISACTBankBuilder.AuthoringMode.Music, "Music",

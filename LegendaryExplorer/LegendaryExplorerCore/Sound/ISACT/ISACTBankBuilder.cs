@@ -911,13 +911,18 @@ public static partial class ISACTBankBuilder
     private static string GetNamedEventName(WaveSample sample, AuthoringMode authoringMode)
     {
         string fileBaseName = Path.GetFileNameWithoutExtension(sample.FileName);
-        if (authoringMode is AuthoringMode.Codex or AuthoringMode.Music)
+        if (authoringMode == AuthoringMode.Codex)
         {
-            if (authoringMode == AuthoringMode.Codex &&
-                !fileBaseName.StartsWith("vo_codex_", StringComparison.OrdinalIgnoreCase))
-                throw new InvalidDataException($"Codex WAV names must begin with 'vo_codex_': {sample.FileName}");
-            return fileBaseName;
+            Match codexMatch = CodexFileNameRegex().Match(fileBaseName);
+            if (!codexMatch.Success)
+                throw new InvalidDataException(
+                    $"Codex WAV names must contain 'vo_codex_', optionally preceded by an LE1 audio locale: {sample.FileName}");
+
+            return codexMatch.Groups["event"].Value;
         }
+
+        if (authoringMode == AuthoringMode.Music)
+            return fileBaseName;
 
         Match match = SoundsetFileNameRegex().Match(fileBaseName);
         if (!match.Success)
@@ -1187,6 +1192,9 @@ public static partial class ISACTBankBuilder
 
     [GeneratedRegex(@"(?<id>\d+)(?:_(?<gender>[FM]))?$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex DialogueFileNameRegex();
+
+    [GeneratedRegex(@"^(?:(?:EN|DE|FR|IT|PLPC|RA)_)?(?<event>vo_codex_.+)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex CodexFileNameRegex();
 
     [GeneratedRegex(@"_(?:sb(?<racialVariant>\d)|(?<code>[A-Za-z]{3}))(?<index>\d{2})$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex SoundsetFileNameRegex();

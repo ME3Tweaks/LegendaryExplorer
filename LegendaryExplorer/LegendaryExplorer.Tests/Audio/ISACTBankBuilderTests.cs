@@ -357,7 +357,7 @@ public class ISACTBankBuilderTests
     }
 
     /// <summary>
-    /// Verifies Codex and Soundset filenames produce their required Sound Event names.
+    /// Verifies Codex locale prefixes and Soundset suffixes produce their required Sound Event names.
     /// </summary>
     [TestMethod]
     public void NamedAuthoringModes_CreateExpectedEvents()
@@ -367,6 +367,7 @@ public class ISACTBankBuilderTests
         try
         {
             WritePcmWave(Path.Combine(codexDirectory, "vo_codex_example_entry.wav"), 100);
+            WritePcmWave(Path.Combine(codexDirectory, "EN_vo_codex_localized_entry.wav"), 100);
             WritePcmWave(Path.Combine(soundsetDirectory, "EN_example_atg00.wav"), 100);
             WritePcmWave(Path.Combine(soundsetDirectory, "EN_example_png03.wav"), 100);
             WritePcmWave(Path.Combine(soundsetDirectory, "EN_example_sb100.wav"), 100);
@@ -378,7 +379,7 @@ public class ISACTBankBuilderTests
                 soundsetDirectory, "soundset", authoringMode: ISACTBankBuilder.AuthoringMode.Soundset);
 
             CollectionAssert.AreEqual(
-                new[] { "vo_codex_example_entry" },
+                new[] { "vo_codex_localized_entry", "vo_codex_example_entry" },
                 codex.EventMappings.Select(mapping => mapping.EventName).ToArray());
             CollectionAssert.AreEqual(
                 new[]
