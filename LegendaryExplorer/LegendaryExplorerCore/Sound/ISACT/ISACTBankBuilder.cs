@@ -13,9 +13,14 @@ using System.Threading.Tasks;
 
 namespace LegendaryExplorerCore.Sound.ISACT;
 
-// Builds LE1 ISACT content and sample banks from PCM WAV files.
+/// <summary>
+/// Authors and modifies LE1 ISACT content and sample banks from PCM WAV files.
+/// </summary>
 public static partial class ISACTBankBuilder
 {
+    /// <summary>
+    /// Determines how WAV filenames are converted to ISACT Sound Event names.
+    /// </summary>
     public enum AuthoringMode
     {
         Conversation,
@@ -25,35 +30,41 @@ public static partial class ISACTBankBuilder
     }
 
     private const int InvalidResourceIndex = int.MinValue;
-    private const int DefaultTimeCode = 0x00190028;
+    // Default object metadata written by ISACT Production Studio.
+    private const int DefaultTimeCode = 0x00190028; // 1,638,440
     private const int DefaultTempo = 500000;
-    private const int DefaultTimeSignature = 0x00040004;
-    private const int DefaultSection = unchecked((int)0xE0000000);
+    private const int DefaultTimeSignature = 0x00040004; // 262,148
+    private const int DefaultSection = -536_870_912; // Signed form of 0xE0000000
     private const int ContentIndexEntriesPerPage = 50;
+    // LE1 uses signed 32-bit offsets when reading external sample data.
+    private const long MaximumFinalIsbSize = int.MaxValue;
 
-    // Describes an event-to-sample link created from the WAV filenames.
+    /// <summary>Describes an event-to-sample link created from a WAV filename.</summary>
     public sealed record EventMapping(string EventName, string SampleFileName, int SampleIndex);
 
-    // Source banks and their event mappings.
+    /// <summary>Contains uncompressed source banks and their event mappings.</summary>
     public sealed record SourceBankResult(ISACTBankPair Banks, IReadOnlyList<EventMapping> EventMappings);
 
-    // Paths written by WriteSourceBanksFromWavFolder.
+    /// <summary>Contains paths written for BankBuilder and their event mappings.</summary>
     public sealed record SourceBankFiles(string ICBPath, string ISBPath, IReadOnlyList<EventMapping> EventMappings);
 
-    // Final Ogg Vorbis banks produced by BankBuilder.
+    /// <summary>Contains final Ogg Vorbis banks produced by BankBuilder.</summary>
     public sealed record FinalBankFiles(
         string ICBPath,
         string ISBPath,
         string BuilderLog,
         IReadOnlyList<EventMapping> EventMappings);
 
+    /// <summary>Describes a compiled sample replacement.</summary>
     public sealed record SampleReplacementResult(
         string ISBPath,
         string BuilderLog,
         int SampleIndex,
         string SampleName);
 
-    // Appends compiled samples and events without recompressing existing samples.
+    /// <summary>
+    /// Appends compiled samples and Sound Events without recompressing existing samples.
+    /// </summary>
     public static ISACTBankPair AppendCompiledBanks(ISACTBankPair existing, ISACTBankPair additions)
     {
         ArgumentNullException.ThrowIfNull(existing);
@@ -76,14 +87,14 @@ public static partial class ISACTBankBuilder
         foreach (ISACTListBankChunk sample in addedSamples)
         {
             IntBankChunk index = GetRequiredIndex(sample);
-            index.Value = checked(index.Value + sampleBase);
+            index.Value += sampleBase;
             existing.ISBBank.BankChunks.Add(sample);
         }
 
         foreach (ISACTListBankChunk soundEvent in addedEvents)
         {
             IntBankChunk index = GetRequiredIndex(soundEvent);
-            index.Value = checked(index.Value + eventBase);
+            index.Value += eventBase;
             RebaseSoundEventSamples(soundEvent, sampleBase, addedSamples.Count);
             existing.ICBBank.BankChunks.Add(soundEvent);
         }
@@ -91,7 +102,8 @@ public static partial class ISACTBankBuilder
         ContentIndexBankChunk contentIndex = existing.ICBBank.BankChunks
             .OfType<ContentIndexBankChunk>()
             .SingleOrDefault()
-            ?? throw new InvalidDataException("The existing ICB does not contain a content index.");
+            ?? throw new InvalidDataException(
+                "The existing ICB has no content index, so its Sound Events cannot be appended. Rebuild the original bank before adding content.");
         IReadOnlyList<IndexEntry> existingIndexEntries = contentIndex.IndexPages
             .SelectMany(page => page.IndexEntries)
             .ToList();
@@ -100,14 +112,16 @@ public static partial class ISACTBankBuilder
             {
                 Title = soundEvent.TitleInfo.Value,
                 ObjectType = "snde",
-                ObjectIndex = checked((uint)(eventBase + localIndex))
+                ObjectIndex = (uint)(eventBase + localIndex)
             }))
             .ToArray();
         contentIndex.IndexPages = CreateIndexPages(mergedIndexEntries);
         return existing;
     }
 
-    // Replaces one compiled sample while preserving its resource index and title.
+    /// <summary>
+    /// Replaces one compiled sample while preserving its resource index and title.
+    /// </summary>
     public static void ReplaceCompiledSample(
         ISACTBank existingIsb,
         int sampleIndex,
@@ -150,6 +164,7 @@ public static partial class ISACTBankBuilder
         Male
     }
 
+    /// <summary>Contains the filename metadata and PCM format required to serialize one ISACT sample.</summary>
     private sealed record WaveSample(
         string FilePath,
         string FileName,
@@ -161,6 +176,8 @@ public static partial class ISACTBankBuilder
         ushort BlockAlign,
         byte[] PCMData);
 
+    // Maps filename cue suffixes to Sound Event stems. Values were derived by comparing sample
+    // filenames with Sound Event titles in shipped LE1 Soundset ICBs.
     private static readonly IReadOnlyDictionary<string, string> SoundsetEventNames =
         new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
@@ -178,7 +195,9 @@ public static partial class ISACTBankBuilder
             ["vsd"] = "VehicleShieldsDown"
         };
 
-    // Creates BankBuilder-ready PCM banks from a WAV folder.
+    /// <summary>
+    /// Creates BankBuilder-ready PCM banks from the WAV files in a folder.
+    /// </summary>
     public static SourceBankResult CreateSourceBanksFromWavFolder(
         string wavFolderPath,
         string bankName,
@@ -225,7 +244,9 @@ public static partial class ISACTBankBuilder
         return new SourceBankResult(new ISACTBankPair { ICBBank = icb, ISBBank = isb }, eventMappings);
     }
 
-    // Writes PCM ICB and ISB files for BankBuilder.
+    /// <summary>
+    /// Writes PCM ICB and ISB source files for BankBuilder.
+    /// </summary>
     public static SourceBankFiles WriteSourceBanksFromWavFolder(
         string wavFolderPath,
         string outputDirectory,
@@ -252,7 +273,9 @@ public static partial class ISACTBankBuilder
         return new SourceBankFiles(icbPath, isbPath, result.EventMappings);
     }
 
-    // Builds and validates final banks with BankBuilder.
+    /// <summary>
+    /// Authors source banks, runs BankBuilder, and validates its final Ogg Vorbis output.
+    /// </summary>
     public static async Task<FinalBankFiles> BuildFinalBanksFromWavFolder(
         string wavFolderPath,
         string outputDirectory,
@@ -266,8 +289,6 @@ public static partial class ISACTBankBuilder
         AuthoringMode authoringMode = AuthoringMode.Conversation,
         bool createLoopingMusicQueue = false)
     {
-        if (!OperatingSystem.IsWindows())
-            throw new PlatformNotSupportedException("The official ISACT BankBuilder is a Windows executable.");
         ArgumentException.ThrowIfNullOrWhiteSpace(outputDirectory);
         ArgumentException.ThrowIfNullOrWhiteSpace(bankBuilderPath);
         sampleBankName ??= bankName;
@@ -276,6 +297,7 @@ public static partial class ISACTBankBuilder
             throw new ArgumentOutOfRangeException(nameof(compressionQuality), "Compression quality must be between 0 and 1.");
 
         string bankBuilderExe = ResolveBankBuilderExecutable(bankBuilderPath);
+        // Isolate BankBuilder because it discovers codec DLLs and writes BuilderLog.txt in its working directory.
         string stagingRoot = Path.Combine(Path.GetTempPath(), $"LEX_ISACTBankBuilder_{Guid.NewGuid():N}");
         string toolDirectory = Path.Combine(stagingRoot, "tool");
         string sourceDirectory = Path.Combine(stagingRoot, "source");
@@ -311,6 +333,7 @@ public static partial class ISACTBankBuilder
                 RedirectStandardError = true
             };
 
+            // Capture both process streams and the file log because BankBuilder reports failures through either channel.
             using var process = Process.Start(startInfo)
                 ?? throw new InvalidOperationException("BankBuilder could not be started.");
             Task<string> standardOutput = process.StandardOutput.ReadToEndAsync(cancellationToken);
@@ -394,7 +417,9 @@ public static partial class ISACTBankBuilder
         }
     }
 
-    // Compiles and appends new WAVs without recompressing existing samples.
+    /// <summary>
+    /// Compiles new WAVs and appends them without recompressing existing samples.
+    /// </summary>
     public static async Task<FinalBankFiles> AppendFinalBanksFromWavFolder(
         string existingIcbPath,
         string existingIsbPath,
@@ -418,6 +443,7 @@ public static partial class ISACTBankBuilder
         Directory.CreateDirectory(stagingDirectory);
         try
         {
+            // Only the additions pass through BankBuilder; existing Ogg payloads are copied unchanged.
             FinalBankFiles compiledAdditions = await BuildFinalBanksFromWavFolder(
                 wavFolderPath,
                 stagingDirectory,
@@ -430,6 +456,7 @@ public static partial class ISACTBankBuilder
                 Path.GetFileNameWithoutExtension(existingIsbPath),
                 authoringMode).ConfigureAwait(false);
 
+            // Parse the existing final banks and the newly compressed additions as separate pairs.
             ISACTBankPair existing;
             using (var icbStream = File.OpenRead(existingIcbPath))
             using (var isbStream = File.OpenRead(existingIsbPath))
@@ -452,10 +479,12 @@ public static partial class ISACTBankBuilder
                 };
             }
 
+            // AppendCompiledBanks rebases resource indices and rebuilds the ICB content index.
             int existingSampleCount = GetNextResourceIndex(GetObjects(existing.ISBBank, "samp"));
             int existingEventCount = GetObjects(existing.ICBBank, "snde").Count;
             AppendCompiledBanks(existing, additions);
 
+            // Write to staging first so invalid output cannot overwrite a usable bank pair.
             Directory.CreateDirectory(outputDirectory);
             string outputIcbPath = Path.Combine(outputDirectory, Path.GetFileName(existingIcbPath));
             string outputIsbPath = Path.Combine(outputDirectory, Path.GetFileName(existingIsbPath));
@@ -466,13 +495,15 @@ public static partial class ISACTBankBuilder
             using (var stream = File.Create(temporaryIsbPath))
                 existing.ISBBank.Write(stream);
 
+            // Publish the pair only after its event count, compression, and size have been validated.
             ValidateBuiltBanks(temporaryIcbPath, temporaryIsbPath,
                 existingEventCount + compiledAdditions.EventMappings.Count, expectedSoundQueue: false);
             File.Move(temporaryIcbPath, outputIcbPath, overwrite: true);
             File.Move(temporaryIsbPath, outputIsbPath, overwrite: true);
 
+            // Return indices in the merged bank rather than the temporary additions bank.
             var rebasedMappings = compiledAdditions.EventMappings
-                .Select(mapping => mapping with { SampleIndex = checked(mapping.SampleIndex + existingSampleCount) })
+                .Select(mapping => mapping with { SampleIndex = mapping.SampleIndex + existingSampleCount })
                 .ToList();
             return new FinalBankFiles(
                 outputIcbPath,
@@ -494,7 +525,9 @@ public static partial class ISACTBankBuilder
         }
     }
 
-    // Compiles and replaces one ISB sample.
+    /// <summary>
+    /// Compiles a WAV and replaces one sample in a final ISB without changing its index or title.
+    /// </summary>
     public static async Task<SampleReplacementResult> ReplaceFinalBankSampleFromWave(
         string existingIsbPath,
         int sampleIndex,
@@ -518,6 +551,7 @@ public static partial class ISACTBankBuilder
         Directory.CreateDirectory(wavDirectory);
         try
         {
+            // Preserve the source bank's packet duration unless the caller explicitly overrides it.
             ISACTBank existing;
             using (var stream = File.OpenRead(existingIsbPath))
                 existing = new ISACTBank(stream);
@@ -525,12 +559,15 @@ public static partial class ISACTBankBuilder
                 ?? existing.BankChunks.OfType<IntBankChunk>().FirstOrDefault(chunk => chunk.ChunkName == "stri")?.Value
                 ?? 2500;
 
+            // A one-sample temporary bank lets BankBuilder produce the exact final sample metadata and payload.
             string stagedWave = Path.Combine(wavDirectory, "replacement_1.wav");
             File.Copy(replacementWavPath, stagedWave);
             string bankName = Path.GetFileNameWithoutExtension(existingIsbPath);
             FinalBankFiles compiled = await BuildFinalBanksFromWavFolder(
                 wavDirectory, compiledDirectory, bankName, bankBuilderPath,
                 packetMilliseconds, compressionQuality, timeout, cancellationToken).ConfigureAwait(false);
+
+            // Transfer the compiled sample payload while retaining the selected sample's index and title.
             ISACTBank replacementBank;
             using (var stream = File.OpenRead(compiled.ISBPath))
                 replacementBank = new ISACTBank(stream);
@@ -539,6 +576,7 @@ public static partial class ISACTBankBuilder
                 .Single(sample => GetRequiredIndex(sample).Value == sampleIndex).TitleInfo.Value;
             ReplaceCompiledSample(existing, sampleIndex, replacement);
 
+            // Validate a staged bank before replacing or creating the requested output file.
             string outputDirectory = Path.GetDirectoryName(Path.GetFullPath(outputIsbPath))!;
             Directory.CreateDirectory(outputDirectory);
             string temporaryOutput = Path.Combine(stagingDirectory, $"updated_{Guid.NewGuid():N}.isb");
@@ -559,6 +597,7 @@ public static partial class ISACTBankBuilder
         }
     }
 
+    // Serializes the minimal object layout emitted by ISACT Production Studio.
     private static ISACTBank CreateSampleBank(string bankName, IReadOnlyList<WaveSample> samples, int packetMilliseconds)
     {
         var bank = new ISACTBank(ISACTBankType.ISB);
@@ -679,6 +718,7 @@ public static partial class ISACTBankBuilder
 
         byte[] content = new byte[eventCount * 8];
         uint soundEventType = BinaryPrimitives.ReadUInt32LittleEndian("snde"u8);
+        // Queue content is stored as repeated object-type and resource-index pairs.
         for (int index = 0; index < eventCount; index++)
         {
             BinaryPrimitives.WriteUInt32LittleEndian(content.AsSpan(index * 8), soundEventType);
@@ -751,7 +791,7 @@ public static partial class ISACTBankBuilder
             if (localSampleIndex >= addedSampleCount)
                 throw new InvalidDataException(
                     $"Sound event '{soundEvent.TitleInfo?.Value}' references missing appended sample {localSampleIndex}.");
-            uint rebasedIndex = checked((uint)sampleBase + localSampleIndex);
+            uint rebasedIndex = (uint)sampleBase + localSampleIndex;
             track.BufferIndex = (track.BufferIndex & 0xFFFF0000) | rebasedIndex;
         }
     }
@@ -851,6 +891,7 @@ public static partial class ISACTBankBuilder
             return namedMappings;
         }
 
+        // Conversations require both gendered events; a single WAV is shared when no pair is supplied.
         var mappings = new List<EventMapping>();
         foreach (var group in samples.GroupBy(sample => sample.LineId).OrderBy(group => group.Key))
         {
@@ -947,6 +988,7 @@ public static partial class ISACTBankBuilder
         ushort blockAlign = 0;
         ushort bitsPerSample = 0;
         byte[] pcmData = null;
+        // RIFF chunks may appear in any order and are padded to even byte boundaries.
         while (stream.Position + 8 <= stream.Length)
         {
             string chunkName = ReadFourCC(reader);
@@ -1075,6 +1117,7 @@ public static partial class ISACTBankBuilder
         }
     }
 
+    // Reject partial or structurally invalid BankBuilder output before it reaches a package or DLC.
     private static void ValidateBuiltBanks(
         string icbPath, string isbPath, int expectedEventCount, bool expectedSoundQueue)
     {
@@ -1099,6 +1142,11 @@ public static partial class ISACTBankBuilder
 
     private static void ValidateFinalIsb(string isbPath)
     {
+        long fileSize = new FileInfo(isbPath).Length;
+        if (fileSize > MaximumFinalIsbSize)
+            throw new InvalidDataException(
+                $"The final ISB is {fileSize:N0} bytes. LE1 sample banks cannot exceed {MaximumFinalIsbSize:N0} bytes because the game uses 32-bit file offsets.");
+
         using var isbStream = File.OpenRead(isbPath);
         var isb = new ISACTBank(isbStream);
         if (isb.BankType != ISACTBankType.ISB)

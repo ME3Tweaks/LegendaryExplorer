@@ -15,24 +15,45 @@ using NAudio.Wave;
 
 namespace LegendaryExplorer.Dialogs;
 
+/// <summary>
+/// Selects whether the dialog creates a bank pair or appends to an existing pair.
+/// </summary>
 public enum ISACTBankBuildMode
 {
+    /// <summary>Create a new ICB and ISB from source WAV files.</summary>
     Build,
+    /// <summary>Append newly compiled content to an existing ICB and ISB.</summary>
     Rebuild
 }
 
+/// <summary>
+/// Coordinates WAV preparation, ISACT bank compilation, and optional LE1 package installation.
+/// </summary>
 public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
 {
+    /// <summary>Identifies a BioSoundNodeWaveStreamingData export displayed in the package selector.</summary>
     private sealed record StreamingDataChoice(int UIndex, string DisplayName);
-    private sealed record LocalizationChoice(string Suffix, string DisplayName);
+
+    /// <summary>Pairs an LE localization with the suffix used by LE1 ISACT object and bank names.</summary>
+    private sealed record LocalizationChoice(MELocalization Localization, string DisplayName)
+    {
+        public string Suffix => Localization is MELocalization.None or MELocalization.INT
+            ? string.Empty
+            : $"_{Localization.ToLocaleString(MEGame.LE1)}";
+    }
+
+    /// <summary>Defines filename interpretation and user guidance for an authoring mode.</summary>
     private sealed record AuthoringModeChoice(
         ISACTBankBuilder.AuthoringMode Mode, string DisplayName, string WavTooltip);
 
+    // ES and JA use INT audio in LE1 and therefore have no separate ISACT authoring target.
     private static readonly LocalizationChoice[] Localizations =
     [
-        new("", "INT"), new("_DE", "DE"), new("_FR", "FR"),
-        new("_IT", "IT"), new("_PLPC", "PLPC"), new("_RA", "RA")
+        new(MELocalization.INT, "INT"), new(MELocalization.DEU, "DE"),
+        new(MELocalization.FRA, "FR"), new(MELocalization.ITA, "IT"),
+        new(MELocalization.POL, "PLPC"), new(MELocalization.RUS, "RA")
     ];
+    // Each mode applies a different WAV filename-to-Sound Event naming rule.
     private static readonly AuthoringModeChoice[] AuthoringModes =
     [
         new(ISACTBankBuilder.AuthoringMode.Conversation, "BioConversation",
@@ -47,6 +68,11 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
 
     private readonly ISACTBankBuildMode _mode;
 
+    /// <summary>
+    /// Creates a bank-authoring dialog configured for a new build or an append operation.
+    /// </summary>
+    /// <param name="mode">Operation exposed by the dialog.</param>
+    /// <param name="owner">Window that owns this dialog.</param>
     public ISACTBankBuilderDialog(ISACTBankBuildMode mode, Window owner)
     {
         _mode = mode;
@@ -62,6 +88,7 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
             "ISACT", "ISACT SDK", "Win", "Bin", "BankBuilder.exe");
         if (File.Exists(defaultBuilder)) BankBuilderBox.Text = defaultBuilder;
 
+        // Build and rebuild share the form; only rebuild exposes existing-bank inputs.
         bool rebuild = mode == ISACTBankBuildMode.Rebuild;
         ExistingBankPanel.Visibility = rebuild ? Visibility.Visible : Visibility.Collapsed;
         ExistingIcbPanel.Visibility = rebuild ? Visibility.Visible : Visibility.Collapsed;
@@ -74,6 +101,9 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
         SetStreamingDataChoices([]);
     }
 
+    /// <summary>
+    /// Selects source WAVs and derives default output and bank names from their folder.
+    /// </summary>
     private void BrowseWavFolder_Click(object sender, RoutedEventArgs e)
     {
         string path = SelectFolder("Select the folder containing source WAV files");
@@ -84,12 +114,19 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
             BankNameBox.Text = new DirectoryInfo(path).Name;
     }
 
+    /// <summary>Selects the directory that receives the final ICB and ISB.</summary>
     private void BrowseOutputFolder_Click(object sender, RoutedEventArgs e) => SetFolder(OutputFolderBox, "Select the output folder");
+
+    /// <summary>Selects the DLC Content directory that receives an optional ISB copy.</summary>
     private void BrowseDlcContent_Click(object sender, RoutedEventArgs e) => SetFolder(DlcContentBox, "Select DLC_MOD_Example/Content");
 
+    /// <summary>Selects the optional content bank used by a rebuild.</summary>
     private void BrowseExistingIcb_Click(object sender, RoutedEventArgs e) =>
         SetFile(ExistingIcbBox, "ISACT Content Bank (*.icb)|*.icb", "Select the existing ICB");
 
+    /// <summary>
+    /// Selects the sample bank used by a rebuild and derives its bank name and localization.
+    /// </summary>
     private void BrowseExistingIsb_Click(object sender, RoutedEventArgs e)
     {
         string path = SelectFile("ISACT Sample Bank (*.isb)|*.isb", "Select the existing ISB");
@@ -111,9 +148,13 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
         if (string.IsNullOrWhiteSpace(OutputFolderBox.Text)) OutputFolderBox.Text = Path.GetDirectoryName(path);
     }
 
+    /// <summary>Selects the external ISACT BankBuilder executable.</summary>
     private void BrowseBankBuilder_Click(object sender, RoutedEventArgs e) =>
         SetFile(BankBuilderBox, "BankBuilder.exe|BankBuilder.exe|Executable (*.exe)|*.exe", "Select BankBuilder.exe");
 
+    /// <summary>
+    /// Selects an LE1 package and loads its localization and streaming-data exports.
+    /// </summary>
     private void BrowseDestinationPcc_Click(object sender, RoutedEventArgs e)
     {
         string path = SelectFile("Unreal package (*.pcc;*.upk)|*.pcc;*.upk", "Select the destination LE1 package");
@@ -132,6 +173,9 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
         }
     }
 
+    /// <summary>
+    /// Validates the form, prepares WAV input, builds or appends banks, and installs optional outputs.
+    /// </summary>
     private async void Run_Click(object sender, RoutedEventArgs e)
     {
         string normalizedFolder = null;
@@ -140,6 +184,7 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
         {
             ValidateInputs();
             SetRunning(true, "Checking WAV input...");
+            // Conversion uses a temporary folder so the author's source WAVs remain unchanged.
             bool allowNormalisation = NormalizeCheckBox.IsChecked == true;
             normalizedFolder = await Task.Run(() => PrepareWavInput(WavFolderBox.Text, allowNormalisation));
 
@@ -149,12 +194,14 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
             string inputIcbPath = ExistingIcbBox.Text;
             if (_mode == ISACTBankBuildMode.Rebuild && string.IsNullOrWhiteSpace(inputIcbPath))
             {
+                // Rebuild can recover a discarded ICB from the selected package's stripped bank pair.
                 extractedIcbDirectory = Path.Combine(Path.GetTempPath(), $"LEX_ISACTEmbeddedICB_{Guid.NewGuid():N}");
                 Directory.CreateDirectory(extractedIcbDirectory);
                 inputIcbPath = Path.Combine(extractedIcbDirectory, $"{BankNameBox.Text}.icb");
                 ExtractEmbeddedIcb(DestinationPccBox.Text, selectedStreamingData, ExistingIsbBox.Text, inputIcbPath);
             }
 
+            // Only newly supplied WAVs reach BankBuilder during an append operation.
             SetRunning(true, _mode == ISACTBankBuildMode.Build
                 ? "Building ISACT banks..."
                 : "Compiling and appending new ISACT content...");
@@ -172,16 +219,18 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
 
             if (CopyIsbCheckBox.IsChecked == true)
             {
+                // ISBs are external runtime files and may be installed directly into DLC Content.
                 Directory.CreateDirectory(DlcContentBox.Text);
                 File.Copy(result.ISBPath, Path.Combine(DlcContentBox.Text, Path.GetFileName(result.ISBPath)), true);
             }
 
             if (PackageIntegrationCheckBox.IsChecked == true)
             {
+                // Existing exports retain their references; new exports are created in the LE1 streaming hierarchy.
                 SetRunning(true, "Updating BioSoundNodeWaveStreamingData...");
                 await Task.Run(() => InstallStreamingData(
                     DestinationPccBox.Text, selectedStreamingData, BankNameBox.Text,
-                    GetLocalizationSuffix(), result.ICBPath, result.ISBPath));
+                    GetLocalization(), result.ICBPath, result.ISBPath));
             }
 
             SetRunning(false, $"Created {result.EventMappings.Count} sound events.\n{result.ICBPath}\n{result.ISBPath}");
@@ -201,6 +250,9 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
         }
     }
 
+    /// <summary>
+    /// Validates fields required by the selected operation and optional installation steps.
+    /// </summary>
     private void ValidateInputs()
     {
         if (!Directory.Exists(WavFolderBox.Text)) throw new DirectoryNotFoundException("Select a valid WAV source folder.");
@@ -218,11 +270,12 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
         if (CopyIsbCheckBox.IsChecked == true && string.IsNullOrWhiteSpace(DlcContentBox.Text))
             throw new InvalidDataException("Select the DLC Content folder.");
 
+        // Rebuild without an external ICB must recover the embedded content bank from a package.
         bool packageNeeded = PackageIntegrationCheckBox.IsChecked == true ||
                              (_mode == ISACTBankBuildMode.Rebuild && string.IsNullOrWhiteSpace(ExistingIcbBox.Text));
         if (packageNeeded && !File.Exists(DestinationPccBox.Text))
             throw new FileNotFoundException("Select the package containing the target BioStreamingData.");
-        if (packageNeeded && GetPackageLocalizationSuffix(DestinationPccBox.Text) != GetLocalizationSuffix())
+        if (packageNeeded && GetPackageLocalization(DestinationPccBox.Text) != GetLocalization())
             throw new InvalidDataException(
                 "The selected localisation does not match the destination LOC package.");
         if (packageNeeded && _mode == ISACTBankBuildMode.Rebuild && GetSelectedStreamingDataIndex() <= 0)
@@ -231,6 +284,10 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
             throw new FileNotFoundException("The optional existing ICB could not be found.", ExistingIcbBox.Text);
     }
 
+    /// <summary>
+    /// Verifies WAV channel and sample formats and optionally creates temporary PCM16 copies.
+    /// </summary>
+    /// <returns>A temporary converted directory, or <see langword="null"/> when conversion is unnecessary.</returns>
     private static string PrepareWavInput(string sourceFolder, bool allowNormalisation)
     {
         string[] files = Directory.GetFiles(sourceFolder, "*.wav", SearchOption.TopDirectoryOnly);
@@ -248,6 +305,7 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
         if (!allowNormalisation)
             throw new InvalidDataException("One or more WAV files are not signed 16-bit PCM. Enable automatic conversion or clean the sources first.");
 
+        // Converted copies preserve source filenames because event naming is filename-driven.
         string convertedFolder = Path.Combine(Path.GetTempPath(), $"LEX_ISACT_PCM16_{Guid.NewGuid():N}");
         Directory.CreateDirectory(convertedFolder);
         foreach (string file in files)
@@ -262,6 +320,9 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
         return convertedFolder;
     }
 
+    /// <summary>
+    /// Loads available BioSoundNodeWaveStreamingData destinations from an LE1 package.
+    /// </summary>
     private void LoadStreamingDataChoices(string packagePath)
     {
         using IMEPackage package = MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: true);
@@ -273,19 +334,29 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
         SetStreamingDataChoices(choices);
     }
 
+    /// <summary>Selects the authoring localization inferred from the destination package name.</summary>
     private void SelectPackageLocalization(string packagePath)
     {
-        string suffix = GetPackageLocalizationSuffix(packagePath);
-        LocalizationComboBox.SelectedItem = Localizations.Single(choice => choice.Suffix == suffix);
+        MELocalization localization = GetPackageLocalization(packagePath);
+        LocalizationComboBox.SelectedItem = Localizations.Single(choice => choice.Localization == localization);
     }
 
+    /// <summary>Returns the localization selected for generated object and sample-bank names.</summary>
+    private MELocalization GetLocalization() =>
+        (LocalizationComboBox.SelectedItem as LocalizationChoice)?.Localization ?? MELocalization.INT;
+
+    /// <summary>Returns the LE1 suffix used by the selected audio localization.</summary>
     private string GetLocalizationSuffix() =>
         (LocalizationComboBox.SelectedItem as LocalizationChoice)?.Suffix ?? "";
 
+    /// <summary>Returns the filename interpretation selected for source WAVs.</summary>
     private ISACTBankBuilder.AuthoringMode GetAuthoringMode() =>
         (AuthoringModeComboBox.SelectedItem as AuthoringModeChoice)?.Mode
         ?? ISACTBankBuilder.AuthoringMode.Conversation;
 
+    /// <summary>
+    /// Updates filename guidance and music-specific options when the authoring mode changes.
+    /// </summary>
     private void AuthoringModeComboBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
     {
         if (WavFolderBox is null || AuthoringModeComboBox.SelectedItem is not AuthoringModeChoice choice) return;
@@ -295,26 +366,19 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
             : Visibility.Collapsed;
         if (choice.Mode != ISACTBankBuilder.AuthoringMode.Music)
             LoopingMusicQueueCheckBox.IsChecked = false;
+        // Shipped LE1 music commonly uses 2000 ms packets instead of the dialogue-oriented default.
         if (choice.Mode == ISACTBankBuilder.AuthoringMode.Music && PacketSizeBox?.Text == "2500")
             PacketSizeBox.Text = "2000";
     }
 
-    private static string GetPackageLocalizationSuffix(string packagePath)
+    /// <summary>Infers an LE localization from a package filename and treats unlocalized files as INT.</summary>
+    private static MELocalization GetPackageLocalization(string packagePath)
     {
         MELocalization localization = Path.GetFileNameWithoutExtension(packagePath).GetUnrealLocalization();
-        return localization switch
-        {
-            MELocalization.None or MELocalization.INT => "",
-            MELocalization.DEU => "_DE",
-            MELocalization.FRA => "_FR",
-            MELocalization.ITA => "_IT",
-            MELocalization.POL => "_PLPC",
-            MELocalization.RUS => "_RA",
-            _ => throw new InvalidDataException(
-                $"'{Path.GetFileName(packagePath)}' is not a supported LE1 LOC package name.")
-        };
+        return localization == MELocalization.None ? MELocalization.INT : localization;
     }
 
+    /// <summary>Builds a selector label from an export path and its embedded content-bank title.</summary>
     private static string DescribeStreamingData(ExportEntry export)
     {
         string bankTitle = null;
@@ -323,21 +387,27 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
             bankTitle = export.GetBinaryData<BioSoundNodeWaveStreamingData>().BankPair.ICBBank.BankChunks
                 .OfType<TitleBankChunk>().FirstOrDefault()?.Value;
         }
+        // Malformed exports remain selectable so validation can report the underlying bank error later.
         catch { }
         return bankTitle is null
             ? $"#{export.UIndex} {export.InstancedFullPath}"
             : $"#{export.UIndex} {export.InstancedFullPath} - {bankTitle}";
     }
 
+    /// <summary>Replaces and initializes the available streaming-data destinations.</summary>
     private void SetStreamingDataChoices(IReadOnlyCollection<StreamingDataChoice> choices)
     {
         StreamingDataComboBox.ItemsSource = choices;
         StreamingDataComboBox.SelectedIndex = choices.Count > 0 ? 0 : -1;
     }
 
+    /// <summary>Returns the selected streaming-data UIndex, or -1 when no destination is selected.</summary>
     private int GetSelectedStreamingDataIndex() =>
         StreamingDataComboBox.SelectedItem is StreamingDataChoice choice ? choice.UIndex : -1;
 
+    /// <summary>
+    /// Recovers an embedded ICB after confirming the selected external ISB belongs to the same bank pair.
+    /// </summary>
     private static void ExtractEmbeddedIcb(
         string packagePath, int streamingDataUIndex, string existingIsbPath, string outputPath)
     {
@@ -354,8 +424,11 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
         ISACTHelper.ExportStreamingDataContentBank(streamingData, outputPath);
     }
 
+    /// <summary>
+    /// Updates a selected export or creates one under the localized DVDStreamingAudioData package.
+    /// </summary>
     private static void InstallStreamingData(
-        string destinationPath, int streamingDataUIndex, string bankName, string localizationSuffix,
+        string destinationPath, int streamingDataUIndex, string bankName, MELocalization localization,
         string icbPath, string isbPath)
     {
         using IMEPackage destination = MEPackageHandler.OpenMEPackage(destinationPath, forceLoadFromDisk: true);
@@ -367,10 +440,11 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
                 GetStreamingDataExport(destination, streamingDataUIndex), icbPath, isbPath);
         else
             ISACTHelper.CreateSoundNodeWaveStreamingData(
-                destination, bankName, icbPath, isbPath, localizationSuffix);
+                destination, bankName, icbPath, isbPath, localization);
         destination.Save();
     }
 
+    /// <summary>Resolves and validates a BioSoundNodeWaveStreamingData export by UIndex.</summary>
     private static ExportEntry GetStreamingDataExport(IMEPackage package, int uIndex)
     {
         if (!package.TryGetUExport(uIndex, out ExportEntry export) || export.ClassName != "BioSoundNodeWaveStreamingData")
@@ -378,6 +452,7 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
         return export;
     }
 
+    /// <summary>Updates command availability, progress visibility, and operation status.</summary>
     private void SetRunning(bool running, string status)
     {
         RunButton.IsEnabled = !running;
@@ -385,32 +460,38 @@ public partial class ISACTBankBuilderDialog : NotifyPropertyChangedWindowBase
         StatusText.Text = status;
     }
 
+    /// <summary>Closes the dialog.</summary>
     private void Cancel_Click(object sender, RoutedEventArgs e) => Close();
 
+    /// <summary>Displays an owned folder picker and returns the selected path.</summary>
     private string SelectFolder(string title)
     {
         var dialog = new CommonOpenFileDialog(title) { IsFolderPicker = true };
         return dialog.ShowDialog(this) == CommonFileDialogResult.Ok ? dialog.FileName : null;
     }
 
+    /// <summary>Displays a file picker and returns the selected path.</summary>
     private static string SelectFile(string filter, string title)
     {
         var dialog = new OpenFileDialog { Filter = filter, Title = title, CheckFileExists = true };
         return dialog.ShowDialog() == true ? dialog.FileName : null;
     }
 
+    /// <summary>Copies a selected folder path into a form field.</summary>
     private void SetFolder(System.Windows.Controls.TextBox target, string title)
     {
         string path = SelectFolder(title);
         if (path is not null) target.Text = path;
     }
 
+    /// <summary>Copies a selected file path into a form field.</summary>
     private static void SetFile(System.Windows.Controls.TextBox target, string filter, string title)
     {
         string path = SelectFile(filter, title);
         if (path is not null) target.Text = path;
     }
 
+    /// <summary>Best-effort cleanup for temporary WAV and extracted-bank directories.</summary>
     private static void DeleteTemporaryDirectory(string path)
     {
         if (path is null || !Directory.Exists(path)) return;

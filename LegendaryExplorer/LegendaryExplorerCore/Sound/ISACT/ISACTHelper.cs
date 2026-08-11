@@ -78,19 +78,25 @@ namespace LegendaryExplorerCore.Sound.ISACT
         /// <summary>
         /// Creates an LE1 streaming-data export for a compiled bank pair.
         /// </summary>
+        /// <param name="package">Package that will contain the streaming-data export.</param>
+        /// <param name="bankName">Unlocalised bank name.</param>
+        /// <param name="icbPath">Compiled content-bank path.</param>
+        /// <param name="isbPath">Compiled sample-bank path.</param>
+        /// <param name="localization">Localisation used for LE1 object and sample-bank names.</param>
+        /// <returns>The newly created streaming-data export.</returns>
         public static ExportEntry CreateSoundNodeWaveStreamingData(
             IMEPackage package, string bankName, string icbPath, string isbPath,
-            string localizationSuffix = "")
+            MELocalization localization = MELocalization.None)
         {
             ArgumentNullException.ThrowIfNull(package);
             ArgumentException.ThrowIfNullOrWhiteSpace(bankName);
             if (package.Game != MEGame.LE1)
                 throw new ArgumentException("Streaming-data export creation is only supported for LE1 packages.", nameof(package));
-            localizationSuffix ??= "";
-            if (localizationSuffix.Length > 0 && !localizationSuffix.StartsWith('_'))
-                localizationSuffix = $"_{localizationSuffix}";
-            if (localizationSuffix is not ("" or "_DE" or "_FR" or "_IT" or "_PLPC" or "_RA"))
-                throw new ArgumentException($"Unsupported LE1 audio localization suffix: '{localizationSuffix}'.", nameof(localizationSuffix));
+
+            string locale = localization is MELocalization.None or MELocalization.INT
+                ? string.Empty
+                : localization.ToLocaleString(MEGame.LE1);
+            string localizationSuffix = locale.Length == 0 ? string.Empty : $"_{locale}";
 
             string localizedBankName = bankName + localizationSuffix;
             ExportEntry streamingRoot = package.CreatePackageExport("DVDStreamingAudioData" + localizationSuffix);
@@ -100,10 +106,16 @@ namespace LegendaryExplorerCore.Sound.ISACT
                     $"A streaming-data export named '{localizedBankName}' already exists. Select it for updating instead.");
             ExportEntry streamingData = package.CreateExport(
                 new NameReference(localizedBankName), "BioSoundNodeWaveStreamingData", pcPackage, indexed: false);
+            // Shipped INT and localized LE1 exports use Public and Standalone, not LocalizedResource.
+            // ExportEntry supplies the load flags and the forced package parent supplies ForcedExport.
+            streamingData.ObjectFlags |= UnrealFlags.EObjectFlags.Public | UnrealFlags.EObjectFlags.Standalone;
             GenerateSoundNodeWaveStreamingDataCS(streamingData, icbPath, isbPath);
             return streamingData;
         }
 
+        /// <summary>
+        /// Writes the embedded ICB from a streaming-data export.
+        /// </summary>
         public static void ExportStreamingDataContentBank(ExportEntry wsdExport, string outputPath)
         {
             ArgumentNullException.ThrowIfNull(wsdExport);

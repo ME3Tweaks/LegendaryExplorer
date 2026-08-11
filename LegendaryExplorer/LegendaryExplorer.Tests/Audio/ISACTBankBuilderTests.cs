@@ -5,17 +5,27 @@ using System.Threading.Tasks;
 using LegendaryExplorerCore;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Sound.ISACT;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace LegendaryExplorer.Tests.Audio;
 
+/// <summary>
+/// Verifies deterministic ISACT authoring, event naming, bank mutation, and LE1 package integration.
+/// </summary>
 [TestClass]
 public class ISACTBankBuilderTests
 {
+    /// <summary>
+    /// Initializes package and binary-converter services used by the package integration tests.
+    /// </summary>
     [ClassInitialize]
     public static void Initialize(TestContext _) => LegendaryExplorerCoreLib.InitLib(TaskScheduler.Default);
 
+    /// <summary>
+    /// Verifies conversation filenames create the expected samples, gendered events, and ISACT indices.
+    /// </summary>
     [TestMethod]
     public void CreateSourceBanks_BuildsExpectedSamplesAndEvents()
     {
@@ -35,6 +45,7 @@ public class ISACTBankBuilderTests
                 new[] { 0, 0, 1, 2 },
                 result.EventMappings.Select(mapping => mapping.SampleIndex).ToArray());
 
+            // Reparse both banks to verify their serialized representation rather than only the source objects.
             using var icbStream = new MemoryStream();
             result.Banks.ICBBank.Write(icbStream);
             icbStream.Position = 0;
@@ -67,6 +78,9 @@ public class ISACTBankBuilderTests
         }
     }
 
+    /// <summary>
+    /// Verifies deterministic serialization and the shared-audio fallback for unpaired dialogue lines.
+    /// </summary>
     [TestMethod]
     public void CreateSourceBanks_IsDeterministicAndUsesSingleGenderAsSharedFallback()
     {
@@ -89,6 +103,9 @@ public class ISACTBankBuilderTests
         }
     }
 
+    /// <summary>
+    /// Verifies conversation authoring rejects filenames without a trailing string reference.
+    /// </summary>
     [TestMethod]
     public void CreateSourceBanks_RejectsMalformedConversationName()
     {
@@ -106,6 +123,9 @@ public class ISACTBankBuilderTests
         }
     }
 
+    /// <summary>
+    /// Verifies content-index entries are divided into the 50-entry pages used by ISACT.
+    /// </summary>
     [TestMethod]
     public void CreateSourceBanks_SplitsContentIndexAtLegacyFiftyEntryLimit()
     {
@@ -129,6 +149,9 @@ public class ISACTBankBuilderTests
         }
     }
 
+    /// <summary>
+    /// Verifies appending preserves compiled sample data and rebases sample and event indices.
+    /// </summary>
     [TestMethod]
     public void AppendCompiledBanks_PreservesExistingSamplesAndRebasesAddedObjects()
     {
@@ -146,6 +169,7 @@ public class ISACTBankBuilderTests
                 .OfType<ISACTListBankChunk>().Single(chunk => chunk.ObjectType == "samp").SampleData.ToArray();
 
             ISACTBankPair merged = ISACTBankBuilder.AppendCompiledBanks(existing, additions);
+            // Serialize and reparse to catch incorrect chunk sizes or index data written by the merge.
             using var icbStream = new MemoryStream(Serialize(merged.ICBBank));
             using var isbStream = new MemoryStream(Serialize(merged.ISBBank));
             var reparsedIcb = new ISACTBank(icbStream);
@@ -173,6 +197,9 @@ public class ISACTBankBuilderTests
         }
     }
 
+    /// <summary>
+    /// Verifies an append cannot introduce a Sound Event title already present in the content bank.
+    /// </summary>
     [TestMethod]
     public void AppendCompiledBanks_RejectsDuplicateEvents()
     {
@@ -195,6 +222,9 @@ public class ISACTBankBuilderTests
         }
     }
 
+    /// <summary>
+    /// Verifies sample replacement retains the original resource identity and all unrelated payloads.
+    /// </summary>
     [TestMethod]
     public void ReplaceCompiledSample_PreservesIndexTitleAndOtherSamplePayloads()
     {
@@ -234,6 +264,9 @@ public class ISACTBankBuilderTests
         }
     }
 
+    /// <summary>
+    /// Verifies a new BioSoundNodeWaveStreamingData export has the required hierarchy, flags, and stripped ISB.
+    /// </summary>
     [TestMethod]
     public void CreateStreamingDataExport_CreatesExportInEmptyPackage()
     {
@@ -250,6 +283,13 @@ public class ISACTBankBuilderTests
             Assert.AreEqual("BioSoundNodeWaveStreamingData", export.ClassName);
             Assert.AreEqual("native_bank", export.ObjectName.Name);
             Assert.AreEqual("DVDStreamingAudioData.PC", export.ParentInstancedFullPath);
+            Assert.IsTrue(export.ObjectFlags.HasFlag(UnrealFlags.EObjectFlags.Public));
+            Assert.IsTrue(export.ObjectFlags.HasFlag(UnrealFlags.EObjectFlags.Standalone));
+            Assert.IsTrue(export.ObjectFlags.HasFlag(UnrealFlags.EObjectFlags.LoadForClient));
+            Assert.IsTrue(export.ObjectFlags.HasFlag(UnrealFlags.EObjectFlags.LoadForServer));
+            Assert.IsTrue(export.ObjectFlags.HasFlag(UnrealFlags.EObjectFlags.LoadForEdit));
+            Assert.IsFalse(export.ObjectFlags.HasFlag(UnrealFlags.EObjectFlags.LocalizedResource));
+            Assert.IsTrue(export.ExportFlags.HasFlag(UnrealFlags.EExportFlags.ForcedExport));
             var binary = export.GetBinaryData<BioSoundNodeWaveStreamingData>();
             Assert.AreEqual(2, binary.BankPair.ICBBank.BankChunks.OfType<ISACTListBankChunk>()
                 .Count(chunk => chunk.ObjectType == "snde"));
@@ -264,6 +304,9 @@ public class ISACTBankBuilderTests
         }
     }
 
+    /// <summary>
+    /// Verifies localized sample-bank names do not alter the content-bank filename or title.
+    /// </summary>
     [TestMethod]
     public void SourceBanks_CanUseLocalizedSampleBankName()
     {
@@ -287,6 +330,9 @@ public class ISACTBankBuilderTests
         }
     }
 
+    /// <summary>
+    /// Verifies LE1 localization naming is applied to the streaming root and data export.
+    /// </summary>
     [TestMethod]
     public void CreateStreamingDataExport_AppliesLocalizedObjectNames()
     {
@@ -299,7 +345,7 @@ public class ISACTBankBuilderTests
             using IMEPackage package = MEPackageHandler.CreateMemoryEmptyPackage("LOC_DE.pcc", MEGame.LE1);
 
             ExportEntry export = ISACTHelper.CreateSoundNodeWaveStreamingData(
-                package, "native_bank", source.ICBPath, source.ISBPath, "_DE");
+                package, "native_bank", source.ICBPath, source.ISBPath, MELocalization.DEU);
 
             Assert.AreEqual("native_bank_DE", export.ObjectName.Name);
             Assert.AreEqual("DVDStreamingAudioData_DE.PC", export.ParentInstancedFullPath);
@@ -310,6 +356,9 @@ public class ISACTBankBuilderTests
         }
     }
 
+    /// <summary>
+    /// Verifies Codex and Soundset filenames produce their required Sound Event names.
+    /// </summary>
     [TestMethod]
     public void NamedAuthoringModes_CreateExpectedEvents()
     {
@@ -346,6 +395,9 @@ public class ISACTBankBuilderTests
         }
     }
 
+    /// <summary>
+    /// Verifies looping music authoring creates one queue containing every generated Sound Event.
+    /// </summary>
     [TestMethod]
     public void MusicAuthoring_CreatesLoopingSoundQueue()
     {
@@ -382,9 +434,15 @@ public class ISACTBankBuilderTests
         }
     }
 
+    /// <summary>
+    /// Reads the first sample-buffer reference from a serialized Sound Event.
+    /// </summary>
     private static uint GetTrackBufferIndex(ISACTListBankChunk soundEvent) =>
         ((SoundEventSoundTracks)soundEvent.GetChunk(SoundEventSoundTracks.FixedChunkTitle)).SoundTracks.Single().BufferIndex;
 
+    /// <summary>
+    /// Serializes an ISACT bank for binary equality checks and reparsing.
+    /// </summary>
     private static byte[] Serialize(ISACTBank bank)
     {
         using var stream = new MemoryStream();
@@ -392,6 +450,9 @@ public class ISACTBankBuilderTests
         return stream.ToArray();
     }
 
+    /// <summary>
+    /// Round-trips a bank pair through its binary representation.
+    /// </summary>
     private static ISACTBankPair ReparsePair(ISACTBankPair pair)
     {
         using var icbStream = new MemoryStream(Serialize(pair.ICBBank));
@@ -399,6 +460,9 @@ public class ISACTBankBuilderTests
         return new ISACTBankPair { ICBBank = new ISACTBank(icbStream), ISBBank = new ISACTBank(isbStream) };
     }
 
+    /// <summary>
+    /// Creates an isolated directory for one test's bank and WAV files.
+    /// </summary>
     private static string CreateTempDirectory()
     {
         string path = Path.Combine(Path.GetTempPath(), $"LEX_ISACTBankBuilder_{Guid.NewGuid():N}");
@@ -406,6 +470,9 @@ public class ISACTBankBuilderTests
         return path;
     }
 
+    /// <summary>
+    /// Writes a deterministic mono PCM16 WAV fixture without relying on external audio files.
+    /// </summary>
     private static void WritePcmWave(string path, int frameCount)
     {
         const ushort channels = 1;

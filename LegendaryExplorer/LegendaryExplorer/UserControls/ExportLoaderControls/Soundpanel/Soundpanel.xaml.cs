@@ -1340,6 +1340,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         #region Audio Replacement
 
+        /// <summary>
+        /// Determines whether the selected ISACT sample or package audio export supports replacement.
+        /// </summary>
         private bool CanReplaceAudio(object obj)
         {
             if (CurrentLoadedISACTEntry != null && HostingControl is SoundplorerWPF soundplorer)
@@ -1367,10 +1370,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return false;
         }
 
+        /// <summary>
+        /// Dispatches replacement to the handler for an external ISB sample or package audio export.
+        /// </summary>
         private async void ReplaceAudio(object obj)
         {
             if (CurrentLoadedISACTEntry != null)
             {
+                // External ISB samples require BankBuilder rather than the embedded-audio replacement paths.
                 await ReplaceExternalISBSample();
                 return;
             }
@@ -1391,6 +1398,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
+        /// <summary>
+        /// Replaces the selected external ISB sample and optionally refreshes its package metadata.
+        /// </summary>
         private async Task ReplaceExternalISBSample()
         {
             if (CurrentLoadedISACTEntry == null || HostingControl is not SoundplorerWPF soundplorer ||
@@ -1406,6 +1416,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             if (audioDialog.ShowDialog(Window.GetWindow(this)) != true)
                 return;
 
+            // ISB offsets change after replacement, so the stripped metadata in the package may also need updating.
             string packagePath = null;
             MessageBoxResult updatePackage = MessageBox.Show(
                 "A replacement changes compressed sizes and external ISB offsets. The matching BioSoundNodeWaveStreamingData should also be refreshed.\n\nSelect the package containing it now?",
@@ -1436,6 +1447,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             string normalizedWave = Path.Combine(Path.GetTempPath(), $"LEX_ISACTReplaceInput_{Guid.NewGuid():N}.wav");
             try
             {
+                // BankBuilder expects PCM16 input; normalisation is isolated from the user's source file.
                 using (var reader = new AudioFileReader(audioDialog.FileName))
                     WaveFileWriter.CreateWaveFile16(normalizedWave, reader);
                 using (var waveReader = new WaveFileReader(normalizedWave))
@@ -1459,6 +1471,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     bankBuilderPath = builderDialog.FileName;
                 }
 
+                // Release the loaded ISB before replacing it on disk.
                 FreeAudioResources();
                 HostingControl.IsBusy = true;
                 HostingControl.BusyText = "Compiling and replacing ISACT sample";
@@ -1469,6 +1482,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 Exception metadataError = null;
                 if (packagePath is not null)
                 {
+                    // Sample offsets are stored in the package, but a failed refresh must not undo the ISB replacement.
                     try
                     {
                         await Task.Run(() => RefreshExternalISBMetadata(packagePath, result.ISBPath));
@@ -1506,6 +1520,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
+        /// <summary>
+        /// Finds the matching streaming-data export by ISB title and replaces its stripped ISB metadata.
+        /// </summary>
         private static void RefreshExternalISBMetadata(string packagePath, string isbPath)
         {
             string isbTitle;
