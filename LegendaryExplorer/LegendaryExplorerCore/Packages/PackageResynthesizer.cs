@@ -44,7 +44,7 @@ namespace LegendaryExplorerCore.Packages
             var hasDuplicates = package.HasDuplicateObjects();
             if (hasDuplicates)
             {
-                LECLog.Warning("Cannot resynthesisize package: Package has duplicate named objects");
+                LECLog.Warning($"Cannot resynthesisize {package.FileNameNoExtension}: Package has duplicate named objects");
                 return package;
             }
 
