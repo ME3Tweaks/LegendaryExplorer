@@ -9,16 +9,16 @@ using Microsoft.Win32;
 namespace LegendaryExplorerCore.GameFilesystem
 {
     /// <summary>
-    /// Contains information about the LE3 game directory
+    /// Contains information about the LMP game directory
     /// </summary>
     public static class LMPDirectory
     {
         /// <summary>
-        /// Gets the path to the BioGame folder for LE3
+        /// Gets the path to the BioGame folder for LMP
         /// </summary>
         public static string BioGamePath => GetBioGamePath();
         /// <summary>
-        /// Gets the path to the BioGame folder for LE3
+        /// Gets the path to the BioGame folder for LMP
         /// </summary>
         /// <param name="rootPathOverride">Optional: override game path root</param>
         /// <returns>Path to BioGame folder, null if no usable root path</returns>
@@ -30,11 +30,11 @@ namespace LegendaryExplorerCore.GameFilesystem
         }
 
         /// <summary>
-        /// Gets the path to the DLC folder for LE3
+        /// Gets the path to the DLC folder for LMP
         /// </summary>
         public static string DLCPath => GetDLCPath();
         /// <summary>
-        /// Gets the path to the DLC folder for LE3
+        /// Gets the path to the DLC folder for LMP
         /// </summary>
         /// <param name="rootPathOverride">Optional: override game path root</param>
         /// <returns>Path to DLC folder, null if no usable root path</returns>
@@ -46,11 +46,11 @@ namespace LegendaryExplorerCore.GameFilesystem
         }
 
         /// <summary>
-        /// Gets the path to the basegame Cooked folder for LE3
+        /// Gets the path to the basegame Cooked folder for LMP
         /// </summary>
         public static string CookedPCPath => GetCookedPCPath();
         /// <summary>
-        /// Gets the path to basegame Cooked folder for LE3
+        /// Gets the path to basegame Cooked folder for LMP
         /// </summary>
         /// <param name="rootPathOverride">Optional: override game path root</param>
         /// <returns>Path to Cooked folder, null if no usable root path</returns>
@@ -62,11 +62,11 @@ namespace LegendaryExplorerCore.GameFilesystem
         }
 
         /// <summary>
-        /// Gets the path to the executable folder for LE3
+        /// Gets the path to the executable folder for LMP
         /// </summary>
         public static string ExecutableFolder => GetExecutableDirectory();
         /// <summary>
-        /// Gets the path to the executable folder for LE3
+        /// Gets the path to the executable folder for LMP
         /// </summary>
         /// <param name="rootPathOverride">Optional: override game path root</param>
         /// <returns>Path to executable folder, null if no usable root path</returns>
@@ -78,11 +78,11 @@ namespace LegendaryExplorerCore.GameFilesystem
         }
 
         /// <summary>
-        /// Gets the path to the game executable for LE3
+        /// Gets the path to the game executable for LMP
         /// </summary>
         public static string ExecutablePath => GetExecutablePath();
         /// <summary>
-        /// Gets the path to the game executable for LE3
+        /// Gets the path to the game executable for LMP
         /// </summary>
         /// <param name="rootPathOverride">Optional: override game path root</param>
         /// <returns>Path to game executable, null if no usable root path</returns>
@@ -91,7 +91,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             if (rootPathOverride == null) rootPathOverride = DefaultGamePath;
             if (rootPathOverride == null) return null; // There is no usable root path
             // This cannot be changed due to DRM
-            return Path.Combine(GetExecutableDirectory(rootPathOverride), "MassEffect3.exe");
+            return Path.Combine(GetExecutableDirectory(rootPathOverride), "MassEffectMultiplayer.exe");
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <summary>
         /// The filenames of any valid LMP executables
         /// </summary>
-        public static readonly ReadOnlyCollection<string> ExecutableNames = Array.AsReadOnly(new[] { "MassEffect3.exe" });
+        public static readonly ReadOnlyCollection<string> ExecutableNames = Array.AsReadOnly(new[] { "MassEffectMultiplayer.exe" });
 
         /// <summary>
         /// Gets the list of vanilla DLL filenames that ship with LMP
@@ -158,7 +158,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <summary>
         /// Path to the folder where career profiles are stored in the user config directory.
         /// </summary>
-        public static string SaveFolderPath => Path.Combine(LEDirectory.BioWareDocumentsPath, @"Save", @"ME3");
+        public static string SaveFolderPath => Path.Combine(LEDirectory.BioWareDocumentsPath, @"Save", @"LMP");
 
         /// <summary>
         /// Path to the 'Local_Profile' file in the user config directory.
