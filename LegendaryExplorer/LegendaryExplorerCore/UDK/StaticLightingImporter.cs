@@ -50,7 +50,7 @@ namespace LegendaryExplorerCore.UDK
         /// <summary>
         /// Imports static lighting from UDK.
         /// </summary>
-        /// <param name="package">The persistent package file. To import sublevels, the package must have AdditionalPackagesToCook set in the package. Tags must be set on StaticMeshActors to map their source.</param>
+        /// <param name="package">The package file. To import sublevels, the package must have AdditionalPackagesToCook set in the package and the setup object indicating it should import sublevels. Tags must be set on StaticMeshActors to map their source.</param>
         public static void ImportStaticLighting(IMEPackage package, LightingImportSetup setup)
         {
             var persistentPackage = (MEPackage)package;
@@ -75,7 +75,7 @@ namespace LegendaryExplorerCore.UDK
         }
 
         /// <summary>
-        /// Trashes all lightmaps in a file in preparing for bringing in new lightmap data
+        /// Trashes all lightmaps/shadowmaps in a file in preparing for bringing in new lightmap data
         /// </summary>
         /// <param name="mePackage"></param>
         private static void ClearLightmaps(IMEPackage mePackage, LightingImportSetup setup)
@@ -117,6 +117,7 @@ namespace LegendaryExplorerCore.UDK
                     foreach (var elem in meBin.Elements)
                     {
                         ClearLightmap(elem.LightMap, mePackage, setup);
+                        ClearShadowMaps(mePackage, ref elem.ShadowMaps, setup);
                     }
                 }
 
@@ -150,6 +151,32 @@ namespace LegendaryExplorerCore.UDK
                 EntryPruner.TrashEntries(tex.FileRef, [tex]);
             }
             setup.LightmapsToTrash.Clear();
+        }
+
+        /// <summary>
+        /// Deletes the shadows maps from the package, their textures, and then clears the shadow map array, to help prevent collisions
+        /// </summary>
+        /// <param name="shadowMaps">List of ShadowMap2D indices</param>
+        private static void ClearShadowMaps(IMEPackage mePackage, ref int[] shadowMaps, LightingImportSetup setup)
+        {
+            foreach(var uindex in shadowMaps)
+            {
+                var shadowMap = mePackage.GetUExport(uindex);
+                if (shadowMap.ClassName == "ShadowMap2D")
+                {
+                    var tindex = shadowMap.GetProperty<ObjectProperty>("Texture");
+                    if (tindex != null)
+                    {
+                        var temp = tindex.Value;
+                        TrashRef(mePackage, ref temp, setup);
+                    }
+                }
+
+                var index = shadowMap.UIndex;
+                TrashRef(mePackage, ref index, setup);
+            }
+
+            shadowMaps = [];
         }
 
         private static void ClearLightmap(LightMap lightMap, IMEPackage mePackage, LightingImportSetup setup)
@@ -380,6 +407,7 @@ namespace LegendaryExplorerCore.UDK
                     udkBin.Elements[i].Component = mc.UIndex; // Point to self
                     udkBin.Elements[i].Material = mePackage.FindEntry(udkPackage.GetEntry(udkBin.Elements[i].Material).InstancedFullPath)?.UIndex ?? 0; // Point to material
                     PortLightMaps(udkBin.Elements[i].LightMap, mc, udkPackage);
+                    PortShadowMaps(ref udkBin.Elements[i].ShadowMaps, mc, udkPackage);
                 }
                 // Yes write UDK version as we just relinked it to us
                 mc.WriteBinary(udkBin);
@@ -408,6 +436,44 @@ namespace LegendaryExplorerCore.UDK
                     updatedModels.Add(owningModel);
                 }
             }
+        }
+
+        /// <summary>
+        /// Ports shadowmaps and updates the shadowmaps array with the relinked UIndex values
+        /// </summary>
+        /// <param name="shadowMaps"></param>
+        /// <param name="mc"></param>
+        /// <param name="udkPackage"></param>
+        private static void PortShadowMaps(ref int[] shadowMaps, ExportEntry mc, UDKPackage udkPackage)
+        {
+            // It looks like UDK carries through our busted UDK files when making lighting, so we filter out invalid shadow maps here
+            // instead of keeping them around. I do not know if UDK actually creates shadow maps.
+            var finalShadowMapsArray = new List<int>();
+            foreach (var shadowMapIdx in shadowMaps)
+            {
+                if (udkPackage.TryGetUExport(shadowMapIdx, out var shadowMap))
+                {
+                    if (shadowMap.ClassName is "ShadowMap1D" or "ShadowMap2D")
+                    {
+                        EntryExporter.ExportExportToPackage(shadowMap, mc.FileRef, out var newShadowMap, null, new RelinkerOptionsPackage());
+                        finalShadowMapsArray.Add(shadowMapIdx);
+                        /*
+                        var tindex = shadowMap.GetProperty<ObjectProperty>("Texture");
+                        if (tindex != null)
+                        {
+                            var udkTex = udkPackage.GetUExport(tindex.Value);
+                            if (udkTex != null)
+                            {
+                                PortLightMap(mc.FileRef, ref tindex.Value, udkPackage);
+                                finalShadowMapsArray[Array.IndexOf(shadowMaps, shadowMapIdx)] = shadowMap.UIndex;
+                            }
+                        }*/
+                    }
+                }
+            }
+
+            // This dumps out invalid values.
+            shadowMaps = finalShadowMapsArray.ToArray();
         }
 
         private static void PortLightMaps(LightMap lmWithUdkRefs, ExportEntry meComponent, UDKPackage udkPackage)
@@ -450,7 +516,6 @@ namespace LegendaryExplorerCore.UDK
             if (bin is LightMap_1D lm1d)
             {
                 // No textures
-
             }
             else if (bin is LightMap_2D lm2d)
             {

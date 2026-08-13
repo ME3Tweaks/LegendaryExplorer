@@ -129,7 +129,6 @@ namespace LegendaryExplorerCore.UDK
 
                 PortStaticMeshActors(assetInfo, packageCache, delegatesROP);
 
-
                 #region Terrain
 
                 // Not sure if we need to port this into temp
@@ -199,6 +198,19 @@ namespace LegendaryExplorerCore.UDK
                 var mePolys = pcc.GetUExport(meModelBin.Polys);
                 var udkPolys = udkPackage2.GetUExport(udkModelBin.Polys);
                 udkPolys.indexValue = mePolys.indexValue;
+
+                // Dump shadow maps, as we're going to be rebuilding them in UDK
+                foreach(var mci in meLevelBin.ModelComponents)
+                {
+                    if (pcc.TryGetUExport(mci, out var mc))
+                    {
+                        // Dump out shadow map array
+                        var mcBin = ObjectBinary.From<ModelComponent>(mc);
+                        mcBin.Elements = mcBin.Elements.Select(x => { x.ShadowMaps = []; return x; }).ToArray();
+                        mc.WriteBinary(mcBin);
+                    }
+                }
+
 
                 // Overwrite it
                 EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.ReplaceSingularWithRelink, meModel,
