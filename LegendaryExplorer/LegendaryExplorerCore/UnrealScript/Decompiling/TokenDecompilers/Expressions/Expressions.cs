@@ -800,11 +800,11 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 {
                     if (vTableNames.Count <= (ushort)vtableIdx)
                     {
-                        errorMessage = $"ERROR: Function {funcName} has vtable index {vtableIdx}, but the class {contextClass.Name} only has {vTableNames.Count} virtual functions.";
+                        errorMessage = $"ERROR: Function {funcName} has vtable index {vtableIdx}, but the class {contextClass.Name} only has {vTableNames.Count} virtual functions. Recompilation of this function is required.";
                     }
                     else if (!funcName.CaseInsensitiveEquals(vTableNames[vtableIdx]))
                     {
-                        errorMessage = $"ERROR: Function {funcName} has vtable index {vtableIdx}, but the function at that index in class {contextClass.Name} is {vTableNames[vtableIdx]}.";
+                        errorMessage = $"ERROR: Function {funcName} has vtable index {vtableIdx}, but the function at that index in class {contextClass.Name} is {vTableNames[vtableIdx]}. Recompilation of this function is required.";
                     }
                 }
             }
@@ -814,14 +814,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 var classExp = ContainingClass.Export;
                 if (vTable.Length <= (ushort)vtableIdx)
                 {
-                    errorMessage = $"ERROR: Function {funcName} has vtable index {vtableIdx}, but the class {classExp.ObjectName.Instanced} only has {vTable.Length} virtual functions.";
+                    errorMessage = $"ERROR: Function {funcName} has vtable index {vtableIdx}, but the class {classExp.ObjectName.Instanced} only has {vTable.Length} virtual functions. Recompilation of this function is required.";
                 }
                 else
                 {
                     string vTableFuncName = classExp.FileRef.GetEntry(vTable[vtableIdx])?.ObjectName.Instanced;
                     if (!funcName.CaseInsensitiveEquals(vTableFuncName))
                     {
-                        errorMessage = $"ERROR: Function {funcName} has vtable index {vtableIdx}, but the function at that index is {vTableFuncName ?? "##ERROR_INVALID_UINDEX"}.";
+                        errorMessage = $"ERROR: Function {funcName} has vtable index {vtableIdx}, but the function at that index is {vTableFuncName ?? "##ERROR_INVALID_UINDEX"}. Recompilation of this function is required.";
                     }
                 }
             }
