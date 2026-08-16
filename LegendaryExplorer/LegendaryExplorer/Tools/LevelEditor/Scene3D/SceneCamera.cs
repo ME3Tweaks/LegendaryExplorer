@@ -47,6 +47,35 @@ public class SceneCamera
     public float ZNear = 0.1f;
     public float ZFar = 100_000;
     public bool FirstPerson = false;
+    public bool IsOrthographic = false;
+    public float OrthoWidth = 5000f; // world units visible horizontally in ortho mode
+
+    // Saved perspective state for toggling back from ortho
+    private Vector3 savedPerspectivePosition;
+    private float savedPitch, savedYaw, savedFocusDepth;
+    private bool hasSavedPerspectiveState;
+
+    public void SavePerspectiveState()
+    {
+        savedPerspectivePosition = Position;
+        savedPitch = Pitch;
+        savedYaw = Yaw;
+        savedFocusDepth = FocusDepth;
+        hasSavedPerspectiveState = true;
+    }
+
+    public void RestorePerspectiveState()
+    {
+        if (hasSavedPerspectiveState)
+        {
+            position = savedPerspectivePosition;
+            pitch = savedPitch;
+            yaw = savedYaw;
+            FocusDepth = savedFocusDepth;
+            CalcViewMatrix();
+            hasSavedPerspectiveState = false;
+        }
+    }
     public Vector3 CameraUp
     {
         get
@@ -124,14 +153,15 @@ public class SceneCamera
     {
         get
         {
+            if (IsOrthographic)
+            {
+                return Matrix4x4.CreateLookToLeftHanded(Position, -Vector3.UnitZ, Vector3.UnitY);
+            }
             if (FirstPerson)
             {
                 return firstPersonViewMatrix;
             }
-            else
-            {
-                return firstPersonViewMatrix * Matrix4x4.CreateTranslation(0, 0, FocusDepth);
-            }
+            return firstPersonViewMatrix * Matrix4x4.CreateTranslation(0, 0, FocusDepth);
         }
     }
 
@@ -144,6 +174,10 @@ public class SceneCamera
     {
         get
         {
+            if (IsOrthographic)
+            {
+                return Matrix4x4.CreateOrthographicLeftHanded(OrthoWidth, OrthoWidth / aspect, ZNear, ZFar);
+            }
             return Matrix4x4.CreatePerspectiveFieldOfViewLeftHanded(FOV, aspect, ZNear, ZFar);
         }
     }

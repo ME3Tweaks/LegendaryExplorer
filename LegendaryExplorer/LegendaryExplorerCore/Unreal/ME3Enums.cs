@@ -1151,7 +1151,13 @@ namespace LegendaryExplorerCore.Unreal
     public enum ECoverType
     {
         CT_None,
+        /// <summary>
+        /// Index 1
+        /// </summary>
         CT_Standing,
+        /// <summary>
+        /// Index 2
+        /// </summary>
         CT_MidLevel,
     }
     public enum ECoverLocationDescription

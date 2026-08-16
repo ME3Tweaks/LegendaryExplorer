@@ -11,7 +11,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         public bool ForceNoNewLines { get; set; }
 
         private readonly List<Inline> Inlines = new();
-        private EF CurrentFormat = EF.None;
+        private ST CurrentFormat = ST.None;
         private string CurrentRun = "";
         private int lineDisplayLength;
 
@@ -21,7 +21,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             return Inlines;
         }
 
-        public void AppendToNewLine(string text, EF formatType)
+        public void AppendToNewLine(string text, ST formatType)
         {
             if (!ForceNoNewLines)
             {
@@ -36,7 +36,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
             Append(text, formatType);
         }
 
-        public void Append(string text, EF formatType)
+        public void Append(string text, ST formatType)
         {
             if (formatType != CurrentFormat)
             {

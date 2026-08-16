@@ -32,6 +32,7 @@ using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript;
+using System.Threading;
 
 namespace LegendaryExplorer.Tools.PackageDumper
 {
@@ -43,17 +44,17 @@ namespace LegendaryExplorer.Tools.PackageDumper
         /// <summary>
         /// Items show in the list that are currently being processed
         /// </summary>
-        public ObservableCollectionExtended<PackageDumperSingleFileTask> CurrentDumpingItems { get; set; } = new();
+        public ObservableCollectionExtended<PackageDumperSingleFileTask> CurrentDumpingItems { get; set; } = [];
 
-        public ObservableCollectionExtended<MEGame> SupportedGames { get; private set; } = new()
-        {
+        public ObservableCollectionExtended<MEGame> SupportedGames { get; private set; } =
+        [
             MEGame.ME1,
             MEGame.ME2,
             MEGame.ME3,
             MEGame.LE1,
             MEGame.LE2,
             MEGame.LE3
-        };
+        ];
 
         /// <summary>
         /// All items in the queue
@@ -197,7 +198,7 @@ namespace LegendaryExplorer.Tools.PackageDumper
             set => verbose = value;
         }
 
-        private object _syncObj = new object();
+        private Lock _syncObj = new();
 
         private void EnsureCaches(MEGame game)
         {

@@ -23,17 +23,11 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic
 		/// </exception>
 		public static ICollection<T> AddRange<T>(this ICollection<T> collection, IEnumerable<T> items)
 		{
-			if (collection == null)
-			{
-				throw new ArgumentNullException(nameof(collection));
-			}
+            ArgumentNullException.ThrowIfNull(collection);
 
-			if (items == null)
-			{
-				throw new ArgumentNullException(nameof(items));
-			}
+            ArgumentNullException.ThrowIfNull(items);
 
-			foreach (var each in items)
+            foreach (var each in items)
 			{
 				collection.Add(each);
 			}
@@ -48,12 +42,9 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic
 
 		public static int RemoveAll<TSource>(this ICollection<TSource> source, TSource value, IEqualityComparer<TSource> comparer)
 		{
-			if (source == null)
-			{
-				throw new ArgumentNullException(nameof(source));
-			}
+            ArgumentNullException.ThrowIfNull(source);
 
-			comparer = comparer ?? EqualityComparer<TSource>.Default;
+            comparer ??= EqualityComparer<TSource>.Default;
 
 			var removedItems = source.Where(item => comparer.Equals(value, item)).ToList();
 
@@ -67,17 +58,11 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic
 
 		public static int RemoveAll<TSource>(this ICollection<TSource> source, Func<TSource, bool> predicate)
 		{
-			if (source == null)
-			{
-				throw new ArgumentNullException(nameof(source));
-			}
+            ArgumentNullException.ThrowIfNull(source);
 
-			if (predicate == null)
-			{
-				throw new ArgumentNullException(nameof(predicate));
-			}
+            ArgumentNullException.ThrowIfNull(predicate);
 
-			var removedItems = source.Where(predicate).ToList();
+            var removedItems = source.Where(predicate).ToList();
 
 			foreach (var item in removedItems)
 			{
@@ -87,12 +72,12 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic
 			return removedItems.Count;
 		}
 
-        /// <summary> 
+        /// <summary>
         /// Replaces all elements in existing collection with specified collection.
-        /// </summary> 
+        /// </summary>
         public static void ReplaceAll<TSource>(this ICollection<TSource> oldCollection, IEnumerable<TSource> newCollection)
         {
-            if (newCollection == null) throw new ArgumentNullException(nameof(newCollection));
+            ArgumentNullException.ThrowIfNull(newCollection);
 			oldCollection.Clear();
             oldCollection.AddRange(newCollection);
         }

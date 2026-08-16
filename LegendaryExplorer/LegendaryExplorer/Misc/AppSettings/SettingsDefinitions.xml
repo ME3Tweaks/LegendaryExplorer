@@ -25,6 +25,7 @@
            friendlyName="Show metadata in tree (if available)"/>
   <setting name="PackageEditor_ShowExperiments" type="bool" defaultvalue="false" category="Package Editor"
            friendlyName="Show experimental features"/>
+  <setting name="PackageEditor_BoundExperimentShortcuts" type="Dictionary&lt;string, string&gt;" defaultvalue="new Dictionary&lt;string, string&gt;()"/>
 
 
   <!-- Sequence Editor specific settings -->
@@ -59,6 +60,10 @@
   <setting name="PathfindingEditor_ShowArtLayer" type="bool" defaultvalue="false"/>
   <setting name="PathfindingEditor_ShowSplinesLayer" type="bool" defaultvalue="false"/>
   <setting name="PathfindingEditor_ShowEverythingElseLayer" type="bool" defaultvalue="false"/>
+
+  <!-- Pathfinding Network Editor specific settings -->
+  <setting name="PathfindingNetworkEditor_RotationArrowMinZoom" type="double" defaultvalue="1.0"
+           category="Pathfinding Network Editor" friendlyName="Rotation Arrow Min Zoom (show rotation arrows above this zoom level)"/>
 
   <!-- AssetDB specific settings-->
   <setting name="AssetDB_DefaultGame" type="string" defaultvalue=""/>
@@ -124,5 +129,8 @@
   <setting name="CustomAssetDirectories" type="List&lt;string&gt;" defaultvalue="new List&lt;string&gt;()" category="General"
            friendlyName="Custom Asset Directories"/>
 
+  <!-- Script Editor IDE Theme -->
+  <setting name="ScriptIDE_ActiveTheme" type="string" defaultvalue=""/>
+  <setting name="ScriptIDE_SavedThemes" type="Dictionary&lt;string, ThemeData&gt;" defaultvalue="new Dictionary&lt;string, ThemeData&gt;()"/>
 
 </appsettings>

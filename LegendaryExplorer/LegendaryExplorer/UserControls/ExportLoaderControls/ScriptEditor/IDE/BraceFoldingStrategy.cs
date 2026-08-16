@@ -39,6 +39,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         /// </summary>
         private IEnumerable<NewFolding> CreateNewFoldings(TextDocument document, out int firstErrorOffset)
         {
+            // firstErrorOffset is required by the AvalonEdit FoldingManager API but unused here
             firstErrorOffset = -1;
             return CreateNewFoldings(document);
         }

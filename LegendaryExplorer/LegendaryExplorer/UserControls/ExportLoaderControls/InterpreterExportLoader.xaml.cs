@@ -1157,15 +1157,35 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             if (parsingExport.ClassName == "CoverLink" && prop.Name.Name == "Interactions" && prop is ImmutableByteArrayProperty ibap)
                             {
                                 string actions = "";
-                                foreach (var b in ibap.Bytes)
+                                foreach (var packedByte in ibap.Bytes)
                                 {
-                                    actions += "[";
-                                    actions += (b & (1 << 4)) != 0 ? "CT_MidLevel " : "CT_Standing "; // DestType
-                                    actions += (b & (1 << 5)) != 0 ? "CA_LeanLeft" :
-                                        (b & (1 << 6)) != 0 ? "CA_LeanRight" :
-                                        (b & (1 << 7)) != 0 ? "CA_PopUp" :
-                                        "CA_Default";
-                                    actions += "] ";
+                                    ECoverType srcType = ECoverType.CT_None;
+                                    ECoverAction srcAction = ECoverAction.CA_Default;
+                                    ECoverType destType = ECoverType.CT_None;
+                                    ECoverAction destAction = ECoverAction.CA_Default;
+
+
+                                    // --- Unpack Source (Lower 4 bits) ---
+                                    srcType = (packedByte & (1 << 0)) != 0 ? ECoverType.CT_MidLevel : ECoverType.CT_Standing;
+
+                                    // Bits 1, 2, and 3 determine SrcAction
+                                    if ((packedByte & (1 << 1)) != 0) srcAction = ECoverAction.CA_LeanLeft;  // Value 3
+                                    else if ((packedByte & (1 << 2)) != 0) srcAction = ECoverAction.CA_LeanRight; // Value 4
+                                    else if ((packedByte & (1 << 3)) != 0) srcAction = ECoverAction.CA_PopUp;     // Value 5
+                                    else srcAction = ECoverAction.CA_Default;   // Value 0
+
+                                    // --- Unpack Destination (Upper 4 bits) ---
+                                    // Bit 4 determines DestType (0 -> 1, 1 -> 2)
+                                    destType = (packedByte & (1 << 4)) != 0 ? ECoverType.CT_MidLevel : ECoverType.CT_Standing;
+
+                                    // Bits 5, 6, and 7 determine DestAction
+                                    if ((packedByte & (1 << 5)) != 0) destAction = ECoverAction.CA_LeanLeft;  // Value 3
+                                    else if ((packedByte & (1 << 6)) != 0) destAction = ECoverAction.CA_LeanRight; // Value 4
+                                    else if ((packedByte & (1 << 7)) != 0) destAction = ECoverAction.CA_PopUp;     // Value 5
+                                    else destAction = ECoverAction.CA_Default;   // Value 0
+
+                                    // Now build the string.
+                                    actions += $"[{srcType} {srcAction} -> {destType} {destAction}] ";
                                 }
 
                                 editableValue = $"{at} array - {actions}";
@@ -1591,7 +1611,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                 var covRefIdx = value & 0x0000FFFF;
 
                                 var level = ObjectBinary.From<Level>(export.FileRef.FindExport("TheWorld.PersistentLevel"));
-                                if (level.CoverIndexPairs.Count >= covRefIdx)
+                                if (level.CoverIndexPairs.Count > covRefIdx)
                                 {
                                     var cover = level.CoverIndexPairs[covRefIdx];
                                     var coverRef = level.CoverLinkRefs[(int)cover.CoverIndexIdx];
@@ -1601,7 +1621,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                     }
                                     else
                                     {
-                                        return $"Cover Reference: <Null>, slot {cover.SlotIdx}, DynamicLinkInfoIndex: {dynamicLinkInfoIndex}";
+                                        // It's likely a cross level reference.
+                                        var coverRefGuid = level.CrossLevelCoverGuidRefs.Find(x => x.CoverIndexIdx == (int)cover.CoverIndexIdx);
+                                        if (coverRefGuid.Guid != Guid.Empty)
+                                        {
+                                            return $"Cross Level Cover Reference: {coverRefGuid.Guid} slot {cover.SlotIdx}, DynamicLinkInfoIndex: {dynamicLinkInfoIndex}";
+                                        }
+                                        /*else
+                                        {
+                                            return $"Cover Reference: <Null>, slot {cover.SlotIdx}, DynamicLinkInfoIndex: {dynamicLinkInfoIndex}";
+                                        }*/
                                     }
                                 }
 

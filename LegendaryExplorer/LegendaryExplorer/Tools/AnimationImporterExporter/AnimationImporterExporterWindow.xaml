@@ -18,7 +18,7 @@
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         Icon="pack://application:,,,/Tools/Icons/16x16/AnimationImporter_Icon_16.ico"
-        Title="Animation Importer/Exporter" Height="600" Width="1000" Loaded="AnimationImporter_OnLoaded">
+        Title="Animation Importer/Exporter" Height="800" Width="1200" Loaded="AnimationImporter_OnLoaded">
     <Window.Resources>
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <converters:NullEnabledConverter x:Key="NullEnabledConverter"/>
@@ -55,6 +55,9 @@
                 <MenuItem Header="Tools" Padding="4">
                     <MenuItem Header="Import New AnimSequence(s) from PSA" Command="{Binding ImportFromPSACommand}" />
                     <MenuItem Header="Replace AnimSequence from PSA" Command="{Binding ReplaceFromPSACommand}" />
+                    <MenuItem Header="Import AnimSequence from BVH" Command="{Binding ImportFromBVHCommand}"
+                              ToolTip="Import a BVH motion-capture file as a new AnimSequence" />
+                    <MenuItem Header="Replace AnimSequence from BVH" Command="{Binding ReplaceFromBVHCommand}" />
                     <MenuItem Header="Import New AnimSequence(s) from UDK" Command="{Binding ImportFromUDKCommand}"
                               sharedUi:Bindings.VisibilityToEnabled="True" />
                     <MenuItem Header="Replace AnimSequence from UDK" Command="{Binding ReplaceFromUDKCommand}"
@@ -62,6 +65,9 @@
                     <MenuItem Header="Export AnimSequence to PSA" Command="{Binding ExportAnimSeqToPSACommand}" />
                     <MenuItem Header="Export AnimSet to PSA" Command="{Binding ExportAnimSetToPSACommand}"
                               sharedUi:Bindings.VisibilityToEnabled="True" />
+                    <MenuItem Header="Export AnimSequence to BVH" Command="{Binding ExportAnimSeqToBVHCommand}" />
+                    <MenuItem Header="Export AnimSequence to glTF" Command="{Binding ExportAnimSeqToGLTFCommand}"
+                              ToolTip="Export the skeletal mesh, skin, and animation to a single glTF/glb file" />
                 </MenuItem>
             </Menu>
             <StatusBar Height="23" DockPanel.Dock="Bottom">
@@ -153,6 +159,9 @@
                                 <MenuItem Header="Replace AnimSequence from PSA"
                                           Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ReplaceFromPSACommand}"
                                           sharedUi:Bindings.VisibilityToEnabled="True" />
+                                <MenuItem Header="Replace AnimSequence from BVH"
+                                          Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ReplaceFromBVHCommand}"
+                                          sharedUi:Bindings.VisibilityToEnabled="True" />
                                 <MenuItem Header="Replace AnimSequence from UDK"
                                           Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ReplaceFromUDKCommand}"
                                           sharedUi:Bindings.VisibilityToEnabled="True" />
@@ -161,6 +170,12 @@
                                           sharedUi:Bindings.VisibilityToEnabled="True" />
                                 <MenuItem Header="Export AnimSet to PSA"
                                           Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportAnimSetToPSACommand}"
+                                          sharedUi:Bindings.VisibilityToEnabled="True" />
+                                <MenuItem Header="Export AnimSequence to BVH"
+                                          Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportAnimSeqToBVHCommand}"
+                                          sharedUi:Bindings.VisibilityToEnabled="True" />
+                                <MenuItem Header="Export AnimSequence to glTF"
+                                          Command="{Binding Source={StaticResource bindingProxy}, Path=Data.ExportAnimSeqToGLTFCommand}"
                                           sharedUi:Bindings.VisibilityToEnabled="True" />
                             </ContextMenu>
                             <Style TargetType="{x:Type ListBoxItem}">
@@ -172,19 +187,39 @@
 
                 </DockPanel>
                 <Grid Grid.Column="2"
-                      Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Collapsed}"
-                      IsEnabled="{Binding IsRendererBusy, Converter={StaticResource BoolEnabledConverter}, ConverterParameter='Not'}">
+                      Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Collapsed}">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition MinHeight="5" MaxHeight="5" Height="5" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <exportLoaderControls:InterpreterExportLoader x:Name="InterpreterTab_Interpreter" HideHexBox="True" />
-                    <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" />
-                    <exportLoaderControls:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter"
-                                                               Grid.Row="2" HideHexBox="True"
-                                                               AlwaysLoadRegardlessOfSize="True"
-                                                               HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    <!-- Row 0: SkeletalMesh selector -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2">
+                        <TextBlock Text="SkeletalMesh:" VerticalAlignment="Center" Margin="0,0,5,0" />
+                        <ComboBox x:Name="SkeletalMeshComboBox" Width="250"
+                                  ItemsSource="{Binding SkeletalMeshExports}"
+                                  SelectedItem="{Binding SelectedSkeletalMesh}"
+                                  DisplayMemberPath="ObjectName.Instanced" />
+                    </StackPanel>
+                    <!-- Row 1: Animation Preview -->
+                    <sharedToolControls:AnimationPreviewControl x:Name="AnimPreview" Grid.Row="1" />
+                    <!-- Row 2: Splitter -->
+                    <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" />
+                    <!-- Row 3: Interpreter + Binary -->
+                    <Grid Grid.Row="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition MinHeight="5" MaxHeight="5" Height="5" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <exportLoaderControls:InterpreterExportLoader x:Name="InterpreterTab_Interpreter" HideHexBox="True" />
+                        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" />
+                        <exportLoaderControls:BinaryInterpreterWPF x:Name="BinaryInterpreterTab_BinaryInterpreter"
+                                                                   Grid.Row="2" HideHexBox="True"
+                                                                   AlwaysLoadRegardlessOfSize="True"
+                                                                   HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    </Grid>
                 </Grid>
             </Grid>
         </DockPanel>

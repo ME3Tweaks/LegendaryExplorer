@@ -13,7 +13,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
 
         public Class CurrentClass;
 
-        public Class Filter; 
+        public Class Filter;
 
         private readonly List<LogMessage> content = [];
         public IReadOnlyList<LogMessage> Content => content.AsReadOnly();
@@ -26,6 +26,32 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling.Errors
         //This being here is a gross hack. Needed some way to make the TokenStream accesible to the ClassValidationVisitor,
         //and the MessageLog is the one thing that gets passed through all the layers... bleh
         public TokenStream Tokens;
+
+        public void SortLog()
+        {
+            //sorts errors first, then warnings, then messages
+            //within type, sorts by position in file in ascending order
+            content.Sort(static (y, x) =>
+            {
+                int result = 0;
+                result += weight(x);
+                result -= weight(y);
+                if (x is PositionedMessage xPos && y is PositionedMessage yPos)
+                {
+                    result -= xPos.Start.CompareTo(yPos.Start);
+                }
+                return result;
+
+                static int weight(LogMessage x) => x switch
+                {
+                    LineError => 12,
+                    Error => 10,
+                    LineWarning => 7,
+                    Warning => 5,
+                    _ => 0,
+                };
+            });
+        }
 
         public void LogMessage(string msg)
         {

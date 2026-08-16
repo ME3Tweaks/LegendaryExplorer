@@ -1,0 +1,49 @@
+<Window x:Class="LegendaryExplorer.ToolsetDev.ShaderInfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Shader Resource Bindings" Height="600" Width="1100"
+        WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Panel -->
+        <DockPanel Grid.Column="0">
+            <TextBlock DockPanel.Dock="Top" FontWeight="Bold" Margin="4" Text="{Binding LeftTitle}"/>
+            <TextBlock DockPanel.Dock="Top" Margin="4,0,4,4" Text="{Binding LeftInstructionCount}"/>
+            <DataGrid ItemsSource="{Binding LeftEntries}" AutoGenerateColumns="False"
+                      IsReadOnly="True" HeadersVisibility="Column" GridLinesVisibility="All"
+                      FontFamily="Consolas" FontSize="11" CanUserSortColumns="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                    <DataGridTextColumn Header="Buffer" Binding="{Binding BufferIndex}" Width="50"/>
+                    <DataGridTextColumn Header="Base" Binding="{Binding BaseIndex}" Width="50"/>
+                    <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="50"/>
+                    <DataGridTextColumn Header="Sampler" Binding="{Binding SamplerIndex}" Width="60"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
+
+        <!-- Right Panel -->
+        <DockPanel Grid.Column="2">
+            <TextBlock DockPanel.Dock="Top" FontWeight="Bold" Margin="4" Text="{Binding RightTitle}"/>
+            <TextBlock DockPanel.Dock="Top" Margin="4,0,4,4" Text="{Binding RightInstructionCount}"/>
+            <DataGrid ItemsSource="{Binding RightEntries}" AutoGenerateColumns="False"
+                      IsReadOnly="True" HeadersVisibility="Column" GridLinesVisibility="All"
+                      FontFamily="Consolas" FontSize="11" CanUserSortColumns="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                    <DataGridTextColumn Header="Buffer" Binding="{Binding BufferIndex}" Width="50"/>
+                    <DataGridTextColumn Header="Base" Binding="{Binding BaseIndex}" Width="50"/>
+                    <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="50"/>
+                    <DataGridTextColumn Header="Sampler" Binding="{Binding SamplerIndex}" Width="60"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+    </Grid>
+</Window>

@@ -18,13 +18,24 @@ using SharpDX.Mathematics.Interop;
 using Texture2D = SharpDX.Direct3D11.Texture2D;
 using D2D = SharpDX.Direct2D1;
 using DW = SharpDX.DirectWrite;
+using System.Runtime.InteropServices;
 
-namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D;
+namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D;
+
+/// <summary>
+/// A text label to be drawn at a screen-space position as a D2D overlay.
+/// </summary>
+public struct ScreenLabel(float x, float y, string text)
+{
+    public float X = x;
+    public float Y = y;
+    public string Text = text;
+}
 
 /// <summary>
 /// Handles rendering of mesh data
 /// </summary>
-public class MeshRenderContext : RenderContext
+public class MeshRenderContext : LegacyRenderContext
 {
     /// <summary>
     /// The current flags for rendering textures. This renderer does not support 'SetAlphaAsBlack' or 'ReconstructZ'
@@ -61,8 +72,11 @@ public class MeshRenderContext : RenderContext
     private D2D.RenderTarget renderTarget2D;
     private DW.TextFormat statsTextFormat;
     private DW.TextFormat errorTextFormat;
+    private DW.TextFormat labelTextFormat;
     private D2D.SolidColorBrush statsTextBrush;
     private D2D.SolidColorBrush errorTextBrush;
+    private D2D.SolidColorBrush labelTextBrush;
+    private D2D.SolidColorBrush labelBackgroundBrush;
     #endregion
     public GenericEffect<WorldConstants, WorldVertex> DefaultEffect { get; private set; }
     public LEEffect LEEffect { get; private set; }
@@ -105,6 +119,12 @@ public class MeshRenderContext : RenderContext
     private float lastFPSTime;
     private float lastFPSFrame;
     public string ErrorText;
+
+    /// <summary>
+    /// Screen-space labels to be rendered as a D2D text overlay after 3D rendering.
+    /// Populated by scene renderers, cleared each frame after drawing.
+    /// </summary>
+    public List<ScreenLabel> ScreenLabels { get; } = [];
 
     public event EventHandler<float> UpdateScene;
     public event EventHandler RenderScene;
@@ -185,13 +205,26 @@ public class MeshRenderContext : RenderContext
                 }
             }
 
-            if (App.IsDebug)
+            if (App.IsDebug || ScreenLabels.Count > 0)
             {
-                //render D2D overlay
                 renderTarget2D.BeginDraw();
                 {
-                    var size = renderTarget2D.Size;
-                    renderTarget2D.DrawText($"{FPS} fps", statsTextFormat, new RawRectangleF(0, 0, size.Width, size.Height), statsTextBrush);
+                    if (App.IsDebug)
+                    {
+                        var size = renderTarget2D.Size;
+                        renderTarget2D.DrawText($"{FPS} fps", statsTextFormat, new RawRectangleF(0, 0, size.Width, size.Height), statsTextBrush);
+                    }
+
+                    foreach (ref readonly var label in CollectionsMarshal.AsSpan(ScreenLabels))
+                    {
+                        const float labelW = 20;
+                        const float labelH = 12;
+                        var rect = new RawRectangleF(label.X - labelW * 0.5f, label.Y - labelH * 0.5f,
+                                                     label.X + labelW * 0.5f, label.Y + labelH * 0.5f);
+                        renderTarget2D.FillRectangle(rect, labelBackgroundBrush);
+                        renderTarget2D.DrawText(label.Text, labelTextFormat, rect, labelTextBrush);
+                    }
+                    ScreenLabels.Clear();
                 }
                 renderTarget2D.EndDraw();
             }
@@ -302,6 +335,13 @@ public class MeshRenderContext : RenderContext
             TextAlignment = DW.TextAlignment.Leading,
             ParagraphAlignment = DW.ParagraphAlignment.Center
         };
+        labelTextFormat = new DW.TextFormat(dwFactory, "Verdana", 8)
+        {
+            TextAlignment = DW.TextAlignment.Center,
+            ParagraphAlignment = DW.ParagraphAlignment.Center
+        };
+        labelTextBrush = new D2D.SolidColorBrush(renderTarget2D, new RawColor4(1, 1, 1, 1), new D2D.BrushProperties { Opacity = 1 });
+        labelBackgroundBrush = new D2D.SolidColorBrush(renderTarget2D, new RawColor4(0, 0, 0, 0.65f), new D2D.BrushProperties { Opacity = 1 });
     }
 
     public override void DisposeSizeDependentResources()
@@ -312,8 +352,11 @@ public class MeshRenderContext : RenderContext
         DepthBuffer?.Dispose();
         statsTextFormat?.Dispose();
         errorTextFormat?.Dispose();
+        labelTextFormat?.Dispose();
         statsTextBrush?.Dispose();
         errorTextBrush?.Dispose();
+        labelTextBrush?.Dispose();
+        labelBackgroundBrush?.Dispose();
         base.DisposeSizeDependentResources();
     }
 
@@ -438,7 +481,7 @@ public class MeshRenderContext : RenderContext
 
     public override bool MouseUp(MouseButtons button, int x, int y)
     {
-        bool handled = Orbiting | Panning | Zooming;
+        bool handled = Orbiting || Panning || Zooming;
 
         Orbiting = false;
         Panning = false;
@@ -537,8 +580,8 @@ file class BlendDescComparer : IEqualityComparer<RenderTargetBlendDescription>
     public bool Equals(RenderTargetBlendDescription x, RenderTargetBlendDescription y)
     {
         return x.IsBlendEnabled.Equals(y.IsBlendEnabled)
-               && x.SourceBlend == y.SourceBlend 
-               && x.DestinationBlend == y.DestinationBlend 
+               && x.SourceBlend == y.SourceBlend
+               && x.DestinationBlend == y.DestinationBlend
                && x.BlendOperation == y.BlendOperation
                && x.SourceAlphaBlend == y.SourceAlphaBlend
                && x.DestinationAlphaBlend == y.DestinationAlphaBlend
@@ -549,7 +592,7 @@ file class BlendDescComparer : IEqualityComparer<RenderTargetBlendDescription>
     public int GetHashCode(RenderTargetBlendDescription obj)
     {
         return HashCode.Combine(obj.IsBlendEnabled, (int)obj.SourceBlend,
-            (int)obj.DestinationBlend, (int)obj.BlendOperation, 
+            (int)obj.DestinationBlend, (int)obj.BlendOperation,
             (int)obj.SourceAlphaBlend, (int)obj.DestinationAlphaBlend,
             (int)obj.AlphaBlendOperation, (int)obj.RenderTargetWriteMask);
     }

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.AccessControl;
+using System.Threading;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -42,17 +43,17 @@ public class TieredPackageCache : PackageCache
     /// <summary>
     /// Used by children to synchronize the promo dictionary for tracking
     /// </summary>
-    private object promoSyncObj = new object();
+    private Lock promoSyncObj = new();
 
     /// <summary>
     /// Use by children to synchronize promotion guid
     /// </summary>
-    private object childSyncObj = new object();
+    private Lock childSyncObj = new();
 
     /// <summary>
     /// Used by children to synchronize promotions
     /// </summary>
-    private object promoInsertionSyncObj = new object();
+    private Lock promoInsertionSyncObj = new();
 
     /// <summary>
     /// On access, will initialize global packages.

@@ -49,41 +49,29 @@ namespace LegendaryExplorerCore.Gammtek.Extensions
 
 		public static string Left(this string value, int count)
 		{
-			if (value == null)
-			{
-				throw new ArgumentNullException(nameof(value));
-			}
+			ArgumentNullException.ThrowIfNull(value);
 
 			return value.Substring(0, count.Clamp(0, value.Length));
 		}
 
 		public static string RemoveLeft(this string value, int count)
 		{
-			if (value == null)
-			{
-				throw new ArgumentNullException(nameof(value));
-			}
+			ArgumentNullException.ThrowIfNull(value);
 
 			return value.Substring((value.Length - count).Clamp(0, value.Length));
 		}
 
 		public static string RemoveRight(this string value, int count)
 		{
-			if (value == null)
-			{
-				throw new ArgumentNullException(nameof(value));
-			}
+			ArgumentNullException.ThrowIfNull(value);
 
 			return value.Substring(0, value.Length - count.Clamp(0, value.Length));
 		}
 
 		public static string Right(this string value, int count)
 		{
-			if (value == null)
-			{
-				throw new ArgumentNullException(nameof(value));
-			}
-			
+			ArgumentNullException.ThrowIfNull(value);
+
 			return value.Substring(value.Length - count.Clamp(0, value.Length));
 		}
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.TLK.ME1;
@@ -14,7 +15,7 @@ namespace LegendaryExplorerCore.TLK.ME2ME3
     /// </summary>
     public sealed class ME2ME3LazyTLK : ME2ME3TLKBase
     {
-        private object syncObj = new object();
+        private readonly Lock syncObj = new();
         private TLKBitArray Bits;
         private HuffmanNode[] Nodes;
         private StringBuilder _builder;

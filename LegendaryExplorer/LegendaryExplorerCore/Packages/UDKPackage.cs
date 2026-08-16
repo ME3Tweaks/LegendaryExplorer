@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
@@ -107,7 +108,7 @@ namespace LegendaryExplorerCore.Packages
             return (s, associatedFilePath) => new UDKPackage(s, associatedFilePath);
         }
 
-        public static Action<UDKPackage, string, bool, object> RegisterSaver() => saveByReconstructing;
+        public static Action<UDKPackage, string, bool, Lock> RegisterSaver() => saveByReconstructing;
 
         /// <summary>
         ///     UDKPackage class constructor. It also load namelist, importlist and exportinfo (not exportdata) from udk file
@@ -266,7 +267,7 @@ namespace LegendaryExplorerCore.Packages
             RebuildLookupTable();
         }
 
-        private static void saveByReconstructing(UDKPackage udkPackage, string path, bool isSaveAs, object diskIOSyncLock = null)
+        private static void saveByReconstructing(UDKPackage udkPackage, string path, bool isSaveAs, Lock diskIOSyncLock = null)
         {
             var datastream = udkPackage.SaveToStream(false);
             // Lock writing with the sync object (if not null) to prevent disk concurrency issues

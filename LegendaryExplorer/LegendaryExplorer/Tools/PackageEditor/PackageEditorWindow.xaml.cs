@@ -1388,7 +1388,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
                     break;
             }
 
-            var d = new SaveFileDialog { Filter = fileFilter };
+            var d = new SaveFileDialog { Filter = fileFilter, CustomPlaces = AppDirectories.GameCustomPlaces };
             if (d.ShowDialog() == true)
             {
                 await Pcc.SaveAsync(d.FileName);
@@ -3066,6 +3066,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
             ExportLoaders[ScriptTab_UnrealScriptIDE] = Script_Tab;
             ExportLoaders[RADLauncherTab_BIKLauncher] = RADLaunch_Tab;
             ExportLoaders[AnimNodeTab_AnimNodeLoader] = AnimNode_Tab;
+            ExportLoaders[ActorPreviewTab_ActorPreviewControl] = ActorPreview_Tab;
 
             InterpreterTab_Interpreter.SetParentNameList(NamesList); //reference to this control for name editor set
 
@@ -4060,6 +4061,22 @@ namespace LegendaryExplorer.Tools.PackageEditor
                 }
 
                 TryAddToPersistentLevel(Pcc.Exports.Skip(numExports));
+
+                if (sourceEntry is ExportEntry sourceExport && sourceEntry.Parent is ExportEntry sourceLink && targetLinkEntry is ExportEntry targetLink && newEntry is ExportEntry newExp) {
+                    if (sourceLink.ClassName == "StaticMeshCollectionActor" && targetLink.ClassName == "StaticMeshCollectionActor" && newExp.ClassName == "StaticMeshComponent")
+                    {
+                        var sourceCollectionBin = ObjectBinary.From<StaticMeshCollectionActor>(sourceLink);
+                        var targetCollectionBin = ObjectBinary.From<StaticMeshCollectionActor>(targetLink);
+
+                        // Must write before serializing out
+                        targetCollectionBin.Components.Add(newEntry.UIndex);
+                        targetLink.WriteProperty(new ArrayProperty<ObjectProperty>(targetCollectionBin.Components.Select(x=>new ObjectProperty(x)), "StaticMeshComponents"));
+                        
+                        var sourceIndex = sourceCollectionBin.Components.IndexOf(sourceEntry.UIndex);
+                        targetCollectionBin.LocalToWorldTransforms.Add(sourceCollectionBin.LocalToWorldTransforms[sourceIndex]); 
+                        targetLink.WriteBinary(targetCollectionBin);
+                    }
+                }
 
                 //sw.Stop();
                 //MessageBox.Show($"Took {sw.ElapsedMilliseconds}ms");

@@ -199,6 +199,15 @@ namespace LegendaryExplorerCore.Unreal
         {
             return !n1.Equals(n2);
         }
+        public static bool operator ==(NameReference? n1, NameReference n2)
+        {
+            return n1 is not null && n1.Equals(n2);
+        }
+
+        public static bool operator !=(NameReference? n1, NameReference n2)
+        {
+            return n1 is null && !n1.Equals(n2);
+        }
         public bool Equals(NameReference other)
         {
             return string.Equals(_name, other._name, StringComparison.OrdinalIgnoreCase) && _number == other._number;

@@ -161,10 +161,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
 
 		public bool ToBoolean(byte[] value, int startIndex)
 		{
-			if (value == null)
-			{
-				throw new ArgumentNullException(nameof(value));
-			}
+			ArgumentNullException.ThrowIfNull(value);
 
 			if (startIndex < 0 || startIndex > value.Length - 1)
 			{
@@ -218,30 +215,21 @@ namespace LegendaryExplorerCore.Gammtek.IO
 
 		public string ToString(byte[] value)
 		{
-			if (value == null)
-			{
-				throw new ArgumentNullException(nameof(value));
-			}
+			ArgumentNullException.ThrowIfNull(value);
 
 			return BitConverter.ToString(value);
 		}
 
 		public string ToString(byte[] value, int startIndex)
 		{
-			if (value == null)
-			{
-				throw new ArgumentNullException(nameof(value));
-			}
+			ArgumentNullException.ThrowIfNull(value);
 
 			return BitConverter.ToString(value, startIndex);
 		}
 
 		public string ToString(byte[] value, int startIndex, int length)
 		{
-			if (value == null)
-			{
-				throw new ArgumentNullException(nameof(value));
-			}
+			ArgumentNullException.ThrowIfNull(value);
 
 			return BitConverter.ToString(value, startIndex, length);
 		}
@@ -263,10 +251,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
 
 		private long CheckedFromBytes(byte[] value, int startIndex, int bytesToConvert)
 		{
-			if (value == null)
-			{
-				throw new ArgumentNullException(nameof(value));
-			}
+			ArgumentNullException.ThrowIfNull(value);
 
 			if (startIndex < 0 || startIndex > value.Length - bytesToConvert)
 			{
@@ -278,10 +263,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
 
 		private void CopyBytes(long value, int bytes, byte[] buffer, int index)
 		{
-			if (buffer == null)
-			{
-				throw new ArgumentNullException(nameof(buffer));
-			}
+			ArgumentNullException.ThrowIfNull(buffer);
 
 			if (buffer.Length < index + bytes)
 			{
@@ -305,10 +287,7 @@ namespace LegendaryExplorerCore.Gammtek.IO
 
 		private long FromBytes(byte[] buffer, int startIndex, int bytesToConvert)
 		{
-			if (buffer == null)
-			{
-				throw new ArgumentNullException(nameof(buffer));
-			}
+			ArgumentNullException.ThrowIfNull(buffer);
 
 			long returnValue = 0;
 

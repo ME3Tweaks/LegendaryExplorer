@@ -161,6 +161,22 @@ namespace LegendaryExplorer.GameInterop
             return WindowsAPI.SendMessage(hWnd, Msg, 0, 0) != 0;
         }
 
+        internal static int GetInteropVersion(MEGame game)
+        {
+            if (!game.IsLEGame())
+            {
+                throw new ArgumentException($"{nameof(GetInteropVersion)} only support LE games");
+            }
+
+            return game switch
+            {
+                MEGame.LE1 => LE1InteropTarget.InteropASIVersion,
+                MEGame.LE2 => LE2InteropTarget.InteropASIVersion,
+                MEGame.LE3 => LE3InteropTarget.InteropASIVersion,
+                _ => throw new ArgumentException("Invalid LE game passed to GetInteropVersion!") // Required default case
+            };
+        }
+
         static readonly Dictionary<char, Keys> characterMapping = new()
         {
             ['a'] = Keys.A,

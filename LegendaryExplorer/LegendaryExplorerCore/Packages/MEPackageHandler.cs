@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -132,7 +133,7 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="quickLoad">Only load the header. Meant for when you just need to get info about a package without caring about the contents.</param>
         /// <param name="diskIOSyncLock">If provided, all I/O will be done inside a lock on this object</param>
         /// <returns></returns>
-        public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false, bool quickLoad = false, object diskIOSyncLock = null)
+        public static IMEPackage OpenMEPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false, bool quickLoad = false, Lock diskIOSyncLock = null)
         {
             //Debug.WriteLine($"Opening package {pathToFile}");
             if (File.Exists(pathToFile))

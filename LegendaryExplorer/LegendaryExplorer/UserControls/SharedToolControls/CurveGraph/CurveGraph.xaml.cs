@@ -22,6 +22,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
         public string Label { get; set; }
         public SolidColorBrush Color { get; set; }
         public double LabelOffset { get; set; }
+
+        public Line existingLine;
+        public Label existingLabel;
     }
 
     /// <summary>
@@ -297,7 +300,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             // Extra lines
             foreach (ExtraCurveGraphLine extraLine in ExtraXLines)
             {
-                RenderXGridLine(extraLine.Position, extraLine.Label, extraLine.LabelOffset, extraLine.Color);
+                (extraLine.existingLine, extraLine.existingLabel) = RenderXGridLine(extraLine.Position, extraLine.Label, extraLine.LabelOffset, extraLine.Color);
             }
 
             if (ShowReferenceCurve && ComparisonCurve != null && ComparisonCurve.CurvePoints.Count > 0)
@@ -316,7 +319,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             TrackLoading = false;
         }
 
-        private void RenderXGridLine(double position, string content = null, double yoffset = 0, SolidColorBrush color = null)
+        private (Line, Label) RenderXGridLine(double position, string content = null, double yoffset = 0, SolidColorBrush color = null)
         {
             var line = new Line();
             Canvas.SetLeft(line, toLocalX(position));
@@ -328,8 +331,10 @@ namespace LegendaryExplorer.UserControls.SharedToolControls
             var label = new Label();
             Canvas.SetLeft(label, toLocalX(position));
             Canvas.SetBottom(label, yoffset);
+            if (color != null) label.Foreground = color;
             label.Content = content ?? position.ToString("0.00");
             graph.Children.Add(label);
+            return (line, label);
         }
 
         private void RenderYGridLine(double position)

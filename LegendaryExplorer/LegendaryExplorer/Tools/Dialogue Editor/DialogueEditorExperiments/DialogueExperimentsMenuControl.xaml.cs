@@ -35,6 +35,11 @@ namespace LegendaryExplorer.Tools.Dialogue_Editor.DialogueEditorExperiments
             DialogueEditorExperimentsM.AddSpeakerWithSharedFXAToAllConvos(GetDEWindow());
         }
 
+        private void ExtractAllAudioBySpeakerTag_Click(object sender, RoutedEventArgs e)
+        {
+            DialogueEditorExperimentsM.ExtractAllAudioFromSpeakerByTag(GetDEWindow());
+        }
+
         #endregion
 
         // EXPERIMENTS: EXKYWOR------------------------------------------------------------

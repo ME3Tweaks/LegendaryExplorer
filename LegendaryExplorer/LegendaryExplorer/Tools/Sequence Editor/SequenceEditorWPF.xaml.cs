@@ -7,7 +7,7 @@ using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.SharedUI.PeregrineTreeView;
-using LegendaryExplorer.Tools.PathfindingEditor;
+using LegendaryExplorer.Tools.CustomFilesManager;
 using LegendaryExplorer.Tools.PlotEditor;
 using LegendaryExplorer.Tools.Sequence_Editor.Experiments;
 using LegendaryExplorer.Tools.SequenceObjects;
@@ -17,6 +17,7 @@ using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Kismet;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
@@ -41,12 +42,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using LegendaryExplorer.Tools.CustomFilesManager;
 using Color = System.Drawing.Color;
 using Image = System.Drawing.Image;
-using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
-using LegendaryExplorer.Tools.PackageEditor;
 
 namespace LegendaryExplorer.Tools.Sequence_Editor
 {
@@ -179,6 +177,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
         public ICommand CheckSequenceSetsCommand { get; set; }
         public ICommand ConvertSeqActLogCommentCommand { get; set; }
         public ICommand GotoCommand { get; set; }
+        public ICommand InstallKismetLoggerCommand { get; set; }
         public ICommand KismetLogCommand { get; set; }
         public ICommand KismetLogCurrentSequenceCommand { get; set; }
         public ICommand SearchCommand { get; set; }
@@ -202,6 +201,7 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             SaveViewCommand = new GenericCommand(() => saveView(), () => CurrentObjects.Any);
             AutoLayoutCommand = new GenericCommand(() => AutoLayout(), () => CurrentObjects.Any);
             GotoCommand = new GenericCommand(GoTo, PackageIsLoaded);
+            InstallKismetLoggerCommand = new GenericCommand(InstallKismetLogger, CanInstallKismetLogger);
             KismetLogCommand = new RelayCommand(OpenKismetLogParser, CanOpenKismetLog);
             ScanFolderForLoopsCommand = new GenericCommand(ScanFolderPackagesForTightLoops);
             CheckSequenceSetsCommand = new GenericCommand(() => SequenceEditorExperimentsM.CheckSequenceSets(this),
@@ -224,6 +224,61 @@ namespace LegendaryExplorer.Tools.Sequence_Editor
             DesignerCreateExternCommand = new GenericCommand(CreateExtern, () => SelectedSequence != null);
             DesignerCreateInputCommand = new GenericCommand(CreateInput, () => SelectedSequence != null);
             DesignerCreateOutputCommand = new GenericCommand(CreateOutput, () => SelectedSequence != null);
+        }
+
+        private int GetKismetLoggerASIId(MEGame game)
+        {
+            return game switch
+            {
+                MEGame.ME2 => ASIModIDs.ME2_KISMET_LOGGER,
+                MEGame.ME3 => ASIModIDs.ME3_KISMET_LOGGER,
+                MEGame.LE1 => ASIModIDs.LE1_KISMET_LOGGER,
+                MEGame.LE2 => ASIModIDs.LE2_KISMET_LOGGER,
+                MEGame.LE3 => ASIModIDs.LE3_KISMET_LOGGER,
+                _ => 0
+            };
+        }
+
+        private void InstallKismetLogger()
+        {
+            if (ModManagerIntegration.GetModManagerBuildNumber() >= 126)
+            {
+                int modId = GetKismetLoggerASIId(Pcc.Game);
+                if (modId != 0)
+                {
+                    ModManagerIntegration.RequestASIInstallation(Pcc.Game, modId);
+                }
+            }
+        }
+
+        private bool CanInstallKismetLogger()
+        {
+            if (Pcc == null || Pcc.Game == MEGame.ME1)
+            {
+                return false;
+            }
+
+            // Detecting OT ASIs is difficult due to versioning info not being available.
+            if (Pcc.Game.IsOTGame())
+            {
+                return false;
+            }
+
+            var kismetLoggerAsiId = GetKismetLoggerASIId(Pcc.Game);
+
+            // We use enumerator so once we find the one we care about we don't do anything
+            // with the rest.
+            foreach(var asi in ASIModIDs.GetInstalledASIModIds(MEDirectories.GetExecutableFolderPath(Pcc.Game)))
+            {
+                if (asi.id == kismetLoggerAsiId)
+                {
+                    // Already installed.
+                    return false;
+                }
+            }
+
+            // Not installed
+            return true;
         }
 
         private void CreateOutput()

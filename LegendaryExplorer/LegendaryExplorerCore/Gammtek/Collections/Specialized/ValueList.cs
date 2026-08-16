@@ -252,8 +252,7 @@ internal struct ValueList<T> : IEnumerable<T>
     public ref T GetReferenceUnsafe(int index)
     {
 #if DEBUG
-        ThrowHelper.ThrowExceptionIfNull(nameof(_items), _items);
-        Guard.IsNotNull(_items);
+        ArgumentNullException.ThrowIfNull(_items);
         Guard.IsLessThanOrEqualTo((uint)index, (uint)Capacity);
 #endif
         return ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(_items), index);

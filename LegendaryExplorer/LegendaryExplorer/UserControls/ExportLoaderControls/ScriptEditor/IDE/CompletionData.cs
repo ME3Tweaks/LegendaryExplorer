@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using FontAwesome5;
+﻿using FontAwesome5;
 using FontAwesome5.Extensions;
 using ICSharpCode.AvalonEdit.CodeCompletion;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Editing;
+using System;
+using System.Windows.Media;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
 {
@@ -17,11 +13,25 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
         public CompletionData(string text, string description = null)
         {
             Text = text;
-            Description = description;
+            descriptionText = description;
         }
 
         public string Text { get; set; }
-        public object Description { get; set; }
+
+        private string descriptionText;
+
+        private object _description;
+        public object Description
+        {
+            get
+            {
+                if (_description is null && descriptionText is not null)
+                {
+                    _description = CompletionHelper.CreateDescriptionBlock(descriptionText);
+                }
+                return _description;
+            }
+        }
         public double Priority => 0;
         public object Content => Text;
 

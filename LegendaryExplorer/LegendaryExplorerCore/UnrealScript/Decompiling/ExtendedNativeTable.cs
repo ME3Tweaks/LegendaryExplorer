@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
@@ -24,7 +25,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
 
     internal partial class ByteCodeDecompiler
     {
-        private Dictionary<int, NativeTableEntry> NativeTable => Game switch
+        private FrozenDictionary<int, NativeTableEntry> NativeTable => Game switch
         {
             MEGame.ME3 => ME3NativeTable,
             MEGame.ME2 => ME2NativeTable,
@@ -36,7 +37,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             _ => throw new Exception($"Native table does not exist for {Game}!")
         };
 
-        private static readonly Dictionary<int, NativeTableEntry> ME3NativeTable = new() 
+        private static readonly FrozenDictionary<int, NativeTableEntry> ME3NativeTable = new Dictionary<int, NativeTableEntry>
         {
             { 0x81, new NativeTableEntry { Name = "!", Type = NativeType.PreOperator } },
             { 0x82, new NativeTableEntry { Name = "&&", Type = NativeType.Operator, Precedence = 30 } },
@@ -241,9 +242,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             { 0xF81, new NativeTableEntry { Name = "MoveSmooth", Type = NativeType.Function } },
             { 0xF82, new NativeTableEntry { Name = "SetPhysics", Type = NativeType.Function } },
             { 0xF83, new NativeTableEntry { Name = "AutonomousPhysics", Type = NativeType.Function } },
-        };
+        }.ToFrozenDictionary();
 
-        private static readonly Dictionary<int, NativeTableEntry> ME2NativeTable = new()
+        private static readonly FrozenDictionary<int, NativeTableEntry> ME2NativeTable = new Dictionary<int, NativeTableEntry>
         {
             { 0x70, new NativeTableEntry { Name = "$", Type = NativeType.Operator, Precedence = 40 } },
             { 0x71, new NativeTableEntry { Name = "GotoState", Type = NativeType.Function } },
@@ -449,9 +450,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             { 0xF81, new NativeTableEntry { Name = "MoveSmooth", Type = NativeType.Function } },
             { 0xF82, new NativeTableEntry { Name = "SetPhysics", Type = NativeType.Function } },
             { 0xF83, new NativeTableEntry { Name = "AutonomousPhysics", Type = NativeType.Function } },
-        };
+        }.ToFrozenDictionary();
 
-        private static readonly Dictionary<int, NativeTableEntry> ME1NativeTable = new()
+        private static readonly FrozenDictionary<int, NativeTableEntry> ME1NativeTable = new Dictionary<int, NativeTableEntry>
         {
             { 0x70, new NativeTableEntry { Name = "$", Type = NativeType.Operator, Precedence = 40 } },
             { 0x71, new NativeTableEntry { Name = "GotoState", Type = NativeType.Function } },
@@ -657,9 +658,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             { 0xF81, new NativeTableEntry { Name = "MoveSmooth", Type = NativeType.Function } },
             { 0xF82, new NativeTableEntry { Name = "SetPhysics", Type = NativeType.Function } },
             { 0xF83, new NativeTableEntry { Name = "AutonomousPhysics", Type = NativeType.Function } },
-        };
+        }.ToFrozenDictionary();
 
-        private static readonly Dictionary<int, NativeTableEntry> LE3NativeTable = new()
+        private static readonly FrozenDictionary<int, NativeTableEntry> LE3NativeTable = new Dictionary<int, NativeTableEntry>
         {
             { 0x81, new NativeTableEntry { Name = "!", Type = NativeType.PreOperator } },
             { 0x82, new NativeTableEntry { Name = "&&", Type = NativeType.Operator, Precedence = 30 } },
@@ -864,9 +865,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             { 0xF81, new NativeTableEntry { Name = "MoveSmooth", Type = NativeType.Function } },
             { 0xF82, new NativeTableEntry { Name = "SetPhysics", Type = NativeType.Function } },
             { 0xF83, new NativeTableEntry { Name = "AutonomousPhysics", Type = NativeType.Function } },
-        };
+        }.ToFrozenDictionary();
 
-        private static readonly Dictionary<int, NativeTableEntry> LE2NativeTable = new()
+        private static readonly FrozenDictionary<int, NativeTableEntry> LE2NativeTable = new Dictionary<int, NativeTableEntry>
         {
             { 0x70, new NativeTableEntry { Name = "$", Type = NativeType.Operator, Precedence = 40 } },
             { 0x71, new NativeTableEntry { Name = "GotoState", Type = NativeType.Function } },
@@ -1073,9 +1074,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             { 0xF81, new NativeTableEntry { Name = "MoveSmooth", Type = NativeType.Function } },
             { 0xF82, new NativeTableEntry { Name = "SetPhysics", Type = NativeType.Function } },
             { 0xF83, new NativeTableEntry { Name = "AutonomousPhysics", Type = NativeType.Function } },
-        };
+        }.ToFrozenDictionary();
 
-        private static readonly Dictionary<int, NativeTableEntry> LE1NativeTable = new()
+        private static readonly FrozenDictionary<int, NativeTableEntry> LE1NativeTable = new Dictionary<int, NativeTableEntry>
         {
             { 0x70, new NativeTableEntry { Name = "$", Type = NativeType.Operator, Precedence = 40 } },
             { 0x71, new NativeTableEntry { Name = "GotoState", Type = NativeType.Function } },
@@ -1283,9 +1284,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             { 0xF81, new NativeTableEntry { Name = "MoveSmooth", Type = NativeType.Function } },
             { 0xF82, new NativeTableEntry { Name = "SetPhysics", Type = NativeType.Function } },
             { 0xF83, new NativeTableEntry { Name = "AutonomousPhysics", Type = NativeType.Function } },
-        };
+        }.ToFrozenDictionary();
 
-        public static readonly Dictionary<int, NativeTableEntry> UDKNativeTable = new()
+        public static readonly FrozenDictionary<int, NativeTableEntry> UDKNativeTable = new Dictionary<int, NativeTableEntry>
         {
             { 0x70, new NativeTableEntry { Name="$", Type=NativeType.Operator, Precedence=40} },
             { 0x71, new NativeTableEntry { Name="GotoState", Type=NativeType.Function, Precedence=0} },
@@ -1489,9 +1490,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             { 0xF81, new NativeTableEntry { Name="MoveSmooth", Type=NativeType.Function, Precedence=0} },
             { 0xF82, new NativeTableEntry { Name="SetPhysics", Type=NativeType.Function, Precedence=0} },
             { 0xF83, new NativeTableEntry { Name="AutonomousPhysics", Type=NativeType.Function, Precedence=0} },
-        };
+        }.ToFrozenDictionary();
 
-        private static readonly Dictionary<int, string> PrimitiveCastTable = new()
+        private static readonly FrozenDictionary<int, string> PrimitiveCastTable = new Dictionary<int, string>
         {
             { 0x36, OBJECT }, // InterfaceToObject
             { 0x37, STRING }, // InterfaceToString
@@ -1535,9 +1536,9 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             { 0x5D, STRINGREF }, // IntToStringRef
             //{ 0x5F, "UNKN_TYPE_5F"}, //UNUSED
             { 0x60, NAME }, // StringToName
-        };
+        }.ToFrozenDictionary();
         
-        private static readonly Dictionary<string, InOpDeclaration> NonNativeOperators = new()
+        private static readonly FrozenDictionary<string, InOpDeclaration> NonNativeOperators = new Dictionary<string, InOpDeclaration>
         {
             ["ClockwiseFrom_IntInt"] = new InOpDeclaration(TokenType.ClockwiseFrom, 24, 0, null, null, null),
             ["EqualEqual_InterfaceInterface"] = new InOpDeclaration(TokenType.Equals, 24, 0, null, null, null),
@@ -1551,6 +1552,6 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             ["Add_ColorColor"] = new InOpDeclaration(TokenType.PlusSign, 20, 0, null, null, null),
             ["Multiply_LinearColorFloat"] = new InOpDeclaration(TokenType.StarSign, 20, 0, null, null, null),
             ["Subtract_LinearColorLinearColor"] = new InOpDeclaration(TokenType.MinusSign, 16, 0, null, null, null),
-        };
+        }.ToFrozenDictionary();
     }
 }

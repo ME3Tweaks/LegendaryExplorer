@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Numerics;
 
-namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
+namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
 {
     public class SceneCamera
     {

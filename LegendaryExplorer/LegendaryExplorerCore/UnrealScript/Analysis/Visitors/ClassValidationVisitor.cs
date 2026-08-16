@@ -354,7 +354,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 if (needsAdd)
                 {
-                    if (node.VarType is not PrimitiveType)
+                    if (node.VarType is not PrimitiveType && node.Outer is not Function { IsLambda: true })
                     {
                         node.VarType.Outer = node;
                         var typeStub = node.VarType;
@@ -362,9 +362,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                         {
                             return Error($"No type named '{node.VarType.DisplayName()}' exists!", node.VarType.StartPos, node.VarType.EndPos);
                         }
-
                         //Tokens will only be set when parsing source code, not when linking up a decompiled AST
-                        if (Log.Tokens is not null)
+                        if (Log.Tokens is not null && typeStub.StartPos > 0)
                         {
                             Log.Tokens.AddDefinitionLink(node.VarType, typeStub.StartPos, typeStub.TextLength);
                             //disgusting hack...
@@ -378,11 +377,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                                             ScriptToken typeNameToken = Log.Tokens.TokensSpan[idx];
                                             if (node.VarType is Struct)
                                             {
-                                                typeNameToken.SyntaxType = EF.Struct;
+                                                typeNameToken.SyntaxType = ST.Struct;
                                             }
                                             else if (node.VarType is Enumeration)
                                             {
-                                                typeNameToken.SyntaxType = EF.Enum;
+                                                typeNameToken.SyntaxType = ST.Enum;
                                             }
                                         }
                                         break;
@@ -395,11 +394,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                                             ScriptToken typeNameToken = Log.Tokens.TokensSpan[idx];
                                             if (dynArrType.ElementType is Struct)
                                             {
-                                                typeNameToken.SyntaxType = EF.Struct;
+                                                typeNameToken.SyntaxType = ST.Struct;
                                             }
                                             else if (dynArrType.ElementType is Enumeration)
                                             {
-                                                typeNameToken.SyntaxType = EF.Enum;
+                                                typeNameToken.SyntaxType = ST.Enum;
                                             }
                                         }
                                         break;
@@ -1182,6 +1181,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(DefaultPropertiesBlock node)
         { throw new NotImplementedException(); }
         public bool VisitNode(Subobject node)
+        { throw new NotImplementedException(); }
+
+        public bool VisitNode(LambdaExpression lambdaExpression)
         { throw new NotImplementedException(); }
         #endregion
     }

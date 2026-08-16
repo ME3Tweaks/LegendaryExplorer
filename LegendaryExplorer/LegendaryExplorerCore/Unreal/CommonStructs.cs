@@ -21,6 +21,18 @@ namespace LegendaryExplorerCore.Unreal
         }
         public static Vector3 GetVector3(StructProperty vecProp) =>
             new Vector3(vecProp.GetProp<FloatProperty>("X"), vecProp.GetProp<FloatProperty>("Y"), vecProp.GetProp<FloatProperty>("Z"));
+        public static StructProperty PlaneProp(Plane plane, NameReference? name = null) => PlaneProp(plane.Normal.X, plane.Normal.Y, plane.Normal.Z, plane.D, name);
+        public static StructProperty PlaneProp(float x, float y, float z, float w, NameReference? name = null)
+        {
+            return new StructProperty("Vector", [
+                new FloatProperty(w, "W"),
+                new FloatProperty(x, "X"),
+                new FloatProperty(y, "Y"),
+                new FloatProperty(z, "Z")
+            ], name, true);
+        }
+        public static Plane GetPlane(StructProperty planeProp) =>
+            new Plane(planeProp.GetProp<FloatProperty>("X"), planeProp.GetProp<FloatProperty>("Y"), planeProp.GetProp<FloatProperty>("Z"), planeProp.GetProp<FloatProperty>("W"));
 
         public static Vector3 GetVector3(ExportEntry exp, string propName, Vector3 defaultValue)
         {
@@ -97,6 +109,11 @@ namespace LegendaryExplorerCore.Unreal
 
         public static Guid GetGuid(StructProperty guidProp)
         {
+            if (guidProp == null)
+            {
+                return Guid.Empty;
+            }
+
             int a = guidProp.GetProp<IntProperty>("A");
             int b = guidProp.GetProp<IntProperty>("B");
             int c = guidProp.GetProp<IntProperty>("C");
@@ -107,6 +124,19 @@ namespace LegendaryExplorerCore.Unreal
             ms.WriteInt32(c);
             ms.WriteInt32(d);
             return new Guid(ms.ToArray());
+        }
+
+        public record Cylinder(float Radius, float Height);
+        public static Cylinder GetCylinder(StructProperty cylinderProp)
+        {
+            if (cylinderProp == null)
+            {
+                return new Cylinder(0, 0);
+            }
+
+            var radius = cylinderProp.GetProp<FloatProperty>("Radius");
+            var height = cylinderProp.GetProp<FloatProperty>("Height");
+            return new Cylinder(radius.Value, height.Value);
         }
 
         public static StructProperty ColorProp(System.Drawing.Color color, NameReference? name = null)
@@ -126,16 +156,16 @@ namespace LegendaryExplorerCore.Unreal
         {
             return new StructProperty("LinearColor", [
                 new FloatProperty(r, "R"),
-                new FloatProperty(r, "G"),
-                new FloatProperty(r, "B"),
-                new FloatProperty(r, "A")
+                new FloatProperty(g, "G"),
+                new FloatProperty(b, "B"),
+                new FloatProperty(a, "A")
             ], name, true);
         }
 
-        public static LinearColor GetLinearColor(StructProperty prop) => 
-            new (prop.GetProp<FloatProperty>("R").Value, 
-                prop.GetProp<FloatProperty>("G").Value, 
-                prop.GetProp<FloatProperty>("B").Value, 
+        public static LinearColor GetLinearColor(StructProperty prop) =>
+            new (prop.GetProp<FloatProperty>("R").Value,
+                prop.GetProp<FloatProperty>("G").Value,
+                prop.GetProp<FloatProperty>("B").Value,
                 prop.GetProp<FloatProperty>("A").Value);
     }
 }

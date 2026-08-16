@@ -210,7 +210,8 @@ public partial class BinaryInterpreterWPF
             for (int i = 0; i < materialShaderMapcount; i++)
             {
                 var nodes = new List<ITreeItem>();
-                materialShaderMaps.Items.Add(new BinInterpNode(bin.Position, $"Material Shader Map {i}") { Items = nodes });
+                var rootNode = new BinInterpNode(bin.Position, $"Material Shader Map {i}") { Items = nodes };
+                materialShaderMaps.Items.Add(rootNode);
                 nodes.Add(ReadFStaticParameterSet(bin));
 
                 if (Pcc.Game >= MEGame.ME3)
@@ -261,7 +262,10 @@ public partial class BinaryInterpreterWPF
 
                 nodes.Add(new BinInterpNode(bin.Position, $"MaterialId: {bin.ReadGuid()}") { Length = 16 });
 
-                nodes.Add(MakeStringNode(bin, "Friendly Name", Pcc.Game));
+                var pos = bin.Position;
+                var friendlyName = bin.ReadUnrealString();
+                nodes.Add(new BinInterpNode(pos, $"Friendly Name: {friendlyName}"));
+                rootNode.Header += $" ({friendlyName})";
 
                 nodes.Add(ReadFStaticParameterSet(bin));
 
@@ -335,7 +339,7 @@ public partial class BinaryInterpreterWPF
         return subnodes;
     }
 
-    private BinInterpNode ReadShaderParameters(EndianReader bin, string shaderType, out Exception exception)
+    public BinInterpNode ReadShaderParameters(EndianReader bin, string shaderType, out Exception exception)
     {
         exception = null;
         if (!CurrentLoadedExport.Game.IsLEGame())
@@ -1674,7 +1678,7 @@ public partial class BinaryInterpreterWPF
                 [
                     MakeInt32Node(bin, "unk int 1"),
                     MakeBoolIntNode(bin, "UniformPixelShaderParameters is well formed?"),
-                    MakeInt32Node(bin, "unk int 2")
+                    MakeInt32Node(bin, "UniformPixelScalarShaderParameterCount")
                 ]);
             }
             super.Items.Add(FShaderParameter("WrapLightingParameters"));
@@ -1707,7 +1711,14 @@ public partial class BinaryInterpreterWPF
             }
             else
             {
-                return parameter($"(Type {bin.ReadByte()}) [{bin.ReadInt32()}]");
+                byte paramType = bin.ReadByte();
+                string paramTypePretty = $"(Type {paramType})";
+                if (paramType == 8) { paramTypePretty = "UniformPixelVectorShaderParameter"; }
+                else if (paramType == 15) { paramTypePretty = "UniformPixelScalarShaderParameter"; }
+                else if (paramType == 16) { paramTypePretty = "UniformPixel2DShaderResourceParameter"; }
+                else if (paramType == 32) { paramTypePretty = "UniformPixelCubeShaderResourceParameter"; }
+
+                return parameter($"{paramTypePretty} [{bin.ReadInt32()}]");
             }
         }
 

@@ -11,7 +11,7 @@ using SharpDX.Direct3D11;
 using Vector3 = System.Numerics.Vector3;
 using Vector4 = System.Numerics.Vector4;
 
-namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
+namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
 {
     internal static class ShaderParameterSetters
     {
@@ -144,12 +144,12 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
             }
             if (p.ScreenDoorNoiseTexture.IsBound())
             {
-                Debugger.Break();
+                //Debugger.Break();
                 context.ImmediateContext.PixelShader.SetShaderResource(p.ScreenDoorNoiseTexture.BaseIndex, null);
             }
             if (p.WrapLightingParameters.IsBound())
             {
-                Debugger.Break();
+                //Debugger.Break();
             }
         }
 
@@ -157,12 +157,12 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
         {
             if (p.SceneColorTexture.IsBound())
             {
-                Debugger.Break();
+                //Debugger.Break();
                 context.ImmediateContext.PixelShader.SetShaderResource(p.SceneColorTexture.BaseIndex, null);
             }
             if (p.SceneDepthTexture.IsBound())
             {
-                Debugger.Break();
+                //Debugger.Break();
                 context.ImmediateContext.PixelShader.SetShaderResource(p.SceneDepthTexture.BaseIndex, null);
             }
 

@@ -9,11 +9,10 @@ using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 
 namespace LegendaryExplorerCore.Coalesced.Xml
 {
-	public class XmlCoalesceAsset : CoalesceAsset
+	public partial class XmlCoalesceAsset : CoalesceAsset
 	{
-		//private static readonly Regex WhitespacePattern = new Regex("[\r\n\t]+", RegexOptions.Compiled);
-		//private static readonly Regex WhitespacePattern = new Regex(@"\s+", RegexOptions.Compiled);
-		private static readonly Regex SpecialCharactersPattern = new Regex(@"[\r\n\t]+", RegexOptions.Compiled);
+		[GeneratedRegex(@"[\r\n\t]+")]
+		private static partial Regex SpecialCharactersPattern { get; }
 
 		public XmlCoalesceAsset(string name = "", CoalesceSections sections = default, IList<CoalesceInclude> includes = null) : base(name, sections)
 		{
@@ -111,10 +110,7 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 
 		public void ReadIncludes(XElement root)
 		{
-			if (root == null)
-			{
-				throw new ArgumentNullException(nameof(root));
-			}
+			ArgumentNullException.ThrowIfNull(root);
 
 			var includesElement = root.Element("Includes");
 
@@ -155,10 +151,7 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 
 		public CoalesceProperty ReadProperty(XElement propertyElement)
 		{
-			if (propertyElement == null)
-			{
-				throw new ArgumentNullException(nameof(propertyElement));
-			}
+			ArgumentNullException.ThrowIfNull(propertyElement);
 
 			var propertyName = (string) propertyElement.Attribute("name");
 			//var optionsString = ((string) propertyElement.Attribute("options")) ?? "";
@@ -263,10 +256,7 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 
 		public void ReadSections(XElement root)
 		{
-			if (root == null)
-			{
-				throw new ArgumentNullException(nameof(root));
-			}
+			ArgumentNullException.ThrowIfNull(root);
 
 			var sectionsElement = root.Element("Sections");
 

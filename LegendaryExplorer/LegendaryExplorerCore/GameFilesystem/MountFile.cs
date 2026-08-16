@@ -277,6 +277,12 @@ namespace LegendaryExplorerCore.GameFilesystem
                     break;
             }
         }
+
+        public MountFile(MEGame game)
+        {
+            Game = game;
+        }
+
         /// <summary>
         /// Static method to get the mount priority of the Mount.dlc file at the given filepath
         /// </summary>
@@ -284,7 +290,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <returns>Mount priority</returns>
         public static int GetMountPriority(string filepath) => new MountFile(filepath).MountPriority;
 
-        private void LoadMountFileME2(MemoryStream ms)
+        public void LoadMountFileME2(MemoryStream ms)
         {
             ms.Seek(0x28, SeekOrigin.Begin);
             MountFlags = new MountFlag(ms.ReadInt32(), true);
@@ -296,7 +302,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             ME2Only_DLCFolderName = ms.ReadUnrealString();
         }
 
-        private void LoadMountFileME3(MemoryStream ms)
+        public void LoadMountFileME3(MemoryStream ms)
         {
             ms.Seek(0x10, SeekOrigin.Begin);
             MountPriority = ms.ReadUInt16();

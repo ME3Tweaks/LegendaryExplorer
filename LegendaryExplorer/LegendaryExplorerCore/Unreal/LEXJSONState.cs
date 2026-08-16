@@ -37,7 +37,7 @@ namespace LegendaryExplorerCore.Unreal
             return $"{entry.ClassName}'{entry.InstancedFullPath}'";
         }
         [GeneratedRegex("^([^']+)'([^']+)'$")]
-        private static partial Regex ObjectLiteralRegex();
+        private static partial Regex ObjectLiteralRegex { get; }
 
         public int PathToUIndex(string objLiteral)
         {
@@ -45,7 +45,7 @@ namespace LegendaryExplorerCore.Unreal
             {
                 return 0;
             }
-            Match m = ObjectLiteralRegex().Match(objLiteral);
+            Match m = ObjectLiteralRegex.Match(objLiteral);
             if (m.Groups.Count is not 3)
             {
                 throw new JsonException($"Could not parse {objLiteral} as an object literal");

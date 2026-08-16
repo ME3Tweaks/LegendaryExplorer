@@ -168,7 +168,7 @@ namespace LegendaryExplorer.Tools.AnimationViewer
                         }
                     }
 
-                    pos = new Vector3(floats[0], floats[1], floats[2]);
+                    pos = new Vector3(floats);
                 }
                 noUpdate = true;
                 XPos = (int)pos.X;
@@ -208,8 +208,8 @@ namespace LegendaryExplorer.Tools.AnimationViewer
             }
         }
 
-        public List<AnimationRecord> Animations { get; } = new();
-        private readonly List<(string fileName, string directory)> FileListExtended = new();
+        public List<AnimationRecord> Animations { get; } = [];
+        private readonly List<(string fileName, string directory)> FileListExtended = [];
 
         private AnimationRecord _selectedAnimation;
 

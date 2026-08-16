@@ -19,7 +19,7 @@ using Vector4 = System.Numerics.Vector4;
 // MODEL RENDERING OVERVIEW:
 // Construct a ModelPreview instance with an existing SkeletalMesh or StaticMesh.
 // Call ModelPreview.Render(...) every frame. Boom.
-namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
+namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
 {
     /// <summary>
     /// Stores the material information of triangles in a <see cref="ModelPreviewLOD"/> mesh.

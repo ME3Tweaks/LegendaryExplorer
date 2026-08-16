@@ -296,11 +296,32 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     {
                         filename = localDirectoryTFCPath;
                     }
-                    else if (additionalTFCs != null && additionalTFCs.Any(x => Path.GetFileName(x).Equals(archive, StringComparison.InvariantCultureIgnoreCase)))
+
+                    if (filename == null && localDirectoryTFCPath.Contains(@"\CookedPCConsole")
+                        && !string.Equals(Path.GetFileName(Path.GetDirectoryName(packagePathForLocalLookup)), "CookedPCConsole", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Package is in a subfolder of CookedPCConsole - walk up to find the CookedPCConsole parent and try it
+                        var dir = Path.GetDirectoryName(packagePathForLocalLookup);
+                        while (dir != null && !string.Equals(Path.GetFileName(dir), "CookedPCConsole", StringComparison.OrdinalIgnoreCase))
+                        {
+                            dir = Path.GetDirectoryName(dir);
+                        }
+                        if (dir != null)
+                        {
+                            var cookedTFCPath = Path.Combine(dir, archive);
+                            if (File.Exists(cookedTFCPath))
+                            {
+                                filename = cookedTFCPath;
+                            }
+                        }
+                    }
+
+                    if (filename == null && additionalTFCs != null && additionalTFCs.Any(x => Path.GetFileName(x).Equals(archive, StringComparison.InvariantCultureIgnoreCase)))
                     {
                         filename = additionalTFCs.First(x => Path.GetFileName(x).Equals(archive, StringComparison.InvariantCultureIgnoreCase));
                     }
-                    else
+
+                    if (filename == null)
                     {
                         //var tfcs = loadedFiles.Where(x => x.EndsWith(@".tfc")).ToList();
 

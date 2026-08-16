@@ -205,10 +205,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
         private IMEPackage meshPcc;
         private IMEPackage textPcc;
         private IMEPackage audioPcc;
+        private IMEPackage animPcc;
         private GridViewColumnHeader _lastHeaderClicked = null;
         private ListSortDirection _lastDirection = ListSortDirection.Ascending;
 
-        private BlockingCollection<ConvoLine> _linequeue = new();
+        private BlockingCollection<ConvoLine> _linequeue = [];
         private Tuple<string, string, int, string, bool> _currentConvo = new(null, null, -1, null, false); //ConvoName, FileName, export, contentdir, isAmbient
         public Tuple<string, string, int, string, bool> CurrentConvo
         {
@@ -257,7 +258,16 @@ namespace LegendaryExplorer.Tools.AssetDatabase
 
         private bool IsUsageSelected(object obj)
         {
-            return (lstbx_Usages.SelectedIndex >= 0 && currentView == 1) || (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 2) || (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 5) || (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3) || (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 6) || (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 4) || (lstbx_GUIUsages.SelectedIndex >= 0 && currentView == 7) || (lstbx_Lines.SelectedIndex >= 0 && currentView == 8) || (currentView == 9 && lstbx_PlotUsages.SelectedIndex >= 0) || (currentView == 0 && IsNotCND(lstbx_Files.SelectedItem));
+            return (lstbx_Usages.SelectedIndex >= 0 && currentView == 1)
+                || (materialsUsagesPanel.SelectedIndex >= 0 && currentView == 2)
+                || (meshesUsagesPanel.SelectedIndex >= 0 && currentView == 3)
+                || (texturesUsagesPanel.SelectedIndex >= 0 && currentView == 4)
+                || (animationsUsagesPanel.SelectedIndex >= 0 && currentView == 5)
+                || (vfxUsagesPanel.SelectedIndex >= 0 && currentView == 6)
+                || (guiUsagesPanel.SelectedIndex >= 0 && currentView == 7)
+                || (lstbx_Lines.SelectedIndex >= 0 && currentView == 8)
+                || (currentView == 9 && lstbx_PlotUsages.SelectedIndex >= 0)
+                || (currentView == 0 && IsNotCND(lstbx_Files.SelectedItem));
         }
 
         private bool IsNotCND(object obj)
@@ -379,14 +389,17 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             BIKExternalExportLoaderTab_BIKExternalExportLoader?.Dispose();
             EmbeddedTextureViewerTab_EmbeddedTextureViewer?.Dispose();
             MaterialEditorExportLoader_Control?.Dispose();
+            AnimPreviewControl?.Dispose();
 
             audioPcc?.Dispose();
             meshPcc?.Dispose();
             textPcc?.Dispose();
+            animPcc?.Dispose();
 
             audioPcc = null;
             meshPcc = null;
             textPcc = null;
+            animPcc = null;
 
             dbworker.DoWork -= GetLineStrings;
             dbworker.RunWorkerCompleted -= dbworker_LineWorkCompleted;
@@ -653,6 +666,11 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             textPcc?.Dispose();
             btn_TextRenderToggle.IsChecked = false;
             btn_TextRenderToggle.Content = "Toggle Texture Rendering";
+            AnimPreviewControl?.Clear();
+            animPcc?.Dispose();
+            animPcc = null;
+            btn_AnimPreviewToggle.IsChecked = false;
+            btn_AnimPreviewToggle.Content = "Toggle Animation Preview";
             MaterialEditorExportLoader_Control?.UnloadExport();
             SoundpanelWPF_ADB.UnloadExport();
             audioPcc?.Dispose();
@@ -894,41 +912,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                 (usagepkg, contentdir, usagemount) = FileListExtended[c.FileKey];
                 usageUID = c.UIndex;
             }
-            else if (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 2)
+            else if (GetSelectedPanelUsage(currentView) is IAssetUsage usage)
             {
-                var m = (MatUsage)lstbx_MatUsages.SelectedItem;
-                (usagepkg, contentdir, usagemount) = FileListExtended[m.FileKey];
-                usageUID = m.UIndex;
-            }
-            else if (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3)
-            {
-                var s = (MeshUsage)lstbx_MeshUsages.SelectedItem;
-                (usagepkg, contentdir, usagemount) = FileListExtended[s.FileKey];
-                usageUID = s.UIndex;
-            }
-            else if (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 4)
-            {
-                var t = (TextureUsage)lstbx_TextureUsages.SelectedItem;
-                (usagepkg, contentdir, usagemount) = FileListExtended[t.FileKey];
-                usageUID = t.UIndex;
-            }
-            else if (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 5)
-            {
-                var a = (AnimUsage)lstbx_AnimUsages.SelectedItem;
-                (usagepkg, contentdir, usagemount) = FileListExtended[a.FileKey];
-                usageUID = a.UIndex;
-            }
-            else if (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 6)
-            {
-                var ps = (ParticleSysUsage)lstbx_PSUsages.SelectedItem;
-                (usagepkg, contentdir, usagemount) = FileListExtended[ps.FileKey];
-                usageUID = ps.UIndex;
-            }
-            else if (lstbx_GUIUsages.SelectedIndex >= 0 && currentView == 7)
-            {
-                var sf = (GUIUsage)lstbx_GUIUsages.SelectedItem;
-                (usagepkg, contentdir, usagemount) = FileListExtended[sf.FileKey];
-                usageUID = sf.UIndex;
+                (usagepkg, contentdir, usagemount) = FileListExtended[usage.FileKey];
+                usageUID = usage.UIndex;
             }
             else if (lstbx_Lines.SelectedIndex >= 0 && currentView == 8)
             {
@@ -1300,6 +1287,15 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     btn_TextRenderToggle.Content = "Toggle Texture Rendering";
                 }
 
+                if (previousView == 5)
+                {
+                    AnimPreviewControl.Clear();
+                    animPcc?.Dispose();
+                    animPcc = null;
+                    btn_AnimPreviewToggle.IsChecked = false;
+                    btn_AnimPreviewToggle.Content = "Toggle Animation Preview";
+                }
+
                 if (currentView == 0)
                 {
                     menu_OpenUsage.Header = "Open File";
@@ -1328,6 +1324,15 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             if (currentView == 4 && lstbx_Textures.SelectedIndex >= 0)
             {
                 ToggleRenderTexture();
+            }
+        }
+
+        private void lstbx_Anims_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            e.Handled = true;
+            if (currentView == 5 && lstbx_Anims.SelectedIndex >= 0)
+            {
+                ToggleRenderAnimation();
             }
         }
 
@@ -1396,6 +1401,19 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             else
             {
                 btn_MeshRenderToggle.Content = "Toggle Mesh Rendering";
+            }
+        }
+
+        private void btn_AnimPreviewToggle_Click(object sender, RoutedEventArgs e)
+        {
+            ToggleRenderAnimation();
+            if (btn_AnimPreviewToggle.IsChecked == true)
+            {
+                btn_AnimPreviewToggle.Content = "Untoggle Animation Preview";
+            }
+            else
+            {
+                btn_AnimPreviewToggle.Content = "Toggle Animation Preview";
             }
         }
 
@@ -1468,6 +1486,94 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     }
                 }
                 meshPcc.Dispose();
+            }
+        }
+
+        private void ToggleRenderAnimation()
+        {
+            bool showAnim = btn_AnimPreviewToggle.IsChecked == true
+                && lstbx_Anims.SelectedIndex >= 0
+                && !((lstbx_Anims.SelectedItem as AnimationRecord)?.IsAmbPerf ?? true)
+                && currentView == 5;
+
+            if (!showAnim)
+            {
+                AnimPreviewControl.Clear();
+                animPcc?.Dispose();
+                animPcc = null;
+                return;
+            }
+
+            var anim = (AnimationRecord)lstbx_Anims.SelectedItem;
+            if (!anim.Usages.Any()) return;
+
+            int animUIndex = 0;
+            string filePath = null;
+
+            // find the first usage that we can actually resolve to a file; this will skip over mods that were uninstalled since the database was generated
+            foreach (var usage in anim.Usages)
+            {
+                int fileListIndex;
+                (fileListIndex, animUIndex, _) = usage;
+                filePath = GetFilePath(fileListIndex);
+                if (filePath != null)
+                {
+                    break;
+                }
+            }
+
+            if (filePath == null)
+            {
+                AnimPreviewControl.Clear();
+                return;
+            }
+
+            animPcc?.Dispose();
+            animPcc = MEPackageHandler.OpenMEPackage(filePath);
+
+            if (animPcc.IsUExport(animUIndex))
+            {
+                var animExp = animPcc.GetUExport(animUIndex);
+                LoadSkeletalMeshForAnimPreview();
+                AnimPreviewControl.LoadAnimSequence(animExp);
+                AnimPreviewControl.Play();
+            }
+        }
+
+        private void AnimPreview_MeshSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            LoadSkeletalMeshForAnimPreview();
+        }
+
+        private void LoadSkeletalMeshForAnimPreview()
+        {
+            if (cbx_AnimPreviewMesh.SelectedItem is MeshRecord meshRecord && meshRecord.Usages.Any())
+            {
+                string filePath = null;
+                int uIndex = 0;
+                // find the first usage that we can actually resolve. This will skip over mods that have been removed since the database was generated
+                foreach (var (fileKey, tempUIndex, _) in meshRecord.Usages)
+                {
+                    filePath = GetFilePath(fileKey);
+                    if (filePath != null)
+                    {
+                        uIndex = tempUIndex;
+                        break;
+                    }
+                }
+
+                // in case we can't find a resolvable usage, clear the animation preview
+                if (filePath == null)
+                {
+                    AnimPreviewControl.Clear();
+                    return;
+                }
+
+                using var meshPackage = MEPackageHandler.OpenMEPackage(filePath);
+                if (meshPackage.IsUExport(uIndex))
+                {
+                    AnimPreviewControl.LoadSkeletalMesh(meshPackage.GetUExport(uIndex));
+                }
             }
         }
 
@@ -1807,10 +1913,10 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             var t = FilterBox.Text;
             if (!string.IsNullOrEmpty(t))
             {
-                showthis = f.FileName.ToLower().Contains(t.ToLower());
+                showthis = f.FileName.Contains(t, StringComparison.CurrentCultureIgnoreCase);
                 if (!showthis)
                 {
-                    showthis = f.Directory.ToLower().Contains(t.ToLower());
+                    showthis = f.Directory.Contains(t, StringComparison.CurrentCultureIgnoreCase);
                 }
             }
             return showthis;
@@ -1845,6 +1951,23 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     ICollectionView viewA = CollectionViewSource.GetDefaultView(CurrentDataBase.Animations);
                     viewA.Filter = AssetFilters.AnimationFilter.Filter;
                     lstbx_Anims.ItemsSource = viewA;
+                    List<MeshRecord> meshRecords = CurrentDataBase.Meshes.Where(m => m.IsSkeleton).ToList();
+                    cbx_AnimPreviewMesh.ItemsSource = meshRecords;
+
+                    //Tali
+                    string defaultMesh = CurrentGame switch
+                    {
+                        MEGame.LE1 => "QRN_FAC_ARM_LGTa_MDL",
+                        MEGame.ME1 => "QRN_FAC_ARM_LGTa_MDL",
+                        MEGame.LE2 => "QRN_TLI_LGTa_MDL",
+                        MEGame.ME2 => "QRN_TLI_LGTa_MDL",
+                        //LE3/ME3
+                        _ => "QRN_ARM_TLIa_MDL"
+                    };
+                    if (meshRecords.FindIndex(mr => mr.MeshName == defaultMesh) is int idx and > 0)
+                    {
+                        cbx_AnimPreviewMesh.SelectedIndex = idx;
+                    }
                     break;
                 case 6: //Particles
                     ICollectionView viewP = CollectionViewSource.GetDefaultView(CurrentDataBase.Particles);
@@ -2103,35 +2226,9 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                         var c = (ClassUsage)lstbx_Usages.SelectedItem;
                         FileKey = c.FileKey;
                     }
-                    else if (lstbx_MatUsages.SelectedIndex >= 0 && currentView == 2)
+                    else if (GetSelectedPanelUsage(currentView) is IAssetUsage panelUsage)
                     {
-                        var m = (MatUsage)lstbx_MatUsages.SelectedItem;
-                        FileKey = m.FileKey;
-                    }
-                    else if (lstbx_MeshUsages.SelectedIndex >= 0 && currentView == 3)
-                    {
-                        var s = (MeshUsage)lstbx_MeshUsages.SelectedItem;
-                        FileKey = s.FileKey;
-                    }
-                    else if (lstbx_TextureUsages.SelectedIndex >= 0 && currentView == 4)
-                    {
-                        var t = (TextureUsage)lstbx_TextureUsages.SelectedItem;
-                        FileKey = t.FileKey;
-                    }
-                    else if (lstbx_AnimUsages.SelectedIndex >= 0 && currentView == 5)
-                    {
-                        var a = (AnimUsage)lstbx_AnimUsages.SelectedItem;
-                        FileKey = a.FileKey;
-                    }
-                    else if (lstbx_PSUsages.SelectedIndex >= 0 && currentView == 6)
-                    {
-                        var ps = (ParticleSysUsage)lstbx_PSUsages.SelectedItem;
-                        FileKey = ps.FileKey;
-                    }
-                    else if (lstbx_GUIUsages.SelectedIndex >= 0 && currentView == 7)
-                    {
-                        var sf = (GUIUsage)lstbx_GUIUsages.SelectedItem;
-                        FileKey = sf.FileKey;
+                        FileKey = panelUsage.FileKey;
                     }
                     else if (lstbx_Lines.SelectedIndex >= 0 && currentView == 8)
                     {
@@ -2422,38 +2519,15 @@ namespace LegendaryExplorer.Tools.AssetDatabase
             CommandManager.InvalidateRequerySuggested(); //Refresh commands
         }
 
-        private void CopyUsages_Click(object sender, RoutedEventArgs e)
+        public void CopyUsagesFromPanel(AssetUsagesPanel panel)
         {
-            string text = null;
-
             if (FileListExtended == null || !FileListExtended.Any())
-                return; // Can't copy anything
+                return;
 
-            if (sender == CopyUsagesMaterials_Button && lstbx_Materials.SelectedItem is MaterialRecord matR)
-            {
-                text = string.Join("\n", matR.Usages.Select(x => FileListExtended[x.FileKey]?.FileName).Distinct());
-            }
-            else if (sender == CopyUsagesTextures_Button && lstbx_Textures.SelectedItem is TextureRecord tr)
-            {
-                text = string.Join("\n", tr.Usages.Select(x => FileListExtended[x.FileKey]?.FileName).Distinct());
-            }
-            else if (sender == CopyUsagesMeshes_Button && lstbx_Meshes.SelectedItem is MeshRecord mr)
-            {
-                text = string.Join("\n", mr.Usages.Select(x => FileListExtended[x.FileKey]?.FileName).Distinct());
-            }
-            else if (sender == CopyUsagesAnimations_Button && lstbx_Anims.SelectedItem is AnimationRecord animR)
-            {
-                text = string.Join("\n", animR.Usages.Select(x => FileListExtended[x.FileKey]?.FileName).Distinct());
-            }
-            else if (sender == CopyUsagesVFX_Button && lstbx_Particles.SelectedItem is ParticleSysRecord psysR)
-            {
-                text = string.Join("\n", psysR.Usages.Select(x => FileListExtended[x.FileKey]?.FileName).Distinct());
-            }
-            else if (sender == CopyUsagesGUI_Button && lstbx_Scaleform.SelectedItem is GUIElement ge)
-            {
-                text = string.Join("\n", ge.Usages.Select(x => FileListExtended[x.FileKey]?.FileName).Distinct());
-            }
+            if (panel.UsagesSource is not IEnumerable<IAssetUsage> usages)
+                return;
 
+            var text = string.Join("\n", usages.Select(x => FileListExtended[x.FileKey]?.FileName).Distinct());
             if (text != null)
             {
                 try
@@ -2465,6 +2539,20 @@ namespace LegendaryExplorer.Tools.AssetDatabase
                     MessageBox.Show(ex.Message, "Error copying to clipboard", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
+        }
+
+        private IAssetUsage GetSelectedPanelUsage(int view)
+        {
+            return view switch
+            {
+                2 => materialsUsagesPanel.SelectedItem as IAssetUsage,
+                3 => meshesUsagesPanel.SelectedItem as IAssetUsage,
+                4 => texturesUsagesPanel.SelectedItem as IAssetUsage,
+                5 => animationsUsagesPanel.SelectedItem as IAssetUsage,
+                6 => vfxUsagesPanel.SelectedItem as IAssetUsage,
+                7 => guiUsagesPanel.SelectedItem as IAssetUsage,
+                _ => null
+            };
         }
 
 

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using LegendaryExplorerCore.DebugTools;
+﻿using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
@@ -13,6 +6,14 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using PropertyChanged;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 #if AZURE
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -45,6 +46,13 @@ namespace LegendaryExplorerCore.Unreal
             {
                 if (prop.Name == name && prop.StaticArrayIndex == staticArrayIndex)
                 {
+#if DEBUG
+                    //type check is duplicative of the assert, but we want to avoid the string construction cost even in debug builds, as this is a very hot path
+                    if (prop is not T)
+                    {
+                        Debug.Assert(prop is T, $"GetProp<{typeof(T).Name}>(\"{name}\"): property exists but is {prop.GetType().Name}. Check the generic type argument.");
+                    }
+#endif
                     return prop as T;
                 }
             }
@@ -2289,5 +2297,184 @@ namespace LegendaryExplorerCore.Unreal
 
         ///<inheritdoc/>
         public override bool Equivalent(Property other, Func<int, int, bool> objectComparer = null) => false;
+    }
+
+    public static class PropertyCollectionExtensions
+    {
+        /// <summary>
+        /// Resolves the propertys in this array to Exports. If the object is an import, it will attempt to resolve it from another package.
+        /// Any null values or unresolved imports will be filtered out of the returned collection
+        /// </summary>
+        /// <param name="pcc">Package this property resides in</param>
+        /// <param name="cache">Cache to use if resolving an import</param>
+        public static IEnumerable<ExportEntry> ResolveToExports(this ArrayProperty<ObjectProperty> objArray, IMEPackage pcc, PackageCache cache)
+        {
+            foreach (var objProp in objArray)
+            {
+                if (objProp.ResolveToExport(pcc, cache) is ExportEntry export)
+                {
+                    yield return export;
+                }
+            }
+        }
+        /// <summary>
+        /// Resolves the propertys in this array to IEntries.
+        /// Any null values or invalid uIndexes will be filtered out of the returned collection
+        /// </summary>
+        /// <param name="pcc">Package this property resides in</param>
+        public static IEnumerable<IEntry> ResolveToEntries(this ArrayProperty<ObjectProperty> objArray, IMEPackage pcc)
+        {
+            foreach (var objProp in objArray)
+            {
+                if (objProp.ResolveToEntry(pcc) is {} entry)
+                {
+                    yield return entry;
+                }
+            }
+        }
+
+        public static T GetEnumValOrDefault<T>(this EnumProperty enumProp, T defaultVal) where T : struct, Enum
+        {
+            if (enumProp?.Value is NameReference valName && Enum.TryParse(valName.Instanced, true, out T enumVal))
+            {
+                return enumVal;
+            }
+            return defaultVal;
+        }
+
+        public static bool TryResolveObjectProp<T>(this PropertyCollection props, IMEPackage pcc, string propName, out T export) where T : class, IEntry
+        {
+            if (props.GetProp<ObjectProperty>(propName)?.ResolveToEntry(pcc) is T exp)
+            {
+                export = exp;
+                return true;
+            }
+            export = null;
+            return false;
+        }
+
+        public static bool TryGetProp<T>(this PropertyCollection props, NameReference name, out T prop, int staticArrayIndex = 0) where T : Property
+        {
+            prop = props.GetProp<T>(name, staticArrayIndex);
+            return prop is not null;
+        }
+
+        /// <summary>Gets the <see cref="IntProperty"/> with the specified name, returning <paramref name="defaultValue"/> if it does not exist.</summary>
+        public static int GetPropVal(this PropertyCollection props, NameReference name, int defaultValue, int staticArrayIndex = 0)
+            => props.GetProp<IntProperty>(name, staticArrayIndex)?.Value ?? defaultValue;
+
+        /// <summary>Gets the <see cref="FloatProperty"/> with the specified name, returning <paramref name="defaultValue"/> if it does not exist.</summary>
+        public static float GetPropVal(this PropertyCollection props, NameReference name, float defaultValue, int staticArrayIndex = 0)
+            => props.GetProp<FloatProperty>(name, staticArrayIndex)?.Value ?? defaultValue;
+
+        /// <summary>Gets the <see cref="BoolProperty"/> with the specified name, returning <paramref name="defaultValue"/> if it does not exist.</summary>
+        public static bool GetPropVal(this PropertyCollection props, NameReference name, bool defaultValue, int staticArrayIndex = 0)
+            => props.GetProp<BoolProperty>(name, staticArrayIndex)?.Value ?? defaultValue;
+
+        /// <summary>Gets the <see cref="StrProperty"/> with the specified name, returning <paramref name="defaultValue"/> if it does not exist.</summary>
+        public static string GetPropVal(this PropertyCollection props, NameReference name, string defaultValue, int staticArrayIndex = 0)
+            => props.GetProp<StrProperty>(name, staticArrayIndex)?.Value ?? defaultValue;
+
+        /// <summary>Gets the <see cref="NameProperty"/> with the specified name, returning <paramref name="defaultValue"/> if it does not exist.</summary>
+        public static NameReference GetPropVal(this PropertyCollection props, NameReference name, NameReference defaultValue, int staticArrayIndex = 0)
+            => props.GetProp<NameProperty>(name, staticArrayIndex)?.Value ?? defaultValue;
+
+        /// <summary>
+        /// Gets the value of the named <see cref="EnumProperty"/> as a <typeparamref name="TEnum"/>, returning <paramref name="defaultValue"/> if the property does not exist.
+        /// Fires a debug assertion if the stored enum name cannot be parsed as <typeparamref name="TEnum"/>.
+        /// </summary>
+        public static TEnum GetPropVal<TEnum>(this PropertyCollection props, NameReference name, TEnum defaultValue, int staticArrayIndex = 0) where TEnum : struct, Enum
+        {
+            NameReference? value = props.GetProp<EnumProperty>(name, staticArrayIndex)?.Value;
+            if (value is null)
+            {
+                return defaultValue;
+            }
+            if (Enum.TryParse(value.Value.Name, out TEnum result))
+            {
+                return result;
+            }
+            Debug.Assert(false, $"GetPropEnum<{typeof(TEnum).Name}>(\"{name}\"): Could not parse \"{value.Value.Name}\" as {typeof(TEnum).Name}.");
+            return defaultValue;
+        }
+
+        public static bool TryGetProp<T>(this StructProperty props, NameReference name, out T prop, int staticArrayIndex = 0) where T : Property
+        {
+            prop = props.GetProp<T>(name, staticArrayIndex);
+            return prop is not null;
+        }
+
+        /// <summary>Gets the <see cref="IntProperty"/> with the specified name, returning <paramref name="defaultValue"/> if it does not exist.</summary>
+        public static int GetPropVal(this StructProperty props, NameReference name, int defaultValue, int staticArrayIndex = 0)
+            => props.Properties.GetPropVal(name, defaultValue, staticArrayIndex);
+
+        /// <summary>Gets the <see cref="FloatProperty"/> with the specified name, returning <paramref name="defaultValue"/> if it does not exist.</summary>
+        public static float GetPropVal(this StructProperty props, NameReference name, float defaultValue, int staticArrayIndex = 0)
+            => props.Properties.GetPropVal(name, defaultValue, staticArrayIndex);
+
+        /// <summary>Gets the <see cref="BoolProperty"/> with the specified name, returning <paramref name="defaultValue"/> if it does not exist.</summary>
+        public static bool GetPropVal(this StructProperty props, NameReference name, bool defaultValue, int staticArrayIndex = 0)
+            => props.Properties.GetPropVal(name, defaultValue, staticArrayIndex);
+
+        /// <summary>Gets the <see cref="StrProperty"/> with the specified name, returning <paramref name="defaultValue"/> if it does not exist.</summary>
+        public static string GetPropVal(this StructProperty props, NameReference name, string defaultValue, int staticArrayIndex = 0)
+            => props.Properties.GetPropVal(name, defaultValue, staticArrayIndex);
+
+        /// <summary>Gets the <see cref="NameProperty"/> with the specified name, returning <paramref name="defaultValue"/> if it does not exist.</summary>
+        public static NameReference GetPropVal(this StructProperty props, NameReference name, NameReference defaultValue, int staticArrayIndex = 0)
+            => props.Properties.GetPropVal(name, defaultValue, staticArrayIndex);
+
+        /// <summary>
+        /// Gets the value of the named <see cref="EnumProperty"/> as a <typeparamref name="TEnum"/>, returning <paramref name="defaultValue"/> if the property does not exist.
+        /// Fires a debug assertion if the stored enum name cannot be parsed as <typeparamref name="TEnum"/>.
+        /// </summary>
+        public static TEnum GetPropVal<TEnum>(this StructProperty props, NameReference name, TEnum defaultValue, int staticArrayIndex = 0) where TEnum : struct, Enum
+            => props.Properties.GetPropVal(name, defaultValue, staticArrayIndex);
+
+        public static void ReadProp(this PropertyCollection props, ref bool field, bool defaultValue = false, [CallerArgumentExpression(nameof(field))] string propName = null)
+        {
+            field = props.GetProp<BoolProperty>(propName)?.Value ?? defaultValue;
+        }
+
+        public static void ReadProp(this PropertyCollection props, ref int field, int defaultValue = 0, [CallerArgumentExpression(nameof(field))] string propName = null)
+        {
+            field = props.GetProp<IntProperty>(propName)?.Value ?? defaultValue;
+        }
+
+        public static void ReadProp(this PropertyCollection props, ref float field, float defaultValue = 0f, [CallerArgumentExpression(nameof(field))] string propName = null)
+        {
+            field = props.GetProp<FloatProperty>(propName)?.Value ?? defaultValue;
+        }
+
+        public static void ReadProp(this PropertyCollection props, ref string field, string defaultValue = null, [CallerArgumentExpression(nameof(field))] string propName = null)
+        {
+            field = props.GetProp<StrProperty>(propName)?.Value ?? defaultValue;
+        }
+
+        public static void ReadProp(this PropertyCollection props, ref NameReference field, NameReference defaultValue = default, [CallerArgumentExpression(nameof(field))] string propName = null)
+        {
+            if (defaultValue.Name is null)
+            {
+                defaultValue = NameReference.None;
+            }
+            field = props.GetProp<NameProperty>(propName)?.Value ?? defaultValue;
+        }
+
+        public static void ReadProp(this PropertyCollection props, ref byte field, byte defaultValue = 0, [CallerArgumentExpression(nameof(field))] string propName = null)
+        {
+            field = props.GetProp<ByteProperty>(propName)?.Value ?? defaultValue;
+        }
+
+        public static void ReadProp<T>(this PropertyCollection props, ref T field, T defaultValue = default, [CallerArgumentExpression(nameof(field))] string propName = null) where T : struct, Enum
+        {
+            if (props.GetProp<EnumProperty>(propName) is { } prop && Enum.TryParse(prop.Value.Instanced, out T enumVal))
+            {
+                field = enumVal;
+            }
+            else
+            {
+                field = defaultValue;
+            }
+        }
     }
 }

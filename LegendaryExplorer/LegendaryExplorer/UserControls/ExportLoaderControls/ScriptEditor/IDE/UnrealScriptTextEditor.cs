@@ -10,6 +10,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE
     {
         public UnrealScriptTextEditor()
         {
+            // CSharpIndentationStrategy works for UnrealScript since both use brace-based indentation
             TextArea.IndentationStrategy = new CSharpIndentationStrategy(Options);
         }
 

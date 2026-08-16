@@ -34,10 +34,7 @@ namespace LegendaryExplorerCore.Coalesced
 
 		public bool CompareId(CoalesceAsset asset, bool ignoreCase = false)
 		{
-			if (asset == null)
-			{
-				throw new ArgumentNullException(nameof(asset));
-			}
+			ArgumentNullException.ThrowIfNull(asset);
 
 			return CompareId(asset.Id, ignoreCase);
 		}
@@ -59,10 +56,7 @@ namespace LegendaryExplorerCore.Coalesced
 
 		public bool CompareName(CoalesceAsset asset, bool ignoreCase = false)
 		{
-			if (asset == null)
-			{
-				throw new ArgumentNullException(nameof(asset));
-			}
+			ArgumentNullException.ThrowIfNull(asset);
 
 			return CompareName(asset.Name, ignoreCase);
 		}
@@ -84,10 +78,7 @@ namespace LegendaryExplorerCore.Coalesced
 
 		public bool CompareSource(CoalesceAsset asset, bool ignoreCase = false)
 		{
-			if (asset == null)
-			{
-				throw new ArgumentNullException(nameof(asset));
-			}
+			ArgumentNullException.ThrowIfNull(asset);
 
 			return CompareSource(asset.Source, ignoreCase);
 		}
@@ -115,10 +106,7 @@ namespace LegendaryExplorerCore.Coalesced
 
 	    public void Combine(CoalesceAsset asset)
 		{
-			if (asset == null)
-			{
-				throw new ArgumentNullException(nameof(asset));
-			}
+			ArgumentNullException.ThrowIfNull(asset);
 
 			foreach (var section in asset.Sections)
 			{
@@ -135,10 +123,7 @@ namespace LegendaryExplorerCore.Coalesced
 
 		public void MergeRight(CoalesceAsset asset)
 		{
-			if (asset == null)
-			{
-				throw new ArgumentNullException(nameof(asset));
-			}
+			ArgumentNullException.ThrowIfNull(asset);
 
 			throw new NotImplementedException();
 		}

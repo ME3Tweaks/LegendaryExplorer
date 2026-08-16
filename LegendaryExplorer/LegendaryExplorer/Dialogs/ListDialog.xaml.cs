@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorerCore.Misc;
@@ -13,7 +15,10 @@ namespace LegendaryExplorer.Dialogs
     public partial class ListDialog : TrackingNotifyPropertyChangedWindowBase
     {
         public ObservableCollectionExtended<object> Items { get; } = new();
+        // Backwards-compatible handler for EntryStringPair items
         public Action<EntryStringPair> DoubleClickEntryHandler { get; set; }
+        // General-purpose handler for arbitrary list items (strings, etc.)
+        public Action<object> DoubleClickItemHandler { get; set; }
         private string topText;
 
         public string TopText
@@ -22,10 +27,26 @@ namespace LegendaryExplorer.Dialogs
             set => SetProperty(ref topText, value);
         }
 
+        private string filterText;
+        public string FilterText
+        {
+            get => filterText;
+            set
+            {
+                if (SetProperty(ref filterText, value))
+                {
+                    ItemsView.Refresh();
+                }
+            }
+        }
+
+        public ICollectionView ItemsView => CollectionViewSource.GetDefaultView(Items);
+
         private ListDialog(string title, string message, Window owner, int width = 0, int height = 0) : base("List Dialog", false)
         {
             DataContext = this;
             InitializeComponent();
+            ItemsView.Filter = FilterItem;
             Title = title;
             if (width != 0)
             {
@@ -64,9 +85,31 @@ namespace LegendaryExplorer.Dialogs
             }
         }
 
+        private bool FilterItem(object item)
+        {
+            if (string.IsNullOrWhiteSpace(FilterText))
+            {
+                return true;
+            }
+
+            if (item is string str)
+            {
+                return str.IndexOf(FilterText, StringComparison.InvariantCultureIgnoreCase) >= 0;
+            }
+
+            if (item is EntryStringPair pair)
+            {
+                return !string.IsNullOrWhiteSpace(pair.Message) &&
+                       pair.Message.IndexOf(FilterText, StringComparison.InvariantCultureIgnoreCase) >= 0;
+            }
+
+            return item?.ToString()?.IndexOf(FilterText, StringComparison.InvariantCultureIgnoreCase) >= 0;
+        }
+
         private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if (((FrameworkElement)e.OriginalSource).DataContext is EntryStringPair item && (item.Entry is not null || item.Openable is not null))
+            var ctx = ((FrameworkElement)e.OriginalSource).DataContext;
+            if (ctx is EntryStringPair esp && (esp.Entry is not null || esp.Openable is not null))
             {
                 if (DoubleClickEntryHandler == null)
                 {
@@ -74,7 +117,18 @@ namespace LegendaryExplorer.Dialogs
                 }
                 else
                 {
-                    DoubleClickEntryHandler.Invoke(item);
+                    DoubleClickEntryHandler.Invoke(esp);
+                }
+            }
+            else if (ctx != null)
+            {
+                if (DoubleClickItemHandler == null)
+                {
+                    // No-op: dialog may be used just for display
+                }
+                else
+                {
+                    DoubleClickItemHandler.Invoke(ctx);
                 }
             }
         }

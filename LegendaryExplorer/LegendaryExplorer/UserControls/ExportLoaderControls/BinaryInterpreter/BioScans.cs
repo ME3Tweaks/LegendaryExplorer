@@ -1762,7 +1762,7 @@ public partial class BinaryInterpreterWPF
 
             for (int i = 0; i < columnCount; i++)
             {
-                subnodes.Add(new BinInterpNode(bin.Position, $"Name: {bin.ReadNameReference(Pcc)}, Index: {bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 12 });
+                    subnodes.Add(new BinInterpNode(bin.Position, $"Name: {bin.ReadNameReference(Pcc).Instanced}, Index: {bin.ReadInt32()}", NodeType.StructLeafInt) { Length = 12 });
             }
         }
         catch (Exception ex)

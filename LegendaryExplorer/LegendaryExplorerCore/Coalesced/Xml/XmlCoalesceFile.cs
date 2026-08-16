@@ -68,10 +68,7 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 
 		public void ReadAssets(XElement element)
 		{
-			if (element == null)
-			{
-				throw new ArgumentNullException(nameof(element));
-			}
+			ArgumentNullException.ThrowIfNull(element);
 
 			var assetsElement = element.Element("Assets");
 
@@ -112,20 +109,14 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 
 		public void ReadAssets(XDocument doc)
 		{
-			if (doc == null)
-			{
-				throw new ArgumentNullException(nameof(doc));
-			}
+			ArgumentNullException.ThrowIfNull(doc);
 
 			ReadAssets(doc.Root);
 		}
 
 		public void ReadIncludes(XElement element)
 		{
-			if (element == null)
-			{
-				throw new ArgumentNullException(nameof(element));
-			}
+			ArgumentNullException.ThrowIfNull(element);
 
 			var includesElement = element.Element("Includes");
 
@@ -164,20 +155,14 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 
 		public void ReadIncludes(XDocument doc)
 		{
-			if (doc == null)
-			{
-				throw new ArgumentNullException(nameof(doc));
-			}
+			ArgumentNullException.ThrowIfNull(doc);
 
 			ReadIncludes(doc.Root);
 		}
 
 		public void ReadSettings(XElement element)
 		{
-			if (element == null)
-			{
-				throw new ArgumentNullException(nameof(element));
-			}
+			ArgumentNullException.ThrowIfNull(element);
 
 			var settingsElement = element.Element("Settings");
 
@@ -209,10 +194,7 @@ namespace LegendaryExplorerCore.Coalesced.Xml
 
 		public void ReadSettings(XDocument doc)
 		{
-			if (doc == null)
-			{
-				throw new ArgumentNullException(nameof(doc));
-			}
+			ArgumentNullException.ThrowIfNull(doc);
 
 			ReadSettings(doc.Root);
 		}

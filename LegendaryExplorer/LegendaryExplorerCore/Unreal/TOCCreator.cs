@@ -298,7 +298,8 @@ namespace LegendaryExplorerCore.Unreal
             foreach (var dlcFolder in dlcList)
             {
                 var dlcName = Path.GetFileName(dlcFolder);
-                if (!dlcName.StartsWith("DLC_", StringComparison.OrdinalIgnoreCase))
+                // 01/25/2026 - TOC for LE1 only works on DLC_MOD_ instead of just DLC_
+                if (!dlcName.StartsWith("DLC_MOD_", StringComparison.OrdinalIgnoreCase))
                     continue;
 
                 string autoLoadPath = Path.Combine(dlcFolder, "autoload.ini");  //CHECK IF FILE EXISTS?

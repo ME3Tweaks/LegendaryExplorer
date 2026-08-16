@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using CommunityToolkit.HighPerformance;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorerCore.UnrealScript.Lexing;
-using CommunityToolkit.HighPerformance;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace LegendaryExplorerCore.UnrealScript.Parsing
 {
@@ -18,6 +19,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         public readonly List<(ASTNode node, int offset, int length)> DefinitionLinks;
 
         public ReadOnlySpan<ScriptToken> TokensSpan => Data.AsSpan();
+
+        public int Count => Data.Count;
 
         private TokenStream(List<ScriptToken> tokens)
         {
@@ -169,12 +172,26 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
         public void AddDefinitionLink(ASTNode node, int offset, int length)
         {
+            if (offset is -1)
+            {
+                return;
+            }
             DefinitionLinks.Add((node, offset, length));
         }
 
         public void AddDefinitionLink(ASTNode node, ScriptToken token)
         {
             DefinitionLinks.Add((node, token.StartPos, token.Length));
+        }
+
+        public TokenStream Slice()
+        {
+            return new TokenStream(Data.GetRange(0, CurrentIndex), this);
+        }
+
+        public TokenStream Remaining()
+        {
+            return new TokenStream(Data.GetRange(CurrentIndex, Data.Count - CurrentIndex), this);
         }
     }
 }

@@ -176,21 +176,24 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
                 return;
             }
 
-            try
+            var posPoints = posTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+            var eulerPoints = eulerTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+            var lookupPoints = lookupTrack.GetProp<ArrayProperty<StructProperty>>("Points");
+
+            int keyCount = Math.Min(posPoints.Count, Math.Min(eulerPoints.Count, lookupPoints.Count));
+            if (idx < 0 || idx >= keyCount)
             {
-                posTrack.GetProp<ArrayProperty<StructProperty>>("Points").RemoveAt(idx);
-                eulerTrack.GetProp<ArrayProperty<StructProperty>>("Points").RemoveAt(idx);
-                lookupTrack.GetProp<ArrayProperty<StructProperty>>("Points").RemoveAt(idx);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show($"{e.Message}", "Error", MessageBoxButton.OK);
+                MessageBox.Show($"Index {idx} is out of range. Track has {keyCount} key(s) (valid range: 0-{keyCount - 1}).", "Warning", MessageBoxButton.OK);
                 return;
             }
 
+            posPoints.RemoveAt(idx);
+            eulerPoints.RemoveAt(idx);
+            lookupPoints.RemoveAt(idx);
+
             trackMove.WriteProperties(props);
 
-            MessageBox.Show($"Keys {idx} successfully deleted", "Success", MessageBoxButton.OK);
+            MessageBox.Show($"Key at index {idx} successfully deleted.", "Success", MessageBoxButton.OK);
         }
 
         /// <summary>
@@ -302,20 +305,19 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
                 return;
             }
 
-            try
+            int keyCount = Math.Min(m_aDOFData.Count, m_aTrackKeys.Count);
+            if (idx < 0 || idx >= keyCount)
             {
-                m_aDOFData.RemoveAt(idx);
-                m_aTrackKeys.RemoveAt(idx);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show($"{e.Message}", "Error", MessageBoxButton.OK);
+                MessageBox.Show($"Index {idx} is out of range. Track has {keyCount} key(s) (valid range: 0-{keyCount - 1}).", "Warning", MessageBoxButton.OK);
                 return;
             }
 
+            m_aDOFData.RemoveAt(idx);
+            m_aTrackKeys.RemoveAt(idx);
+
             dofTrack.WriteProperties(props);
 
-            MessageBox.Show($"Keys {idx} successfully deleted", "Success", MessageBoxButton.OK);
+            MessageBox.Show($"Key at index {idx} successfully deleted.", "Success", MessageBoxButton.OK);
         }
 
         /// <summary>
@@ -389,20 +391,19 @@ namespace LegendaryExplorer.Tools.InterpEditor.InterpExperiments
                 return;
             }
 
-            try
+            int keyCount = Math.Min(m_aGestures.Count, m_aTrackKeys.Count);
+            if (idx < 0 || idx >= keyCount)
             {
-                m_aGestures.RemoveAt(idx);
-                m_aTrackKeys.RemoveAt(idx);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show($"{e.Message}", "Error", MessageBoxButton.OK);
+                MessageBox.Show($"Index {idx} is out of range. Track has {keyCount} key(s) (valid range: 0-{keyCount - 1}).", "Warning", MessageBoxButton.OK);
                 return;
             }
 
+            m_aGestures.RemoveAt(idx);
+            m_aTrackKeys.RemoveAt(idx);
+
             gesturesTrack.WriteProperties(props);
 
-            MessageBox.Show($"Keys {idx} successfully deleted", "Success", MessageBoxButton.OK);
+            MessageBox.Show($"Key at index {idx} successfully deleted.", "Success", MessageBoxButton.OK);
         }
 
         /// <summary>

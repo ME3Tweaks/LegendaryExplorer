@@ -14,6 +14,7 @@
     <MenuItem Header=" &gt;&gt; THIS STUFF CAN BREAK GAMES/TOOLSET FUNCTIONALITY &lt;&lt;" IsEnabled="False"/>
     <MenuItem Header=" &gt;&gt; DO NOT USE IF YOU DON'T KNOW WHAT YOU'RE DOING &gt;&lt;" IsEnabled="False"/>
     <MenuItem Header=" &gt;&gt; Text may not reflect actual functionality &lt;&lt;" IsEnabled="False"/>
+    <MenuItem x:Name="BindExperimentToKey_MenuItem" Header="Bind Experiment to Key" Click="BindExperimentToKey_Click"/>
     <MenuItem Header="Force reload package*" Command="{Binding ForceReloadPackageCommand}" sharedUi:Bindings.VisibilityToEnabled="True" InputGestureText="Ctrl+Shift+R" ToolTip="Forcibly reloads this package file, if it was loaded from disk.&#10;This operation will drop this package out of the package sharing system across tools, be careful as edits will not sync across tools!"/>
 
     <MenuItem Header="Trigger GetProperties() on current export" Click="RefreshProperties_Clicked"/>
@@ -84,6 +85,7 @@
             <MenuItem Header="Print loaded packages to debug console" Click="PrintLoadedPackages_Clicked"/>
             <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>
             <MenuItem Header="Open hosted shader export loader" Click="OpenHostedExportLoader_Shader_Click"/>
+            <MenuItem Header="Test TLKSystem" Click="TestTLKSystem_Click"/>
         </MenuItem>
         <MenuItem Header="Useful for Mgamerz (maybe)">
             <MenuItem Header="Mgamerz' Easy Button™" Click="MScanner_Click"/>
@@ -202,7 +204,11 @@
         <MenuItem Header="Export all WwiseBanks (all files, all games)" Click="DumpWwiseBanks_Click"/>
     </MenuItem>
     <MenuItem Header="Squid's new and exciting ways to break stuff">
+        <MenuItem Header="Export to glTF/glb (no textures)" Click="ExportGltf_Click" ToolTip="Export a mesh as a glTF/glb file. quick, small files."/>
+        <MenuItem Header="Export to glTF/glb (with textures)" Click="ExportGltf_Textures_Click" ToolTip="Export a mesh as a glTF/glb file, including diff and normal textures ready to import/preview in most tools. much slower and larger, especially if there are many materials. "/>
+        <MenuItem Header="Import glTF/glb" Click="ImportGltf_Click" ToolTip="Import one or more things from a gLTF/glb file. Select a compatible item to replace it. Otrherwise, imports as new item."/>
         <MenuItem Header="Export Selected Item as PSKX/PSA" Click="ExportSelectedToPsx_Click" ToolTip="Exports the selected item as a pskx and/or psa and config file. Works for SkeletalMesh, BioMorphFace, MorphTargetSet, AnimSet, BioDynamicAnimSet, and AnimSequence"/>
+        <MenuItem Header="Export all textures from material" Click="ExportSelectedMaterial_Click" ToolTip="Exports the selected Material's textures to the selected folder"/>
         <MenuItem Header="Ron File tools">
             <MenuItem Header="Export RON file as PSKX/PSA" Click="ExportRonToPsx_Click" ToolTip="Converts a ron file into a pskx and psa file that can be imported into blender to edit your Shepard's head."/>
             <MenuItem Header="import ron to BioMorphFace" Click="ImportRonToBmf_Click" ToolTip="Imports a Ron file as a BioMorphFace; assets will be linked if they are in the file. "/>
@@ -210,6 +216,7 @@
             <MenuItem Header="replace ron vertex + bone data from psk + psa" Click="UpdateRonFromPskAndPsa_Click" ToolTip="Updates the vertex positions in a ron file with those from a psk"/>
         </MenuItem>
         <MenuItem Header="Import Mesh/Animation">
+            <MenuItem Header="Import PSK/PSKX over existing mesh" Click="ImportPskOverMesh_Click" ToolTip="Directly imports a psk/pskx file over an existing skeletal mesh, maintaining sockets."/>
             <MenuItem Header="Import PSK/PSKX as new mesh" Click="ImportPskAsNewMesh_Click" ToolTip="Directly imports a psk/pskx file as a new skeletal mesh. Select an existing one to copy the sockets from it to the new one."/>
             <MenuItem Header="Add/Update a new MorphTarget from a psk + psa" Click="AddNewMorphTargetFromPskAndPsa_Click" ToolTip="Converts a psk to a morph target as a delta to the base mesh. select a morphTargetSet to use this. "/>
             <MenuItem Header="import psk + psa to BioMorphFace" Click="ImportPskAndPsaToBmf_Click" ToolTip="Applies the vetex positions from a psk file onto a BioMorphFace. "/>
@@ -224,6 +231,17 @@
             <MenuItem Header="Make Custom Morph Target Set" Click="MakeCustomMorphTargetSet_Click" ToolTip="Makes a new CustomMorphTargetSet and BioMorphFace for use in mods that dynamically change appearance from MorphTargetSet or SkeletalMesh. currently only for AMM LE3. "/>
         </MenuItem>
         <MenuItem Header="Even more experimental than usual">
+            <MenuItem Header="bulk import textures" Click="BulkImportTextures_Click" ToolTip="bulk imports textures into a package file, with a few sensible defaults."/>
+            <MenuItem Header="Import green channel as alpha" Click="GreenToAlpha_Click" ToolTip="Imports an image's green channel as the new alpha channel on the selected texture."/>
+            <MenuItem Header="Stop deforming the necks, Bioware" Click="FixMorphTargets_Click" ToolTip="Makes the morph targets stop deforming the neck seam and reintroducing the gap (probably only useful for Squid)"/>
+            <MenuItem Header="Generate m3to text for package" Click="GenerateM3to_Click" ToolTip="Given a package, generates the json for an m3to file that overrides all textures by path with the ones in that pacakge."/>
+            <MenuItem Header="Squid's lazy texture import button" Click="LazyDiffImport_Click" ToolTip="Imports a texture over an existing one while keeping the alpha channel of the existing one. Useful for when you re baked the color channels and need to add back on the alpha channel"/>
+            <MenuItem Header="Squid's lazy Normal Map import button" Click="LazyNormImport_Click" ToolTip="Imports a normal map texture (over an existing one or new, depending on what is selected) and flips the green channel for you. Useful for when you forgot to bake it for unreal conventions"/>
+            <MenuItem Header="Fix LE2 Locker bug" Click="FixLE2LockerBug_Click"/>
+            <MenuItem Header="Move All Package Stored Textures to tfc" Click="TexturesToTfc_Click"/>
+            <MenuItem Header="Make Selected Texture tfc stored" Click="SelectedTextureToTfc_Click"/>
+            <MenuItem Header="Move All Externally Stored Textures to package stored" Click="TexturesToPackageStored_Click"/>
+            <MenuItem Header="Remove LODs" Click="RemoveLODs_Click" ToolTip="Removes all but the first LOD."/>
             <MenuItem Header="Calculate normal map blue channel" Click="CalculateNormalBlue_Click" ToolTip="Calculates the blue channel of a normal map from the red and green channels. some engines do this at runtime to save space or pack other data into the blue and alpha channels."/>
             <MenuItem Header="Invert Green Channel of normal map" Click="InvertGreenChannel_Click" ToolTip="Inverts the green channel of a normal map. useful for converting from engines that have the opposite convention."/>
             <MenuItem Header="Make Texture transparent" Click="MakeTransparent_Click" ToolTip="."/>

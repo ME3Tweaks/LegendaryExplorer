@@ -4,7 +4,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using CommunityToolkit.HighPerformance;
+using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
@@ -16,7 +18,7 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorerCore.Packages
 {
-    public static class MEPackageExtensions
+    public static partial class MEPackageExtensions
     {
         public static string GetEntryString(this IMEPackage pcc, int index)
         {
@@ -122,7 +124,7 @@ namespace LegendaryExplorerCore.Packages
             return import;
         }
 
-        public static bool AddToLevelActorsIfNotThere(this IMEPackage pcc, params ExportEntry[] actors) //TODO NET 9: change to span params
+        public static bool AddToLevelActorsIfNotThere(this IMEPackage pcc, params ReadOnlySpan<ExportEntry> actors)
         {
             bool added = false;
             if (pcc.FindExport("TheWorld.PersistentLevel") is ExportEntry { ClassName: "Level" } levelExport)
@@ -542,6 +544,29 @@ namespace LegendaryExplorerCore.Packages
             }
         }
 
+        /// <summary>
+        /// Find an entry within the given package by Memory full path, optionally filtering by class
+        /// </summary>
+        /// <param name="pachage">The package to search in</param>
+        /// <param name="memoryFullPath">The memory full path to search for</param>
+        /// <param name="className">The class to filter on. It will find instances of this class or classes that extend it. </param>
+        /// <returns>the matching entry, or null if none are found.</returns>
+        public static IEntry FindEntryByMemeroryFullPath(this IMEPackage pachage, string memoryFullPath, string className = null)
+        {
+            foreach (IEntry entry in pachage.Exports.Concat<IEntry>(pachage.Imports))
+            {
+                if (entry.MemoryFullPath.CaseInsensitiveEquals(memoryFullPath))
+                {
+                    if (className != null && !(entry.ClassName.CaseInsensitiveEquals(className) || entry.IsA(className)))
+                    {
+                        continue;
+                    }
+                    return entry;
+                }
+            }
+            return null;
+        }
+
         private readonly struct ReferenceFinder : IUIndexAction
         {
             private readonly int CurrentExportUIndex;
@@ -562,6 +587,51 @@ namespace LegendaryExplorerCore.Packages
                     Refs.Add(Pcc.GetEntry(uIndex));
                 }
             }
+        }
+
+        [GeneratedRegex(@"^(.+)_LOC_[A-Z]{3}$")]
+        private static partial Regex LOCFileRegex { get; }
+
+        public static ExportEntry FindActorByTag(this IMEPackage pcc, NameReference tag, bool searchRelatedFiles = false)
+        {
+            if (pcc.FindExport("TheWorld.PersistentLevel") is ExportEntry { ClassName: "Level" } levelExport)
+            {
+                var level = ObjectBinary.From<Level>(levelExport);
+                foreach (int actoridx in level.Actors)
+                {
+                    if (pcc.TryGetUExport(actoridx, out ExportEntry actor) 
+                        && actor.GetProperty<NameProperty>("Tag")?.Value == tag)
+                    {
+                        return actor;
+                    }
+                }
+            }
+            if (searchRelatedFiles)
+            {
+                if (pcc.FileNameNoExtension is string fileName && LOCFileRegex.Match(fileName) is { Success: true} match)
+                {
+                    string relatedFileName = match.Groups[1].Value + ".pcc";
+                    string relatedFilePath = null;
+                    if (!MELoadedFiles.TryGetHighestMountedFile(pcc.Game, relatedFileName, out relatedFilePath))
+                    {
+                        relatedFilePath = Path.Combine(Path.GetDirectoryName(pcc.FilePath), relatedFileName);
+                        if (!File.Exists(relatedFilePath))
+                        {
+                            relatedFilePath = null;
+                        }
+                    }
+                    if (relatedFilePath is not null)
+                    {
+                        using IMEPackage relatedPcc = MEPackageHandler.OpenMEPackage(relatedFilePath);
+                        var actor = relatedPcc.FindActorByTag(tag, false);
+                        if (actor != null)
+                        {
+                            return actor;
+                        }
+                    }
+                }
+            }
+            return null;
         }
     }
 

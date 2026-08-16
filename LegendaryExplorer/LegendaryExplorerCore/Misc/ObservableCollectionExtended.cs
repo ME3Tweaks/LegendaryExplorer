@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,6 +7,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace LegendaryExplorerCore.Misc
 {
@@ -50,7 +52,7 @@ namespace LegendaryExplorerCore.Misc
         /// </summary> 
         public void AddRange(IEnumerable<T> collection)
         {
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
+            ArgumentNullException.ThrowIfNull(collection);
             int oldcount = Count;
             lock (_syncLock)
             {
@@ -70,7 +72,7 @@ namespace LegendaryExplorerCore.Misc
         /// </summary> 
         public void RemoveRange(IEnumerable<T> collection)
         {
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
+            ArgumentNullException.ThrowIfNull(collection);
             // ReSharper disable once PossibleUnintendedReferenceComparison
             if (collection == Items) throw new Exception(@"Cannot remove range of same collection");
             int oldcount = Count;
@@ -113,7 +115,7 @@ namespace LegendaryExplorerCore.Misc
         /// </summary> 
         public void Replace(T item)
         {
-            ReplaceAll(new[] { item });
+            ReplaceAll([item]);
         }
 
         /// <summary> 
@@ -121,7 +123,7 @@ namespace LegendaryExplorerCore.Misc
         /// </summary> 
         public void ReplaceAll(IEnumerable<T> collection)
         {
-            if (collection == null) throw new ArgumentNullException(nameof(collection));
+            ArgumentNullException.ThrowIfNull(collection);
             int oldcount = Count;
 
             lock (_syncLock)
@@ -147,6 +149,12 @@ namespace LegendaryExplorerCore.Misc
         /// <param name="keySelector">A function to extract a key from an item.</param>
         public void Sort<TKey>(Func<T, TKey> keySelector)
         {
+            if (Items is List<T> list)
+            {
+                list.Sort((t1, t2) => Comparer<TKey>.Default.Compare(keySelector(t1), keySelector(t2)));
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                return;
+            }
             InternalSort(Items.OrderBy(keySelector));
         }
 
@@ -157,6 +165,12 @@ namespace LegendaryExplorerCore.Misc
         /// <param name="keySelector">A function to extract a key from an item.</param>
         public void SortDescending<TKey>(Func<T, TKey> keySelector)
         {
+            if (Items is List<T> list)
+            {
+                list.Sort((t1, t2) => -Comparer<TKey>.Default.Compare(keySelector(t1), keySelector(t2)));
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                return;
+            }
             InternalSort(Items.OrderByDescending(keySelector));
         }
 
@@ -168,6 +182,12 @@ namespace LegendaryExplorerCore.Misc
         /// <param name="comparer">An <see cref="IComparer{T}"/> to compare keys.</param>
         public void Sort<TKey>(Func<T, TKey> keySelector, IComparer<TKey> comparer)
         {
+            if (Items is List<T> list)
+            {
+                list.Sort((t1, t2) => comparer.Compare(keySelector(t1), keySelector(t2)));
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                return;
+            }
             InternalSort(Items.OrderBy(keySelector, comparer));
         }
 
@@ -179,10 +199,8 @@ namespace LegendaryExplorerCore.Misc
         {
             var sortedItemsList = sortedItems.ToList();
 
-            foreach (var item in sortedItemsList)
-            {
-                Move(IndexOf(item), sortedItemsList.IndexOf(item));
-            }
+            Items.Clear();
+            Items.AddRange(sortedItemsList);
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
@@ -210,7 +228,7 @@ namespace LegendaryExplorerCore.Misc
 
         #endregion // Sorting
 
-        private readonly object _syncLock = new();
+        private readonly Lock _syncLock = new();
         /// <summary> 
         /// Initializes a new instance of the System.Collections.ObjectModel.ObservableCollection(Of T) class. 
         /// </summary> 
@@ -229,6 +247,20 @@ namespace LegendaryExplorerCore.Misc
         /// </summary>
         /// <returns></returns>
         public object GetSyncLock() => _syncLock;
+
+        /// <summary>
+        /// Adds the specified item to the collection and raises property change notifications for the 'Any' and 'Count'
+        /// properties.
+        /// </summary>
+        /// <remarks>Use this method to add an item and ensure that property change notifications are
+        /// triggered for dependent properties. This is useful in scenarios where UI elements are bound to the 'Any' or
+        /// 'Count' properties and need to update when the collection changes.</remarks>
+        public void AddEx(T item)
+        {
+            this.Add(item);
+            OnPropertyChanged(nameof(Any));
+            OnPropertyChanged(nameof(Count));
+        }
 
         /// <summary> 
         /// Initializes a new instance of the System.Collections.ObjectModel.ObservableCollection(Of T) class that contains elements copied from the specified collection. 

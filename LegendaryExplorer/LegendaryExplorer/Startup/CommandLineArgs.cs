@@ -30,9 +30,9 @@ namespace LegendaryExplorer.Startup
         {
             var root = new RootCommand()
             {
-                new Option<FileInfo>(new [] {"--open", "-o"}, "A file you would like to open in the toolset"),
-                new Option<string>(new [] {"--tool", "-t"}, "The tool to open"),
-                new Option<int>("--UIndex", "UIndex of the file to open")
+                new Option<FileInfo>(["--open", "-o"], "A file you would like to open in the toolset"),
+                new Option<string>(["--tool", "-t"], "The tool to open"),
+                new Option<int>("--UIndex", "UIndex in the file to open")
             };
 
             root.Handler = CommandHandler.Create<FileInfo, string, int>(HandleCLIArgs);
@@ -50,10 +50,10 @@ namespace LegendaryExplorer.Startup
                 switch(tool)
                 {
                     case "SequenceEditor":
-                        OpenTool<SequenceEditorWPF>((s) => s.LoadFile(file.FullName));
+                        OpenTool<SequenceEditorWPF>((s) => s.LoadFileAndGoTo(file.FullName, UIndex));
                         break;
                     case "DialogueEditor":
-                        OpenTool<DialogueEditorWindow>((s) => s.LoadFile(file.FullName));
+                        OpenTool<DialogueEditorWindow>((s) => s.LoadFile(file.FullName, UIndex));
                         break;
                     case "SoundExplorer":
                     case "Soundplorer":
@@ -109,6 +109,7 @@ namespace LegendaryExplorer.Startup
                     case "SequenceEditor":
                         OpenTool<SequenceEditorWPF>();
                         break;
+                    case "SoundExplorer":
                     case "Soundplorer":
                         OpenTool<SoundplorerWPF>();
                         break;
@@ -118,6 +119,7 @@ namespace LegendaryExplorer.Startup
                     case "PathfindingEditor":
                         OpenTool<PathfindingEditorWindow>();
                         break;
+                    case "MeshExplorer":
                     case "Meshplorer":
                         OpenTool<MeshplorerWindow>();
                         break;
@@ -132,7 +134,7 @@ namespace LegendaryExplorer.Startup
         }
 
         private static void OpenTool<T>(Action<T> toolAction = null)
-            where T : WPFBase, new()
+            where T : System.Windows.Window, new()
         {
             var editor = new T();
             editor.Show();

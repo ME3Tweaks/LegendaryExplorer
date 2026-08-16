@@ -23,7 +23,10 @@ namespace LegendaryExplorerCore.Misc
                 {
                     Header = sectionName
                 };
-                Sections.Add(ns);
+                if (sectionName == null)
+                    Sections.Insert(0, ns); // null (global) section always stays at the top
+                else
+                    Sections.Add(ns);
                 return ns;
             }
             set
@@ -45,18 +48,27 @@ namespace LegendaryExplorerCore.Misc
             return section?.GetValue(key);
         }
 
+        public Section GetGlobalSection()
+        {
+            return GetSection((string)null);
+        }
+
         /// <summary>
         /// Returns the first section with the given case-insensitive name.
+        /// Pass <see langword="null"/> to retrieve the global (header-less) section.
         /// </summary>
         /// <param name="sectionname"></param>
         /// <returns></returns>
         public Section GetSection(string sectionname)
         {
-            return Sections.FirstOrDefault(x => x.Header.Equals(sectionname, StringComparison.InvariantCultureIgnoreCase));
+            if (sectionname == null)
+                return Sections.FirstOrDefault(x => x.Header == null);
+            return Sections.FirstOrDefault(x => x.Header != null && x.Header.Equals(sectionname, StringComparison.InvariantCultureIgnoreCase));
         }
 
         /// <summary>
         /// Gets the first section with the given case-sensitive name, or returns a newly added blank one if it does not exist.
+        /// Pass <see langword="null"/> to get or create the global (header-less) section.
         /// </summary>
         /// <param name="sectionname"></param>
         /// <returns></returns>
@@ -65,13 +77,18 @@ namespace LegendaryExplorerCore.Misc
             var s = GetSection(sectionname);
             if (s != null) return s;
             s = new Section() { Header = sectionname };
-            Sections.Add(s);
+            if (sectionname == null)
+                Sections.Insert(0, s); // null (global) section always stays at the top
+            else
+                Sections.Add(s);
             return s;
         }
 
         public Section GetSection(Section section)
         {
-            return Sections.FirstOrDefault(x => x.Header.Equals(section.Header, StringComparison.InvariantCultureIgnoreCase));
+            if (section.Header == null)
+                return Sections.FirstOrDefault(x => x.Header == null);
+            return Sections.FirstOrDefault(x => x.Header != null && x.Header.Equals(section.Header, StringComparison.InvariantCultureIgnoreCase));
         }
 
         /// <summary>
@@ -103,12 +120,10 @@ namespace LegendaryExplorerCore.Misc
                     };
                     di.Sections.Add(currentSection);
                 }
-                else if (currentSection == null)
-                {
-                    continue; //this parser only supports section items
-                }
                 else
                 {
+                    if (currentSection == null)
+                        currentSection = di.GetOrAddSection(null);
                     currentSection.Entries.Add(new IniEntry(trimmed));
                 }
             }
@@ -128,8 +143,22 @@ namespace LegendaryExplorerCore.Misc
         {
             StringBuilder sb = new StringBuilder();
             bool isFirst = true;
+
+            // Write global (header-less) entries first so they appear before any section.
+            var nullSection = Sections.FirstOrDefault(x => x.Header == null);
+            if (nullSection?.Entries.Any() == true)
+            {
+                foreach (var line in nullSection.Entries)
+                {
+                    sb.Append(line.HasValue ? $"{line.Key}={line.Value}" : line.RawText);
+                    sb.Append("\n");
+                }
+                isFirst = false;
+            }
+
             foreach (var section in Sections)
             {
+                if (section.Header == null) continue; // already written above
                 if (!section.Entries.Any())
                 {
                     continue; //Do not write out empty sections.

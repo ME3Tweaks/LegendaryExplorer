@@ -80,12 +80,12 @@ namespace LegendaryExplorer.Misc
         /// Shared method for getting a standard open file dialog.
         /// </summary>
         /// <returns></returns>
-        public static OpenFileDialog GetOpenPackageDialog()
+        public static OpenFileDialog GetOpenPackageDialog(string titleOverride = "Open package file")
         {
             return new OpenFileDialog
             {
                 Filter = GameFileFilters.OpenFileFilter,
-                Title = "Open package file",
+                Title = titleOverride,
                 CustomPlaces = AppDirectories.GameCustomPlaces
             };
         }

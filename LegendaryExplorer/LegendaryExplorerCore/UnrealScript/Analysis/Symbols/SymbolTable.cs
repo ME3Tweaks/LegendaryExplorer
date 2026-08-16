@@ -213,6 +213,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                 }
             };
             table.AddType(clientType);
+            CreatScopeAndAddSymbols(clientType);
             var staticMeshType = new Class("StaticMesh", objectClass, objectClass, intrinsicClassFlags | EClassFlags.SafeReplace | EClassFlags.CollapseCategories)
             {
                 Package = "Engine",
@@ -232,6 +233,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                 }
             };
             table.AddType(staticMeshType);
+            CreatScopeAndAddSymbols(staticMeshType);
             table.PushScope(staticMeshType.Name);
                 var fracturedStaticMeshType = new Class("FracturedStaticMesh", staticMeshType, objectClass, intrinsicClassFlags | EClassFlags.SafeReplace | EClassFlags.CollapseCategories)
                 {
@@ -274,6 +276,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                     }
                 };
                 table.AddType(fracturedStaticMeshType);
+                CreatScopeAndAddSymbols(fracturedStaticMeshType);
             table.PopScope();
             var shadowMap1DType = new Class("ShadowMap1D", objectClass, objectClass, intrinsicClassFlags) { Package = "Engine" };
             table.AddType(shadowMap1DType);
@@ -291,9 +294,10 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                     }
                 };
                 table.AddType(levelType);
+                CreatScopeAndAddSymbols(levelType);
                 var pendingLevel = new Class("PendingLevel", levelBase, objectClass, intrinsicClassFlags | EClassFlags.Abstract) { Package = "Engine" };
                 table.AddType(pendingLevel);
-                table.PushScope(pendingLevel.Name); table.PopScope();
+                CreatScopeAndAddSymbols(pendingLevel);
             table.PopScope();
             var modelType = new Class("Model", objectClass, objectClass, intrinsicClassFlags) { Package = "Engine" };
             table.AddType(modelType);
@@ -309,9 +313,19 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             #endregion
 
             return table;
+
+            void CreatScopeAndAddSymbols(Class cls)
+            {
+                table.PushScope(cls.Name);
+                foreach (var varDecl in cls.VariableDeclarations)
+                {
+                    table.AddSymbol(varDecl.Name, varDecl);
+                }
+                table.PopScope();
+            }
         }
 
-        private readonly List<Class> intrinsicClasses = new();
+        private readonly List<Class> intrinsicClasses = [];
 
         public void ValidateIntrinsics(UnrealScriptOptionsPackage usop)
         {
@@ -448,7 +462,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
             return null;
         }
-        
+
         public bool TypeExists(VariableType type, bool globalOnly = false) => TryResolveType(ref type, globalOnly);
 
         public bool TryGetSymbolInScopeStack<T>(string symbol, out T node, string lowestScope) where T : ASTNode
@@ -456,6 +470,21 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             node = null;
 
             return TryBuildSpecificScope(lowestScope, out Stack<ASTNodeDict> stack) && TryGetSymbolInternal(symbol, out node, stack);
+        }
+
+        public bool TryGetScopeSymbol(string scope, out ASTNode scopeSymbol) 
+        {
+            int lastDotIndex = scope.LastIndexOf('.');
+            if (lastDotIndex > 0)
+            {
+                string symbolName = scope[(lastDotIndex + 1)..];
+                if (TryGetSymbolFromSpecificScope(symbolName, out scopeSymbol, scope[..lastDotIndex]))
+                {
+                    return true;
+                }
+            }
+            scopeSymbol = null;
+            return false;
         }
 
         private bool TryBuildSpecificScope(string lowestScope, out Stack<ASTNodeDict> stack)

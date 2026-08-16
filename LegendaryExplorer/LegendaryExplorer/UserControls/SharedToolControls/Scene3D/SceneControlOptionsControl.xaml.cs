@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using LegendaryExplorer.Misc;
 
-namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
+namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
 {
     /// <summary>
     /// Interaction logic for SceneControlOptionsControl.xaml

@@ -223,7 +223,7 @@ internal static partial class OperatorHelper
 
 
     [GeneratedRegex("^[a-zA-Z][a-zA-Z0-9]*$")]
-    private static partial Regex ValidWordOperator();
+    private static partial Regex ValidWordOperator { get; }
 
-    internal static bool IsValidWordOperator(string friendlyName) => ValidWordOperator().IsMatch(friendlyName);
+    internal static bool IsValidWordOperator(string friendlyName) => ValidWordOperator.IsMatch(friendlyName);
 }

@@ -41,7 +41,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             ErrorTokens = tokens;
             foreach (ScriptToken token in tokens)
             {
-                token.SyntaxType = EF.ERROR;
+                token.SyntaxType = ST.ERROR;
             }
         }
 

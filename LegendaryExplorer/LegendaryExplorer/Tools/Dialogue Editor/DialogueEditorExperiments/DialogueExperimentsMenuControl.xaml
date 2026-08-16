@@ -14,6 +14,7 @@
     <MenuItem Header=" &gt;&gt; Text may not reflect actual functionality &lt;&lt;" IsEnabled="False"/>
     <MenuItem Header="Mgamerz's small experiments menu">
         <MenuItem Header="Add speaker to all dialogues with shared FXAs" Click="AddSharedFXASpeakerToAll_Click"/>
+        <MenuItem Header="LE2/LE3: Extract all audio from game for a specific speaker tag" Click="ExtractAllAudioBySpeakerTag_Click"/>
     </MenuItem>
     <MenuItem Header="Exkywor's buttons for lazy people">
             <MenuItem Header="Change Audio Node StringRef" Click="UpdateAudioNodeStrRef_Click" ToolTip="Updates an audio node's VOElements, FXA, and Wwisestream StrRefs."/>

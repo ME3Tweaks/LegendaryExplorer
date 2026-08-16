@@ -31,23 +31,43 @@
                 <RowDefinition Height="5"/>
                 <RowDefinition Height="100"/>
             </Grid.RowDefinitions>
-            <ToolBar ToolBarTray.IsLocked="True" Visibility="Collapsed">
+            <ToolBar ToolBarTray.IsLocked="True" Visibility="Visible">
+                <Button Content="Theme Editor" Click="ThemePicker_OnClick"/>
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                 <Label IsEnabled="False">Text Size:</Label>
-                <Button Name="FontSizeIncrease_Button" ToolTip="Add a new element to the selected array"
+                <Button Name="FontSizeIncrease_Button" ToolTip="Increase font size"
                         Command="{Binding IncreaseFontSizeCommand}"
                         VerticalAlignment="Center">
                     <fa5:FontAwesome Icon="Solid_Plus"/>
                 </Button>
-                <Button Name="FontSizeDecrease_Button" ToolTip="Add a new element to the selected array"
+                <Button Name="FontSizeDecrease_Button" ToolTip="Decrease font size"
                         Command="{Binding DecreaseFontSizeCommand}"
                         VerticalAlignment="Center">
                     <fa5:FontAwesome Icon="Solid_Minus"/>
                 </Button>
                 <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                <Button Content="Theme" Click="ThemePicker_OnClick"/>
+                <Button Name="DecreaseIndent_Button" ToolTip="Decrease indent of selected lines"
+                        Command="{Binding DecreaseIndentCommand}"
+                        VerticalAlignment="Center">
+                    <fa5:FontAwesome Icon="Solid_Indent" FlipOrientation="Horizontal"/>
+                </Button>
+                <Button Name="IncreaseIndent_Button" ToolTip="Increase indent of selected lines"
+                        Command="{Binding IncreaseIndentCommand}"
+                        VerticalAlignment="Center">
+                    <fa5:FontAwesome Icon="Solid_Indent"/>
+                </Button>
+                <Button Name="Comment_Button" ToolTip="Comment out the selected lines"
+                        Command="{Binding AddCommentCommand}"
+                        VerticalAlignment="Center">
+                    <fa5:FontAwesome Icon="Solid_Comment"/>
+                </Button>
+                <Button Name="Uncomment_Button" ToolTip="Uncomment the selected lines"
+                        Command="{Binding UncommentCommand}"
+                        VerticalAlignment="Center">
+                    <fa5:FontAwesome Icon="Solid_CommentSlash"/>
+                </Button>
             </ToolBar>
             <ide:UnrealScriptTextEditor x:Name="textEditor" Grid.Row="1" Document="{Binding Document}" SyntaxHighlighting="Unrealscript"
-                                        Background="#1E1E1E" Foreground="#DBDBDB" LineNumbersForeground ="#2B90AE"
                                         FontFamily="Consolas" ContextMenuOpening="TextEditor_OnContextMenuOpening" ContextMenuClosing="TextEditor_OnContextMenuClosing"
                                         MouseHover="TextEditor_OnMouseHover" MouseHoverStopped="TextEditor_OnMouseHoverStopped">
                 <avalonedit:TextEditor.InputBindings>
@@ -70,10 +90,9 @@
                     </ContextMenu>
                 </avalonedit:TextEditor.ContextMenu>
                 <avalonedit:TextEditor.Resources>
+                    <SolidColorBrush x:Key="EditorSelectionBrush" Color="#1ba1e2"/>
                     <Style TargetType="{x:Type avalonedit:TextEditor}">
                         <Setter Property="FlowDirection" Value="LeftToRight" />
-                        <Setter Property="Background" Value="#1E1E1E"/>
-                        <Setter Property="Foreground" Value="#DBDBDB"/>
                         <Setter Property="LineNumbersForeground" Value="Black"/>
                         <Setter Property="Template">
                             <Setter.Value>
@@ -88,10 +107,10 @@
 
                                         <Style TargetType="{x:Type avalonedit:TextArea}">
                                             <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-                                            <Setter Property="SelectionBrush" Value="#1ba1e2" />
+                                            <Setter Property="SelectionBrush" Value="{StaticResource EditorSelectionBrush}" />
                                             <Setter Property="SelectionBorder">
                                                 <Setter.Value>
-                                                    <Pen Brush="#1ba1e2" Thickness="1" />
+                                                    <Pen Brush="{StaticResource EditorSelectionBrush}" Thickness="1" />
                                                 </Setter.Value>
                                             </Setter>
                                             <Setter Property="SelectionCornerRadius" Value="0" />
@@ -171,7 +190,7 @@
 
                                                             <!-- Display mini-toolbar and Horizontal scrollbar at the bottom of the view -->
                                                             <!-- Using DialogBackgroundBrush since Editor can use a WPF Theme independent background color -->
-                                                            <!-- TODO XXX Background="{DynamicResource DialogBackgroundBrush}" -->
+                                                            <!-- Background intentionally omitted: the editor uses its own theme-driven background, not DialogBackgroundBrush -->
                                                             <Grid Grid.Column="0" Grid.Row="1">
                                                                 <Grid.ColumnDefinitions>
                                                                     <ColumnDefinition Width="*" />
@@ -219,6 +238,7 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <StackPanel Orientation="Vertical">
+                    <!-- Debug buttons, hidden from production UI -->
                     <Button Content="Decompile" Click="Decompile_OnClick" Visibility="Collapsed"/>
                     <Button Content="Compile to AST" Click="CompileAST_OnClick" Visibility="Collapsed" IsEnabled="{Binding FullyInitialized}"/>
                     <Button Content="Compile" Click="Compile_OnClick" IsEnabled="{Binding FullyInitialized}" Padding="10"/>

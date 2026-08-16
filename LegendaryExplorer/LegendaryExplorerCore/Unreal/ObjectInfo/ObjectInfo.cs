@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 
 namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {
@@ -72,7 +73,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         /// Lock for loading property database
         /// </summary>
         [JsonIgnore]
-        private object syncObj = new object();
+        private readonly Lock syncObj = new();
 
         protected GameObjectInfo()
         {

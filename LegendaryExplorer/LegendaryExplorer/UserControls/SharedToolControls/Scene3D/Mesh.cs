@@ -9,7 +9,7 @@ using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using Device = SharpDX.Direct3D11.Device;
 
-namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
+namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
 {
     // This class exists because typing Mesh<WorldVertex> is a pain.
     public class WorldMesh : Mesh<WorldVertex>

@@ -5,11 +5,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using LegendaryExplorerCore.Misc;
+using System.Threading;
 
 namespace LegendaryExplorerCore.Packages
 {
     /// <summary>
-    /// Class that allows you to cache packages in memory for fast accessing, without having to use a global package cache like ME3Explorer's system. Can be subclassed for specific implementations.
+    /// Class that allows you to cache packages in memory for fast accessing, without having to use a global package cache like 
+    /// Legendary Explorer's package interop system. 
+    /// Can be subclassed for specific implementations.
     /// </summary>
     public class PackageCache : IDisposable
     {
@@ -20,7 +23,7 @@ namespace LegendaryExplorerCore.Packages
         /// <summary>
         /// Object used for synchronizing for threads
         /// </summary>
-        public readonly object syncObj = new();
+        public readonly Lock syncObj = new();
         /// <summary>
         /// Cache that should only be accessed read-only. Subclasses of this can reference this shared cache object
         /// </summary>

@@ -52,25 +52,19 @@ namespace LegendaryExplorerCore.Gammtek.Helpers
 				return "null";
 			}
 
-#if !NETFX_CORE && !PCL
 			if (instance == DBNull.Value)
 			{
 				return "dbnull";
 			}
-#endif
-
-#if !NETFX_CORE
-			// Note: cannot be used on NETFX_CORE
 
 			// Check if there is a culture specific version
 			var instanceType = instance.GetType();
-			var toStringMethod = instanceType.GetMethodEx("ToString", new[] { typeof(IFormatProvider) });
+			var toStringMethod = instanceType.GetMethodEx("ToString", [typeof(IFormatProvider)]);
 
 			if (toStringMethod != null)
 			{
-				return (string)toStringMethod.Invoke(instance, new object[] { cultureInfo });
+				return (string)toStringMethod.Invoke(instance, [cultureInfo]);
 			}
-#endif
 
 			return instance.ToString();
 		}

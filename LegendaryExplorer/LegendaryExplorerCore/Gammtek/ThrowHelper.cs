@@ -25,15 +25,6 @@ namespace LegendaryExplorerCore.Gammtek
 			throw new DivideByZeroException();
 		}
 
-		[ContractAnnotation("obj:null => halt")]
-        public static void ThrowExceptionIfNull([InvokerParameterName] string paramName, object obj)
-		{
-			if (obj == null)
-			{
-				throw new ArgumentNullException(paramName);
-			}
-		}
-
         [DoesNotReturn]
         public static void ThrowArgumentException([InvokerParameterName] string paramName, string message)
         {

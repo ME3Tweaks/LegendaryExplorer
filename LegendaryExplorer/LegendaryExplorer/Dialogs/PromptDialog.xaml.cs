@@ -30,27 +30,9 @@ namespace LegendaryExplorer.Dialogs
         private InputType _inputType;
 
         /// <summary>
-        /// Optional validation function that determines if the input is valid.
+        /// Optional validation function that determines if the input is valid and optionally provides textual validation feedback.
         /// </summary>
-        private Predicate<string> validationFunc;
-
-        /// <summary>
-        /// Optional function that returns validation feedback text based on the current input.
-        /// </summary>
-        private Func<string, string> validationTextFunc;
-
-        /// <summary>
-        /// Command executed when the OK button is clicked.
-        /// </summary>
-        public ICommand OkCommand { get; set; }
-
-        /// <summary>
-        /// Initializes the commands used by the dialog.
-        /// </summary>
-        private void LoadCommands()
-        {
-            OkCommand = new GenericCommand(SuccessClose, IsInputValid);
-        }
+        private Func<string, (bool, string)> validationFunc;
 
         /// <summary>
         /// Creates a new prompt dialog with the specified question, title, and default value. Ensure you set the owner before showing if this if being called from a WPF window.
@@ -64,7 +46,6 @@ namespace LegendaryExplorer.Dialogs
         /// <param name="inputType">The type of input control to display (single-line or multi-line).</param>
         public PromptDialog(string question, string title, string defaultValue = "", bool selectText = false, int selectionStart = -1, int selectionEnd = -1, InputType inputType = InputType.Text)
         {
-            LoadCommands();
             InitializeComponent();
             this.Loaded += PromptDialog_Loaded;
             txtQuestion.Text = question;
@@ -122,15 +103,14 @@ namespace LegendaryExplorer.Dialogs
         /// <param name="selectionStart">The starting position of the text selection. Use -1 to select all text.</param>
         /// <param name="selectionEnd">The ending position of the text selection. Use -1 or 0 to select to the end.</param>
         /// <param name="inputType">The type of input control to display (single-line or multi-line).</param>
-        /// <param name="validator">Optional validation function that returns true if the input is valid.</param>
-        /// <param name="validationText">Optional function that returns validation feedback text based on the current input.</param>
+        /// <param name="validator">Optional validation function that returns true if the input is valid,
+        /// as well as a string that provides feedback on the value (null is valid). Will be called frequently. Must not cause side effects!</param>
         /// <returns>The user's input text if OK was clicked; null if the dialog was cancelled.</returns>
-        public static string Prompt(Control owner, string question, string title = "", 
-            string defaultValue = "", 
-            bool selectText = false, int selectionStart = -1, int selectionEnd = -1, 
+        public static string Prompt(Control owner, string question, string title = "",
+            string defaultValue = "",
+            bool selectText = false, int selectionStart = -1, int selectionEnd = -1,
             InputType inputType = InputType.Text,
-            Predicate<string> validator = null,
-            Func<string, string> validationText = null)
+            Func<string, (bool, string)> validator = null)
         {
             PromptDialog inst = new PromptDialog(question, title, defaultValue, selectText, selectionStart, selectionEnd, inputType);
             if (owner != null)
@@ -139,12 +119,7 @@ namespace LegendaryExplorer.Dialogs
                 inst.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             }
             inst.validationFunc = validator;
-            inst.validationTextFunc = validationText;
-            if (validationText is not null)
-            {
-                inst.txtValidation.Visibility = Visibility.Visible;
-                inst.txtValidation.Text = validationText(inst.ResponseText);
-            }
+            inst.Validate();
             inst.ShowDialog();
             if (inst.DialogResult == true)
                 return inst.ResponseText;
@@ -160,18 +135,20 @@ namespace LegendaryExplorer.Dialogs
         /// Checks if the current input is valid using the validation function if provided.
         /// </summary>
         /// <returns>True if the input is valid or no validation function is set; otherwise false.</returns>
-        private bool IsInputValid()
+        private void Validate()
         {
-            return validationFunc?.Invoke(ResponseText) ?? true;
-        }
-
-        /// <summary>
-        /// Closes the dialog with a successful result (DialogResult = true).
-        /// </summary>
-        private void SuccessClose()
-        {
-            DialogResult = true;
-            Close();
+            if (validationFunc is null) return;
+            (bool valid, string feedback) = validationFunc(ResponseText);
+            btnOk.IsEnabled = valid;
+            if (feedback is null)
+            {
+                txtValidation.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                txtValidation.Visibility = Visibility.Visible;
+                txtValidation.Text = feedback;
+            }
         }
 
         /// <summary>
@@ -187,9 +164,15 @@ namespace LegendaryExplorer.Dialogs
         /// </summary>
         private void OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (validationTextFunc is not null)
+            Validate();
+        }
+
+        private void ok_Click(object sender, RoutedEventArgs e)
+        {
+            if (validationFunc is null || validationFunc(ResponseText).Item1)
             {
-                txtValidation.Text = validationTextFunc(ResponseText);
+                DialogResult = true;
+                Close();
             }
         }
     }

@@ -62,6 +62,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return new Rotator(pitch.RadiansToUnrealRotationUnits(), yaw.RadiansToUnrealRotationUnits(), 0);
         }
 
+        //Takes Vector3 where X:Roll, Y:Pitch, Z:Yaw, in degrees 
+        public static Rotator FromDegreesVector(Vector3 degrees)
+        {
+            return new Rotator(degrees.Y.DegreesToUnrealRotationUnits(), degrees.Z.DegreesToUnrealRotationUnits(), degrees.X.DegreesToUnrealRotationUnits());
+        }
+
         public static Rotator FromQuaternion(Quaternion quat)
         {
             return Matrix4x4.CreateFromQuaternion(quat).GetRotator();
@@ -74,6 +80,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             var sp = MathF.Sin(Pitch.UnrealRotationUnitsToRadians());
             var sy = MathF.Sin(Yaw.UnrealRotationUnitsToRadians());
             return new Vector3((cp * cy), (cp * sy), sp);
+        }
+
+        public Vector3 GetDegreesVector()
+        {
+            return new Vector3(Roll.UnrealRotationUnitsToDegrees(), Pitch.UnrealRotationUnitsToDegrees(), Yaw.UnrealRotationUnitsToDegrees());
         }
 
         public bool IsZero => Pitch == 0 && Yaw == 0 && Roll == 0;
@@ -102,6 +113,30 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
 
         public override int GetHashCode() => HashCode.Combine(Pitch, Yaw, Roll);
+
+        public readonly Matrix4x4 ToRotationMatrix()
+        {
+            var pitchRad = Pitch.UnrealRotationUnitsToRadians();
+            var yawRad = Yaw.UnrealRotationUnitsToRadians();
+            var rollRad = Roll.UnrealRotationUnitsToRadians();
+            var cp = MathF.Cos(pitchRad);
+            var sp = MathF.Sin(pitchRad);
+            var cy = MathF.Cos(yawRad);
+            var sy = MathF.Sin(yawRad);
+            var cr = MathF.Cos(rollRad);
+            var sr = MathF.Sin(rollRad);
+            return new Matrix4x4(
+                cp * cy, cp * sy, sp, 0,
+                sr * sp * cy - cr * sy, sr * sp * sy + cr * cy, -sr * cp, 0,
+                -(cr * sp * cy + sr * sy), cy * sr - cr * sp * sy, cr * cp, 0,
+                0, 0, 0, 1
+                );
+        }
+
+        public readonly Quaternion ToQuaternion()
+        {
+            return Quaternion.CreateFromRotationMatrix(ToRotationMatrix());
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -227,6 +262,14 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Max = Min = vec;
                 IsValid = 1;
             }
+        }
+
+        public StructProperty GetStructProperty()
+        {
+            return new StructProperty("Box", true,
+                CommonStructs.Vector3Prop(Min, "Min"),
+                CommonStructs.Vector3Prop(Max, "Max"),
+                new ByteProperty(IsValid, "IsValid"));
         }
     }
 

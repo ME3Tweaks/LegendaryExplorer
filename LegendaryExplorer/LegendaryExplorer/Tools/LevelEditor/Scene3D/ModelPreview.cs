@@ -160,7 +160,7 @@ public class TexturedPreviewMaterial : ModelPreviewMaterial<WorldVertex>
             }
         }
 
-        foreach (var textureEntry in mat.Textures)
+        foreach (var textureEntry in mat.Textures.Reverse())
         {
             var texObjectName = textureEntry.ObjectName.Name.ToLower();
             if (texObjectName.Contains("diff") || texObjectName.Contains("tex"))
@@ -487,7 +487,7 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
         var sections = new List<ModelPreviewSection>();
         foreach (var element in lodModel.Elements)
         {
-            if (element.Material is 0)
+            if (element.Material is 0 || !m.Export.FileRef.IsEntry(element.Material))
             {
                 sections.Add(new ModelPreviewSection(null, element.FirstIndex, element.NumTriangles));
             }
@@ -547,7 +547,7 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
             {
                 triangles.Add(new Triangle(lodmodel.IndexBuffer[i], lodmodel.IndexBuffer[i + 1], lodmodel.IndexBuffer[i + 2]));
             }
-            var mesh = new Mesh<TVertex>(renderContext.Device, triangles, vertices);
+            var mesh = new Mesh<TVertex>(renderContext.Device, triangles, vertices, isDynamic: true);
             // Sections
             var sections = new List<ModelPreviewSection>();
             foreach (var section in lodmodel.Sections)

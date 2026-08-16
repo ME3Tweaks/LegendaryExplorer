@@ -14,8 +14,8 @@ namespace LegendaryExplorerCore.Unreal.Classes
         public BinaryConverters.BioMorphFace MorphFace { get; }
         public SkeletalMesh BaseHead { get; }
         public SkeletalMesh HairMesh { get; }
-        public List<MorphFeature> MorphFeatures { get; } = new();
-        public List<BoneOffset> BoneOffsets { get; } = new();
+        public List<MorphFeature> MorphFeatures { get; } = [];
+        public List<BonePosition> BoneOffsets { get; } = [];
 
         public IEntry m_oBaseHead;
         public IEntry m_oHairMesh;
@@ -31,6 +31,13 @@ namespace LegendaryExplorerCore.Unreal.Classes
             HairMesh = LoadMeshFromEntry(m_oHairMesh);
         }
 
+        public static (BonePosition[], Vector3[][]) GetBoneAndVertexPositions(ExportEntry morphExport)
+        {
+            var boneOffsets = morphExport.GetProperty<ArrayProperty<StructProperty>>("m_aFinalSkeleton")?.Select(e => new BonePosition(e)).ToArray();
+            var vertexOffsets = ObjectBinary.From<BinaryConverters.BioMorphFace>(morphExport)?.LODs;
+            return (boneOffsets, vertexOffsets);
+        }
+
         private void ParseProperties(PropertyCollection props)
         {
             var headProp = props.GetProp<ObjectProperty>("m_oBaseHead");
@@ -39,7 +46,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
             m_oHairMesh = hairProp?.ResolveToEntry(Export.FileRef);
 
             MorphFeatures.AddRange(props.GetProp<ArrayProperty<StructProperty>>("m_aMorphFeatures").Select(e => new MorphFeature(e)));
-            BoneOffsets.AddRange(props.GetProp<ArrayProperty<StructProperty>>("m_aFinalSkeleton").Select(e => new BoneOffset(e)));
+            BoneOffsets.AddRange(props.GetProp<ArrayProperty<StructProperty>>("m_aFinalSkeleton").Select(e => new BonePosition(e)));
         }
 
         private SkeletalMesh LoadMeshFromEntry(IEntry mOBaseHead)
@@ -95,12 +102,12 @@ namespace LegendaryExplorerCore.Unreal.Classes
         }
     }
 
-    public readonly struct BoneOffset
+    public readonly struct BonePosition
     {
         public string Name { get; }
         public Vector3 Position { get; }
 
-        public BoneOffset(StructProperty boneOffsetStruct)
+        public BonePosition(StructProperty boneOffsetStruct)
         {
             Name = boneOffsetStruct.GetProp<NameProperty>("nName")?.Value ?? "";
             var vectorStruct = boneOffsetStruct.GetProp<StructProperty>("vPos");

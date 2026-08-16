@@ -1,4 +1,7 @@
-﻿using System;
+Exit code: 0
+Wall time: 0.2 seconds
+Output:
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,244 +16,65 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls;
 
 public partial class BinaryInterpreterWPF
 {
-    /// <summary>
-    /// Reads the common header for FaceFX archives.
-    /// </summary>
-    private (int version, MEGame game) ReadFaceFXHeader(EndianReader bin, List<ITreeItem> subnodes)
-    {
-        var archiveSize = bin.ReadInt32();
-        subnodes.Add(new BinInterpNode(bin.Position - 4, $"Archive size: {archiveSize} ({FileSize.FormatSize(archiveSize)})"));
-        subnodes.Add(new BinInterpNode(bin.Position, $"Magic: {bin.ReadInt32():X8}") { Length = 4 });
-        int versionID = bin.ReadInt32(); //1710 = ME1, 1610 = ME2, 1731 = ME3.
-        var game = versionID == 1710 ? MEGame.ME1 :
-            versionID == 1610 ? MEGame.ME2 :
-            versionID == 1731 ? MEGame.ME3 :
-            MEGame.Unknown;
-        var vIdStr = versionID.ToString();
-        var vers = new Version(vIdStr[0] - '0', vIdStr[1] - '0', vIdStr[2] - '0', vIdStr[3] - '0'); //Mega hack
-        subnodes.Add(new BinInterpNode(bin.Position - 4, $"SDK Version: {versionID} ({vers})") { Length = 4 });
-        if (versionID == 1731)
+Exit code: 0
+Wall time: 0.4 seconds
+Output:
+/// <summary>
+        /// Reads the common header for FaceFX archives.
+        /// </summary>
+        private (int sdkVersion, List<string> names) ReadFaceFXHeader(EndianReader bin, List<ITreeItem> subnodes)
         {
-            subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
-        }
+            var archiveSize = bin.ReadInt32();
+            subnodes.Add(new BinInterpNode(bin.Position - 4, $"Archive size: {archiveSize} ({FileSize.FormatSize(archiveSize)})"));
+            subnodes.Add(new BinInterpNode(bin.Position, $"Magic: {bin.ReadInt32():X8}") { Length = 4 });
+            int sdkVersion = bin.ReadInt32(); //1710 = ME1, 1610 = ME2, 1731 = ME3/LE1/LE2/LE3.
 
-        subnodes.Add(new BinInterpNode(bin.Position, $"Licensee: {bin.ReadFaceFXString(game)}"));
-        subnodes.Add(new BinInterpNode(bin.Position, $"Project: {bin.ReadFaceFXString(game)}"));
-
-        var licenseeVersion = bin.ReadInt32();
-        vIdStr = licenseeVersion.ToString();
-        vers = new Version(vIdStr[0] - '0', vIdStr[1] - '0', vIdStr[2] - '0', vIdStr[3] - '0'); //Mega hack
-        subnodes.Add(new BinInterpNode(bin.Position - 4, $"Licensee version: {vIdStr} ({vers})") { Length = 4 });
-
-        return (versionID, game);
-    }
-
-    private List<ITreeItem> StartFaceFXAnimSetScan(byte[] data, ref int binarystart)
-    {
-        var subnodes = new List<ITreeItem>();
-        try
-        {
-            var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
-            bin.JumpTo(binarystart);
-            ReadFaceFXHeader(bin, subnodes);
-
-            if (Pcc.Game == MEGame.ME2)
+            var vIdStr = sdkVersion.ToString();
+            var vers = new Version(vIdStr[0] - '0', vIdStr[1] - '0', vIdStr[2] - '0', vIdStr[3] - '0'); //Mega hack
+            subnodes.Add(new BinInterpNode(bin.Position - 4, $"SDK Version: {sdkVersion} ({vers})") { Length = 4 });
+            if (sdkVersion == 1731)
             {
-                subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
-            }
-            else
-            {
-                subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                subnodes.Add(new BinInterpNode(bin.Position, $"File Format Version: {bin.ReadInt32():X8}") { Length = 4 });
             }
 
-            if (Pcc.Game != MEGame.ME2)
+            subnodes.Add(new BinInterpNode(bin.Position, $"Licensee: {bin.ReadFaceFXString(sdkVersion)}"));
+            subnodes.Add(new BinInterpNode(bin.Position, $"Project: {bin.ReadFaceFXString(sdkVersion)}"));
+
+            var licenseeVersion = bin.ReadInt32();
+            vIdStr = licenseeVersion.ToString();
+            vers = new Version(vIdStr[0] - '0', vIdStr[1] - '0', vIdStr[2] - '0', vIdStr[3] - '0'); //Mega hack
+            subnodes.Add(new BinInterpNode(bin.Position - 4, $"Licensee version: {vIdStr} ({vers})") { Length = 4 });
+
+            ushort dirVersion = 0;
+            subnodes.Add(new BinInterpNode(bin.Position, $"Directory Version: {dirVersion = bin.ReadUInt16()}") { Length = 2 });
+            if (dirVersion >= 1)
             {
-                int hNodeCount = bin.ReadInt32();
-                var hNodes = new List<ITreeItem>();
-                subnodes.Add(new BinInterpNode(bin.Position - 4, $"Nodes: {hNodeCount} items")
+                int binCount = bin.ReadInt32();
+                var clsVersionsDictBins = new List<ITreeItem>();
+                subnodes.Add(new BinInterpNode(bin.Position - 4, $"Class Versions Dict")
                 {
-                    Items = hNodes
+                    Items = clsVersionsDictBins
                 });
-                for (int i = 0; i < hNodeCount; i++)
+                for (int i = 0; i < binCount; i++)
                 {
-                    var hNodeNodes = new List<ITreeItem>();
-                    hNodes.Add(new BinInterpNode(bin.Position, $"{i}")
+                    var kvps = new List<ITreeItem>();
+                    clsVersionsDictBins.Add(new BinInterpNode(bin.Position, $"Bin {bin.ReadInt32()}")
                     {
-                        Items = hNodeNodes
+                        Items = kvps
                     });
-                    hNodeNodes.Add(MakeInt32Node(bin, "Unknown"));
                     var nNameCount = bin.ReadInt32();
-                    hNodeNodes.Add(new BinInterpNode(bin.Position, $"Name Count: {nNameCount}") { Length = 4 });
+                    kvps.Add(new BinInterpNode(bin.Position, $"Num KeyValuePairs in bin: {nNameCount}") { Length = 4 });
                     for (int n = 0; n < nNameCount; n++)
                     {
-                        hNodeNodes.Add(new BinInterpNode(bin.Position, $"Name: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
-                        hNodeNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        kvps.Add(new BinInterpNode(bin.Position, $"Class: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
+                        kvps.Add(new BinInterpNode(bin.Position, $"Version: {bin.ReadInt16()}") { Length = 2 });
                     }
                 }
             }
 
-            int nameCount = bin.ReadInt32();
-            subnodes.Add(new BinInterpNode(bin.Position - 4, $"Names: {nameCount} items")
+            if (sdkVersion < 1700)
             {
-                //ME2 different to ME3/1
-                Items = ReadList(nameCount, i => new BinInterpNode(bin.Skip(Pcc.Game != MEGame.ME2 ? 0 : 4).Position, $"{i}: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"))
-            });
-
-            subnodes.Add(MakeInt32Node(bin, "Unknown"));
-            subnodes.Add(MakeInt32Node(bin, "Unknown"));
-            subnodes.Add(MakeInt32Node(bin, "Unknown"));
-            subnodes.Add(MakeInt32Node(bin, "Unknown"));
-            if (Pcc.Game == MEGame.ME2)
-            {
-                subnodes.Add(MakeInt32Node(bin, "Unknown"));
-                subnodes.Add(MakeInt32Node(bin, "Unknown"));
-                subnodes.Add(MakeInt32Node(bin, "Unknown"));
-                subnodes.Add(MakeInt32Node(bin, "Unknown"));
-                subnodes.Add(MakeInt32Node(bin, "Unknown"));
-            }
-
-            int lineCount = bin.ReadInt32();
-            var lines = new List<ITreeItem>();
-
-            subnodes.Add(new BinInterpNode(bin.Position - 4, $"FaceFXLines: {lineCount} items")
-            {
-                Items = lines
-            });
-            for (int i = 0; i < lineCount; i++)
-            {
-                var nodes = new List<ITreeItem>();
-                lines.Add(new BinInterpNode(bin.Position, $"{i}")
-                {
-                    Items = nodes
-                });
-                if (Pcc.Game == MEGame.ME2)
-                {
-                    nodes.Add(MakeInt32Node(bin, "Unknown"));
-                    nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                }
-                nodes.Add(MakeInt32Node(bin, "Name"));
-                if (Pcc.Game == MEGame.ME2)
-                {
-                    nodes.Add(MakeInt32Node(bin, "Unknown"));
-                }
-                int animationCount = bin.ReadInt32();
-                var anims = new List<ITreeItem>();
-                nodes.Add(new BinInterpNode(bin.Position - 4, $"Animations: {animationCount} items")
-                {
-                    Items = anims
-                });
-                for (int j = 0; j < animationCount; j++)
-                {
-                    var animNodes = new List<ITreeItem>();
-                    anims.Add(new BinInterpNode(bin.Position, $"{j}")
-                    {
-                        Items = animNodes
-                    });
-                    if (Pcc.Game == MEGame.ME2)
-                    {
-                        animNodes.Add(MakeInt32Node(bin, "Unknown"));
-                        animNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                    }
-                    animNodes.Add(MakeInt32Node(bin, "Name"));
-                    animNodes.Add(MakeInt32Node(bin, "Unknown"));
-                    if (Pcc.Game == MEGame.ME2)
-                    {
-                        animNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                    }
-                }
-
-                int pointsCount = bin.ReadInt32();
-                nodes.Add(new BinInterpNode(bin.Position - 4, $"Points: {pointsCount} items")
-                {
-                    Items = ReadList(pointsCount, j => new BinInterpNode(bin.Position, $"{j}")
-                    {
-                        Items = new List<ITreeItem>
-                        {
-                            new BinInterpNode(bin.Position, $"Time: {bin.ReadFloat()}") {Length = 4},
-                            new BinInterpNode(bin.Position, $"Weight: {bin.ReadFloat()}") {Length = 4},
-                            new BinInterpNode(bin.Position, $"InTangent: {bin.ReadFloat()}") {Length = 4},
-                            new BinInterpNode(bin.Position, $"LeaveTangent: {bin.ReadFloat()}") {Length = 4}
-                        }
-                    })
-                });
-
-                if (pointsCount > 0)
-                {
-                    if (Pcc.Game == MEGame.ME2)
-                    {
-                        nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                    }
-                    nodes.Add(new BinInterpNode(bin.Position, $"NumKeys: {bin.ReadInt32()} items")
-                    {
-                        Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpNode(bin.Position, $"{bin.ReadInt32()} keys"))
-                    });
-                }
-                nodes.Add(new BinInterpNode(bin.Position, $"Fade In Time: {bin.ReadFloat()}") { Length = 4 });
-                nodes.Add(new BinInterpNode(bin.Position, $"Fade Out Time: {bin.ReadFloat()}") { Length = 4 });
-                nodes.Add(MakeInt32Node(bin, "Unknown"));
-                if (Pcc.Game == MEGame.ME2)
-                {
-                    nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                    nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                }
-                nodes.Add(new BinInterpNode(bin.Position, $"Path: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
-                if (Pcc.Game == MEGame.ME2)
-                {
-                    nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                }
-                nodes.Add(new BinInterpNode(bin.Position, $"ID: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
-                nodes.Add(MakeInt32Node(bin, "index"));
-            }
-        }
-        catch (Exception ex)
-        {
-            subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
-        }
-        return subnodes;
-    }
-
-    private List<ITreeItem> StartFaceFXAssetScan(byte[] data, ref int binarystart)
-    {
-        var subnodes = new List<ITreeItem>();
-        try
-        {
-            var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
-            bin.JumpTo(binarystart);
-            var (version, game) = ReadFaceFXHeader(bin, subnodes);
-
-            if (game == MEGame.ME2)
-            {
-                subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt32():X8}") { Length = 4 });
-            }
-            else
-            {
-                subnodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-            }
-            //Node Table
-            if (game != MEGame.ME2)
-            {
-                int hNodeCount = bin.ReadInt32();
-                var hNodes = new List<ITreeItem>();
-                subnodes.Add(new BinInterpNode(bin.Position - 4, $"Nodes: {hNodeCount} items")
-                {
-                    Items = hNodes
-                });
-                for (int i = 0; i < hNodeCount; i++)
-                {
-                    var hNodeNodes = new List<ITreeItem>();
-                    hNodes.Add(new BinInterpNode(bin.Position, $"{i}")
-                    {
-                        Items = hNodeNodes
-                    });
-                    hNodeNodes.Add(MakeInt32Node(bin, "Unknown"));
-                    var nNameCount = bin.ReadInt32();
-                    hNodeNodes.Add(new BinInterpNode(bin.Position, $"Name Count: {nNameCount}") { Length = 4 });
-                    for (int n = 0; n < nNameCount; n++)
-                    {
-                        hNodeNodes.Add(new BinInterpNode(bin.Position, $"Name: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
-                        hNodeNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                    }
-                }
+                subnodes.Add(MakeUInt16Node(bin, "FxArray version"));
             }
 
             //Name Table
@@ -260,410 +84,495 @@ public partial class BinaryInterpreterWPF
             var nametablePos = bin.Position - 4;
             var nametabObj = new List<ITreeItem>();
 
-            // Does this need byte aligned? ME2 seems like it does...
-            //if (game == MEGame.ME2)
-            //{
-            //    bin.ReadByte(); // Align to bytes?
-            //}
-
             for (int m = 0; m < nameCount; m++)
             {
                 var pos = bin.Position;
-                var mName = bin.ReadFaceFXString(game, true);
+                if (sdkVersion < 1700)
+                {
+                    //FxArchiveNameEntry version, always 0
+                    bin.ReadUInt16();
+                }
+                var mName = bin.ReadFaceFXString(sdkVersion);
                 nameTable.Add(mName);
                 nametabObj.Add(new BinInterpNode(pos, $"{m}: {mName}"));
-                //if (game != MEGame.ME2)
-                //{
-                //    bin.Skip(4);
-                //}
             }
 
             subnodes.Add(new BinInterpNode(nametablePos, $"Names: {nameCount} items")
             {
-                //ME1 and ME3 same, ME2 different
                 Items = nametabObj
             });
 
-            subnodes.Add(MakeInt32Node(bin, "Unknown"));
-            subnodes.Add(MakeInt32Node(bin, "Unknown"));
+            subnodes.Add(MakeUInt32Node(bin, "NumObjectPointers"));
 
-            if (game == MEGame.ME2)
-            {
-                subnodes.Add(MakeInt32Node(bin, "Unknown"));
-                subnodes.Add(MakeInt16Node(bin, "Unknown"));
-                subnodes.Add(MakeInt16Node(bin, "Unknown"));
-                subnodes.Add(MakeInt16Node(bin, "Unknown"));
-            }
+            return (sdkVersion, nameTable);
+        }
 
-            //LIST A - BONES
-            var bonesList = new List<ITreeItem>();
-            var bonesCount = bin.ReadInt32();
-            if (game == MEGame.ME2)
+        private List<ITreeItem> StartFaceFXAnimSetScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
             {
-                subnodes.Add(MakeInt32Node(bin, "Unknown"));
-                subnodes.Add(MakeInt16Node(bin, "Unknown"));
-            }
-            subnodes.Add(new BinInterpNode(((game == MEGame.ME2) ? (bin.Position - 10) : (bin.Position - 4)), $"Bone Nodes: {bonesCount} items")
-            {
-                Items = bonesList
-            });
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.JumpTo(binarystart);
+                (int sdkVersion, List<string> names) = ReadFaceFXHeader(bin, subnodes);
 
-            for (int a = 0; a < bonesCount; a++) //NOT EXACT??
-            {
-                var boneNode = new List<ITreeItem>();
-                bonesList.Add(new BinInterpNode(bin.Position, $"{nameTable[bin.ReadInt32()]}")
+                if (sdkVersion < 1700)
                 {
-                    Items = boneNode
+                    subnodes.Add(MakeUInt16Node(bin, "FxObject version"));
+                    subnodes.Add(MakeUInt16Node(bin, "FxNamedObject version"));
+                    subnodes.Add(MakeUInt16Node(bin, "FxName version"));
+                }
+                subnodes.Add(new BinInterpNode(bin.Position, $"FxAnimSet Name: {names[bin.ReadInt32()]}"));
+                if (sdkVersion < 1700)
+                {
+                    subnodes.Add(MakeUInt16Node(bin, "FxAnimSet version"));
+                    subnodes.Add(MakeUInt16Node(bin, "FxName version"));
+                }
+                subnodes.Add(new BinInterpNode(bin.Position, $"FxAsset Name: {names[bin.ReadInt32()]}"));
+                if (sdkVersion < 1700)
+                {
+                    subnodes.Add(MakeUInt16Node(bin, "FxObject version"));
+                    subnodes.Add(MakeUInt16Node(bin, "FxNamedObject version"));
+                    subnodes.Add(MakeUInt16Node(bin, "FxName version"));
+                }
+                subnodes.Add(new BinInterpNode(bin.Position, $"FxAnimGroup Name: {names[bin.ReadInt32()]}"));
+                if (sdkVersion < 1700)
+                {
+                    subnodes.Add(MakeUInt16Node(bin, "FxAnimGroup version"));
+                }
+                if (sdkVersion < 1700)
+                {
+                    subnodes.Add(MakeUInt16Node(bin, "FxArray version"));
+                }
+
+                int lineCount = bin.ReadInt32();
+                var lines = new List<ITreeItem>();
+
+                subnodes.Add(new BinInterpNode(bin.Position - 4, $"FaceFXLines: {lineCount} items")
+                {
+                    Items = lines
                 });
-                boneNode.Add(MakeFloatNode(bin, "X"));
-                boneNode.Add(MakeFloatNode(bin, "Y"));
-                boneNode.Add(MakeFloatNode(bin, "Z"));
-
-                boneNode.Add(MakeFloatNode(bin, "Unknown float"));
-                boneNode.Add(MakeFloatNode(bin, "Unknown float"));
-                boneNode.Add(MakeFloatNode(bin, "Unknown float"));
-
-                boneNode.Add(MakeFloatNode(bin, "Unknown float"));
-                boneNode.Add(MakeFloatNode(bin, "Unknown float"));
-                boneNode.Add(MakeFloatNode(bin, "Unknown float"));
-
-                boneNode.Add(MakeFloatNode(bin, "Unknown float"));
-                boneNode.Add(MakeFloatNode(bin, "Unknown float"));
-                boneNode.Add(MakeFloatNode(bin, "Unknown float"));
-
-                boneNode.Add(MakeFloatNode(bin, "Unknown float"));
-                boneNode.Add(MakeFloatNode(bin, "Unknown float"));
-                if (game != MEGame.ME2)
+                for (int i = 0; i < lineCount; i++)
                 {
-                    boneNode.Add(MakeFloatNode(bin, "Unknown float"));
-                    boneNode.Add(MakeFloatNode(bin, "Bone weight?"));
-                    //while (true)
-                    //{
-                    //    var item = bin.ReadInt32();
-                    //    if (item == 2147483647)
-                    //    {
-                    //        tableItems.Add(new BinInterpNode(bin.Position - 4, $"End Marker: FF FF FF 7F") { Length = 4 });
-                    //        tableItems.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                    //        break;
-                    //    }
-
-                    //    bin.Skip(-4);
-                    //    tableItems.Add(MakeFloatNode(bin, "Unknown float"));
-
-                    //}
-                    //Name list to Bones and other facefx?
-                    var unkNameList1 = new List<ITreeItem>();
-                    var countUk1 = bin.ReadInt32();
-                    boneNode.Add(new BinInterpNode(bin.Position - 4, $"Functions?: {countUk1} items")
+                    var nodes = new List<ITreeItem>();
+                    lines.Add(new BinInterpNode(bin.Position, $"{i}")
                     {
-                        Items = unkNameList1
+                        Items = nodes
                     });
-                    for (int b = 0; b < countUk1; b++)
+                    if (sdkVersion < 1700)
                     {
-                        var unameVal = bin.ReadInt32();
-                        var unkNameList1items = new List<ITreeItem>();
-                        unkNameList1.Add(new BinInterpNode(bin.Position - 4, $"{b},{unameVal}")
+                        nodes.Add(MakeUInt16Node(bin, "FxObject version"));
+                        nodes.Add(MakeUInt16Node(bin, "FxNamedObject version"));
+                        nodes.Add(MakeUInt16Node(bin, "FxName version"));
+                    }
+                    nodes.Add(new BinInterpNode(bin.Position, $"Name: {names[bin.ReadInt32()]}"));
+                    if (sdkVersion < 1700)
+                    {
+                        nodes.Add(MakeUInt16Node(bin, "FxAnim version"));
+                        nodes.Add(MakeUInt16Node(bin, "FxArray version"));
+                    }
+                    int animationCount = bin.ReadInt32();
+                    var anims = new List<ITreeItem>();
+                    nodes.Add(new BinInterpNode(bin.Position - 4, $"Animations: {animationCount} items")
+                    {
+                        Items = anims
+                    });
+                    for (int j = 0; j < animationCount; j++)
+                    {
+                        var animNodes = new List<ITreeItem>();
+                        anims.Add(new BinInterpNode(bin.Position, $"{j}")
                         {
-                            Items = unkNameList1items
+                            Items = animNodes
                         });
-                        unkNameList1items.Add(new BinInterpNode(bin.Position, $"{nameTable[bin.ReadInt32()]}"));
-                        unkNameList1items.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                        unkNameList1items.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                        unkNameList1items.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                        unkNameList1items.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                        unkNameList1items.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                        unkNameList1items.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                        unkNameList1items.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                        unkNameList1items.Add(MakeInt32Node(bin, "Unknown"));
-                        unkNameList1items.Add(MakeInt32Node(bin, "Unknown"));
-                        unkNameList1items.Add(MakeInt32Node(bin, "Unknown"));
-                    }
-                }
-            }
-
-            //LIST B - COMBINER NODES
-            //FROM HERE ME3 ONLY WIP
-
-            //I have literally no idea how this works in ME2
-
-            var combinerList = new List<ITreeItem>();
-            var combinerListNames = new List<string>();
-            var combinerCount = bin.ReadInt32();
-
-            if (game == MEGame.ME2)
-            {
-                subnodes.Add(MakeInt32Node(bin, "Unknown"));
-            }
-
-            subnodes.Add(new BinInterpNode(bin.Position - (game == MEGame.ME2 ? 8 : 4), $"Combiner nodes: {combinerCount} items")
-            {
-                Items = combinerList
-            });
-
-            for (int b = 0, i = 0; i < combinerCount; b++, i++)
-            {
-                var bLocation = bin.Position;
-                // There seem to be several types, known types are 0, 4, 6, 8. 
-                int formatType;
-                if (game == MEGame.ME2)
-                {
-                    formatType = bin.ReadInt16();
-                }
-                else formatType = bin.ReadInt32();
-
-                var nameIdx = bin.ReadInt32();
-
-                var combinerNode = new List<ITreeItem>();
-                combinerList.Add(new BinInterpNode(bin.Position - 4, $"{b}: {nameTable[nameIdx]} - {(FxNodeType)formatType}")
-                {
-                    Items = combinerNode
-                });
-                combinerListNames.Add(nameTable[nameIdx]);
-
-                combinerNode.Add(new BinInterpNode(bin.Position - 8, $"Format: {formatType} - {(FxNodeType)formatType}"));
-                combinerNode.Add(new BinInterpNode(bin.Position - 4, $"Table index: {nameIdx}"));
-                combinerNode.Add(new BinInterpNode(bin.Position, $"Minimum Value: {bin.ReadSingle()}") { Length = 4 });
-                combinerNode.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                combinerNode.Add(new BinInterpNode(bin.Position, $"Maximum Value: {bin.ReadSingle()}") { Length = 4 });
-                combinerNode.Add(new BinInterpNode(bin.Position, $"Unknown float: {bin.ReadSingle()}") { Length = 4 });
-                var inputOp = bin.ReadInt32();
-                combinerNode.Add(new BinInterpNode(bin.Position - 4, $"Input Operation: {inputOp} - {(FxInputOperation)inputOp}"));
-
-                // Parent links section
-                var parentLinks = new List<ITreeItem>(); //Name list to Bones and other facefx phenomes?
-                var parentLinksCount = bin.ReadInt32();
-                combinerNode.Add(new BinInterpNode(bin.Position - 4, $"Parent Links: {parentLinksCount} items")
-                {
-                    Items = parentLinks
-                });
-                for (int n2 = 0; n2 < parentLinksCount; n2++)
-                {
-                    var combinerIdx = bin.ReadInt32();
-                    var linkedNode = combinerIdx < b ? combinerListNames[combinerIdx] : "";
-                    var parentLinkItems = new List<ITreeItem>();
-                    parentLinks.Add(new BinInterpNode(bin.Position - 4, $"Combiner Idx: {combinerIdx} {linkedNode}")
-                    {
-                        Items = parentLinkItems
-                    });
-                    var linkFunction = bin.ReadInt32();
-                    parentLinkItems.Add(new BinInterpNode(bin.Position - 4, $"Link Function: {(FxLinkFunction)linkFunction}"));
-                    var n3count = bin.ReadInt32();
-                    parentLinkItems.Add(new BinInterpNode(bin.Position - 4, $"Parameter Count: {n3count}"));
-                    for (int n3 = 0; n3 < n3count; n3++)
-                    {
-                        parentLinkItems.Add(new BinInterpNode(bin.Position, $"Function Parameter {n3}: {bin.ReadSingle()}") { Length = 4 });
-                    }
-                }
-
-                // Parameters section
-                int parameterCount = bin.ReadInt32();
-                var fxaParameter = new List<ITreeItem>(parameterCount);
-                combinerNode.Add(new BinInterpNode(bin.Position - 4, $"Parameters: {parameterCount} items")
-                {
-                    Items = fxaParameter
-                });
-                for (int fxaIndex = 0; fxaIndex < parameterCount; fxaIndex++)
-                {
-                    int fxaIdxVal = bin.ReadInt32();
-                    var fxaInfoItem = new List<ITreeItem>();
-                    fxaParameter.Add(new BinInterpNode(bin.Position - 4, $"{nameTable[fxaIdxVal]} - {fxaIdxVal}")
-                    {
-                        Items = fxaInfoItem
-                    });
-                    int parameterFmt = bin.ReadInt32();
-                    fxaInfoItem.Add(new BinInterpNode(bin.Position - 4, $"Parameter Name: {nameTable[fxaIdxVal]} ({fxaIdxVal})"));
-                    fxaInfoItem.Add(new BinInterpNode(bin.Position - 4, $"Parameter Format: {(FxNodeParamFormat)parameterFmt} ({parameterFmt})") { Length = 4 });
-                    // Parameter format - 0 means first int is the param value, 3 means there is a string on the end that is the param value
-
-                    var firstUnkIntName = parameterFmt == 0 ? "Int Value" : "Unknown int";
-                    fxaInfoItem.Add(new BinInterpNode(bin.Position, $"{firstUnkIntName}: {bin.ReadInt32()}") { Length = 4 });
-                    fxaInfoItem.Add(new BinInterpNode(bin.Position, $"Float value?: {bin.ReadSingle()}") { Length = 4 });
-                    fxaInfoItem.Add(new BinInterpNode(bin.Position, $"Unknown int: {bin.ReadInt32()}") { Length = 4 });
-
-                    if (parameterFmt == 3)
-                    {
-                        var unkStringLength = bin.ReadInt32();
-                        fxaInfoItem.Add(new BinInterpNode(bin.Position - 4, $"Parameter Value: {bin.BaseStream.ReadStringLatin1(unkStringLength)}"));
-                    }
-                }
-            }
-
-            // Fix names for bone node functions now that we've parsed combiner table - this is terrible code
-            foreach (var bone in bonesList)
-            {
-                var functions = (bone as BinInterpNode).Items[^1];
-                if (functions is BinInterpNode functionNode && functionNode.Header.Contains("Function"))
-                {
-                    foreach (var funcItem in functionNode.Items)
-                    {
-                        if (funcItem is BinInterpNode func)
+                        if (sdkVersion < 1700)
                         {
-                            var ints = func.Header.Split(',', ' ').Where(str => Int32.TryParse(str, out _)).Select(str => Convert.ToInt32(str)).ToArray();
-                            if (ints.Length != 2) break;
-                            func.Header = $"{ints[0]}: Combiner Node {ints[1]} ({combinerListNames[ints[1]]})";
+                            animNodes.Add(MakeUInt16Node(bin, "FxObject version"));
+                            animNodes.Add(MakeUInt16Node(bin, "FxNamedObject version"));
+                            animNodes.Add(MakeUInt16Node(bin, "FxName version"));
+                        }
+                        animNodes.Add(new BinInterpNode(bin.Position, $"Name: {names[bin.ReadInt32()]}"));
+                        if (sdkVersion < 1700)
+                        {
+                            animNodes.Add(MakeUInt16Node(bin, "FxAnimCurve version"));
+                        }
+                        animNodes.Add(new BinInterpNode(bin.Position, $"Interpolation type: {(FxInterpolationType)bin.ReadInt32()}"));
+                    }
+
+                    int pointsCount = bin.ReadInt32();
+                    nodes.Add(new BinInterpNode(bin.Position - 4, $"Points: {pointsCount} items")
+                    {
+                        Items = ReadList(pointsCount, j => new BinInterpNode(bin.Position, $"{j}")
+                        {
+                            Items =
+                            [
+                                new BinInterpNode(bin.Position, $"Time: {bin.ReadFloat()}") {Length = 4},
+                                new BinInterpNode(bin.Position, $"Weight: {bin.ReadFloat()}") {Length = 4},
+                                new BinInterpNode(bin.Position, $"InTangent: {bin.ReadFloat()}") {Length = 4},
+                                new BinInterpNode(bin.Position, $"LeaveTangent: {bin.ReadFloat()}") {Length = 4}
+                            ]
+                        })
+                    });
+
+                    if (pointsCount > 0)
+                    {
+                        if (sdkVersion < 1700)
+                        {
+                            nodes.Add(new BinInterpNode(bin.Position, $"FxArray version: {bin.ReadInt16()}") { Length = 2 });
+                        }
+                        nodes.Add(new BinInterpNode(bin.Position, $"NumKeys: {bin.ReadInt32()} items")
+                        {
+                            Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpNode(bin.Position, $"{bin.ReadInt32()} keys"))
+                        });
+                    }
+                    nodes.Add(new BinInterpNode(bin.Position, $"Fade In Time: {bin.ReadFloat()}") { Length = 4 });
+                    nodes.Add(new BinInterpNode(bin.Position, $"Fade Out Time: {bin.ReadFloat()}") { Length = 4 });
+                    if (sdkVersion < 1700)
+                    {
+                        nodes.Add(new BinInterpNode(bin.Position, $"FxArray version: {bin.ReadInt16()}") { Length = 2 });
+                    }
+                    nodes.Add(MakeInt32Node(bin, "BoneWeights Array (Always 0 items)"));
+                    if (sdkVersion < 1700)
+                    {
+                        nodes.Add(new BinInterpNode(bin.Position, $"FxString version: {bin.ReadInt16()}") { Length = 2 });
+                    }
+                    nodes.Add(new BinInterpNode(bin.Position, $"Path: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
+                    if (sdkVersion < 1700)
+                    {
+                        nodes.Add(new BinInterpNode(bin.Position, $"FxString version: {bin.ReadInt16()}") { Length = 2 });
+                    }
+                    nodes.Add(new BinInterpNode(bin.Position, $"ID: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
+                    nodes.Add(MakeInt32Node(bin, "index"));
+                }
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+            return subnodes;
+        }
+
+        private List<ITreeItem> StartFaceFXAssetScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.JumpTo(binarystart);
+                (int sdkVersion, var nameTable) = ReadFaceFXHeader(bin, subnodes);
+
+                if (sdkVersion < 1700)
+                {
+                    subnodes.Add(MakeUInt16Node(bin, "FxObject Version"));
+                    subnodes.Add(MakeUInt16Node(bin, "FxNamedObject Version"));
+                    subnodes.Add(MakeUInt16Node(bin, "FxName Version"));
+                }
+
+                subnodes.Add(new BinInterpNode(bin.Position, $"FxActorName {nameTable[bin.ReadInt32()]}"));
+
+                if (sdkVersion < 1700)
+                {
+                    subnodes.Add(MakeUInt16Node(bin, "FxActor Version"));
+                    subnodes.Add(MakeUInt16Node(bin, "FxMasterBoneList Version"));
+                }
+
+
+                //LIST A - BONES
+                var bonesList = new List<ITreeItem>();
+                var bonesCount = bin.ReadInt32();
+                subnodes.Add(new BinInterpNode((bin.Position - 4), $"MasterBoneList: {bonesCount} items")
+                {
+                    Items = bonesList
+                });
+                List<(int, int, BinInterpNode)> nodesToRename = [];
+                for (int a = 0; a < bonesCount; a++)
+                {
+                    var boneNodeItems = new List<ITreeItem>();
+                    if (sdkVersion < 1700)
+                    {
+                        boneNodeItems.Add(MakeUInt16Node(bin, "FxObject Version"));
+                        boneNodeItems.Add(MakeUInt16Node(bin, "FxNamedObject Version"));
+                        boneNodeItems.Add(MakeUInt16Node(bin, "FxName Version"));
+                    }
+                    BinInterpNode boneNode = new(bin.Position, $"{nameTable[bin.ReadInt32()]}")
+                    {
+                        Items = boneNodeItems
+                    };
+                    bonesList.Add(boneNode);
+                    if (sdkVersion < 1700)
+                    {
+                        boneNodeItems.Add(MakeUInt16Node(bin, "FxBone Version"));
+                    }
+
+                    boneNodeItems.Add(MakeVectorNode(bin, "Position"));
+                    boneNodeItems.Add(MakeFxQuatNode(bin, "Rotation"));
+                    boneNodeItems.Add(MakeVectorNode(bin, "Scale"));
+                    if (sdkVersion >= 1700)
+                    {
+                        boneNodeItems.Add(MakeFxQuatNode(bin, "Inverse Rotation"));
+                    }
+                    boneNodeItems.Add(MakeInt32Node(bin, "Index"));
+                    boneNodeItems.Add(MakeFloatNode(bin, "Weight"));
+                    if (sdkVersion >= 1700)
+                    {
+                        var links = new List<ITreeItem>();
+                        var linksCount = bin.ReadInt32();
+                        boneNodeItems.Add(new BinInterpNode(bin.Position - 4, $"Links: {linksCount} items")
+                        {
+                            Items = links
+                        });
+                        for (int b = 0; b < linksCount; b++)
+                        {
+                            var linkItems = new List<ITreeItem>();
+                            //formatted like this so it can be parsed by nodesToRename loop below
+                            BinInterpNode linkNode = new(bin.Position, "")
+                            {
+                                Items = linkItems
+                            };
+                            nodesToRename.Add(b, bin.ReadInt32(), linkNode);
+                            links.Add(linkNode);
+
+                            linkItems.Add(new BinInterpNode(bin.Position, $"Bone Name: {nameTable[bin.ReadInt32()]}"));
+                            linkItems.Add(MakeVectorNode(bin, "Position"));
+                            linkItems.Add(MakeFxQuatNode(bin, "Rotation"));
+                            linkItems.Add(MakeVectorNode(bin, "Scale"));
                         }
                     }
                 }
-            }
 
-            // Unknown Table C First 4 bytes
-            // Theory 1: This could refer to a number of "unique" entries, it seems to be a number of entries in the table that have only 1 string reference to the combiner.
-            //           Subtracting: (entries in this table that have 2 or more strings) - (total amount of combiner entires) = seems to result in same number that exists in these first 4 bytes.
-            byte[] unkHeaderC = bin.ReadBytes(4);
-            var unkListC = new List<ITreeItem>();
-            subnodes.Add(new BinInterpNode(bin.Position - 4, $"Unknown Table C - Combiner Mapping?")
-            {
-                Items = unkListC
-            });
-
-            for (int c = 0; c < combinerCount; c++)
-            {
-                // Table begins with an unknown ID - this ID seems to be from some kind of global table as same entries with same names use same IDs across different FaceFX files
-                //                                   (not 100% sure as only smallish sample of about 20 files was checked)
-                int entryID = bin.ReadInt32();
-                // Add tree item with entry ID as an idicator
-                var unkListCitems = new List<ITreeItem>();
-                unkListC.Add(new BinInterpNode(bin.Position - 4, $"{c}: {entryID}")
+                if (sdkVersion < 1700)
                 {
-                    Items = unkListCitems
-                });
-                unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Unknown int: {entryID}") { Length = 4 });
-                // String count:
-                int stringCount = bin.ReadInt32();
-                unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"String count: {stringCount}") { Length = 4 });
-                // Combiner entry name:
-                int stringLength = bin.ReadInt32();
-                string stringText = bin.ReadEndianASCIIString(stringLength);
-                unkListCitems.Add(new BinInterpNode(bin.Position - stringLength - 4, $"Combiner String: {stringText}") { Length = stringLength + 4 });
-                // Combiner entry ID:
-                int name = bin.ReadInt32();
-                unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Combiner ID: {name} {combinerListNames[name]}") { Length = 4 });
-                // Do the same for next strings if theres more than one.
-                for (int i = 1; i < stringCount; i++)
-                {
-                    c++;
-                    stringLength = bin.ReadInt32();
-                    stringText = bin.ReadEndianASCIIString(stringLength);
-                    unkListCitems.Add(new BinInterpNode(bin.Position - stringLength - 4, $"Combiner String: {stringText}") { Length = stringLength + 4 });
-                    name = bin.ReadInt32();
-                    unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Combiner ID: {name} {combinerListNames[name]}") { Length = 4 });
+                    subnodes.Add(new BinInterpNode(bin.Position, "Remainder unparsed"));
+                    return subnodes;
                 }
-            }
 
-            if (game == MEGame.ME2)
-            {
-                subnodes.Add(MakeInt32Node(bin, "Unknown"));
-                subnodes.Add(MakeInt32Node(bin, "Unknown"));
-                subnodes.Add(MakeInt32Node(bin, "Unknown"));
-                subnodes.Add(MakeInt32Node(bin, "Unknown"));
-                subnodes.Add(MakeInt32Node(bin, "Unknown"));
-            }
-
-            subnodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
-
-            int lineCount;
-            var lines = new List<ITreeItem>();
-            subnodes.Add(new BinInterpNode(bin.Position, $"FaceFXLines: {lineCount = bin.ReadInt32()}")
-            {
-                Items = lines
-            });
-            for (int i = 0; i < lineCount; i++)
-            {
-                var nodes = new List<ITreeItem>();
-                lines.Add(new BinInterpNode(bin.Position, $"{i}")
+                var combinerList = new List<ITreeItem>();
+                var combinerListNames = new List<string>();
+                var combinerCount = bin.ReadInt32();
+                subnodes.Add(new BinInterpNode(bin.Position - 4, $"CompiledFaceGraph Nodes: {combinerCount} items")
                 {
-                    Items = nodes
+                    Items = combinerList
                 });
-                nodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
-                int animationCount = bin.ReadInt32();
-                var anims = new List<ITreeItem>();
-                nodes.Add(new BinInterpNode(bin.Position - 4, $"Animations: {animationCount} items")
+
+                for (int b = 0, i = 0; i < combinerCount; b++, i++)
                 {
-                    Items = anims
-                });
-                for (int j = 0; j < animationCount; j++)
-                {
-                    var animNodes = new List<ITreeItem>();
-                    anims.Add(new BinInterpNode(bin.Position, $"{j}")
+                    var bLocation = bin.Position;
+                    // There seem to be several types, known types are 0, 4, 6, 8.
+                    var formatType = (FxNodeType)bin.ReadInt32();
+
+                    var nodeName = nameTable[bin.ReadInt32()];
+
+                    var combinerNode = new List<ITreeItem>();
+                    combinerList.Add(new BinInterpNode(bLocation, $"{b}: {nodeName} - {formatType}")
                     {
-                        Items = animNodes
+                        Items = combinerNode
                     });
-                    animNodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
-                    animNodes.Add(MakeInt32Node(bin, "Unknown"));
-                    if (game == MEGame.ME2)
+                    combinerListNames.Add(nodeName);
+
+                    combinerNode.Add(new BinInterpNode(bin.Position - 8, $"Format: {formatType}"));
+                    combinerNode.Add(new BinInterpNode(bin.Position - 4, $"Node: {nodeName}"));
+                    combinerNode.Add(new BinInterpNode(bin.Position, $"Min Value: {bin.ReadSingle()}") { Length = 4 });
+                    combinerNode.Add(new BinInterpNode(bin.Position, $"Reciprocal of Min: {bin.ReadSingle()}") { Length = 4 });
+                    combinerNode.Add(new BinInterpNode(bin.Position, $"Maximum Value: {bin.ReadSingle()}") { Length = 4 });
+                    combinerNode.Add(new BinInterpNode(bin.Position, $"Reciprocal of Max: {bin.ReadSingle()}") { Length = 4 });
+                    var inputOp = (FxInputOperation)bin.ReadInt32();
+                    combinerNode.Add(new BinInterpNode(bin.Position - 4, $"Input Operation: {inputOp}"));
+
+                    var inputLinks = new List<ITreeItem>();
+                    var inputLinksCount = bin.ReadInt32();
+                    combinerNode.Add(new BinInterpNode(bin.Position - 4, $"Input Links: {inputLinksCount} items")
                     {
-                        animNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        Items = inputLinks
+                    });
+                    for (int n2 = 0; n2 < inputLinksCount; n2++)
+                    {
+                        var combinerIdx = bin.ReadInt32();
+                        var linkedNode = combinerIdx < b ? combinerListNames[combinerIdx] : "";
+                        var parentLinkItems = new List<ITreeItem>();
+                        inputLinks.Add(new BinInterpNode(bin.Position - 4, $"NodeIndex: {combinerIdx} {linkedNode}")
+                        {
+                            Items = parentLinkItems
+                        });
+                        var linkFunction = (FxLinkFunction)bin.ReadInt32();
+                        parentLinkItems.Add(new BinInterpNode(bin.Position - 4, $"Link Function type: {linkFunction}"));
+                        var n3count = bin.ReadInt32();
+                        parentLinkItems.Add(new BinInterpNode(bin.Position - 4, $"Parameter Count: {n3count}"));
+                        for (int n3 = 0; n3 < n3count; n3++)
+                        {
+                            parentLinkItems.Add(new BinInterpNode(bin.Position, $"Function Parameter {n3}: {bin.ReadSingle()}") { Length = 4 });
+                        }
+                    }
+
+                    // Parameters section
+                    int parameterCount = bin.ReadInt32();
+                    var userPropNode = new List<ITreeItem>(parameterCount);
+                    combinerNode.Add(new BinInterpNode(bin.Position - 4, $"UserProperties: {parameterCount} items")
+                    {
+                        Items = userPropNode
+                    });
+                    for (int userPropIndex = 0; userPropIndex < parameterCount; userPropIndex++)
+                    {
+                        string userPropName = nameTable[bin.ReadInt32()];
+                        var userPropNodeItems = new List<ITreeItem>();
+                        userPropNode.Add(new BinInterpNode(bin.Position - 4, $"{userPropName}")
+                        {
+                            Items = userPropNodeItems
+                        });
+                        var parameterFmt = (FxGraphNodeUserPropertyType)bin.ReadInt32();
+                        userPropNodeItems.Add(new BinInterpNode(bin.Position - 8, $"Name: {userPropName}"));
+                        userPropNodeItems.Add(new BinInterpNode(bin.Position - 4, $"PropertyType: {parameterFmt}") { Length = 4 });
+
+                        userPropNodeItems.Add(new BinInterpNode(bin.Position, $"Int Value: {bin.ReadInt32()}") { Length = 4 });
+                        userPropNodeItems.Add(new BinInterpNode(bin.Position, $"Float value: {bin.ReadSingle()}") { Length = 4 });
+                        int strValueCount;
+                        userPropNodeItems.Add(new BinInterpNode(bin.Position, $"String Value count: {strValueCount = bin.ReadInt32()}") { Length = 4 });
+                        for (int strValueIdx = 0; strValueIdx < strValueCount; strValueIdx++)
+                        {
+                            userPropNodeItems.Add(new BinInterpNode(bin.Position, $"[{strValueIdx}]: {bin.ReadFaceFXString(sdkVersion)}"));
+                        }
                     }
                 }
-                int pointsCount = bin.ReadInt32();
-                nodes.Add(new BinInterpNode(bin.Position - 4, $"Points: {pointsCount} items")
+
+                // Fix names for bone node links now that we've parsed combiner table
+
+                foreach ((int linkIdx, int nodeIndex, BinInterpNode nodeToRename) in nodesToRename)
                 {
-                    Items = ReadList(pointsCount, j => new BinInterpNode(bin.Position, $"{j}")
-                    {
-                        Items = new List<ITreeItem>
-                        {
-                            new BinInterpNode(bin.Position, $"Time: {bin.ReadFloat()}") {Length = 4},
-                            new BinInterpNode(bin.Position, $"Weight: {bin.ReadFloat()}") {Length = 4},
-                            new BinInterpNode(bin.Position, $"InTangent: {bin.ReadFloat()}") {Length = 4},
-                            new BinInterpNode(bin.Position, $"LeaveTangent: {bin.ReadFloat()}") {Length = 4}
-                        }
-                    })
+                    nodeToRename.Header = $"{linkIdx}: FaceGraph Node {nodeIndex} ({combinerListNames[nodeIndex]})";
+                }
+
+                int nodeDictBinCount = bin.ReadInt32();
+                var nodeDictNodes = new List<ITreeItem>();
+                subnodes.Add(new BinInterpNode(bin.Position - 4, $" FaceGraph Node lookup dict - {nodeDictBinCount} bins")
+                {
+                    Items = nodeDictNodes
                 });
-                if (pointsCount > 0)
+
+                for (int c = 0; c < nodeDictBinCount; c++)
                 {
-                    if (game == MEGame.ME2)
+                    var unkListCitems = new List<ITreeItem>();
+                    int binIndex;
+                    nodeDictNodes.Add(new BinInterpNode(bin.Position, $"{c}: {binIndex = bin.ReadInt32()}")
+                    {
+                        Items = unkListCitems
+                    });
+                    unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Bin Index: {binIndex}") { Length = 4 });
+
+                    int kvpCount = bin.ReadInt32();
+                    unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Num KeyValuePairs: {kvpCount}") { Length = 4 });
+                    for (int i = 0; i < kvpCount; i++)
+                    {
+                        var stringLength = bin.ReadInt32();
+                        var stringText = bin.ReadEndianASCIIString(stringLength);
+                        unkListCitems.Add(new BinInterpNode(bin.Position - stringLength - 4, $"Key (FaceGraph node name): {stringText}") { Length = stringLength + 4 });
+                        var name = bin.ReadInt32();
+                        unkListCitems.Add(new BinInterpNode(bin.Position - 4, $"Value (FaceGraph node index): {name} {combinerListNames[name]}") { Length = 4 });
+                    }
+                }
+
+                subnodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
+
+                int lineCount;
+                var lines = new List<ITreeItem>();
+                subnodes.Add(new BinInterpNode(bin.Position, $"FaceFXLines: {lineCount = bin.ReadInt32()}")
+                {
+                    Items = lines
+                });
+                for (int i = 0; i < lineCount; i++)
+                {
+                    var nodes = new List<ITreeItem>();
+                    lines.Add(new BinInterpNode(bin.Position, $"{i}")
+                    {
+                        Items = nodes
+                    });
+                    nodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
+                    int animationCount = bin.ReadInt32();
+                    var anims = new List<ITreeItem>();
+                    nodes.Add(new BinInterpNode(bin.Position - 4, $"Animations: {animationCount} items")
+                    {
+                        Items = anims
+                    });
+                    for (int j = 0; j < animationCount; j++)
+                    {
+                        var animNodes = new List<ITreeItem>();
+                        anims.Add(new BinInterpNode(bin.Position, $"{j}")
+                        {
+                            Items = animNodes
+                        });
+                        animNodes.Add(new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 });
+                        animNodes.Add(MakeInt32Node(bin, "Unknown"));
+                        if (sdkVersion < 1700)
+                        {
+                            animNodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        }
+                    }
+                    int pointsCount = bin.ReadInt32();
+                    nodes.Add(new BinInterpNode(bin.Position - 4, $"Points: {pointsCount} items")
+                    {
+                        Items = ReadList(pointsCount, j => new BinInterpNode(bin.Position, $"{j}")
+                        {
+                            Items = new List<ITreeItem>
+                            {
+                                new BinInterpNode(bin.Position, $"Time: {bin.ReadFloat()}") {Length = 4},
+                                new BinInterpNode(bin.Position, $"Weight: {bin.ReadFloat()}") {Length = 4},
+                                new BinInterpNode(bin.Position, $"InTangent: {bin.ReadFloat()}") {Length = 4},
+                                new BinInterpNode(bin.Position, $"LeaveTangent: {bin.ReadFloat()}") {Length = 4}
+                            }
+                        })
+                    });
+                    if (pointsCount > 0)
+                    {
+                        if (sdkVersion < 1700)
+                        {
+                            nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        }
+
+                        nodes.Add(new BinInterpNode(bin.Position, $"NumKeys: {bin.ReadInt32()} items")
+                        {
+                            Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpNode(bin.Position, $"{bin.ReadInt32()} keys"))
+                        });
+                    }
+
+                    nodes.Add(new BinInterpNode(bin.Position, $"Fade In Time: {bin.ReadFloat()}") { Length = 4 });
+                    nodes.Add(new BinInterpNode(bin.Position, $"Fade Out Time: {bin.ReadFloat()}") { Length = 4 });
+                    nodes.Add(MakeInt32Node(bin, "Unknown"));
+                    if (sdkVersion < 1700)
+                    {
+                        nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                        nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                    }
+
+                    nodes.Add(new BinInterpNode(bin.Position, $"Path: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
+                    if (sdkVersion < 1700)
                     {
                         nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
                     }
 
-                    nodes.Add(new BinInterpNode(bin.Position, $"NumKeys: {bin.ReadInt32()} items")
+                    nodes.Add(new BinInterpNode(bin.Position, $"ID: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
+                    nodes.Add(MakeInt32Node(bin, "index"));
+                }
+
+                subnodes.Add(MakeInt32Node(bin, "unknown"));
+
+                subnodes.Add(MakeArrayNode(bin, "Unknown Table D - Mapping?", i => new BinInterpNode(bin.Position, $"{i}")
+                {
+                    IsExpanded = true,
+                    Items =
                     {
-                        Items = ReadList(bin.Skip(-4).ReadInt32(), j => new BinInterpNode(bin.Position, $"{bin.ReadInt32()} keys"))
-                    });
-                }
-
-                nodes.Add(new BinInterpNode(bin.Position, $"Fade In Time: {bin.ReadFloat()}") { Length = 4 });
-                nodes.Add(new BinInterpNode(bin.Position, $"Fade Out Time: {bin.ReadFloat()}") { Length = 4 });
-                nodes.Add(MakeInt32Node(bin, "Unknown"));
-                if (game == MEGame.ME2)
+                        new BinInterpNode(bin.Position, $"Column Id?: {bin.ReadInt32()}") {Length = 4},
+                        new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") {Length = 4},
+                        MakeFloatNode(bin, "Unk Float")
+                    }
+                }));
+                subnodes.Add(MakeArrayNode(bin, "Lip sync phoneme list:", i => new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 }));
+                subnodes.Add(MakeInt32Node(bin, "Unknown"));
+                if (CurrentLoadedExport.Game is MEGame.LE1 or MEGame.LE2)
                 {
-                    nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                    nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
+                    subnodes.Add(MakeArrayNode(bin, "Unknown Ints", i => new BinInterpNode(bin.Position, $"Unknown: {nameTable[bin.ReadInt32()]}") { Length = 4 }));
                 }
-
-                nodes.Add(new BinInterpNode(bin.Position, $"Path: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
-                if (game == MEGame.ME2)
-                {
-                    nodes.Add(new BinInterpNode(bin.Position, $"Unknown: {bin.ReadInt16()}") { Length = 2 });
-                }
-
-                nodes.Add(new BinInterpNode(bin.Position, $"ID: {bin.BaseStream.ReadStringLatin1(bin.ReadInt32())}"));
-                nodes.Add(MakeInt32Node(bin, "index"));
             }
-
-            subnodes.Add(MakeInt32Node(bin, "unknown"));
-
-            subnodes.Add(MakeArrayNode(bin, "Unknown Table D - Mapping?", i => new BinInterpNode(bin.Position, $"{i}")
+            catch (Exception ex)
             {
-                IsExpanded = true,
-                Items =
-                {
-                    new BinInterpNode(bin.Position, $"Column Id?: {bin.ReadInt32()}") {Length = 4},
-                    new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") {Length = 4},
-                    MakeFloatNode(bin, "Unk Float")
-                }
-            }));
-            subnodes.Add(MakeArrayNode(bin, "Lip sync phoneme list:", i => new BinInterpNode(bin.Position, $"Name: {nameTable[bin.ReadInt32()]}") { Length = 4 }));
-            subnodes.Add(MakeInt32Node(bin, "Unknown"));
-            if (game is MEGame.LE1 or MEGame.LE2)
-            {
-                subnodes.Add(MakeArrayNode(bin, "Unknown Ints", i => new BinInterpNode(bin.Position, $"Unknown: {nameTable[bin.ReadInt32()]}") { Length = 4 }));
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
+            return subnodes;
         }
-        catch (Exception ex)
-        {
-            subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
-        }
-        return subnodes;
-    }
 }

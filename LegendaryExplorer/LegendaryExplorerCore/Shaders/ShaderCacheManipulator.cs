@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -163,8 +164,8 @@ namespace LegendaryExplorerCore.Shaders
                 }
             }
 
-            var shader = RefShaderCacheReader.GetShaders(game, shaderGuids, out var stcrc, out var vfcrc);
-            foreach (var sh in shader)
+            var shaders = RefShaderCacheReader.GetShaders(game, shaderGuids, out var stcrc, out var vfcrc);
+            foreach (var sh in shaders)
             {
                 tempCache.Shaders.TryAdd(sh.Guid, sh);
             }
@@ -262,7 +263,7 @@ namespace LegendaryExplorerCore.Shaders
         /// <summary>
         /// For locking shader cache file
         /// </summary>
-        private static object shaderCacheReaderObj = new object();
+        private static Lock shaderCacheReaderObj = new();
 
         public static List<ExportEntry> GetBrokenMaterials(IMEPackage pcc, string gamePathOverride = null)
         {

@@ -179,7 +179,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
             {
                 try
                 {
-                    LoadedMaterials.Add(command[2]);
+                    LoadedMaterials.Add(string.Join(' ', command[2..]));
                 }
                 catch (Exception ex)
                 {
@@ -365,7 +365,7 @@ namespace LegendaryExplorer.Tools.LiveLevelEditor.MatEd
 
         private void SetMaterial()
         {
-            InteropHelper.SendMessageToGame($"{InteropCommands.LME_SET_MATERIAL} {SelectedComponentSlot.SlotIdx} {SelectedMaterial}", Game);
+            InteropHelper.SendMessageToGame($"{InteropCommands.LME_SET_MATERIAL} {SelectedComponentSlot.SlotIdx} \"{SelectedMaterial}\"", Game);
         }
 
         private void LoadCommands()

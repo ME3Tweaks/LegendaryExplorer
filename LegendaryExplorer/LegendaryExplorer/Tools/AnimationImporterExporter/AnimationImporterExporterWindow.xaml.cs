@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using LegendaryExplorer.Dialogs;
@@ -12,15 +13,19 @@ using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
+using LegendaryExplorer.Tools.AssetDatabase;
 using LegendaryExplorer.UserControls.SharedToolControls;
+using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.Win32;
 using Path = System.IO.Path;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorer.Tools.AnimationImporterExporter
 {
@@ -30,6 +35,8 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
     public partial class AnimationImporterExporterWindow : WPFBase, IRecents
     {
         public const string PSAFilter = "*.psa|*.psa";
+        public const string BVHFilter = "*.bvh|*.bvh";
+        public const string GLTFFilter = "glTF binary|*.glb|glTF|*.gltf";
 
         public AnimationImporterExporterWindow() : base("Animation Importer/Exporter")
         {
@@ -53,6 +60,8 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
             UIndexQueuedForFocusing = uIndex;
         }
 
+        #region Properties
+
         private ExportEntry _currentExport;
         public ExportEntry CurrentExport
         {
@@ -69,6 +78,12 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                 {
                     BinaryInterpreterTab_BinaryInterpreter.LoadExport(CurrentExport);
                     InterpreterTab_Interpreter.LoadExport(CurrentExport);
+
+                    // If it's an AnimSequence, load it into the preview
+                    if (CurrentExport.ClassName == "AnimSequence")
+                    {
+                        AnimPreview.LoadAnimSequence(CurrentExport);
+                    }
                 }
             }
         }
@@ -78,6 +93,24 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
         private readonly int UIndexQueuedForFocusing;
 
         public ObservableCollectionExtended<ExportEntry> AnimSequenceExports { get; } = new();
+        public ObservableCollectionExtended<ExportEntry> SkeletalMeshExports { get; } = new();
+
+        private ExportEntry _selectedSkeletalMesh;
+        public ExportEntry SelectedSkeletalMesh
+        {
+            get => _selectedSkeletalMesh;
+            set
+            {
+                if (SetProperty(ref _selectedSkeletalMesh, value) && value != null)
+                {
+                    AnimPreview.LoadSkeletalMesh(value);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Commands
 
         public ICommand OpenFileCommand { get; set; }
         public ICommand SaveFileCommand { get; set; }
@@ -88,6 +121,11 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
         public ICommand ReplaceFromPSACommand { get; set; }
         public ICommand ExportAnimSeqToPSACommand { get; set; }
         public ICommand ExportAnimSetToPSACommand { get; set; }
+        public ICommand ExportAnimSeqToBVHCommand { get; set; }
+        public ICommand ImportFromBVHCommand { get; set; }
+        public ICommand ReplaceFromBVHCommand { get; set; }
+        public ICommand ExportAnimSeqToGLTFCommand { get; set; }
+
         private void LoadCommands()
         {
             OpenFileCommand = new GenericCommand(OpenFile);
@@ -100,7 +138,15 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
             ReplaceFromPSACommand = new GenericCommand(ReplaceFromPSA, IsAnimSequenceSelected);
             ExportAnimSeqToPSACommand = new GenericCommand(ExportAnimSeqToPSA, IsAnimSequenceSelected);
             ExportAnimSetToPSACommand = new GenericCommand(ExportAnimSetToPSA, IsBioAnimDataSelected);
+            ExportAnimSeqToBVHCommand = new GenericCommand(ExportAnimSeqToBVH, IsAnimSequenceSelected);
+            ImportFromBVHCommand = new GenericCommand(ImportFromBVH, IsPackageLoaded);
+            ReplaceFromBVHCommand = new GenericCommand(ReplaceFromBVH, IsAnimSequenceSelected);
+            ExportAnimSeqToGLTFCommand = new GenericCommand(ExportAnimSeqToGLTF, IsAnimSequenceSelected);
         }
+
+        #endregion
+
+        #region Import/Export functionality
 
         private void ExportAnimSetToPSA()
         {
@@ -124,6 +170,283 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                     MessageBox.Show("Done!", "PSA Export", MessageBoxButton.OK);
                 }
             }
+        }
+
+        private void ImportFromBVH()
+        {
+            var dlg = new OpenFileDialog
+            {
+                Filter = BVHFilter,
+                CheckFileExists = true,
+                Title = "Select BVH file",
+                Multiselect = false,
+            };
+            if (dlg.ShowDialog(this) != true) return;
+
+            string chosenCoord = InputComboBoxDialog.GetValue(this,
+                "Select the coordinate system the BVH was exported with.",
+                "Coordinate System",
+                CoordSystemOptions.Select(o => o.Label),
+                CoordSystemOptions[0].Label);
+            if (chosenCoord.IsEmpty()) return;
+
+            BVHCoordinateSystem cs = CoordSystemOptions.First(o => o.Label == chosenCoord).Value;
+
+            AnimationCompressionFormat rotationCompressionFormat = AnimationCompressionFormat.ACF_Float96NoW;
+            if (!TryGetRotationCompressionFormat(ref rotationCompressionFormat)) return;
+
+            AnimSequence animSeq = BVH.ImportFromBVH(dlg.FileName, cs);
+            string defaultName = Path.GetFileNameWithoutExtension(dlg.FileName);
+            animSeq.Name = NameReference.FromInstancedString(defaultName);
+
+            var pkg = ExportCreator.CreatePackageExport(Pcc, NameReference.FromInstancedString(defaultName));
+            var bioAnimSetData = ExportCreator.CreateExport(Pcc, "BioAnimSetData", "BioAnimSetData", pkg);
+            bioAnimSetData.WriteProperty(new ArrayProperty<NameProperty>(
+                animSeq.Bones.Select(b => new NameProperty(NameReference.FromInstancedString(b.Trim().Replace(' ', '-')))),
+                "TrackBoneNames"));
+
+            var seqExp = ExportCreator.CreateExport(Pcc, NameReference.FromInstancedString(defaultName), "AnimSequence", pkg);
+            var props = seqExp.GetProperties();
+            animSeq.UpdateProps(props, Pcc.Game, rotationCompressionFormat, forceUpdate: true);
+            props.AddOrReplaceProp(new ObjectProperty(bioAnimSetData, "m_pBioAnimSetData"));
+            seqExp.WriteProperties(props);
+            seqExp.WriteBinary(animSeq);
+
+            MessageBox.Show("Done!", "BVH Import", MessageBoxButton.OK);
+        }
+
+        private void ReplaceFromBVH()
+        {
+            var dlg = new OpenFileDialog
+            {
+                Filter = BVHFilter,
+                CheckFileExists = true,
+                Title = "Select BVH file",
+                Multiselect = false,
+            };
+            if (dlg.ShowDialog(this) != true) return;
+
+            string chosenCoord = InputComboBoxDialog.GetValue(this,
+                "Select the coordinate system the BVH was exported with.",
+                "Coordinate System",
+                CoordSystemOptions.Select(o => o.Label),
+                CoordSystemOptions[0].Label);
+            if (chosenCoord.IsEmpty()) return;
+
+            BVHCoordinateSystem cs = CoordSystemOptions.First(o => o.Label == chosenCoord).Value;
+
+            AnimSequence bvhSeq = BVH.ImportFromBVH(dlg.FileName, cs);
+
+            var props = CurrentExport.GetProperties();
+
+            if (props.GetProp<ObjectProperty>("m_pBioAnimSetData") is { Value: > 0 } bioAnimSetProp
+                && Pcc.TryGetUExport(bioAnimSetProp.Value, out ExportEntry bioAnimSet)
+                && bioAnimSet.GetProperty<ArrayProperty<NameProperty>>("TrackBoneNames") is { } trackNames)
+            {
+                List<string> existingBones = trackNames.Select(np => np.Value.Instanced).ToList();
+
+                if (existingBones.Except(bvhSeq.Bones, StringComparer.OrdinalIgnoreCase).ToList() is { Count: > 0 } missingBones)
+                {
+                    MessageBox.Show($"This BVH is missing these bones:\n{string.Join(", ", missingBones)}",
+                        "", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                var bvhNameToTrack = new Dictionary<string, AnimTrack>(StringComparer.OrdinalIgnoreCase);
+                for (int i = 0; i < bvhSeq.Bones.Count; i++)
+                    bvhNameToTrack[bvhSeq.Bones[i]] = bvhSeq.RawAnimationData[i];
+
+                bvhSeq.RawAnimationData = existingBones.Select(b => bvhNameToTrack[b]).ToList();
+                bvhSeq.Bones = existingBones.Clone();
+            }
+
+            if (props.GetProp<EnumProperty>("RotationCompressionFormat") is not { } compressionEnum
+                || !Enum.TryParse(compressionEnum.Value, out AnimationCompressionFormat rotationCompressionFormat))
+            {
+                rotationCompressionFormat = AnimationCompressionFormat.ACF_Float96NoW;
+            }
+
+            if (!TryGetRotationCompressionFormat(ref rotationCompressionFormat)) return;
+
+            var originalSeqName = props.GetProp<NameProperty>("SequenceName");
+            bvhSeq.UpdateProps(props, CurrentExport.Game, rotationCompressionFormat, forceUpdate: true);
+            if (originalSeqName != null)
+                props.AddOrReplaceProp(originalSeqName);
+            CurrentExport.WriteProperties(props);
+            CurrentExport.WriteBinary(bvhSeq);
+            MessageBox.Show("Done!", "Replace from BVH", MessageBoxButton.OK);
+        }
+
+        private static readonly (string Label, BVHCoordinateSystem Value)[] CoordSystemOptions =
+        [
+            ("Y-up, Right-handed (Blender default)", BVHCoordinateSystem.YUpRightHanded),
+            ("Y-up, Left-handed",                    BVHCoordinateSystem.YUpLeftHanded),
+            ("Z-up, Right-handed",                   BVHCoordinateSystem.ZUpRightHanded),
+            ("Z-up, Left-handed (UE3 native)",        BVHCoordinateSystem.ZUpLeftHanded),
+        ];
+
+        private async void ExportAnimSeqToBVH()
+        {
+            if (ObjectBinary.From(CurrentExport) is not AnimSequence animSequence)
+                return;
+
+            MeshBone[] refSkeleton = await TryGetRefSkeletonFromDB(Pcc.Game);
+            if (refSkeleton is null)
+                return;
+
+            string chosenCoord = InputComboBoxDialog.GetValue(this,
+                "Select the coordinate system for the BVH export.",
+                "Coordinate System",
+                CoordSystemOptions.Select(o => o.Label),
+                CoordSystemOptions[0].Label);
+            if (chosenCoord.IsEmpty())
+                return;
+
+            BVHCoordinateSystem coordinateSystem = CoordSystemOptions.First(o => o.Label == chosenCoord).Value;
+
+            string sequenceName = CurrentExport.GetProperty<NameProperty>("SequenceName")?.Value.Instanced ?? CurrentExport.ObjectName.Instanced;
+            var dlg = new SaveFileDialog
+            {
+                Filter = BVHFilter,
+                FileName = $"{sequenceName}.bvh",
+                AddExtension = true,
+            };
+            if (dlg.ShowDialog(this) == true)
+            {
+                BVH.ExportToBVH(animSequence, dlg.FileName, refSkeleton, coordinateSystem);
+                MessageBox.Show("Done!", "BVH Export", MessageBoxButton.OK);
+            }
+        }
+
+        private async void ExportAnimSeqToGLTF()
+        {
+            if (ObjectBinary.From(CurrentExport) is not AnimSequence animSequence)
+                return;
+
+            MeshBone[] refSkeleton = await TryGetRefSkeletonFromDB(Pcc.Game);
+            if (refSkeleton is null)
+                return;
+
+            string sequenceName = CurrentExport.GetProperty<NameProperty>("SequenceName")?.Value.Instanced ?? CurrentExport.ObjectName.Instanced;
+            var dlg = new SaveFileDialog
+            {
+                Filter = GLTFFilter,
+                FileName = $"{sequenceName}.glb",
+                AddExtension = true,
+            };
+            if (dlg.ShowDialog(this) != true)
+                return;
+
+            IsBusy = true;
+            BusyText = "Exporting to glTF…";
+            string filePath = dlg.FileName;
+            string version = $"Legendary Explorer {AppVersion.DisplayedVersion}";
+
+            try
+            {
+                await Task.Run(() => GLTF.ExportAnimSequenceToGltf(animSequence, refSkeleton, filePath, version));
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+            MessageBox.Show("Done!", "glTF Export", MessageBoxButton.OK);
+        }
+
+        private async Task<MeshBone[]> TryGetRefSkeletonFromDB(MEGame game)
+        {
+            var (pkg, export) = await TryGetSkeletalMeshExportFromDB(game);
+            using (pkg)
+            {
+                if (export is not null && ObjectBinary.From(export) is SkeletalMesh skMesh)
+                    return skMesh.RefSkeleton;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Asks the user to pick a SkeletalMesh from the asset database and returns the owning package + export.
+        /// Caller is responsible for disposing the returned IMEPackage.
+        /// </summary>
+        private async Task<(IMEPackage pkg, ExportEntry export)> TryGetSkeletalMeshExportFromDB(MEGame game)
+        {
+            string dbPath = AssetDatabaseWindow.GetDBPath(game);
+            if (!File.Exists(dbPath))
+            {
+                MessageBox.Show(
+                    "No asset database found for this game.\n\nSelect a SkeletalMesh from the current package, or generate the asset database using the Asset Database tool.",
+                    "No Asset Database", MessageBoxButton.OK, MessageBoxImage.Information);
+                return (null, null);
+            }
+
+            IsBusy = true;
+            BusyText = "Loading asset database…";
+            var db = new AssetDB();
+            try
+            {
+                await AssetDatabaseWindow.LoadDatabase(dbPath, game, db, CancellationToken.None);
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+            var skeletalMeshes = db.Meshes.Where(m => m.IsSkeleton).OrderBy(m => m.MeshName).ToList();
+            if (skeletalMeshes.Count == 0)
+            {
+                MessageBox.Show("No SkeletalMeshes found in the asset database.", "Select SkeletalMesh", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return (null, null);
+            }
+
+            string chosen = InputComboBoxDialog.GetValue(this,
+                "Select a SkeletalMesh to use as the skeleton.\nThe animation must be compatible with the chosen mesh.",
+                "Select SkeletalMesh",
+                skeletalMeshes.Select(m => m.DisplayString));
+            if (chosen.IsEmpty())
+                return (null, null);
+
+            MeshRecord selectedRecord = skeletalMeshes.First(m => m.DisplayString == chosen);
+
+            string gamePath = MEDirectories.GetDefaultGamePath(game);
+            if (gamePath is null || !Directory.Exists(gamePath))
+            {
+                MessageBox.Show($"Game path for {game} is not configured. Check your settings.", "Select SkeletalMesh", MessageBoxButton.OK, MessageBoxImage.Error);
+                return (null, null);
+            }
+
+            foreach (var (fileKey, uIndex, _) in selectedRecord.Usages)
+            {
+                FileNameDirKeyPair filePair = db.FileList[fileKey];
+                string contentDir = db.ContentDir[filePair.DirectoryKey];
+
+                string filePath = Directory.EnumerateFiles(gamePath, $"{filePair.FileName}.*", SearchOption.AllDirectories)
+                                           .FirstOrDefault(f => f.Contains(contentDir));
+
+                if (filePath is null && game == MEGame.ME3)
+                {
+                    string sfarPath = Path.Combine(MEDirectories.GetDLCPath(MEGame.ME3), contentDir, "CookedPCConsole", "Default.sfar");
+                    if (File.Exists(sfarPath))
+                    {
+                        var dlp = new DLCPackage(sfarPath);
+                        if (dlp.FindFileEntry(filePair.FileName) >= 0)
+                            filePath = sfarPath;
+                    }
+                }
+
+                if (filePath is null)
+                    continue;
+
+                IMEPackage pkg = MEPackageHandler.OpenMEPackage(filePath);
+                if (pkg.IsUExport(uIndex) && pkg.GetUExport(uIndex) is ExportEntry export && export.IsA("SkeletalMesh"))
+                {
+                    return (pkg, export);
+                }
+                pkg.Dispose();
+            }
+
+            MessageBox.Show($"Could not locate any package file for '{selectedRecord.MeshName}'.", "Select SkeletalMesh", MessageBoxButton.OK, MessageBoxImage.Error);
+            return (null, null);
         }
 
         private void ReplaceFromPSA()
@@ -249,14 +572,29 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                     return;
                 }
 
-                //todo: Make UI for choosing subset of AnimSequences from PSA.
+                List<AnimSequence> seqsToImport;
+                if (psaSeqs.Count > 1)
+                {
+                    const string allOption = "(Import all)";
+                    var choices = psaSeqs.Select(s => s.Name.Instanced).Prepend(allOption);
+                    string chosen = InputComboBoxDialog.GetValue(this, "Select which animation(s) to import", "Animation Selector", choices, allOption);
+                    if (chosen.IsEmpty())
+                    {
+                        return;
+                    }
+                    seqsToImport = chosen == allOption ? psaSeqs : [psaSeqs.First(s => s.Name.Instanced == chosen)];
+                }
+                else
+                {
+                    seqsToImport = psaSeqs;
+                }
 
                 var pkg = ExportCreator.CreatePackageExport(Pcc, NameReference.FromInstancedString(Path.GetFileNameWithoutExtension(dlg.FileName)));
 
                 var bioAnimSetData = ExportCreator.CreateExport(Pcc, "BioAnimSetData", "BioAnimSetData", pkg);
-                bioAnimSetData.WriteProperty(new ArrayProperty<NameProperty>(psaSeqs[0].Bones.Select(b => new NameProperty(NameReference.FromInstancedString(b.Trim().Replace(' ', '-')))), "TrackBoneNames"));
+                bioAnimSetData.WriteProperty(new ArrayProperty<NameProperty>(seqsToImport[0].Bones.Select(b => new NameProperty(NameReference.FromInstancedString(b.Trim().Replace(' ', '-')))), "TrackBoneNames"));
 
-                foreach (AnimSequence seq in psaSeqs)
+                foreach (AnimSequence seq in seqsToImport)
                 {
                     var seqExp = ExportCreator.CreateExport(Pcc, NameReference.FromInstancedString(seq.Name), "AnimSequence", pkg);
                     var props = seqExp.GetProperties();
@@ -403,11 +741,19 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
             }
         }
 
+        #endregion
+
+        #region Helpers
+
         private bool IsBioAnimDataSelected() => CurrentExport?.ClassName == "BioAnimSetData";
 
         private bool IsAnimSequenceSelected() => CurrentExport?.ClassName == "AnimSequence";
 
         private bool IsPackageLoaded() => Pcc != null;
+
+        #endregion
+
+        #region File operations
 
         private async void SaveFile()
         {
@@ -468,13 +814,12 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
         {
             try
             {
-                //BusyText = "Loading " + Path.GetFileName(s);
-                //IsBusy = true;
                 StatusBar_LeftMostText.Text = $"Loading {Path.GetFileName(s)} ({FileSize.FormatSize(new FileInfo(s).Length)})";
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 LoadMEPackage(s);
 
                 AnimSequenceExports.ReplaceAll(Pcc.Exports.Where(exp => exp.ClassName == "AnimSequence"));
+                SkeletalMeshExports.ReplaceAll(Pcc.Exports.Where(exp => exp.ClassName == "SkeletalMesh"));
 
                 StatusBar_LeftMostText.Text = Path.GetFileName(s);
                 Title = $"Animation Importer/Exporter - {s}";
@@ -493,6 +838,8 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
                 MessageBox.Show($"Error loading {Path.GetFileName(s)}:\n{e.Message}");
             }
         }
+
+        #endregion
 
         public override void HandleUpdate(List<PackageUpdate> updates)
         {
@@ -612,6 +959,7 @@ namespace LegendaryExplorer.Tools.AnimationImporterExporter
             if (e.Cancel)
                 return;
 
+            AnimPreview?.Dispose();
             InterpreterTab_Interpreter?.Dispose();
             BinaryInterpreterTab_BinaryInterpreter?.Dispose();
             RecentsController?.Dispose();

@@ -12,6 +12,7 @@ using LegendaryExplorer.Tools.Sequence_Editor;
 using LegendaryExplorer.Tools.Soundplorer;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.UnrealExtensions;
+using LegendaryExplorer.UnrealExtensions.Classes;
 using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorerCore.Dialogue;
 using LegendaryExplorerCore.GameFilesystem;
@@ -21,6 +22,7 @@ using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.PlotDatabase;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Newtonsoft.Json;
 using Piccolo;
@@ -204,6 +206,7 @@ namespace LegendaryExplorer.DialogueEditor
         public ICommand SearchCommand { get; set; }
         public ICommand CopyToClipboardCommand { get; set; }
         public ICommand ForceRefreshCommand { get; set; }
+        public ICommand ExtractSpeakerAudioCommand { get; set; }
         private bool HasWwbank(object param)
         {
             return SelectedConv?.WwiseBank != null;
@@ -431,6 +434,7 @@ namespace LegendaryExplorer.DialogueEditor
             SearchCommand = new GenericCommand(SearchDialogue, () => CurrentObjects.Any);
             CopyToClipboardCommand = new RelayCommand(CopyStringToClipboard);
             ForceRefreshCommand = new RelayCommand(ForceRefresh);
+            ExtractSpeakerAudioCommand = new GenericCommand(ExtractSpeakerAudio, () => SelectedSpeaker != null && SelectedSpeaker.SpeakerID >= -2);
         }
 
         private void DialogueEditorWPF_Loaded(object sender, RoutedEventArgs e)
@@ -3640,6 +3644,170 @@ namespace LegendaryExplorer.DialogueEditor
         }
 
         #endregion
+
+        private void ExtractSpeakerAudio()
+        {
+            if (SelectedSpeaker == null || SelectedSpeaker.SpeakerID < -2 || SelectedConv == null)
+                return;
+
+            // Get all entry nodes for this speaker
+            List<DialogueNodeExtended> speakerEntries;
+            if (SelectedSpeaker.SpeakerID == -2)
+            {
+                speakerEntries = SelectedConv.ReplyList.Where(e => e.SpeakerIndex == SelectedSpeaker.SpeakerID).ToList();
+            }
+            else
+            {
+                speakerEntries = SelectedConv.EntryList.Where(e => e.SpeakerIndex == SelectedSpeaker.SpeakerID).ToList();
+            }
+
+            if (!speakerEntries.Any())
+            {
+                MessageBox.Show($"No dialogue lines found for speaker '{SelectedSpeaker.SpeakerName}'.", "Dialogue Editor");
+                return;
+            }
+
+            // Count available audio files
+            var maleAudioCount = speakerEntries.Count(e => e.WwiseStream_Male != null);
+            var femaleAudioCount = speakerEntries.Count(e => e.WwiseStream_Female != null);
+
+            if (maleAudioCount == 0 && femaleAudioCount == 0)
+            {
+                MessageBox.Show($"No audio files found for speaker '{SelectedSpeaker.SpeakerName}'.", "Dialogue Editor");
+                return;
+            }
+
+            // Ask if user wants to include dialogue text in filenames
+            var includeDialogueResult = MessageBox.Show(
+                "Include dialogue text in the filenames?\n\n" +
+                "Yes - Filenames will include a shortened version of the spoken line\n" +
+                "No - Filenames will only include entry number and string reference",
+                "Include Dialogue Text",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+
+            bool includeDialogueText = includeDialogueResult == MessageBoxResult.Yes;
+
+            // Ask which genders to extract
+            var genderResult = MessageBox.Show(
+                $"Which audio files would you like to extract?\n\n" +
+                $"Male files available: {maleAudioCount}\n" +
+                $"Female files available: {femaleAudioCount}\n\n" +
+                "Yes - Extract both male and female\n" +
+                "No - Extract only male\n" +
+                "Cancel - Extract only female",
+                "Select Genders",
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Question);
+
+            bool extractMale = genderResult != MessageBoxResult.Cancel;
+            bool extractFemale = genderResult != MessageBoxResult.No;
+
+            // Ask user to select folder
+            using var folderDialog = new System.Windows.Forms.FolderBrowserDialog
+            {
+                Description = $"Select folder to extract audio for '{SelectedSpeaker.SpeakerName}'",
+                ShowNewFolderButton = true
+            };
+
+            if (folderDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                return;
+
+            try
+            {
+                var extractedCount = ExtractAudioFilesForSpeaker(speakerEntries, SelectedSpeaker.SpeakerName, includeDialogueText, extractMale, extractFemale, folderDialog.SelectedPath);
+
+                MessageBox.Show($"Successfully extracted {extractedCount} audio file(s) for speaker '{SelectedSpeaker.SpeakerName}'.", "Dialogue Editor");
+
+                // Open the folder in File Explorer
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = folderDialog.SelectedPath,
+                    UseShellExecute = true,
+                    Verb = "open"
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error extracting audio: {ex.Message}", "Dialogue Editor", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        /// <summary>
+        /// Extracts audio files for a given speaker's dialogue entries and saves them to the specified output folder. 
+        /// Filenames are generated based on the speaker name, entry number, string reference, and optionally 
+        /// include a shortened version of the dialogue text.
+        /// </summary>
+        /// <param name="speakerEntries"></param>
+        /// <param name="tag"></param>
+        /// <param name="includeDialogueText"></param>
+        /// <param name="extractMale">Whether to extract male audio files</param>
+        /// <param name="extractFemale">Whether to extract female audio files</param>
+        /// <param name="outputFolder"></param>
+        /// <returns></returns>
+        public static int ExtractAudioFilesForSpeaker(List<DialogueNodeExtended> speakerEntries, string tag, bool includeDialogueText, bool extractMale, bool extractFemale, string outputFolder)
+        {
+            int extractedCount = 0;
+            string speakerName = Regex.Replace(tag, @"[<>:""/\\|?*]", "_");
+
+            foreach (var entry in speakerEntries)
+            {
+                string baseFileName = $"{speakerName}_E{entry.NodeCount}_SR{entry.LineStrRef}";
+
+                // Add dialogue text if requested
+                if (includeDialogueText && !string.IsNullOrWhiteSpace(entry.Line))
+                {
+                    // Truncate to 40 characters and sanitize for filename
+                    string dialogueText = entry.Line.Length > 40 ? entry.Line.Substring(0, 40) : entry.Line;
+                    dialogueText = Regex.Replace(dialogueText, @"[<>:""/\\|?*]", "_");
+                    dialogueText = dialogueText.Replace('\n', ' ').Replace('\r', ' ').Trim();
+                    baseFileName += $"_{dialogueText}";
+                }
+
+                // Extract male audio
+                if (extractMale && entry.WwiseStream_Male != null)
+                {
+                    string maleFileName = Path.Combine(outputFolder, $"{baseFileName}_M.wav");
+                    if (ExtractWwiseAudio(entry.WwiseStream_Male, maleFileName))
+                    {
+                        extractedCount++;
+                    }
+                }
+
+                // Extract female audio
+                if (extractFemale && entry.WwiseStream_Female != null)
+                {
+                    string femaleFileName = Path.Combine(outputFolder, $"{baseFileName}_F.wav");
+                    if (ExtractWwiseAudio(entry.WwiseStream_Female, femaleFileName))
+                    {
+                        extractedCount++;
+                    }
+                }
+            }
+
+            return extractedCount;
+        }
+
+        private static bool ExtractWwiseAudio(ExportEntry wwiseStream, string outputPath)
+        {
+            try
+            {
+                // Get the WwiseStream binary data and use CreateWave() to generate WAV file
+                var wwiseStreamData = wwiseStream.GetBinaryData<WwiseStream>();
+                string tempWavPath = wwiseStreamData.CreateWave();
+
+                if (tempWavPath != null && File.Exists(tempWavPath))
+                {
+                    File.Copy(tempWavPath, outputPath, true);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to extract audio from {wwiseStream.InstancedFullPath}: {ex.Message}");
+            }
+            return false;
+        }
 
         #region Helpers
         public static string AddOrdinal(int num)

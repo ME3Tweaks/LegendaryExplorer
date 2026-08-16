@@ -1,19 +1,22 @@
 ﻿using CommunityToolkit.HighPerformance;
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.ExperimentsTools;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Helpers;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Misc.ME3Tweaks;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Save;
+using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorerCore.UnrealScript.Compiling.Errors;
 using Microsoft.Win32;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Tga;
 using SixLabors.ImageSharp.PixelFormats;
@@ -26,6 +29,7 @@ using System.Text;
 using System.Windows;
 using static LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter;
 using static LegendaryExplorerCore.Unreal.PSA;
+using Image = LegendaryExplorerCore.Textures.Image;
 using Texture2D = LegendaryExplorerCore.Unreal.Classes.Texture2D;
 
 namespace LegendaryExplorer.Tools.PackageEditor.Experiments
@@ -34,6 +38,482 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
     {
         // the Mass Effect binary mesh format enforces there be a maximum of 4 bone influences per vertex
         const int MaxBoneInfluences = 4;
+
+        public static void BulkImportTextures(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null)
+            {
+                return;
+            }
+
+         
+            var d = new OpenFileDialog
+            {
+                Filter = "All supported types|*.png;*.dds;*.tga;*.jpg;*.txt|text config file|*.txt|PNG files (*.png)|*.png|DDS files (*.dds)|*.dds|TGA files (*.tga)|*.tga|JPEG files (*.jpg)|*.jpg",
+                Title = "Select a texture or text config file. all textures in the directory will be imported if you select a texture"
+            };
+            if (d.ShowDialog() == true)
+            {
+                string configPath = null;
+                if (Path.GetExtension(d.FileName).Equals(".txt", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    configPath = d.FileName;
+                }
+                var directoryPath = Path.GetDirectoryName(d.FileName);
+
+                string[] textureExtensions = [".dds", ".png", ".bmp", ".tga", ".jpg"];
+                var files = Directory.GetFiles(directoryPath, "*", SearchOption.AllDirectories);
+
+                var excludeNonConfigImages = false;
+                CaseInsensitiveDictionary<List<string>> renames = [];
+                if (configPath != null)
+                {
+                    var lines = File.ReadAllLines(configPath);
+                    foreach (var line in lines)
+                    {
+                        var trimmedLine = line.Trim();
+                        if (trimmedLine == "*=")
+                        {
+                            excludeNonConfigImages = true;
+                            continue;
+                        }
+                        if (trimmedLine.StartsWith(';'))
+                        {
+                            continue;
+                        }
+                        var split = trimmedLine.Split('=');
+                        if (split.Length != 2)
+                        {
+                            continue;
+                        }
+                        var fileName = split[0].Trim();
+                        var exportName = split[1].Trim();
+                        if (renames.TryGetValue(fileName, out List<string> values))
+                        {
+                            if (exportName != "")
+                            {
+                                values.Add(exportName);
+                            }
+                        }
+                        else
+                        {
+                            if (exportName == "")
+                            {
+                                renames.Add(fileName, []);
+                            }
+                            else
+                            {
+                                renames.Add(fileName, [split[1]]);
+                            }
+                        }
+                    }
+                }
+
+                foreach (var file in files)
+                {
+                    var extension = Path.GetExtension(file);
+                    if (textureExtensions.Contains(extension.ToLower()))
+                    {
+                        var rawName = Path.GetFileNameWithoutExtension(file);
+                        // these will be combined with the diffs
+                        if (rawName.EndsWith("_spec"))
+                        {
+                            continue;
+                        }
+                        IEnumerable<string> names = [];
+                        // if it appears to be a normal map, import it as bc5 and non srgb
+                        // if it appears to be a diff, import it as dxt5 and srgb
+                        // it will be treated as a diff by default
+                        // if it is replacing a texture, the pixelFormat will be whatever it was before
+                        var isNorm = rawName.Contains("norm", StringComparison.InvariantCultureIgnoreCase) || rawName.Contains("nrm", StringComparison.InvariantCultureIgnoreCase);
+
+                        if (renames.TryGetValue(rawName, out List<string> values))
+                        {
+                            if (values.IsEmpty())
+                            {
+                                continue;
+                            }
+                            names = values;
+                        }
+                        else if (!excludeNonConfigImages)
+                        {
+                            rawName = rawName.Replace(" ", "_");
+                            names = [rawName];
+                        }
+                        else
+                        {
+                            continue;
+                        }
+
+                        var pixelFormat = isNorm ? PixelFormat.BC5 : PixelFormat.DXT5;
+                        var img = Image.LoadFromFile(file, isNorm? PixelFormat.BC5 : PixelFormat.ARGB);
+
+                        if (!isNorm)
+                        {
+                            var specFile = file.Replace("_Diff", "_Spec");
+                            // assume this file exists
+                            var specImg = Image.LoadFromFile(specFile, PixelFormat.G8);
+                            var diffData = img.mipMaps.First().data;
+                            var specData = specImg.mipMaps.First().data;
+                            // assume the dimensions match
+                            for (var i = 0; i < img.mipMaps.First().width * img.mipMaps.First().height; i++)
+                            {
+                                // convert the RGB channels from linear color to SRGB
+                                diffData[4 * i + 0] = LinearToSrgb(diffData[4 * i + 0]);
+                                diffData[4 * i + 1] = LinearToSrgb(diffData[4 * i + 1]);
+                                diffData[4 * i + 2] = LinearToSrgb(diffData[4 * i + 2]);
+                                // write the single channel from the spec to the alpha of the diff
+                                diffData[4 * i + 3] = specData[i];
+                            }
+                        }
+
+                        foreach (var name in names)
+                        {
+                            var textureExport = pew.Pcc.Exports.FirstOrDefault(x => x.ClassName == "Texture2D" && x.ObjectNameString.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+                            if (textureExport == null)
+                            {
+                                textureExport = Texture2D.CreateTexture(pew.Pcc, name, img.mipMaps.First().width, img.mipMaps.First().height, pixelFormat, true);
+                            }
+                            var props = textureExport.GetProperties();
+                            props.RemoveNamedProperty("TFCFileGuidHiRes");
+                            props.RemoveNamedProperty("TextureFileCacheName");
+                            if (isNorm)
+                            {
+                                props.AddOrReplaceProp(new BoolProperty(false, "SRGB"));
+                                props.AddOrReplaceProp(new EnumProperty("TC_NormalmapBC5", "TextureCompressionSettings", pew.Pcc.Game, "CompressionSettings"));
+                                props.AddOrReplaceProp(new EnumProperty("TEXTUREGROUP_Character_Norm", "TextureGroup", pew.Pcc.Game, "LODGroup"));
+                            }
+                            else
+                            {
+                                props.AddOrReplaceProp(new BoolProperty(true, "SRGB"));
+                                props.AddOrReplaceProp(new EnumProperty("TEXTUREGROUP_Character_Diff", "TextureGroup", pew.Pcc.Game, "LODGroup"));
+                            }
+                            new Texture2D(textureExport).Replace(img, props, isPackageStored: true, forcedNewFormat: isNorm? PixelFormat.BC5 : PixelFormat.DXT5);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static byte LinearToSrgb(byte input)
+        {
+            // normalize it a float 0-1
+            float linear = input / 255.0f;
+            float srgb;
+
+            // do the sRGB transformation
+            if (linear <= 0.0031308f)
+            {
+                srgb = linear * 12.92f;
+            }
+            else
+            {
+                srgb = 1.055f * MathF.Pow(linear, 1.0f / 2.4f) - 0.055f;
+            }
+
+            // put it back to byte format
+            return (byte)Math.Clamp(srgb * 255.0f, 0, 255);
+        }
+
+        //private static byte SrgbToLinear(byte input)
+        //{
+
+        //}
+
+        public static void GreenToAlpha(PackageEditorWindow pew)
+        {
+            if (GetSelectedItem(pew, "Texture2D", out var textureExport))
+            {
+                var existingTexture = new Texture2D(textureExport);
+                var existingTopMip = existingTexture.GetTopMip();
+                var w = existingTopMip.width;
+                var h = existingTopMip.height;
+                if (GetTextureFromFile(pew, out var image, out var _))
+                {
+                    if (image.mipMaps[0].width != w || image.mipMaps[0].height != h)
+                    {
+                        MessageBox.Show("Cannot replace texture: dimensions must exactly match.");
+                        return;
+                    }
+
+                    var oldBytes = Image.convertRawToARGB(Texture2D.GetTextureData(existingTopMip, pew.Pcc.Game), ref w, ref h, Image.getPixelFormatType(existingTexture.TextureFormat));
+
+                    // transfer the green channel of the new image to the alpha of the existing image
+                    for (int i = 0; i < w * h; i++)
+                    {
+                        // A
+                        image.mipMaps[0].data[4 * i + 3] = image.mipMaps[0].data[4 * i + 1];
+                        image.mipMaps[0].data[4 * i] = oldBytes[4 * i]; // R
+                        image.mipMaps[0].data[4 * i + 1] = oldBytes[4 * i + 1]; // G
+                        image.mipMaps[0].data[4 * i + 2] = oldBytes[4 * i + 2]; // B
+                    }
+
+                    var props = textureExport.GetProperties();
+                    existingTexture.Replace(image, props, isPackageStored: true);
+                }
+            }
+        }
+
+        public static void FixMorphTargets(PackageEditorWindow pew)
+        {
+            if (GetSelectedItem(pew, "MorphTargetSet", out var entry))
+            {
+                int[] neckSeamVertexIndices;
+                if (entry.ObjectNameString.Contains("hmf", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    neckSeamVertexIndices = pew.Pcc.Game switch
+                    {
+                        MEGame.LE1 or MEGame.LE2 => [97, 96, 150, 99, 98, 101, 100, 113, 114, 139, 213, 212, 186, 187, 172, 173, 170, 171, 223, 169, 140],
+                        _ => throw new NotImplementedException()
+                    };
+                }
+                else if (entry.ObjectNameString.Contains("hmm", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    neckSeamVertexIndices = pew.Pcc.Game switch
+                    {
+                        MEGame.LE1 or MEGame.LE2 => [1739, 1738, 1718, 1717, 1705, 1704, 1703, 1702, 1748, 1701, 1641, 1640, 1688, 1643, 1642, 1645, 1644, 1657, 1658, 1678, 1679],
+                        _ => throw new NotImplementedException()
+                    };
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+                var morphTargets = entry.GetProperty<ArrayProperty<ObjectProperty>>("Targets").Select(x => x.ResolveToEntry(pew.Pcc));
+                foreach (var target in morphTargets)
+                {
+                    if (target is ExportEntry targetExport)
+                    {
+                        var targetBin = ObjectBinary.From<MorphTarget>(targetExport);
+                        var lod = targetBin.MorphLODModels[0];
+                        //foreach (var lod in targetBin.MorphLODModels)
+                        //{
+                            // filter out the ones where it moves a neck seam vertex
+                            lod.Vertices = [.. lod.Vertices.Where(x => !neckSeamVertexIndices.Contains(x.SourceIdx))];
+                        //}
+                        targetExport.WriteBinary(targetBin);
+                    }
+                }
+            }
+
+        }
+
+        public static void GenerateM3to(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null)
+            {
+                return;
+            }
+            var sb = new StringBuilder(
+$@"{{
+    ""Game"": ""{pew.Pcc.Game}"",
+    ""Textures"": [
+");
+            var first = true;
+            foreach (var textureExport in pew.Pcc.Exports.Where(x => x.ClassName == "Texture2D"))
+            {
+                if (!first)
+                {
+                    sb.Append(',');
+                }
+                first = false;
+                sb.Append(
+$@"        {{
+            ""sourcepackage"": ""{pew.Pcc.FileNameNoExtension}.pcc"",
+            ""textureifp"": ""{textureExport.InstancedFullPath}""
+         }}");
+            }
+
+            sb.Append(@"
+    ]
+}
+");
+            Clipboard.SetText(sb.ToString());
+        }
+
+        public static void LazyDiffImport(PackageEditorWindow pew)
+        {
+            if (GetSelectedItem(pew, "Texture2D", out var textureExport))
+            {
+                var existingTexture = new Texture2D(textureExport);
+                var existingTopMip = existingTexture.GetTopMip();
+                var w = existingTopMip.width;
+                var h = existingTopMip.height;
+                if (GetTextureFromFile(pew, out var image, out var _))
+                {
+                    if (image.mipMaps[0].width != w || image.mipMaps[0].height != h)
+                    {
+                        MessageBox.Show("Cannot replace texture: dimensions must exactly match.");
+                        return;
+                    }
+
+                    var oldBytes = Image.convertRawToARGB(Texture2D.GetTextureData(existingTopMip, pew.Pcc.Game), ref w, ref h, Image.getPixelFormatType(existingTexture.TextureFormat));
+
+                    // transfer the alpha from the existing image to the new one
+                    for (int i = 0; i < w * h; i++)
+                    {
+                        image.mipMaps[0].data[4 * i + 3] = oldBytes[4 * i + 3];
+                    }
+
+                    var props = textureExport.GetProperties();
+                    existingTexture.Replace(image, props, isPackageStored: true);
+                }
+            }
+        }
+
+        public static void LazyNormImport(PackageEditorWindow pew)
+        {
+            if (GetSelectedItem(pew, "Texture2D", out var textureExport))
+            {
+                var existingTexture = new Texture2D(textureExport);
+                var existingTopMip = existingTexture.GetTopMip();
+                var w = existingTopMip.width;
+                var h = existingTopMip.height;
+                if (GetTextureFromFile(pew, out var image, out var _))
+                {
+                    if (image.mipMaps[0].origWidth / image.mipMaps[0].origHeight != w / h)
+                    {
+                        MessageBox.Show("Cannot replace texture: Aspect ratios must be the same.");
+                        return;
+                    }
+
+                    // invert the green channel
+                    for (int i = 0; i < w * h; i++)
+                    {
+                        image.mipMaps[0].data[4 * i + 1] = (byte)(255 - image.mipMaps[0].data[4 * i + 1]);
+                    }
+
+                    var props = textureExport.GetProperties();
+                    existingTexture.Replace(image, props, isPackageStored: true);
+                }
+            }
+        }
+
+        public static void FixLE2LockerBug(PackageEditorWindow pew)
+        {
+            //TODO
+            //if (GetSelectedMeshBinary(pew, out var meshExport, out var meshBin))
+            //{
+            //    meshBin.ClothingAssets = new int[meshBin.Materials.Length];
+            //    meshExport.WriteBinary(meshBin);
+            //}
+        }
+
+        public static void TexturesToPackageStored(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null)
+            {
+                return;
+            }
+            foreach (var textureExport in pew.Pcc.Exports.Where(x => x.ClassName == "Texture2D"))
+            {
+                var texture = new Texture2D(textureExport);
+                if (!texture.GetTopMip().IsPackageStored)
+                {
+                    var img = texture.ToImage(LegendaryExplorerCore.Textures.Image.getPixelFormatType(texture.TextureFormat));
+                    var props = textureExport.GetProperties();
+                    texture.Replace(img, props, isPackageStored: true);
+                }
+            }
+        }
+
+        public static void SelectedTextureToTfc(PackageEditorWindow pew)
+        {
+            if (GetSelectedItem(pew, "Texture2D", out var textureExport))
+            {
+                var texture = new Texture2D(textureExport);
+                if (texture.GetTopMip().IsPackageStored)
+                {
+                    string tfcName = GetTfcName(pew);
+                    if (tfcName == null)
+                    {
+                        // we were not able to determine the tfc name
+                        ShowError("unable to determine tfc name");
+                        return;
+                    }
+                    var img = texture.ToImage(LegendaryExplorerCore.Textures.Image.getPixelFormatType(texture.TextureFormat));
+                    var props = textureExport.GetProperties();
+                    texture.Replace(img, props, forcedTFCName: tfcName);
+                }
+            }
+        }
+
+        public static void TexturesToTfc(PackageEditorWindow pew)
+        {
+            if (pew.Pcc == null)
+            {
+                return;
+            }
+            string tfcName = GetTfcName(pew);
+            if (tfcName == null)
+            {
+                // we were not able to determine the tfc name
+                ShowError("unable to determine tfc name");
+                return;
+            }
+            foreach (var textureExport in pew.Pcc.Exports.Where(x => x.ClassName == "Texture2D"))
+            {
+                var texture = new Texture2D(textureExport);
+                if (texture.GetTopMip().IsPackageStored)
+                {
+                    var img = texture.ToImage(LegendaryExplorerCore.Textures.Image.getPixelFormatType(texture.TextureFormat));
+                    var props = textureExport.GetProperties();
+                    texture.Replace(img, props, forcedTFCName: tfcName);
+                }
+            }
+        }
+
+        private static string GetTfcName(PackageEditorWindow pew)
+        {
+            string tfcName = null;
+            var containingFolderInfo = Directory.GetParent(pew.Pcc.FilePath);
+            if (Path.GetFileName(containingFolderInfo.FullName).StartsWith("CookedPC"))
+            {
+                //Check next level up.
+                containingFolderInfo = containingFolderInfo.Parent;
+                if (containingFolderInfo != null &&
+                    Path.GetFileName(containingFolderInfo.FullName).StartsWith("DLC_"))
+                {
+                    var possibleDLCName = Path.GetFileName(containingFolderInfo.FullName);
+                    if (!MEDirectories.OfficialDLC(pew.Pcc.Game).Contains(possibleDLCName))
+                    {
+                        tfcName = $"Textures_{possibleDLCName}";
+                    }
+                }
+            }
+            return tfcName;
+        }
+
+        public static void MakeLODs(PackageEditorWindow pew)
+        {
+            if (GetSelectedMeshBinary(pew, out var meshExport, out var meshBin))
+            {
+                meshBin = MeshHelper.UnMapMaterials(meshExport);
+                // find the lowest LOD, duplicate it until
+                var worstLod = meshBin.LODModels.Last();
+                List<StaticLODModel> LODs = [.. meshBin.LODModels];
+                while (LODs.Count < 3)
+                {
+                    LODs.Add(worstLod);
+                }
+                meshBin.LODModels = [.. LODs];
+                meshExport.WriteBinary(meshBin);
+                var lodInfo = MeshHelper.GetLodInfoForSkeletalMesh(meshBin, meshExport.Game);
+                meshExport.WriteProperty(lodInfo);
+            }
+        }
+
+        public static void RemoveLODs(PackageEditorWindow pew)
+        {
+            if (GetSelectedMeshBinary(pew, out var meshExport, out var meshBin))
+            {
+                var LOD0 = meshBin.LODModels[0];
+                meshBin.LODModels = [LOD0];
+                meshExport.WriteBinary(meshBin);
+                var lodInfo = MeshHelper.GetLodInfoForSkeletalMesh(meshBin, meshExport.Game);
+                meshExport.WriteProperty(lodInfo);
+            }
+        }
 
         public static void ImportAnimSet(PackageEditorWindow pew)
         {
@@ -110,118 +590,70 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        public static void ImportPskAsNewMesh(PackageEditorWindow pew)
+        public static void ExportMeshToGltf(PackageEditorWindow pew, GLTF.MaterialExportLevel materialExportLevel = GLTF.MaterialExportLevel.NameOnly)
         {
-            if (pew.Pcc.Game == MEGame.ME1)
+            GltfHelper.ExportMeshToGltf(pew, null, pew.Pcc, pew.SelectedItem.Entry, materialExportLevel);
+        }
+
+        public static void ImportGltf(PackageEditorWindow pew)
+        {
+            if (pew.SelectedItem?.Entry != null && (pew.SelectedItem.Entry.ClassName == "SkeletalMesh" || pew.SelectedItem.Entry.ClassName == "StaticMesh"))
             {
-                ShowError("This experiment does not yet support OT1; if you must do this, import it into another game and port it to OT1");
+                GltfHelper.ReplaceFromGltf(pew, pew.SelectedItem.Entry);
             }
-            if (pew.Pcc.Game == MEGame.UDK)
+            else
             {
-                ShowError("This experiment does not support UDK files;");
+                GltfHelper.ImportNewFromGltf(pew);
             }
-            if (GetPskFromFile(pew, out var psk, out var path))
+        }
+
+        //public static void ImportNewFromGltf(PackageEditorWindow pew)
+        //{
+        //    GltfHelper.ImportNewFromGltf(pew);
+        //}
+
+        //public static void ReplaceFromGltf(PackageEditorWindow pew)
+        //{
+        //    GltfHelper.ReplaceFromGltf(pew, pew.SelectedItem.Entry);
+        //}
+
+
+        private static SkeletalMesh CreateSkeletalMeshFromPsks(PackageEditorWindow pew, PSK[] psks, out ArrayProperty<StructProperty> lodInfoProp)
+        {
+            var meshBin = SkeletalMesh.Create();
+
+            // TODO make sure the skeleton matches between all LODs
+            SetupSkeleton(psks[0], meshBin);
+            SetupBounds(psks[0], meshBin);
+
+            // so, I need to make a slot for all materials, deduplicated from across the LODs
+            List<string> materials = [];
+            foreach (var psk in psks)
             {
-                if (!psk.Bones.Any())
+                foreach (var mat in psk.Materials)
                 {
-                    throw new NotImplementedException("You can't make a static mesh yet");
-                }
-
-                var meshExport = ExportCreator.CreateExport(pew.Pcc, Path.GetFileNameWithoutExtension(path), "SkeletalMesh");
-                var meshBin = SkeletalMesh.Create();
-
-                SetupSkeleton(psk, meshBin);
-                SetupBounds(psk, meshBin);
-                SetupMaterials(pew, psk, meshBin);
-                CalculateNormalsIfNeeded(psk);
-
-                GetAllVertices(psk, out List<TempVertex> vertsInWedgeOrder, out TempVertex[] finalVerts);
-                CalcualteTangents(psk, vertsInWedgeOrder);
-
-                StaticLODModel LOD;
-                List<MeshChunk> chunks;
-                SetupSectionsAndChunks(psk, meshBin, vertsInWedgeOrder, finalVerts, out LOD, out chunks);
-
-                #region the rest of the LOD data
-                LOD.ActiveBoneIndices = [.. Enumerable.Range(0, psk.Bones.Count).Select(x => (ushort)x)];
-
-                // finally, write out the vertex data!
-                LOD.NumVertices = (uint)finalVerts.Length;
-
-                LOD.VertexBufferGPUSkin = new SkeletalMeshVertexBuffer
-                {
-                    VertexData = new GPUSkinVertex[finalVerts.Length],
-                    MeshExtension = new Vector3(1, 1, 1)
-                };
-
-                for (int chunkIndex = 0; chunkIndex < LOD.Chunks.Length; chunkIndex++)
-                {
-                    var LODChunk = LOD.Chunks[chunkIndex];
-                    var chunk = chunks[chunkIndex];
-                    for (var i = chunk.VertIndexStart; i <= chunk.VertIndexEnd; i++)
+                    if (!materials.Contains(mat.Name))
                     {
-                        var tempVert = finalVerts[i];
-                        var newVert = new GPUSkinVertex
-                        {
-                            UV = new Vector2DHalf(tempVert.U, tempVert.V),
-                            Position = tempVert.Position with { Y = tempVert.Position.Y * -1 }
-                        };
-
-                        var vertNorm = tempVert.Normal with { Y = -tempVert.Normal.Y };
-                        var packedNorm = (PackedNormal)Vector3.Normalize(vertNorm);
-                        // the w component of the normal is stores the bitangent sign, indicating whether the UV mapping is mirorred here
-                        var normalW = tempVert.BiTangentSign > 0 ? (byte)255 : (byte)0;
-                        newVert.TangentZ = new PackedNormal(packedNorm.X, packedNorm.Y, packedNorm.Z, normalW);
-
-                        var vertTangent = tempVert.Tangent with { Y = -tempVert.Tangent.Y };
-                        var packedTangent = (PackedNormal)Vector3.Normalize(vertTangent);
-                        newVert.TangentX = packedTangent;
-
-                        // add in the bone influences
-                        byte GetMappedBoneIndex(PSK.PSKWeight influence)
-                        {
-                            var boneName = psk.Bones[influence.Bone].Name;
-                            var meshBoneIndex = meshBin.RefSkeleton.FindIndex(x => x.Name == boneName);
-                            return (byte)LODChunk.BoneMap.IndexOf((ushort)meshBoneIndex);
-                        }
-
-                        (newVert.InfluenceBones, newVert.InfluenceWeights) = DistributeWeights(tempVert.Weights.Select(x => (GetMappedBoneIndex(x), x.Weight)));
-
-                        LOD.VertexBufferGPUSkin.VertexData[i] = newVert;
-                    }
-                }
-                #endregion
-
-                /* things I have not implemented: 
-                 * net Index (probably not important unless you are doing ME3MP modding, and you can set it manually easily enough)
-                 * Clothing Assets (all null anyway in vanilla)
-                 * LOD size (doesn't seem to be important; UDK imports have it set to 0, and I don't know how it is calculated)
-                 * PerPolyBoneKDOPS (no idea what this is, it's mostly empty in vanilla)
-                 * importing to OT1 (the format is slightly different in ways I don't care to implement), you can probably use debug build to port into OT1 if you must
-                 * */
-
-                // just write one LOD. we could extend this to multiple in the future if needed, but no one I know of is actually generating multiple LODs
-                meshBin.LODModels = [LOD];
-
-                meshExport.WriteBinary(meshBin);
-
-                // copy the sockets from the selected mesh onto the new one
-                if (GetSelectedItem(pew, "SkeletalMesh", out var selectedMesh))
-                {
-                    var oldSocketsProp = selectedMesh.GetProperty<ArrayProperty<ObjectProperty>>("Sockets");
-                    if (oldSocketsProp != null)
-                    {
-                        var newSocketsProp = new ArrayProperty<ObjectProperty>("Sockets");
-                        foreach (var socket in oldSocketsProp)
-                        {
-                            var newEntry = EntryCloner.CloneEntry(socket.ResolveToEntry(pew.Pcc), incrementIndex: false);
-                            newEntry.Parent = meshExport;
-                            newSocketsProp.Add(new ObjectProperty(newEntry));
-                        }
-                        meshExport.WriteProperty(newSocketsProp);
+                        materials.Add(mat.Name);
                     }
                 }
             }
+            SetupMaterials(pew, materials, meshBin);
+
+            meshBin.LODModels = [.. psks.Select(x => SetupLOD(x, meshBin))];
+
+            /* things I have not implemented: 
+             * net Index (probably not important unless you are doing ME3MP modding, and you can set it manually easily enough)
+             * Clothing Assets (all null anyway in vanilla)
+             * LOD size (doesn't seem to be important; UDK imports have it set to 0, and I don't know how it is calculated)
+             * PerPolyBoneKDOPS (no idea what this is, it's mostly empty in vanilla)
+             * importing to OT1 (the format is slightly different in ways I don't care to implement), you can probably use debug build to port into OT1 if you must
+             * */
+
+            lodInfoProp = MeshHelper.GetLodInfoForSkeletalMesh(meshBin, pew.Pcc.Game);
+
+            return meshBin;
+
 
             static (Influences bones, Influences influences) DistributeWeights(IEnumerable<(byte bone, float weight)> weights)
             {
@@ -356,16 +788,16 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 };
             }
 
-            static void SetupMaterials(PackageEditorWindow pew, PSK psk, SkeletalMesh meshBin)
+            static void SetupMaterials(PackageEditorWindow pew, IList<string> materials, SkeletalMesh meshBin)
             {
-                SetNumMaterialSlots(meshBin, psk.Materials.Count);
-                for (int i = 0; i < psk.Materials.Count; i++)
+                SetNumMaterialSlots(meshBin, materials.Count);
+                for (int i = 0; i < materials.Count; i++)
                 {
                     // Does not work because it is looking for the full instanced path; can I export using that?
-                    var entry = pew.Pcc.FindEntry(psk.Materials[i].Name);
+                    var entry = pew.Pcc.FindEntry(materials[i]);
                     // a good enough heuristic for now
-                    entry ??= pew.Pcc.Exports.FirstOrDefault(x => x.ObjectName == psk.Materials[i].Name && x.ClassName.Contains("Material"));
-                    entry ??= pew.Pcc.Imports.FirstOrDefault(x => x.ObjectName == psk.Materials[i].Name && x.ClassName.Contains("Material"));
+                    entry ??= pew.Pcc.Exports.FirstOrDefault(x => x.ObjectName == materials[i] && x.ClassName.Contains("Material"));
+                    entry ??= pew.Pcc.Imports.FirstOrDefault(x => x.ObjectName == materials[i] && x.ClassName.Contains("Material"));
                     if (entry != null)
                     {
                         meshBin.Materials[i] = entry.UIndex;
@@ -679,6 +1111,203 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     BoneMap = [.. x.InfluenceBones.Select(GetMeshBoneIndex).Order()]
                 })];
             }
+
+            static StaticLODModel SetupLOD(PSK psk, SkeletalMesh meshBin)
+            {
+                CalculateNormalsIfNeeded(psk);
+                GetAllVertices(psk, out List<TempVertex> vertsInWedgeOrder, out TempVertex[] finalVerts);
+                CalcualteTangents(psk, vertsInWedgeOrder);
+
+                SetupSectionsAndChunks(psk, meshBin, vertsInWedgeOrder, finalVerts, out StaticLODModel LOD, out List<MeshChunk> chunks);
+
+                LOD.ActiveBoneIndices = [.. Enumerable.Range(0, psk.Bones.Count).Select(x => (ushort)x)];
+
+                // finally, write out the vertex data!
+                LOD.NumVertices = (uint)finalVerts.Length;
+
+                LOD.VertexBufferGPUSkin = new SkeletalMeshVertexBuffer
+                {
+                    VertexData = new GPUSkinVertex[finalVerts.Length],
+                    MeshExtension = new Vector3(1, 1, 1)
+                };
+
+                for (int chunkIndex = 0; chunkIndex < LOD.Chunks.Length; chunkIndex++)
+                {
+                    var LODChunk = LOD.Chunks[chunkIndex];
+                    var chunk = chunks[chunkIndex];
+                    for (var i = chunk.VertIndexStart; i <= chunk.VertIndexEnd; i++)
+                    {
+                        var tempVert = finalVerts[i];
+                        var newVert = new GPUSkinVertex
+                        {
+                            UV = new Vector2DHalf(tempVert.U, tempVert.V),
+                            Position = tempVert.Position with { Y = tempVert.Position.Y * -1 }
+                        };
+
+                        var vertNorm = tempVert.Normal with { Y = -tempVert.Normal.Y };
+                        var packedNorm = (PackedNormal)Vector3.Normalize(vertNorm);
+                        // the w component of the normal is stores the bitangent sign, indicating whether the UV mapping is mirorred here
+                        var normalW = tempVert.BiTangentSign > 0 ? (byte)255 : (byte)0;
+                        newVert.TangentZ = new PackedNormal(packedNorm.X, packedNorm.Y, packedNorm.Z, normalW);
+
+                        var vertTangent = tempVert.Tangent with { Y = -tempVert.Tangent.Y };
+                        var packedTangent = (PackedNormal)Vector3.Normalize(vertTangent);
+                        newVert.TangentX = packedTangent;
+
+                        // add in the bone influences
+                        byte GetMappedBoneIndex(PSK.PSKWeight influence)
+                        {
+                            var boneName = psk.Bones[influence.Bone].Name;
+                            var meshBoneIndex = meshBin.RefSkeleton.FindIndex(x => x.Name == boneName);
+                            return (byte)LODChunk.BoneMap.IndexOf((ushort)meshBoneIndex);
+                        }
+
+                        (newVert.InfluenceBones, newVert.InfluenceWeights) = DistributeWeights(tempVert.Weights.Select(x => (GetMappedBoneIndex(x), x.Weight)));
+
+                        LOD.VertexBufferGPUSkin.VertexData[i] = newVert;
+                    }
+                }
+
+                return LOD;
+            }
+        }
+
+        public static void ImportPskAsNewMesh(PackageEditorWindow pew)
+        {
+            if (pew.Pcc.Game == MEGame.ME1)
+            {
+                ShowError("This experiment does not yet support OT1; if you must do this, import it into another game and port it to OT1");
+            }
+            if (pew.Pcc.Game == MEGame.UDK)
+            {
+                ShowError("This experiment does not support UDK files;");
+            }
+            if (GetPskFromFile(out var psks, out var path))
+            {
+                if (!psks[0].Bones.Any())
+                {
+                    throw new NotImplementedException("You can't make a static mesh yet");
+                }
+
+                var meshBin = CreateSkeletalMeshFromPsks(pew, psks, out var lodInfoProp);
+
+                var meshExport = ExportCreator.CreateExport(pew.Pcc, Path.GetFileNameWithoutExtension(path), "SkeletalMesh");
+
+                meshExport.WriteBinary(meshBin);
+
+                // copy the sockets from the selected mesh onto the new one
+                if (GetSelectedItem(pew, "SkeletalMesh", out var selectedMesh))
+                {
+                    var oldSocketsProp = selectedMesh.GetProperty<ArrayProperty<ObjectProperty>>("Sockets");
+                    if (oldSocketsProp != null)
+                    {
+                        var newSocketsProp = new ArrayProperty<ObjectProperty>("Sockets");
+                        foreach (var socket in oldSocketsProp)
+                        {
+                            var newEntry = EntryCloner.CloneEntry(socket.ResolveToEntry(pew.Pcc), incrementIndex: false);
+                            newEntry.Parent = meshExport;
+                            newSocketsProp.Add(new ObjectProperty(newEntry));
+                        }
+                        meshExport.WriteProperty(newSocketsProp);
+                    }
+                }
+
+                meshExport.WriteProperty(lodInfoProp);
+            }
+        }
+
+        public static void ImportPskOverMesh(PackageEditorWindow pew)
+        {
+            if (pew.Pcc.Game == MEGame.ME1)
+            {
+                ShowError("This experiment does not yet support OT1; if you must do this, import it into another game and port it to OT1");
+            }
+            if (pew.Pcc.Game == MEGame.UDK)
+            {
+                ShowError("This experiment does not support UDK files;");
+            }
+            if (GetSelectedItem(pew, "SkeletalMesh", out var selectedMesh))
+            {
+                if (GetPskFromFile(out var psks, out var path))
+                {
+                    if (!psks[0].Bones.Any())
+                    {
+                        throw new NotImplementedException("You can't make a static mesh yet");
+                    }
+
+                    var meshBin = CreateSkeletalMeshFromPsks(pew, psks, out var lodInfoProp);
+                    selectedMesh.WriteBinary(meshBin);
+
+                    var newProps = new PropertyCollection();
+                    var oldSocketsProp = selectedMesh.GetProperty<ArrayProperty<ObjectProperty>>("Sockets");
+                    if (oldSocketsProp != null)
+                    {
+                        newProps.Add(oldSocketsProp);
+                    }
+
+                    newProps.Add(lodInfoProp);
+
+                    selectedMesh.WriteProperties(newProps);
+                }
+            }
+            else
+            {
+                ShowError("You must select an existing SkelelalMesh to replace");
+            }
+        }
+
+        public static void ExportTexturesFromMaterial(PackageEditorWindow pew)
+        {
+            if (GetSelectedItem(pew, ["MaterialInstanceConstant", "BioMaterialInstanceConstant", "Material", "RvrEffectsMaterialUser"], out var materialExport))
+            {
+                var saveFolderDialog = new System.Windows.Forms.FolderBrowserDialog
+                {
+                    Description = "Select destination folder",
+                    UseDescriptionForTitle = true
+                };
+                if (saveFolderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    var saveFolder = saveFolderDialog.SelectedPath;
+                    ExportMaterialTextures(materialExport, saveFolder);
+                }
+            }
+            else
+            {
+                ShowError("You must select a MaterialInstanceConstant, BioMaterialInstanceConstant, Material, or RvrEffectsMaterialUser");
+            }
+        }
+
+        public static void ExportMaterialTextures(ExportEntry materialExport, string exportDirectory)
+        {
+            var textureExports = materialExport.GetMaterialTextures(out var baseTextures);
+
+            foreach (var tex in baseTextures)
+            {
+                if (!tex.IsA("Texture2D"))
+                {
+                    continue;
+                }
+                var texture = new Texture2D(tex);
+                var exportPath = Path.Combine(exportDirectory, $"{tex.ObjectNameString}.png");
+                if (!File.Exists(exportPath))
+                {
+                    texture.ExportToPNG(exportPath);
+                }
+            }
+
+            foreach (var tex in textureExports.Values)
+            {
+                if (!tex.IsA("Texture2D"))
+                {
+                    continue;
+                }
+                var texture = new Texture2D(tex);
+                var exportPath = Path.Combine(exportDirectory, $"{tex.ObjectNameString}.png");
+                if (!File.Exists(exportPath))
+                {
+                    texture.ExportToPNG(exportPath);
+                }
+            }
         }
 
         private class TempVertex
@@ -703,37 +1332,32 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             switch (selectedEntryClass)
             {
                 case "SkeletalMesh":
-                    // export the skeletal mesh as a psk
-                    var d = new SaveFileDialog { Filter = "PSKX|*.pskx" };
-                    if (d.ShowDialog() == true)
-                    {
-                        PSK.CreateFromSkeletalMesh(((ExportEntry)pew.SelectedItem.Entry).GetBinaryData<SkeletalMesh>(), 0, true).ToFile(d.FileName);
-                    }
+                    ExportSkeletalMeshToPskx(pew);
                     return;
                 case "AnimSet":
                 case "BioDynamicAnimSet":
-                    ExportAnimSet(pew);
+                    ExportAnimSetToPsa(pew);
                     return;
                 case "AnimSequence":
-                    ExportAnimSequence(pew);
+                    ExportAnimSequenceToPsa(pew);
                     return;
-                //case "StaticMesh":
-                //    ExportStaticMeshToPSKX(pew);
-                //    return;
+                case "StaticMesh":
+                    ExportStaticMeshToPskx(pew);
+                    return;
                 case "BioMorphFace":
                     BioMorphFaceToPskxAndPsa(pew);
                     return;
                 case "MorphTargetSet":
-                    ExportMorphTargetSet(pew);
+                    ExportMorphTargetSetToPskxAndPsa(pew);
                     return;
-                // TODO support StaticMesh, BrushComponent, FracturedStaticMesh, etc. There are a few other mesh like objects it might be nice to be able to edit, but very low priority?
+                // TODO support BrushComponent, FracturedStaticMesh, etc. There are a few other mesh like objects it might be nice to be able to edit, but very low priority?
                 default:
-                    ShowError("You must open a pcc file and select a SkeletalMesh, BioMorphFace, MorphTargetSet, AnimSet, or AnimSequence for this experiment");
+                    ShowError("You must open a pcc file and select a SkeletalMesh, StaticMesh, BioMorphFace, MorphTargetSet, AnimSet, or AnimSequence for this experiment");
                     return;
             }
         }
 
-        private static void ExportAnimSequence(PackageEditorWindow pew)
+        private static void ExportAnimSequenceToPsa(PackageEditorWindow pew)
         {
             if (GetSelectedItem(pew, "AnimSequence", out var animSeqExport))
             {
@@ -747,7 +1371,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        private static void ExportAnimSet(PackageEditorWindow pew)
+        private static void ExportAnimSetToPsa(PackageEditorWindow pew)
         {
             if (GetSelectedItem(pew, ["AnimSet", "BioDynamicAnimSet"], out var animSetExport))
             {
@@ -763,11 +1387,66 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
             }
         }
 
-        //private static void ExportStaticMeshToPSKX(PackageEditorWindow pew)
-        //{
-        //    // TODO implement this
-        //    throw new NotImplementedException("I haven't implemented exporting static meshes yet.");
-        //}
+        private static void ExportSkeletalMeshToPskx(PackageEditorWindow pew)
+        {
+            var d = new SaveFileDialog { Filter = "PSKX|*.pskx", FileName = $"{pew.SelectedItem.Entry.ObjectNameString}" };
+            if (d.ShowDialog() == true)
+            {
+                var meshBin = ((ExportEntry)pew.SelectedItem.Entry).GetBinaryData<SkeletalMesh>();
+                PSK.CreateFromSkeletalMesh(meshBin, 0, true).ToFile(d.FileName);
+                for (int i = 1; i < meshBin.LODModels.Length; i++)
+                {
+                    PSK.CreateFromSkeletalMesh(meshBin, i, true).ToFile($"{d.FileName[..^5]}_LOD{i}.pskx");
+                }
+                // export the textures as well
+                var textureDirectory = $"{d.FileName[..^5]}_Textures";
+                Directory.CreateDirectory(textureDirectory);
+                foreach (var matIdx in meshBin.Materials)
+                {
+                    var entry = pew.Pcc.GetEntry(matIdx);
+                    if (entry != null)
+                    {
+                        var matExport = SharedMethods.ResolveEntryToExport(entry, new PackageCache());
+                        ExportMaterialTextures(matExport, textureDirectory);
+                    }
+                }
+            }
+        }
+
+        private static void ExportStaticMeshToPskx(PackageEditorWindow pew)
+        {
+            // for now, only support ME3 and LE. ME1 and ME2 have a different static mesh format.
+            if (!(pew.Pcc.Game.IsGame3() || pew.Pcc.Game.IsLEGame()))
+            {
+                ShowError("This experiment does not yet support OT1 or OT2 for static meshes.");
+            }
+
+            var d = new SaveFileDialog { Filter = "PSKX|*.pskx", FileName = $"{pew.SelectedItem.Entry.ObjectNameString}" };
+            if (d.ShowDialog() == true)
+            {
+                var meshBin = ((ExportEntry)pew.SelectedItem.Entry).GetBinaryData<StaticMesh>();
+                PSK.CreateFromStaticMesh(meshBin, 0).ToFile(d.FileName);
+                for (int i = 1; i < meshBin.LODModels.Length; i++)
+                {
+                    PSK.CreateFromStaticMesh(meshBin, i).ToFile($"{d.FileName[..^5]}_LOD{i}.pskx");
+                }
+                // TODO export the collision mesh, if present
+                // export the textures as well
+                var textureDirectory = $"{d.FileName[..^5]}_Textures";
+                Directory.CreateDirectory(textureDirectory);
+                // get all the material indices across all LODs
+                var materials = meshBin.LODModels.SelectMany(x => x.Elements.Select(y => y.Material)).Distinct();
+                foreach (var matIdx in materials)
+                {
+                    var entry = pew.Pcc.GetEntry(matIdx);
+                    if (entry != null)
+                    {
+                        var matExport = SharedMethods.ResolveEntryToExport(entry, new PackageCache());
+                        ExportMaterialTextures(matExport, textureDirectory);
+                    }
+                }
+            }
+        }
 
         private static void BioMorphFaceToPskxAndPsa(PackageEditorWindow pew)
         {
@@ -778,27 +1457,39 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                 return;
             }
 
-            var d = new SaveFileDialog { Filter = "PSKX|*.pskx" };
+            var d = new SaveFileDialog { Filter = "PSKX|*.pskx", FileName = bmf.ObjectNameString };
             if (d.ShowDialog() == true)
             {
-
-                var baseHeadMesh = pew.Pcc.GetEntry(bmf.GetProperty<ObjectProperty>("m_oBaseHead").Value) as ExportEntry;
+                var baseHeadMesh = SharedMethods.ResolveEntryToExport(pew.Pcc.GetEntry(bmf.GetProperty<ObjectProperty>("m_oBaseHead").Value), new PackageCache());
                 var baseMeshBin = baseHeadMesh.GetBinaryData<SkeletalMesh>();
-
-                // make most of the psk from the base head mesh
-                var psk = PSK.CreateFromSkeletalMesh(baseHeadMesh.GetBinaryData<SkeletalMesh>(), 0, true);
-
                 var bmfBin = bmf.GetBinaryData<BioMorphFace>();
 
-                for (var i = 0; i < psk.Points.Count && i < bmfBin.LODs[0].Length; i++)
+                void ExportLOD(int lod)
                 {
-                    // modify each point in the psk with the points from the bmf
-                    var bmfPoint = bmfBin.LODs[0][i];
-                    psk.Points[i] = bmfPoint with { Y = -bmfPoint.Y };
+                    var psk = PSK.CreateFromSkeletalMesh(baseMeshBin, lod, true);
+
+                    for (var i = 0; i < psk.Points.Count && i < bmfBin.LODs[lod].Length; i++)
+                    {
+                        // modify each point in the psk with the points from the bmf
+                        var bmfPoint = bmfBin.LODs[lod][i];
+                        psk.Points[i] = bmfPoint with { Y = -bmfPoint.Y };
+                    }
+
+                    if (lod == 0)
+                    {
+                        psk.ToFile(d.FileName);
+                    }
+                    else
+                    {
+                        psk.ToFile($"{d.FileName[..^5]}_LOD{lod}.pskx");
+                    }
                 }
 
-                psk.ToFile(d.FileName);
-
+                // make most of the psk from the base head mesh
+                for (int i = 0; i < baseMeshBin.LODModels.Length && i < bmfBin.LODs.Length; i++)
+                {
+                    ExportLOD(i);
+                }
 
                 // now, output the psa file and config file
                 var config = new StringBuilder();
@@ -863,7 +1554,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     });
                 }
 
-                psa.ToFile(Path.ChangeExtension(d.FileName, "psa"));
+                psa.ToFile(Path.ChangeExtension(d.FileName, "psa"), false);
 
                 // also output a config file next to this to tell it to skip rotations for every sequence and every bone, and skip everythig for bones that aren't part of the pose
                 File.WriteAllText(Path.ChangeExtension(d.FileName, "config"), config.ToString());
@@ -1082,7 +1773,7 @@ namespace LegendaryExplorer.Tools.PackageEditor.Experiments
                     });
                 }
 
-                psa.ToFile(Path.ChangeExtension(d.FileName, "psa"));
+                psa.ToFile(Path.ChangeExtension(d.FileName, "psa"), false);
 
                 // also output a config file next to this to tell it to skip rotations for every sequence and every bone, and skip everythig for bones that aren't part of the pose
                 File.WriteAllText(Path.ChangeExtension(d.FileName, "config"), config.ToString());
@@ -2018,7 +2709,7 @@ defaultproperties
         private static Image<Rgba32> ToIsImage(Texture2D tex)
         {
             var rawPng = tex.GetPNG(tex.GetTopMip());
-            return Image.Load<Rgba32>(rawPng);
+            return SixLabors.ImageSharp.Image.Load<Rgba32>(rawPng);
         }
 
         private static Vector3 ToNormalVector(Rgba32 pixelValue)
@@ -2052,7 +2743,7 @@ defaultproperties
             var I = v.Y * t.X / v.Z;
             var J = (H * B + I) / (1 - (F * B));
             var K = (E + (F * C)) / (1 - (H * C));
-            
+
             var Y = (D + (F * A) + (K * G) + (K * H * A)) / (1 - (F * B) - (K * H * B) - (K * I));
             var Z = (G + (H * A) + (J * D) + (J * F * A)) / (1 - (H * C) - (J * E) - (J * F * C));
             var X = A + (B * Y) + C * Z;
@@ -2083,6 +2774,51 @@ defaultproperties
             }
         }
 
+        private static bool GetTextureFromFile(PackageEditorWindow pew, out Image image, out string filePath)
+        {
+            OpenFileDialog selectImage = new()
+            {
+                Title = "Select texture file",
+#if WINDOWS
+                Filter = "All supported types|*.png;*.dds;*.tga;*.jpg|PNG files (*.png)|*.png|DDS files (*.dds)|*.dds|TGA files (*.tga)|*.tga|JPEG files (*.jpg)|*.jpg",
+#else
+                Filter = "Texture (DDS PNG BMP TGA)|*.dds;*.png;*.bmp;*.tga",
+#endif
+                CustomPlaces = AppDirectories.GameCustomPlaces
+            };
+            var result = selectImage.ShowDialog();
+            if (result.HasValue && result.Value)
+            {
+                filePath = selectImage.FileName;
+                try
+                {
+#if WINDOWS
+                    image = Image.LoadFromFile(filePath, PixelFormat.ARGB);
+#else
+                    image = new Image(filePath);
+#endif
+                    return true;
+                }
+                catch (TextureSizeNotPowerOf2Exception)
+                {
+                    MessageBox.Show("The width and height of a texture must both be a power of 2\n" +
+                                    "(1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192 (LE only))", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    image = null;
+                    return false;
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show($"Error: {e.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    image = null;
+                    return false;
+                }
+            }
+
+            image = null;
+            filePath = null;
+            return false;
+        }
+
         private static bool GetPsaFromFile(PackageEditorWindow pew, out PSA psa, out string filePath)
         {
             var d = new OpenFileDialog
@@ -2102,7 +2838,7 @@ defaultproperties
             return false;
         }
 
-        private static bool GetPskFromFile(PackageEditorWindow pew, out PSK psk, out string filePath)
+        private static bool GetPskFromFile(out PSK[] psks, out string filePath)
         {
             var d = new OpenFileDialog
             {
@@ -2111,12 +2847,28 @@ defaultproperties
             };
             if (d.ShowDialog() == true)
             {
-                psk = PSK.FromFile(d.FileName);
                 filePath = d.FileName;
-                return psk != null;
+                var folder = Path.GetDirectoryName(filePath);
+                var extension = Path.GetExtension(filePath);
+                var baseName = Path.GetFileNameWithoutExtension(filePath);
+                var LOD0 = PSK.FromFile(filePath);
+                List<PSK> lods = [LOD0];
+                var lod = 1;
+                do
+                {
+                    var path = Path.Combine(folder, $"{baseName}_LOD{lod++}{extension}");
+                    if (!File.Exists(path))
+                    {
+                        break;
+                    }
+                    var lodPsk = PSK.FromFile(path);
+                    lods.Add(lodPsk);
+                } while (true);
+                psks = [.. lods];
+                return LOD0 != null;
             }
 
-            psk = null;
+            psks = [];
             filePath = null;
             return false;
         }
@@ -2174,15 +2926,15 @@ defaultproperties
         {
             if (GetSelectedItem(pew, "BioMorphFace", out var bmfExport))
             {
-                if (GetPskFromFile(pew, out var psk, out _))
+                if (GetPskFromFile(out var psks, out _))
                 {
                     var bmfBin = bmfExport.GetBinaryData<BioMorphFace>();
 
-                    Vector3[] vertexPos = new Vector3[psk.Points.Count];
+                    Vector3[] vertexPos = new Vector3[psks[0].Points.Count];
 
-                    for (int i = 0; i < psk.Points.Count; i++)
+                    for (int i = 0; i < psks[0].Points.Count; i++)
                     {
-                        vertexPos[i] = psk.Points[i] with { Y = -psk.Points[i].Y };
+                        vertexPos[i] = psks[0].Points[i] with { Y = -psks[0].Points[i].Y };
                     }
 
                     bmfBin.LODs = [[.. vertexPos]];
@@ -2382,12 +3134,12 @@ defaultproperties
         {
             if (GetHeadmorphFromFile(out var headMorph, out var ronFilePath))
             {
-                if (GetPskFromFile(pew, out var psk, out _))
+                if (GetPskFromFile(out var psks, out _))
                 {
-                    headMorph.Lod0Vertices = new List<Vector3>(psk.Points.Count);
-                    for (int i = 0; i < psk.Points.Count; i++)
+                    headMorph.Lod0Vertices = new List<Vector3>(psks[0].Points.Count);
+                    for (int i = 0; i < psks[0].Points.Count; i++)
                     {
-                        headMorph.Lod0Vertices.Add(psk.Points[i] with { Y = -psk.Points[i].Y });
+                        headMorph.Lod0Vertices.Add(psks[0].Points[i] with { Y = -psks[0].Points[i].Y });
                     }
                 }
                 if (GetPsaFromFile(pew, out var psa, out _))
@@ -2546,7 +3298,7 @@ defaultproperties
             var baseMeshBinary = baseMesh.GetBinaryData<SkeletalMesh>();
 
             // using bitwise | so it evaluates the second even if the first evaluates to true
-            if (GetPskFromFile(pew, out var psk, out var pskName) | GetPsaFromFile(pew, out var psa, out var psaName))
+            if (GetPskFromFile(out var psks, out var pskName) | GetPsaFromFile(pew, out var psa, out var psaName))
             {
                 var morphTargetName = Path.GetFileNameWithoutExtension(pskName ?? psaName);
 
@@ -2563,22 +3315,22 @@ defaultproperties
                     {
                         MorphLODModels = [new MorphTarget.MorphLODModel()]
                     };
-                    morphTargetBin.MorphLODModels[0].NumBaseMeshVerts = psk.Points.Count;
+                    morphTargetBin.MorphLODModels[0].NumBaseMeshVerts = psks[0].Points.Count;
 
                     // add it to the morph target set
                     targets.Add(new ObjectProperty(morphTarget.UIndex));
                     morphTargetSet.WriteProperty(targets);
                 }
 
-                if (psk != null)
+                if (psks != null)
                 {
-                    if (psk.Points.Count != baseMeshBinary.LODModels[0].NumVertices)
+                    if (psks[0].Points.Count != baseMeshBinary.LODModels[0].NumVertices)
                     {
                         ShowError("the number of vertices in the base mesh (LOD 0) and the psk must match.");
                         return;
                     }
 
-                    if (psk.Points.Count != psk.Wedges.Count)
+                    if (psks[0].Points.Count != psks[0].Wedges.Count)
                     {
                         ShowError("Can't use this psk; number of points and wedges differ.");
                         return;
@@ -2586,18 +3338,18 @@ defaultproperties
 
                     List<MorphTarget.MorphVertex> vertDeltas = [];
 
-                    for (int i = 0; i < psk.Points.Count; i++)
+                    for (int i = 0; i < psks[0].Points.Count; i++)
                     {
                         // gotta flip the y part of the position
-                        psk.Points[i] = new Vector3(psk.Points[i].X, psk.Points[i].Y * -1, psk.Points[i].Z);
+                        psks[0].Points[i] = new Vector3(psks[0].Points[i].X, psks[0].Points[i].Y * -1, psks[0].Points[i].Z);
 
                         // TODO I could more simply represent this with a distance call and comparison
-                        if (!ApproximatelyEqual(baseMeshBinary.LODModels[0].VertexBufferGPUSkin.VertexData[i].Position, psk.Points[i]))
+                        if (!ApproximatelyEqual(baseMeshBinary.LODModels[0].VertexBufferGPUSkin.VertexData[i].Position, psks[0].Points[i]))
                         {
                             vertDeltas.Add(new MorphTarget.MorphVertex()
                             {
                                 SourceIdx = (ushort)i,
-                                PositionDelta = psk.Points[i] - baseMeshBinary.LODModels[0].VertexBufferGPUSkin.VertexData[i].Position
+                                PositionDelta = psks[0].Points[i] - baseMeshBinary.LODModels[0].VertexBufferGPUSkin.VertexData[i].Position
                             });
                         }
 
@@ -2643,7 +3395,7 @@ defaultproperties
             return false;
         }
 
-        private static void ExportMorphTargetSet(PackageEditorWindow pew)
+        private static void ExportMorphTargetSetToPskxAndPsa(PackageEditorWindow pew)
         {
             if (!GetSelectedItem(pew, "MorphTargetSet", out var morphTargetSet))
             {
@@ -2662,36 +3414,55 @@ defaultproperties
             var baseMeshBin = baseMesh.GetBinaryData<SkeletalMesh>();
             var targets = morphTargetSet.GetProperty<ArrayProperty<ObjectProperty>>("Targets");
 
-            var d = new SaveFileDialog { Filter = "PSKX|*.pskx" };
+            var d = new SaveFileDialog { Filter = "PSKX|*.pskx", FileName = morphTargetSet.ObjectNameString };
             if (d.ShowDialog() == true)
             {
-                // output the special psk into a file with the name of the base head
-                // make most of the psk from the base skeletal mesh
-                var psk = PSK.CreateFromSkeletalMesh(baseMeshBin, 0, true);
-
-                foreach (var target in targets)
+                void OutputLOD(int lod)
                 {
-                    var targetExport = SharedMethods.ResolveEntryToExport(pew.Pcc.GetEntry(target.Value), new PackageCache());
-                    var targetBin = targetExport.GetBinaryData<MorphTarget>();
-                    psk.Morphs.Add(new PSK.MorphInfo
-                    {
-                        Name = targetExport.ObjectNameString,
-                        VertexCount = targetBin.MorphLODModels[0].Vertices.Length
-                    });
+                    // output the special psk into a file with the name of the base head
+                    // make most of the psk from the base skeletal mesh
+                    var psk = PSK.CreateFromSkeletalMesh(baseMeshBin, lod, true);
 
-                    foreach (var vertex in targetBin.MorphLODModels[0].Vertices)
+                    foreach (var target in targets)
                     {
-                        psk.MorphData.Add(new PSK.MorphDelta
+                        var targetExport = SharedMethods.ResolveEntryToExport(pew.Pcc.GetEntry(target.Value), new PackageCache());
+                        var targetBin = targetExport.GetBinaryData<MorphTarget>();
+                        if (targetBin.MorphLODModels.Length > lod)
                         {
-                            PointIndex = vertex.SourceIdx,
-                            PositionDelta = vertex.PositionDelta,
-                            // this gets ignored on import to Blender anyway
-                            //TangentZDelta = vertex.TangentZDelta
-                        });
+                            psk.Morphs.Add(new PSK.MorphInfo
+                            {
+                                Name = targetExport.ObjectNameString,
+                                VertexCount = targetBin.MorphLODModels[lod].Vertices.Length
+                            });
+
+                            foreach (var vertex in targetBin.MorphLODModels[lod].Vertices)
+                            {
+                                psk.MorphData.Add(new PSK.MorphDelta
+                                {
+                                    PointIndex = vertex.SourceIdx,
+                                    PositionDelta = vertex.PositionDelta,
+                                    // this gets ignored on import to Blender anyway
+                                    //TangentZDelta = vertex.TangentZDelta
+                                });
+                            }
+                        }
+                    }
+
+                    if (lod == 0)
+                    {
+                        psk.ToFile(d.FileName);
+                    }
+                    else
+                    {
+                        psk.ToFile($"{d.FileName[..^5]}_LOD{lod}.pskx");
                     }
                 }
 
-                psk.ToFile(d.FileName);
+                // make most of the psk from the base head mesh
+                for (int i = 0; i < baseMeshBin.LODModels.Length; i++)
+                {
+                    OutputLOD(i);
+                }
 
                 // now, output the psa file and config file
                 var config = new StringBuilder();
@@ -2766,7 +3537,7 @@ defaultproperties
                     }
                 }
 
-                psa.ToFile(Path.ChangeExtension(d.FileName, "psa"));
+                psa.ToFile(Path.ChangeExtension(d.FileName, "psa"), false);
 
                 // also output a config file next to this to tell it to skip rotations for every sequence and every bone
                 File.WriteAllText(Path.ChangeExtension(d.FileName, "config"), config.ToString());
@@ -2783,14 +3554,15 @@ defaultproperties
             entry = null;
             if (pew.SelectedItem == null || pew.SelectedItem.Entry == null || pew.Pcc == null) { return false; }
 
-            if (!expectedTypes.Contains(pew.SelectedItem.Entry.ClassName))
+            foreach (var expectedType in expectedTypes)
             {
-                return false;
+                if (pew.SelectedItem.Entry.IsA(expectedType))
+                {
+                    entry = (ExportEntry)pew.SelectedItem.Entry;
+                    return entry != null;
+                }
             }
-
-            entry = (ExportEntry)pew.SelectedItem.Entry;
-
-            return entry != null;
+            return false;
         }
     }
 }

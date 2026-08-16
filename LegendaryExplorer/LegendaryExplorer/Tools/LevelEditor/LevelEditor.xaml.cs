@@ -1,8 +1,7 @@
-﻿using LegendaryExplorer.Misc;
+using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
-using LegendaryExplorer.SharedUI.Interfaces;
-using LegendaryExplorer.UserControls.SharedToolControls;
 using LegendaryExplorer.Tools.LevelEditor.Scene3D;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
@@ -11,14 +10,19 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
+using LegendaryExplorer.Tools.PackageEditor;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -27,12 +31,46 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 /// <summary>
 /// Interaction logic for LevelEditor.xaml
 /// </summary>
-public partial class LevelEditor : WPFBase, IRecents
+public class RecentFileSet
 {
-    public readonly LevelEditorRenderContext RenderContext;
+    public MEGame Game { get; set; }
+    public List<string> FilePaths { get; set; } = [];
+    public List<string> ReadOnlyFilePaths { get; set; } = [];
 
+    [JsonIgnore]
+    public string DisplayName => FilePaths.Count switch
+    {
+        0 => "(empty)",
+        1 => Path.GetFileName(FilePaths[0]),
+        _ => $"{Path.GetFileName(FilePaths[0])} (+{FilePaths.Count - 1} more)"
+    };
+
+    [JsonIgnore]
+    public string TooltipText => string.Join("\n", FilePaths.Select(Path.GetFileName));
+}
+
+public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditorContext
+{
+    public LevelEditorRenderContext RenderContext { get; }
+
+    public ObservableCollectionExtended<OpenLevelFile> OpenFiles { get; } = [];
     public ObservableCollectionExtended<ActorProxy> Actors { get; } = [];
-    private ExportEntry LevelExport;
+    public ICollectionView ActorsView { get; }
+    private string _actorFilterText = "";
+
+    private bool _hasAnyFileOpen;
+    public bool HasAnyFileOpen
+    {
+        get => _hasAnyFileOpen;
+        private set => SetProperty(ref _hasAnyFileOpen, value);
+    }
+
+    private MEGame _game = MEGame.Unknown;
+    public MEGame Game
+    {
+        get => _game;
+        private set => SetProperty(ref _game, value);
+    }
 
     private ActorProxy selectedActor;
     public ActorProxy SelectedActor
@@ -40,16 +78,9 @@ public partial class LevelEditor : WPFBase, IRecents
         get => selectedActor;
         set
         {
-            if (SetProperty(ref selectedActor, value) && selectedActor is not null)
-            {
-                FocusOnBounds(selectedActor.GetBounds());
-                RenderContext.TransformWidget.Attach = selectedActor;
-            }
+            SelectActor(value, true);
         }
     }
-
-    private readonly List<(IMEPackage, ExportEntry)> OverlayLevels = [];
-    private readonly List<ActorProxy> OverlayActors = [];
 
     private bool isDirty;
     public bool IsDirty
@@ -65,36 +96,77 @@ public partial class LevelEditor : WPFBase, IRecents
         set => SetProperty(ref _showCollision, value);
     }
 
-    private bool _showVolumes = true;
+    private bool _showVolumes = false;
     public bool ShowVolumes
     {
         get => _showVolumes;
         set => SetProperty(ref _showVolumes, value);
     }
 
-    private bool _showLevelsOverlay;
-    public bool ShowLevelsOverlay
+    private bool _showVolumetrics = false;
+    public bool ShowVolumetrics
     {
-        get => _showLevelsOverlay;
-        set => SetProperty(ref _showLevelsOverlay, value);
+        get => _showVolumetrics;
+        set => SetProperty(ref _showVolumetrics, value);
     }
 
     public bool UseLocalCoordsForWidget
     {
-        get => RenderContext.TransformWidget.UseLocalCoords; 
+        get => RenderContext.TransformWidget.UseLocalCoords;
         set => SetProperty(ref RenderContext.TransformWidget.UseLocalCoords, value);
     }
 
-    public string Toolname => "LevelEditor";
-    public LevelEditor() : base("LevelEditor")
+    public bool TranslateSnapEnabled
+    {
+        get => RenderContext.TransformWidget.TranslateSnapEnabled;
+        set => SetProperty(ref RenderContext.TransformWidget.TranslateSnapEnabled, value);
+    }
+    public float TranslateSnapValue
+    {
+        get => RenderContext.TransformWidget.TranslateSnapValue;
+        set => SetProperty(ref RenderContext.TransformWidget.TranslateSnapValue, value);
+    }
+    public bool RotateSnapEnabled
+    {
+        get => RenderContext.TransformWidget.RotateSnapEnabled;
+        set => SetProperty(ref RenderContext.TransformWidget.RotateSnapEnabled, value);
+    }
+    public float RotateSnapValue
+    {
+        get => RenderContext.TransformWidget.RotateSnapValue;
+        set => SetProperty(ref RenderContext.TransformWidget.RotateSnapValue, value);
+    }
+    public bool ScaleSnapEnabled
+    {
+        get => RenderContext.TransformWidget.ScaleSnapEnabled;
+        set => SetProperty(ref RenderContext.TransformWidget.ScaleSnapEnabled, value);
+    }
+    public float ScaleSnapValue
+    {
+        get => RenderContext.TransformWidget.ScaleSnapValue;
+        set => SetProperty(ref RenderContext.TransformWidget.ScaleSnapValue, value);
+    }
+
+    public ObservableCollectionExtended<RecentFileSet> RecentSets { get; } = [];
+
+    private static string RecentSetsFile => Path.Combine(
+        Directory.CreateDirectory(Path.Combine(AppDirectories.AppDataFolder, "LevelEditor")).FullName,
+        "RECENTSETS");
+
+    public LevelEditor()
     {
         RenderContext = new LevelEditorRenderContext();
+        RenderContext.TransformWidget.OnDragComplete = OnWidgetDragComplete;
+        ActorsView = CollectionViewSource.GetDefaultView(Actors);
+        ActorsView.Filter = ActorFilter;
+        ActorsView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ActorProxy.OwningFile)));
 
         LoadCommands();
         InitializeComponent();
-        RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
+        LoadRecentSets();
 
         SceneViewer.Context = RenderContext;
+        UndoHistory.PropertyChanged += UndoHistory_PropertyChanged;
     }
 
     private string FileQueuedForLoad;
@@ -113,22 +185,14 @@ public partial class LevelEditor : WPFBase, IRecents
 
     private void RenderScene(object sender, EventArgs e)
     {
-        Span<RenderPass> passes = ShowCollision 
-            ? [RenderPass.Base, RenderPass.Hair, RenderPass.Collision] 
+        RenderContext.ShowVolumes = ShowVolumes;
+        RenderContext.ShowVolumetrics = ShowVolumetrics;
+        Span<RenderPass> passes = ShowCollision
+            ? [RenderPass.Base, RenderPass.Hair, RenderPass.Collision]
             : [RenderPass.Base, RenderPass.Hair];
-        
 
         foreach (RenderPass pass in passes)
         {
-            if (ShowLevelsOverlay)
-            {
-                RenderContext.CurrentHitTestId = Vector3.Zero;
-                foreach (ActorProxy actor in OverlayActors)
-                {
-                    if (actor.IsVolume && !ShowVolumes) continue;
-                    actor.Render(RenderContext, pass);
-                }
-            }
             DoRenderPass(pass);
         }
 
@@ -140,7 +204,9 @@ public partial class LevelEditor : WPFBase, IRecents
         {
             ActorProxy actor = RenderContext.DrawList_3D[i];
             if (actor.IsVolume && !ShowVolumes) continue;
-            RenderContext.CurrentHitTestId = new Vector3((i & 0xFF) / 255f, ((i >> 8) & 0xFF) / 255f, ((i >> 16) & 0xFF) / 255f);
+            if (actor.IsVolumetricMesh && !ShowVolumetrics) continue;
+            int hitID = actor.HitID;
+            RenderContext.CurrentHitTestId = new Vector3((hitID & 0xFF) / 255f, ((hitID >> 8) & 0xFF) / 255f, ((hitID >> 16) & 0xFF) / 255f);
             if (actor == selectedActor)
             {
                 RenderContext.RenderFlags |= LevelEditorRenderContext.ShaderFlags.Selected;
@@ -152,16 +218,40 @@ public partial class LevelEditor : WPFBase, IRecents
 
     private void ViewportActorSelect(ActorProxy actor)
     {
-        //don't set the property normally, as we don't want to trigger FocusOnBounds
-        SetProperty(ref selectedActor, actor, nameof(SelectedActor));
+        SelectActor(actor, false);
         MeshExportsList.ScrollIntoView(selectedActor);
+    }
+
+    private void SelectActor(ActorProxy actor, bool focus)
+    {
+        var prev = selectedActor;
+        if (SetProperty(ref selectedActor, actor, nameof(SelectedActor)))
+        {
+            if (prev is not null)
+            {
+                prev.PropertyChanged -= OnActorPropertyChanged;
+            }
+            if (selectedActor is not null)
+            {
+                if (focus)
+                {
+                    FocusOnBounds(selectedActor.GetBounds());
+                    RenderContext.TransformWidget.Attach = selectedActor;
+                }
+                selectedActor.PropertyChanged += OnActorPropertyChanged;
+                _preEditSnapshot = selectedActor.SnapshotTransform();
+            }
+            else
+            {
+                _preEditSnapshot = null;
+            }
+        }
     }
 
     private void CenterView()
     {
         if (Actors.Count > 0)
         {
-            //place camera at the edge of the bounding sphere containing all actors, 30 degrees up, facing the midpoint 
             BoxSphereBounds fullBounds = Actors[0].GetBounds();
             for (int i = 1; i < Actors.Count; i++)
             {
@@ -180,62 +270,212 @@ public partial class LevelEditor : WPFBase, IRecents
     private void FocusOnBounds(BoxSphereBounds fullBounds)
     {
         Vector3 origin = fullBounds.Origin;
-        float hyp = fullBounds.SphereRadius.Clamp(10, float.MaxValue) * 2;
-        (float sin, float cos) = MathF.SinCos(MathF.PI / 2.5f);
-        RenderContext.Camera.Position = new Vector3(origin.X, origin.Y + sin * hyp, origin.Z + cos * hyp);
-        RenderContext.Camera.OrientTowards(origin);
+        if (RenderContext.Camera.IsOrthographic)
+        {
+            RenderContext.Camera.Position = new Vector3(origin.X, origin.Y, RenderContext.Camera.ZFar * 0.4f);
+            RenderContext.Camera.OrthoWidth = fullBounds.SphereRadius.Clamp(10, float.MaxValue) * 3f;
+        }
+        else
+        {
+            float hyp = fullBounds.SphereRadius.Clamp(10, float.MaxValue) * 2;
+            (float sin, float cos) = MathF.SinCos(MathF.PI / 2.5f);
+            RenderContext.Camera.Position = new Vector3(origin.X, origin.Y + sin * hyp, origin.Z + cos * hyp);
+            RenderContext.Camera.OrientTowards(origin);
+        }
     }
 
-    private void LoadLevel(Level level, bool isReload = false)
+    #region File Management
+
+    public async Task LoadFileAsync(string s)
     {
-        (Vector3, float, float) savedCamPOV = default;
-        Vector3 savedActorPos = default;
-        if (isReload && SelectedActor is not null)
+        try
         {
-            savedCamPOV = (RenderContext.Camera.Position, RenderContext.Camera.Pitch, RenderContext.Camera.Yaw);
-            savedActorPos = SelectedActor.Location;
-            ExportQueuedForFocusing = SelectedActor.Export.UIndex;
+            CloseAllFiles();
+            Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
+
+
+            using var guard = new RenderGuard(this);
+
+            await AddLevelFile(s).ConfigureAwait(true);
+        }
+        catch (Exception e)
+        {
+            StatusBar_LeftMostText.Text = "Failed to load " + Path.GetFileName(s);
+            MessageBox.Show($"Error loading {Path.GetFileName(s)}:\n{e.Message}");
+            IsBusy = false;
+            IsBusyTaskbar = false;
+        }
+    }
+
+    private async Task AddLevelFile(string path)
+    {
+        path = Path.GetFullPath(path);
+
+        if (OpenFiles.Any(f => f.FilePath.Equals(path, StringComparison.OrdinalIgnoreCase)))
+        {
+            MessageBox.Show(this, $"{Path.GetFileName(path)} is already open.");
+            return;
         }
 
-        IsBusy = true;
-        BusyText = "Loading level...";
-        UnloadLevel();
-        LevelExport = level.Export;
-        Task.Run(() => LoadActors(level)).ContinueWithOnUIThread(prevTask =>
+        using IMEPackage pcc = MEPackageHandler.OpenMEPackage(path);
+        if (OpenFiles.Count > 0 && pcc.Game != Game)
         {
-            var (actors, ignoredClasses) = prevTask.Result;
-            Actors.AddRange(actors.OrderBy(actor => actor.Export.UIndex));
-            RenderContext.LoadLevel(Actors);
-            if (!isReload)
-            {
-                CenterView();
-            }
+            MessageBox.Show(this, $"Cannot mix games. The open files are {Game}, but {Path.GetFileName(path)} is {pcc.Game}.");
+            return;
+        }
+        Game = pcc.Game;
+        ExportEntry levelExport = pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level");
+        if (levelExport is null)
+        {
+            MessageBox.Show(this, $"{Path.GetFileName(path)} is not a level file!");
+            return;
+        }
 
-            SceneViewer.SetShouldRender(true);
-            IsBusy = false;
+        var openFile = new OpenLevelFile(this, pcc, levelExport);
+        // Register the OpenLevelFile as a user of the package for update notifications
+        pcc.RegisterTool(openFile);
+        OpenFiles.Add(openFile);
+        HasAnyFileOpen = true;
 
-            if (ignoredClasses.Count > 0)
-            {
-                TextBelowActors = $"Unrendered Actor types:\n{string.Join(", ", ignoredClasses)}";
-            }
+        RecordCurrentFilesAsRecent();
 
-            if (ExportQueuedForFocusing > 0)
+        Level levelBin = levelExport.GetBinaryData<Level>();
+        bool isFirstFile = OpenFiles.Count == 1;
+
+        IsBusy = true;
+        BusyText = $"Loading {Path.GetFileName(path)}...";
+
+        var (actors, ignoredClasses) = await Task.Run(() => LoadActors(levelBin, openFile)).ConfigureAwait(true);
+        var sorted = actors.OrderBy(actor => actor.Export.UIndex).ToList();
+        openFile.Actors.AddRange(sorted);
+        Actors.AddRange(sorted);
+        RenderContext.LoadActors(sorted);
+
+        if (isFirstFile)
+        {
+            CenterView();
+        }
+
+        if (ignoredClasses.Count > 0)
+        {
+            string existing = string.IsNullOrEmpty(TextBelowActors) ? "" : TextBelowActors + "\n";
+            TextBelowActors = existing + $"{Path.GetFileName(path)} unrendered: {string.Join(", ", ignoredClasses)}";
+        }
+
+        if (ExportQueuedForFocusing > 0)
+        {
+            if (sorted.FirstOrDefault(a => a.Export.UIndex == ExportQueuedForFocusing) is { } proxy)
             {
-                if (Actors.FirstOrDefault(a => a.Export.UIndex == ExportQueuedForFocusing) is { } proxy)
-                {
-                    SelectedActor = proxy;
-                }
+                SelectedActor = proxy;
                 ExportQueuedForFocusing = 0;
-                if (isReload)
-                {
-                    (RenderContext.Camera.Position, RenderContext.Camera.Pitch, RenderContext.Camera.Yaw) 
-                    = (savedCamPOV.Item1 + SelectedActor.Location - savedActorPos, savedCamPOV.Item2, savedCamPOV.Item3);
-                }
             }
-        });
+        }
+
+        UpdateTitle();
     }
 
-    private (List<ActorProxy>, HashSet<string> ignoredActorClasses) LoadActors(Level level)
+    private void CloseAllFiles()
+    {
+        Game = MEGame.Unknown;
+        if (selectedActor is not null)
+        {
+            selectedActor.PropertyChanged -= OnActorPropertyChanged;
+            selectedActor = null;
+        }
+        SceneViewer.SetShouldRender(false);
+        RenderContext.UnloadLevel();
+        Actors.Clear();
+        foreach (var file in OpenFiles)
+        {
+            file.Dispose();
+        }
+        OpenFiles.Clear();
+        HasAnyFileOpen = false;
+        TextBelowActors = "";
+        IsDirty = false;
+        UndoHistory.Clear();
+        _preEditSnapshot = null;
+    }
+
+    public void CloseFile(OpenLevelFile file)
+    {
+        if (file is null) return;
+
+        if (file.IsDirty)
+        {
+            var result = MessageBox.Show(this,
+                $"{file.FileName} has uncommitted changes. Close anyway?",
+                "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (result != MessageBoxResult.Yes) return;
+        }
+        else if (file.Package.IsModified && file.Package.Users.Count <= 1)
+        {
+            var result = MessageBox.Show(this,
+                $"{file.FileName} has unsaved changes. Close anyway?",
+                "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (result != MessageBoxResult.Yes) return;
+        }
+
+        if (SelectedActor is not null && file.Actors.Contains(SelectedActor))
+        {
+            SelectedActor = null;
+        }
+
+        foreach (var actor in file.Actors)
+        {
+            Actors.Remove(actor);
+            RenderContext.RemoveActor(actor);
+            actor.Dispose();
+        }
+
+        file.Dispose();
+        OpenFiles.Remove(file);
+        HasAnyFileOpen = OpenFiles.Count > 0;
+        UpdateGlobalDirtyState();
+        UpdateTitle();
+
+        if (OpenFiles.Count == 0)
+        {
+            SceneViewer.SetShouldRender(false);
+            TextBelowActors = "";
+            UndoHistory.Clear();
+            _preEditSnapshot = null;
+        }
+    }
+
+    public void CloseFileByName(string fileName)
+    {
+        var file = OpenFiles.FirstOrDefault(f => f.FileName == fileName);
+        if (file is not null)
+        {
+            CloseFile(file);
+        }
+    }
+
+    private void UpdateTitle()
+    {
+        if (OpenFiles.Count == 0)
+            Title = "Level Editor";
+        else if (OpenFiles.Count == 1)
+            Title = $"Level Editor - {OpenFiles[0].FilePath}";
+        else
+            Title = $"Level Editor - {OpenFiles.Count} files";
+
+        StatusBar_LeftMostText.Text = OpenFiles.Count switch
+        {
+            0 => "Select package file to load",
+            1 => OpenFiles[0].FileName,
+            _ => $"{OpenFiles.Count} files loaded"
+        };
+    }
+
+    #endregion
+
+    #region Actor Loading
+
+    private readonly record struct LoadActorsResult(List<ActorProxy> actors, HashSet<string> ignoredActorClasses);
+
+    private LoadActorsResult LoadActors(Level level, OpenLevelFile owningFile)
     {
         var actorExports = level.Actors.Where(level.Export.FileRef.IsUExport).Select(level.Export.FileRef.GetUExport);
         var actors = new List<ActorProxy>();
@@ -251,23 +491,14 @@ public partial class LevelEditor : WPFBase, IRecents
                     if (level.Export.FileRef.TryGetUExport(smca.Components[i], out ExportEntry smcExport))
                     {
                         var smcActor = new StaticMeshComponentActorProxy(this, smcExport, smca, i);
+                        smcActor.OwningFile = owningFile;
                         actors.Add(smcActor);
                     }
                 }
             }
-            //else if (className is "StaticLightCollectionActor")
-            //{
-            //    var slca = actorExport.GetBinaryData<StaticLightCollectionActor>();
-            //    for (int i = 0; i < slca.Components.Count; i++)
-            //    {
-            //        if (Pcc.TryGetUExport(slca.Components[i], out ExportEntry lightComponentExport))
-            //        {
-
-            //        }
-            //    }
-            //}
             else if (ActorProxy.Create(this, actorExport) is { } actorProxy)
             {
+                actorProxy.OwningFile = owningFile;
                 actors.Add(actorProxy);
             }
             else if (className is not "BioWorldInfo")
@@ -275,164 +506,222 @@ public partial class LevelEditor : WPFBase, IRecents
                 ignoredActorClasses.Add(className);
             }
         }
-        return (actors, ignoredActorClasses);
+        foreach (var actor in actors)
+        {
+            actor.ResolveAttachment(actors);
+        }
+        return new(actors, ignoredActorClasses);
     }
 
-    public void LoadFile(string s)
+    public void RemoveActor(ActorProxy actor)
     {
-        try
+        if (Actors.Remove(actor))
         {
-            UnloadLevel();
-            Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
-            LoadMEPackage(s);
-
-            StatusBar_LeftMostText.Text = Path.GetFileName(s);
-            Title = $"Level Editor - {s}";
-
-            RecentsController.AddRecent(s, false, Pcc?.Game);
-            RecentsController.SaveRecentList(true);
-
-            if (Pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is { } levelExport)
-            {
-                Level levelBin = levelExport.GetBinaryData<Level>();
-                LoadLevel(levelBin);
-            }
-            else
-            {
-                MessageBox.Show(this, "This is not a level file!");
-                UnLoadMEPackage();
-            }
-
-        }
-        catch (Exception e)
-        {
-            StatusBar_LeftMostText.Text = "Failed to load " + Path.GetFileName(s);
-            MessageBox.Show($"Error loading {Path.GetFileName(s)}:\n{e.Message}");
-            IsBusy = false;
-            IsBusyTaskbar = false;
-            //throw e;
+            actor.Detach();
+            actor.OwningFile?.Actors.Remove(actor);
+            RenderContext.RemoveActor(actor);
+            actor.Dispose();
         }
     }
 
-    public void UnloadLevel()
+    public void AddActor(ActorProxy actor, bool sort = true)
     {
-        SceneViewer.SetShouldRender(false);
-        RenderContext.UnloadLevel();
-        ClearOverlay();
-        Actors.Clear();
-        TextBelowActors = "";
-        LevelExport = null;
-        IsDirty = false;
+        if (!Actors.Contains(actor))
+        {
+            Actors.Add(actor);
+            actor.ResolveAttachment(Actors);
+            actor.OwningFile?.Actors.Add(actor);
+            RenderContext.AddActor(actor);
+            if (sort)
+            {
+                Actors.Sort(a => a.Export.UIndex);
+            }
+        }
     }
+
+    #endregion
+
+    #region Commands
 
     public ICommand OpenFileCommand { get; set; }
-    public ICommand SaveFileCommand { get; set; }
+    public ICommand AddFileCommand { get; set; }
+    public ICommand SaveAllCommand { get; set; }
     public ICommand SaveAsCommand { get; set; }
+    public ICommand SaveSingleFileCommand { get; set; }
+    public ICommand CloseFileCommand { get; set; }
     public ICommand ToggleTranslateCommand { get; set; }
     public ICommand ToggleRotateCommand { get; set; }
     public ICommand ToggleScaleCommand { get; set; }
     public ICommand ToggleUniformScaleCommand { get; set; }
     public ICommand CommitChangesCommand { get; set; }
+    public ICommand CommitSingleFileCommand { get; set; }
     public ICommand LoadRelatedLevelsCommand { get; set; }
+    public ICommand FocusSelectedCommand { get; set; }
+    public ICommand ToggleLocalCoordsCommand { get; set; }
+    public ICommand OpenInPackageEditorCommand { get; set; }
+    public ICommand OpenRecentSetCommand { get; set; }
+    public ICommand UndoCommand { get; set; }
+    public ICommand RedoCommand { get; set; }
+    public ICommand ToggleOrthoViewCommand { get; set; }
     private void LoadCommands()
     {
         OpenFileCommand = new GenericCommand(OpenFile);
-        SaveFileCommand = new GenericCommand(SaveFile, PackageIsLoaded);
+        AddFileCommand = new GenericCommand(AddFile);
+        SaveAllCommand = new GenericCommand(SaveAllFiles, PackageIsLoaded);
         SaveAsCommand = new GenericCommand(SaveFileAs, PackageIsLoaded);
-        ToggleTranslateCommand = new GenericCommand(() => RenderContext.TransformWidget.Mode = EWidgetMode.Translate, PackageIsLoaded);
-        ToggleRotateCommand = new GenericCommand(() => RenderContext.TransformWidget.Mode = EWidgetMode.Rotate, PackageIsLoaded);
-        ToggleScaleCommand = new GenericCommand(() => RenderContext.TransformWidget.Mode = EWidgetMode.Scale, PackageIsLoaded);
-        ToggleUniformScaleCommand = new GenericCommand(() => RenderContext.TransformWidget.Mode = EWidgetMode.UniformScale, PackageIsLoaded);
+        SaveSingleFileCommand = new RelayCommand(SaveSingleFileExecute, _ => PackageIsLoaded());
+        CloseFileCommand = new RelayCommand(CloseFileExecute);
+        ToggleTranslateCommand = new GenericCommand(() => { RenderContext.TransformWidget.Mode = EWidgetMode.Translate; CurrentModeName = "Translate"; }, PackageIsLoaded);
+        ToggleRotateCommand = new GenericCommand(() => { RenderContext.TransformWidget.Mode = EWidgetMode.Rotate; CurrentModeName = "Rotate"; }, PackageIsLoaded);
+        ToggleScaleCommand = new GenericCommand(() => { RenderContext.TransformWidget.Mode = EWidgetMode.Scale; CurrentModeName = "Scale"; }, PackageIsLoaded);
+        ToggleUniformScaleCommand = new GenericCommand(() => { RenderContext.TransformWidget.Mode = EWidgetMode.UniformScale; CurrentModeName = "Uniform Scale"; }, PackageIsLoaded);
         CommitChangesCommand = new GenericCommand(CommitChanges, PackageIsLoaded);
+        CommitSingleFileCommand = new RelayCommand(CommitSingleFileExecute, _ => PackageIsLoaded());
         LoadRelatedLevelsCommand = new GenericCommand(LoadRelatedLevels, PackageIsLoaded);
+        FocusSelectedCommand = new GenericCommand(() =>
+        {
+            if (SelectedActor is not null)
+            {
+                FocusOnBounds(SelectedActor.GetBounds());
+            }
+        }, () => PackageIsLoaded() && SelectedActor is not null);
+        ToggleLocalCoordsCommand = new GenericCommand(() => UseLocalCoordsForWidget = !UseLocalCoordsForWidget, PackageIsLoaded);
+        OpenInPackageEditorCommand = new GenericCommand(() =>
+        {
+            if (SelectedActor is not null)
+            {
+                var p = new PackageEditorWindow();
+                p.Show();
+                p.LoadFile(SelectedActor.Export.FileRef.FilePath, SelectedActor.Export.UIndex);
+                p.Activate();
+            }
+        }, () => PackageIsLoaded() && SelectedActor is not null);
+        OpenRecentSetCommand = new RelayCommand(obj => { if (obj is RecentFileSet set) OpenRecentFileSet(set); });
+        UndoCommand = new GenericCommand(Undo, () => UndoHistory.CanUndo);
+        RedoCommand = new GenericCommand(Redo, () => UndoHistory.CanRedo);
+        ToggleOrthoViewCommand = new GenericCommand(() => IsOrthographicView = !IsOrthographicView);
     }
 
-    private void LoadRelatedLevels()
+    #endregion
+
+    #region Undo/Redo
+    public readonly UndoHistory UndoHistory = new();
+    private TransformSnapshot? _preEditSnapshot;
+    private bool _isApplyingUndoRedo;
+    public bool IsApplyingUndoRedo => _isApplyingUndoRedo;
+
+    public bool CanUndo => UndoHistory.CanUndo;
+    public bool CanRedo => UndoHistory.CanRedo;
+
+    private void UndoHistory_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        if (Pcc is null) return;
+        OnPropertyChanged(nameof(CanUndo));
+        OnPropertyChanged(nameof(CanRedo));
+    }
 
-        ClearOverlay();
+    public void Undo_Clicked(object sender, RoutedEventArgs e) => Undo();
+    public void Undo()
+    {
+        if (UndoHistory.CanUndo)
+        {
+            _isApplyingUndoRedo = true;
+            UndoHistory.Undo();
+            _isApplyingUndoRedo = false;
+            if (SelectedActor is not null)
+            {
+                _preEditSnapshot = SelectedActor.SnapshotTransform();
+            }
+        }
+    }
 
-        string rootFilename = Path.GetFileName(Pcc.FilePath);
+    public void Redo_Clicked(object sender, RoutedEventArgs e) => Redo();
+    void Redo()
+    {
+        if (UndoHistory.CanRedo)
+        {
+            _isApplyingUndoRedo = true;
+            UndoHistory.Redo();
+            _isApplyingUndoRedo = false;
+            if (SelectedActor is not null)
+            {
+                _preEditSnapshot = SelectedActor.SnapshotTransform();
+            }
+        }
+    }
+    #endregion
+
+    #region Load Related Levels
+
+    private async void LoadRelatedLevels()
+    {
+        if (OpenFiles.Count == 0) return;
+
+        var firstFile = OpenFiles[0];
+        string rootFilename = firstFile.FileName;
+        MEGame game = Game;
+
         if (rootFilename.StartsWith("Bio") && rootFilename.Length > 3
             && rootFilename[3] is 'P' or 'D' or 'A' or 'S'
             && rootFilename.Split('_') is [_, string levelIdent, ..]
             && levelIdent.Split('.') is [string realLevelIdent, ..])
         {
-            List<string> paths = [];
+            List<(string filename, string path)> candidates = [];
             var regex = new Regex($"^Bio[PDA]_{realLevelIdent}", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            foreach ((string filename, string path) in MELoadedFiles.GetFilesLoadedInGame(Pcc.Game))
+            var openFilePaths = OpenFiles.Select(f => Path.GetFileName(f.FilePath)).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            foreach ((string filename, string path) in MELoadedFiles.GetFilesLoadedInGame(game))
             {
-                if (regex.IsMatch(filename) && !filename.Contains("_LOC_", StringComparison.OrdinalIgnoreCase) && filename != rootFilename)
+                if (regex.IsMatch(filename) && !filename.Contains("_LOC_", StringComparison.OrdinalIgnoreCase) && !openFilePaths.Contains(filename))
                 {
-                    paths.Add(path);
+                    candidates.Add((filename, path));
                 }
             }
-            if (paths.Count is 0) return;
+            if (candidates.Count is 0) return;
 
-            BusyText = "Loading levels...";
-            SceneViewer.SetShouldRender(false);
-            IsBusy = true;
-            Task.Run(() =>
+            var dialogItems = candidates.Select(c => new CheckedListItem
             {
-                foreach (string path in paths)
-                {
-                    IMEPackage pcc = MEPackageHandler.OpenMEPackage(path);
-                    if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "Level") is { } levelExport)
-                    {
-                        OverlayLevels.Add((pcc, levelExport));
-                        Level levelBin = levelExport.GetBinaryData<Level>();
-                        (var actors, _) = LoadActors(levelBin);
-                        OverlayActors.AddRange(actors);
-                    }
-                }
-                foreach (var actor in OverlayActors)
-                {
-                    actor.Editor = null;
-                }
-            }).ContinueWithOnUIThread(prevTask =>
+                DisplayName = c.filename,
+                IsSelected = true,
+                Tag = c.path
+            }).ToList();
+
+            var dialog = new CheckedListDialog(dialogItems, "Load Related Levels",
+                $"Select levels related to {realLevelIdent} to load:", this);
+
+            if (dialog.ShowDialog() != true) return;
+
+            var selectedPaths = dialog.GetSelectedItems().Select(i => (string)i.Tag).ToList();
+            if (selectedPaths.Count is 0) return;
+
+            using var guard = new RenderGuard(this);
+
+            foreach (string path in selectedPaths)
             {
-                IsBusy = false;
-                SceneViewer.SetShouldRender(true);
-                ShowLevelsOverlay = true;
-            });
+                await AddLevelFile(path).ConfigureAwait(true);
+            }
         }
     }
 
-    private void ClearOverlay()
-    {
-        foreach ((IMEPackage pcc, _) in OverlayLevels)
-        {
-            pcc?.Dispose();
-        }
-        OverlayLevels.Clear();
-        OverlayActors.DisposeAndClear();
-    }
+    #endregion
 
-    private void Goto_TextBox_KeyUp(object sender, KeyEventArgs e)
-    {
-        if (e.Key == Key.Return && !e.IsRepeat)
-        {
-            GotoButton_Clicked(null, null);
-        }
-    }
-
-    private void GotoButton_Clicked(object sender, RoutedEventArgs e)
-    {
-        if (int.TryParse(Goto_TextBox.Text, out int uIdx) 
-            && Actors.FirstOrDefault(a => a.Export.UIndex == uIdx) is ActorProxy actor)
-        {
-            SelectedActor = actor;
-        }
-    }
+    #region Commit & Save
 
     private void CommitChanges()
     {
         if (!PackageIsLoaded() || Actors.Count is 0) return;
 
+        foreach (var file in OpenFiles)
+        {
+            if (!file.IsReadOnly)
+                CommitChangesForFile(file);
+        }
+        IsDirty = false;
+    }
+
+    private void CommitChangesForFile(OpenLevelFile file)
+    {
         Dictionary<int, StaticCollectionActor> collectionActorMap = [];
 
-        foreach (ActorProxy actor in Actors)
+        foreach (ActorProxy actor in file.Actors)
         {
             if (!actor.IsDirty)
             {
@@ -451,27 +740,162 @@ public partial class LevelEditor : WPFBase, IRecents
             {
                 actor.CommitChanges();
             }
+            actor.MarkClean();
         }
 
         foreach (var collectionActor in collectionActorMap.Values)
         {
             collectionActor.Export.WriteBinary(collectionActor);
         }
-        IsDirty = false;
+        file.IsDirty = false;
     }
 
-    public override void HandleUpdate(List<PackageUpdate> updates)
+    private void CommitSingleFileExecute(object parameter)
     {
-        if (LevelExport is null)
+        OpenLevelFile file = ResolveFileParameter(parameter);
+        if (file is not null && !file.IsReadOnly)
         {
-            return; //nothing is loaded
+            CommitChangesForFile(file);
         }
+    }
+
+    private async void SaveAllFiles()
+    {
+        if (IsDirty)
+        {
+            switch (MessageBox.Show("Do you want to commit your Level Editor changes before saving all files?", "Uncommitted changes", MessageBoxButton.YesNoCancel))
+            {
+                case MessageBoxResult.Yes:
+                    CommitChanges();
+                    break;
+                case MessageBoxResult.No:
+                    break;
+                case MessageBoxResult.Cancel:
+                default:
+                    return;
+            }
+        }
+        foreach (var file in OpenFiles)
+        {
+            if (!file.IsReadOnly && file.Package.IsModified)
+            {
+                await file.Package.SaveAsync();
+            }
+        }
+    }
+
+    private async void SaveSingleFileExecute(object parameter)
+    {
+        OpenLevelFile file = ResolveFileParameter(parameter);
+        if (file is null || file.IsReadOnly) return;
+
+        if (file.IsDirty)
+        {
+            switch (MessageBox.Show($"Do you want to commit changes to {file.FileName} before saving?", "Uncommitted changes", MessageBoxButton.YesNoCancel))
+            {
+                case MessageBoxResult.Yes:
+                    CommitChangesForFile(file);
+                    break;
+                case MessageBoxResult.No:
+                    break;
+                case MessageBoxResult.Cancel:
+                default:
+                    return;
+            }
+        }
+        await file.Package.SaveAsync();
+    }
+
+    private void CloseFileExecute(object parameter)
+    {
+        OpenLevelFile file = ResolveFileParameter(parameter);
+        if (file is not null)
+        {
+            CloseFile(file);
+        }
+    }
+
+    private OpenLevelFile ResolveFileParameter(object parameter)
+    {
+        if (parameter is OpenLevelFile file) return file;
+        if (parameter is string fileName)
+        {
+            return OpenFiles.FirstOrDefault(f => f.FileName == fileName);
+        }
+        return null;
+    }
+
+    private async void SaveFileAs()
+    {
+        if (OpenFiles.Count == 0) return;
+
+        // Save As applies to the first file when only one is open,
+        // otherwise prompt which file to save
+        OpenLevelFile fileToSave;
+        if (OpenFiles.Count == 1)
+        {
+            fileToSave = OpenFiles[0];
+        }
+        else
+        {
+            // For multi-file, Save As saves all files to a chosen directory
+            // For simplicity, just save the selected actor's file, or the first file
+            fileToSave = SelectedActor?.OwningFile ?? OpenFiles[0];
+        }
+
+        if (fileToSave.IsDirty)
+        {
+            switch (MessageBox.Show($"Do you want to commit changes to {fileToSave.FileName} before saving?", "Uncommitted changes", MessageBoxButton.YesNoCancel))
+            {
+                case MessageBoxResult.Yes:
+                    CommitChangesForFile(fileToSave);
+                    break;
+                case MessageBoxResult.No:
+                    break;
+                case MessageBoxResult.Cancel:
+                default:
+                    return;
+            }
+        }
+
+        string fileFilter;
+        switch (fileToSave.Package.Game)
+        {
+            case MEGame.ME1:
+                fileFilter = GameFileFilters.ME1SaveFileFilter;
+                break;
+            case MEGame.ME2:
+            case MEGame.ME3:
+                fileFilter = GameFileFilters.ME3ME2SaveFileFilter;
+                break;
+            default:
+                string extension = Path.GetExtension(fileToSave.FilePath);
+                fileFilter = $"*{extension}|*{extension}";
+                break;
+        }
+        var d = new SaveFileDialog { Filter = fileFilter };
+        if (d.ShowDialog() == true)
+        {
+            IsBusy = true;
+            BusyText = "Saving...";
+            await fileToSave.Package.SaveAsync(d.FileName);
+            IsBusy = false;
+        }
+    }
+
+    #endregion
+
+    #region HandleUpdate
+
+    public void HandleFileUpdate(OpenLevelFile file, List<PackageUpdate> updates)
+    {
+        if (file.LevelExport is null) return;
 
         IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.Change.Has(PackageChange.Export));
         HashSet<int> updatedExports = relevantUpdates.Select(x => x.Index).ToHashSet();
-        if (LevelExport is not null && updatedExports.Contains(LevelExport.UIndex))
+        if (updatedExports.Contains(file.LevelExport.UIndex))
         {
-            ReloadLevel();
+            ReloadFile(file);
         }
         else
         {
@@ -480,9 +904,9 @@ public partial class LevelEditor : WPFBase, IRecents
             (Vector3, float, float) savedCamPOV = default;
             Vector3 savedActorPos = default;
             List<ExportEntry> collectionActorsToUpdate = [];
-            for (int i = Actors.Count - 1; i >= 0; i--)
+            for (int i = file.Actors.Count - 1; i >= 0; i--)
             {
-                ActorProxy alteredActor = Actors[i];
+                ActorProxy alteredActor = file.Actors[i];
                 if (alteredActor.TestUIndexes(updatedExports))
                 {
                     updated = true;
@@ -497,24 +921,25 @@ public partial class LevelEditor : WPFBase, IRecents
                         collectionActorsToUpdate.Add(cacp.Export);
                         continue;
                     }
-                    Actors.RemoveAt(i);
-                    if (Pcc.GetEntry(alteredActor.Export.UIndex) is ExportEntry actorExport 
+                    RemoveActor(alteredActor);
+                    if (file.Package.GetEntry(alteredActor.Export.UIndex) is ExportEntry actorExport
                         && ActorProxy.Create(this, actorExport) is { } actorProxy)
                     {
-                        Actors.Add(actorProxy);
+                        actorProxy.OwningFile = file;
+                        AddActor(actorProxy);
                     }
                 }
             }
             foreach (var collectionActor in collectionActorsToUpdate)
             {
-                for (int i = Actors.Count - 1; i >= 0; i++)
+                for (int i = file.Actors.Count - 1; i >= 0; i--)
                 {
-                    if (Actors[i] is CollectionActorComponentProxy)
+                    if (file.Actors[i] is CollectionActorComponentProxy)
                     {
-                        Actors.RemoveAt(i);
+                        RemoveActor(file.Actors[i]);
                     }
                 }
-                if (Pcc.GetEntry(collectionActor.UIndex) is ExportEntry newCollectionActor)
+                if (file.Package.GetEntry(collectionActor.UIndex) is ExportEntry newCollectionActor)
                 {
                     string className = newCollectionActor.ClassName;
                     if (className is "StaticMeshCollectionActor")
@@ -522,98 +947,141 @@ public partial class LevelEditor : WPFBase, IRecents
                         var smca = newCollectionActor.GetBinaryData<StaticMeshCollectionActor>();
                         for (int i = 0; i < smca.Components.Count; i++)
                         {
-                            if (Pcc.TryGetUExport(smca.Components[i], out ExportEntry smcExport))
+                            if (file.Package.TryGetUExport(smca.Components[i], out ExportEntry smcExport))
                             {
                                 var smcActor = new StaticMeshComponentActorProxy(this, smcExport, smca, i);
-                                Actors.Add(smcActor);
+                                smcActor.OwningFile = file;
+                                AddActor(smcActor, false);
                             }
                         }
-                    }
-                    else if (className is "StaticLightCollectionActor")
-                    {
-
                     }
                 }
             }
             if (updated)
             {
                 Actors.Sort(a => a.Export.UIndex);
-                IsDirty = Actors.Any(a => a.IsDirty);
+                UpdateGlobalDirtyState();
             }
             if (reselectUIndex is not 0)
             {
-                SelectedActor = Actors.FirstOrDefault(a => a.Export.UIndex == reselectUIndex);
+                SelectedActor = Actors.FirstOrDefault(a => a.Export.UIndex == reselectUIndex && a.Export.FileRef == file.Package);
+                if (SelectedActor is not null)
+                {
+                    (RenderContext.Camera.Position, RenderContext.Camera.Pitch, RenderContext.Camera.Yaw)
+                    = (savedCamPOV.Item1 + SelectedActor.Location - savedActorPos, savedCamPOV.Item2, savedCamPOV.Item3);
+                }
+            }
+        }
+    }
+
+    private void ReloadFile(OpenLevelFile file)
+    {
+        // Remove all actors for this file, then re-load
+        (Vector3, float, float) savedCamPOV = default;
+        Vector3 savedActorPos = default;
+        int reselectUIndex = 0;
+        if (SelectedActor is not null && file.Actors.Contains(SelectedActor))
+        {
+            savedCamPOV = (RenderContext.Camera.Position, RenderContext.Camera.Pitch, RenderContext.Camera.Yaw);
+            savedActorPos = SelectedActor.Location;
+            reselectUIndex = SelectedActor.Export.UIndex;
+            SelectedActor = null;
+        }
+
+        foreach (var actor in file.Actors.ToList())
+        {
+            Actors.Remove(actor);
+            RenderContext.RemoveActor(actor);
+            actor.Dispose();
+        }
+        file.Actors.Clear();
+
+        Level levelBin = file.LevelExport.GetBinaryData<Level>();
+        var (actors, _) = LoadActors(levelBin, file);
+        var sorted = actors.OrderBy(a => a.Export.UIndex).ToList();
+        file.Actors.AddRange(sorted);
+        Actors.AddRange(sorted);
+        RenderContext.LoadActors(sorted);
+
+        if (reselectUIndex is not 0)
+        {
+            var reselect = Actors.FirstOrDefault(a => a.Export.UIndex == reselectUIndex && a.Export.FileRef == file.Package);
+            if (reselect is not null)
+            {
+                SelectedActor = reselect;
                 (RenderContext.Camera.Position, RenderContext.Camera.Pitch, RenderContext.Camera.Yaw)
-                = (savedCamPOV.Item1 + SelectedActor.Location - savedActorPos, savedCamPOV.Item2, savedCamPOV.Item3);
+                = (savedCamPOV.Item1 + reselect.Location - savedActorPos, savedCamPOV.Item2, savedCamPOV.Item3);
             }
         }
+
+        file.IsDirty = false;
     }
 
-    private bool PackageIsLoaded() => Pcc != null;
+    #endregion
 
-    private async void SaveFile()
+    public void UpdateGlobalDirtyState()
     {
-        if (IsDirty)
-        {
-            switch (MessageBox.Show("Do you want to commit your Level Editor changes before saving this file?", "Uncommitted changes", MessageBoxButton.YesNoCancel))
-            {
-                case MessageBoxResult.Yes:
-                    CommitChanges();
-                    break;
-                case MessageBoxResult.No:
-                    //continue on
-                    break;
-                case MessageBoxResult.Cancel:
-                default:
-                    return;
-            }
-        }
-        await Pcc.SaveAsync();
+        IsDirty = OpenFiles.Any(f => f.IsDirty);
     }
 
-    private async void SaveFileAs()
+    private bool PackageIsLoaded() => OpenFiles.Count > 0;
+
+    private void OnActorPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        if (IsDirty)
+        if (_isApplyingUndoRedo || RenderContext.TransformWidget.IsDragging) return;
+        if (e.PropertyName is not (nameof(ActorProxy.Location) or nameof(ActorProxy.Rotation) or nameof(ActorProxy.DrawScale) or nameof(ActorProxy.DrawScale3D))) return;
+
+        if (sender is ActorProxy actor && _preEditSnapshot is { } before)
         {
-            switch (MessageBox.Show("Do you want to commit your Level Editor changes before saving this file?", "Uncommitted changes", MessageBoxButton.YesNoCancel))
+            var after = actor.SnapshotTransform();
+            if (!before.Equals(after))
             {
-                case MessageBoxResult.Yes:
-                    CommitChanges();
-                    break;
-                case MessageBoxResult.No:
-                    //continue on
-                    break;
-                case MessageBoxResult.Cancel:
-                default:
-                    return;
+                UndoHistory.Push(new TransformAction(actor, before, after, $"Edit {actor.Export.ObjectName.Instanced}"));
+                _preEditSnapshot = after;
             }
-        }
-        string fileFilter;
-        switch (Pcc.Game)
-        {
-            case MEGame.ME1:
-                fileFilter = GameFileFilters.ME1SaveFileFilter;
-                break;
-            case MEGame.ME2:
-            case MEGame.ME3:
-                fileFilter = GameFileFilters.ME3ME2SaveFileFilter;
-                break;
-            default:
-                string extension = Path.GetExtension(Pcc.FilePath);
-                fileFilter = $"*{extension}|*{extension}";
-                break;
-        }
-        var d = new SaveFileDialog { Filter = fileFilter };
-        if (d.ShowDialog() == true)
-        {
-            IsBusy = true;
-            BusyText = "Saving...";
-            await Pcc.SaveAsync(d.FileName);
-            IsBusy = false;
         }
     }
 
-    private void OpenFile()
+    private void OnWidgetDragComplete(ActorProxy actor, TransformSnapshot before, TransformSnapshot after)
+    {
+        if (before.Equals(after)) return;
+        UndoHistory.Push(new TransformAction(actor, before, after, $"Drag {actor.Export.ObjectName.Instanced}"));
+        _preEditSnapshot = after;
+    }
+
+    private bool ActorFilter(object obj)
+    {
+        if (string.IsNullOrEmpty(_actorFilterText)) return true;
+        return obj is ActorProxy actor &&
+               actor.Export.ObjectName.Instanced.Contains(_actorFilterText, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void ActorFilter_TextBox_KeyUp(object sender, KeyEventArgs e)
+    {
+        _actorFilterText = ActorFilter_TextBox.Text;
+        ActorsView.Refresh();
+    }
+
+    private void Goto_TextBox_KeyUp(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Return && !e.IsRepeat)
+        {
+            GotoButton_Clicked(null, null);
+        }
+    }
+
+    private void GotoButton_Clicked(object sender, RoutedEventArgs e)
+    {
+        if (int.TryParse(Goto_TextBox.Text, out int uIdx)
+            && Actors.FirstOrDefault(a => a.Export.UIndex == uIdx) is ActorProxy actor)
+        {
+            SelectedActor = actor;
+        }
+    }
+
+    #region Open / Drag-Drop
+
+    private async void OpenFile()
     {
         var d = AppDirectories.GetOpenPackageDialog();
         if (d.ShowDialog() == true)
@@ -622,7 +1090,29 @@ public partial class LevelEditor : WPFBase, IRecents
             try
             {
 #endif
-            LoadFile(d.FileName);
+            await LoadFileAsync(d.FileName);
+#if !DEBUG
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unable to open file:\n" + ex.Message);
+            }
+#endif
+        }
+    }
+
+    private async void AddFile()
+    {
+        var d = AppDirectories.GetOpenPackageDialog();
+        if (d.ShowDialog() == true)
+        {
+#if !DEBUG
+            try
+            {
+#endif
+
+            using var guard = new RenderGuard(this);
+            await AddLevelFile(d.FileName).ConfigureAwait(true);
 #if !DEBUG
             }
             catch (Exception ex)
@@ -637,7 +1127,6 @@ public partial class LevelEditor : WPFBase, IRecents
     {
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
-            // Note that you can have more than one file.
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
             string ext = Path.GetExtension(files[0]).ToLower();
             if (ext != ".upk" && ext != ".pcc" && ext != ".sfm")
@@ -653,37 +1142,73 @@ public partial class LevelEditor : WPFBase, IRecents
         }
     }
 
-    private void Window_Drop(object sender, DragEventArgs e)
+    private async void Window_Drop(object sender, DragEventArgs e)
     {
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
-            // Note that you can have more than one file.
+            bool isFirst = true;
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            string ext = Path.GetExtension(files[0]).ToLower();
-            if (ext is ".upk" or ".pcc" or ".sfm")
+            if (files.Length is 0) return;
+            if (PackageIsLoaded())
             {
-                LoadFile(files[0]);
+                string q = files.Length is 1 ? "these files" : "";
+                var result = MessageBox.Show("Do you want to add" + q + "to the existing level view? Select no to unload all open files first.", "Add to files?", MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Cancel) return;
+                isFirst = result == MessageBoxResult.No;
+            }
+            foreach (string file in files)
+            {
+                string ext = Path.GetExtension(file).ToLower();
+                if (ext is not (".upk" or ".pcc" or ".sfm")) continue;
+
+                if (isFirst && OpenFiles.Count == 0)
+                {
+                    await LoadFileAsync(file);
+                    isFirst = false;
+                }
+                else
+                {
+                    using var guard = new RenderGuard(this);
+
+                    await AddLevelFile(file).ConfigureAwait(true);
+                    isFirst = false;
+                }
             }
         }
     }
-    private void LevelEditor_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-    {
-        if (e.Cancel)
-            return;
 
-        UnloadLevel();
+    #endregion
+
+    #region Window Lifecycle
+
+    private void LevelEditor_Closing(object sender, CancelEventArgs e)
+    {
+        if (e.Cancel) return;
+
+        var dirtyFiles = OpenFiles.Where(f => f.IsDirty || f.Package.IsModified).ToList();
+        if (dirtyFiles.Count > 0)
+        {
+            string fileNames = string.Join(",\n", dirtyFiles.Select(f => f.FileName));
+            var result = MessageBox.Show(this,
+                $"The following files have unsaved changes:\n{fileNames}\n\nClose anyway?",
+                "Unsaved Changes", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+            if (result == MessageBoxResult.No)
+            {
+                e.Cancel = true;
+                return;
+            }
+        }
+
+        CloseAllFiles();
 
         RenderContext.UpdateScene -= UpdateScene;
         RenderContext.RenderScene -= RenderScene;
         RenderContext.SelectActor -= ViewportActorSelect;
 
+        UndoHistory.PropertyChanged -= UndoHistory_PropertyChanged;
+        UndoHistory.Clear();
+
         SceneViewer.Dispose();
-        RecentsController?.Dispose();
-        UnLoadMEPackage();
-    }
-    public void PropogateRecentsChange(string propogationSource, IEnumerable<RecentsControl.RecentItem> newRecents)
-    {
-        RecentsController.PropogateRecentsChange(false, newRecents);
     }
 
     private void LevelEditor_Loaded(object sender, RoutedEventArgs e)
@@ -696,14 +1221,109 @@ public partial class LevelEditor : WPFBase, IRecents
         {
             Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
             {
-                //Wait for all children to finish loading
-                LoadFile(FileQueuedForLoad);
+                LoadFileAsync(FileQueuedForLoad);
                 FileQueuedForLoad = null;
 
                 Activate();
             }));
         }
     }
+
+    #endregion
+
+    #region Recent File Sets
+
+    private void LoadRecentSets()
+    {
+        if (!File.Exists(RecentSetsFile)) return;
+        try
+        {
+            var json = File.ReadAllText(RecentSetsFile);
+            var sets = JsonConvert.DeserializeObject<List<RecentFileSet>>(json);
+            if (sets is null) return;
+            foreach (var set in sets)
+            {
+                set.FilePaths.RemoveAll(p => !File.Exists(p));
+                if (set.FilePaths.Count > 0)
+                    RecentSets.Add(set);
+            }
+        }
+        catch { /* corrupt file, ignore */ }
+        RefreshRecentsMenu();
+    }
+
+    private void SaveRecentSets()
+    {
+        var json = JsonConvert.SerializeObject(RecentSets.ToList(), Formatting.Indented);
+        File.WriteAllText(RecentSetsFile, json);
+        RefreshRecentsMenu();
+    }
+
+    private void RecordCurrentFilesAsRecent()
+    {
+        if (OpenFiles.Count == 0) return;
+        var currentPaths = OpenFiles.Select(f => f.FilePath).ToList();
+
+        for (int i = 0; i < RecentSets.Count; i++)
+        {
+            var existing = RecentSets[i].FilePaths;
+            if (existing.Count > 0 && existing[0] == currentPaths[0])
+            {
+                RecentSets.RemoveAt(i);
+            }
+        }
+
+        RecentSets.Insert(0, new RecentFileSet
+        {
+            Game = Game,
+            FilePaths = currentPaths,
+            ReadOnlyFilePaths = OpenFiles.Where(f => f.IsReadOnly).Select(f => f.FilePath).ToList()
+        });
+
+        while (RecentSets.Count > 10)
+            RecentSets.RemoveAt(RecentSets.Count - 1);
+
+        SaveRecentSets();
+    }
+
+    private async void OpenRecentFileSet(RecentFileSet set)
+    {
+        CloseAllFiles();
+
+        using var guard = new RenderGuard(this);
+
+        foreach (string path in set.FilePaths)
+        {
+            if (File.Exists(path))
+            {
+                await AddLevelFile(path).ConfigureAwait(true);
+                var openFile = OpenFiles.LastOrDefault(f => f.FilePath == path);
+                if (openFile is not null && set.ReadOnlyFilePaths.Contains(path))
+                    openFile.IsReadOnly = true;
+            }
+        }
+    }
+
+    private void RefreshRecentsMenu()
+    {
+        Recents_MenuItem.Items.Clear();
+        Recents_MenuItem.IsEnabled = RecentSets.Count > 0;
+        foreach (var set in RecentSets)
+        {
+            var mi = new MenuItem
+            {
+                Header = set.DisplayName.Replace("_", "__"),
+                ToolTip = set.TooltipText,
+                Tag = set
+            };
+            mi.Click += (_, _) => OpenRecentFileSet((RecentFileSet)mi.Tag);
+            Recents_MenuItem.Items.Add(mi);
+        }
+    }
+
+    #endregion
+
+    #region UI Properties
 
     private float _posIncrement = 10f;
     public float PosIncrement
@@ -729,16 +1349,115 @@ public partial class LevelEditor : WPFBase, IRecents
     private string textBelowActors;
     public string TextBelowActors { get => textBelowActors; set => SetProperty(ref textBelowActors, value); }
 
+    private string _currentModeName = "Translate";
+    public string CurrentModeName { get => _currentModeName; set => SetProperty(ref _currentModeName, value); }
+
+    private bool _isOrthographicView;
+    public bool IsOrthographicView
+    {
+        get => _isOrthographicView;
+        set
+        {
+            if (SetProperty(ref _isOrthographicView, value))
+            {
+                if (value)
+                {
+                    RenderContext.Camera.SavePerspectiveState();
+                    RenderContext.Camera.IsOrthographic = true;
+                    var pos = RenderContext.Camera.Position;
+                    RenderContext.Camera.Position = new Vector3(pos.X, pos.Y, RenderContext.Camera.ZFar * 0.4f);
+                    float focusDepth = RenderContext.Camera.FocusDepth;
+                    RenderContext.Camera.OrthoWidth = MathF.Max(focusDepth * 4f, 500f);
+                }
+                else
+                {
+                    RenderContext.Camera.IsOrthographic = false;
+                    RenderContext.Camera.RestorePerspectiveState();
+                }
+            }
+        }
+    }
+
     private void ResetUncommittedChanges_Click(object sender, RoutedEventArgs e)
     {
         if (IsDirty && MessageBox.Show("Are you sure you want to reset uncommitted changes?", "Reset confirmation", MessageBoxButton.YesNo) is MessageBoxResult.Yes)
         {
-            ReloadLevel();
+            foreach (var file in OpenFiles)
+            {
+                ReloadFile(file);
+            }
         }
     }
 
-    private void ReloadLevel()
+    #endregion
+
+
+
+    #region Busy variables
+
+    private bool _isBusy;
+
+    public bool IsBusy
     {
-        LoadLevel(LevelExport.GetBinaryData<Level>(), true);
+        get => _isBusy;
+        set => SetProperty(ref _isBusy, value);
+    }
+
+    private bool _isBusyTaskbar;
+
+    public bool IsBusyTaskbar
+    {
+        get => _isBusyTaskbar;
+        set => SetProperty(ref _isBusyTaskbar, value);
+    }
+
+    private string _busyText;
+
+    public string BusyText
+    {
+        get => _busyText;
+        set => SetProperty(ref _busyText, value);
+    }
+
+    public virtual void SetBusy(string text = null)
+    {
+        BusyText = text;
+        IsBusy = true;
+    }
+    public virtual void EndBusy()
+    {
+        IsBusy = false;
+    }
+
+    public void HandleSaveStateChange(bool isSaving)
+    {
+        if (isSaving)
+        {
+            SetBusy("Saving");
+        }
+        else
+        {
+            EndBusy();
+        }
+    }
+
+    #endregion
+
+    private readonly struct RenderGuard : IDisposable
+    {
+        private readonly LevelEditor levelEditor;
+
+        public RenderGuard(LevelEditor levEd)
+        {
+            levelEditor = levEd;
+            levelEditor.SceneViewer.SetShouldRender(false);
+            levelEditor.SetBusy();
+        }
+
+        public readonly void Dispose()
+        {
+            levelEditor.SceneViewer.SetShouldRender(true);
+            levelEditor.EndBusy();
+        }
     }
 }

@@ -19,10 +19,19 @@ using System.Windows.Input;
 using Color = System.Windows.Media.Color;
 using D2D = SharpDX.Direct2D1;
 using DW = SharpDX.DirectWrite;
-using Texture2D = SharpDX.Direct3D11.Texture2D;
 using LECTexture2D = LegendaryExplorerCore.Unreal.Classes.Texture2D;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
+
+/// <summary>
+/// A text label to be drawn at a screen-space position as a D2D overlay.
+/// </summary>
+public struct ScreenLabel(float x, float y, string text)
+{
+    public float X = x;
+    public float Y = y;
+    public string Text = text;
+}
 
 /// <summary>
 /// Handles rendering of mesh data
@@ -77,8 +86,11 @@ public class MeshRenderContext : RenderContext
     protected D2D.RenderTarget RenderTarget2D;
     private DW.TextFormat statsTextFormat;
     private DW.TextFormat errorTextFormat;
+    private DW.TextFormat labelTextFormat;
     private D2D.SolidColorBrush statsTextBrush;
     private D2D.SolidColorBrush errorTextBrush;
+    private D2D.SolidColorBrush labelTextBrush;
+    private D2D.SolidColorBrush labelBackgroundBrush;
     #endregion
     public GenericEffect<WorldConstants> DefaultEffect { get; private set; }
     public LEEffect LEEffect { get; private set; }
@@ -114,7 +126,7 @@ public class MeshRenderContext : RenderContext
             }
         }
     }
-    private KeyStates PressedKeys; 
+    private KeyStates PressedKeys;
     private MouseButtons PressedMouseButton;
     public float CameraSpeed { get; set; } = 500.0f; // Units per second
     public float Time { get; private set; }
@@ -124,6 +136,12 @@ public class MeshRenderContext : RenderContext
     private float lastFPSTime;
     private float lastFPSFrame;
     public string ErrorText;
+
+    /// <summary>
+    /// Screen-space labels to be rendered as a D2D text overlay after 3D rendering.
+    /// Populated by scene renderers, cleared each frame after drawing.
+    /// </summary>
+    public List<ScreenLabel> ScreenLabels { get; } = [];
 
     public Vector3 CurrentHitTestId;
 
@@ -157,7 +175,28 @@ public class MeshRenderContext : RenderContext
             FPS = MathF.Round(frameDelta / fpsDelta);
         }
 
-        if (Camera.FirstPerson)
+        if (Camera.IsOrthographic)
+        {
+            float panSpeed = Camera.OrthoWidth * 0.5f;
+            if (PressedKeys.HasFlag(KeyStates.W))
+                Camera.Position += Vector3.UnitY * timestep * panSpeed;
+            if (PressedKeys.HasFlag(KeyStates.S))
+                Camera.Position -= Vector3.UnitY * timestep * panSpeed;
+            if (PressedKeys.HasFlag(KeyStates.A))
+                Camera.Position -= Vector3.UnitX * timestep * panSpeed;
+            if (PressedKeys.HasFlag(KeyStates.D))
+                Camera.Position += Vector3.UnitX * timestep * panSpeed;
+            if (PressedKeys.HasFlag(KeyStates.Q))
+            {
+                Camera.OrthoWidth *= 1 + timestep;
+            }
+            if (PressedKeys.HasFlag(KeyStates.E))
+            {
+                Camera.OrthoWidth *= 1 - timestep;
+                Camera.OrthoWidth = MathF.Max(Camera.OrthoWidth, 1f);
+            }
+        }
+        else if (Camera.FirstPerson)
         {
             if (PressedKeys.HasFlag(KeyStates.W))
             {
@@ -219,16 +258,27 @@ public class MeshRenderContext : RenderContext
                 }
             }
 
-            if (App.IsDebug)
+            //render D2D overlay
+            RenderTarget2D.BeginDraw();
             {
-                //render D2D overlay
-                RenderTarget2D.BeginDraw();
+                if (App.IsDebug)
                 {
                     var size = RenderTarget2D.Size;
                     RenderTarget2D.DrawText($"{FPS} fps\n{Camera.Position}", statsTextFormat, new RawRectangleF(0, 0, size.Width, size.Height), statsTextBrush);
                 }
-                RenderTarget2D.EndDraw();
+
+                foreach (ref readonly var label in CollectionsMarshal.AsSpan(ScreenLabels))
+                {
+                    const float labelW = 20;
+                    const float labelH = 12;
+                    var rect = new RawRectangleF(label.X - labelW * 0.5f, label.Y - labelH * 0.5f,
+                                                 label.X + labelW * 0.5f, label.Y + labelH * 0.5f);
+                    RenderTarget2D.FillRectangle(rect, labelBackgroundBrush);
+                    RenderTarget2D.DrawText(label.Text, labelTextFormat, rect, labelTextBrush);
+                }
+                ScreenLabels.Clear();
             }
+            RenderTarget2D.EndDraw();
         }
 
         base.Render();
@@ -356,6 +406,13 @@ public class MeshRenderContext : RenderContext
             TextAlignment = DW.TextAlignment.Leading,
             ParagraphAlignment = DW.ParagraphAlignment.Center
         };
+        labelTextFormat = new DW.TextFormat(dwFactory, "Verdana", 8)
+        {
+            TextAlignment = DW.TextAlignment.Center,
+            ParagraphAlignment = DW.ParagraphAlignment.Center
+        };
+        labelTextBrush = new D2D.SolidColorBrush(RenderTarget2D, new RawColor4(1, 1, 1, 1), new D2D.BrushProperties { Opacity = 1 });
+        labelBackgroundBrush = new D2D.SolidColorBrush(RenderTarget2D, new RawColor4(0, 0, 0, 0.65f), new D2D.BrushProperties { Opacity = 1 });
     }
 
     public override void DisposeSizeDependentResources()
@@ -372,10 +429,13 @@ public class MeshRenderContext : RenderContext
         HitBuffer?.Dispose();
         HitBuffer = null;
         RenderTarget2D.Dispose();
-        statsTextFormat.Dispose();
-        errorTextFormat.Dispose();
-        statsTextBrush.Dispose();
-        errorTextBrush.Dispose();
+        statsTextFormat?.Dispose();
+        errorTextFormat?.Dispose();
+        labelTextFormat?.Dispose();
+        statsTextBrush?.Dispose();
+        errorTextBrush?.Dispose();
+        labelTextBrush?.Dispose();
+        labelBackgroundBrush?.Dispose();
         base.DisposeSizeDependentResources();
     }
 
@@ -518,7 +578,24 @@ public class MeshRenderContext : RenderContext
         bool handled = false;
         int xDiff = (x - lastMouse.X);
         int yDiff = (y - lastMouse.Y);
-        if (Camera.FirstPerson)
+        if (Camera.IsOrthographic)
+        {
+            switch (PressedMouseButton)
+            {
+                case MouseButtons.Left:
+                case MouseButtons.Middle:
+                    float worldPerPixel = Camera.OrthoWidth / Width;
+                    Camera.Position += new Vector3(-xDiff * worldPerPixel, yDiff * worldPerPixel, 0);
+                    handled = true;
+                    break;
+                case MouseButtons.Right:
+                    Camera.OrthoWidth *= MathF.Pow(1.01f, yDiff);
+                    Camera.OrthoWidth = MathF.Max(Camera.OrthoWidth, 1f);
+                    handled = true;
+                    break;
+            }
+        }
+        else if (Camera.FirstPerson)
         {
             switch (PressedMouseButton)
             {
@@ -570,7 +647,12 @@ public class MeshRenderContext : RenderContext
 
     public override bool MouseScroll(int delta)
     {
-        if (Camera.FirstPerson)
+        if (Camera.IsOrthographic)
+        {
+            Camera.OrthoWidth *= MathF.Pow(1.2f, -Math.Sign(delta));
+            Camera.OrthoWidth = MathF.Max(Camera.OrthoWidth, 1f);
+        }
+        else if (Camera.FirstPerson)
         {
             Camera.Position += Camera.CameraForward * (CameraSpeed / FPS ) * (delta / 10f);
         }

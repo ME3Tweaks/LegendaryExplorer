@@ -132,7 +132,7 @@ public static class RenderContextExtensions
                     float x = vertex.GetProp<FloatProperty>("X").Value;
                     float y = vertex.GetProp<FloatProperty>("Y").Value;
                     float z = vertex.GetProp<FloatProperty>("Z").Value;
-                    vertices.Add(new WorldVertex(new Vector3(-x, z, y), Vector4.Zero, Vector2.Zero));
+                    vertices.Add(new WorldVertex(new Vector3(x, y, z), Vector4.Zero, Vector2.Zero));
                     ++vertTotal;
                 }
             }
@@ -502,7 +502,7 @@ public sealed class SceneRenderControl : ContentControl, IDisposable, INotifyPro
             d3dres.Dispose();
         }
 
-        if (isNewSurface || _shouldRender)
+        if (_shouldRender)
         {
             // Debug.WriteLine("_shouldRender");
             Context.Update((float)Stopwatch.Elapsed.Ticks / TimeSpan.TicksPerSecond);

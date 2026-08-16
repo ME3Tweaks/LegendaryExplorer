@@ -56,6 +56,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             return names;
         }
+
+        //used by LEC's script compiler, do not serialize
+        internal List<UFunction> Lambdas;
     }
 
     public partial class SerializingContainer

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LegendaryExplorer.Libraries;
 
-namespace LegendaryExplorer.UserControls.SharedToolControls.Scene3D
+namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
 {
     public static partial class RenderDoc
     {

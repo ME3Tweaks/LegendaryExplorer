@@ -10,7 +10,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
         public TokenStream Tokens;
 
         public CodeBody(List<Statement> contents = null, int start = -1, int end = -1)
-            : base(ASTNodeType.CodeBody, start, end) 
+            : base(ASTNodeType.CodeBody, start, end)
         {
             Statements = contents ?? [];
             foreach (Statement statement in Statements)

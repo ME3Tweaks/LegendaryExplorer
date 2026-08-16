@@ -14,6 +14,7 @@
     <UserControl.Resources>
         <converters:TimeToPositionConverter x:Key="TimeToPositionConverter"/>
         <converters:NullOrEmptyStringVisibilityConverter x:Key="NullOrEmptyStringVisibilityConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <SolidColorBrush x:Key="KeyBrush" Color="#FF640000"/>
         <Color x:Key="SelectedBackgroundColor">#FFC5CBF9</Color>
         <Color x:Key="SelectedUnfocusedColor">#FFDDDDDD</Color>
@@ -276,6 +277,14 @@
                 <RowDefinition Height="50" />
             </Grid.RowDefinitions>
             <Canvas Grid.Column="0" Grid.Row="0" Background="#FF3C3C3C" />
+            <!-- Playhead overlay: spans both rows of Column 1, sits above track content -->
+            <Canvas x:Name="PlayheadCanvas" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
+                    IsHitTestVisible="False" Panel.ZIndex="10">
+                <Line x:Name="PlayheadLine"
+                      Y1="0" Y2="{Binding ActualHeight, ElementName=PlayheadCanvas}"
+                      Stroke="Red" StrokeThickness="1.5"
+                      Visibility="Collapsed" />
+            </Canvas>
             <Canvas Grid.Column="1" Grid.Row="1" Background="#FF505050" Name="Guide" Cursor="ScrollWE"
                     ForceCursor="True"
                     PreviewMouseDown="Guide_OnPreviewMouseDown" PreviewMouseUp="Guide_OnPreviewMouseUp"
@@ -289,7 +298,6 @@
                     </Style>
                     <Style TargetType="Label">
                         <Setter Property="Foreground" Value="#FFE0E0E0" />
-                        <Setter Property="FontFamily" Value="/LegendaryExplorer;component/Resources/Fonts/KismetFont.ttf#FFF Hero" />
                         <Setter Property="FontSize" Value="10" />
                     </Style>
                 </Canvas.Resources>
@@ -307,6 +315,29 @@
                                 </Grid.ColumnDefinitions>
                                 <Canvas Grid.Column="0">
                                     <TextBlock Text="{Binding GroupName}" Canvas.Left="25" Canvas.Top="3" Foreground="Black"/>
+                                    <StackPanel Canvas.Right="11" Canvas.Top="4" Orientation="Horizontal"
+                                                Visibility="{Binding IsLevelEditorConnected,
+                                                    RelativeSource={RelativeSource AncestorType=UserControl},
+                                                    Converter={StaticResource BoolToVisibilityConverter}}">
+                                        <Ellipse Width="8" Height="8" Margin="0,0,2,0"
+                                                 ToolTip="{Binding GroupActor.DisplayText, FallbackValue='No actor resolved'}">
+                                            <Ellipse.Style>
+                                                <Style TargetType="Ellipse">
+                                                    <Setter Property="Fill" Value="Red"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding HasResolvedActor}" Value="True">
+                                                            <Setter Property="Fill" Value="LimeGreen"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Ellipse.Style>
+                                        </Ellipse>
+                                        <Button Content="..." Width="14" Height="14" FontSize="9" Padding="0"
+                                                ToolTip="Set Group Actor"
+                                                Command="{Binding SetGroupActorCmd,
+                                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"/>
+                                    </StackPanel>
                                     <Rectangle Width="10" Height="24" Canvas.Right="0">
                                         <Rectangle.Fill>
                                             <SolidColorBrush Color="{Binding GroupColor}" />
@@ -322,7 +353,7 @@
                         </Border>
                     </HierarchicalDataTemplate>
                     <DataTemplate DataType="{x:Type interpEditor:InterpTrack}">
-                        <Border BorderBrush="Black" BorderThickness="0 1" HorizontalAlignment="Stretch">
+                        <Border BorderBrush="Black" BorderThickness="0 1" HorizontalAlignment="Stretch" Background="#02000000">
                             <Grid HorizontalAlignment="Stretch" Height="24">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="196" />
@@ -355,13 +386,12 @@
                                             </Setter>
                                             <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
                                             <Setter Property="Canvas.Bottom" Value="0" />
-                                            <!--<Setter Property="Cursor" Value="Hand"/>-->
                                             <Setter Property="Template">
                                                 <Setter.Value>
                                                     <ControlTemplate>
                                                         <Path Data="M -8 8 L 0 0 L 8 8 Z">
-                                                            <Path.Fill>
-                                                                <SolidColorBrush Color="#FF640000" />
+                                                                <Path.Fill>
+                                                                    <SolidColorBrush Color="#FF640000" />
                                                             </Path.Fill>
                                                         </Path>
                                                     </ControlTemplate>
@@ -381,64 +411,6 @@
                             </b:Interaction.Triggers>
                         </Border>
                     </DataTemplate>
-                    <!--<Style TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition MinWidth="19" Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition/>
-                                    </Grid.RowDefinitions>
-                                    <ToggleButton x:Name="Expander" ClickMode="Press" IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}" Style="{DynamicResource ExpandCollapseToggleStyle}"/>
-                                    <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.Column="1" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
-                                        <ContentPresenter x:Name="PART_Header" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                    </Border>
-                                    <ItemsPresenter x:Name="ItemsHost" Grid.Column="1" Grid.Row="1" Margin="-12,0,0,0"/>
-                                </Grid>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsExpanded" Value="false">
-                                        <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed"/>
-                                    </Trigger>
-                                    <Trigger Property="HasItems" Value="false">
-                                        <Setter Property="Visibility" TargetName="Expander" Value="Hidden"/>
-                                    </Trigger>
-                                    <Trigger Property="IsSelected" Value="true">
-                                        <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
-                                    </Trigger>
-                                    <MultiTrigger>
-                                        <MultiTrigger.Conditions>
-                                            <Condition Property="IsSelected" Value="true"/>
-                                            <Condition Property="IsSelectionActive" Value="false"/>
-                                        </MultiTrigger.Conditions>
-                                        <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-                                    </MultiTrigger>
-                                    <Trigger Property="IsEnabled" Value="false">
-                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <Trigger Property="VirtualizingStackPanel.IsVirtualizing" Value="true">
-                            <Setter Property="ItemsPanel">
-                                <Setter.Value>
-                                    <ItemsPanelTemplate>
-                                        <VirtualizingStackPanel/>
-                                    </ItemsPanelTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>-->
-
                 </TreeView.Resources>
                 <TreeView.ContextMenu>
                     <ContextMenu>
@@ -448,6 +420,8 @@
                         <MenuItem Header="Open InterpData in Package Editor" Command="{Binding OpenInterpData}"
                                   CommandParameter="Data" />
                         <MenuItem Header="Rename Track" Command="{Binding RenameTrackCommand}" />
+                        <Separator/>
+                        <MenuItem Header="Insert Key at Time..." Command="{Binding InsertKeyCmd}" sharedUi:Bindings.VisibilityToEnabled="True"/>
                     </ContextMenu>
                 </TreeView.ContextMenu>
             </TreeView>

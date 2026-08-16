@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -19,7 +20,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor
 {
     internal static class MatEditorTextureLoader
     {
-        private static object singleThreadSyncLock = new object();
+        private static Lock singleThreadSyncLock = new();
         public static void InitTexture(IMatEdTexture mt, IMEPackage pcc, int texIdx, PackageCache cache)
         {
             if (texIdx == 0)

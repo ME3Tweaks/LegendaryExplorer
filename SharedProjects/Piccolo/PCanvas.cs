@@ -289,8 +289,9 @@ namespace Piccolo {
 		/// better performance by turning off region management.
 		/// </remarks>
 		[Category("Appearance")]
-		public virtual bool RegionManagement {
-			get => regionManagement;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public virtual bool RegionManagement {
+            get => regionManagement;
             set => regionManagement = value;
         }
 
@@ -305,6 +306,7 @@ namespace Piccolo {
 		/// zooming, the text may appear jumpy.
 		/// </remarks>
 		[Category("Appearance")]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool GridFitText { get; set; }
 
         /// <summary>
@@ -375,6 +377,7 @@ namespace Piccolo {
 		/// </summary>
 		/// <value>The default render quality for this canvas.</value>
 		/// <remarks>The default value is <c>RenderQuality.HighQuality</c>.</remarks>
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public virtual RenderQuality DefaultRenderQuality {
 			set {
 				defaultRenderQuality = value;
@@ -388,6 +391,7 @@ namespace Piccolo {
 		/// </summary>
 		/// <value>The animating render quality for this canvas.</value>
 		/// <remarks>The default value is <c>RenderQuality.LowQuality</c>.</remarks>
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public virtual RenderQuality AnimatingRenderQuality {
 			set {
 				animatingRenderQuality = value;
@@ -401,6 +405,7 @@ namespace Piccolo {
 		/// </summary>
 		/// <value>The interacting render quality for this canvas.</value>
 		/// <remarks>The default value is <c>RenderQuality.LowQuality</c>.</remarks>
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public virtual RenderQuality InteractingRenderQuality {
 			set {
 				interactingRenderQuality = value;

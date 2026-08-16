@@ -8,15 +8,8 @@ namespace LegendaryExplorerCore.Gammtek.Extensions.IO
 	{
 		public static string GetRelativePath(FileSystemInfo path1, FileSystemInfo path2)
 		{
-			if (path1 == null)
-			{
-				throw new ArgumentNullException(nameof(path1));
-			}
-
-			if (path2 == null)
-			{
-				throw new ArgumentNullException(nameof(path2));
-			}
+			ArgumentNullException.ThrowIfNull(path1);
+			ArgumentNullException.ThrowIfNull(path2);
 
 			Func<FileSystemInfo, string> getFullName = delegate(FileSystemInfo path)
 			{

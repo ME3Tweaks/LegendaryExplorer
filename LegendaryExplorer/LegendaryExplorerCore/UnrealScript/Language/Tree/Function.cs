@@ -27,6 +27,9 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public DelegateType VarType;
 
+        public bool IsLambda;
+        public List<Function> Lambdas = [];
+
         public bool IsNative => Flags.Has(EFunctionFlags.Native);
 
         public bool IsDefined => Flags.Has(EFunctionFlags.Defined);

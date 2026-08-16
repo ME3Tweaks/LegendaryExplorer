@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
@@ -7,10 +8,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     public class FaceFXAsset : ObjectBinary
     {
         public int Version;
-        private List<HNode> HNodes;
+        private ClassVersionBin[] HNodes;
         public List<string> Names;
-        public List<FaceFXBoneNode> BoneNodes;
-        public List<FxNode> CombinerNodes;
+        public List<FaceFXBoneListEntry> RefBones;
+        public List<FxNode> CompiledFaceGraph;
         private FXATableCElement[] TableC;
         private int unk1;
         private int Name;
@@ -29,21 +30,18 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             int length = 0;
             sc.Serialize(ref length);
 
-            sc.SerializeFaceFXHeader(ref Version);
+            sc.SerializeFaceFXHeader(ref Version, ref HNodes, ref Names);
 
-            sc.Serialize(ref HNodes, sc.Serialize);
-            sc.Serialize(ref Names, sc.SerializeFaceFXString);
-            sc.Serialize(ref int0);
             sc.Serialize(ref int0);
 
-            sc.Serialize(ref BoneNodes, sc.Serialize);
-            sc.Serialize(ref CombinerNodes, sc.Serialize);
+            sc.Serialize(ref RefBones, sc.Serialize);
+            sc.Serialize(ref CompiledFaceGraph, sc.Serialize);
 
             // Do not serialize TableC count - it is the same length as combiner nodes (except not really)
             // Table C sucks. That's all i'm gonna say about it
             if (sc.IsLoading)
             {
-                TableC = new FXATableCElement[CombinerNodes.Count];
+                TableC = new FXATableCElement[CompiledFaceGraph.Count];
             }
             for (int i = 0; i < TableC.Length; i++)
             {
@@ -93,8 +91,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 HNodes = [],
                 Names = [],
-                BoneNodes = [],
-                CombinerNodes = [],
+                RefBones = [],
+                CompiledFaceGraph = [],
                 TableC = [],
                 Lines = [],
                 TableD = [],
@@ -109,26 +107,26 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             };
         }
 
-        public class HNode
+        public class ClassVersionBin
         {
-            public int unk1;
+            public int BinIndex;
             public (string, ushort)[] Names;
 
             /// <summary>
             /// Returns the node table used in FaceFXAnimsets
             /// </summary>
             /// <returns></returns>
-            public static HNode[] GetFXANodeTable()
+            public static ClassVersionBin[] GetFXAClassVersions()
             {
                 return
                 [
-                    new HNode {unk1 = 0x1A, Names= [("FxObject", 0)] },
-                    new HNode {unk1 = 0x48, Names= [("FxAnim", 6)] },
-                    new HNode {unk1 = 0x54, Names= [("FxAnimSet", 0)] },
-                    new HNode {unk1 = 0x5F, Names= [("FxNamedObject", 0)] },
-                    new HNode {unk1 = 0x64, Names= [("FxName", 1)] },
-                    new HNode {unk1 = 0x6D, Names= [("FxAnimCurve", 1)] },
-                    new HNode {unk1 = 0x75, Names= [("FxAnimGroup", 0)] }
+                    new ClassVersionBin {BinIndex = 0x1A, Names= [("FxObject", 0)] },
+                    new ClassVersionBin {BinIndex = 0x48, Names= [("FxAnim", 6)] },
+                    new ClassVersionBin {BinIndex = 0x54, Names= [("FxAnimSet", 0)] },
+                    new ClassVersionBin {BinIndex = 0x5F, Names= [("FxNamedObject", 0)] },
+                    new ClassVersionBin {BinIndex = 0x64, Names= [("FxName", 1)] },
+                    new ClassVersionBin {BinIndex = 0x6D, Names= [("FxAnimCurve", 1)] },
+                    new ClassVersionBin {BinIndex = 0x75, Names= [("FxAnimGroup", 0)] }
                 ];
             }
         }
@@ -148,66 +146,84 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public class FaceFXBoneNode
+    public struct FaceFxBone
     {
         public int BoneName;
-        public float X;
-        public float Y;
-        public float Z;
-        // As we figure out what these do, we can take them out of the array
-        public float[] unkFloats = new float[13];
-
-        public List<FaceFXBoneNodeChild> Children;
+        public Vector3 Position;
+        public Quaternion Rotation;
+        public Vector3 Scale;
     }
 
-    public class FaceFXBoneNodeChild
+    public class FaceFXBoneListEntry
     {
-        public int CombinerIndex; // Index into combiner node table - I think?
-        public int ParentName;
-        public float[] unkFloats = new float[10];
+        public FaceFxBone RefBone;
+        public Quaternion RefBoneInverseRot;
+        public int Index;
+        public float RefWeight;
+
+        public List<FaceFxBoneLink> Links;
+    }
+
+    public class FaceFxBoneLink
+    {
+        public int GraphIndex;
+        public FaceFxBone OptimizedBone;
     }
 
     public enum FxNodeType : int
     {
-        FxCombinerNode = 0,
-        FxDeltaNode = 1,
-        FxCurrentTimeNode = 2,
-        FxBonePoseNode = 4,
-        FxMorphTargetNode = 5,
-        FxEmotionsWeightNode = 8
+        Invalid = -1,
+        Combiner = 0,
+        Delta = 1,
+        CurrentTime = 2,
+        GenericTarget = 3,
+        BonePose = 4,
+        MorphTarget = 5,
+        MaterialParameterUE3 = 6,
+        MorphTargetUE3 = 7,
+        EmotionsWeight = 8
     }
 
     public enum FxInputOperation : int
     {
-        SumInputs = 0,
-        MultiplyInputs = 1
+        Invalid = -1,
+        Sum = 0,
+        Multiply = 1,
+        Max = 2,
+        Min = 3,
     }
 
     public class FxNode
     {
         public int format;
-        public FxNodeType Format
+        public FxNodeType NodeType
         {
             get => (FxNodeType) format;
             set => format = (int)value;
         }
         public int Name;
         public float MinVal;
-        public float unk1;
+        public float MinValReciprocal;
         public float MaxVal;
-        public float unk2;
+        public float MaxValReciprocal;
         public int inputOp;
         public FxInputOperation InputOperation
         {
             get => (FxInputOperation)inputOp;
             set => inputOp= (int)value;
         }
-        public List<FxNodeParentLink> ChildLinks;
-        public List<FxNodeParameter> Parameters;
+        public List<FxCompiledFaceGraphLink> InputLinks;
+        public List<FxGraphNodeUserProperty> UserProperties;
+
+        //non-serialized, these are used for animating
+        public float TrackValue;
+        public float FinalValue;
     }
 
     public enum FxLinkFunction : int
     {
+        Invalid = -1,
+        Null = 0,
         Linear = 1,
         Quadratic = 2,
         Cubic = 3,
@@ -220,7 +236,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         ClampedLinear = 10
     }
 
-    public class FxNodeParentLink
+    public class FxCompiledFaceGraphLink
     {
         public int NodeIndex;
         public int linkFunction;
@@ -230,40 +246,42 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             get => (FxLinkFunction) linkFunction;
             set => linkFunction = (int)value;
         }
-        public List<float> FunctionSettings; // Each function has a different number of float settings
+        public List<float> Parameters; // Each function has a different number of float settings
     }
 
-    public enum FxNodeParamFormat
+    public enum FxGraphNodeUserPropertyType
     {
         Integer = 0,
-        String = 3
+        Bool = 1,
+        Float = 2,
+        String = 3,
+        Choice = 4,
     }
     
-    public class FxNodeParameter
+    public class FxGraphNodeUserProperty
     {
         public int Name;
         public int paramFormat;
-        public FxNodeParamFormat Format
+        public FxGraphNodeUserPropertyType Format
         {
-            get => (FxNodeParamFormat) paramFormat;
+            get => (FxGraphNodeUserPropertyType) paramFormat;
             set => paramFormat = (int)value;
         }
 
         public int IntParameter;
         public float FloatParameter;
-        public int unk2;
-        public string StringParameter;
+        public string[] StringParameters;
     }
 
     public partial class SerializingContainer
     {
-        public void Serialize(ref FaceFXAsset.HNode node)
+        public void Serialize(ref FaceFXAsset.ClassVersionBin node)
         {
             if (IsLoading)
             {
-                node = new FaceFXAsset.HNode();
+                node = new FaceFXAsset.ClassVersionBin();
             }
-            Serialize(ref node.unk1);
+            Serialize(ref node.BinIndex);
             if (IsLoading)
             {
                 node.Names = new (string, ushort)[ms.ReadInt32()];
@@ -282,37 +300,44 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-        public void Serialize(ref FaceFXBoneNode node)
+        public void Serialize(ref FaceFxBone bone)
         {
-            if (IsLoading)
-            {
-                node = new FaceFXBoneNode();
-            }
-            Serialize(ref node.BoneName);
-            Serialize(ref node.X);
-            Serialize(ref node.Y);
-            Serialize(ref node.Z);
-
-            for (int i = 0; i < node.unkFloats.Length; i++)
-            {
-                Serialize(ref node.unkFloats[i]);
-            }
-            Serialize(ref node.Children, Serialize);
+            Serialize(ref bone.BoneName);
+            Serialize(ref bone.Position);
+            SerializeFaceFxQuat(ref bone.Rotation);
+            Serialize(ref bone.Scale);
         }
 
-        public void Serialize(ref FaceFXBoneNodeChild node)
+        private void SerializeFaceFxQuat(ref Quaternion faceFxQuat)
+        {
+
+            Serialize(ref faceFxQuat.W);
+            Serialize(ref faceFxQuat.X);
+            Serialize(ref faceFxQuat.Y);
+            Serialize(ref faceFxQuat.Z);
+        }
+
+        public void Serialize(ref FaceFXBoneListEntry node)
         {
             if (IsLoading)
             {
-                node = new FaceFXBoneNodeChild();
+                node = new FaceFXBoneListEntry();
             }
-            Serialize(ref node.CombinerIndex);
-            Serialize(ref node.ParentName);
+            Serialize(ref node.RefBone);
+            SerializeFaceFxQuat(ref node.RefBoneInverseRot);
+            Serialize(ref node.Index);
+            Serialize(ref node.RefWeight);
+            Serialize(ref node.Links, Serialize);
+        }
 
-            for (int i = 0; i < node.unkFloats.Length; i++)
+        public void Serialize(ref FaceFxBoneLink node)
+        {
+            if (IsLoading)
             {
-                Serialize(ref node.unkFloats[i]);
+                node = new FaceFxBoneLink();
             }
+            Serialize(ref node.GraphIndex);
+            Serialize(ref node.OptimizedBone);
         }
 
         public void Serialize(ref FxNode node)
@@ -322,40 +347,36 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             Serialize(ref node.format);
             Serialize(ref node.Name);
             Serialize(ref node.MinVal);
-            Serialize(ref node.unk1);
+            Serialize(ref node.MinValReciprocal);
             Serialize(ref node.MaxVal);
-            Serialize(ref node.unk2);
+            Serialize(ref node.MaxValReciprocal);
             Serialize(ref node.inputOp);
-            Serialize(ref node.ChildLinks, Serialize);
-            Serialize(ref node.Parameters, Serialize);
+            Serialize(ref node.InputLinks, Serialize);
+            Serialize(ref node.UserProperties, Serialize);
         }
 
-        public void Serialize(ref FxNodeParentLink node)
+        public void Serialize(ref FxCompiledFaceGraphLink node)
         {
             if (IsLoading)
             {
-                node = new FxNodeParentLink();
+                node = new FxCompiledFaceGraphLink();
             }
             Serialize(ref node.NodeIndex);
             Serialize(ref node.linkFunction);
-            Serialize(ref node.FunctionSettings, Serialize);
+            Serialize(ref node.Parameters, Serialize);
         }
 
-        public void Serialize(ref FxNodeParameter param)
+        public void Serialize(ref FxGraphNodeUserProperty param)
         {
             if (IsLoading)
             {
-                param = new FxNodeParameter();
+                param = new FxGraphNodeUserProperty();
             }
             Serialize(ref param.Name);
             Serialize(ref param.paramFormat);
             Serialize(ref param.IntParameter);
             Serialize(ref param.FloatParameter);
-            Serialize(ref param.unk2);
-            if (param.paramFormat == 3)
-            {
-                SerializeFaceFXString(ref param.StringParameter);
-            }
+            Serialize(ref param.StringParameters, SerializeFaceFXString);
         }
 
         public void Serialize(ref FaceFXAsset.FXATableCElement el)

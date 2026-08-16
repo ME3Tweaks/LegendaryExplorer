@@ -27,7 +27,7 @@ namespace LegendaryExplorerCore.Matinee
         /// </summary>
         /// <param name="interpData">InterpData export to add director to</param>
         /// <returns>The created InterpGroupDirector</returns>
-        public static ExportEntry AddNewGroupDirectorToInterpData(ExportEntry interpData) => InternalAddGroup("InterpGroupDirector", interpData, null);
+        public static ExportEntry AddNewGroupDirectorToInterpData(ExportEntry interpData) => InternalAddPreset("Director", interpData, MEGame.Unknown, null);
 
         /// <summary>
         /// Adds a preset interp export to the given InterpData or InterpGroup
