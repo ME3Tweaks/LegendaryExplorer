@@ -1,24 +1,24 @@
-﻿using DocumentFormat.OpenXml.Math;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using LegendaryExplorer.SharedUI.Interfaces;
-using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
-using LegendaryExplorerCore.Unreal.BinaryConverters;
 using ME3Tweaks.Wwiser.Formats;
 using ME3Tweaks.Wwiser.Model;
+using ME3Tweaks.Wwiser.Model.Action;
+using ME3Tweaks.Wwiser.Model.Action.Specific;
+using ME3Tweaks.Wwiser.Model.GlobalSettings;
 using ME3Tweaks.Wwiser.Model.Hierarchy;
 using ME3Tweaks.Wwiser.Model.Hierarchy.Enums;
 using ME3Tweaks.Wwiser.Model.ParameterNode;
 using ME3Tweaks.Wwiser.Model.ParameterNode.Positioning;
 using ME3Tweaks.Wwiser.Model.RTPC;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.AccumType;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.CurveScaling;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.GroupType;
-using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.ParameterId;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.Enums.PriorityOverrideFlags;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.MediaInformation;
 using static ME3Tweaks.Wwiser.Model.Hierarchy.RanSeqFlags;
@@ -28,22 +28,24 @@ using static ME3Tweaks.Wwiser.Model.ParameterNode.Positioning.PathMode;
 using static ME3Tweaks.Wwiser.Model.ParameterNode.Positioning.PositioningChunk;
 using static ME3Tweaks.Wwiser.Model.RTPC.RtpcType;
 using static ME3Tweaks.Wwiser.Model.State.SyncType;
+using LanguageId = ME3Tweaks.Wwiser.Model.LanguageId;
+using static LegendaryExplorer.UserControls.ExportLoaderControls.BinaryNodeFactory;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls;
 
-public partial class BinaryInterpreterWPF
+public class WwiseBankScans
 {
     private record WwiseItem(uint Id, string Name, long Position);
 
     private Dictionary<uint, WwiseItem> WwiseIdMap = new();
 
+    private List<(BinInterpNodeOffsetReference, uint)> WwiseRefs = new();
+
     private BinInterpNode MakeWwiseIdNode(EndianReader bin, string refName, string nodeName = "ID")
     {
-        var id = bin.ReadUInt32();
-        bin.Skip(-4);
-        var item = new WwiseItem(id, refName, bin.Position);
-        WwiseIdMap.Add(id, item);
-        var node = MakeUInt32Node(bin, nodeName);
+        var node = MakeUInt32Node(bin, nodeName, out var id);
+        var item = new WwiseItem(id, refName, bin.Position - 4);
+        WwiseIdMap[id] = item;
         return node;
     }
 
@@ -51,15 +53,8 @@ public partial class BinaryInterpreterWPF
     {
         var pos = bin.Position;
         var id = bin.ReadUInt32();
-        var node = new BinInterpNode(pos, $"{name}: {id}") { Length = 4 };
-        if (WwiseIdMap.TryGetValue(id, out var item))
-        {
-            node.Header += $" (Ref to {item.Name})";
-        }
-        else
-        {
-            node.Header += $" (Ref)";
-        }
+        var node = new BinInterpNodeOffsetReference(pos, $"{name}: {id}") { Length = 4 };
+        WwiseRefs.Add((node, id));
         return node;
     }
 
@@ -68,12 +63,17 @@ public partial class BinaryInterpreterWPF
         var node = new BinInterpNode(bin.Position, $"{name}: ") { Length = 4 };
         Span<byte> span = stackalloc byte[4];
         var read = bin.BaseStream.Read(span);
+        if (read != 4)
+        {
+            node.Header += "Error reading data. Expected 4 bytes.";
+            return node;
+        }
         uint value = BitConverter.ToUInt32(span);
         if (value > 0x10000000)
         {
             // float
             var f = BitConverter.ToSingle(span);
-            node.Header += f.ToString();
+            node.Header += f.ToString(CultureInfo.InvariantCulture);
         }
         else
         {
@@ -95,30 +95,28 @@ public partial class BinaryInterpreterWPF
         return node;
     }
 
-    private BinInterpNode MakeUInt32EnumNode<T>(EndianReader bin, string name) where T : Enum
+    private static BinInterpNode MakeArrayNodeWwiseVarCount(EndianReader bin, string name, Func<int, BinInterpNode> selector, bool IsExpanded = false,
+        BinInterpNode.ArrayPropertyChildAddAlgorithm arrayAddAlgo = BinInterpNode.ArrayPropertyChildAddAlgorithm.None)
     {
-        var value = bin.ReadUInt32();
-        var parsedValue = Enum.GetName(typeof(T), value);
-        if (string.IsNullOrEmpty(parsedValue)) parsedValue = "None";
-        return new BinInterpNode(bin.Position - 4, $"{name}: {parsedValue}") { Length = 4 };
+        var pos = bin.Position;
+        uint count;
+        return new BinInterpNode(bin.Position, $"{name} ({count = VarCount.ReadResizingUint(bin.BaseStream)})")
+        {
+            IsExpanded = IsExpanded,
+            Items = ReadList((int)count, selector),
+            ArrayAddAlgorithm = arrayAddAlgo,
+            Length = (int)(bin.Position - pos)
+        };
     }
 
-    private BinInterpNode MakeByteEnumNode<T>(EndianReader bin, string name) where T : Enum
-    {
-        var value = bin.ReadByte();
-        var parsedValue = Enum.GetName(typeof(T), value);
-        if (string.IsNullOrEmpty(parsedValue)) parsedValue = "None";
-        return new BinInterpNode(bin.Position - 1, $"{name}: {parsedValue}") { Length = 1 };
-    }
-
-    private List<ITreeItem> Scan_WwiseBank(byte[] data)
+    public List<ITreeItem> Scan_WwiseBank(byte[] data, ExportEntry export)
     {
         var subnodes = new List<ITreeItem>();
         WwiseIdMap.Clear();
-        var bin = new EndianReader(new MemoryStream(data)) { Endian = Pcc.Endian };
-        bin.JumpTo(CurrentLoadedExport.propsEnd());
+        var bin = new EndianReader(new MemoryStream(data)) { Endian = export.FileRef.Endian };
+        bin.JumpTo(export.propsEnd());
 
-        if (Pcc.Game is MEGame.ME2 or MEGame.LE2)
+        if (export.Game is MEGame.ME2 or MEGame.LE2)
         {
             subnodes.Add(MakeUInt32Node(bin, "Unk1"));
             subnodes.Add(MakeUInt32Node(bin, "Unk2"));
@@ -127,7 +125,7 @@ public partial class BinaryInterpreterWPF
                 return subnodes;
             }
         }
-        subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
+        subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(BinaryInterpreterWPF.EBulkDataFlags)bin.ReadUInt32()}"));
         subnodes.Add(MakeInt32Node(bin, "Element Count", out int dataSize));
         subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
         subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
@@ -171,21 +169,47 @@ public partial class BinaryInterpreterWPF
                 case "INIT":
                     Scan_WwiseBank_INIT(chunkNode, bin);
                     break;
+                case "STMG":
+                    Scan_WwiseBank_STMG(chunkNode, bin, version);
+                    break;
+                case "ENVS":
+                    Scan_WwiseBank_ENVS(chunkNode, bin, version);
+                    break;
+                    
             }
 
             // Just in case we don't parse chunk in full - jump to next chunk
             bin.JumpTo(start + size + 8);
         }
+        
+        // At the end of the file, fill in all the reference details
+        AddNodeReferences();
         return subnodes;
+    }
+
+    public void AddNodeReferences()
+    {
+        foreach(var (refNode, refId) in WwiseRefs)
+        {
+            if (WwiseIdMap.TryGetValue(refId, out var item))
+            {
+                refNode.Header += $" (Ref to {item.Name})";
+                refNode.OffsetTarget = (int)item.Position;
+            }
+            else
+            {
+                refNode.Header += $" (Ref to unknown)";
+            }
+        }
+        WwiseRefs = new List<(BinInterpNodeOffsetReference, uint)>();
     }
 
     private (uint, bool) Scan_WwiseBank_BKHD(BinInterpNode root, EndianReader bin, int size)
     {
-        var version = bin.ReadUInt32();
         bool useFeedback = false;
-        bin.Skip(-4);
-
-        root.Items.Add(MakeUInt32Node(bin, "WwiseVersion"));
+        uint version;
+        
+        root.Items.Add(MakeUInt32Node(bin, "WwiseVersion", out version));
         root.Items.Add(MakeWwiseIdNode(bin, "SoundBank", "SoundBankId"));
 
         if(version <= 122)
@@ -197,11 +221,9 @@ public partial class BinaryInterpreterWPF
             root.Items.Add(MakeUInt32Node(bin, "LanguageIDStringHash"));
         }
 
-        if(version > 27 && version < 126)
+        if(version is > 27 and < 126)
         {
-            useFeedback = bin.ReadBoolByte();
-            bin.Skip(-1);
-            root.Items.Add(MakeBoolByteNode(bin, "UseFeedback"));
+            root.Items.Add(MakeBoolByteNode(bin, "UseFeedback", out useFeedback));
         }
 
         if(version > 126)
@@ -248,37 +270,68 @@ public partial class BinaryInterpreterWPF
 
     private void Scan_WwiseBank_HIRC(BinInterpNode root, EndianReader bin, uint version, bool useFeedback)
     {
-        root.Items.Add(MakeArrayNode(bin, "Items", i => MakeHIRCNode(i, bin, version, useFeedback), IsExpanded: true));
+        root.Items.Add(MakeArrayNode(bin, "Items", i => MakeHIRCNode(i, bin, version, useFeedback), isExpanded: true));
     }
 
-    private BinInterpNode MakeHIRCNode(int index, EndianReader bin, uint version, bool useFeedback)
+    public BinInterpNode MakeHIRCNode(int index, EndianReader bin, uint version, bool useFeedback)
     {
         var start = bin.Position;
         var root = new BinInterpNode(bin.Position, $"{index}: ");
 
         var type = HircSmartType.DeserializeStatic(bin.BaseStream, version);
-
-        if(version <= 48)
-        {
-            root.Items.Add(new BinInterpNode(bin.Position - 4, $"Type: {type}") { Length = 4 });
-        }
-        else
-        {
-            root.Items.Add(new BinInterpNode(bin.Position - 1, $"Type: {type}") { Length = 1 });
-        }
-
-        var fullSize = bin.ReadInt32() + (version <= 48 ? 8 : 5);
-
-        bin.Skip(-4);
-        root.Items.Add(MakeUInt32Node(bin, "Size"));
+        var typeLen = (version <= 48) ? 4 : 1;
+        root.Items.Add(new BinInterpNode(bin.Position - typeLen, $"Type: {type}") { Length = typeLen });
+        
+        
+        root.Items.Add(MakeUInt32Node(bin, "Size", out var fullSize));
+        fullSize += (uint)(version <= 48 ? 8 : 5);
 
         root.Items.Add(MakeWwiseIdNode(bin, type.ToString()));
 
         root.Header += $"{type}";
-        root.Length = fullSize;
+        root.Length = (int)fullSize;
 
         switch(type)
         {
+            case HircType.State:
+                if (version <= 56)
+                {
+                    root.Items.Add(MakeFloatNode(bin, "Volume"));
+                    root.Items.Add(MakeFloatNode(bin, "LFEVolume"));
+                    root.Items.Add(MakeFloatNode(bin, "Pitch"));
+                    root.Items.Add(MakeFloatNode(bin, "LPF"));
+                    if(version <= 52)
+                    {
+                        root.Items.Add(MakeByteEnumNode<VolumeMeaning>(bin, "VolumeValueMeaning"));
+                        root.Items.Add(MakeByteEnumNode<VolumeMeaning>(bin, "LFEValueMeaning"));
+                        root.Items.Add(MakeByteEnumNode<VolumeMeaning>(bin, "PitchValueMeaning"));
+                        root.Items.Add(MakeByteEnumNode<VolumeMeaning>(bin, "LPFValueMeaning"));
+                    }
+                }
+                else
+                {
+                    var propBPos = bin.Position;
+                    var propCount = (version <= 126) ? bin.ReadByte() : (byte)bin.ReadUInt16();
+                    root.Items.Add(new BinInterpNode(propBPos, $"Prop Count: {propCount}") { Length = (int)(bin.Position - propBPos) });
+                    root.Items.Add(MakeArrayNode(propCount, bin, "ParameterIds", i =>
+                    {
+                        var pidPos = bin.Position;
+                        var (paramId, modParamId, customId) = ParameterId.DeserializeStatic(bin.BaseStream, version, false); // TODO: use modulator not handles on high versions!
+                        var pidLength = (int)(bin.Position - pidPos);
+                        if (customId != null)
+                        {
+                            return new BinInterpNode(pidPos,  $"CustomId: {customId}") { Length = pidLength };
+                        }
+                        return paramId.HasValue
+                            ? new BinInterpNode(pidPos, $"ParameterId: {Enum.GetName(paramId.Value)}")
+                                { Length = pidLength }
+                            : new BinInterpNode(pidPos, $"ModulatorParameterId: {Enum.GetName(modParamId.Value)}")
+                                { Length = pidLength };
+                    }, true));
+                    root.Items.Add(MakeArrayNode(propCount, bin, "Values", i => MakeFloatNode(bin, $"{i}"), true));
+                }
+
+                break;
             case HircType.Sound:
                 Scan_HIRC_BankSourceData(root, bin, version);
                 Scan_HIRC_NodeBaseParams(root, bin, version, useFeedback);
@@ -289,8 +342,117 @@ public partial class BinaryInterpreterWPF
                     root.Items.Add(MakeInt16Node(bin, "LoopModMax"));
                 }
                 break;
+            case HircType.Action:
+                var (actionType, actionFlags) = ActionType.DeserializeStatic(bin.BaseStream, version);
+                root.Header += $" ({actionType.ToString()})";
+                var typeLength = version <= 56 ? 4 : 2;
+                root.Items.Add(new BinInterpNode(bin.Position - typeLength,
+                    $"ActionType: {actionType.ToString()}, Flags: {actionFlags.ToString()}") { Length = typeLength });
+                root.Items.Add(MakeWwiseIdRefNode(bin, "Target ID"));
+                if (version <= 56)
+                {
+                    root.Items.Add(MakeInt32Node(bin, "Delay"));
+                    root.Items.Add(MakeInt32Node(bin, "DelayModMin"));
+                    root.Items.Add(MakeInt32Node(bin, "DelayModMax"));
+                    root.Items.Add(MakeUInt32Node(bin, "SubsectionSize"));
+                }
+
+                if (version > 65) root.Items.Add(MakeBoolByteNode(bin, "IsBus"));
+                if (version > 56) Scan_HIRC_InitialParams(root, bin, version);
+                switch (actionType)
+                {
+                    case ActionTypeValue.Play:
+                    case ActionTypeValue.PlayAndContinue:
+                    case ActionTypeValue.PlayEventUnknown:
+                        if (version <= 56)
+                        {
+                            root.Items.Add(MakeInt32Node(bin, "TransitionTime"));
+                            root.Items.Add(MakeInt32Node(bin, "TransitionTimeModMin"));
+                            root.Items.Add(MakeInt32Node(bin, "TransitionTimeModMax"));
+                        }
+                        root.Items.Add(MakeByteEnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
+
+                        if (version <= 56)
+                        {
+                            Scan_HIRC_ActionSpecificParams(root, bin, version, actionType);
+                            Scan_HIRC_ActionExceptParams(root, bin, version);
+                        }
+                        root.Items.Add(MakeWwiseIdRefNode(bin, "BankId"));
+                        break;
+                    case ActionTypeValue.SetState:
+                    case ActionTypeValue.SetSwitch:
+                        root.Items.Add(MakeWwiseIdRefNode(bin, "GroupId"));
+                        root.Items.Add(MakeWwiseIdRefNode(bin, "TargetStateId"));
+                        break;
+                    case ActionTypeValue.SetRTPC:
+                        root.Items.Add(MakeWwiseIdRefNode(bin, "RTPCId"));
+                        root.Items.Add(MakeFloatNode(bin, "RTPCValue"));
+                        break;
+                    case ActionTypeValue.SetFX1:
+                    case ActionTypeValue.SetFX2:
+                        root.Items.Add(MakeBoolByteNode(bin, "IsAudioDeviceElement"));
+                        root.Items.Add(MakeByteNode(bin, "SlotIndex"));
+                        root.Items.Add(MakeWwiseIdRefNode(bin, "FXId"));
+                        root.Items.Add(MakeBoolByteNode(bin, "IsShared"));
+                        Scan_HIRC_ActionExceptParams(root, bin, version);
+                        break;
+                    case ActionTypeValue.BypassFX1:
+                    case ActionTypeValue.BypassFX2:
+                    case ActionTypeValue.BypassFX3:
+                    case ActionTypeValue.BypassFX4:
+                    case ActionTypeValue.BypassFX5:
+                    case ActionTypeValue.BypassFX6:
+                    case ActionTypeValue.BypassFX7:
+                        root.Items.Add(MakeBoolByteNode(bin, "IsBypass"));
+                        root.Items.Add(MakeByteNode(bin, "TargetMask"));
+                        Scan_HIRC_ActionExceptParams(root, bin, version);
+                        break;
+                    case ActionTypeValue.Seek:
+                        root.Items.Add(MakeBoolByteNode(bin, "IsSeekRelativeToDuration"));
+                        root.Items.Add(MakeFloatNode(bin, "SeekValue"));
+                        root.Items.Add(MakeFloatNode(bin, "SeekValueModMin"));
+                        root.Items.Add(MakeFloatNode(bin, "SeekValueModMax"));
+                        root.Items.Add(MakeBoolByteNode(bin, "SnapToNearestMarker"));
+                        Scan_HIRC_ActionExceptParams(root, bin, version);
+                        break;
+                    case ActionTypeValue.UseState1:
+                    case ActionTypeValue.UseState2:
+                        if (version == 56)
+                        {
+                            root.Items.Add(MakeInt32Node(bin, "Time"));
+                            root.Items.Add(MakeInt32Node(bin, "TimeModMin"));
+                            root.Items.Add(MakeInt32Node(bin, "TimeModMax"));
+                            root.Items.Add(MakeByteEnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
+                            Scan_HIRC_ActionSpecificParams(root, bin, version, actionType);
+                            Scan_HIRC_ActionExceptParams(root, bin, version);
+                        }
+                        break;
+                    case ActionTypeValue.Release:
+                    case ActionTypeValue.PlayEvent:
+                    case ActionTypeValue.Event1:
+                    case ActionTypeValue.Event2:
+                    case ActionTypeValue.Event3:
+                    case ActionTypeValue.Duck:
+                    case ActionTypeValue.Break:
+                    case ActionTypeValue.Trigger:
+                        break;
+                    default:
+                        if (version <= 56)
+                        {
+                            root.Items.Add(MakeInt32Node(bin, "TransitionTime"));
+                            root.Items.Add(MakeInt32Node(bin, "TransitionTimeModMin"));
+                            root.Items.Add(MakeInt32Node(bin, "TransitionTimeModMax"));
+                        }
+                        root.Items.Add(MakeByteEnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
+                        Scan_HIRC_ActionSpecificParams(root, bin, version, actionType);
+                        Scan_HIRC_ActionExceptParams(root, bin, version);
+                        break;
+                }
+                break;
             case HircType.Event:
-                root.Items.Add(MakeArrayNode(bin, "Actions", i => MakeWwiseIdRefNode(bin, i.ToString()), IsExpanded:true));
+                root.Items.Add(version <= 122
+                    ? MakeArrayNode(bin, "Actions", i => MakeWwiseIdRefNode(bin, i.ToString()))
+                    : MakeArrayNodeWwiseVarCount(bin, "Actions", i => MakeWwiseIdRefNode(bin, i.ToString())));
                 break;
             case HircType.RandomSequenceContainer:
                 Scan_HIRC_NodeBaseParams(root, bin, version, useFeedback);
@@ -317,14 +479,21 @@ public partial class BinaryInterpreterWPF
                 }
                 else root.Items.Add(MakeByteEnumNode<RanSeqInner>(bin, "RandSeqFlags"));
                 root.Items.Add(MakeArrayNode(bin, "Children", i => MakeWwiseIdRefNode(bin, $"Child {i}")));
-                root.Items.Add(MakeArrayNodeInt16Count(bin, "Playlist", i =>
+                var playlistArrayFunc = (int i) =>
                 {
                     var n = new BinInterpNode(bin.Position, $"Item {i}");
-                    n.Items.Add(MakeWwiseIdNode(bin, "PlaylistItemId"));
-                    if (version <= 56) n.Items.Add(MakeByteNode(bin, "Weight"));
-                    else n.Items.Add(MakeInt32Node(bin, "Weight"));
+                    n.Items.Add(MakeWwiseIdRefNode(bin, "PlaylistItemId"));
+                    n.Items.Add(version <= 56 ? MakeByteNode(bin, "Weight") : MakeInt32Node(bin, "Weight"));
                     return n;
-                }));
+                };
+                if (version <= 38)
+                {
+                    root.Items.Add(MakeArrayNode(bin, "Playlist", playlistArrayFunc));
+                }
+                else
+                {
+                    root.Items.Add(MakeArrayNodeInt16Count(bin, "Playlist", playlistArrayFunc));
+                }
                 break;
             case HircType.SwitchContainer:
                 Scan_HIRC_NodeBaseParams(root, bin, version, useFeedback);
@@ -338,7 +507,7 @@ public partial class BinaryInterpreterWPF
                 {
                     var g = new BinInterpNode(bin.Position, $"Group {i}");
                     g.Items.Add(MakeWwiseIdNode(bin, "GroupId"));
-                    g.Items.Add(MakeArrayNode(bin, "ItemIDs", i => MakeWwiseIdRefNode(bin, $"Item {i}")));
+                    g.Items.Add(MakeArrayNode(bin, "ItemIDs", j => MakeWwiseIdRefNode(bin, $"Item {j}")));
                     return g;
                 }));
                 root.Items.Add(MakeArrayNode(bin, "SwitchParams", i =>
@@ -393,10 +562,11 @@ public partial class BinaryInterpreterWPF
                     if (version <= 56) l.Items.Add(MakeFloatNode(bin, "CrossfadingRtpcDefaultValue"));
                     root.Items.Add(MakeArrayNode(bin, "AssociatedChildren", j => MakeArrayNode(bin, $"Child {j} Curves", k =>
                     {
-                        var gItem = new BinInterpNode(bin.Position, $"Graph Item {k}");
-                        gItem.Items.Add(MakeFloatNode(bin, "From"));
-                        gItem.Items.Add(MakeFloatNode(bin, "To"));
+                        var gItem = new BinInterpNode(bin.Position, "");
+                        gItem.Items.Add(MakeFloatNode(bin, "From", out float from));
+                        gItem.Items.Add(MakeFloatNode(bin, "To", out float to));
                         gItem.Items.Add(MakeUInt32EnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
+                        gItem.Header += $"{k}: {from} to {to}";
                         return gItem;
                     })));
                     return l;
@@ -404,9 +574,7 @@ public partial class BinaryInterpreterWPF
                 break;
             case HircType.Attenuation:
                 if (version > 136) root.Items.Add(MakeBoolByteNode(bin, "IsHeightSpreadEnabled"));
-                var isConeEnabled = bin.ReadBoolByte();
-                bin.Skip(-1);
-                root.Items.Add(MakeBoolByteNode(bin, "IsConeEnabled"));
+                root.Items.Add(MakeBoolByteNode(bin, "IsConeEnabled", out var isConeEnabled));
                 if (isConeEnabled)
                 {
                     root.Items.Add(MakeFloatNode(bin, "InsideDegrees"));
@@ -426,17 +594,40 @@ public partial class BinaryInterpreterWPF
                 {
                     var c = new BinInterpNode(bin.Position, $"Item {i}");
                     c.Items.Add(MakeByteEnumNode<CurveScalingInner>(bin, "CurveScaling"));
-                    c.Items.Add(MakeArrayNodeInt16Count(bin, $"Graph", k =>
-                    {
-                        var gItem = new BinInterpNode(bin.Position, $"Graph Item {k}");
-                        gItem.Items.Add(MakeFloatNode(bin, "From"));
-                        gItem.Items.Add(MakeFloatNode(bin, "To"));
-                        gItem.Items.Add(MakeUInt32EnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
-                        return gItem;
-                    }, true));
+                    c.Items.Add(MakeArrayNodeInt16Count(bin, $"Graph", k => MakeWwiseGraphItem(bin, k), true));
                     return c;
                 }, true));
                 Scan_HIRC_RTPCParameterNodeBase(root, bin, version);
+                break;
+            case HircType.FxShareSet:
+            case HircType.FxCustom:
+                root.Items.Add(MakeUInt32Node(bin, "PluginID"));
+                root.Items.Add(MakeUInt32Node(bin, "PluginParametersSize", out var paramLength));
+                root.Items.Add(new BinInterpNode(bin.Position, "PluginParameters") { Length = (int)paramLength });
+                bin.Skip(paramLength);
+                
+                root.Items.Add(MakeArrayNodeByteCount(bin, "Media", i =>
+                {
+                    var item = new BinInterpNode(bin.Position, i.ToString());
+                    item.Items.Add(MakeByteNode(bin, "Index"));
+                    item.Items.Add(MakeWwiseIdRefNode(bin, "SourceID"));
+                    return item;
+                }));
+                
+                Scan_HIRC_RTPCParameterNodeBase(root, bin, version);
+                
+                if(version is > 123 and < 126) root.Items.Add(MakeUInt16Node(bin, "Unk1"));
+                
+                if(version > 126) Scan_HIRC_State(root, bin, version);
+                
+                if(version > 90) root.Items.Add(MakeArrayNodeInt16Count(bin, "RTPCInitValues", i =>
+                {
+                    var item = new BinInterpNode(bin.Position, i.ToString());
+                    item.Items.Add(MakeWwiseIdRefNode(bin, "ParameterID"));
+                    if(version > 126) item.Items.Add(MakeByteNode(bin, "RTPCAccum"));
+                    item.Items.Add(MakeFloatNode(bin, "InitValue"));
+                    return item;
+                }));
                 break;
         }
 
@@ -445,11 +636,96 @@ public partial class BinaryInterpreterWPF
         return root;
     }
 
+    private BinInterpNode MakeWwiseGraphItem(EndianReader bin, int k)
+    {
+        var gItem = new BinInterpNode(bin.Position, $"Graph Item {k}");
+        gItem.Items.Add(MakeFloatNode(bin, "From"));
+        gItem.Items.Add(MakeFloatNode(bin, "To"));
+        gItem.Items.Add(MakeUInt32EnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
+        return gItem;
+    }
+
+    private void Scan_HIRC_ActionExceptParams(BinInterpNode root, EndianReader bin, uint version)
+    {
+        root.Items.Add(MakeArrayNodeWwiseVarCount(bin, "Exceptions", i =>
+        {
+            var item = MakeWwiseIdNode(bin, $"Exception {i}", $"{i}: ID");
+            if (version > 65)
+            {
+                item.Items.Add(MakeBoolByteNode(bin, "IsBus"));
+            }
+
+            return item;
+        }));
+    }
+
+    private void Scan_HIRC_ActionSpecificParams(BinInterpNode root, EndianReader bin, uint version, ActionTypeValue actionType)
+    {
+        switch (actionType)
+        {
+            case ActionTypeValue.Stop:
+            case ActionTypeValue.Pause:
+            case ActionTypeValue.Resume:
+                if (version <= 56)
+                {
+                    root.Items.Add(MakeBoolIntNode(bin, "IsMaster"));
+                    root.Items.Add(MakeReverseBoolIntNode(bin, "IncludePendingResume"));
+                    root.Items.Add(MakeReverseBoolIntNode(bin, "ApplyToStateTransitions"));
+                    root.Items.Add(MakeReverseBoolIntNode(bin, "ApplyToDynamicSequence"));
+                }
+                else
+                {
+                    root.Items.Add(MakeByteEnumNode<ActiveFlags.ActiveFlagsInner>(bin, "ActiveFlags"));
+                }
+
+                break;
+                
+            case ActionTypeValue.SetHPF1:
+            case ActionTypeValue.SetHPF2:
+                if(version <= 56) root.Items.Add(MakeUInt32EnumNode<SmartValueMeaning.ValueMeaning>(bin, "ValueMeaning"));
+                else root.Items.Add(MakeByteEnumNode<SmartValueMeaning.ValueMeaning>(bin, "ValueMeaning"));
+                root.Items.Add(MakeFloatNode(bin, "RandomizerModifier"));
+                root.Items.Add(MakeFloatNode(bin, "RandomizerModifierMin"));
+                root.Items.Add(MakeFloatNode(bin, "RandomizerModifierMax"));
+                break;
+            case ActionTypeValue.SetGameParameter1:
+            case ActionTypeValue.SetGameParameter2:
+                if(version > 89) root.Items.Add(MakeBoolByteNode(bin, "BypassTransition"));
+                if(version <= 56) root.Items.Add(MakeUInt32EnumNode<SmartValueMeaning.ValueMeaning>(bin, "ValueMeaning"));
+                else root.Items.Add(MakeByteEnumNode<SmartValueMeaning.ValueMeaning>(bin, "ValueMeaning"));
+                root.Items.Add(MakeFloatNode(bin, "RandomizerModifier"));
+                root.Items.Add(MakeFloatNode(bin, "RandomizerModifierMin"));
+                root.Items.Add(MakeFloatNode(bin, "RandomizerModifierMax"));
+                break;
+            case ActionTypeValue.ResetPlaylist:
+                break;
+            default:
+                if (actionType is >= ActionTypeValue.SetPitch1 and <= ActionTypeValue.SetLPF2)
+                {
+                    // same as SetHPF - I just don't want to write out all the cases.
+                    if(version > 89) root.Items.Add(MakeBoolByteNode(bin, "BypassTransition"));
+                    if(version <= 56) root.Items.Add(MakeUInt32EnumNode<SmartValueMeaning.ValueMeaning>(bin, "ValueMeaning"));
+                    else root.Items.Add(MakeByteEnumNode<SmartValueMeaning.ValueMeaning>(bin, "ValueMeaning"));
+                    root.Items.Add(MakeFloatNode(bin, "RandomizerModifier"));
+                    root.Items.Add(MakeFloatNode(bin, "RandomizerModifierMin"));
+                    root.Items.Add(MakeFloatNode(bin, "RandomizerModifierMax"));
+                }
+                else if(version <= 56)
+                {
+                    root.Items.Add(new BinInterpNode(bin.Position, $"Unk") { Length = 10 });
+                    bin.Skip(10);
+                }
+
+                break;
+        }
+    }
+
     private void Scan_HIRC_BankSourceData(BinInterpNode root, EndianReader bin, uint version)
     {
-        var pluginExists = bin.ReadUInt32();
-        bin.Skip(-4);
-        root.Items.Add(MakeUInt32Node(bin, "PluginID"));
+        //var pluginExists = bin.ReadUInt32();
+        //bin.Skip(-4);
+        root.Items.Add(MakeUInt32Node(bin, "PluginID", out var pluginId));
+        var pluginType = pluginId & 0x0F;
 
         var streamTypeNode = new BinInterpNode(bin.Position, "");
         var streamType = StreamType.DeserializeStatic(bin.BaseStream, version);
@@ -486,15 +762,22 @@ public partial class BinaryInterpreterWPF
             flags &= ~MediaInformationFlags.Prefetch;
         }
         root.Items.Add(new BinInterpNode(bin.Position - 1, $"MediaInformationFlags: {flags}") { Length = 1 });
-        
+
+        if (pluginType == 2 || (pluginType == 5 && version <= 126))
+        {
+            root.Items.Add(MakeUInt32Node(bin, "PluginParametersSize", out var paramLength));
+            if (paramLength > 0)
+            {
+                root.Items.Add(new BinInterpNode(bin.Position, "PluginParameters") { Length = (int)paramLength });
+                bin.Skip(paramLength);
+            }
+        }
     }
 
     private void Scan_HIRC_NodeBaseParams(BinInterpNode root, EndianReader bin, uint version, bool useFeedback)
     {
         root.Items.Add(MakeBoolByteNode(bin, "IsOverrideParentFX"));
-        var fxCount = bin.ReadByte();
-        bin.Skip(-1);
-        root.Items.Add(MakeByteNode(bin, "FXCount"));
+        root.Items.Add(MakeByteNode(bin, "FXCount", out var fxCount));
         if (fxCount > 0)
         {
             root.Items.Add(MakeByteNode(bin, "BitsFXBypass"));
@@ -514,7 +797,6 @@ public partial class BinaryInterpreterWPF
                 if (version <= 48)
                 {
                     var pLength = bin.ReadUInt32();
-                    bin.Skip(-4);
                     fx.Items.Add(new BinInterpNode(bin.Position - 4, "FXParameters") { Length = (int)(pLength + 4) });
                     bin.Skip(pLength);
                 }
@@ -559,7 +841,7 @@ public partial class BinaryInterpreterWPF
         Scan_HIRC_AdvSettingsParams(root, bin, version);
         Scan_HIRC_State(root, bin, version);
         Scan_HIRC_RTPCParameterNodeBase(root, bin, version);
-        if(version < 126 && useFeedback) Scan_HIRC_FeedbackInfo(root, bin, version);
+        if(version < 126 && useFeedback) Scan_HIRC_FeedbackInfo(root, bin);
     }
 
     private void Scan_HIRC_InitialParams(BinInterpNode root, EndianReader bin, uint version)
@@ -584,9 +866,7 @@ public partial class BinaryInterpreterWPF
         else
         {
             ipNode.IsExpanded = true;
-            var paramLength = bin.ReadByte();
-            bin.Skip(-1);
-            ipNode.Items.Add(MakeByteNode(bin, "ParamsLength"));
+            ipNode.Items.Add(MakeByteNode(bin, "ParamsLength", out var paramLength));
 
             if(paramLength > 0)
             {
@@ -613,10 +893,8 @@ public partial class BinaryInterpreterWPF
                     }
                 }
             }
-
-            var rangeLength = bin.ReadByte();
-            bin.Skip(-1);
-            ipNode.Items.Add(MakeByteNode(bin, "RangesLength"));
+            
+            ipNode.Items.Add(MakeByteNode(bin, "RangesLength", out var rangeLength));
 
             if(rangeLength > 0)
             {
@@ -685,23 +963,24 @@ public partial class BinaryInterpreterWPF
                 pNode.Items.Add(MakeFloatNode(bin, "PanFR"));
             }
 
-            if(version <= 89)
+            if (version <= 72)
             {
-                if(version < 72)
+                pNode.Items.Add(MakeBoolByteNode(bin, "Has3DPositioning", out has3dPositioning));
+                if (!has3dPositioning)
                 {
-                    pNode.Items.Add(MakeBoolByteNode(bin, "Has2DPositioning"));
-                    bin.Skip(-1);
-                    has2dPositioning = bin.ReadBoolByte();
-                }
-
-                pNode.Items.Add(MakeBoolByteNode(bin, "Has3DPositioning"));
-                bin.Skip(-1);
-                has3dPositioning = bin.ReadBoolByte();
-                if ((!has3dPositioning && version <= 72) || has2dPositioning)
-                {
-                    pNode.Items.Add(MakeBoolByteNode(bin, "HasPanner"));
+                    pNode.Items.Add(MakeBoolByteNode(bin, "IsPannerEnabled"));
                 }
             }
+            else if (version <= 89)
+            {
+                pNode.Items.Add(MakeBoolByteNode(bin, "Has2DPositioning", out has2dPositioning));
+                pNode.Items.Add(MakeBoolByteNode(bin, "Has3DPositioning", out has3dPositioning));
+                if (has2dPositioning)
+                {
+                    pNode.Items.Add(MakeBoolByteNode(bin, "IsPannerEnabled"));
+                }
+            }
+            
         }
 
         if (has3dPositioning)
@@ -785,16 +1064,14 @@ public partial class BinaryInterpreterWPF
     {
         var aNode = new BinInterpNode(bin.Position, "AuxParams");
 
-        bool hasAux = false;
+        bool hasAux;
 
         if(version <= 89)
         {
             aNode.Items.Add(MakeBoolByteNode(bin, "OverrideGameAuxSends"));
             aNode.Items.Add(MakeBoolByteNode(bin, "UseGameAuxSends"));
             aNode.Items.Add(MakeBoolByteNode(bin, "OverrideUserAuxSends"));
-            hasAux = bin.ReadBoolByte();
-            bin.Skip(-1);
-            aNode.Items.Add(MakeBoolByteNode(bin, "HasAux"));
+            aNode.Items.Add(MakeBoolByteNode(bin, "HasAux", out hasAux));
         }
         else
         {
@@ -871,20 +1148,13 @@ public partial class BinaryInterpreterWPF
 
         if(version <= 52)
         {
-            ReadStateGroup(sNode, bin, version);
-
+            ReadStateGroup(sNode);
         }
         else
         {
-            var countPos = bin.Position;
-            var propsCount = VarCount.ReadResizingUint(bin.BaseStream);
-            bin.JumpTo(countPos);
-            sNode.Items.Add(MakeWwiseVarCountNode(bin, "StatePropsCount"));
-
-            if(propsCount > 0)
+            if (version >= 125)
             {
-                var props = new BinInterpNode(bin.Position, "PropertyInfo") { IsExpanded = true };
-                for (var i = 0;i < propsCount; i++)
+                sNode.Items.Add(MakeArrayNodeWwiseVarCount(bin, "StateProperties", i =>
                 {
                     var item = new BinInterpNode(bin.Position, i.ToString());
 
@@ -893,73 +1163,59 @@ public partial class BinaryInterpreterWPF
                     if (version <= 125) accumType += 1;
                     item.Items.Add(new BinInterpNode(bin.Position - 1, $"AccumType: {Enum.GetName(accumType)}"));
                     if (version > 126) item.Items.Add(MakeBoolByteNode(bin, "InDb"));
-
-                    props.Items.Add(item);
-                }
-
-                sNode.Items.Add(props);
+                    
+                    return item;
+                }));
             }
 
-            countPos = bin.Position;
-            var groupsCount = VarCount.ReadResizingUint(bin.BaseStream);
-            bin.JumpTo(countPos);
-            sNode.Items.Add(MakeWwiseVarCountNode(bin, "StateGroupsCount"));
-
-            if(groupsCount > 0)
+            var arrayFunc = new Func<int, BinInterpNode>(i =>
             {
-                var groups = new BinInterpNode(bin.Position, "GroupChunks") { IsExpanded = true };
-                for (var i = 0; i < propsCount; i++)
-                {
-                    var item = new BinInterpNode(bin.Position, i.ToString());
+                var item = new BinInterpNode(bin.Position, i.ToString());
 
-                    item.Items.Add(MakeWwiseIdNode(bin, "StateGroup"));
-                    ReadStateGroup(item, bin, version);
-                    groups.Items.Add(item);
-                }
+                item.Items.Add(MakeWwiseIdNode(bin, "StateGroup"));
+                ReadStateGroup(item);
 
-                sNode.Items.Add(groups);
-            }
+                return item;
+            });
+
+            sNode.Items.Add(version >= 125
+                ? MakeArrayNodeWwiseVarCount(bin, "StateGroups", arrayFunc)
+                : MakeArrayNode(bin, "StateGroups", arrayFunc));
         }
 
         root.Items.Add(sNode);
+        return;
 
-        void ReadStateGroup(BinInterpNode root, EndianReader bin, uint version)
+        void ReadStateGroup(BinInterpNode grp)
         {
-            root.Items.Add(MakeByteEnumNode<SyncTypeInner>(bin, "SyncType"));
+            grp.Items.Add(MakeByteEnumNode<SyncTypeInner>(bin, "SyncType"));
             var countPos = bin.Position;
             var stateCount = ReadStateCount();
             var length = (int)(bin.Position - countPos);
             bin.JumpTo(countPos);
-            root.Items.Add(new BinInterpNode(bin.Position, $"StateCount: {ReadStateCount()}") { Length = length });
+            grp.Items.Add(new BinInterpNode(bin.Position, $"StateCount: {ReadStateCount()}") { Length = length });
             var states = new BinInterpNode(bin.Position, "States") { IsExpanded = true };
             for (var i = 0; i < stateCount; i++)
             {
                 var state = new BinInterpNode(bin.Position, $"{i}");
-                state.Items.Add(MakeWwiseIdNode(bin, "State"));
-                if (version <= 120) state.Items.Add(MakeWwiseIdRefNode(bin, "StateId"));
+                state.Items.Add(MakeWwiseIdNode(bin, "StateId"));
                 if (version <= 52) state.Items.Add(MakeBoolByteNode(bin, "IsCustom"));
                 if (version <= 145) state.Items.Add(MakeWwiseIdRefNode(bin, "StateInstanceId"));
 
                 // bunch of stuff goes right here except its only higher wwise versions! score!
                 states.Items.Add(state);
             }
-            root.Items.Add(states);
+            grp.Items.Add(states);
         }
 
         uint ReadStateCount()
         {
-            if (version > 122)
+            return version switch
             {
-                return VarCount.ReadResizingUint(bin.BaseStream);
-            }
-            else if (version is > 36 and <= 52)
-            {
-                return bin.ReadUInt16();
-            }
-            else
-            {
-                return bin.ReadUInt32();
-            }
+                > 122 => VarCount.ReadResizingUint(bin.BaseStream),
+                > 36 => bin.ReadUInt16(),
+                _ => bin.ReadUInt32()
+            };
         }
     }
 
@@ -969,31 +1225,44 @@ public partial class BinaryInterpreterWPF
         {
             var rtpc = new BinInterpNode(bin.Position, $"RTPC {i}");
 
-            rtpc.Items.Add(MakeWwiseIdRefNode(bin, "PluginId"));
-            rtpc.Items.Add(MakeBoolByteNode(bin, "IsRendered"));
+            if (version <= 48)
+            {
+                rtpc.Items.Add(MakeWwiseIdRefNode(bin, "PluginId"));
+                rtpc.Items.Add(MakeByteNode(bin, "IsRendered"));
+            }
             rtpc.Items.Add(MakeWwiseIdRefNode(bin, "RTPCId"));
-            var rtpcType = bin.ReadByte();
-            if (version <= 140 && rtpcType == 0x02) rtpcType = 0x04;
-            rtpc.Items.Add(new BinInterpNode(bin.Position - 1, $"RTPCType: {Enum.GetName((RtpcTypeInner)rtpcType)}") { Length = 1 });
-            var accumType = (AccumTypeInner)bin.ReadByte();
-            if (version <= 125) accumType += 1;
-            rtpc.Items.Add(new BinInterpNode(bin.Position - 1, $"AccumType: {Enum.GetName(accumType)}"));
-            if(version <= 89) rtpc.Items.Add(MakeUInt32EnumNode<RtpcParameterId>(bin, "ParameterId"));
-            else if(version <= 113) rtpc.Items.Add(MakeByteEnumNode<RtpcParameterId>(bin, "ParameterId"));
+
+            if (version > 89)
+            {
+                var rtpcType = bin.ReadByte();
+                if (version <= 140 && rtpcType == 0x02) rtpcType = 0x04;
+                rtpc.Items.Add(new BinInterpNode(bin.Position - 1, $"RTPCType: {Enum.GetName((RtpcTypeInner)rtpcType)}") { Length = 1 });
+                var accumType = (AccumTypeInner)bin.ReadByte();
+                if (version <= 125) accumType += 1;
+                rtpc.Items.Add(new BinInterpNode(bin.Position - 1, $"AccumType: {Enum.GetName(accumType)}"));
+            }
+            
+            var pidPos = bin.Position;
+            var (paramId, modParamId, customId) = ParameterId.DeserializeStatic(bin.BaseStream, version, false); // TODO: use modulator not handles on high versions!
+            var pidLength = (int)(bin.Position - pidPos);
+            if (customId != null)
+            {
+                rtpc.Items.Add(new BinInterpNode(pidPos,  $"CustomId: {customId}") { Length = pidLength });
+            }
             else
             {
-                var pos = bin.Position;
-                var parameterId = (RtpcParameterId)VarCount.ReadResizingUint(bin.BaseStream);
-                bin.JumpTo(pos);
-                var node = MakeWwiseVarCountNode(bin, $"ParameterId");
-                node.Header += $" ({Enum.GetName(parameterId)})";
-                rtpc.Items.Add(node);
+                rtpc.Items.Add(paramId.HasValue
+                    ? new BinInterpNode(pidPos, $"ParameterId: {Enum.GetName(paramId.Value)}")
+                        { Length = pidLength }
+                    : new BinInterpNode(pidPos, $"ModulatorParameterId: {Enum.GetName(modParamId.Value)}")
+                        { Length = pidLength });
             }
+
             rtpc.Items.Add(MakeWwiseIdRefNode(bin, "RtpcCurveId"));
             rtpc.Items.Add(MakeByteEnumNode<CurveScalingInner>(bin, "CurveScaling"));
-            rtpc.Items.Add(MakeArrayNodeInt16Count(bin, "Graph", i =>
+            rtpc.Items.Add(MakeArrayNodeInt16Count(bin, "Graph", j =>
             {
-                var gItem = new BinInterpNode(bin.Position, $"Graph Item {i}");
+                var gItem = new BinInterpNode(bin.Position, $"Graph Item {j}");
                 gItem.Items.Add(MakeFloatNode(bin, "From"));
                 gItem.Items.Add(MakeFloatNode(bin, "To"));
                 gItem.Items.Add(MakeUInt32EnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
@@ -1004,7 +1273,7 @@ public partial class BinaryInterpreterWPF
         }));
     }
 
-    private void Scan_HIRC_FeedbackInfo(BinInterpNode root, EndianReader bin, uint version)
+    private void Scan_HIRC_FeedbackInfo(BinInterpNode root, EndianReader bin)
     {
         root.Items.Add(MakeWwiseIdRefNode(bin, "BusId"));
         bin.Skip(-4);
@@ -1054,464 +1323,111 @@ public partial class BinaryInterpreterWPF
         }));
     }
 
-    private List<ITreeItem> Scan_WwiseBankOld(byte[] data)
+    private void Scan_WwiseBank_STMG(BinInterpNode root, EndianReader bin, uint version)
     {
-        var subnodes = new List<ITreeItem>();
-        try
+        root.Items.Add(MakeFloatNode(bin, "VolumeThreshold"));
+        if (version > 53) root.Items.Add(MakeUInt16Node(bin, "MaxNumVoicesLimitInternal"));
+        if (version > 126) root.Items.Add(MakeUInt16Node(bin, "MaxNumDangerousVirtVoicesLimitInternal"));
+        
+        root.Items.Add(MakeArrayNode(bin, "StateGroups", i =>
         {
-            var bin = new EndianReader(new MemoryStream(data)) { Endian = Pcc.Endian };
-            bin.JumpTo(CurrentLoadedExport.propsEnd());
-
-            if (Pcc.Game is MEGame.ME2 or MEGame.LE2)
+            var sg = new BinInterpNode(bin.Position, $"Group {i}");
+            sg.Items.Add(MakeWwiseIdNode(bin, "StateId"));
+            sg.Items.Add(MakeUInt32Node(bin, "DefaultTransitionTime"));
+            if(version <= 52) sg.Items.Add(MakeArrayNode(bin, "CustomStates", j =>
             {
-                subnodes.Add(MakeUInt32Node(bin, "Unk1"));
-                subnodes.Add(MakeUInt32Node(bin, "Unk2"));
-                if (bin.Skip(-8).ReadInt64() == 0)
+                var stateNode = MakeWwiseIdRefNode(bin, "StateId");
+                var node = MakeHIRCNode(j, bin, version, false);
+                node.Items.Insert(0, stateNode);
+                return node;
+            }));
+            sg.Items.Add(MakeArrayNode(bin, "StateTransitions", j =>
+            {
+                var st = new BinInterpNode(bin.Position, $"{j}");
+                st.Items.Add(MakeWwiseIdRefNode(bin, "FromStateId"));
+                st.Items.Add(MakeWwiseIdRefNode(bin, "ToStateId"));
+                st.Items.Add(MakeUInt32Node(bin, "TransitionTime"));
+                return st;
+            }));
+                
+            return sg;
+        }));
+        
+        root.Items.Add(MakeArrayNode(bin, "SwitchGroups", i =>
+        {
+            var sg = new BinInterpNode(bin.Position, $"Group {i}");
+            sg.Items.Add(MakeWwiseIdNode(bin, "GroupId"));
+            sg.Items.Add(MakeWwiseIdRefNode(bin, "RtpcId?"));
+            if (version > 89)
+            {
+                var rtpcType = bin.ReadByte();
+                if (version <= 140 && rtpcType == 0x02)
                 {
-                    return subnodes;
+                    rtpcType = 0x04;
                 }
+                sg.Items.Add(new BinInterpNode(bin.Position - 1, $"RtpcType: {Enum.GetName((RtpcTypeInner)rtpcType)}") { Length = 1 });
             }
-            subnodes.Add(new BinInterpNode(bin.Position, $"BulkDataFlags: {(EBulkDataFlags)bin.ReadUInt32()}"));
-            subnodes.Add(MakeInt32Node(bin, "Element Count", out int dataSize));
-            subnodes.Add(MakeInt32Node(bin, "BulkDataSizeOnDisk"));
-            subnodes.Add(MakeUInt32HexNode(bin, "BulkDataOffsetInFile"));
-
-            if (dataSize == 0)
-            {
-                // Nothing more
-                return subnodes;
-            }
-
-            var chunksNode = new BinInterpNode(bin.Position, "Chunks")
-            {
-                IsExpanded = true,
-            };
-            subnodes.Add(chunksNode);
-            while (bin.Position < bin.Length)
-            {
-                var start = bin.Position;
-                string chunkID = bin.BaseStream.ReadStringLatin1(4); //This is not endian swapped!
-                int size = bin.ReadInt32();
-                var chunk = new BinInterpNode(start, $"{chunkID}: {size} bytes")
-                {
-                    Length = size + 8
-                };
-                chunksNode.Items.Add(chunk);
-
-                switch (chunkID)
-                {
-                    case "BKHD":
-                        chunk.Items.Add(MakeUInt32Node(bin, "Version"));
-                        chunk.Items.Add(new BinInterpNode(bin.Position, $"ID: {bin.ReadUInt32():X}") { Length = 4 });
-                        chunk.Items.Add(MakeUInt32Node(bin, "Unk Zero"));
-                        chunk.Items.Add(MakeUInt32Node(bin, "Unk Zero"));
-                        break;
-                    case "STMG":
-                        if (Pcc.Game.IsGame2())
-                        {
-                            chunk.Items.Add(new BinInterpNode(bin.Position, "STMG node not parsed for ME2"));
-                            break;
-                        }
-                        chunk.Items.Add(MakeFloatNode(bin, "Volume Threshold"));
-                        if (Pcc.Game == MEGame.ME3)
-                        {
-                            chunk.Items.Add(MakeUInt16Node(bin, "Max Voice Instances"));
-                        }
-                        int numStateGroups;
-                        var stateGroupsNode = new BinInterpNode(bin.Position, $"State Groups ({numStateGroups = bin.ReadInt32()})");
-                        chunk.Items.Add(stateGroupsNode);
-                        for (int i = 0; i < numStateGroups; i++)
-                        {
-                            stateGroupsNode.Items.Add(MakeUInt32HexNode(bin, "ID"));
-                            stateGroupsNode.Items.Add(MakeUInt32Node(bin, "Default Transition Time (ms)"));
-                            int numTransitionTimes;
-                            var transitionTimesNode = new BinInterpNode(bin.Position, $"Custom Transition Times ({numTransitionTimes = bin.ReadInt32()})");
-                            stateGroupsNode.Items.Add(transitionTimesNode);
-                            for (int j = 0; j < numTransitionTimes; j++)
-                            {
-                                transitionTimesNode.Items.Add(MakeUInt32HexNode(bin, "'From' state ID"));
-                                transitionTimesNode.Items.Add(MakeUInt32HexNode(bin, "'To' state ID"));
-                                transitionTimesNode.Items.Add(MakeUInt32Node(bin, "Transition Time (ms)"));
-                            }
-                        }
-                        int numSwitchGroups;
-                        var switchGroupsNode = new BinInterpNode(bin.Position, $"Switch Groups ({numSwitchGroups = bin.ReadInt32()})");
-                        chunk.Items.Add(switchGroupsNode);
-                        for (int i = 0; i < numSwitchGroups; i++)
-                        {
-                            switchGroupsNode.Items.Add(MakeUInt32HexNode(bin, "ID"));
-                            switchGroupsNode.Items.Add(MakeUInt32HexNode(bin, "Game Parameter ID"));
-                            int numPoints;
-                            var pointNode = new BinInterpNode(bin.Position, $"Points ({numPoints = bin.ReadInt32()})");
-                            switchGroupsNode.Items.Add(pointNode);
-                            for (int j = 0; j < numPoints; j++)
-                            {
-                                pointNode.Items.Add(MakeFloatNode(bin, "Game Parameter value"));
-                                pointNode.Items.Add(MakeUInt32HexNode(bin, "ID of Switch set when Game Parameter >= given value"));
-                                pointNode.Items.Add(MakeUInt32Node(bin, "Curve shape. (9 = constant)"));
-                            }
-                        }
-                        int numGameParams;
-                        var gameParamNode = new BinInterpNode(bin.Position, $"Game Parameters ({numGameParams = bin.ReadInt32()})");
-                        chunk.Items.Add(gameParamNode);
-                        for (int i = 0; i < numGameParams; i++)
-                        {
-                            gameParamNode.Items.Add(MakeUInt32HexNode(bin, "ID"));
-                            gameParamNode.Items.Add(MakeFloatNode(bin, "default value"));
-                        }
-                        break;
-                    case "DIDX":
-                        for (int i = 0; i < size / 12; i++)
-                        {
-                            BinInterpNode item = new BinInterpNode(bin.Position, $"{i}: Embedded File Info")
-                            {
-                                Length = 12,
-                                IsExpanded = true
-                            };
-                            chunk.Items.Add(item);
-                            item.Items.Add(new BinInterpNode(bin.Position, $"ID: {bin.ReadUInt32():X}") { Length = 4 });
-                            item.Items.Add(MakeUInt32Node(bin, "Offset"));
-                            item.Items.Add(MakeUInt32Node(bin, "Length"));
-
-                            // //todo: remove testing code
-                            // bin.Skip(-8);
-                            // int off = bin.ReadInt32();
-                            // int len = bin.ReadInt32();
-                            // item.Items.Add(new BinInterpNode(0xf4 + off, "file start"));
-                            // item.Items.Add(new BinInterpNode(0xf4 + off + len, "file end"));
-                        }
-                        break;
-                    case "DATA":
-                        chunk.Items.Add(new BinInterpNode(bin.Position, "Start of DATA section. Embedded file offsets are relative to here"));
-                        break;
-                    case "HIRC":
-                        chunk.Items.Add(MakeUInt32Node(bin, "HIRC object count"));
-                        uint hircCount = bin.Skip(-4).ReadUInt32();
-                        for (int i = 0; i < hircCount; i++)
-                        {
-                            chunk.Items.Add(ScanHircObject(bin, i));
-                        }
-                        break;
-                    case "STID":
-                        chunk.Items.Add(MakeUInt32Node(bin, "Unk One"));
-                        chunk.Items.Add(MakeUInt32Node(bin, "WwiseBanks referenced in this bank"));
-                        uint soundBankCount = bin.Skip(-4).ReadUInt32();
-                        for (int i = 0; i < soundBankCount; i++)
-                        {
-                            BinInterpNode item = new BinInterpNode(bin.Position, $"{i}: Referenced WwiseBank")
-                            {
-                                Length = 12,
-                                IsExpanded = true
-                            };
-                            item.Items.Add(new BinInterpNode(bin.Position, $"ID: {bin.ReadUInt32():X}") { Length = 4 });
-                            int strLen = bin.ReadByte();
-                            item.Items.Add(new BinInterpNode(bin.Position, $"Name: {bin.ReadStringASCII(strLen)}") { Length = strLen });
-                            chunk.Items.Add(item);
-                        }
-                        break;
-                    default:
-                        chunk.Items.Add(new BinInterpNode(bin.Position, "UNPARSED CHUNK!"));
-                        break;
-                }
-
-                bin.JumpTo(start + size + 8);
-            }
-        }
-        catch (Exception ex)
+            sg.Items.Add(MakeArrayNode(bin, "Graph", j => MakeWwiseGraphItem(bin, j)));
+            return sg;
+        }));
+        
+        root.Items.Add(MakeArrayNode(bin, "Params", i =>
         {
-            subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
-        }
-        return subnodes;
-
-        BinInterpNode ScanHircObject(EndianReader bin, int idx)
-        {
-            var startPos = bin.Position;
-            HIRCType hircType = (HIRCType)(Pcc.Game == MEGame.ME2 ? bin.ReadUInt32() : bin.ReadByte());
-            int len = bin.ReadInt32();
-            uint id = bin.ReadUInt32();
-            var node = new BinInterpNode(startPos, $"{idx}: Type: {AudioStreamHelper.GetHircObjTypeString(hircType)} | Length:{len} | ID:{id:X8}")
+            var p = new BinInterpNode(bin.Position, $"Param {i}");
+            p.Items.Add(MakeWwiseIdRefNode(bin, "RtpcParamId"));
+            p.Items.Add(MakeFloatNode(bin, "Value"));
+            if (version > 89)
             {
-                Length = len + 4 + (Pcc.Game == MEGame.ME2 ? 4 : 1)
-            };
-            bin.JumpTo(startPos);
-            node.Items.Add(Pcc.Game == MEGame.ME2 ? MakeUInt32Node(bin, "Type") : MakeByteNode(bin, "Type"));
-            node.Items.Add(MakeInt32Node(bin, "Length"));
-            node.Items.Add(MakeUInt32HexNode(bin, "ID"));
-            var endPos = startPos + node.Length;
-            switch (hircType)
-            {
-                case HIRCType.Event:
-                    if (Pcc.Game.IsLEGame())
-                    {
-                        MakeArrayNodeByteCount(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}"));
-                    }
-                    else
-                    {
-                        MakeArrayNode(bin, "Event Actions", i => MakeUInt32HexNode(bin, $"{i}"));
-                    }
-                    break;
-                case HIRCType.EventAction:
-                    {
-                        node.Items.Add(new BinInterpNode(bin.Position, $"Scope: {(WwiseBankParsed.EventActionScope)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
-                        WwiseBankParsed.EventActionType actType;
-                        node.Items.Add(new BinInterpNode(bin.Position, $"Action Type: {actType = (WwiseBankParsed.EventActionType)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
-                        if (Pcc.Game.IsOTGame())
-                            node.Items.Add(MakeUInt16Node(bin, "Unknown1"));
-                        node.Items.Add(MakeUInt32HexNode(bin, "Referenced Object ID"));
-                        switch (actType)
-                        {
-                            case WwiseBankParsed.EventActionType.Play:
-                                node.Items.Add(MakeUInt32Node(bin, "Delay (ms)"));
-                                node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range lower bound (ms)"));
-                                node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range upper bound (ms)"));
-                                node.Items.Add(MakeUInt32Node(bin, "Unknown2"));
-                                node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
-                                node.Items.Add(MakeInt32Node(bin, "Fade-in Randomization Range lower bound (ms)"));
-                                node.Items.Add(MakeInt32Node(bin, "Fade-in Randomization Range upper bound (ms)"));
-                                node.Items.Add(MakeByteNode(bin, "Fade-in curve Shape"));
-                                break;
-                            case WwiseBankParsed.EventActionType.Stop:
-                                node.Items.Add(MakeUInt32Node(bin, "Delay (ms)"));
-                                node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range lower bound (ms)"));
-                                node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range upper bound (ms)"));
-                                node.Items.Add(MakeUInt32Node(bin, "Unknown2"));
-                                node.Items.Add(MakeUInt32Node(bin, "Fade-out (ms)"));
-                                node.Items.Add(MakeInt32Node(bin, "Fade-out Randomization Range lower bound (ms)"));
-                                node.Items.Add(MakeInt32Node(bin, "Fade-out Randomization Range upper bound (ms)"));
-                                node.Items.Add(MakeByteNode(bin, "Fade-out curve Shape"));
-                                break;
-                            case WwiseBankParsed.EventActionType.Play_LE:
-                                node.Items.Add(MakeByteNode(bin, "Unknown1"));
-                                bool playHasFadeIn;
-                                node.Items.Add(new BinInterpNode(bin.Position, $"Has Fade In: {playHasFadeIn = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
-                                if (playHasFadeIn)
-                                {
-                                    node.Items.Add(MakeByteNode(bin, "Unknown byte"));
-                                    node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
-                                }
-                                bool RandomFade;
-                                node.Items.Add(new BinInterpNode(bin.Position, $"Unknown 2: {RandomFade = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
-                                if (RandomFade)
-                                {
-                                    node.Items.Add(MakeByteNode(bin, "Enabled?"));
-                                    node.Items.Add(MakeUInt32Node(bin, "MinOffset"));
-                                    node.Items.Add(MakeUInt32Node(bin, "MaxOffset"));
-                                }
-                                node.Items.Add(new BinInterpNode(bin.Position, $"Fade-out curve Shape: {(WwiseBankParsed.EventActionFadeCurve)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
-                                node.Items.Add(MakeUInt32HexNode(bin, "Bank ID"));
-                                break;
-                            case WwiseBankParsed.EventActionType.Stop_LE:
-                                node.Items.Add(MakeByteNode(bin, "Unknown1"));
-                                bool stopHasFadeOut;
-                                node.Items.Add(new BinInterpNode(bin.Position, $"Has Fade In: {stopHasFadeOut = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
-                                if (stopHasFadeOut)
-                                {
-                                    node.Items.Add(MakeByteNode(bin, "Unknown byte"));
-                                    node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
-                                }
-                                node.Items.Add(MakeByteNode(bin, "Unknown2"));
-                                node.Items.Add(new BinInterpNode(bin.Position, $"Fade-out curve Shape: {(WwiseBankParsed.EventActionFadeCurve)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
-                                node.Items.Add(MakeByteNode(bin, "Unknown3"));
-                                node.Items.Add(MakeByteNode(bin, "Unknown4"));
-                                break;
-                            case WwiseBankParsed.EventActionType.SetLPF_LE:
-                            case WwiseBankParsed.EventActionType.SetVolume_LE:
-                            case WwiseBankParsed.EventActionType.ResetLPF_LE:
-                            case WwiseBankParsed.EventActionType.ResetVolume_LE:
-                                node.Items.Add(MakeByteNode(bin, "Unknown1"));
-                                bool HasFade;
-                                node.Items.Add(new BinInterpNode(bin.Position, $"Has Fade In: {HasFade = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
-                                if (HasFade)
-                                {
-                                    node.Items.Add(MakeByteNode(bin, "Unknown byte"));
-                                    node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
-                                }
-                                node.Items.Add(MakeByteNode(bin, "Unknown2"));
-                                node.Items.Add(new BinInterpNode(bin.Position, $"Fade-out curve Shape: {(WwiseBankParsed.EventActionFadeCurve)bin.ReadByte()}", NodeType.StructLeafByte) { Length = 1 });
-                                node.Items.Add(MakeByteNode(bin, "Unknown3"));
-                                node.Items.Add(MakeFloatNode(bin, "Unknown float A"));
-                                node.Items.Add(MakeInt32Node(bin, "Unknown int/float B"));
-                                node.Items.Add(MakeInt32Node(bin, "Unknown int/float C"));
-                                node.Items.Add(MakeByteNode(bin, "Unknown4"));
-                                break;
-                        }
-                        goto default;
-                    }
-                case HIRCType.SoundSXFSoundVoice:
-                    //node.Items.Add(MakeUInt32Node(bin, "Unknown1"));
-                    //WwiseBank.SoundState soundState;
-                    //node.Items.Add(new BinInterpNode(bin.Position, $"State: {soundState = (WwiseBank.SoundState)bin.ReadUInt32()}", NodeType.StructLeafInt) { Length = 4 });
-                    //switch (soundState)
-                    //{
-                    //    case WwiseBank.SoundState.Embed:
-                    //        node.Items.Add(MakeUInt32HexNode(bin, "Audio ID"));
-                    //        node.Items.Add(MakeUInt32HexNode(bin, "Source ID"));
-                    //        node.Items.Add(MakeInt32Node(bin, "Type?"));
-                    //        node.Items.Add(MakeInt32Node(bin, "Prefetch length?"));
-                    //        break;
-                    //    case WwiseBank.SoundState.Streamed:
-                    //        node.Items.Add(MakeUInt32HexNode(bin, "Audio ID"));
-                    //        node.Items.Add(MakeUInt32HexNode(bin, "Source ID"));
-                    //        break;
-                    //    case WwiseBank.SoundState.StreamPrefetched:
-                    //        node.Items.Add(MakeUInt32HexNode(bin, "Audio ID"));
-                    //        node.Items.Add(MakeUInt32HexNode(bin, "Source ID"));
-                    //        node.Items.Add(MakeInt32Node(bin, "Type?"));
-                    //        node.Items.Add(MakeInt32Node(bin, "Prefetch length?"));
-                    //        break;
-
-                    //}
-
-                    //WwiseBank.SoundType soundType;
-                    //node.Items.Add(new BinInterpNode(bin.Position, $"SoundType: {soundType = (WwiseBank.SoundType)bin.ReadUInt32()}", NodeType.StructLeafInt) { Length = 4 });
-                    //switch (soundType)
-                    //{
-                    //    case WwiseBank.SoundType.SFX:
-                    //        node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //        node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //        node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //        node.Items.Add(MakeUInt32HexNode(bin, "Mixer Out Reference ID"));
-                    //        break;
-                    //    case WwiseBank.SoundType.Voice:
-                    //        node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //        node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //        node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //        node.Items.Add(MakeUInt32HexNode(bin, "Mixer Out Reference ID"));
-                    //        break;
-                    //    default:
-                    //        node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //        node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //        node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //        node.Items.Add(MakeUInt32HexNode(bin, "Mixer Out Reference ID"));
-                    //        break;
-                    //}
-                    //node.Items.Add(MakeByteNode(bin, "Unknown_hex32"));  //Maybe standard mixer package (shared with actor/mixer)
-                    //node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //node.Items.Add(MakeByteNode(bin, "PreVolume-UnknownF6"));
-                    //node.Items.Add(MakeFloatNode(bin, "Volume (-db)"));
-                    //node.Items.Add(MakeInt32Node(bin, "Unknown_A_4bytes"));  //These maybe link or RTPC or randomizer?
-                    //node.Items.Add(MakeInt32Node(bin, "Unknown_B_4bytes"));
-                    //node.Items.Add(MakeFloatNode(bin, "Low Frequency Effect (LFE)"));
-                    //node.Items.Add(MakeInt32Node(bin, "Unknown_C_4bytes"));
-                    //node.Items.Add(MakeInt32Node(bin, "Unknown_D_4bytes"));
-                    //node.Items.Add(MakeFloatNode(bin, "Pitch"));
-                    //node.Items.Add(MakeFloatNode(bin, "Unknown_E_float"));
-                    //node.Items.Add(MakeFloatNode(bin, "Unknown_F_float"));
-                    //node.Items.Add(MakeFloatNode(bin, "Low Pass Filter"));
-                    //node.Items.Add(MakeUInt32Node(bin, "Unknown_G_4bytes"));
-                    //node.Items.Add(MakeUInt32Node(bin, "Unknown_H_4bytes"));
-                    //node.Items.Add(MakeUInt32Node(bin, "Unknown_I_4bytes"));
-                    //node.Items.Add(MakeUInt32Node(bin, "Unknown_J_4bytes"));
-                    //node.Items.Add(MakeUInt32Node(bin, "Unknown_K_4bytes"));
-                    //node.Items.Add(MakeUInt32Node(bin, "Unknown_L_4bytes")); //In v56 banks?
-                    //                                                         //node.Items.Add(MakeByteNode(bin, "Unknown"));  In imported v53 banks?
-                    //                                                         //node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //node.Items.Add(MakeInt32Node(bin, "Loop Count (0=infinite)"));
-                    //node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //node.Items.Add(MakeByteNode(bin, "Unknown"));
-
-                    goto default;
-                case HIRCType.RandomOrSequenceContainer:
-                case HIRCType.SwitchContainer:
-                case HIRCType.ActorMixer:
-                    //node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //int nEffects = 0;
-                    //node.Items.Add(new BinInterpNode(bin.Position, $"Count of Effects (?Aux Bus?): {nEffects = bin.ReadByte()}") { Length = 1 });
-                    //for (int b = 0; b < nEffects; b++)
-                    //{
-                    //    node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //    node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //    node.Items.Add(MakeUInt32HexNode(bin, "Effect Reference ID"));
-                    //    node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //}
-                    //if (nEffects > 0)
-                    //{
-                    //    node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //}
-                    //node.Items.Add(MakeUInt32HexNode(bin, "Master Audio Bus Reference ID"));
-                    //node.Items.Add(MakeUInt32HexNode(bin, "Audio Out link"));
-                    //node.Items.Add(MakeByteNode(bin, "Unknown_hex32"));  //Is here on a standard mixer? Appears in SoundSFX/voice
-                    //node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //node.Items.Add(MakeByteNode(bin, "Unknown"));
-                    //node.Items.Add(MakeByteNode(bin, "PreVolume-Unknown_hexF6"));
-                    //node.Items.Add(MakeFloatNode(bin, "Volume (-db)"));
-                    //node.Items.Add(MakeUInt32Node(bin, "Unknown_A_4bytes"));  //These maybe link or RTPC or randomizer?
-                    //node.Items.Add(MakeUInt32Node(bin, "Unknown_B_4bytes"));
-                    //node.Items.Add(MakeFloatNode(bin, "Low Frequency Effect (LFE)"));
-                    //node.Items.Add(MakeUInt32Node(bin, "Unknown_C_4bytes"));
-                    //node.Items.Add(MakeUInt32Node(bin, "Unknown_D_4bytes"));
-                    //node.Items.Add(MakeFloatNode(bin, "Pitch"));
-                    //node.Items.Add(MakeFloatNode(bin, "Unknown_E_float"));
-                    //node.Items.Add(MakeFloatNode(bin, "Unknown_F_float"));
-                    //node.Items.Add(MakeFloatNode(bin, "Low Pass Filter"));
-                    //node.Items.Add(MakeUInt32Node(bin, "Unknown_G_4bytes"));
-                    //node.Items.Add(MakeUInt32Node(bin, "Unknown_H_4bytes")); //Mixer end
-
-                    ////Minimum is 4 x 4bytes but can expanded
-                    //bool hasEffects = false; //Maybe something else
-                    //node.Items.Add(new BinInterpNode(bin.Position, $"Unknown_Byte->Int + Unk4 + Float: {hasEffects = bin.ReadBoolByte()}") { Length = 1 }); //Count of something? effects?
-                    //if (hasEffects)
-                    //{
-                    //    node.Items.Add(MakeInt32Node(bin, "Unknown_Int"));
-                    //    node.Items.Add(MakeUInt32Node(bin, "Unknown_I_4bytes"));
-                    //    node.Items.Add(MakeFloatNode(bin, "Unknown Float"));
-                    //}
-                    //bool hasAttenuation = false;
-                    //node.Items.Add(new BinInterpNode(bin.Position, $"Attenuations?: {hasAttenuation = bin.ReadBoolByte()}") { Length = 1 }); //RPTCs? Count? Attenuations?
-                    //if (hasAttenuation)
-                    //{
-                    //    node.Items.Add(MakeInt32Node(bin, "Unknown_J_Int")); //<= extra if byte?
-                    //    node.Items.Add(MakeUInt32HexNode(bin, "Attenuation? Reference")); //<= extra if byte?
-                    //    node.Items.Add(MakeUInt32Node(bin, "Unknown_L_4bytes"));
-                    //    node.Items.Add(MakeUInt32Node(bin, "Unknown_M_4bytes"));
-                    //    node.Items.Add(MakeByteNode(bin, "UnknownByte"));
-                    //}
-                    //else
-                    //{
-                    //    node.Items.Add(MakeInt32Node(bin, "Unknown_J_Int"));
-                    //    node.Items.Add(MakeUInt32Node(bin, "Unknown_L_4bytes"));
-                    //}
-
-                    //node.Items.Add(MakeUInt32Node(bin, "Unknown_N_4bytes"));
-                    //node.Items.Add(MakeUInt32Node(bin, "Unknown_O_4bytes"));
-                    //goto default;
-                    //node.Items.Add(MakeArrayNode(bin, "Input References", i => MakeUInt32HexNode(bin, $"{i}")));
-                    goto default;
-                case HIRCType.AudioBus:
-                case HIRCType.BlendContainer:
-                case HIRCType.MusicSegment:
-                case HIRCType.MusicTrack:
-                case HIRCType.MusicSwitchContainer:
-                case HIRCType.MusicPlaylistContainer:
-                case HIRCType.Attenuation:
-                case HIRCType.DialogueEvent:
-                case HIRCType.MotionBus:
-                case HIRCType.MotionFX:
-                case HIRCType.Effect:
-                case HIRCType.AuxiliaryBus:
-                //node.Items.Add(MakeByteNode(bin, "Count of something?"));
-                //node.Items.Add(MakeByteNode(bin, "Unknown"));
-                //node.Items.Add(MakeByteNode(bin, "Unknown"));
-                //node.Items.Add(MakeByteNode(bin, "Unknown"));
-                //node.Items.Add(MakeUInt32Node(bin, "Unknown_Int"));
-                //node.Items.Add(MakeFloatNode(bin, "Unknown Float"));
-                //break;
-                case HIRCType.Settings:
-                default:
-                    if (bin.Position < endPos)
-                    {
-                        node.Items.Add(new BinInterpNode(bin.Position, "Unknown bytes")
-                        {
-                            Length = (int)(endPos - bin.Position)
-                        });
-                    }
-                    break;
+                p.Items.Add(MakeUInt32EnumNode<TransitionRampingType>(bin, "RampingType"));
+                p.Items.Add(MakeFloatNode(bin, "RampUp"));
+                p.Items.Add(MakeFloatNode(bin, "RampDown"));
+                p.Items.Add(MakeByteEnumNode<BuiltInParam>(bin, "BuiltInParam"));
             }
+            return p;
+        }));
 
-            bin.JumpTo(endPos);
-            return node;
-        }
+        if (version > 118) root.Items.Add(MakeArrayNode(bin, "AcousticTextures", i =>
+        {
+            var at = new BinInterpNode(bin.Position, $"Acoustic Texture {i}");
+            at.Items.Add(MakeWwiseIdNode(bin, "AcousticTexture"));
+            foreach(var p in (string[])["AbsorptionOffset", "AbsorptionLow", "AbsorptionMidLow", "AbsorptionMidHigh", "AbsorptionHigh", "Scattering"])
+            {
+                at.Items.Add(MakeFloatNode(bin, p));
+            }
+            return at;
+        }));
     }
 
+    private void Scan_WwiseBank_ENVS(BinInterpNode root, EndianReader bin, uint version)
+    {
+        var x = version <= 150 ? 2 : 4;
+        var y = version <= 89 ? 2 : 3;
+        string[] xLabels = ["Obs", "Occ", "Diff", "Trans"];
+        string[] yLabels = ["Volume", "LPF", "HPF"];
+        
+        for(var i = 0; i < x; i++)
+        {
+            for(var j = 0; j < y; j++)
+            {
+                var curve = new BinInterpNode(bin.Position, $"Curve {xLabels[i]}[{yLabels[j]}]");
+                ScanCurve(curve);
+                curve.Length = (int)bin.Position - curve.Offset;
+                root.Items.Add(curve);
+            }
+        }
+        
+        void ScanCurve(BinInterpNode parent)
+        {
+            parent.Items.Add(MakeBoolByteNode(bin, "CurveEnabled"));
+            parent.Items.Add(MakeByteEnumNode<CurveScalingInner>(bin, "CurveScaling"));
+            parent.Items.Add(MakeArrayNodeInt16Count(bin, "Graph", j =>
+            {
+                var gItem = new BinInterpNode(bin.Position, $"Graph Item {j}");
+                gItem.Items.Add(MakeFloatNode(bin, "From"));
+                gItem.Items.Add(MakeFloatNode(bin, "To"));
+                gItem.Items.Add(MakeUInt32EnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
+                return gItem;
+            }));
+        }
+    }
 }

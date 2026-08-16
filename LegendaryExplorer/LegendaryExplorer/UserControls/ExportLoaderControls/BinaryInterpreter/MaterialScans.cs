@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using static LegendaryExplorer.UserControls.ExportLoaderControls.BinaryNodeFactory;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls
 {
@@ -180,14 +178,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             List<ITreeItem> nodes = node.Items;
             try
             {
-                nodes.Add(MakeArrayNode(bin, "Compile Errors", i => MakeStringNode(bin, $"{i}")));
-                nodes.Add(MakeArrayNode(bin, "TextureDependencyLengthMap", i => new BinInterpNode(bin.Position, $"{entryRefString(bin)}: {bin.ReadInt32()}")));
+                nodes.Add(MakeArrayNode(bin, "Compile Errors", i => MakeStringNode(bin, $"{i}", Pcc.Game)));
+                nodes.Add(MakeArrayNode(bin, "TextureDependencyLengthMap", i => new BinInterpNode(bin.Position, $"{MakeEntryNodeString(bin, Pcc)}: {bin.ReadInt32()}")));
                 nodes.Add(MakeInt32Node(bin, "MaxTextureDependencyLength"));
                 nodes.Add(MakeMaterialGuidNode(bin, "ID", materialGuidMap));
                 nodes.Add(MakeUInt32Node(bin, "NumUserTexCoords"));
                 if (Pcc.Game >= MEGame.ME3)
                 {
-                    nodes.Add(MakeArrayNode(bin, "UniformExpressionTextures", i => MakeEntryNode(bin, $"{i}")));
+                    nodes.Add(MakeArrayNode(bin, "UniformExpressionTextures", i => MakeEntryNode(bin, $"{i}", Pcc)));
                 }
                 else
                 {
@@ -280,6 +278,123 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 nodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
             }
             return node;
+        }
+
+        private BinInterpNode ReadMaterialUniformExpression(EndianReader bin, string prefix = "")
+        {
+            NameReference expressionType = bin.ReadNameReference(Pcc);
+            var node = new BinInterpNode(bin.Position - 8, $"{prefix}{(string.IsNullOrEmpty(prefix) ? "" : ": ")}{expressionType.Instanced}");
+
+            switch (expressionType.Name)
+            {
+                case "FMaterialUniformExpressionAbs":
+                case "FMaterialUniformExpressionCeil":
+                case "FMaterialUniformExpressionFloor":
+                case "FMaterialUniformExpressionFrac":
+                case "FMaterialUniformExpressionPeriodic":
+                case "FMaterialUniformExpressionSquareRoot":
+                    node.Items.Add(ReadMaterialUniformExpression(bin, "X"));
+                    break;
+                case "FMaterialUniformExpressionAppendVector":
+                    node.Items.Add(ReadMaterialUniformExpression(bin, "A"));
+                    node.Items.Add(ReadMaterialUniformExpression(bin, "B"));
+                    node.Items.Add(MakeUInt32Node(bin, "NumComponentsA:"));
+                    break;
+                case "FMaterialUniformExpressionClamp":
+                    node.Items.Add(ReadMaterialUniformExpression(bin, "Input"));
+                    node.Items.Add(ReadMaterialUniformExpression(bin, "Min"));
+                    node.Items.Add(ReadMaterialUniformExpression(bin, "Max"));
+                    break;
+                case "FMaterialUniformExpressionConstant":
+                    node.Items.Add(MakeFloatNode(bin, "R"));
+                    node.Items.Add(MakeFloatNode(bin, "G"));
+                    node.Items.Add(MakeFloatNode(bin, "B"));
+                    node.Items.Add(MakeFloatNode(bin, "A"));
+                    node.Items.Add(MakeByteNode(bin, "ValueType"));
+                    break;
+                case "FMaterialUniformExpressionFmod":
+                case "FMaterialUniformExpressionMax":
+                case "FMaterialUniformExpressionMin":
+                    node.Items.Add(ReadMaterialUniformExpression(bin, "A"));
+                    node.Items.Add(ReadMaterialUniformExpression(bin, "B"));
+                    break;
+                case "FMaterialUniformExpressionFoldedMath":
+                    node.Items.Add(ReadMaterialUniformExpression(bin, "A"));
+                    node.Items.Add(ReadMaterialUniformExpression(bin, "B"));
+                    node.Items.Add(new BinInterpNode(bin.Position, $"Op: {(EFoldedMathOperation)bin.ReadByte()}"));
+                    break;
+                case "FMaterialUniformExpressionRealTime":
+                    //intentionally left blank. outputs current real-time, has no parameters
+                    break;
+                case "FMaterialUniformExpressionScalarParameter":
+                    node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}"));
+                    node.Items.Add(MakeFloatNode(bin, "DefaultValue"));
+                    break;
+                case "FMaterialUniformExpressionSine":
+                    node.Items.Add(ReadMaterialUniformExpression(bin, "X"));
+                    node.Items.Add(MakeBoolIntNode(bin, "bIsCosine"));
+                    break;
+                case "FMaterialUniformExpressionTexture":
+                case "FMaterialUniformExpressionFlipBookTextureParameter":
+                    if (Pcc.Game >= MEGame.ME3)
+                    {
+                        node.Items.Add(MakeInt32Node(bin, "TextureIndex"));
+                    }
+                    else
+                    {
+                        node.Items.Add(MakeEntryNode(bin, "TextureIndex", Pcc));
+                    }
+                    break;
+                case "FMaterialUniformExpressionFlipbookParameter":
+                    node.Items.Add(MakeInt32Node(bin, "Index:"));
+                    node.Items.Add(MakeEntryNode(bin, "TextureIndex", Pcc));
+                    break;
+                case "FMaterialUniformExpressionTextureParameter":
+                    node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}"));
+                    node.Items.Add(MakeInt32Node(bin, "TextureIndex"));
+                    break;
+                case "FMaterialUniformExpressionTime":
+                    //intentionally left blank. outputs current scene time, has no parameters
+                    break;
+                case "FMaterialUniformExpressionVectorParameter":
+                    node.Items.Add(new BinInterpNode(bin.Position, $"ParameterName: {bin.ReadNameReference(Pcc).Instanced}"));
+                    node.Items.Add(MakeFloatNode(bin, "Default R"));
+                    node.Items.Add(MakeFloatNode(bin, "Default G"));
+                    node.Items.Add(MakeFloatNode(bin, "Default B"));
+                    node.Items.Add(MakeFloatNode(bin, "Default A"));
+                    break;
+                case "FMaterialUniformExpressionFractionOfEffectEnabled":
+                    //Not sure what it does, but it doesn't seem to have any parameters
+                    break;
+                default:
+                    throw new ArgumentException(expressionType.Instanced);
+            }
+
+            return node;
+        }
+
+        private enum EFoldedMathOperation : byte
+        {
+            Add,
+            Sub,
+            Mul,
+            Div,
+            Dot
+        }
+
+        [Flags]
+        public enum ECoordTransformUsage : uint
+        {
+            // no transforms used
+            UsedCoord_None = 0,
+            // local to world used
+            UsedCoord_World = 1 << 0,
+            // local to view used
+            UsedCoord_View = 1 << 1,
+            // local to local used
+            UsedCoord_Local = 1 << 2,
+            // World Position used
+            UsedCoord_WorldPos = 1 << 3
         }
     }
 }

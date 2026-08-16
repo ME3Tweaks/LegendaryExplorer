@@ -416,8 +416,9 @@ namespace LegendaryExplorer.Tools.Soundplorer
                     }
                 case "WwiseBank":
                     {
-                        var bank = Export.GetBinaryData<WwiseBankParsed>();
-                        SubText = $"{bank.EmbeddedFiles.Count} embedded WEM{(bank.EmbeddedFiles.Count != 1 ? "s" : "")}";
+                        var bank = Export.GetBinaryData<WwiseBank>().Bank;
+                        var embeddedFileCount = bank.EmbeddedFiles.Count;
+                        SubText = $"{embeddedFileCount} embedded WEM{(embeddedFileCount != 1 ? "s" : "")}";
                         NeedsLoading = false;
                         Icon = EFontAwesomeIcon.Solid_University;
                         break;

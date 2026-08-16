@@ -24,9 +24,12 @@ using Microsoft.Win32;
 using Newtonsoft.Json;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
+using ME3Tweaks.Wwiser.Model.Hierarchy;
+using ME3Tweaks.Wwiser.Model.Hierarchy.Enums;
 using Piccolo;
 using Piccolo.Event;
 using Piccolo.Nodes;
+using Action = System.Action;
 using Brushes = System.Drawing.Brushes;
 using Color = System.Drawing.Color;
 using Image = System.Drawing.Image;
@@ -132,7 +135,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             }
         }
 
-        private WwiseBankParsed CurrentWwiseBank;
+        private WwiseBank CurrentWwiseBank;
 
         public ICommand OpenCommand { get; set; }
         public ICommand SaveCommand { get; set; }
@@ -260,7 +263,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             graphEditor.Enabled = false;
             graphEditor.UseWaitCursor = true;
 
-            CurrentWwiseBank = export.GetBinaryData<WwiseBankParsed>();
+            CurrentWwiseBank = export.GetBinaryData<WwiseBank>();
             SetupJSON(export);
             Properties_InterpreterWPF.LoadExport(export);
             binaryInterpreter.LoadExport(export);
@@ -306,21 +309,24 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             }
         }
 
-        private void GetObjects(WwiseBankParsed bank)
+        private void GetObjects(WwiseBank bank)
         {
             var newObjs = new List<WwiseHircObjNode>();
-            foreach ((uint id, WwiseBankParsed.HIRCObject hircObject) in CurrentWwiseBank.HIRCObjects)
+            CurrentObjects.Clear();
+            if (bank.Bank.HIRC is null) return;
+            foreach (var hircItem in bank.Bank.HIRC.Items)
             {
-                newObjs.Add(hircObject switch
+                newObjs.Add(hircItem.Type.Value switch
                 {
-                    WwiseBankParsed.Event evt => new WEvent(evt, 0, 0, graphEditor),
-                    WwiseBankParsed.EventAction evtAct => new WEventAction(evtAct, 0, 0, graphEditor),
-                    WwiseBankParsed.SoundSFXVoice sfxvoice => new WSoundSFXVoice(sfxvoice, 0, 0, graphEditor),
-                    _ => new WGeneric(hircObject, 0, 0, graphEditor)
+                    HircType.Event => new WEvent(hircItem.Item as Event, 0, 0, graphEditor),
+                    HircType.Action => new WEventAction(hircItem.Item as ME3Tweaks.Wwiser.Model.Hierarchy.Action, 0, 0, graphEditor),
+                    HircType.RandomSequenceContainer => new WRandomSequenceAction(hircItem.Item as RandSeqContainer, 0, 0, graphEditor),
+                    HircType.Sound => new WSoundSFXVoice(hircItem.Item as Sound, 0, 0, graphEditor),
+                    _ => new WGeneric(hircItem.Item, 0, 0, graphEditor)
                 });
             }
 
-            CurrentObjects.ReplaceAll(newObjs);
+            CurrentObjects.AddRange(newObjs);
         }
 
         public void Layout()
@@ -370,9 +376,9 @@ namespace LegendaryExplorer.Tools.WwiseEditor
                         }
                         case WSoundSFXVoice wSound:
                         {
-                            if (!referencedExports.TryGetValue(wSound.SoundSFXVoice.AudioID, out List<WExport> wExports))
+                            if (!referencedExports.TryGetValue(wSound.SoundItem.BankSourceData.MediaInformation.SourceId, out List<WExport> wExports))
                             {
-                                if (!wwiseStreams.TryGetValue(wSound.SoundSFXVoice.AudioID, out ExportEntry wwiseSoundExport))
+                                if (!wwiseStreams.TryGetValue(wSound.SoundItem.BankSourceData.MediaInformation.SourceId, out ExportEntry wwiseSoundExport))
                                 {
                                     continue;
                                 }
@@ -380,7 +386,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
                                 wExports = new List<WExport>();
                                 var wExp = new WExport(wwiseSoundExport, 0, 0, graphEditor);
                                 wExports.Add(wExp);
-                                referencedExports.AddToListAt(wSound.SoundSFXVoice.AudioID, wExp);
+                                referencedExports.AddToListAt(wSound.SoundItem.BankSourceData.MediaInformation.SourceId, wExp);
                                 graphEditor.AddNode(wExp);
                             }
                             obj.Varlinks[0].Links.Clear();

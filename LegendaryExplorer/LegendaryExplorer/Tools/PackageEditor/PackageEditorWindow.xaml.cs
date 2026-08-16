@@ -49,6 +49,7 @@ using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using LegendaryExplorer.Tools.AssetViewer;
 using LegendaryExplorer.GameInterop;
 using LegendaryExplorer.Tools.ObjectReferenceViewer;
+using LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel;
 
 namespace LegendaryExplorer.Tools.PackageEditor
 {

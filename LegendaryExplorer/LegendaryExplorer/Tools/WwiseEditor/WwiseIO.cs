@@ -2,17 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LegendaryExplorer.Audio;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
-using Newtonsoft.Json.Linq;
 using WwiseTools.Objects;
 using WwiseTools.Src.Models.SoundBank;
 using WwiseTools.Utils;
@@ -48,11 +44,11 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             var soundbank = await WwiseUtility.Instance.CreateObjectAtPathAsync(export.ObjectName, WwiseObject.ObjectType.SoundBank, "\\Soundbanks\\Default Work Unit");
 
             // Now we inspect the WwiseBank
-            var bank = ObjectBinary.From<WwiseBankParsed>(export);
+            var bank = ObjectBinary.From<WwiseBank>(export);
             List<EmbeddedWEMFile> wems = new List<EmbeddedWEMFile>();
-            foreach ((uint wemID, byte[] wemData) in bank.EmbeddedFiles)
+            foreach (var ef in bank.Bank.EmbeddedFiles)
             {
-                var wem = new EmbeddedWEMFile(wemData, "", export, wemID);
+                var wem = new EmbeddedWEMFile(ef.Data, "", export, ef.Id);
                 wems.Add(wem);
             }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
@@ -10,23 +9,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Be.Windows.Forms;
 using FontAwesome5;
 using LegendaryExplorer.Audio;
+using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Interfaces;
-using LegendaryExplorer.Dialogs;
-using LegendaryExplorer.Misc.AppSettings;
 using LegendaryExplorer.Tools.Soundplorer;
-using LegendaryExplorer.Misc;
 using LegendaryExplorer.UnrealExtensions;
 using LegendaryExplorer.UnrealExtensions.Classes;
-using LegendaryExplorerCore.Audio;
-using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
@@ -35,22 +30,26 @@ using LegendaryExplorerCore.Sound.ISACT;
 using LegendaryExplorerCore.Sound.Wwise;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using ME3Tweaks.Wwiser;
+using ME3Tweaks.Wwiser.Model.Hierarchy;
+using ME3Tweaks.Wwiser.Model.Hierarchy.Enums;
 using Microsoft.Win32;
 using NAudio.Wave;
 using NAudio.WaveFormRenderer;
 using AudioStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
 using WwiseStream = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseStream;
 using Color = System.Drawing.Color;
+using IValueConverter = System.Windows.Data.IValueConverter;
+using WwiseBank = LegendaryExplorerCore.Unreal.BinaryConverters.WwiseBank;
 
-namespace LegendaryExplorer.UserControls.ExportLoaderControls
+namespace LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel
 {
     /// <summary>
     /// Interaction logic for Soundpanel.xaml
     /// </summary>
-    public partial class Soundpanel : ExportLoaderControl
+    public partial class Soundpanel
     {
         public ObservableCollectionExtended<object> ExportInformationList { get; } = new();
-        public ObservableCollectionExtended<HIRCNotableItem> HIRCNotableItems { get; } = new();
         private readonly List<EmbeddedWEMFile> AllWems = new(); //used only for rebuilding soundbank
         WwiseStream wwiseStream;
         public string afcPath = "";
@@ -58,8 +57,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private bool SeekUpdatingDueToTimer;
         private bool SeekDragging;
         Stream audioStream;
-        private HexBox SoundpanelHIRC_Hexbox;
-        private ReadOptimizedByteProvider hircHexProvider;
 
         /// <summary>
         /// Notified when the seekbar position has changed.
@@ -68,7 +65,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public ISACTListBankChunk CurrentLoadedISACTEntry { get; private set; }
         public AFCFileEntry CurrentLoadedAFCFileEntry { get; private set; }
-        public WwiseBankParsed CurrentLoadedWwisebank { get; private set; }
+        public WwiseBank CurrentLoadedWwisebank { get; private set; }
 
         /// <summary>
         /// The cached stream source is used to determine if we should unload the current vorbis stream
@@ -125,20 +122,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        public int HexBoxMinWidth
-        {
-            get => (int)GetValue(HexBoxMinWidthProperty);
-            set => SetValue(HexBoxMinWidthProperty, value);
-        }
-        public static readonly DependencyProperty HexBoxMinWidthProperty = DependencyProperty.Register(nameof(HexBoxMinWidth), typeof( int ), typeof( Soundpanel ), new PropertyMetadata(default(int)));
-
-        public int HexBoxMaxWidth
-        {
-            get => (int)GetValue(HexBoxMaxWidthProperty);
-            set => SetValue(HexBoxMaxWidthProperty, value);
-        }
-        public static readonly DependencyProperty HexBoxMaxWidthProperty = DependencyProperty.Register(nameof(HexBoxMaxWidth), typeof( int ), typeof( Soundpanel ), new PropertyMetadata(default(int)));
-
         public int SeekbarUpdatePeriod
         {
             get => (int)GetValue(SeekbarUpdatePeriodProperty);
@@ -170,7 +153,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private static void GenerateWaveFormChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (d is Soundpanel sp)
+            if (d is Soundpanel)
             {
             }
         }
@@ -184,14 +167,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     // MiniPlayerMode enabled
                     sp.ExportInfoListBox.Visibility = Visibility.Collapsed;
                     foreach (var item in sp.SoundPanel_TabsControl.Items)
-                        (item as TabItem).Visibility = Visibility.Collapsed;
+                        ((TabItem)item).Visibility = Visibility.Collapsed;
                 }
                 else
                 {
                     // MiniPlayerMode disabled
                     sp.ExportInfoListBox.Visibility = Visibility.Visible;
                     foreach (var item in sp.SoundPanel_TabsControl.Items)
-                        (item as TabItem).Visibility = Visibility.Visible;
+                        ((TabItem)item).Visibility = Visibility.Visible;
                 }
             }
         }
@@ -228,25 +211,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void PoppedOut(ExportLoaderHostedWindow elhw)
         {
             //todo: improve ui layout on popout
-        }
-
-        private bool ControlLoaded;
-
-        private void Soundpanel_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (!ControlLoaded)
-            {
-                SoundpanelHIRC_Hexbox = (HexBox)HIRC_Hexbox_Host.Child;
-                hircHexProvider = new ReadOptimizedByteProvider();
-
-                SoundpanelHIRC_Hexbox.ByteProvider = hircHexProvider;
-                SoundpanelHIRC_Hexbox.ByteProvider.Changed += SoundpanelHIRC_Hexbox_BytesChanged;
-
-                this.bind(HexBoxMinWidthProperty, SoundpanelHIRC_Hexbox, nameof(SoundpanelHIRC_Hexbox.MinWidth));
-                this.bind(HexBoxMaxWidthProperty, SoundpanelHIRC_Hexbox, nameof(SoundpanelHIRC_Hexbox.MaxWidth));
-
-                ControlLoaded = true;
-            }
         }
 
         #endregion
@@ -298,16 +262,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 //Debug.WriteLine("trackpos: " + value);
                 _currentTrackPosition = value;
                 SeekUpdatingDueToTimer = true;
-                OnPropertyChanged(nameof(CurrentTrackPosition));
+                OnPropertyChanged();
                 SeekUpdatingDueToTimer = false;
             }
-        }
-
-        private bool _hircHexChanged;
-        public bool HIRCHexChanged
-        {
-            get => _hircHexChanged;
-            private set => SetProperty(ref _hircHexChanged, value);
         }
 
         private string _searchStatusText;
@@ -315,6 +272,26 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             get => _searchStatusText;
             private set => SetProperty(ref _searchStatusText, value);
+        }
+
+        private HIRCDisplayObject _selectedHIRCObject;
+
+        public HIRCDisplayObject SelectedHIRCObject
+        {
+            get => _selectedHIRCObject;
+            set
+            {
+                if(value is not null) HIRCObjectSelected?.Invoke((uint)value.Index);
+                SetProperty( ref _selectedHIRCObject, value);
+            }
+        }
+
+        private WwiseBankScans _wwiseBankScans;
+        
+        public WwiseBankScans WwiseBankScans
+        {
+            get => _wwiseBankScans;
+            set => SetProperty(ref _wwiseBankScans, value);
         }
 
         #endregion
@@ -331,7 +308,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand VolumeControlValueChangedCommand { get; set; }
         public ICommand CommitCommand { get; set; }
         public ICommand SearchHIRCHexCommand { get; private set; }
-        public ICommand SaveHIRCHexCommand { get; private set; }
         public RelayCommand PlayHIRCCommand { get; set; }
 
         private void LoadCommands()
@@ -350,7 +326,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             //WwisebankEditor commands
             CommitCommand = new GenericCommand(CommitBankToFile, CanCommitBankToFile);
             SearchHIRCHexCommand = new GenericCommand(SearchHIRCHex, CanSearchHIRCHex);
-            SaveHIRCHexCommand = new GenericCommand(SaveHIRCHex, CanSaveHIRCHex);
 
             // HIRC commands
             PlayHIRCCommand = new RelayCommand(PlayHIRC, CanPlayHIRC);
@@ -360,34 +335,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void CommitBankToFile()
         {
-            // byte[] dataBefore = CurrentLoadedWwisebank.Export.Data;
-            CurrentLoadedWwisebank.HIRCObjects.Empty(HIRCObjects.Count);
-            CurrentLoadedWwisebank.HIRCObjects.AddRange(HIRCObjects.Select(x => new KeyValuePair<uint, WwiseBankParsed.HIRCObject>(x.ID, CreateHircObjectFromHex(x.Data))));
+            if (CurrentLoadedWwisebank.Bank.HIRC is not null)
+            {
+                CurrentLoadedWwisebank.Bank.HIRC.Items = HIRCObjects.Select(i => i.Item).ToList();
+            }
 
             // We must restore the original wem datas. In preloading entries, the length on the RIFF is the actual full length. But the data on disk is only like .1s long. 
             // wwise does some trickery to load the rest of the audio later but we don't have that kind of code so we interally adjust it for local playback
-            CurrentLoadedWwisebank.EmbeddedFiles.Empty(AllWems.Count);
-            CurrentLoadedWwisebank.EmbeddedFiles.AddRange(AllWems.Select(w => new KeyValuePair<uint, byte[]>(w.Id, w.HasBeenFixed ? w.OriginalWemData : w.WemData)));
+            CurrentLoadedWwisebank.Bank.EmbeddedFiles = AllWems.Select(w =>
+                new EmbeddedFile { Id = w.Id, Data = w.HasBeenFixed ? w.OriginalWemData : w.WemData }).ToList();
             CurrentLoadedExport.WriteBinary(CurrentLoadedWwisebank);
-            foreach (var hircObject in HIRCObjects)
-            {
-                hircObject.DataChanged = false;
-            }
-            //byte[] dataAfter = CurrentLoadedWwisebank.Export.Data;
-
-            //if (dataBefore.Length == dataAfter.Length)
-            //{
-            //    for (int i = 0; i < dataAfter.Length; i++)
-            //    {
-            //        if (dataAfter[i] != dataBefore[i])
-            //        {
-            //            MessageBox.Show($@"Commited data has changed! Change starts at 0x{i:X8}");
-            //            break;
-            //        }
-            //    }
-            //}
-
-            //CurrentLoadedWwisebank.Export.Data = dataBefore;
         }
 
         #endregion
@@ -493,17 +450,22 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 if (exportEntry.ClassName == "WwiseBank")
                 {
-                    var wb = CurrentLoadedWwisebank = exportEntry.GetBinaryData<WwiseBankParsed>();
-                    ExportInformationList.Add($"#{exportEntry.UIndex} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced} (Bank ID 0x{wb.ID:X8})");
+                    var wb = CurrentLoadedWwisebank = exportEntry.GetBinaryData<WwiseBank>();
+                    ExportInformationList.Add($"#{exportEntry.UIndex} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced} (Bank ID 0x{wb.Bank.BKHD.SoundBankId:X8})");
 
                     HIRCObjects.Clear();
-                    HIRCObjects.AddRange(wb.HIRCObjects.Values.Select((ho, i) => new HIRCDisplayObject(i, ho, exportEntry.Game)));
+                    if (wb.Bank.HIRC != null)
+                    {
+                        HIRCObjects.AddRange(HIRCDisplayObject.CreateFromBank(wb.Bank));
+                    }
 
-                    if (wb.EmbeddedFiles.Count > 0)
+                    if (wb.Bank.EmbeddedFiles.Count > 0)
                     {
                         int i = 0;
-                        foreach ((uint id, byte[] bytes) in wb.EmbeddedFiles)
+                        foreach (var file in wb.Bank.EmbeddedFiles)
                         {
+                            var id = file.Id;
+                            var bytes = file.Data;
                             string wemId = id.ToString("X8");
                             if (ShouldReverseIDEndianness)
                             {
@@ -532,27 +494,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
 
                     CurrentLoadedExport = exportEntry;
-
-                    //This makes the hexbox widen by 1 and then shrink by 1
-                    //For some rason it won't calculate the scrollbar again unless you do this
-                    //which is very annoying.
-                    var currentWidth = HIRC_Hexbox_Host.Width;
-                    if (currentWidth > 500)
-                    {
-                        SoundpanelHIRC_Hexbox.Width -= 1;
-                        HIRC_Hexbox_Host.UpdateLayout();
-                        SoundpanelHIRC_Hexbox.Width += 1;
-                    }
-                    else
-                    {
-                        SoundpanelHIRC_Hexbox.Width += 1;
-                        HIRC_Hexbox_Host.UpdateLayout();
-                        SoundpanelHIRC_Hexbox.Width -= 1;
-                    }
-
-                    HIRC_Hexbox_Host.UpdateLayout();
-                    SoundpanelHIRC_Hexbox.Select(0, 1);
-                    SoundpanelHIRC_Hexbox.ScrollByteIntoView();
+                    HIRCItemEditor.FixBuggyHexBox();
+                    
+                    WwiseBankScans = new WwiseBankScans();
+                    WwiseBankScans.Scan_WwiseBank(exportEntry.Data, exportEntry); // this is to populate wwise id references for use later
+                }
+                else
+                {
+                    WwiseBankScans = null;
                 }
 
                 if (exportEntry.ClassName == "SoundNodeWave")
@@ -586,7 +535,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         if (bsd.ResolveToEntry(exportEntry.FileRef) is ExportEntry streamingData)
                         {
                             // Remove the ISB: prefix
-                            var indexEntryName = exportEntry.ObjectName.Instanced.Substring(exportEntry.ObjectName.Instanced.IndexOf(":") + 1);
+                            var indexEntryName = exportEntry.ObjectName.Instanced.Substring(exportEntry.ObjectName.Instanced.IndexOf(':') + 1);
                             ISACTBankPair ibp = ISACTHelper.GetPairedBanks(streamingData.GetBinaryData().Skip(4).ToArray());
                             IndexEntry foundICBInfo = null;
                             if (ibp.ICBBank.GetAllBankChunks().FirstOrDefault(x => x.ChunkName == ContentIndexBankChunk.FixedChunkTitle) is ContentIndexBankChunk contentIndex)
@@ -704,7 +653,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     using (FileStream fs = new FileStream(aEntry.AFCPath, FileMode.Open))
                     {
                         fs.Seek(aEntry.Offset, SeekOrigin.Begin);
-                        fs.Read(headerbytes, 0, 0x56);
+                        fs.ReadExactly(headerbytes, 0, 0x56);
                         bytesread = true;
                     }
                 }
@@ -791,6 +740,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// Gets a PCM stream of data (WAV) from either the currently loaded export or selected WEM
         /// </summary>
+        /// <param name="forcedWwiseStreamExport">WwiseStream export we will force</param>
         /// <param name="forcedWemFile">WEM that we will force to get a stream for</param>
         /// <returns></returns>
         public Stream GetPCMStream(ExportEntry forcedWwiseStreamExport = null, EmbeddedWEMFile forcedWemFile = null)
@@ -825,7 +775,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         try
                         {
                             // This is to prevent error if malformed names
-                            isbName = localCurrentExport.ObjectName.Instanced.Substring(0, localCurrentExport.ObjectName.Instanced.IndexOf(":"));
+                            isbName = localCurrentExport.ObjectName.Instanced.Substring(0, localCurrentExport.ObjectName.Instanced.IndexOf(':'));
                         }
                         catch
                         {
@@ -833,7 +783,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         return AudioStreamHelper.GetWaveStreamFromISBEntry(bankEntry, isbName: isbName, game: localCurrentExport.Game);
                     }
                 }
-                else if (forcedWemFile != null || (localCurrentExport?.ClassName == "WwiseBank"))
+                else if (forcedWemFile != null || (localCurrentExport.ClassName == "WwiseBank"))
                 {
                     object currentWEMItem = forcedWemFile ?? ExportInfoListBox.SelectedItem;
                     if (currentWEMItem == null || currentWEMItem is string)
@@ -854,7 +804,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void PlayHIRC(object obj)
         {
-            if (obj is HIRCDisplayObject hirc && hirc.ObjType == 0x2)
+            if (obj is HIRCDisplayObject { Item: { Type.Value: HircType.Sound, Item: Sound snd}})
             {
                 var wems = ExportInformationList.OfType<EmbeddedWEMFile>().ToList();
                 foreach (var v in wems.OrderBy(x => x.Id))
@@ -862,7 +812,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     Debug.WriteLine(v.Id.ToString("X8"));
                 }
 
-                var playItem = ExportInformationList.OfType<EmbeddedWEMFile>().FirstOrDefault(x => x.Id == hirc.AudioID);
+                var playItem = ExportInformationList.OfType<EmbeddedWEMFile>().FirstOrDefault(x => x.Id == snd.BankSourceData.MediaInformation.SourceId);
                 if (playItem != null)
                 {
                     // Found the matching item
@@ -878,7 +828,14 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private bool CanPlayHIRC(object obj)
         {
-            return obj is HIRCDisplayObject { ObjType: 0x2 } hirc && CurrentLoadedWwisebank != null && hirc.SourceID == CurrentLoadedWwisebank.ID;
+            return obj is HIRCDisplayObject
+            {
+                Item:
+                {
+                    Type.Value: HircType.Sound,
+                    Item: Sound { BankSourceData.StreamType.Value : StreamType.StreamTypeInner.DataBnk }
+                }
+            };
         }
 
         private void StartPlayback()
@@ -1249,7 +1206,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
 
-                if (CurrentLoadedExport.ClassName == "SoundNodeWave" && ExportInfoListBox.SelectedItem is ISACTListBankChunk bankEntry)
+                if (CurrentLoadedExport.ClassName == "SoundNodeWave" && ExportInfoListBox.SelectedItem is ISACTListBankChunk)
                 {
                     var pcmStream = GetPCMStream();
                     if (pcmStream == null)
@@ -1453,22 +1410,26 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                 listChunk.GetChunk(DataBankChunk.FixedChunkTitle).RawData = oggData; // Update ogg data.
 
-                var c2Chunk = listChunk.GetChunk(CompressionInfoBankChunk.FixedChunkTitle) as CompressionInfoBankChunk;
-                c2Chunk.TotalSize = oggData.Length;
-                c2Chunk.CurrentFormat = CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS;
-                c2Chunk.TargetFormat = CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS;
-                c2Chunk.CompressionQuality = quality;
+                if (listChunk.GetChunk(CompressionInfoBankChunk.FixedChunkTitle) is CompressionInfoBankChunk c2Chunk)
+                {
+                    c2Chunk.TotalSize = oggData.Length;
+                    c2Chunk.CurrentFormat = CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS;
+                    c2Chunk.TargetFormat = CompressionInfoBankChunk.ISACTCompressionFormat.OGGVORBIS;
+                    c2Chunk.CompressionQuality = quality;
+                }
 
-                var sinfChunk = listChunk.GetChunk(SampleInfoBankChunk.FixedChunkTitle) as SampleInfoBankChunk;
-                sinfChunk.TimeLength = (int)wfr.TotalTime.TotalMilliseconds;
-                sinfChunk.ByteLength = (int)wfr.Length; // Appears to be the size of the original WAV data segment, maybe this is the size of the buffer
-                // it will need to allocate for decompressed sample data
-                sinfChunk.BufferOffset = 0; // Pretty sure this is always zero
-                sinfChunk.BitsPerSample = (ushort)wfr.WaveFormat.BitsPerSample;
-                sinfChunk.SamplesPerSecond = wfr.WaveFormat.SampleRate;
+                if (listChunk.GetChunk(SampleInfoBankChunk.FixedChunkTitle) is SampleInfoBankChunk sinfChunk)
+                {
+                    sinfChunk.TimeLength = (int)wfr.TotalTime.TotalMilliseconds;
+                    sinfChunk.ByteLength =
+                        (int)wfr.Length; // Appears to be the size of the original WAV data segment, maybe this is the size of the buffer
+                    // it will need to allocate for decompressed sample data
+                    sinfChunk.BufferOffset = 0; // Pretty sure this is always zero
+                    sinfChunk.BitsPerSample = (ushort)wfr.WaveFormat.BitsPerSample;
+                    sinfChunk.SamplesPerSecond = wfr.WaveFormat.SampleRate;
+                }
 
-                var channelChunk = listChunk.GetChunk(ChannelBankChunk.FixedChunkTitle) as ChannelBankChunk;
-                channelChunk.ChannelCount = wfr.WaveFormat.Channels;
+                if (listChunk.GetChunk(ChannelBankChunk.FixedChunkTitle) is ChannelBankChunk channelChunk) channelChunk.ChannelCount = wfr.WaveFormat.Channels;
                 // Not sure if other data needs to be updated here.
 
             }
@@ -1567,8 +1528,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 wem.WemData = convertedStream.ToArray();
             }
-            CurrentLoadedWwisebank.EmbeddedFiles.Empty(AllWems.Count);
-            CurrentLoadedWwisebank.EmbeddedFiles.AddRange(AllWems.Select(w => new KeyValuePair<uint, byte[]>(w.Id, w.HasBeenFixed ? w.OriginalWemData : w.WemData)));
+            CurrentLoadedWwisebank.Bank.EmbeddedFiles = AllWems.Select(w => new EmbeddedFile()
+                { Id = w.Id, Data = w.HasBeenFixed ? w.OriginalWemData : w.WemData }).ToList();
             CurrentLoadedExport.WriteBinary(CurrentLoadedWwisebank);
             File.Delete(oggPath);
             UpdateAudioStream();
@@ -1618,7 +1579,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 var conversion = await WwiseCliHandler.RunWwiseConversion(Pcc.Game, sourceFile, conversionSettings);
                 ReplaceAudioFromWwiseEncodedFile(conversion, forcedExport, conversionSettings?.UpdateReferencedEvents ?? false, conversionSettings?.DestinationAFCFile);
-            }).ContinueWithOnUIThread((a) =>
+            }).ContinueWithOnUIThread(_ =>
             {
                 UpdateAudioStream();
                 if (HostingControl != null)
@@ -1631,8 +1592,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         /// <summary>
         /// Replaces the audio in the current loaded export, or the forced export. Will prompt user for a Wwise Encoded Audio file. (.ogg for ME3, .wem otherwise)
         /// </summary>
+        /// <param name="filePath">Default file path for audio file. If null, the user will be prompted to select a file</param>
         /// <param name="forcedExport">Export to update. If null, the currently loaded one is used instead.</param>
         /// <param name="updateReferencedEvents">If true will find all WwiseEvents referencing this export and update their Duration property</param>
+        /// <param name="destAFCBasename">Base file name of destination AFC</param>
         public void ReplaceAudioFromWwiseEncodedFile(string filePath = null, ExportEntry forcedExport = null, bool updateReferencedEvents = false, string destAFCBasename = null)
         {
             StopPlaying();
@@ -1675,7 +1638,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         private void WEMItem_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e is KeyEventArgs ke)
+            if (e is { } ke)
             {
                 switch (ke.Key)
                 {
@@ -1731,40 +1694,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public event Action<uint> HIRCObjectSelected;
 
-        private bool CanSaveHIRCHex() => HIRCHexChanged;
-
-        private void SaveHIRCHex()
-        {
-            int idx = HIRC_ListBox.SelectedIndex;
-            if (idx != -1)
-            {
-                //var dataBefore = hircHexProvider.Bytes.ToArray();
-                HIRCObjects[idx] = new HIRCDisplayObject(idx, CreateHircObjectFromHex(hircHexProvider.Span.ToArray()), Pcc.Game)
-                {
-                    DataChanged = true
-                };
-                HIRCHexChanged = false;
-                OnPropertyChanged(nameof(HIRCHexChanged));
-                //var dataAfter = HIRCObjects[idx].Data;
-                //if (dataBefore.Length == dataAfter.Length)
-                //{
-                //    for (int i = 0; i < dataAfter.Length; i++)
-                //    {
-                //        if (dataAfter[i] != dataBefore[i])
-                //        {
-                //            MessageBox.Show($@"Committed data has changed! Change starts at 0x{i:X8}");
-                //            break;
-                //        }
-                //    }
-                //}
-            }
-        }
-
-        private WwiseBankParsed.HIRCObject CreateHircObjectFromHex(byte[] bytes)
-        {
-            return WwiseBankParsed.HIRCObject.Create(new SerializingContainer(new MemoryStream(bytes), Pcc, true));
-        }
-
         private bool CanSearchHIRCHex()
         {
             string hexString = SearchHIRCHex_TextBox.Text.Replace(" ", string.Empty);
@@ -1811,16 +1740,16 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 buff[i] = Convert.ToByte(hexString.Substring(i * 2, 2), 16);
             }
 
-            int count = HIRCObjects.Count;
-            int hexboxIndex = (int)SoundpanelHIRC_Hexbox.SelectionStart + 1;
-            for (int i = 0; i < count; i++)
+            var count = HIRCObjects.Count;
+            var hexboxIndex = (int)HIRCItemEditor.GetSelectedHex() + 1;
+            for (var i = 0; i < count; i++)
             {
                 byte[] hirc = HIRCObjects[(i + currentSelectedHIRCIndex) % count].Data; //search from selected index, and loop back around
                 int indexIn = hirc.IndexOfArray(buff, hexboxIndex);
                 if (indexIn > -1)
                 {
                     HIRC_ListBox.SelectedIndex = (i + currentSelectedHIRCIndex) % count;
-                    SoundpanelHIRC_Hexbox.Select(indexIn, buff.Length);
+                    HIRCItemEditor.SelectHex(indexIn, buff.Length);
                     //searchHexStatus.Text = "";
                     return;
                 }
@@ -1831,211 +1760,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             SearchStatusText = "Hex not found";
         }
 
-        private void HIRC_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            HIRCNotableItems.ClearEx();
-            if (HIRC_ListBox.SelectedItem is HIRCDisplayObject h)
-            {
-                HIRC_ListBox.ScrollIntoView(h);
-
-                OriginalHIRCHex = h.Data;
-                hircHexProvider.ReplaceBytes(OriginalHIRCHex);
-                SoundpanelHIRC_Hexbox.Refresh();
-
-                int start = 0x0;
-                HIRCNotableItems.Add(new HIRCNotableItem
-                {
-                    Offset = start,
-                    Header = $"Type: 0x{h.ObjType:X2}",
-                    Length = (Pcc?.Game == MEGame.ME2 ? 4 : 1)
-                });
-
-                start += (Pcc?.Game == MEGame.ME2 ? 4 : 1);
-                HIRCNotableItems.Add(new HIRCNotableItem
-                {
-                    Offset = start,
-                    Header = $"Size: 0x{h.Data.Length - 5:X8}",
-                    Length = 4
-                });
-
-                start += 4;
-                HIRCNotableItems.Add(new HIRCNotableItem
-                {
-                    Offset = start,
-                    Header = $"Object ID: 0x{h.ID:X8}",
-                    Length = 4
-                });
-
-                start += 4;
-
-                switch ((HIRCType)h.ObjType)
-                {
-                    case HIRCType.SoundSXFSoundVoice:
-                        HIRCNotableItems.Add(new HIRCNotableItem
-                        {
-                            Offset = start,
-                            Header = $"Unknown 4 bytes: 0x{h.unk1:X8}",
-                            Length = 4
-                        });
-
-                        start += 4;
-                        HIRCNotableItems.Add(new HIRCNotableItem
-                        {
-                            Offset = start,
-                            Header = $"State: {h.State:X8}",
-                            Length = 4
-                        });
-
-                        start += 4;
-                        HIRCNotableItems.Add(new HIRCNotableItem
-                        {
-                            Offset = start,
-                            Header = $"Audio ID: {h.AudioID:X8}",
-                            Length = 4
-                        });
-
-                        start += 4;
-                        HIRCNotableItems.Add(new HIRCNotableItem
-                        {
-                            Offset = start,
-                            Header = $"Source ID: 0x{h.SourceID:X8}",
-                            Length = 4
-                        });
-
-                        start += 4;
-                        HIRCNotableItems.Add(new HIRCNotableItem
-                        {
-                            Offset = start,
-                            Header = $"Sound Type: {h.SoundType}",
-                            Length = 4
-                        });
-                        break;
-                    case HIRCType.Event:
-                        HIRCNotableItems.Add(new HIRCNotableItem
-                        {
-                            Offset = start,
-                            Header = $"# of event actions to fire: {h.EventIDs.Count}",
-                            Length = 4
-                        });
-                        start += 4;
-                        foreach (uint eventid in h.EventIDs)
-                        {
-                            HIRCNotableItems.Add(new HIRCNotableItem
-                            {
-                                Offset = start,
-                                Header = $"Event action to fire: 0x{eventid:X8}",
-                                Length = 4
-                            });
-                            start += 4;
-                        }
-
-                        break;
-                }
-                HIRCObjectSelected?.Invoke(h.ID);
-            }
-            else
-            {
-                HIRCNotableItems.Add(new HIRCNotableItem
-                {
-                    Header = "Select a HIRC object"
-                });
-
-                OriginalHIRCHex = null;
-                hircHexProvider.Clear();
-                SoundpanelHIRC_Hexbox.Refresh();
-            }
-        }
-
-        private void SoundpanelHIRC_Hexbox_BytesChanged(object sender, EventArgs e)
-        {
-            if (OriginalHIRCHex != null)
-            {
-                HIRCHexChanged = !hircHexProvider.Span.SequenceEqual(OriginalHIRCHex);
-            }
-        }
-
-        private void Soundpanel_HIRCHexbox_SelectionChanged(object sender, EventArgs e)
-        {
-            if (CurrentLoadedExport != null)
-            {
-                ReadOptimizedByteProvider hbp = (ReadOptimizedByteProvider)SoundpanelHIRC_Hexbox.ByteProvider;
-                var memory = hbp.Span;
-                int start = (int)SoundpanelHIRC_Hexbox.SelectionStart;
-                int len = (int)SoundpanelHIRC_Hexbox.SelectionLength;
-                int size = (int)SoundpanelHIRC_Hexbox.ByteProvider.Length;
-                try
-                {
-                    if (memory.Length > 0 && start != -1 && start < size)
-                    {
-                        string s = $"Byte: {memory[start]}"; //if selection is same as size this will crash.
-                        if (start <= memory.Length - 4)
-                        {
-                            int val = EndianReader.ToInt32(memory, start, Pcc.Endian);
-                            float fval = EndianReader.ToSingle(memory, start, Pcc.Endian);
-                            s += $", Int: {val} (0x{val:X8}) Float: {fval}";
-                            var referencedHIRCbyID = HIRCObjects.FirstOrDefault(x => x.ID == val);
-
-                            if (referencedHIRCbyID != null)
-                            {
-                                s += $", HIRC Object (by ID) Index: {referencedHIRCbyID.Index}";
-                            }
-
-                            EmbeddedWEMFile referencedWEMbyID = AllWems.FirstOrDefault(x => x.Id == val);
-
-                            if (referencedWEMbyID != null)
-                            {
-                                s += $", Embedded WEM Object (by ID): {referencedWEMbyID.DisplayString}";
-                            }
-
-                            //if (CurrentLoadedExport.FileRef.getEntry(val) is ExportEntry exp)
-                            //{
-                            //    s += $", Export: {exp.ObjectName}";
-                            //}
-                            //else if (CurrentLoadedExport.FileRef.getEntry(val) is ImportEntry imp)
-                            //{
-                            //    s += $", Import: {imp.ObjectName}";
-                            //}
-                        }
-
-                        s += $" | Start=0x{start:X8} ";
-                        if (len > 0)
-                        {
-                            s += $"Length=0x{len:X8} ";
-                            s += $"End=0x{(start + len - 1):X8}";
-                        }
-
-                        HIRCStatusBar_LeftMostText.Text = s;
-                    }
-                    else
-                    {
-                        HIRCStatusBar_LeftMostText.Text = "Nothing Selected";
-                    }
-                }
-                catch (Exception)
-                {
-                }
-
-                SoundpanelHIRC_Hexbox.Refresh();
-            }
-        }
-
         public bool HasPendingHIRCChanges => HIRCObjects.Any(x => x.DataChanged);
-
-        private byte[] OriginalHIRCHex;
         private static bool ShouldReverseIDEndianness => Settings.Soundplorer_ReverseIDDisplayEndianness;
-
-        private void HIRC_ToggleHexboxWidth_Click(object sender, RoutedEventArgs e)
-        {
-            GridLength len = HexboxColumnDefinition.Width;
-            if (len.Value < HexboxColumnDefinition.MaxWidth)
-            {
-                HexboxColumnDefinition.Width = new GridLength(HexboxColumnDefinition.MaxWidth);
-            }
-            else
-            {
-                HexboxColumnDefinition.Width = new GridLength(HexboxColumnDefinition.MinWidth);
-            }
-        }
 
         private void Searchbox_OnKeyUpHandler(object sender, KeyEventArgs e)
         {
@@ -2049,32 +1775,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             if (HIRC_ListBox.SelectedItem is HIRCDisplayObject h)
             {
-                WwiseBankParsed.HIRCObject clone = CreateHircObjectFromHex(h.Data).Clone();
-                HIRCObjects.Add(new HIRCDisplayObject(HIRCObjects.Count, clone, Pcc.Game)
-                {
-                    DataChanged = true
-                });
+                var clone = h.Clone();
+                clone.Index = HIRCObjects.Count;
+                HIRCObjects.Add(clone);
                 HIRC_ListBox.ScrollIntoView(clone);
-                HIRC_ListBox.SelectedItem = clone;
-            }
-        }
-
-        public class HIRCNotableItem
-        {
-            public int Offset { get; set; }
-            public string Header { get; set; }
-            public int Length { get; internal set; }
-            public override string ToString() => $"0x{Offset:X6}: {Header}";
-        }
-
-        private void HIRCNotableItems_ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            SoundpanelHIRC_Hexbox.UnhighlightAll();
-            if (HIRCNotableItems_ListBox.SelectedItem is HIRCNotableItem h)
-            {
-                SoundpanelHIRC_Hexbox.Highlight(h.Offset, h.Length);
-                SoundpanelHIRC_Hexbox.SelectionStart = h.Offset;
-                SoundpanelHIRC_Hexbox.SelectionLength = 1;
+                SelectedHIRCObject = clone;
             }
         }
 
@@ -2100,10 +1805,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             FreeAudioResources();
             waveformImage.Source = null;
-            SoundpanelHIRC_Hexbox?.Dispose();
-            SoundpanelHIRC_Hexbox = null;
-            HIRC_Hexbox_Host?.Child?.Dispose();
-            HIRC_Hexbox_Host?.Dispose();
             CurrentLoadedWwisebank = null;
         }
 

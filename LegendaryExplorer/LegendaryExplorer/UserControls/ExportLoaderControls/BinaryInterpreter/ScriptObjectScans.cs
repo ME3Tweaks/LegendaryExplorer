@@ -6,6 +6,7 @@ using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
+using static LegendaryExplorer.UserControls.ExportLoaderControls.BinaryNodeFactory;
 
 namespace LegendaryExplorer.UserControls.ExportLoaderControls;
 
@@ -92,8 +93,8 @@ public partial class BinaryInterpreterWPF
             if (Pcc.Platform is MEPackage.GamePlatform.PC || (Pcc.Game is not MEGame.ME3 && Pcc.Platform is MEPackage.GamePlatform.Xenon))
             {
                 // This seems missing on Xenon 2011. Not sure about others
-                subnodes.Add(MakeNameNode(bin, "Category"));
-                subnodes.Add(MakeEntryNode(bin, "ArraySizeEnum"));
+                subnodes.Add(MakeNameNode(bin, "Category", Pcc));
+                subnodes.Add(MakeEntryNode(bin, "ArraySizeEnum", Pcc));
             }
 
             if (ObjectFlagsMask.HasFlag(UnrealFlags.EPropertyFlags.Net))
@@ -110,19 +111,19 @@ public partial class BinaryInterpreterWPF
                 case "ComponentProperty":
                 case "ArrayProperty":
                 case "InterfaceProperty":
-                    subnodes.Add(MakeEntryNode(bin, "Holds objects of type"));
+                    subnodes.Add(MakeEntryNode(bin, "Holds objects of type", Pcc));
                     break;
                 case "DelegateProperty":
-                    subnodes.Add(MakeEntryNode(bin, "Holds objects of type"));
-                    subnodes.Add(MakeEntryNode(bin, "Same as above but only if this is in a function or struct"));
+                    subnodes.Add(MakeEntryNode(bin, "Holds objects of type", Pcc));
+                    subnodes.Add(MakeEntryNode(bin, "Same as above but only if this is in a function or struct", Pcc));
                     break;
                 case "ClassProperty":
-                    subnodes.Add(MakeEntryNode(bin, "Outer class"));
-                    subnodes.Add(MakeEntryNode(bin, "Class type"));
+                    subnodes.Add(MakeEntryNode(bin, "Outer class", Pcc));
+                    subnodes.Add(MakeEntryNode(bin, "Class type", Pcc));
                     break;
                 case "MapProperty":
-                    subnodes.Add(MakeEntryNode(bin, "Key Type"));
-                    subnodes.Add(MakeEntryNode(bin, "Value Type"));
+                    subnodes.Add(MakeEntryNode(bin, "Key Type", Pcc));
+                    subnodes.Add(MakeEntryNode(bin, "Value Type", Pcc));
                     break;
             }
         }
@@ -137,9 +138,9 @@ public partial class BinaryInterpreterWPF
     {
         if (Pcc.Game is not MEGame.UDK)
         {
-            yield return MakeEntryNode(bin, "SuperClass");
+            yield return MakeEntryNode(bin, "SuperClass", Pcc);
         }
-        yield return MakeEntryNode(bin, "Next item in compiling chain");
+        yield return MakeEntryNode(bin, "Next item in compiling chain", Pcc);
     }
 
     private IEnumerable<ITreeItem> MakeUStructNodes(EndianReader bin)
@@ -150,16 +151,16 @@ public partial class BinaryInterpreterWPF
         }
         if (Pcc.Game is MEGame.UDK)
         {
-            yield return MakeEntryNode(bin, "SuperClass");
+            yield return MakeEntryNode(bin, "SuperClass", Pcc);
         }
         if (Pcc.Game is MEGame.ME1 or MEGame.ME2 or MEGame.UDK && Pcc.Platform != MEPackage.GamePlatform.PS3)
         {
-            yield return MakeEntryNode(bin, "ScriptText");
+            yield return MakeEntryNode(bin, "ScriptText", Pcc);
         }
-        yield return MakeEntryNode(bin, "ChildListStart");
+        yield return MakeEntryNode(bin, "ChildListStart", Pcc);
         if (Pcc.Game is MEGame.ME1 or MEGame.ME2 or MEGame.UDK && Pcc.Platform != MEPackage.GamePlatform.PS3)
         {
-            yield return MakeEntryNode(bin, "C++ Text");
+            yield return MakeEntryNode(bin, "C++ Text", Pcc);
             yield return MakeInt32Node(bin, "Source file line number");
             yield return MakeInt32Node(bin, "Source file text position");
         }
@@ -287,12 +288,12 @@ public partial class BinaryInterpreterWPF
             {
                 subnodes.Add(MakeByteNode(bin, "Unknown byte"));
             }
-            subnodes.Add(MakeEntryNode(bin, "Outer Class"));
-            subnodes.Add(MakeNameNode(bin, "Class Config Name"));
+            subnodes.Add(MakeEntryNode(bin, "Outer Class", Pcc));
+            subnodes.Add(MakeNameNode(bin, "Class Config Name", Pcc));
 
             if (Pcc.Game <= MEGame.ME2 && Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
-                subnodes.Add(MakeArrayNode(bin, "Unknown name list 1", i => MakeNameNode(bin, $"{i}")));
+                subnodes.Add(MakeArrayNode(bin, "Unknown name list 1", i => MakeNameNode(bin, $"{i}", Pcc)));
             }
 
             subnodes.Add(MakeArrayNode(bin, "Component Table", i =>
@@ -302,18 +303,18 @@ public partial class BinaryInterpreterWPF
 
             if (Pcc.Game is MEGame.UDK)
             {
-                subnodes.Add(MakeArrayNode(bin, "DontSortCategories", i => MakeNameNode(bin, $"{i}")));
-                subnodes.Add(MakeArrayNode(bin, "HideCategories", i => MakeNameNode(bin, $"{i}")));
-                subnodes.Add(MakeArrayNode(bin, "AutoExpandCategories", i => MakeNameNode(bin, $"{i}")));
-                subnodes.Add(MakeArrayNode(bin, "AutoCollapseCategories", i => MakeNameNode(bin, $"{i}")));
+                subnodes.Add(MakeArrayNode(bin, "DontSortCategories", i => MakeNameNode(bin, $"{i}", Pcc)));
+                subnodes.Add(MakeArrayNode(bin, "HideCategories", i => MakeNameNode(bin, $"{i}", Pcc)));
+                subnodes.Add(MakeArrayNode(bin, "AutoExpandCategories", i => MakeNameNode(bin, $"{i}", Pcc)));
+                subnodes.Add(MakeArrayNode(bin, "AutoCollapseCategories", i => MakeNameNode(bin, $"{i}", Pcc)));
                 subnodes.Add(MakeBoolIntNode(bin, "bForceScriptOrder"));
-                subnodes.Add(MakeArrayNode(bin, "Unknown name list", i => MakeNameNode(bin, $"{i}")));
-                subnodes.Add(MakeStringNode(bin, "Class Name?"));
+                subnodes.Add(MakeArrayNode(bin, "Unknown name list", i => MakeNameNode(bin, $"{i}", Pcc)));
+                subnodes.Add(MakeStringNode(bin, "Class Name?", Pcc.Game));
             }
 
             if (Pcc.Game >= MEGame.ME3 || Pcc.Platform == MEPackage.GamePlatform.PS3)
             {
-                subnodes.Add(MakeNameNode(bin, "DLL Bind Name"));
+                subnodes.Add(MakeNameNode(bin, "DLL Bind Name", Pcc));
                 if (Pcc.Game is not MEGame.UDK)
                 {
                     subnodes.Add(MakeUInt32Node(bin, "Unknown"));
@@ -321,17 +322,17 @@ public partial class BinaryInterpreterWPF
             }
             else
             {
-                subnodes.Add(MakeArrayNode(bin, "Unknown name list 2", i => MakeNameNode(bin, $"{i}")));
+                subnodes.Add(MakeArrayNode(bin, "Unknown name list 2", i => MakeNameNode(bin, $"{i}", Pcc)));
             }
 
             if (Pcc.Game is MEGame.LE2 || Pcc.Platform == MEPackage.GamePlatform.PS3 && Pcc.Game == MEGame.ME2)
             {
                 subnodes.Add(MakeUInt32Node(bin, "LE2 & PS3 ME2 Unknown"));
             }
-            subnodes.Add(MakeEntryNode(bin, "Defaults"));
+            subnodes.Add(MakeEntryNode(bin, "Defaults", Pcc));
             if (Pcc.Game.IsGame3())
             {
-                subnodes.Add(MakeArrayNode(bin, "Virtual Function Table", i => MakeEntryNode(bin, $"{i}: ")));
+                subnodes.Add(MakeArrayNode(bin, "Virtual Function Table", i => MakeEntryNode(bin, $"{i}: ", Pcc)));
             }
         }
         catch (Exception ex)
@@ -375,7 +376,7 @@ public partial class BinaryInterpreterWPF
             NameReference enumName = CurrentLoadedExport.ObjectName;
             for (int i = 0; i < enumCount; i++)
             {
-                subnodes.Add(MakeNameNode(bin, $"{enumName}[{i}]"));
+                subnodes.Add(MakeNameNode(bin, $"{enumName}[{i}]", Pcc));
             }
         }
         catch (Exception ex)
@@ -395,7 +396,7 @@ public partial class BinaryInterpreterWPF
             bin.Skip(binaryStart);
             subnodes.AddRange(MakeUFieldNodes(bin));
 
-            subnodes.Add(MakeStringNode(bin, "Literal Value"));
+            subnodes.Add(MakeStringNode(bin, "Literal Value", Pcc.Game));
         }
         catch (Exception ex)
         {
@@ -460,7 +461,7 @@ public partial class BinaryInterpreterWPF
             }
             if ((Pcc.Game.IsGame1() || Pcc.Game.IsGame2() || Pcc.Game is MEGame.UDK) && Pcc.Platform != MEPackage.GamePlatform.PS3)
             {
-                subnodes.Add(MakeNameNode(bin, "FriendlyName"));
+                subnodes.Add(MakeNameNode(bin, "FriendlyName", Pcc));
             }
         }
         catch (Exception ex)

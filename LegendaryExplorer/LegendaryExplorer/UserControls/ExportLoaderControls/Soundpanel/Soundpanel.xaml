@@ -1,4 +1,4 @@
-﻿<exportLoaderControls:ExportLoaderControl x:Class="LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel"
+﻿<exportLoaderControls:ExportLoaderControl x:Class="LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel.Soundpanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -6,18 +6,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              xmlns:fa="http://schemas.fontawesome.com/icons/"
-             Loaded="Soundpanel_Loaded"
              Unloaded="Soundpanel_Unloaded"
              xmlns:exportLoaderControls="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls"
              xmlns:settings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
              xmlns:converters="clr-namespace:LegendaryExplorer.SharedUI.Converters"
-             xmlns:hb1="clr-namespace:Be.Windows.Forms;assembly=Be.Windows.Forms.HexBox"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-             xmlns:audio1="clr-namespace:LegendaryExplorerCore.Audio;assembly=LegendaryExplorerCore"
-             xmlns:sharedUi="clr-namespace:LegendaryExplorer.SharedUI"
              xmlns:audio="clr-namespace:LegendaryExplorer.Audio"
-             xmlns:soundplorer="clr-namespace:LegendaryExplorer.Tools.Soundplorer"
              xmlns:isact="clr-namespace:LegendaryExplorerCore.Sound.ISACT;assembly=LegendaryExplorerCore"
+             xmlns:soundpanel="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel"
+             xmlns:wwiserEnums="clr-namespace:ME3Tweaks.Wwiser.Model.Hierarchy.Enums;assembly=ME3Tweaks.Wwiser"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400"
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
@@ -160,11 +157,6 @@
             </TabItem>
             <TabItem Header="HIRCs" IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource EntryTypeBooleanConverter}, ConverterParameter=WwiseBank}">
                 <DockPanel LastChildFill="True">
-                    <StatusBar Height="23" DockPanel.Dock="Bottom" Width="Auto">
-                        <StatusBarItem>
-                            <TextBlock Name="HIRCStatusBar_LeftMostText" Text="Nothing selected"/>
-                        </StatusBarItem>
-                    </StatusBar>
                     <ToolBar ToolBarTray.IsLocked="True" DockPanel.Dock="Top">
                         <Button Command="{Binding CommitCommand}" Content="Commit" ToolTip="Commit changes to this Wwisebank file back to the export" VerticalAlignment="Stretch" Padding="7,0">
                             <Button.Style>
@@ -192,28 +184,28 @@
                         </Grid.RowDefinitions>
 
                         <ListBox ItemsSource="{Binding HIRCObjects}" 
-                             Name="HIRC_ListBox" SelectionChanged="HIRC_ListBox_SelectionChanged" 
+                             Name="HIRC_ListBox" SelectedItem="{Binding SelectedHIRCObject, Mode=TwoWay}"
                              HorizontalContentAlignment="Stretch"
                              Grid.Row="0" Grid.ColumnSpan="3">
                             <ListBox.Resources>
-                                <DataTemplate DataType="{x:Type exportLoaderControls:HIRCDisplayObject}">
+                                <DataTemplate DataType="{x:Type soundpanel:HIRCDisplayObject}">
                                     <DockPanel x:Name="HIRCContainer" VerticalAlignment="Center">
                                         <TextBlock Text="{Binding Index}" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0,0,5,0" Padding="10,0,10,0"/>
-                                        <TextBlock Text="{Binding ID,StringFormat='HIRC 0x{0:X8}'}" DockPanel.Dock="Top"/>
+                                        <TextBlock Text="{Binding Item.Item.Id,StringFormat='Item ID {0}'}" DockPanel.Dock="Top"/>
                                         <Button Content="PLAY" DockPanel.Dock="Right" 
                                                 VerticalAlignment="Center"
                                                 Padding="5"
-                                                Visibility="{Binding Converter={StaticResource HIRCObjectTypeVisibilityConverter},ConverterParameter=2}"
-                                                Command="{Binding PlayHIRCCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type exportLoaderControls:Soundpanel}}}"
+                                                Visibility="{Binding Converter={StaticResource HIRCObjectTypeVisibilityConverter},ConverterParameter={x:Static wwiserEnums:HircType.Sound}}"
+                                                Command="{Binding PlayHIRCCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type soundpanel:Soundpanel}}}"
                                                 CommandParameter="{Binding}">
 
                                         </Button>
                                         <Border Margin="0" DockPanel.Dock="Bottom" Padding="2,0,2,0" BorderThickness="1" BorderBrush="Red" Background="AntiqueWhite" 
                                                 CornerRadius="2" HorizontalAlignment="Left" 
-                                                Visibility="{Binding Converter={StaticResource HIRCObjectTypeVisibilityConverter},ConverterParameter=2}">
-                                            <TextBlock Text="{Binding State,Converter={StaticResource HIRCMediaFetchTypeConverter}}" FontWeight="Bold"/>
+                                                Visibility="{Binding Converter={StaticResource HIRCObjectTypeVisibilityConverter},ConverterParameter={x:Static wwiserEnums:HircType.Sound}}">
+                                            <TextBlock Text="{Binding Item,Converter={StaticResource HIRCMediaFetchTypeConverter}}" FontWeight="Bold"/>
                                         </Border>
-                                        <TextBlock Text="{Binding Path=ObjType, Converter={StaticResource HIRCObjectTypeConverter}}" FontStyle="Italic"/>
+                                        <TextBlock Text="{Binding Path=Item, Converter={StaticResource HIRCObjectTypeConverter}}" FontStyle="Italic"/>
                                         <DockPanel.ContextMenu>
                                             <ContextMenu>
                                                 <MenuItem Click="CloneHIRCObject" ToolTip="Clones HIRC object">
@@ -246,44 +238,9 @@
                       BorderThickness="0,5"
                       BorderBrush="Transparent"
                       Panel.ZIndex="60"/>
-                        <Grid Grid.Row="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition MinWidth="{Binding HexBoxMinWidth}" MaxWidth="{Binding HexBoxMaxWidth}" Width="{Binding HexBoxMinWidth, Mode=OneWay}" Name="HexboxColumnDefinition" />
-                                <ColumnDefinition Width="3" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition MaxHeight="27" MinHeight="27" Height="27"/>
-                                <RowDefinition MinHeight="200"/>
-                            </Grid.RowDefinitions>
-                            <ToolBar ToolBarTray.IsLocked="True" Grid.Row="0" Grid.ColumnSpan="4">
-                                <Button Name="SaveHexChange_Button" ToolTip="Commit hex changes to the HIRC object. This does not commit the changes to the export." Content="Save Hex Changes" Command="{Binding SaveHIRCHexCommand}">
-                                    <Button.Style>
-                                        <Style TargetType="{x:Type Button}">
-                                            <Style.Triggers>
-                                                <Trigger Property="IsEnabled" Value="True">
-                                                    <Setter Property="Foreground" Value="Red"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
-                                <Button Name="ToggleHexboxWidth_Button" Content="Toggle Hexbox Width" ToolTip="Toggle between 4 and 16 byte widths" Click="HIRC_ToggleHexboxWidth_Click"/>
-                                <Separator Name="SaveToggle_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
-                            </ToolBar>
-                            <sharedUi:WindowsFormsHostEx x:Name="HIRC_Hexbox_Host" Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                                <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="Soundpanel_HIRCHexbox_SelectionChanged" VScrollBarVisible="True">
-                                </hb1:HexBox>
-                            </sharedUi:WindowsFormsHostEx>
-                            <GridSplitter Grid.Column="1" 
-                      Grid.Row="1" HorizontalAlignment="Stretch" 
-                      Margin="-5,0"
-                      BorderThickness="5,0"
-                      BorderBrush="Transparent"
-                      Panel.ZIndex="60"/>
-                            <ListBox Name="HIRCNotableItems_ListBox" Grid.Column="2" Grid.Row="1" ItemsSource="{Binding HIRCNotableItems}" SelectionChanged="HIRCNotableItems_ListBox_SelectionChanged" Width="Auto"/>
-                        </Grid>
-
+                        <soundpanel:HIRCItemEditor x:Name="HIRCItemEditor" Grid.Row="2"
+                                                   SelectedHIRCItem="{Binding SelectedHIRCObject, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type soundpanel:Soundpanel}}}" 
+                                                   WwiseBinaryScanner="{Binding WwiseBankScans, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type soundpanel:Soundpanel}}}" />
                     </Grid>
                 </DockPanel>
             </TabItem>

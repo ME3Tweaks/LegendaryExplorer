@@ -2,8 +2,10 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using ME3Tweaks.Wwiser.Model.Hierarchy;
+using ME3Tweaks.Wwiser.Model.Hierarchy.Enums;
 using AudioStreamHelper = LegendaryExplorer.UnrealExtensions.AudioStreamHelper;
-using HIRCDisplayObject = LegendaryExplorer.UserControls.ExportLoaderControls.HIRCDisplayObject;
+using HIRCDisplayObject = LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel.HIRCDisplayObject;
 
 namespace LegendaryExplorer.SharedUI.Converters
 {
@@ -36,14 +38,11 @@ namespace LegendaryExplorer.SharedUI.Converters
         // parameter is allowed class type for visibility
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            uint i = (uint)value;
-            return i switch
+            if (value is HircItemContainer { Type.Value: HircType.Sound, Item: Sound snd})
             {
-                0 => $"Embedded",
-                1 => $"Streamed",
-                2 => $"Streamed with prefetch",
-                _ => $"Unknown playback fetch type: {value}"
-            };
+                return Enum.GetName(typeof(StreamType.StreamTypeInner), snd.BankSourceData.StreamType.Value);
+            }
+            return "No media";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -55,10 +54,14 @@ namespace LegendaryExplorer.SharedUI.Converters
     [ValueConversion(typeof(byte), typeof(string))]
     public class HIRCObjectTypeConverter : IValueConverter
     {
-        // parameter is allowed class type for visibility
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return AudioStreamHelper.GetHircObjTypeString((byte)value);
+            if (value is HircItemContainer { Type: { } hircType })
+            {
+                return Enum.GetName(typeof(HircType), hircType.Value);
+            }
+
+            return "";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -70,14 +73,11 @@ namespace LegendaryExplorer.SharedUI.Converters
     [ValueConversion(typeof(int), typeof(Visibility))]
     public class HIRCObjectTypeVisibilityConverter : IValueConverter
     {
-        // parameter is allowed class type for visibility
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (parameter != null && value != null)
+            if (parameter is HircType parameterType && value is HIRCDisplayObject hdo)
             {
-                int iparameter = int.Parse((string)parameter);
-                HIRCDisplayObject ho = (HIRCDisplayObject)value;
-                return iparameter == ho.ObjType ? Visibility.Visible : Visibility.Collapsed;
+                return parameterType == hdo.Item.Type.Value ? Visibility.Visible : Visibility.Collapsed;
             }
             return Visibility.Collapsed;
         }

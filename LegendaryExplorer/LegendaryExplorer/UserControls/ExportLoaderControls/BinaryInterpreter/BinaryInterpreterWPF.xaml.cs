@@ -161,6 +161,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand OpenInPackageEditorCommand { get; set; }
         public ICommand FindDefinitionOfImportCommand { get; set; }
         public ICommand CopyGuidCommand { get; set; }
+        
+        public ICommand GoToReferencedOffsetCommand { get; set; }
 
         private void LoadCommands()
         {
@@ -169,6 +171,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             OpenInPackageEditorCommand = new GenericCommand(OpenInPackageEditor, IsSelectedItemAnObjectRef);
             FindDefinitionOfImportCommand = new GenericCommand(FindDefinitionOfImport, IsSelectedItemAnImportObjectRef);
             CopyGuidCommand = new GenericCommand(CopyGuid, IsSelectedItemAGuid);
+            GoToReferencedOffsetCommand = new GenericCommand(GoToReferencedOffset, IsSelectedItemAnOffsetRef);
         }
 
         private void CopyGuid()
@@ -187,7 +190,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         {
             return BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b && IsObjectNodeType(b);
         }
-
         private bool IsSelectedItemAnImportObjectRef()
         {
             return BinaryInterpreter_TreeView.SelectedItem is BinInterpNode b && IsImportObjectNodeType(b);
@@ -196,6 +198,19 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private bool IsSelectedItemAGuid()
         {
             return BinaryInterpreter_TreeView.SelectedItem is BinInterpNode { Tag: NodeType.Guid };
+        }
+        
+        private void GoToReferencedOffset()
+        {
+            if (BinaryInterpreter_TreeView.SelectedItem is BinInterpNodeOffsetReference { Tag: NodeType.ReferenceToOffset, OffsetTarget: >=0 } b)
+            {
+                AttemptSelectEntryWithOffset(TreeViewItems, b.OffsetTarget);
+            }
+        }
+
+        private bool IsSelectedItemAnOffsetRef()
+        {
+            return BinaryInterpreter_TreeView.SelectedItem is BinInterpNode { Tag: NodeType.ReferenceToOffset };
         }
 
         private void FireNavigateCallback()
@@ -466,50 +481,6 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         }
 
         #region static stuff
-        public enum NodeType : sbyte
-        {
-            Unknown = -1,
-            StructProperty = 0,
-            IntProperty = 1,
-            FloatProperty = 2,
-            ObjectProperty = 3,
-            NameProperty = 4,
-            BoolProperty = 5,
-            ByteProperty = 6,
-            ArrayProperty = 7,
-            StrProperty = 8,
-            StringRefProperty = 9,
-            DelegateProperty = 10,
-            None,
-            BioMask4Property,
-
-            ArrayLeafObject,
-            ArrayLeafName,
-            ArrayLeafEnum,
-            ArrayLeafStruct,
-            ArrayLeafBool,
-            ArrayLeafString,
-            ArrayLeafFloat,
-            ArrayLeafInt,
-            ArrayLeafByte,
-
-            StructLeafByte,
-            StructLeafFloat,
-            StructLeafDeg, //indicates this is a StructProperty leaf that is in degrees (actually unreal rotation units)
-            StructLeafInt,
-            StructLeafObject,
-            StructLeafName,
-            StructLeafBool,
-            StructLeafStr,
-            StructLeafArray,
-            StructLeafEnum,
-            StructLeafStruct,
-
-            // For right clicking things.
-            Guid,
-
-            Root,
-        }
 
         #endregion
 
@@ -686,7 +657,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                             subNodes.AddRange(Scan_WwiseStream(data));
                             break;
                         case "WwiseBank":
-                            subNodes.AddRange(Scan_WwiseBank(data));
+                            subNodes.AddRange(new WwiseBankScans().Scan_WwiseBank(data, CurrentLoadedExport));
                             break;
                         case "WwiseEvent":
                             subNodes.AddRange(Scan_WwiseEvent(data, ref binarystart));
@@ -932,6 +903,48 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
             }
+            return false;
+        }
+
+        private bool AttemptSelectEntryWithOffset(IEnumerable<ITreeItem> subNodes, int offset)
+        {
+            var binNodes = subNodes.OfType<BinInterpNode>().OrderBy(o => o.Offset);
+            BinInterpNode closestOffset = null;
+            
+            foreach (BinInterpNode b in binNodes)
+            {
+                if (b.Offset == offset)
+                {
+                    b.IsProgramaticallySelecting = true;
+                    b.IsSelected = true;
+                    return true;
+                }
+                
+                if(b.Offset > offset && closestOffset is not null)
+                {
+                    break;
+                }
+                
+                if (b.Offset < offset)
+                {
+                    closestOffset = b;
+                }
+            }
+
+            if (closestOffset is null) return false;
+            
+            if (closestOffset.Items is null) // Handle offset being inside a leaf node with no children
+            {
+                closestOffset.IsProgramaticallySelecting = true;
+                closestOffset.IsSelected = true;
+                return true;
+            }
+            if(AttemptSelectEntryWithOffset(closestOffset.Items, offset))
+            {
+                closestOffset.IsExpanded = true;
+                return true;
+            }
+
             return false;
         }
 

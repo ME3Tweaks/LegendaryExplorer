@@ -201,6 +201,7 @@
         <MenuItem Header="Dump TOC file" Click="DumpTOC_Click"/>
         <MenuItem Header="Export BioMorphFace to PSK with UModel" Click="ExportBioMorphFace_Click" ToolTip="Must have BioMorphFace selected and UModel installed"/>
         <MenuItem Header="Replace all wems" Click="ReplaceAllWems_Click"/>
+        <MenuItem Header="Export all WwiseBanks (all files, all games)" Click="DumpWwiseBanks_Click"/>
     </MenuItem>
     <MenuItem Header="Squid's new and exciting ways to break stuff">
         <MenuItem Header="Export to glTF/glb (no textures)" Click="ExportGltf_Click" ToolTip="Export a mesh as a glTF/glb file. quick, small files."/>

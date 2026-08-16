@@ -318,40 +318,5 @@ namespace LegendaryExplorer.UnrealExtensions
                     return null; //other codecs currently unsupported
             }
         }
-
-        public static string GetHircObjTypeString(byte b) => GetHircObjTypeString((HIRCType)b);
-
-        public static string GetHircObjTypeString(HIRCType ht) =>
-            ht switch
-            {
-                HIRCType.SoundSXFSoundVoice => "Sound SFX/Sound Voice",
-                HIRCType.EventAction => "Event Action",
-                HIRCType.Event => "Event",
-                HIRCType.RandomOrSequenceContainer => "Random Container or Sequence Container",
-                HIRCType.ActorMixer => "Actor-Mixer",
-                HIRCType.MusicSegment => "Music Segment",
-                HIRCType.MusicTrack => "Music Track",
-                HIRCType.MusicSwitchContainer => "Music Switch Container",
-                HIRCType.MusicPlaylistContainer => "Music Playlist Container",
-                HIRCType.Attenuation => "Attenuation",
-                HIRCType.Effect => "Effect",
-                HIRCType.AuxiliaryBus => "Auxiliary Bus",
-                HIRCType.Settings => "Settings",
-                HIRCType.SwitchContainer => "Switch Container",
-                HIRCType.AudioBus => "Audio Bus",
-                HIRCType.BlendContainer => "Blend Container",
-                HIRCType.DialogueEvent => "Dialogue Event",
-                HIRCType.MotionBus => "Motion Bus",
-                HIRCType.MotionFX => "Motion FX",
-                _ => "UNKNOWN HIRCOBJECT TYPE!"
-            };
-
-        public static string GetEventActionTypeString(WwiseBankParsed.EventActionType actionType) =>
-            actionType switch
-            {
-                WwiseBankParsed.EventActionType.Play => "Play",
-                WwiseBankParsed.EventActionType.Stop => "Stop",
-                _ => "Unknown Action"
-            };
     }
 }

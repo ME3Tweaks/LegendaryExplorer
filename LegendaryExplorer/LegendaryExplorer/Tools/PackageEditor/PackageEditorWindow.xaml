@@ -23,6 +23,7 @@
         xmlns:materialEditor="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.MaterialEditor"
         mc:Ignorable="d"
         xmlns:global="clr-namespace:LegendaryExplorer"
+        xmlns:soundpanel="clr-namespace:LegendaryExplorer.UserControls.ExportLoaderControls.Soundpanel"
         Icon="pack://application:,,,/Tools/Icons/16x16/PackageEditor_Icon_16.ico"
         Title="Package Editor" Height="720" Width="1100"
         DragOver="Window_DragOver"
@@ -564,7 +565,7 @@
                         <TabItem.Header>
                             <TextBlock Text="Sound" ToolTip="Edit and play audio"/>
                         </TabItem.Header>
-                        <exportLoaderControls:Soundpanel x:Name="SoundTab_Soundpanel" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        <soundpanel:Soundpanel x:Name="SoundTab_Soundpanel" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </TabItem>
                     <TabItem Name="JPEXLauncher_Tab" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}">
                         <TabItem.Header>

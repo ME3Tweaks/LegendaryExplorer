@@ -43,7 +43,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public int Offset { get; set; } = -1;
 
         public int Length { get; set; }
-        public BinaryInterpreterWPF.NodeType Tag { get; set; }
+        public NodeType Tag { get; set; }
         public ArrayPropertyChildAddAlgorithm ArrayAddAlgorithm;
 
         private Brush _diffBackground;
@@ -80,7 +80,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        public BinInterpNode(long pos, string text, BinaryInterpreterWPF.NodeType nodeType = BinaryInterpreterWPF.NodeType.Unknown) : this()
+        public BinInterpNode(long pos, string text, NodeType nodeType = NodeType.Unknown) : this()
         {
             Header = pos >= 0 ? $"0x{pos:X8}: {text}" : text;
             if (pos >= 0)
@@ -99,7 +99,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public int GetObjectRefValue(ExportEntry export)
         {
             if (UIndexValue != 0) return UIndexValue; //cached
-            if (Tag is BinaryInterpreterWPF.NodeType.ArrayLeafObject or BinaryInterpreterWPF.NodeType.ObjectProperty or BinaryInterpreterWPF.NodeType.StructLeafObject)
+            if (Tag is NodeType.ArrayLeafObject or NodeType.ObjectProperty or NodeType.StructLeafObject)
             {
                 UIndexValue = EndianReader.ToInt32(export.DataReadOnly, GetPos(), export.FileRef.Endian);
             }
@@ -243,6 +243,18 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     }
                 }
             }
+        }
+    }
+
+    public class BinInterpNodeOffsetReference : BinInterpNode
+    {
+        public int OffsetTarget { get; set; } = -1;
+
+        public BinInterpNodeOffsetReference(long pos, string text,
+            NodeType nodeType = NodeType.ReferenceToOffset) : base(pos, text,
+            nodeType)
+        {
+            
         }
     }
 }
