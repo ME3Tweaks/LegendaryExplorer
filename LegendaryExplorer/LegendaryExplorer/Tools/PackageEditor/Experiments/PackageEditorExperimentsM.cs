@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Numerics;
-using LegendaryExplorer.Dialogs;
+﻿using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Packages;
 using LegendaryExplorer.Tools.AssetDatabase;
@@ -35,15 +24,21 @@ using LegendaryExplorerCore.UnrealScript;
 using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
-using LegendaryExplorer.Tools.AssetViewer;
-using LegendaryExplorer.UserControls.ExportLoaderControls;
-using LegendaryExplorerCore.Gammtek.Extensions;
-using LegendaryExplorerCore.Pathing;
-using LegendaryExplorerCore.Shaders;
-using LegendaryExplorerCore.UDK;
-using LegendaryExplorerCore.UnrealScript.Documentation;
-using LegendaryExplorer.SharedUI.Controls;
-using LegendaryExplorerCore.Diagnostics;
+using System.IO;
+using Newtonsoft.Json;
+using System.Windows;
+using System.Text;
+using System.Linq;
+using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Diagnostics;
+using System.Numerics;
+using Microsoft.Win32;
+using System.Threading;
+using System.Collections.Concurrent;
 
 //using ImageMagick;
 
@@ -2462,86 +2457,35 @@ defaultproperties
                 var outdirO = Directory.CreateDirectory(Path.Combine(outdir, "ME3")).FullName;
                 var outdirL = Directory.CreateDirectory(Path.Combine(outdir, "LE3")).FullName;
 
-                UnrealScriptOptionsPackage usopOT = new UnrealScriptOptionsPackage()
+                pe.IsBusy = true;
+                CaseInsensitiveDictionary<int> values = new();
+                Task.Run(() =>
                 {
-                    Cache = otPC,
-                };
-                UnrealScriptOptionsPackage usopLE = new UnrealScriptOptionsPackage()
-                {
-                    Cache = otLE,
-                };
-                var flOT = new FileLib(packageO);
-                var flLE = new FileLib(packageL);
-                flOT.Initialize(usopOT);
-                flLE.Initialize(usopLE);
-
-                foreach (var cls in packageL.Exports.Where(x => x.IsClass))
-                {
-                    Debug.WriteLine($"Decompiling {cls.ObjectName}");
-                    // LE
-                    var outFilePathLE = Path.Combine(outdirL, cls.ObjectName + ".uc");
-                    (_, string functionTextLE) = UnrealScriptCompiler.DecompileExport(cls, flLE, usopLE);
-                    File.WriteAllText(outFilePathLE, functionTextLE);
-
-                    // OT
-                    FileLib flOTToUse = flOT;
-                    ExportEntry me3Class = packageO.FindExport(cls.InstancedFullPath);
-                    var testPatchVer = GetTestPatchClass(cls.ObjectName);
-                    if (testPatchVer != null)
+                    var loadedFiles = MELoadedFiles.GetFilesLoadedInGame(MEGame.LE3);
+                    int done = 0;
+                    foreach (var v in loadedFiles)
                     {
-                        me3Class = testPatchVer;
-                        flOTToUse = new FileLib(me3Class.FileRef);
-                        flOTToUse.Initialize(usopOT);
-                    }
-
-                    if (me3Class != null)
-                    {
-                        var outFilePathOT = Path.Combine(outdirO, me3Class.ObjectName + ".uc");
-                        (_, string functionTextOT) = UnrealScriptCompiler.DecompileExport(me3Class, flOTToUse, usopOT);
-                        File.WriteAllText(outFilePathOT, functionTextOT);
-                    }
-                }
-            }
-
-
-
-            /*
-            // Convert to import
-            if (pe.TryGetSelectedExport(out var exp2))
-            {
-                var referencingEntries = exp2.GetEntriesThatReferenceThisOne();
-                if (referencingEntries.Any())
-                {
-                    // Create a temporary import
-                    var convertedItem = new ImportEntry(exp2.FileRef, exp2.Parent, new NameReference(exp2.ObjectName.Name + "_TMP", exp2.ObjectName.Number))
-                    {
-                        ClassName = exp2.ClassName,
-                        PackageFile = "Core", // Do a better lookup for this - it's possible to find where class of class is stored.
-                                              // This works for LEX merges (import finds existing export in package)
-                                              // but will not work in game if it gets turned into an actual import for use
-                    };
-                    exp2.FileRef.AddImport((ImportEntry)convertedItem);
-
-                    foreach (var f in referencingEntries)
-                    {
-                        // Make a new map for every iteration since this technically could add some items... somehow...
-                        var objectMap = new ListenableDictionary<IEntry, IEntry>();
-                        objectMap.Add(exp2, convertedItem); // Convert references to import
-                        objectMap.Add(f.Key, f.Key); // Force this to relink on itself.
-                        RelinkerOptionsPackage rop = new RelinkerOptionsPackage()
+                        pe.BusyText = $"Inventorying materials [{done++}/{loadedFiles.Count}]";
+                        using var p = MEPackageHandler.UnsafePartialLoad(v.Value, x => x.IsA("Material"));
+                        foreach (var t in p.Exports.Where(x => !x.IsDefaultObject && x.IsA("Material")))
                         {
-                            CrossPackageMap = objectMap
-                        };
-                        Relinker.RelinkAll(rop);
+                            var bin = ObjectBinary.From<Material>(t);
+                            if (bin.SM3MaterialResource.unk1 != 0)
+                            {
+                                values[t.MemoryFullPath] = bin.SM3MaterialResource.unk1;
+                            }
+                        }
                     }
 
-                    // Cleanup temporary stuff
-                    convertedItem.ObjectName = exp2.ObjectName;
-                    EntryPruner.TrashEntries(exp2.FileRef, new[] { exp2 });
-                }
-            }*/
+                    foreach (var v in values)
+                    {
+                        Debug.WriteLine($"{v.Key}\t\t{v.Value}");
+                    }
+                    pe.IsBusy = false;
+                });
 
-            return;
+                return;
+            }
 
             // This is to just let me re-use variables. Sometimes I use this old code
 #if FALSE

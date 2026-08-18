@@ -317,6 +317,32 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             private set => SetProperty(ref _searchStatusText, value);
         }
 
+        private bool _isWwiseEventLoaded;
+        /// <summary>
+        /// True if the currently loaded export is a WwiseEvent this panel can play (see <see cref="LegendaryExplorerCore.Audio.WwiseEventPlayer.CanPlay"/>).
+        /// Used to swap the normal player controls for a simple Play/Stop event player - a WwiseEvent
+        /// has no fixed duration to show a seekbar/waveform for.
+        /// </summary>
+        public bool IsWwiseEventLoaded
+        {
+            get => _isWwiseEventLoaded;
+            private set => SetProperty(ref _isWwiseEventLoaded, value);
+        }
+
+        private bool _isWwiseEventPlaying;
+        public bool IsWwiseEventPlaying
+        {
+            get => _isWwiseEventPlaying;
+            private set => SetProperty(ref _isWwiseEventPlaying, value);
+        }
+
+        private string _wwiseEventStatusText;
+        public string WwiseEventStatusText
+        {
+            get => _wwiseEventStatusText;
+            private set => SetProperty(ref _wwiseEventStatusText, value);
+        }
+
         #endregion
 
         #region Commands
@@ -325,6 +351,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public ICommand ExportAudioCommand { get; set; }
         public ICommand StartPlaybackCommand { get; set; }
         public ICommand StopPlaybackCommand { get; set; }
+        public ICommand PlayWwiseEventCommand { get; set; }
+        public ICommand StopWwiseEventCommand { get; set; }
 
         public ICommand TrackControlMouseDownCommand { get; set; }
         public ICommand TrackControlMouseUpCommand { get; set; }
@@ -341,6 +369,8 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             ExportAudioCommand = new RelayCommand(ExportAudio, CanExportAudio);
             StartPlaybackCommand = new GenericCommand(StartPlayback, CanStartPlayback);
             StopPlaybackCommand = new RelayCommand(StopPlayback, CanStopPlayback);
+            PlayWwiseEventCommand = new GenericCommand(PlayWwiseEvent, CanPlayWwiseEvent);
+            StopWwiseEventCommand = new GenericCommand(StopWwiseEvent, () => IsWwiseEventPlaying);
 
             // Event commands
             TrackControlMouseDownCommand = new RelayCommand(TrackControlMouseDown, CanTrackControlMouseDown);
@@ -402,6 +432,31 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 AllWems.Clear();
                 CurrentLoadedWwisebank = null;
                 StopPlaying();
+
+                WwiseEventPlayer.Stop();
+                IsWwiseEventPlaying = false;
+                WwiseEventStatusText = null;
+                IsWwiseEventLoaded = exportEntry.ClassName == "WwiseEvent";
+
+                if (exportEntry.ClassName == "WwiseEvent")
+                {
+                    CurrentLoadedExport = exportEntry;
+                    ExportInformationList.Add($"#{exportEntry.UIndex} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced}");
+
+                    var idProp = exportEntry.GetProperty<IntProperty>("Id");
+                    if (idProp != null)
+                    {
+                        ExportInformationList.Add($"Event ID: 0x{(uint)(int)idProp:X8}");
+                    }
+
+                    if (!WwiseEventPlayer.CanPlay(exportEntry))
+                    {
+                        ExportInformationList.Add(exportEntry.Game.IsGame1()
+                            ? "This game does not use Wwise audio."
+                            : "Playback of WwiseEvents is currently only supported for LE2 and LE3.");
+                    }
+                }
+
                 if (exportEntry.ClassName == "WwiseStream")
                 {
                     ExportInformationList.Add($"#{exportEntry.UIndex} {exportEntry.ClassName} : {exportEntry.ObjectName.Instanced}");
@@ -675,7 +730,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
         public static bool CanParseStatic(ExportEntry exportEntry)
         {
-            return (exportEntry.FileRef.Game.IsGame1() && exportEntry.ClassName == "SoundNodeWave") || (!exportEntry.FileRef.Game.IsGame1() && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"));
+            return (exportEntry.FileRef.Game.IsGame1() && exportEntry.ClassName == "SoundNodeWave")
+                || (!exportEntry.FileRef.Game.IsGame1() && (exportEntry.ClassName == "WwiseBank" || exportEntry.ClassName == "WwiseStream"))
+                || WwiseEventPlayer.CanPlay(exportEntry);
         }
 
         public override bool CanParse(ExportEntry exportEntry) => CanParseStatic(exportEntry);
@@ -879,6 +936,41 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private bool CanPlayHIRC(object obj)
         {
             return obj is HIRCDisplayObject { ObjType: 0x2 } hirc && CurrentLoadedWwisebank != null && hirc.SourceID == CurrentLoadedWwisebank.ID;
+        }
+
+        private bool CanPlayWwiseEvent() => IsWwiseEventLoaded && !IsWwiseEventPlaying;
+
+        private async void PlayWwiseEvent()
+        {
+            ExportEntry export = CurrentLoadedExport;
+            if (export == null)
+            {
+                return;
+            }
+
+            IsWwiseEventPlaying = true;
+            WwiseEventStatusText = "Playing...";
+            CommandManager.InvalidateRequerySuggested();
+            try
+            {
+                // Resolving the bank/streams (AFC reads) and native playback both do blocking IO -
+                // keep this off the UI thread.
+                await Task.Run(() => WwiseEventPlayer.Play(export));
+            }
+            catch (Exception ex)
+            {
+                IsWwiseEventPlaying = false;
+                WwiseEventStatusText = $"Playback failed: {ex.Message}";
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
+
+        private void StopWwiseEvent()
+        {
+            WwiseEventPlayer.Stop();
+            IsWwiseEventPlaying = false;
+            WwiseEventStatusText = null;
+            CommandManager.InvalidateRequerySuggested();
         }
 
         private void StartPlayback()
