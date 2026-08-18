@@ -8,8 +8,10 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
+    [ManualUIndexRefVerification]
     public abstract class StaticCollectionActor : ObjectBinary
     {
+        //no UIndexRef attribute here, because VerifyUIndexRefs is implemented manually in the subclasses
         public List<UIndex> Components;
 
         public List<Matrix4x4> LocalToWorldTransforms;
@@ -79,6 +81,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 LocalToWorldTransforms = [],
             };
         }
+
+        public override void VerifyUIndexRefs(MEGame game, IUIndexRefVerifier verifier)
+        {
+            base.VerifyUIndexRefs(game, verifier);
+            for (int i = 0; i < Components.Count; i++)
+            {
+                verifier.Verify(Components[i], "StaticMeshComponent", $"{ComponentPropName}[{i}]");
+            }
+        }
     }
     public class StaticLightCollectionActor : StaticCollectionActor
     {
@@ -91,6 +102,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 Components = [],
                 LocalToWorldTransforms = [],
             };
+        }
+
+        public override void VerifyUIndexRefs(MEGame game, IUIndexRefVerifier verifier)
+        {
+            base.VerifyUIndexRefs(game, verifier);
+            for (int i = 0; i < Components.Count; i++)
+            {
+                verifier.Verify(Components[i], "LightComponent", $"{ComponentPropName}[{i}]");
+            }
         }
     }
 

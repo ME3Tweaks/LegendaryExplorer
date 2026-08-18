@@ -16,6 +16,9 @@
     <Platforms>x64</Platforms>
     <PlatformTarget>x64</PlatformTarget>
     <Configurations>WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
+    <!-- Writes the source generator output to disk so it can be read and debugged -->
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <CompilerGeneratedFilesOutputPath>$(BaseIntermediateOutputPath)Generated</CompilerGeneratedFilesOutputPath>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
@@ -109,6 +112,13 @@
     <PackageReference Include="System.Drawing.Common" Version="10.0.2" />
     <PackageReference Include="System.IO.Hashing" Version="10.0.2" />
     <PackageReference Include="YellowDogMan.Mikktspace.Net" Version="0.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Emits the VerifyUIndexRefs methods for types with [UIndexRef] fields, and warns about
+         UIndex fields in BinaryConverters that haven't been annotated yet. -->
+    <ProjectReference Include="..\LegendaryExplorerCore.SourceGenerators\LegendaryExplorerCore.SourceGenerators.csproj"
+                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>

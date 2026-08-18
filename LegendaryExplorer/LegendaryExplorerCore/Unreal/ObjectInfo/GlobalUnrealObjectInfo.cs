@@ -61,6 +61,14 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         }
         public static bool IsA(this ClassInfo info, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(info.ClassName, baseClass, game, customClassInfos);
         public static bool IsA(this IEntry entry, string baseClass, Dictionary<string, ClassInfo> customClassInfos = null) => IsA(entry.ClassName, baseClass, entry.Game, customClassInfos, ((entry as ExportEntry)?.Class as ExportEntry)?.SuperClassName);
+        /// <summary>
+        /// Base classes for types that can't go in the class database. See the note on Class in <see cref="AddIntrinsicClasses"/>.
+        /// </summary>
+        private static readonly Dictionary<string, string> IntrinsicBaseClasses = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Class"] = "State"
+        };
+
         public static bool IsA(string className, string baseClass, MEGame game, Dictionary<string, ClassInfo> customClassInfos = null, string knownSuperClass = null)
         {
             if (className == baseClass) return true;
@@ -81,6 +89,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 else if (classes.TryGetValue(className, out info))
                 {
                     className = info.baseClass;
+                }
+                else if (IntrinsicBaseClasses.TryGetValue(className, out string intrinsicBase))
+                {
+                    className = intrinsicBase;
                 }
                 else if (knownSuperClass != null && classes.TryGetValue(knownSuperClass, out info))
                 {
@@ -1185,7 +1197,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             AddCore("Function", "Struct");
             AddCore("Enum", "Field");
             AddCore("Const", "Field");
-            //AddCore("Class", "State"); Causes infinite loop
+            // UClass : UState is correct, but adding it here causes an infinite loop in getPropertyInfo.
+            // IsA special casses Class, which doesn't effect property lookup.
+            //AddCore("Class", "State");
 
             AddCore("Property", "Field");
             AddCore("ByteProperty", "Property");
@@ -1203,6 +1217,11 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
             AddCore("StructProperty", "Property");
             AddCore("DelegateProperty", "Property");
             AddCore("StringRefProperty", "Property");
+
+            if (game is not MEGame.UDK)
+            {
+                AddCore("BioMask4Property", "ByteProperty");
+            }
 
             if (game.IsLEGame())
             {

@@ -6,8 +6,9 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class BioPawn : ObjectBinary
+    public partial class BioPawn : ObjectBinary
     {
+        [UIndexRef("AnimSet")]
         public UMultiMap<NameReference, UIndex> AnimationMap;//? Speculative name  //TODO: Make this a UMap
         protected override void Serialize(SerializingContainer sc)
         {

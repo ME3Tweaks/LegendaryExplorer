@@ -5,8 +5,9 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class SoundCue : ObjectBinary
+    public partial class SoundCue : ObjectBinary
     {
+        [UIndexRef("SoundNode")]
         public UMultiMap<UIndex, Point> EditorData; //Worthless info, but it didn't get cooked out //TODO: Replace with UMap
 
         protected override void Serialize(SerializingContainer sc)

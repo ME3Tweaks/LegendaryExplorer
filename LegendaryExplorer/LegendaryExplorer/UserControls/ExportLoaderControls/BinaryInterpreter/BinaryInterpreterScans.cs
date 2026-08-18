@@ -242,6 +242,41 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             return subnodes;
         }
 
+        private IEnumerable<ITreeItem> StartBioInertScan(byte[] data, ref int binarystart)
+        {
+            var subnodes = new List<ITreeItem>();
+            try
+            {
+                var bin = new EndianReader(new MemoryStream(data)) { Endian = CurrentLoadedExport.FileRef.Endian };
+                bin.JumpTo(binarystart);
+
+                int count = bin.ReadInt32();
+                subnodes.Add(new BinInterpNode(bin.Position - 4, $"NameEntryGuidPairs count: {count}"));
+                for (int i = 0; i < count; i++)
+                {
+                    BinInterpNode node = new BinInterpNode(bin.Position, $"NameEntryGuidPair {i}")
+                    {
+                        IsExpanded = true
+                    };
+                    node.Items.Add(MakeNameNode(bin, "Name"));
+                    if (Pcc.Game == MEGame.LE1)
+                    {
+                        node.Items.Add(MakeEntryNode(bin, "Entry"));
+                    }
+                    node.Items.Add(MakeGuidNode(bin, "GUID"));
+                    subnodes.Add(node);
+                }
+
+                binarystart = (int)bin.Position;
+            }
+            catch (Exception ex)
+            {
+                subnodes.Add(new BinInterpNode { Header = $"Error reading binary data: {ex}" });
+            }
+
+            return subnodes;
+        }
+
 
         private List<ITreeItem> StartBioPersistentCookerDataScan(byte[] data, ref int binarystart)
         {

@@ -2,8 +2,9 @@
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class FluidSurfaceComponent : ObjectBinary
+    public partial class FluidSurfaceComponent : ObjectBinary
     {
+        [UIndexRefContainer]
         public LightMap LightMap;
 
         protected override void Serialize(SerializingContainer sc)

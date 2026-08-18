@@ -12,7 +12,7 @@ using static LegendaryExplorerCore.Packages.MEPackage;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class ShaderCache : ObjectBinary
+    public partial class ShaderCache : ObjectBinary
     {
         /// <summary>
         /// If true, names are serialized as strings and objects cannot be serialized. Used by GlobalShaderCache.
@@ -28,6 +28,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UMultiMap<Guid, Shader> Shaders; //TODO: Make this a UMap
         public UMultiMap<NameReference, uint> VertexFactoryTypeCRCMap; //TODO: Make this a UMap
         public UMultiMap<NameReference, Guid> VertexFactoryTypeGuidMap; // GlobalShaderCache
+        [UIndexRefContainer]
         public UMultiMap<StaticParameterSet, MaterialShaderMap> MaterialShaderMaps; //TODO: Make this a UMap
 
         protected override void Serialize(SerializingContainer sc)
@@ -322,7 +323,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public class MaterialShaderMap
+    public partial class MaterialShaderMap
     {
         //usually empty! Shaders are in MeshShaderMaps
         public UMultiMap<NameReference, ShaderReference> Shaders; //TODO: Make this a UMap
@@ -331,11 +332,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public string FriendlyName;
         public StaticParameterSet StaticParameters;
         //ME3/LE
+        [UIndexRefContainer]
         public MaterialUniformExpression[] UniformPixelVectorExpressions;
+        [UIndexRefContainer]
         public MaterialUniformExpression[] UniformPixelScalarExpressions;
+        [UIndexRefContainer]
         public MaterialUniformExpressionTexture[] Uniform2DTextureExpressions;
+        [UIndexRefContainer]
         public MaterialUniformExpressionTexture[] UniformCubeTextureExpressions;
+        [UIndexRefContainer]
         public MaterialUniformExpression[] UniformVertexVectorExpressions;
+        [UIndexRefContainer]
         public MaterialUniformExpression[] UniformVertexScalarExpressions;
 
         public List<(NameReference, string)> GetNames(MEGame game)

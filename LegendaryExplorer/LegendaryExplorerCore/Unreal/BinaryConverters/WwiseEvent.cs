@@ -7,9 +7,10 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class WwiseEvent : ObjectBinary
+    public partial class WwiseEvent : ObjectBinary
     {
         public uint WwiseEventID; //ME2
+        [UIndexRefContainer]
         public List<WwiseEventLink> Links;
 
         protected override void Serialize(SerializingContainer sc)
@@ -64,9 +65,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-        public class WwiseEventLink
+        public partial class WwiseEventLink
         {
+            [UIndexRef("WwiseBank")]
             public List<UIndex> WwiseBanks;
+            [UIndexRef("WwiseStream")]
             public List<UIndex> WwiseStreams;
         }
     }

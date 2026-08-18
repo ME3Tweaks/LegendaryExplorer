@@ -4,9 +4,11 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public abstract class UField : ObjectBinary
+    public abstract partial class UField : ObjectBinary
     {
+        [UIndexRef("Struct")]
         public UIndex SuperClass; //actually a member of UStruct in UDK
+        [UIndexRef("Field")]
         public UIndex Next;
         protected override void Serialize(SerializingContainer sc)
         {

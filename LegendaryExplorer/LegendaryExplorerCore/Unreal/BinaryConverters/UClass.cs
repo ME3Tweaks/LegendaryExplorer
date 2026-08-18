@@ -9,19 +9,24 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class UClass : UState
+    public partial class UClass : UState
     {
         public UnrealFlags.EClassFlags ClassFlags;
+        [UIndexRef("Class")]
         public UIndex OuterClass;
         public NameReference ClassConfigName;
         public NameReference[] unkNameList1; //ME1, ME2. Categories?
+        [UIndexRef("Component", UIndexRefFlags.Value)]
         public UMultiMap<NameReference, UIndex> ComponentNameToDefaultObjectMap; //TODO: Make this a UMap
+        [UIndexRefContainer]
         public List<ImplementedInterface> Interfaces;
         public NameReference DLLBindName;//ME3, LE. Always None?
         public uint unk2; //ME3, LE. ForceScriptOrder?
         public uint le2ps3me2Unknown; //ME2, PS3 only and LE2
         public NameReference[] unkNameList2;//ME1/ME2. Categories?
+        [UIndexRef("Object")]
         public UIndex Defaults;
+        [UIndexRef("Function")]
         public UIndex[] VirtualFunctionTable;//ME3
 
         protected override void Serialize(SerializingContainer sc)
@@ -158,9 +163,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 }
             }
         }
-        public struct ImplementedInterface
+        public partial struct ImplementedInterface
         {
+            [UIndexRef("Class")]
             public UIndex Class;
+            [UIndexRef("StructProperty")]
             public UIndex PointerProperty;
 
             public ImplementedInterface(UIndex @class, UIndex pointerProperty)

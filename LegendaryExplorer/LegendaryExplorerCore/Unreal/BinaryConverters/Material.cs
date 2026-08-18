@@ -16,9 +16,11 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class Material : ObjectBinary
+    public partial class Material : ObjectBinary
     {
+        [UIndexRefContainer]
         public MaterialResource SM3MaterialResource;
+        [UIndexRefContainer]
         public MaterialResource SM2MaterialResource;
         protected override void Serialize(SerializingContainer sc)
         {
@@ -98,10 +100,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }));
         }
     }
-    public class MaterialInstance : ObjectBinary
+    public partial class MaterialInstance : ObjectBinary
     {
+        [UIndexRefContainer]
         public MaterialResource SM3StaticPermutationResource;
         public StaticParameterSet SM3StaticParameterSet; //Not SM3 in LE... not sure what to call the variable though
+        [UIndexRefContainer]
         public MaterialResource SM2StaticPermutationResource;
         public StaticParameterSet SM2StaticParameterSet;
         protected override void Serialize(SerializingContainer sc)
@@ -153,7 +157,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     //structs
 
-    public class MaterialResource
+    public partial class MaterialResource
     {
         public class TextureLookup
         {
@@ -165,15 +169,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
 
         public string[] CompileErrors;
+        [UIndexRef("MaterialExpression")]
         public UMultiMap<UIndex, int> TextureDependencyLengthMap;  //TODO: Make this a UMap
         public int MaxTextureDependencyLength;
         public Guid ID;
         public uint NumUserTexCoords;
+        [UIndexRef("Texture")]
         public UIndex[] UniformExpressionTextures; //serialized for ME3/LE, but will be set here for ME1 and ME2 as well
         //begin ME1/ME2
+        [UIndexRefContainer]
         public MaterialUniformExpression[] UniformPixelVectorExpressions;
+        [UIndexRefContainer]
         public MaterialUniformExpression[] UniformPixelScalarExpressions;
+        [UIndexRefContainer]
         public MaterialUniformExpressionTexture[] Uniform2DTextureExpressions;
+        [UIndexRefContainer]
         public MaterialUniformExpressionTexture[] UniformCubeTextureExpressions;
         //end ME1/ME2
         public bool bUsesSceneColor;
@@ -188,6 +198,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public TextureLookup[] TextureLookups; //not ME1
         public uint DummyDroppedFallbackComponents;
         //begin ME1
+        [UIndexRefContainer]
         public ME1MaterialUniformExpressionsElement[] Me1MaterialUniformExpressionsList;
         public int unk1;
         public int unkCount
@@ -490,11 +501,15 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public class ME1MaterialUniformExpressionsElement
+    public partial class ME1MaterialUniformExpressionsElement
     {
+        [UIndexRefContainer]
         public MaterialUniformExpression[] UniformPixelVectorExpressions;
+        [UIndexRefContainer]
         public MaterialUniformExpression[] UniformPixelScalarExpressions;
+        [UIndexRefContainer]
         public MaterialUniformExpressionTexture[] Uniform2DTextureExpressions;
+        [UIndexRefContainer]
         public MaterialUniformExpressionTexture[] UniformCubeTextureExpressions;
         public uint unk2;
         public uint unk3;
@@ -729,7 +744,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public readonly Func<UniformExpressionRenderContext, int, LinearColor> GetFlipBookTextureOffset = getFlipBookTextureOffset;
     }
 
-    public abstract class MaterialUniformExpression
+    public abstract partial class MaterialUniformExpression
     {
         public NameReference ExpressionType;
 
@@ -829,8 +844,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override bool IsNotFrameDependent => false; //Re-evaluate once we've figured out what this is
     }
 
-    public abstract class MaterialUniformExpressionUnaryOp : MaterialUniformExpression
+    public abstract partial class MaterialUniformExpressionUnaryOp : MaterialUniformExpression
     {
+        [UIndexRefContainer]
         public MaterialUniformExpression X;
         public override void Serialize(SerializingContainer sc)
         {
@@ -916,9 +932,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public class MaterialUniformExpressionFlipbookParameter : MaterialUniformExpression
+    public partial class MaterialUniformExpressionFlipbookParameter : MaterialUniformExpression
     {
         public int Index; //TODO: what is this?
+        [UIndexRef("Texture", UIndexRefFlags.ME1 | UIndexRefFlags.ME2)]
         public UIndex TextureIndex; //UIndex in ME1/2, index into MaterialResource's Uniform2DTextureExpressions in ME3/LE
         public override void Serialize(SerializingContainer sc)
         {
@@ -952,9 +969,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override bool IsNotFrameDependent => X.IsNotFrameDependent;
     }
 
-    public abstract class MaterialUniformExpressionBinaryOp : MaterialUniformExpression
+    public abstract partial class MaterialUniformExpressionBinaryOp : MaterialUniformExpression
     {
+        [UIndexRefContainer]
         public MaterialUniformExpression A;
+        [UIndexRefContainer]
         public MaterialUniformExpression B;
         public override void Serialize(SerializingContainer sc)
         {
@@ -1110,10 +1129,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public class MaterialUniformExpressionClamp : MaterialUniformExpression
+    public partial class MaterialUniformExpressionClamp : MaterialUniformExpression
     {
+        [UIndexRefContainer]
         public MaterialUniformExpression Input;
+        [UIndexRefContainer]
         public MaterialUniformExpression Min;
+        [UIndexRefContainer]
         public MaterialUniformExpression Max;
         public override void Serialize(SerializingContainer sc)
         {
@@ -1170,8 +1192,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override bool IsNotFrameDependent => true;
     }
 
-    public class MaterialUniformExpressionTexture : MaterialUniformExpression
+    public partial class MaterialUniformExpressionTexture : MaterialUniformExpression
     {
+        [UIndexRef("Texture", UIndexRefFlags.ME1 | UIndexRefFlags.ME2)]
         public UIndex TextureIndex; //UIndex in ME1/2, index into MaterialResource's Uniform2DTextureExpressions in ME3/LE
         public override void Serialize(SerializingContainer sc)
         {

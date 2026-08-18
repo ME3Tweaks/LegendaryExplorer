@@ -58,9 +58,9 @@ namespace LegendaryExplorerCore.Localization
                 case string_interp_warningExceptionParsingProperties:
                     return string.Format("{0} Exception occurred while parsing properties: {1}", parms);
                 case string_interp_warningBinaryReferenceOutsideTables:
-                    return string.Format("{0} Binary reference ({1}) is outside of import/export table", parms);
+                    return string.Format("{0} Binary reference {2} ({1}) is outside of import/export table", parms);
                 case string_interp_warningBinaryReferenceTrashed:
-                    return string.Format("{0} Binary reference ({1}) is a Trashed object", parms);
+                    return string.Format("{0} Binary reference {2} ({1}) is a Trashed object", parms);
                 case string_interp_warningBinaryNameReferenceOutsideNameTable:
                     return string.Format("{0} Found invalid binary reference for a name", parms);
                 case string_interp_warningUnableToParseBinary:
@@ -92,6 +92,8 @@ namespace LegendaryExplorerCore.Localization
                     return string.Format("{0} [Nested Property] references entry {1} {2}, but it appears to be wrong type. Property type expects a class (or subclass) {3}, but the referenced one is of type {4}", parms);
                 case string_interp_warningWrongObjectPropertyTypingWrongMessage:
                     return string.Format("{0} {1} references entry {2} {3}, but it appears to be wrong type. Property type expects an instance of an object of class (or subclass) {4}, but the referenced one is of type {5}", parms);
+                case string_interp_warningWrongBinaryReferenceTyping:
+                    return string.Format("{0} Binary reference {1} references entry {2} {3}, but it appears to be wrong type. It should be an instance of an object of class (or subclass) {4}, but the referenced one is of type {5}", parms);
                 case string_interp_nested_warningWrongObjectPropertyTypingWrongMessage:
                     return string.Format("{0} [Nested Property] references entry {1} {2}, but it appears to be wrong type. Property type expects an instance of an object of class (or subclass) {3}, but the referenced one is of type {4}", parms);
                 case string_interp_warningDelegatePropertyIsOutsideOfExportTable:
@@ -138,6 +140,7 @@ namespace LegendaryExplorerCore.Localization
         internal const string string_interp_warningWrongPropertyTypingWrongMessage = "string_interp_warningWrongPropertyTypingWrongMessage";
         internal const string string_interp_nested_warningWrongClassPropertyTypingWrongMessage = "string_interp_nested_warningWrongClassPropertyTypingWrongMessage";
         internal const string string_interp_warningWrongObjectPropertyTypingWrongMessage = "string_interp_warningWrongObjectPropertyTypingWrongMessage";
+        internal const string string_interp_warningWrongBinaryReferenceTyping = "string_interp_warningWrongBinaryReferenceTyping";
         internal const string string_interp_nested_warningWrongObjectPropertyTypingWrongMessage = "string_interp_nested_warningWrongObjectPropertyTypingWrongMessage";
         internal const string string_interp_warningDelegatePropertyIsOutsideOfExportTable = "string_interp_warningDelegatePropertyIsOutsideOfExportTable";
 

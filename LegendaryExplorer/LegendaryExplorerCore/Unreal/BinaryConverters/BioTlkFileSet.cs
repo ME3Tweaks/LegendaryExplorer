@@ -6,8 +6,9 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class BioTlkFileSet : ObjectBinary
+    public partial class BioTlkFileSet : ObjectBinary
     {
+        [UIndexRefContainer]
         public UMultiMap<NameReference, BioTlkSet> TlkSets; //TODO: Make this a UMap
 
         protected override void Serialize(SerializingContainer sc)
@@ -45,9 +46,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
 
-        public class BioTlkSet
+        public partial class BioTlkSet
         {
+            [UIndexRef("BioTlkFile")]
             public UIndex Male;
+            [UIndexRef("BioTlkFile")]
             public UIndex Female;
         }
     }

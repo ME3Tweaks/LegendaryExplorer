@@ -7,17 +7,21 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class Model : ObjectBinary
+    public partial class Model : ObjectBinary
     {
         public BoxSphereBounds Bounds;
         public Vector3[] Vectors;//BulkSerialized 12
         public Vector3[] Points;//BulkSerialized 12
         public BspNode[] Nodes; //BulkSerialized 64
+        [UIndexRef("Model")]
         public UIndex Self;
+        [UIndexRefContainer]
         public BspSurf[] Surfs;
         public Vert[] Verts;//BulkSerialized 24, ME3: 16
         public int NumSharedSides;
+        [UIndexRefContainer]
         public ZoneProperties[] Zones;
+        [UIndexRef("Polys")]
         public UIndex Polys;
         public int[] LeafHulls; //BulkSerialized 4
         public int[] Leaves; //BulkSerialized 4
@@ -157,8 +161,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int iLeaf1;
     }
 
-    public class BspSurf
+    public partial class BspSurf
     {
+        [UIndexRef("MaterialInterface")]
         public UIndex Material;
         public int PolyFlags;
         public int pBase;
@@ -166,6 +171,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public int vTextureU;
         public int vTextureV;
         public int iBrushPoly;
+        [UIndexRef("Brush")]
         public UIndex Actor;
         public Plane Plane;
         public float ShadowMapScale;
@@ -181,8 +187,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Vector2 BackfaceShadowTexCoord; //not ME3, not LE3
     }
 
-    public class ZoneProperties
+    public partial class ZoneProperties
     {
+        [UIndexRef("ZoneInfo")]
         public UIndex ZoneActor;
         public float LastRenderTime;
         public ulong ConnectivityMask;

@@ -7,13 +7,16 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class Terrain : ObjectBinary
+    public partial class Terrain : ObjectBinary
     {
         public ushort[] Heights;
         public TerrainInfoFlags[] InfoData;
         public AlphaMap[] AlphaMaps;
+        [UIndexRef("TerrainWeightMapTexture")]
         public UIndex[] WeightedTextureMaps;
+        [UIndexRefContainer]
         public TerrainMaterialResource[] CachedTerrainMaterials;
+        [UIndexRefContainer]
         public TerrainMaterialResource[] CachedTerrainMaterials2;//not ME1, UDK
         public byte[] CachedDisplacements;//not ME1 and not UDK
         public float MaxCollisionDisplacement;//not ME1 and not UDK
@@ -66,7 +69,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 for (int i = 0; i < CachedTerrainMaterials2.Length; i++)
                 {
-                    CachedTerrainMaterials[i].ForEachUIndex(game, action, $"CachedTerrainMaterials2[{i}].");
+                    CachedTerrainMaterials2[i].ForEachUIndex(game, action, $"CachedTerrainMaterials2[{i}].");
                 }
             }
         }
@@ -106,8 +109,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public byte[] Data;
     }
 
-    public class TerrainMaterialResource : MaterialResource
+    public partial class TerrainMaterialResource : MaterialResource
     {
+        [UIndexRef("Terrain")]
         public UIndex Terrain;
         public TerrainMaterialMask Mask;
         public Guid[] MaterialIds;

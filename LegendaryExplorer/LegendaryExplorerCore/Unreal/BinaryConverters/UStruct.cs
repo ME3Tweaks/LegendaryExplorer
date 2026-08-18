@@ -9,10 +9,13 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public abstract class UStruct : UField
+    public abstract partial class UStruct : UField
     {
+        [UIndexRef("TextBuffer")]//TextBuffer was compiled out of all Mass Effect games, so this should always be null except in UDK
         private UIndex ScriptText; //ME1/ME2/UDK
+        [UIndexRef("Field")]
         public UIndex Children;
+        [UIndexRef("TextBuffer")]
         private UIndex CppText; //ME1/ME2/UDK
         private int Line; //ME1/ME2/UDK
         private int TextPos; //ME1/ME2/UDK
@@ -95,6 +98,54 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
 
             return names;
+        }
+
+        /// <summary>
+        /// Visits the entry references embedded in this struct's Unrealscript bytecode. Those aren't fields, so
+        /// they can't carry a [UIndexRef]; the generated VerifyUIndexRefs calls this to pick them up.
+        /// Determining the correct type for these references is too complex to do here, so the verifier is passed a null acceptedClass.
+        /// </summary>
+        partial void VerifyExtraUIndexRefs(MEGame game, IUIndexRefVerifier verifier)
+        {
+            if (Export.ClassName is "ScriptStruct")
+            {
+                return;
+            }
+            if (Export.Game == MEGame.ME3 || Export.Game.IsLEGame() || Export.Game is MEGame.UDK)
+            {
+                try
+                {
+                    (List<Token> tokens, _) = Bytecode.ParseBytecode(ScriptBytes, Export);
+                    foreach (var t in tokens)
+                    {
+                        var refs = t.inPackageReferences.Where(x => x.type == Token.INPACKAGEREFTYPE_ENTRY);
+                        foreach ((int position, int type, int value) in refs)
+                        {
+                            verifier.Verify(value, null, $"Reference inside of function at 0x{position:X}");
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine($"Error decompiling function {Export.InstancedFullPath}: {e.Message}");
+                }
+            }
+            else if (!Export.IsClass)
+            {
+                try
+                {
+                    var func = Export.ClassName == "State" ? UE3FunctionReader.ReadState(Export) : UE3FunctionReader.ReadFunction(Export);
+                    func.Decompile(new TextBuilder(), false, false); //parse bytecode without signature (it does not contain entry refs)
+                    foreach ((long key, IEntry value) in func.EntryReferences)
+                    {
+                        verifier.Verify(value.UIndex, null, $"Reference inside of function at 0x{key:X}");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine($"Error decompiling function {Export.InstancedFullPath}: {e.Message}");
+                }
+            }
         }
 
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)

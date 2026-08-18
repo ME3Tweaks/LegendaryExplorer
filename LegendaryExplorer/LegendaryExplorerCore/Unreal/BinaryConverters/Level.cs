@@ -12,41 +12,62 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class Level : ObjectBinary
+    public partial class Level : ObjectBinary
     {
+        [UIndexRef("Level")]
         public UIndex Self;
+        [UIndexRef("Actor")]
         public List<UIndex> Actors;
         public URL URL;
+        [UIndexRef("Model")]
         public UIndex Model;
+        [UIndexRef("ModelComponent")]
         public UIndex[] ModelComponents;
+        [UIndexRef("Sequence")]
         public UIndex[] GameSequences;
+        [UIndexRef("Texture2D")]
         public UMultiMap<UIndex, StreamableTextureInstanceList> TextureToInstancesMap; //TODO: Make this a UMap
+        [UIndexRef("MeshComponent")]
         public UMultiMap<UIndex, uint> MeshComponentsWithDynamiclighting;//UDK  //TODO: Make this a UMap
         public byte[] ApexMesh;//ME3 only
         public byte[] CachedPhysBSPData; //BulkSerialized
+        [UIndexRef("StaticMesh")]
         public UMultiMap<UIndex, CachedPhysSMData> CachedPhysSMDataMap;
         public List<KCachedConvexData> CachedPhysSMDataStore;
+        [UIndexRef("StaticMesh")]
         public UMultiMap<UIndex, CachedPhysSMData> CachedPhysPerTriSMDataMap;
         public List<KCachedPerTriData> CachedPhysPerTriSMDataStore;
         public int CachedPhysBSPDataVersion;
         public int CachedPhysSMDataVersion;
+        [UIndexRef("Texture2D")]
         public UMultiMap<UIndex, bool> ForceStreamTextures;  //TODO: Make this a UMap
+        [UIndexRef("NavigationPoint")]
         public UIndex NavListStart;
+        [UIndexRef("NavigationPoint")]
         public UIndex NavListEnd;
+        [UIndexRef("CoverLink")]
         public UIndex CoverListStart;
+        [UIndexRef("CoverLink")]
         public UIndex CoverListEnd;
         //if ME3
+        [UIndexRef("Pylon")]
         public UIndex PylonListStart;
+        [UIndexRef("Pylon")]
         public UIndex PylonListEnd;
         public List<GuidIndexPair> CrossLevelCoverGuidRefs;
+        [UIndexRef("CoverLink")]
         public List<UIndex> CoverLinkRefs;
         public List<CoverIndexPair> CoverIndexPairs;
         public List<GuidIndexPair> CrossLevelNavGuidRefs;
+        [UIndexRef("NavigationPoint")]
         public List<UIndex> NavRefs;
         public List<int> NavRefIndicies;
         //endif
+        [UIndexRef("Actor")]//in 3 this only contains NavigationPoint descendants, but it's unclear if that is an actual restriction
         public List<UIndex> CrossLevelActors;
+        [UIndexRef("BioArtPlaceable")]
         public UIndex ArtPlaceable1;//ME1
+        [UIndexRef("BioArtPlaceable")]
         public UIndex ArtPlaceable2;//ME1
 
         protected override void Serialize(SerializingContainer sc)

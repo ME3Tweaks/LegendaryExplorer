@@ -7,13 +7,17 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public sealed class World : ObjectBinary
+    public sealed partial class World : ObjectBinary
     {
+        [UIndexRef("Level")]
         private UIndex PersistentLevel;
+        [UIndexRef("FaceFXAnimSet")]
         private UIndex PersistentFaceFXAnimSet; //ME3/LE
         private Fixed4<LevelViewportInfo> EditorViews;
+        [UIndexRef("DecalManager")]
         private UIndex DecalManager; //ME1/LE1
         private float unkFloat; //UDK
+        [UIndexRef("Object")]
         public UIndex[] ExtraReferencedObjects;
 
         protected override void Serialize(SerializingContainer sc)

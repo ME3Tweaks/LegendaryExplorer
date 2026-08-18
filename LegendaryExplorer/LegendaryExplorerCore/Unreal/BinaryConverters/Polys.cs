@@ -7,7 +7,7 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public sealed class Polys : ObjectBinary
+    public sealed partial class Polys : ObjectBinary
     {
         public int PolyCount
         {
@@ -15,7 +15,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             set => Array.Resize(ref Elements, value);
         }
         public int PolyMax;
+        [UIndexRef("Polys")]
         public UIndex Owner;
+        [UIndexRefContainer]
         public Poly[] Elements;
 
         protected override void Serialize(SerializingContainer sc)
@@ -68,7 +70,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
         }
     }
-    public class Poly
+    public partial class Poly
     {
         public Vector3 Base;
         public Vector3 Normal;
@@ -76,8 +78,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Vector3 TextureV;
         public Vector3[] Vertices;
         public int PolyFlags;
+        [UIndexRef("Brush")]
         public UIndex Actor;
         public NameReference ItemName;
+        [UIndexRef("MaterialInterface")]
         public UIndex Material;
         public int iLink;
         public int iBrushPoly;

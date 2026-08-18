@@ -877,6 +877,9 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                         case "BioPersistentCookerData":
                             subNodes.AddRange(StartBioPersistentCookerDataScan(data, ref binarystart));
                             break;
+                        case "BioInert":
+                            subNodes.AddRange(StartBioInertScan(data, ref binarystart));
+                            break;
                         default:
                             if (!CurrentLoadedExport.HasStack)
                             {
