@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.32112.339
+# Visual Studio Version 18
+VisualStudioVersion = 18.8.12023.21 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegendaryExplorer", "LegendaryExplorer\LegendaryExplorer.csproj", "{90722DA5-6E21-4FA5-B625-B832686A10D3}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -49,6 +49,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ME3Tweaks.Wwiser", "submodules\Wwiser.NET\ME3Tweaks.Wwiser\ME3Tweaks.Wwiser.csproj", "{591473D5-22A7-48E8-ADAC-921332DAC7C8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegendaryExplorerUnrealDoc", "LegendaryExplorerUnrealDoc\LegendaryExplorerUnrealDoc.csproj", "{FE6D8103-56EC-4638-89E0-B191BFC82AB4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WwiseAudioPlayer", "WwiseAudioPlayer\WwiseAudioPlayer.vcxproj", "{D9F415BC-1DDC-4DA1-A2BD-9EC8F27C81A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -171,6 +173,14 @@ Global
 		{FE6D8103-56EC-4638-89E0-B191BFC82AB4}.WinAzureRelease|x64.Build.0 = Release|Any CPU
 		{FE6D8103-56EC-4638-89E0-B191BFC82AB4}.WinAzureTest|x64.ActiveCfg = Release|Any CPU
 		{FE6D8103-56EC-4638-89E0-B191BFC82AB4}.WinAzureTest|x64.Build.0 = Release|Any CPU
+		{D9F415BC-1DDC-4DA1-A2BD-9EC8F27C81A2}.Debug|x64.ActiveCfg = WinDebug|x64
+		{D9F415BC-1DDC-4DA1-A2BD-9EC8F27C81A2}.Debug|x64.Build.0 = WinDebug|x64
+		{D9F415BC-1DDC-4DA1-A2BD-9EC8F27C81A2}.Release|x64.ActiveCfg = WinDebug|x64
+		{D9F415BC-1DDC-4DA1-A2BD-9EC8F27C81A2}.Release|x64.Build.0 = WinDebug|x64
+		{D9F415BC-1DDC-4DA1-A2BD-9EC8F27C81A2}.WinAzureRelease|x64.ActiveCfg = WinDebug|x64
+		{D9F415BC-1DDC-4DA1-A2BD-9EC8F27C81A2}.WinAzureRelease|x64.Build.0 = WinDebug|x64
+		{D9F415BC-1DDC-4DA1-A2BD-9EC8F27C81A2}.WinAzureTest|x64.ActiveCfg = WinDebug|x64
+		{D9F415BC-1DDC-4DA1-A2BD-9EC8F27C81A2}.WinAzureTest|x64.Build.0 = WinDebug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
