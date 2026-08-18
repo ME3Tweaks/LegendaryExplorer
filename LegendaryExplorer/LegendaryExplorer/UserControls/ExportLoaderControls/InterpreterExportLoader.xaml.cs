@@ -1622,10 +1622,10 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                                     else
                                     {
                                         // It's likely a cross level reference.
-                                        var coverRefGuid = level.CrossLevelCoverGuidRefs.Find(x => x.CoverIndexIdx == (int)cover.CoverIndexIdx);
-                                        if (coverRefGuid.Guid != Guid.Empty)
+                                        var coverRefGuid = level.CrossLevelCoverGuidRefs[(int)cover.CoverIndexIdx];
+                                        if (coverRefGuid != Guid.Empty)
                                         {
-                                            return $"Cross Level Cover Reference: {coverRefGuid.Guid} slot {cover.SlotIdx}, DynamicLinkInfoIndex: {dynamicLinkInfoIndex}";
+                                            return $"Cross Level Cover Reference: {coverRefGuid} slot {cover.SlotIdx}, DynamicLinkInfoIndex: {dynamicLinkInfoIndex}";
                                         }
                                         /*else
                                         {

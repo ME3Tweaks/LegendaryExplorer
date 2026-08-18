@@ -2282,7 +2282,7 @@ import java.util.*;"
                     string testShaderText = null;
                     if (decompile)
                     {
-                        testShaderText = HLSLDecompiler.DecompileShader(shader.ShaderByteCode, false).Trim();
+                        testShaderText = LegendaryExplorerCore.Shaders.HLSLDecompiler.DecompileShader(shader.ShaderByteCode, false).Trim();
                     }
                     else
                     {

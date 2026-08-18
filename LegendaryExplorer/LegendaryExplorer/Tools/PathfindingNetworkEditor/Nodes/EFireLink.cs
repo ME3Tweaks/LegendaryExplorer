@@ -74,8 +74,7 @@ namespace LegendaryExplorer.Tools.PathfindingNetworkEditor.Nodes
                     }
                     else
                     {
-                        // This is likely bad performance since this probably should be a Dictionary.
-                        targetActorGuid = level.CrossLevelCoverGuidRefs.FirstOrDefault(x => x.CoverIndexIdx == (int)cover.CoverIndexIdx).Guid;
+                        targetActorGuid = level.CrossLevelCoverGuidRefs[(int)cover.CoverIndexIdx];
                     }
                 }
             }

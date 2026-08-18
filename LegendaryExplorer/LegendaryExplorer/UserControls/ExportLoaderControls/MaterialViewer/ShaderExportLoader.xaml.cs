@@ -181,7 +181,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             {
                 foreach (var shader in msm.Shaders)
                 {
-                    var testShaderText = HLSLDecompiler.DecompileShader(shader.Bytecode, false).Trim();
+                    var testShaderText = LegendaryExplorerCore.Shaders.HLSLDecompiler.DecompileShader(shader.Bytecode, false).Trim();
                     if (shaderText.Equals(testShaderText, StringComparison.Ordinal))
                     {
                         SelectedItem = shader;
@@ -972,7 +972,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                     if (Game.IsLEGame())
                     {
-                        return dissasembledShader = HLSLDecompiler.DecompileShader(Bytecode, true);
+                        return dissasembledShader = LegendaryExplorerCore.Shaders.HLSLDecompiler.DecompileShader(Bytecode, true);
                     }
                     else
                     {
