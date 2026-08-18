@@ -25,20 +25,24 @@ using LegendaryExplorer.UserControls.ExportLoaderControls.ScriptEditor.IDE;
 using LegendaryExplorerCore.UnrealScript.Analysis.Visitors;
 using LegendaryExplorerCore.UnrealScript.Language.Tree;
 using System.IO;
-using Newtonsoft.Json;
 using System.Windows;
 using System.Text;
 using System.Linq;
 using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Diagnostics;
 using System.Numerics;
-using Microsoft.Win32;
 using System.Threading;
 using System.Collections.Concurrent;
+using LegendaryExplorer.UserControls.ExportLoaderControls;
+using LegendaryExplorerCore.UDK;
+using LegendaryExplorer.SharedUI.Controls;
+using LegendaryExplorerCore.Shaders;
+using LegendaryExplorerCore.Gammtek.Extensions;
+using LegendaryExplorerCore.Pathing;
+using LegendaryExplorer.Tools.AssetViewer;
+using LegendaryExplorerCore.Diagnostics;
 
 //using ImageMagick;
 
