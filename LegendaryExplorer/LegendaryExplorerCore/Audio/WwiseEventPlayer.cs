@@ -29,7 +29,7 @@ namespace LegendaryExplorerCore.Audio
         private static readonly Dictionary<MEGame, byte[]> InitBankCache = new();
         private static uint? _currentPlayingId;
 
-        public static bool CanPlay(ExportEntry export) => export is { ClassName: "WwiseEvent" } && export.Game is MEGame.LE2 or MEGame.LE3;
+        public static bool CanPlay(ExportEntry export) => export is { ClassName: "WwiseEvent" } && (export.Game is MEGame.LE2 || export.Game.IsLEGame3());
 
         /// <summary>
         /// Resolves and plays the given WwiseEvent export, stopping anything previously playing first.
@@ -97,7 +97,7 @@ namespace LegendaryExplorerCore.Audio
             ExportEntry bankExport = null;
 
             StructProperty relationships;
-            if (wwiseEventExport.Game == MEGame.LE3)
+            if (wwiseEventExport.Game.IsLEGame3())
             {
                 // LE3 layout: Relationships.Bank is a direct property; Streams live in the export's
                 // binary Links[0].WwiseStreams instead (see WwiseEvent.cs, ExportBinaryConverter.cs).

@@ -31,6 +31,7 @@
         <MenuItem Header="Build LE1 Object Info" Click="BuildLE1ObjectInfo_Clicked"/>
         <MenuItem Header="Build LE2 Object Info" Click="BuildLE2ObjectInfo_Clicked"/>
         <MenuItem Header="Build LE3 Object Info" Click="BuildLE3ObjectInfo_Clicked"/>
+        <MenuItem Header="Build LMP Object Info" Click="BuildLMPObjectInfo_Clicked"/>
         <MenuItem Header="Build All 3 LE Object Infos" Click="BuildAllObjectInfoLE_Clicked"/>
         <Separator/>
         <MenuItem Header="Build UDK Object Info" Click="BuildUDKObjectInfo_Clicked"/>

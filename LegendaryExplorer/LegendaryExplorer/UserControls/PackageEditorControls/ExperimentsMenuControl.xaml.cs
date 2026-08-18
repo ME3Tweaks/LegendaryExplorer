@@ -398,6 +398,25 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             });
         }
 
+        private void BuildLMPObjectInfo_Clicked(object sender, RoutedEventArgs e)
+        {
+            var pew = GetPEWindow();
+            pew.BusyText = "Building LMP Object Info";
+            pew.IsBusy = true;
+
+            void setProgress(int done, int total)
+            {
+                Application.Current.Dispatcher.InvokeAsync(() => { pew.BusyText = $"Building LMP Object Info [{done}/{total}]"; });
+            }
+
+            Task.Run(() => { LMPUnrealObjectInfo.generateInfo(Path.Combine(AppDirectories.ExecFolder, "LMPObjectInfo.json"), true, setProgress); }).ContinueWithOnUIThread(x =>
+            {
+                pew.IsBusy = false;
+                pew.RestoreAndBringToFront();
+                MessageBox.Show(GetPEWindow(), "Done");
+            });
+        }
+
         private void BuildUDKObjectInfo_Clicked(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(UDKDirectory.DefaultGamePath))
@@ -1924,6 +1943,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void ChonkyDB_BuildME3GameDB(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.BuildAllObjectsGameDB(MEGame.ME3, GetPEWindow());
+        }
+
+        private void ChonkyDB_BuildMLMPGameDB(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.BuildAllObjectsGameDB(MEGame.LMP, GetPEWindow());
         }
 
         #endregion

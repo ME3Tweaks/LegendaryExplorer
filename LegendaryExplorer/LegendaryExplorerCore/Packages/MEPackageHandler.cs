@@ -670,6 +670,18 @@ namespace LegendaryExplorerCore.Packages
         }
 
         // LEGENDARY EDITION
+        public static IMEPackage OpenLMPPackage(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
+        {
+            IMEPackage pck = OpenMEPackage(pathToFile, user, forceLoadFromDisk);
+            if (pck.Game == MEGame.LMP)
+            {
+                return pck;
+            }
+
+            pck.Release(user);
+            throw new FormatException("Not an LMP package file.");
+        }
+
         public static IMEPackage OpenLE3Package(string pathToFile, IPackageUser user = null, bool forceLoadFromDisk = false)
         {
             IMEPackage pck = OpenMEPackage(pathToFile, user, forceLoadFromDisk);

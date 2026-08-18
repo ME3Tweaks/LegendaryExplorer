@@ -453,7 +453,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         ExportInformationList.Add(exportEntry.Game.IsGame1()
                             ? "This game does not use Wwise audio."
-                            : "Playback of WwiseEvents is currently only supported for LE2 and LE3.");
+                            : "Playback of WwiseEvents is only supported for LE2/LE3/LMP.");
                     }
                 }
 

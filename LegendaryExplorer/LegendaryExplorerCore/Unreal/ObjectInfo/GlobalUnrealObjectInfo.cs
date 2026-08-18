@@ -32,6 +32,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.IsImmutableStruct(structType),
                 MEGame.LE2 => LE2UnrealObjectInfo.IsImmutableStruct(structType),
                 MEGame.LE3 => LE3UnrealObjectInfo.IsImmutableStruct(structType),
+                MEGame.LMP => LMPUnrealObjectInfo.IsImmutableStruct(structType),
                 MEGame.UDK => UDKUnrealObjectInfo.IsImmutableStruct(structType),
                 _ => false,
             };
@@ -151,8 +152,10 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 case MEGame.LE1: return LE1UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
                 case MEGame.LE2: return LE2UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
                 case MEGame.LE3: return LE3UnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
+                case MEGame.LMP: return LMPUnrealObjectInfo.IsAKnownGameSpecificNativeClass(fullPathName);
                 default: return false;
-            };
+            }
+            ;
         }
 
         /// <summary>
@@ -433,6 +436,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 case MEGame.LE3:
                     p = LE3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
                     break;
+                case MEGame.LMP:
+                    p = LMPUnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct, nonVanillaClassInfo, containingExport: containingExport);
+                    break;
             }
             if (p == null)
             {
@@ -462,6 +468,9 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                     case MEGame.LE3:
                         p = LE3UnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
                         break;
+                    case MEGame.LMP:
+                        p = LMPUnrealObjectInfo.getPropertyInfo(containingClassOrStructName, propname, inStruct);
+                        break;
                 }
             }
             return p;
@@ -486,6 +495,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => stripTransients ? LE1UnrealObjectInfo.defaultStructValuesLE1 : DefaultStructValuesWithTransientsLE1,
                 MEGame.LE2 => stripTransients ? LE2UnrealObjectInfo.defaultStructValuesLE2 : DefaultStructValuesWithTransientsLE2,
                 MEGame.LE3 => stripTransients ? LE3UnrealObjectInfo.defaultStructValuesLE3 : DefaultStructValuesWithTransientsLE3,
+                MEGame.LMP => stripTransients ? LMPUnrealObjectInfo.defaultStructValuesLMP : DefaultStructValuesWithTransientsLMP,
                 MEGame.UDK => stripTransients ? UDKUnrealObjectInfo.defaultStructValuesUDK : DefaultStructValuesWithTransientsUDK,
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
             };
@@ -661,6 +671,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsLE1 = new();
         private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsLE2 = new();
         private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsLE3 = new();
+        private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsLMP = new();
         private static readonly ConcurrentDictionary<string, PropertyCollection> DefaultStructValuesWithTransientsUDK = new();
 
         public static UMultiMap<NameReference, PropertyInfo> GetAllProperties(MEGame game, string typeName)
@@ -783,7 +794,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.generateClassInfo(export, isStruct),
                 MEGame.LE2 => LE2UnrealObjectInfo.generateClassInfo(export, isStruct),
                 MEGame.LE3 => LE3UnrealObjectInfo.generateClassInfo(export, isStruct),
-                MEGame.LMP => LE3UnrealObjectInfo.generateClassInfo(export, isStruct), // Should probably change this to be MP specific at some point.
+                MEGame.LMP => LMPUnrealObjectInfo.generateClassInfo(export, isStruct), 
                 _ => null
             };
         }

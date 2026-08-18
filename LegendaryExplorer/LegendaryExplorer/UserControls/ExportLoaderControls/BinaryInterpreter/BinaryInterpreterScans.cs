@@ -26,7 +26,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             int pos = (int)bin.Position;
             int strLen = bin.ReadInt32();
             string str;
-            if (Pcc.Game is MEGame.ME3 or MEGame.LE3)
+            if (Pcc.Game.IsGame3())
             {
                 strLen *= -2;
                 str = bin.BaseStream.ReadStringUnicodeNull(strLen);
@@ -4740,7 +4740,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     subnodes.Add(MakeEntryNode(bin, "PylonListStart"));
                     subnodes.Add(MakeEntryNode(bin, "PylonListEnd"));
                 }
-                if (Pcc.Game is MEGame.ME3 or MEGame.LE3 or MEGame.UDK)
+                if (Pcc.Game.IsGame3() || Pcc.Game == MEGame.UDK)
                 {
                     int guidToIntMapCount;
                     subnodes.Add(new BinInterpNode(bin.Position, $"CrossLevelCoverGuidRefs: ({guidToIntMapCount = bin.ReadInt32()})")

@@ -262,6 +262,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.Classes,
                 MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.Classes,
                 MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.Classes,
+                MEGame.LMP => LE3UnrealObjectInfo.ObjectInfo.Classes, // Todo Make LMP version
                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
             };
             while (true)
