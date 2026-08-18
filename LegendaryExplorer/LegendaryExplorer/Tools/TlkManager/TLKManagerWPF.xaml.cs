@@ -33,6 +33,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         public ObservableCollectionExtended<LoadedTLK> LE1TLKItems { get; } = new();
         public ObservableCollectionExtended<LoadedTLK> LE2TLKItems { get; } = new();
         public ObservableCollectionExtended<LoadedTLK> LE3TLKItems { get; } = new();
+        public ObservableCollectionExtended<LoadedTLK> LMPTLKItems { get; } = new();
 
         private bool bSaveNeededME1;
         private bool bSaveNeededME2;
@@ -40,6 +41,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         private bool bSaveNeededLE1;
         private bool bSaveNeededLE2;
         private bool bSaveNeededLE3;
+        private bool bSaveNeededLMP;
 
         public TLKManagerWPF() : base("TLK Manager", true)
         {
@@ -52,12 +54,14 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             LE1TLKItems.CollectionChanged += LE1CollectionChangedEventHandler;
             LE2TLKItems.CollectionChanged += LE2CollectionChangedEventHandler;
             LE3TLKItems.CollectionChanged += LE3CollectionChangedEventHandler;
+            LMPTLKItems.CollectionChanged += LE3CollectionChangedEventHandler;
             ME1TLKItems.AddRange(ME1TalkFiles.LoadedTlks.Select(x => new LoadedTLK(x.FilePath, x.UIndex, x.Name, true)));
             ME2TLKItems.AddRange(ME2TalkFiles.LoadedTlks.Select(x => new LoadedTLK(x.FilePath, true)));
             ME3TLKItems.AddRange(ME3TalkFiles.LoadedTlks.Select(x => new LoadedTLK(x.FilePath, true)));
             LE1TLKItems.AddRange(LE1TalkFiles.LoadedTlks.Select(x => new LoadedTLK(x.FilePath, x.UIndex, x.Name, true)));
             LE2TLKItems.AddRange(LE2TalkFiles.LoadedTlks.Select(x => new LoadedTLK(x.FilePath, true)));
             LE3TLKItems.AddRange(LE3TalkFiles.LoadedTlks.Select(x => new LoadedTLK(x.FilePath, true)));
+            LMPTLKItems.AddRange(LMPTalkFiles.LoadedTlks.Select(x => new LoadedTLK(x.FilePath, true)));
         }
 
         #region Commands
@@ -67,6 +71,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         public ICommand LE1ReloadTLKs { get; set; }
         public ICommand LE2ReloadTLKs { get; set; }
         public ICommand LE3ReloadTLKs { get; set; }
+        public ICommand LMPReloadTLKs { get; set; }
 
         public ICommand ME1AutoFindTLK { get; set; }
         public ICommand ME2AutoFindTLK { get; set; }
@@ -74,6 +79,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         public ICommand LE1AutoFindTLK { get; set; }
         public ICommand LE2AutoFindTLK { get; set; }
         public ICommand LE3AutoFindTLK { get; set; }
+        public ICommand LMPAutoFindTLK { get; set; }
 
         public ICommand ME1AddManualTLK { get; set; }
         public ICommand ME2AddManualTLK { get; set; }
@@ -81,6 +87,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         public ICommand LE1AddManualTLK { get; set; }
         public ICommand LE2AddManualTLK { get; set; }
         public ICommand LE3AddManualTLK { get; set; }
+        public ICommand LMPAddManualTLK { get; set; }
 
         public ICommand ME1ExportImportTLK { get; set; }
         public ICommand ME2ExportImportTLK { get; set; }
@@ -88,6 +95,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         public ICommand LE1ExportImportTLK { get; set; }
         public ICommand LE2ExportImportTLK { get; set; }
         public ICommand LE3ExportImportTLK { get; set; }
+        public ICommand LMPExportImportTLK { get; set; }
 
         public ICommand ME1ApplyChanges { get; set; }
         public ICommand ME2ApplyChanges { get; set; }
@@ -95,6 +103,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         public ICommand LE1ApplyChanges { get; set; }
         public ICommand LE2ApplyChanges { get; set; }
         public ICommand LE3ApplyChanges { get; set; }
+        public ICommand LMPApplyChanges { get; set; }
 
         private static string _me1LastReloaded;
         private static string _me2LastReloaded;
@@ -102,6 +111,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         private static string _le1LastReloaded;
         private static string _le2LastReloaded;
         private static string _le3LastReloaded;
+        private static string _lmpLastReloaded;
 
         public static string ME1LastReloaded
         {
@@ -164,6 +174,17 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             }
         }
 
+        public static string LMPLastReloaded
+        {
+            get => _lmpLastReloaded;
+            set
+            {
+                if (_lmpLastReloaded == value) return;
+                _lmpLastReloaded = value;
+                StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(LMPLastReloaded )));
+            }
+        }
+
         // Declare a static event representing changes to your static property
         public static event PropertyChangedEventHandler StaticPropertyChanged;
 
@@ -183,6 +204,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             LE1ReloadTLKs = new GenericCommand(LE1ReloadTLKStrings, LE1GamePathExists);
             LE2ReloadTLKs = new GenericCommand(LE2ReloadTLKStrings, LE2BIOGamePathExists);
             LE3ReloadTLKs = new GenericCommand(LE3ReloadTLKStrings, LE3BIOGamePathExists);
+            LMPReloadTLKs = new GenericCommand(LMPReloadTLKStrings, LMPBIOGamePathExists);
 
             ME1AutoFindTLK = new GenericCommand(AutoFindTLKME1, ME1GamePathExists);
             ME2AutoFindTLK = new GenericCommand(AutoFindTLKME2, ME2BIOGamePathExists);
@@ -190,6 +212,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             LE1AutoFindTLK = new GenericCommand(AutoFindTLKLE1, LE1GamePathExists);
             LE2AutoFindTLK = new GenericCommand(AutoFindTLKLE2, LE2BIOGamePathExists);
             LE3AutoFindTLK = new GenericCommand(AutoFindTLKLE3, LE3BIOGamePathExists);
+            LMPAutoFindTLK = new GenericCommand(AutoFindTLKLMP, LMPBIOGamePathExists);
 
             ME1AddManualTLK = new GenericCommand(AddTLKME1, ME1GamePathExists);
             ME2AddManualTLK = new GenericCommand(AddTLKME2, ME2BIOGamePathExists);
@@ -197,6 +220,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             LE1AddManualTLK = new GenericCommand(AddTLKLE1, LE1GamePathExists);
             LE2AddManualTLK = new GenericCommand(AddTLKLE2, LE2BIOGamePathExists);
             LE3AddManualTLK = new GenericCommand(AddTLKLE3, LE3BIOGamePathExists);
+            LMPAddManualTLK = new GenericCommand(AddTLKLMP, LMPBIOGamePathExists);
 
             ME1ExportImportTLK = new GenericCommand(ImportExportTLKME1, ME1TLKListNotEmptyAndGameExists);
             ME2ExportImportTLK = new GenericCommand(ImportExportTLKME2, ME2TLKListNotEmpty);
@@ -204,6 +228,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             LE1ExportImportTLK = new GenericCommand(ImportExportTLKLE1, LE1TLKListNotEmptyAndGameExists);
             LE2ExportImportTLK = new GenericCommand(ImportExportTLKLE2, LE2TLKListNotEmpty);
             LE3ExportImportTLK = new GenericCommand(ImportExportTLKLE3, LE3TLKListNotEmpty);
+            LMPExportImportTLK = new GenericCommand(ImportExportTLKLMP, LMPTLKListNotEmpty);
 
             ME1ApplyChanges = new GenericCommand(ME1ReloadTLKStrings, ME1CanApplyChanges);
             ME2ApplyChanges = new GenericCommand(ME2ReloadTLKStrings, ME2CanApplyChanges);
@@ -211,6 +236,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             LE1ApplyChanges = new GenericCommand(LE1ReloadTLKStrings, LE1CanApplyChanges);
             LE2ApplyChanges = new GenericCommand(LE2ReloadTLKStrings, LE2CanApplyChanges);
             LE3ApplyChanges = new GenericCommand(LE3ReloadTLKStrings, LE3CanApplyChanges);
+            LMPApplyChanges = new GenericCommand(LMPReloadTLKStrings, LMPCanApplyChanges);
         }
 
         private bool ME3TLKListNotEmpty() => ME3TLKItems.Count > 0;
@@ -219,6 +245,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
 
         private bool ME1TLKListNotEmptyAndGameExists() => ME1TLKItems.Count > 0 && ME1GamePathExists();
 
+        private bool LMPTLKListNotEmpty() => LMPTLKItems.Count > 0;
         private bool LE3TLKListNotEmpty() => LE3TLKItems.Count > 0;
 
         private bool LE2TLKListNotEmpty() => LE2TLKItems.Count > 0;
@@ -236,6 +263,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         private bool LE2CanApplyChanges() => bSaveNeededLE2;
 
         private bool LE3CanApplyChanges() => bSaveNeededLE3;
+        private bool LMPCanApplyChanges() => bSaveNeededLMP;
 
         private void ImportExportTLKME1()
         {
@@ -266,6 +294,11 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         {
             new TLKManagerWPF_ExportReplaceDialog(LE3TLKItems.ToList()).Show();
         }
+        private void ImportExportTLKLMP()
+        {
+            new TLKManagerWPF_ExportReplaceDialog(LMPTLKItems.ToList()).Show();
+        }
+
         private string getTLKFile()
         {
             var m = new CommonOpenFileDialog
@@ -324,6 +357,17 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
                     }
                 }
                 SelectLoadedTLKsME1();
+            }
+        }
+
+        private void AddTLKLMP()
+        {
+            string tlk = getTLKFile();
+            if (tlk != null)
+            {
+                var lTLK = new LoadedTLK(tlk, true);
+                LMPTLKItems.Add(lTLK);
+                LMPTLKList.SelectedItems.Add(lTLK);
             }
         }
 
@@ -425,6 +469,16 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             IsBusy = true;
             ME1TalkFiles.ClearLoadedTlks();
             await Task.Run(() => ME1ReloadTLKStringsAsync(ME1TLKItems.Where(x => x.selectedForLoad).ToList()));
+            IsBusy = false;
+        }
+
+        private async void LMPReloadTLKStrings()
+        {
+            BusyText = "Reloading Mass Effect Legendary Edition Multiplayer TLK strings";
+            IsBusy = true;
+            bSaveNeededLMP = false;
+            LMPTalkFiles.ClearLoadedTlks();
+            await Task.Run(() => LMPReloadTLKStringsAsync(LE3TLKItems.Where(x => x.selectedForLoad).ToList()));
             IsBusy = false;
         }
 
@@ -534,6 +588,18 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             TLKLoader.SaveTLKList(MEGame.LE3);
         }
 
+        private static void LMPReloadTLKStringsAsync(List<LoadedTLK> tlksToLoad)
+        {
+            LMPTalkFiles.ClearLoadedTlks();
+
+            foreach (LoadedTLK tlk in tlksToLoad)
+            {
+                LMPTalkFiles.LoadTlkData(tlk.tlkPath);
+            }
+            LMPLastReloaded = $"{DateTime.Now:HH:mm:ss tt}";
+            TLKLoader.SaveTLKList(MEGame.LMP);
+        }
+
         private void AutoFindTLKME3()
         {
             BusyText = "Scanning for Mass Effect 3 TLK files";
@@ -613,6 +679,31 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
                 }
             });
             bSaveNeededME1 = true;
+        }
+
+        private void AutoFindTLKLMP()
+        {
+            BusyText = "Scanning for Mass Effect Legendary Edition Multiplayer TLK files";
+            IsBusy = true;
+            LMPTalkFiles.LoadedTlks.Clear();
+            Task.Run(() =>
+            {
+                var tlkmountmap = new List<(string, int)>();
+                var tlks = Directory.EnumerateFiles(LE3Directory.BioGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false)).ToList();
+                tlks.ForEach(x => x.LoadMountPriority());
+                tlks.Sort((a, b) => a.mountpriority.CompareTo(b.mountpriority));
+                return tlks;
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                LMPTLKItems.ReplaceAll(prevTask.Result);
+                SelectLoadedTLKsLMP();
+                IsBusy = false;
+                if (prevTask.Result.Count > 0 && LMPTLKItems.Any(x => x.selectedForLoad))
+                {
+                    PromptForReload(MEGame.LMP);
+                }
+            });
+            bSaveNeededLMP = true;
         }
 
         private void AutoFindTLKLE3()
@@ -738,6 +829,9 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
                     case MEGame.LE3:
                         LE3ReloadTLKStrings();
                         break;
+                    case MEGame.LMP:
+                        LMPReloadTLKStrings();
+                        break;
                 }
             }
         }
@@ -770,6 +864,11 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         private static bool LE3BIOGamePathExists()
         {
             return LE3Directory.BioGamePath != null && Directory.Exists(LE3Directory.BioGamePath);
+        }
+
+        private static bool LMPBIOGamePathExists()
+        {
+            return LMPDirectory.BioGamePath != null && Directory.Exists(LMPDirectory.BioGamePath);
         }
 
         public class LoadedTLK : NotifyPropertyChangedBase
@@ -834,6 +933,11 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
         private void ME1TLKLangCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SelectLoadedTLKsME1();
+        }
+
+        private void LMPTLKLangCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SelectLoadedTLKsLMP();
         }
 
         private void LE3TLKLangCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -956,6 +1060,19 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             Debug.WriteLine("loaded");
         }
 
+        private void SelectLoadedTLKsLMP()
+        {
+            Debug.WriteLine("Loaded selected TLK.");
+            var tlkLang = ((ComboBoxItem)LMPTLKLangCombobox.SelectedItem).Content.ToString();
+            Debug.WriteLine("Content to string done");
+            tlkLang += ".tlk";
+            foreach (LoadedTLK tlk in LMPTLKItems)
+            {
+                tlk.selectedForLoad = tlk.tlkPath.EndsWith(tlkLang);
+            }
+            Debug.WriteLine("loaded");
+        }
+
         private void SelectLoadedTLKsLE2()
         {
             var tlkLang = ((ComboBoxItem)LE2TLKLangCombobox.SelectedItem).Content.ToString();
@@ -1002,6 +1119,11 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
                     {
                         LE3TalkFiles.LoadedTlks.Clear();
                         await Task.Run(() => LE3ReloadTLKStringsAsync(LE3TLKItems.Where(x => x.selectedForLoad).ToList()));
+                    }
+                    if (bSaveNeededLMP)
+                    {
+                        LMPTalkFiles.LoadedTlks.Clear();
+                        await Task.Run(() => LMPReloadTLKStringsAsync(LE3TLKItems.Where(x => x.selectedForLoad).ToList()));
                     }
                 }
                 else if (confirm == MessageBoxResult.Cancel)
@@ -1129,6 +1251,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
                 MEGame.LE1 => LE1TalkFiles.FindDataById(stringRefID, me1Package),
                 MEGame.LE2 => LE2TalkFiles.FindDataById(stringRefID),
                 MEGame.LE3 => LE3TalkFiles.FindDataById(stringRefID),
+                MEGame.LMP => LMPTalkFiles.FindDataById(stringRefID),
                 _ => "UDK String Refs Not Supported"
             };
         }

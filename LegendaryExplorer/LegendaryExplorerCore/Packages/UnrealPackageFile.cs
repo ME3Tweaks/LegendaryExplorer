@@ -178,7 +178,7 @@ namespace LegendaryExplorerCore.Packages
             MEGame.LE1 => MEPackage.LE1LicenseeVersion,
             MEGame.LE2 => MEPackage.LE2LicenseeVersion,
             MEGame.LE3 => MEPackage.LE3LicenseeVersion,
-            MEGame.LMP => MEPackage.LE3LicenseeVersion,
+            MEGame.LMP => MEPackage.LMPLicenseeVersion,
             MEGame.UDK => UDKPackage.UDKLicenseeVersion,
             _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
         };

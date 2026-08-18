@@ -702,6 +702,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.Classes,
                 MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.Classes,
                 MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.Classes,
+                MEGame.LMP => LE3UnrealObjectInfo.ObjectInfo.Classes,
                 MEGame.UDK => UDKUnrealObjectInfo.ObjectInfo.Classes,
                 _ => null
             };
@@ -717,6 +718,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.Structs,
                 MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.Structs,
                 MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.Structs,
+                MEGame.LMP => LE3UnrealObjectInfo.ObjectInfo.Structs,
                 MEGame.UDK => UDKUnrealObjectInfo.ObjectInfo.Structs,
                 _ => null
             };
@@ -732,6 +734,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.Enums,
                 MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.Enums,
                 MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.Enums,
+                MEGame.LMP => LE3UnrealObjectInfo.ObjectInfo.Enums,
                 MEGame.UDK => UDKUnrealObjectInfo.ObjectInfo.Enums,
                 _ => null
             };
@@ -747,6 +750,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.SequenceObjects,
                 MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.SequenceObjects,
                 MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.SequenceObjects,
+                MEGame.LMP => LE3UnrealObjectInfo.ObjectInfo.SequenceObjects,
                 MEGame.UDK => UDKUnrealObjectInfo.ObjectInfo.SequenceObjects,
                 _ => null
             };
@@ -779,6 +783,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.generateClassInfo(export, isStruct),
                 MEGame.LE2 => LE2UnrealObjectInfo.generateClassInfo(export, isStruct),
                 MEGame.LE3 => LE3UnrealObjectInfo.generateClassInfo(export, isStruct),
+                MEGame.LMP => LE3UnrealObjectInfo.generateClassInfo(export, isStruct), // Should probably change this to be MP specific at some point.
                 _ => null
             };
         }
