@@ -16,7 +16,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 {
     public static class LMPUnrealObjectInfo
     {
-        public static readonly GameObjectInfo ObjectInfo = new LE3ObjectInfo();
+        public static readonly GameObjectInfo ObjectInfo = new LMPObjectInfo();
 
 
         private static readonly FrozenSet<string> ImmutableStructs = FrozenSet.ToFrozenSet(
@@ -161,7 +161,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
 
             foreach (string filePath in allFiles)
             {
-                using IMEPackage pcc = MEPackageHandler.OpenLE3Package(filePath);
+                using IMEPackage pcc = MEPackageHandler.OpenLMPPackage(filePath);
                 if (pcc.Localization != MELocalization.None && pcc.Localization != MELocalization.INT)
                     continue; // DO NOT LOOK AT NON-INT AS SOME GAMES WILL BE MISSING THESE FILES (due to backup/storage)
                 foreach (ExportEntry exportEntry in pcc.Exports)
@@ -394,6 +394,8 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
         #endregion
 
         public static bool IsAKnownGameSpecificNativeClass(string className) => NativeClasses.Contains(className);
+
+        public static void prepareForBuild() { ObjectInfo.prepareForBuild(); }
 
         /// <summary>
         /// List of all known classes that are only defined in native code that are LE3 specific

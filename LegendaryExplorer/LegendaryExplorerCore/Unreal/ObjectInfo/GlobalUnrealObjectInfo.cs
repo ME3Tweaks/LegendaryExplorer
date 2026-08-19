@@ -578,6 +578,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                                 MEGame.LE1 => "GAMERESOURCES_LE1",
                                 MEGame.LE2 => "GAMERESOURCES_LE2",
                                 MEGame.LE3 => "GAMERESOURCES_LE3",
+                                // Not supported for LMP
                                 _ => throw new ArgumentOutOfRangeException(nameof(game), game, null)
                             };
                             loadStream = LegendaryExplorerCoreUtilities.LoadFileFromCompressedResource(
@@ -713,7 +714,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.Classes,
                 MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.Classes,
                 MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.Classes,
-                MEGame.LMP => LE3UnrealObjectInfo.ObjectInfo.Classes,
+                MEGame.LMP => LMPUnrealObjectInfo.ObjectInfo.Classes,
                 MEGame.UDK => UDKUnrealObjectInfo.ObjectInfo.Classes,
                 _ => null
             };
@@ -729,7 +730,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.Structs,
                 MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.Structs,
                 MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.Structs,
-                MEGame.LMP => LE3UnrealObjectInfo.ObjectInfo.Structs,
+                MEGame.LMP => LMPUnrealObjectInfo.ObjectInfo.Structs,
                 MEGame.UDK => UDKUnrealObjectInfo.ObjectInfo.Structs,
                 _ => null
             };
@@ -745,7 +746,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.Enums,
                 MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.Enums,
                 MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.Enums,
-                MEGame.LMP => LE3UnrealObjectInfo.ObjectInfo.Enums,
+                MEGame.LMP => LMPUnrealObjectInfo.ObjectInfo.Enums,
                 MEGame.UDK => UDKUnrealObjectInfo.ObjectInfo.Enums,
                 _ => null
             };
@@ -761,7 +762,7 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                 MEGame.LE1 => LE1UnrealObjectInfo.ObjectInfo.SequenceObjects,
                 MEGame.LE2 => LE2UnrealObjectInfo.ObjectInfo.SequenceObjects,
                 MEGame.LE3 => LE3UnrealObjectInfo.ObjectInfo.SequenceObjects,
-                MEGame.LMP => LE3UnrealObjectInfo.ObjectInfo.SequenceObjects,
+                MEGame.LMP => LMPUnrealObjectInfo.ObjectInfo.SequenceObjects,
                 MEGame.UDK => UDKUnrealObjectInfo.ObjectInfo.SequenceObjects,
                 _ => null
             };
