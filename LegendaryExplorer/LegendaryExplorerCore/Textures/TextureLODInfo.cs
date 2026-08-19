@@ -119,6 +119,7 @@ namespace LegendaryExplorerCore.Textures
             MEGame.LE1 => LE1MaxLodSizes,
             MEGame.LE2 => LE2MaxLodSizes,
             MEGame.LE3 => LE3MaxLodSizes,
+            MEGame.LMP => LE3MaxLodSizes,
             _ => throw new ArgumentOutOfRangeException(nameof(game), game, $"{nameof(LEMaxLodSizes)} is only valid for LE games!")
         };
     }

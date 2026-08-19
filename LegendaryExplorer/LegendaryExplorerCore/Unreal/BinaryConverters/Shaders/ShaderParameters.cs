@@ -255,7 +255,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
     {
         public void SerializeUniformParameters<TParam>(ref TUniformParameter<TParam>[] params1, byte param1TypeId, ref TUniformParameter<TParam>[] params2, byte param2TypeId) where TParam : unmanaged
         {
-            if (Game is MEGame.LE3)
+            if (Game.IsLEGame3())
             {
                 Serialize(ref params1, SerializeUnmanaged);
                 Serialize(ref params2, SerializeUnmanaged);

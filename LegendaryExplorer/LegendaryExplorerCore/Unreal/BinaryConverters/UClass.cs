@@ -138,7 +138,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
 
             Unsafe.AsRef(in action).Invoke(ref Defaults, nameof(Defaults));
-            if (game is MEGame.ME3 or MEGame.LE3)
+            if (game.IsGame3())
             {
                 ForEachUIndexInSpan(action, VirtualFunctionTable.AsSpan(), nameof(VirtualFunctionTable));
             }

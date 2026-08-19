@@ -38,7 +38,7 @@ namespace LegendaryExplorerCore.Sound.Wwise
             }
             // Finding all WwiseEvent references in LE games will return several WwiseExports, some incorrect
             // so we have to look up the WwiseEvent by TLK ID
-            else if (wwiseStreamExport.Game is MEGame.LE3)
+            else if (wwiseStreamExport.Game.IsLEGame3())
             {
                 var durationProperty = new FloatProperty(streamLengthInMs / 1000, "DurationSeconds");
 

@@ -39,6 +39,7 @@ namespace LegendaryExplorerCore.Shaders
         private static Dictionary<Guid, int> ME2ShaderOffsets;
         private static Dictionary<Guid, int> ME1ShaderOffsets;
 
+        private static Dictionary<Guid, int> LMPShaderOffsets;
         private static Dictionary<Guid, int> LE3ShaderOffsets;
         private static Dictionary<Guid, int> LE2ShaderOffsets;
         private static Dictionary<Guid, int> LE1ShaderOffsets;
@@ -52,6 +53,7 @@ namespace LegendaryExplorerCore.Shaders
             MEGame.ME3 => ME3ShaderOffsets,
             MEGame.ME2 => ME2ShaderOffsets,
             MEGame.ME1 => ME1ShaderOffsets,
+            MEGame.LMP => LMPShaderOffsets,
             MEGame.LE3 => LE3ShaderOffsets,
             MEGame.LE2 => LE2ShaderOffsets,
             MEGame.LE1 => LE1ShaderOffsets,
@@ -64,6 +66,7 @@ namespace LegendaryExplorerCore.Shaders
         private static int ME2MaterialShaderMapsOffset = 132795914;
         private static int ME1MaterialShaderMapsOffset = 69550225;
 
+        private static int LMPMaterialShaderMapsOffset = 0; // TODO: FIX THIS FOR FINAL SHIP
         private static int LE3MaterialShaderMapsOffset = 1263553925;
         private static int LE2MaterialShaderMapsOffset = 1014140890;
         private static int LE1MaterialShaderMapsOffset = 720539980;
@@ -72,6 +75,7 @@ namespace LegendaryExplorerCore.Shaders
         private static long ME2RefShaderCacheSize = 151649957;
         private static long ME1RefShaderCacheSize = 76618220;
 
+        private static long LMPRefShaderCacheSize = 0; // TODO: FIX THIS FOR FINAL SHIP
         private static long LE3RefShaderCacheSize = 1296009525;
         private static long LE2RefShaderCacheSize = 1035352391;
         private static long LE1RefShaderCacheSize = 731880291;
@@ -81,6 +85,7 @@ namespace LegendaryExplorerCore.Shaders
             MEGame.ME3 => ME3RefShaderCacheSize,
             MEGame.ME2 => ME2RefShaderCacheSize,
             MEGame.ME1 => ME1RefShaderCacheSize,
+            MEGame.LMP => LMPRefShaderCacheSize,
             MEGame.LE3 => LE3RefShaderCacheSize,
             MEGame.LE2 => LE2RefShaderCacheSize,
             MEGame.LE1 => LE1RefShaderCacheSize,
@@ -94,6 +99,7 @@ namespace LegendaryExplorerCore.Shaders
                 MEGame.ME3 => ME3MaterialShaderMapsOffset,
                 MEGame.ME2 => ME2MaterialShaderMapsOffset,
                 MEGame.ME1 => ME1MaterialShaderMapsOffset,
+                MEGame.LMP => LMPMaterialShaderMapsOffset,
                 MEGame.LE3 => LE3MaterialShaderMapsOffset,
                 MEGame.LE2 => LE2MaterialShaderMapsOffset,
                 MEGame.LE1 => LE1MaterialShaderMapsOffset,
@@ -119,6 +125,7 @@ namespace LegendaryExplorerCore.Shaders
                     MEGame.ME3 => ME3ShaderOffsets ??= [],
                     MEGame.ME2 => ME2ShaderOffsets ??= [],
                     MEGame.ME1 => ME1ShaderOffsets ??= [],
+                    MEGame.LMP => LMPShaderOffsets ??= [],
                     MEGame.LE3 => LE3ShaderOffsets ??= [],
                     MEGame.LE2 => LE2ShaderOffsets ??= [],
                     MEGame.LE1 => LE1ShaderOffsets ??= [],
@@ -179,6 +186,9 @@ namespace LegendaryExplorerCore.Shaders
                             break;
                         case MEGame.ME1:
                             ME1MaterialShaderMapsOffset = (int)fs.Position;
+                            break;
+                        case MEGame.LMP:
+                            LMPMaterialShaderMapsOffset = (int)fs.Position;
                             break;
                         case MEGame.LE3:
                             LE3MaterialShaderMapsOffset = (int)fs.Position;

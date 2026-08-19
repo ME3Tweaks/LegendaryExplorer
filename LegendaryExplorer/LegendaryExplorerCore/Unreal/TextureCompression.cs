@@ -284,8 +284,8 @@ namespace LegendaryExplorerCore.Unreal
                 MEGame.ME3 when isExternal => StorageTypes.extZlib,
                 MEGame.ME3 => StorageTypes.pccZlib,
 
-                MEGame.LE1 or MEGame.LE2 or MEGame.LE3 when isExternal => StorageTypes.extOodle,
-                MEGame.LE1 or MEGame.LE2 or MEGame.LE3 => StorageTypes.pccUnc, // LE game packages are always compressed. Do not compress pcc stored textures
+                MEGame.LE1 or MEGame.LE2 or MEGame.LE3 or MEGame.LMP when isExternal => StorageTypes.extOodle,
+                MEGame.LE1 or MEGame.LE2 or MEGame.LE3 or MEGame.LMP => StorageTypes.pccUnc, // LE game packages are always compressed. Do not compress pcc stored textures
                 
                 MEGame.UDK when isExternal => StorageTypes.extLZO,
                 MEGame.UDK => StorageTypes.pccLZO,

@@ -214,7 +214,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 {
                     case "STMG":
                         {
-                            if (sc.Game.IsGame2() || sc.Game is MEGame.LE3)
+                            if (sc.Game.IsGame2() || sc.Game.IsLEGame3())
                             {
                                 ME2STMGFallback = sc.ms.ReadBytes(chunkSize);
                                 break;

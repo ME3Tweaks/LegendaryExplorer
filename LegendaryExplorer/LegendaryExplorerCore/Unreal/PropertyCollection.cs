@@ -224,7 +224,7 @@ namespace LegendaryExplorerCore.Unreal
                                 if (size != 1)
                                 {
                                     NameReference enumType;
-                                    if (pcc.Game is MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3 or MEGame.UDK || pcc.Platform == MEPackage.GamePlatform.PS3)
+                                    if (pcc.Game is MEGame.ME3 or MEGame.LE1 or MEGame.LE2 or MEGame.LE3 or MEGame.LMP or MEGame.UDK || pcc.Platform == MEPackage.GamePlatform.PS3)
                                     {
                                         enumType = new NameReference(pcc.GetNameEntry(stream.ReadInt32()), stream.ReadInt32());
                                     }
@@ -365,6 +365,7 @@ namespace LegendaryExplorerCore.Unreal
                     case MEGame.UDK when UDKUnrealObjectInfo.ObjectInfo.Structs.ContainsKey(structType):
                     case MEGame.ME2 when ME2UnrealObjectInfo.ObjectInfo.Structs.ContainsKey(structType):
                     case MEGame.ME1 when ME1UnrealObjectInfo.ObjectInfo.Structs.ContainsKey(structType):
+                    case MEGame.LMP when LMPUnrealObjectInfo.ObjectInfo.Structs.ContainsKey(structType):
                     case MEGame.LE3 when LE3UnrealObjectInfo.ObjectInfo.Structs.ContainsKey(structType):
                     case MEGame.LE2 when LE2UnrealObjectInfo.ObjectInfo.Structs.ContainsKey(structType):
                     case MEGame.LE1 when LE1UnrealObjectInfo.ObjectInfo.Structs.ContainsKey(structType):

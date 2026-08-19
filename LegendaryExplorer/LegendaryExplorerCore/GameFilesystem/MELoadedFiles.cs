@@ -25,8 +25,8 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// </summary>
         public static void InvalidateCaches()
         {
-            cachedME1LoadedFiles = cachedME2LoadedFiles = cachedME3LoadedFiles = cachedLE1LoadedFiles = cachedLE2LoadedFiles = cachedLE3LoadedFiles = cachedUDKLoadedFiles = null;
-            cachedME1TargetFiles = cachedME2TargetFiles = cachedME3TargetFiles = cachedLE1TargetFiles = cachedLE2TargetFiles = cachedLE3TargetFiles = cachedUDKTargetFiles = null;
+            cachedME1LoadedFiles = cachedME2LoadedFiles = cachedME3LoadedFiles = cachedLE1LoadedFiles = cachedLE2LoadedFiles = cachedLE3LoadedFiles = cachedLMPLoadedFiles = cachedUDKLoadedFiles = null;
+            cachedME1TargetFiles = cachedME2TargetFiles = cachedME3TargetFiles = cachedLE1TargetFiles = cachedLE2TargetFiles = cachedLE3TargetFiles = cachedLMPTargetFiles = cachedUDKTargetFiles = null;
         }
 
         #region LoadedFiles
@@ -36,6 +36,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         private static CaseInsensitiveDictionary<string> cachedLE1LoadedFiles;
         private static CaseInsensitiveDictionary<string> cachedLE2LoadedFiles;
         private static CaseInsensitiveDictionary<string> cachedLE3LoadedFiles;
+        private static CaseInsensitiveDictionary<string> cachedLMPLoadedFiles;
         private static CaseInsensitiveDictionary<string> cachedUDKLoadedFiles;
 
         /// <summary>
@@ -119,6 +120,18 @@ namespace LegendaryExplorerCore.GameFilesystem
                         if (useCached) return cachedLE3LoadedFiles;
                         break;
                     }
+                    case MEGame.LMP when cachedLMPLoadedFiles != null:
+                        {
+                            bool useCached = true;
+                            if (!forceUseCached)
+                            {
+                                useCached &= HasTFCs(cachedLMPLoadedFiles);
+                                useCached &= HasAFCs(cachedLMPLoadedFiles);
+                                useCached &= HasOtherFileExtensions(cachedLMPLoadedFiles);
+                            }
+                            if (useCached) return cachedLMPLoadedFiles;
+                            break;
+                        }
                     case MEGame.UDK when cachedUDKLoadedFiles is not null:
                     {
                         bool useCached = true;
@@ -161,7 +174,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                     foreach (string filePath in GetCookedFiles(game, directory, includeTFCs, includeAFCs, additionalExtensions))
                     {
                         string fileName = Path.GetFileName(filePath);
-                        if (game == MEGame.LE3 && filePath.EndsWith(FauxStartupPath, StringComparison.InvariantCultureIgnoreCase))
+                        if (game.IsLEGame3() && filePath.EndsWith(FauxStartupPath, StringComparison.InvariantCultureIgnoreCase))
                         {
                             continue; // This file is not used by game and will break lots of stuff if we don't filter it out. This is a bug in how LE3 was cooked
                         }
@@ -229,6 +242,7 @@ namespace LegendaryExplorerCore.GameFilesystem
         private static List<string> cachedLE1TargetFiles;
         private static List<string> cachedLE2TargetFiles;
         private static List<string> cachedLE3TargetFiles;
+        private static List<string> cachedLMPTargetFiles;
         private static List<string> cachedUDKTargetFiles;
 
         /// <summary>
@@ -253,6 +267,7 @@ namespace LegendaryExplorerCore.GameFilesystem
                 if (game == MEGame.LE1 && cachedLE1TargetFiles != null) return cachedLE1TargetFiles;
                 if (game == MEGame.LE2 && cachedLE2TargetFiles != null) return cachedLE2TargetFiles;
                 if (game == MEGame.LE3 && cachedLE3TargetFiles != null) return cachedLE3TargetFiles;
+                if (game == MEGame.LMP && cachedLMPTargetFiles != null) return cachedLMPTargetFiles;
                 if (game == MEGame.UDK && cachedUDKTargetFiles != null) return cachedUDKTargetFiles;
             }
 
@@ -287,6 +302,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             if (game == MEGame.LE1) cachedLE1TargetFiles = loadedFiles;
             if (game == MEGame.LE2) cachedLE2TargetFiles = loadedFiles;
             if (game == MEGame.LE3) cachedLE3TargetFiles = loadedFiles;
+            if (game == MEGame.LMP) cachedLMPTargetFiles = loadedFiles;
             if (game == MEGame.UDK) cachedUDKTargetFiles = loadedFiles;
 
             return loadedFiles;

@@ -374,7 +374,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         /// <returns></returns>
         private static Property AttemptArrayStructCorrection(ArrayProperty<StructProperty> arrayOfStructs, MEGame sourcePccGame, MEGame newGame)
         {
-            if (sourcePccGame == MEGame.ME3 && newGame == MEGame.LE3 && arrayOfStructs.Name == "Slots")
+            if (sourcePccGame == MEGame.ME3 && newGame.IsLEGame3() && arrayOfStructs.Name == "Slots")
             {
                 // This makes a copy to ensure whatever calls this doesn't get a side effect
                 // Correction: CoverSlot ME3 -> LE3
@@ -392,7 +392,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
 
             // This is missing a significant amount of info so the ported info may not be that useful.
-            if (sourcePccGame == MEGame.LE1 && newGame == MEGame.LE3 && arrayOfStructs.Name == "Slots")
+            if (sourcePccGame == MEGame.LE1 && newGame.IsLEGame3() && arrayOfStructs.Name == "Slots")
             {
                 // This has potential to be very slow because we have to reference the level index
 
@@ -453,7 +453,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 return newProp;
             }
 
-            if (sourcePccGame == MEGame.LE2 && newGame == MEGame.LE3 && arrayOfStructs.Name == "Slots")
+            if (sourcePccGame == MEGame.LE2 && newGame.IsLEGame3() && arrayOfStructs.Name == "Slots")
             {
                 // This has potential to be very slow because we have to reference the level index
 

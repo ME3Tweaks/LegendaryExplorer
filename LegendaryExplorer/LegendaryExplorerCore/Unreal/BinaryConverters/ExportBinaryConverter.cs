@@ -42,7 +42,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 // IDK if this works as internal busses have changed identifiers.
                 // You likely would need to correct bus IDs internally for this to properly work.
                 // Todo: LE3 -> LE2
-                else if (objbin is WwiseEvent we && export.Game is MEGame.LE2 or MEGame.LE3 && newGame is /*MEGame.LE2 or*/ MEGame.LE3 && export.Game != newGame)
+                else if (objbin is WwiseEvent we && export.Game is MEGame.LE2 or MEGame.LE3 or MEGame.LMP && newGame is /*MEGame.LE2 or*/ MEGame.LE3 or MEGame.LMP && export.Game != newGame)
                 {
                     // We can't convert ME2 -> ME3, only LE versions work
 

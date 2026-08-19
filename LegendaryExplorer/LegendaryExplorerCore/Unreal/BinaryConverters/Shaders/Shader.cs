@@ -751,7 +751,7 @@ public class TFilterPixelShader : Shader
         var defferedOffsetWriter = base.Serialize(sc);
         sc.SerializeUnmanaged(ref FilterTexture);
         sc.SerializeUnmanaged(ref SampleWeights);
-        if (sc.Game is MEGame.LE3)
+        if (sc.Game.IsLEGame3())
         {
             sc.SerializeUnmanaged(ref SampleMaskRect);
         }
@@ -803,7 +803,7 @@ public class FSFXUberPostProcessBlendPixelShader : FUberPostProcessBlendPixelSha
         sc.SerializeUnmanaged(ref NoiseTextureOffset);
         sc.SerializeUnmanaged(ref FilmGrain_Scale);
         sc.SerializeUnmanaged(ref smpFilmicLUT);
-        if (sc.Game is MEGame.LE3)
+        if (sc.Game.IsLEGame3())
         {
             sc.SerializeUnmanaged(ref ScreenUVScaleBias);
             sc.SerializeUnmanaged(ref HighPrecisionGamma);
@@ -822,7 +822,7 @@ public class FUberPostProcessVertexShader : Shader
     {
         var defferedOffsetWriter = base.Serialize(sc);
         sc.SerializeUnmanaged(ref SceneCoordinate1ScaleBias);
-        if (sc.Game is MEGame.LE3)
+        if (sc.Game.IsLEGame3())
         {
             sc.SerializeUnmanaged(ref SceneCoordinate2ScaleBias);
             sc.SerializeUnmanaged(ref SceneCoordinate3ScaleBias);
@@ -858,7 +858,7 @@ public class FUberPostProcessBlendPixelShader : FDOFAndBloomBlendPixelShader
         var defferedOffsetWriter = base.Serialize(sc);
         sc.SerializeUnmanaged(ref MaterialParameters);
         sc.SerializeUnmanaged(ref GammaParameters);
-        if (sc.Game is MEGame.LE3)
+        if (sc.Game.IsLEGame3())
         {
             sc.SerializeUnmanaged(ref LowResSceneBuffer);
             sc.SerializeUnmanaged(ref HalfResMaskRect);

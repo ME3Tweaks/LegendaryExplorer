@@ -579,6 +579,7 @@ namespace LegendaryExplorerCore.Packages
             {
                 MEGame.LE1 => 4,
                 MEGame.LE3 => 6,
+                MEGame.LMP => 6,
                 MEGame.ME2 => 7,
                 _ => 1
             });

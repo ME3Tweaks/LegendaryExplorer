@@ -30,6 +30,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             MEGame.ME3 => ME3NativeTable,
             MEGame.ME2 => ME2NativeTable,
             MEGame.ME1 => ME1NativeTable,
+            MEGame.LMP => LE3NativeTable,
             MEGame.LE3 => LE3NativeTable,
             MEGame.LE2 => LE2NativeTable,
             MEGame.LE1 => LE1NativeTable,
