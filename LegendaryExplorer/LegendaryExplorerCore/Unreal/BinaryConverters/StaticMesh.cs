@@ -12,13 +12,15 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class StaticMesh : ObjectBinary
+    public partial class StaticMesh : ObjectBinary
     {
         public BoxSphereBounds Bounds;
+        [UIndexRef("RB_BodySetup")]
         public UIndex BodySetup;
         public kDOPTree kDOPTreeME1ME2;
         public kDOPTreeCompact kDOPTreeME3UDKLE;
         public int InternalVersion;
+        [UIndexRefContainer]
         public StaticMeshRenderData[] LODModels;
         public uint unk2; //ME1
         public uint unk3; //ME1
@@ -287,9 +289,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     #endregion
 
-    public class StaticMeshRenderData
+    public partial class StaticMeshRenderData
     {
         public StaticMeshTriangle[] RawTriangles; //BulkData
+        [UIndexRefContainer]
         public StaticMeshElement[] Elements;
         public PositionVertexBuffer PositionVertexBuffer;
         public StaticMeshVertexBuffer VertexBuffer;
@@ -321,8 +324,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public bool bOverrideTangentBasis; //ME3/UDK
     }
 
-    public class StaticMeshElement
+    public partial class StaticMeshElement
     {
+        [UIndexRef("MaterialInterface")]
         public UIndex Material;
         public bool EnableCollision;
         public bool OldEnableCollision;

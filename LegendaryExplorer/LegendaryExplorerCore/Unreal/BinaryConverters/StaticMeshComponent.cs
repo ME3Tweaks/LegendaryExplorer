@@ -7,8 +7,9 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class StaticMeshComponent : ObjectBinary
+    public partial class StaticMeshComponent : ObjectBinary
     {
+        [UIndexRefContainer]
         public StaticMeshComponentLODInfo[] LODData;
 
         protected override void Serialize(SerializingContainer sc)
@@ -36,10 +37,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public class StaticMeshComponentLODInfo
+    public partial class StaticMeshComponentLODInfo
     {
+        [UIndexRef("ShadowMap2D")]
         public UIndex[] ShadowMaps;
+        [UIndexRef("ShadowMap1D")]
         public UIndex[] ShadowVertexBuffers;
+        [UIndexRefContainer]
         public LightMap LightMap;
         public byte bLoadVertexColorData; //ME3
         public ColorVertexBuffer OverrideVertexColors; //ME3, only serialized if bLoadVertexColorData == 1
@@ -57,7 +61,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         LMT_6
     }
 
-    public class LightMap
+    public partial class LightMap
     {
         public ELightMapType LightMapType;
 
@@ -86,9 +90,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public class LightMap_1D : LightMap
+    public partial class LightMap_1D : LightMap
     {
         public Guid[] LightGuids;
+        [UIndexRef("StaticMeshComponent")]
         public UIndex Owner;
         public QuantizedDirectionalLightSample[] DirectionalSamples; //BULKDATA
         public Vector3 ScaleVector1;
@@ -98,15 +103,19 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public QuantizedSimpleLightSample[] SimpleSamples; //BULKDATA
     }
 
-    public class LightMap_2D : LightMap
+    public partial class LightMap_2D : LightMap
     {
         public Guid[] LightGuids;
+        [UIndexRef("LightMapTexture2D")]
         public UIndex Texture1;
         public Vector3 ScaleVector1;
+        [UIndexRef("LightMapTexture2D")]
         public UIndex Texture2;
         public Vector3 ScaleVector2;
+        [UIndexRef("LightMapTexture2D")]
         public UIndex Texture3;
         public Vector3 ScaleVector3;
+        [UIndexRef("LightMapTexture2D")]
         public UIndex Texture4;//< ME3
         public Vector3 ScaleVector4;//< ME3
         public Vector2 CoordinateScale;
@@ -122,13 +131,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public Vector3 unkVector2;
     }
 
-    public class LightMap_4or6 : LightMap
+    public partial class LightMap_4or6 : LightMap
     {
         public Guid[] LightGuids;
+        [UIndexRef("LightMapTexture2D")]
         public UIndex Texture1;
         public Fixed8<float> unkFloats1;
+        [UIndexRef("LightMapTexture2D")]
         public UIndex Texture2;
         public Fixed8<float> unkFloats2;
+        [UIndexRef("LightMapTexture2D")]
         public UIndex Texture3;
         public Fixed8<float> unkFloats3;
         public Vector2 CoordinateScale;

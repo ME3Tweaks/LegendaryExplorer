@@ -507,6 +507,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             //Not every Object has UIndexes. For those that don't, we do nothing.
         }
 
+        /// <summary>
+        /// Calls <see cref="IUIndexRefVerifier.Verify"/> for every UIndex in this object that has been annotated with
+        /// <see cref="UIndexRefAttribute"/>, passing along the class that UIndex is allowed to refer to.
+        /// </summary>
+        /// <remarks>
+        /// Overrides of this are emitted by the LegendaryExplorerCore.SourceGenerators project.
+        /// </remarks>
+        /// <param name="game">Restricts the UIndexes to the ones that exist on this game's version of the object, and picks the expected class for the ones that differ between games.</param>
+        /// <param name="verifier">The <see cref="IUIndexRefVerifier"/> implementation whose Verify method will be called for every annotated uIndex.</param>
+        public virtual void VerifyUIndexRefs(MEGame game, IUIndexRefVerifier verifier)
+        {
+            //Not every Object has annotated UIndexes. For those that don't, we do nothing.
+        }
+
         public virtual void WriteTo(EndianWriter ms, IMEPackage pcc, int fileOffset = 0)
         {
             Serialize(new SerializingContainer(ms.BaseStream, pcc, false, fileOffset));

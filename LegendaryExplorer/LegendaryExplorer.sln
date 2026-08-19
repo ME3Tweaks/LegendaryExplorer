@@ -52,6 +52,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegendaryExplorerUnrealDoc"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "WwiseAudioPlayer", "WwiseAudioPlayer\WwiseAudioPlayer.vcxproj", "{D9F415BC-1DDC-4DA1-A2BD-9EC8F27C81A2}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegendaryExplorerCore.SourceGenerators", "LegendaryExplorerCore.SourceGenerators\LegendaryExplorerCore.SourceGenerators.csproj", "{5C0F8A2E-3D6B-4A19-9E4C-7B1D2F8A6C31}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -181,6 +183,14 @@ Global
 		{D9F415BC-1DDC-4DA1-A2BD-9EC8F27C81A2}.WinAzureRelease|x64.Build.0 = WinDebug|x64
 		{D9F415BC-1DDC-4DA1-A2BD-9EC8F27C81A2}.WinAzureTest|x64.ActiveCfg = WinDebug|x64
 		{D9F415BC-1DDC-4DA1-A2BD-9EC8F27C81A2}.WinAzureTest|x64.Build.0 = WinDebug|x64
+		{5C0F8A2E-3D6B-4A19-9E4C-7B1D2F8A6C31}.Debug|x64.ActiveCfg = WinDebug|Any CPU
+		{5C0F8A2E-3D6B-4A19-9E4C-7B1D2F8A6C31}.Debug|x64.Build.0 = WinDebug|Any CPU
+		{5C0F8A2E-3D6B-4A19-9E4C-7B1D2F8A6C31}.Release|x64.ActiveCfg = WinRelease|Any CPU
+		{5C0F8A2E-3D6B-4A19-9E4C-7B1D2F8A6C31}.Release|x64.Build.0 = WinRelease|Any CPU
+		{5C0F8A2E-3D6B-4A19-9E4C-7B1D2F8A6C31}.WinAzureRelease|x64.ActiveCfg = WinAzureRelease|Any CPU
+		{5C0F8A2E-3D6B-4A19-9E4C-7B1D2F8A6C31}.WinAzureRelease|x64.Build.0 = WinAzureRelease|Any CPU
+		{5C0F8A2E-3D6B-4A19-9E4C-7B1D2F8A6C31}.WinAzureTest|x64.ActiveCfg = WinAzureTest|Any CPU
+		{5C0F8A2E-3D6B-4A19-9E4C-7B1D2F8A6C31}.WinAzureTest|x64.Build.0 = WinAzureTest|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

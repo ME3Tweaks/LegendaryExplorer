@@ -5,15 +5,17 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class EntryGuidNumPair
+    public partial class EntryGuidNumPair
     {
+        [UIndexRef]
         public UIndex Entry;
         public Guid GUID;
         public int UnknownZero;
     }
 
-    public class BioSquadCombat : ObjectBinary
+    public partial class BioSquadCombat : ObjectBinary
     {
+        [UIndexRefContainer]
         public EntryGuidNumPair[] EntryGuidNumPairs;//? Speculative name
         protected override void Serialize(SerializingContainer sc)
         {
