@@ -790,7 +790,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // Mgamerz
 
             // Doesn't go backwards for OT since they use different Wwise versions
-            if (sourceExport.Game == MEGame.LE2 && destPackage.Game == MEGame.LE3 && sourceExport.ClassName == "WwiseEvent")
+            if (sourceExport.Game == MEGame.LE2 && destPackage.Game.IsLEGame3() && sourceExport.ClassName == "WwiseEvent")
             {
                 // Convert the property format
                 var refs = props.GetProp<ArrayProperty<StructProperty>>("References");
@@ -1299,6 +1299,20 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // Add DLC startup files here
         ];
 
+        private static readonly string[] lmpFilesSafeToImportFrom =
+        [
+            //Class libary: These files contain ME3's standard library of classes, structs, enums... Also a few assets
+            // Note: You must use MELoadedFiles for Startup.pcc as it exists in METR Patch and is not used by game! (and is also wrong file)
+            "Core.pcc", "Engine.pcc", "GameFramework.pcc", "IPDrv.pcc", "GFxUI.pcc", "WwiseAudio.pcc", "SFXOnlineFoundation.pcc", "SFXGame.pcc", "Startup.pcc",
+        ];
+
+        private static readonly string[] lmpFilesSafeToImportFromPostLoad =
+        [
+            // These files are safe to import from if the file doing the import is post-save (e.g. it is not a seekfree or startup file)
+            // Will need to see how to handle this in the event you're working on EntryMenu.
+            "BIOP_MP_COMMON.pcc",
+        ];
+
         // Advanced users can add to this list to make additional files be treated as safe
         // For example if they want to use a custom startup file
         // These only are allowed for post load usage!
@@ -1310,6 +1324,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         private static readonly SortedSet<string> le1FilesSafeToImportFromUser = [];
         private static readonly SortedSet<string> le2FilesSafeToImportFromUser = [];
         private static readonly SortedSet<string> le3FilesSafeToImportFromUser = [];
+        private static readonly SortedSet<string> lmpFilesSafeToImportFromUser = [];
 
         /// <summary>
         /// Gets the list of safe to import files from (user defined) for a game. For public read-only access use <see cref="UserSpecifiedSafeToImportFromFiles(MEGame)"/>
@@ -1327,6 +1342,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 MEGame.LE1 => le1FilesSafeToImportFromUser,
                 MEGame.LE2 => le2FilesSafeToImportFromUser,
                 MEGame.LE3 => le3FilesSafeToImportFromUser,
+                MEGame.LMP => lmpFilesSafeToImportFromUser,
                 MEGame.UDK => [], // Dunno how to do Set.Empty<string>()
                 _ => throw new Exception($"Cannot lookup user-defined safe post-load files for {game}")
             };
@@ -1426,7 +1442,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     return true;
                 }
             }
-            else if (game.IsGame2() || game.IsGame3())
+            else if (game.IsGame2() || (game.IsGame3() && game != MEGame.LMP))
             {
                 // DO NOT ADD BIOG
                 if (postLoadTest.StartsWith("BIOP_MP")) // 12/11/2023 - LE3R - Do not allow usage of BIO_COMMON as it breaks MP power porting when using MP Common package
@@ -1443,6 +1459,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     return true;
                 }
 
+                // Do not add LMP here, it doesn't have anything to do with BioNPC
                 if (game == MEGame.LE3)
                 {
                     // BioNPC is used by LE3 framework. It will have a lot of these and might confuse devs so we mark it as a 
@@ -1452,6 +1469,16 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                         return true;
                     }
                 }
+            }
+            else if (game == MEGame.LMP)
+            {
+                if (sourceFilePath.StartsWith("EntryMenu", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return false; // EntryMenu is NOT post load!
+                }
+
+                // Everything else is postload; it can access BIOP_MP_COMMON
+                return true;
             }
 
             return false;
@@ -1493,7 +1520,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 MEGame.LE1 => le1FilesSafeToImportFromPostLoad,
                 MEGame.LE2 => le2FilesSafeToImportFromPostLoad,
                 MEGame.LE3 => le3FilesSafeToImportFromPostLoad,
-                MEGame.LMP => [], // Maybe MPCommon?
+                MEGame.LMP => lmpFilesSafeToImportFromPostLoad,
                 MEGame.UDK => [],
                 _ => throw new Exception($"Cannot lookup post-load safe files for {game}")
             };
