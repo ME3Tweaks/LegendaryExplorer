@@ -7,15 +7,17 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class NameEntryGuidPair
+    public partial class NameEntryGuidPair
     {
         public NameReference Name;
+        [UIndexRef]
         public UIndex Entry;
         public Guid GUID;
     }
 
-    public class BioInert : ObjectBinary
+    public partial class BioInert : ObjectBinary
     {
+        [UIndexRefContainer]
         public NameEntryGuidPair[] NameEntryGuidPairs;//? Speculative name
         protected override void Serialize(SerializingContainer sc)
         {

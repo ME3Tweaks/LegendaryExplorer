@@ -5,11 +5,12 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public abstract class UProperty : UField
+    public abstract partial class UProperty : UField
     {
         public int ArraySize;//If this is not 0, this property is a static array, of ArraySize length
         public UnrealFlags.EPropertyFlags PropertyFlags;
         public NameReference Category;
+        [UIndexRef("Enum")]
         public UIndex ArraySizeEnum; //If this is not 0, this property is a static array, and the number of copies of this property there should be is equal to the MAX value of the Enum this points to 
         public ushort ReplicationOffset;
         protected override void Serialize(SerializingContainer sc)

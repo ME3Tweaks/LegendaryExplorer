@@ -8,12 +8,13 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class UState : UStruct
+    public partial class UState : UStruct
     {
         public EProbeFunctions ProbeMask;
         public EProbeFunctions IgnoreMask;
         public ushort LabelTableOffset;
         public EStateFlags StateFlags;
+        [UIndexRef("Function", UIndexRefFlags.Value)]
         public UMultiMap<NameReference, UIndex> LocalFunctionMap; //TODO: Make this a UMap
         protected override void Serialize(SerializingContainer sc)
         {

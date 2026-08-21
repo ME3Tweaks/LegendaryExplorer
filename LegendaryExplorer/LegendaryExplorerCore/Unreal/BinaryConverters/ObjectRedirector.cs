@@ -4,8 +4,9 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class ObjectRedirector : ObjectBinary
+    public partial class ObjectRedirector : ObjectBinary
     {
+        [UIndexRef("Object")]
         public UIndex DestinationObject;
         protected override void Serialize(SerializingContainer sc)
         {

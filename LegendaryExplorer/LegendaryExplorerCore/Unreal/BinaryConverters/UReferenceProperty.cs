@@ -4,10 +4,11 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class UByteProperty : UProperty
+    public partial class UByteProperty : UProperty
     {
         public bool IsEnum => Enum != 0;
 
+        [UIndexRef("Enum")]
         public UIndex Enum;
         protected override void Serialize(SerializingContainer sc)
         {
@@ -30,8 +31,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public class UObjectProperty : UProperty
+    public partial class UObjectProperty : UProperty
     {
+        [UIndexRef("Class")]
         public UIndex ObjectRef;
         protected override void Serialize(SerializingContainer sc)
         {
@@ -65,8 +67,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public class UClassProperty : UObjectProperty
+    public partial class UClassProperty : UObjectProperty
     {
+        [UIndexRef("Class")]
         public UIndex ClassRef;
         protected override void Serialize(SerializingContainer sc)
         {
@@ -100,8 +103,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public class UArrayProperty : UProperty
+    public partial class UArrayProperty : UProperty
     {
+        [UIndexRef("Property")]
         public UIndex ElementType;
         protected override void Serialize(SerializingContainer sc)
         {
@@ -124,8 +128,9 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public class UStructProperty : UProperty
+    public partial class UStructProperty : UProperty
     {
+        [UIndexRef("ScriptStruct")]
         public UIndex Struct;
         protected override void Serialize(SerializingContainer sc)
         {
@@ -159,9 +164,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public class UMapProperty : UProperty
+    public partial class UMapProperty : UProperty
     {
+        [UIndexRef("Property")]
         public UIndex KeyType;
+        [UIndexRef("Property")]
         public UIndex ValueType;
         protected override void Serialize(SerializingContainer sc)
         {
@@ -185,9 +192,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             Unsafe.AsRef(in action).Invoke(ref ValueType, nameof(ValueType));
         }
     }
-    public class UDelegateProperty : UProperty
+    public partial class UDelegateProperty : UProperty
     {
+        [UIndexRef("Function")]
         public UIndex Function;
+        [UIndexRef("Function")]
         public UIndex Delegate;
         protected override void Serialize(SerializingContainer sc)
         {

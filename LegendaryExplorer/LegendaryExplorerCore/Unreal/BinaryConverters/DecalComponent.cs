@@ -6,8 +6,9 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class DecalComponent : ObjectBinary
+    public partial class DecalComponent : ObjectBinary
     {
+        [UIndexRefContainer]
         public StaticReceiverData[] StaticReceivers;
 
         protected override void Serialize(SerializingContainer sc)
@@ -28,7 +29,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             for (int i = 0; i < StaticReceivers.Length; i++)
             {
                 StaticReceiverData data = StaticReceivers[i];
-                Unsafe.AsRef(in action).Invoke(ref data.PrimitiveComponent, $"StaticReceiver[{i}].PrimitiveComponent");
+                Unsafe.AsRef(in action).Invoke(ref data.Component, $"StaticReceiver[{i}].Component");
                 if (game >= MEGame.ME3)
                 {
                     ForEachUIndexInSpan(action, data.ShadowMap1D.AsSpan(), $"StaticReceiver[{i}].ShadowMap1D");
@@ -37,13 +38,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public class StaticReceiverData
+    public partial class StaticReceiverData
     {
-        public UIndex PrimitiveComponent;
+        [UIndexRef("PrimitiveComponent")]
+        public UIndex Component;
         public DecalVertex[] Vertices;
         public ushort[] Indices;
         public uint NumTriangles;
+        [UIndexRefContainer]
         public LightMap LightMap;
+        [UIndexRef("ShadowMap1D")]
         public UIndex[] ShadowMap1D;//ME3/LE
         public int Data;//ME3/LE
         public int InstanceIndex;//ME3/LE
@@ -88,7 +92,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             {
                 dat = new StaticReceiverData();
             }
-            Serialize(ref dat.PrimitiveComponent);
+            Serialize(ref dat.Component);
             BulkSerialize(ref dat.Vertices, Serialize, Game >= MEGame.ME3 ? 28 : 52);
             BulkSerialize(ref dat.Indices, Serialize, 2);
             Serialize(ref dat.NumTriangles);
