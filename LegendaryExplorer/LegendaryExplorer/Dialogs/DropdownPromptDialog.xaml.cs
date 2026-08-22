@@ -7,7 +7,7 @@ using LegendaryExplorerCore.Misc;
 
 namespace LegendaryExplorer.Dialogs
 {
-    public partial class DropdownPromptDialog : Window
+    public partial class DropdownPromptDialog : NotifyPropertyChangedWindowBase
     {
         public ObservableCollectionExtended<string> Items { get; } = new();
         public string Response => (string)Selection_Combobox.SelectedItem;
