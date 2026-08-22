@@ -234,6 +234,42 @@
         <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
     </Style>
 
+    <!-- SelectorItem is the base class for the checkbox rows inside CheckComboBox/CheckListBox dropdowns.
+         Its stock Aero2 template hardcodes the mouse-over highlight to a light-blue Aero color (#FFB8E0F3)
+         directly on the row's Border, unreachable via a plain Setter, so a full ControlTemplate copy
+         (otherwise identical to the stock one) is needed just to swap that trigger's colors for themed ones. -->
+    <Style TargetType="{x:Type prim:SelectorItem}">
+        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+        <Setter Property="Padding" Value="4,0,0,0"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type prim:SelectorItem}">
+                    <Border x:Name="_background" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                        <CheckBox IsChecked="{Binding IsSelected, RelativeSource={RelativeSource TemplatedParent}}"
+                                  Padding="{TemplateBinding Padding}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <CheckBox.Content>
+                                <ContentControl Content="{TemplateBinding Content}"
+                                                ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+                                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                Foreground="{TemplateBinding Foreground}"/>
+                            </CheckBox.Content>
+                        </CheckBox>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="_background" Property="Background" Value="{DynamicResource Theme.Background.ControlHover}"/>
+                            <Setter TargetName="_background" Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Setter-only overrides don't reach two things baked into the stock template: the toggle chrome is
          drawn by Xceed's own chrome:ButtonChrome element, whose mouse-over/pressed/checked visuals are
          painted internally from hardcoded gradients rather than TemplateBinding Background - and the
