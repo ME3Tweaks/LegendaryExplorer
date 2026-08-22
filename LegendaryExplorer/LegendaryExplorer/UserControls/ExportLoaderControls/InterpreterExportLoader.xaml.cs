@@ -15,6 +15,7 @@ using Be.Windows.Forms;
 using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.Misc.Themes;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorer.Tools.PackageEditor;
@@ -153,6 +154,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             LoadCommands();
             InitializeComponent();
             Settings.StaticPropertyChanged += SettingChanged;
+            ThemeManager.ThemeChanged += Theme_Changed;
             EditorSetElements.Add(Value_TextBox); //str, strref, int, float, obj
             EditorSetElements.Add(Value_ObjectComboBox); // Object selector
             EditorSetElements.Add(Value_ComboBox); //bool, name
@@ -171,6 +173,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                 OnPropertyChanged(nameof(AdvancedView));
                 OnPropertyChanged(nameof(ShowPropOffsets));
             }
+        }
+
+        private void Theme_Changed(object sender, EventArgs e)
+        {
+            ThemeManager.ApplyHexBoxTheme(Interpreter_Hexbox);
         }
 
         private static void ForceSimpleModeChangedCallback(DependencyObject obj, DependencyPropertyChangedEventArgs e)
@@ -2411,6 +2418,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         private void Interpreter_Loaded(object sender, RoutedEventArgs e)
         {
             Interpreter_Hexbox = (HexBox)Interpreter_Hexbox_Host.Child;
+            ThemeManager.ApplyHexBoxTheme(Interpreter_Hexbox);
             Interpreter_Hexbox.ByteProvider ??= new ReadOptimizedByteProvider();
             //remove in the event this object is reloaded again
             Interpreter_Hexbox.ByteProvider.Changed -= Interpreter_Hexbox_BytesChanged;
@@ -2796,6 +2804,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
         public override void Dispose()
         {
             Settings.StaticPropertyChanged -= SettingChanged;
+            ThemeManager.ThemeChanged -= Theme_Changed;
 
             if (Interpreter_Hexbox != null)
             {

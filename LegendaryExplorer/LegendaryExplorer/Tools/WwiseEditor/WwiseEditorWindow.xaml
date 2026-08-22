@@ -133,7 +133,7 @@
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding EntryHasPendingChanges}"
                                                             Value="true">
-                                                    <Setter Property="Background" Value="Yellow" />
+                                                    <Setter Property="Background" Value="{DynamicResource Theme.Background.Modified}" />
                                                     <Setter Property="ToolTip"
                                                         Value="This export has been modified but the file has not yet been saved" />
                                                 </DataTrigger>
@@ -150,7 +150,30 @@
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                         <ListBox.ItemContainerStyle>
-                            <Style>
+                            <!-- Explicitly-assigned ItemContainerStyle bypasses the theme's implicit
+                                 ListBoxItem style the same way Button.Style/TabItem local styles do
+                                 elsewhere in this app, so hover/selection fell back to Aero2's stock
+                                 colors. Duplicated here rather than losing it, same approach as above. -->
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Padding" Value="2"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <Border x:Name="Bd" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                                <ContentPresenter/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.ControlHover}"/>
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.Selected}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
                                 <Style.Triggers>
                                     <Trigger Property="Selector.IsSelected" Value="True">
                                         <Setter Property="TextElement.FontWeight" Value="Bold" />
@@ -164,6 +187,16 @@
                     <TabControl TabStripPlacement="Left" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2"
                                 Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, RelativeSource={RelativeSource AncestorType=Window}}" >
                         <TabControl.Resources>
+                            <!-- BasedOn can't reference the theme's TabItem style ({x:Type TabItem} in
+                                 Controls.Shared.xaml) because that dictionary is only merged into the
+                                 window's resources at runtime, not visible as a StaticResource at this
+                                 file's parse time - and BasedOn doesn't support DynamicResource. So this
+                                 local style (needed for the 270-degree header rotation, since this
+                                 TabControl uses TabStripPlacement="Left" and needs vertically-readable tab
+                                 text) duplicates the theme's actual TabItem Setters/Template/Triggers
+                                 rather than losing them outright, same approach used for Soundpanel's
+                                 Replace button. Border/margin sides are hardcoded for Left placement since
+                                 this TabControl is never placed any other way. -->
                             <Style TargetType="{x:Type TabItem}">
                                 <Setter Property="HeaderTemplate">
                                     <Setter.Value>
@@ -177,6 +210,31 @@
                                     </Setter.Value>
                                 </Setter>
                                 <Setter Property="Padding" Value="3" />
+                                <Setter Property="Background" Value="{DynamicResource Theme.Background.Panel}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Secondary}"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="TabItem">
+                                            <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{DynamicResource Theme.Border}" BorderThickness="1,1,0,1" Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.Window}"/>
+                                                    <Setter TargetName="Bd" Property="Margin" Value="0,0,-1,0"/>
+                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+                                                </Trigger>
+                                                <Trigger SourceName="Bd" Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.ControlHover}"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Disabled}"/>
+                                                    <Setter TargetName="Bd" Property="Opacity" Value="0.6"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
                             </Style>
                         </TabControl.Resources>
                         <TabItem Header="Properties">
