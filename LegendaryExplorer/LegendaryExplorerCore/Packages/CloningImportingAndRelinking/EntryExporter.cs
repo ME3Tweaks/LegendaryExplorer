@@ -136,6 +136,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="source"></param>
         /// <param name="target"></param>
         /// <param name="importAsImport">If the parents should be imported as an import instead of an export if they don't exist. This should only be used if you're porting in an import and creating its parents.</param>
+        /// <param name="cache">Cache assigned to the internal RelinkerOptionPackages if you don't pass in a custom one.</param>
+        /// <param name="customROP">Custom RelinkerOptionsPackage to use for the operation. If set, the cache parameter goes unused.</param>
         /// <returns></returns>
         public static IEntry PortParents(IEntry source, IMEPackage target, bool importAsImport = false, PackageCache cache = null, RelinkerOptionsPackage customROP = null)
         {
