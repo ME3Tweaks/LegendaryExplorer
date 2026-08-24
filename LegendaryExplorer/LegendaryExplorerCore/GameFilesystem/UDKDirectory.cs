@@ -168,8 +168,6 @@ namespace LegendaryExplorerCore.GameFilesystem
             }
             else
             {
-#pragma warning disable CA1416
-#if WINDOWS
                 string hkey64 = @"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall";
 
                 var uninstallList = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\");
@@ -195,8 +193,6 @@ namespace LegendaryExplorerCore.GameFilesystem
                         }
                     }
                 }
-#endif
-#pragma warning restore CA1416
             }
         }
 
