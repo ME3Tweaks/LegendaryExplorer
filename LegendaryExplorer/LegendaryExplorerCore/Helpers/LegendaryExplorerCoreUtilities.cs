@@ -11,7 +11,6 @@ namespace LegendaryExplorerCore.Helpers
 {
     public static class LegendaryExplorerCoreUtilities
     {
-#if WINDOWS
         public static bool OpenAndSelectFileInExplorer(string filePath)
         {
             if (!System.IO.File.Exists(filePath))
@@ -23,7 +22,7 @@ namespace LegendaryExplorerCore.Helpers
             System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{filePath}\"");
             return true;
         }
-#endif
+      
         public static string LoadStringFromCompressedResource(string resourceName, string assetName)
         {
             try
