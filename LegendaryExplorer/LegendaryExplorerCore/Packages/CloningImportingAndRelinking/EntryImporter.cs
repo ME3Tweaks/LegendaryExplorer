@@ -439,6 +439,21 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                             if (testExp.ClassName.CaseInsensitiveEquals(sourceExport.ClassName) || (sourceExport.ClassName.CaseInsensitiveEquals("BioSWF") && testExp.ClassName.CaseInsensitiveEquals("GFxMovieInfo")) || (sourceExport.ClassName == "Material" && testExp.ClassName == "MaterialInstanceConstant"))
                             {
+                                // Ensure correct link is used if we are using a redirected object, otherwise it will be placed
+                                // at the wrong location and lookup will also fail.
+                                if (usingRedirectedObject)
+                                {
+                                    // If link is 0 that means it was porting to the root originally
+                                    var plannedParentDestinationIFP = destPackage.GetEntry(link)?.MemoryFullPath;
+                                    var newParentDestionationIFP = testExp.Parent?.MemoryFullPath; // Important to use memory full path here cause donor coming from a non-forced export package needs converted over. Don't know if our code handles that though.
+                                    if (newParentDestionationIFP != null && !string.Equals(plannedParentDestinationIFP, newParentDestionationIFP, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        // Port in parents and set the new link as that so it transfers to the correct location, which means later ports of this object during relink will hit the correct object
+                                        var newParent = EntryExporter.PortParents(testExp, destPackage, customROP: rop);
+                                        link = newParent.UIndex;
+                                    }
+                                }
+
                                 sourceExport = testExp;
                                 isCached = true;
                                 usingDonor = true;
@@ -472,6 +487,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                     if (!isCached)
                     {
+                        // Not found in our cache, we need to locate this object and load it into the cache
                         var dfp = Path.Combine(MEDirectories.GetDefaultGamePath(destPackage.Game), donorFiles[0]);
                         if (rop.Cache.TryGetCachedPackage(dfp, true, out donorPackage))
                         {
@@ -490,6 +506,21 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                             if (testExp.ClassName == sourceExport.ClassName || (sourceExport.ClassName == "BioSWF" && testExp.ClassName == "GFxMovieInfo") || (sourceExport.ClassName == "Material" && testExp.ClassName == "MaterialInstanceConstant")) // Use GFxMovieInfo Donors for BioSWF export
                             {
+                                // Ensure correct link is used if we are using a redirected object, otherwise it will be placed
+                                // at the wrong location and lookup will also fail.
+                                if (usingRedirectedObject)
+                                {
+                                    // If link is 0 that means it was porting to the root originally
+                                    var plannedParentDestinationIFP = destPackage.GetEntry(link)?.MemoryFullPath;
+                                    var newParentDestionationIFP = testExp.Parent?.MemoryFullPath; // Important to use memory full path here cause donor coming from a non-forced export package needs converted over. Don't know if our code handles that though.
+                                    if (newParentDestionationIFP != null && !string.Equals(plannedParentDestinationIFP, newParentDestionationIFP, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        // Port in parents and set the new link as that so it transfers to the correct location, which means later ports of this object during relink will hit the correct object
+                                        var newParent = EntryExporter.PortParents(testExp, destPackage, customROP: rop);
+                                        link = newParent.UIndex;
+                                    }
+                                }
+
                                 sourceExport = testExp;
                                 usingDonor = true;
                             }
@@ -530,8 +561,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 // Would be nice if this could be done as import. But that'd break a lot of stuff.
                 if (usingRedirectedObject && usingDonor)
                 {
-                    if (destPackage.FindExport(sourceExport.InstancedFullPath, sourceExport.ClassName) != null)
-                        return destPackage.FindExport(sourceExport.InstancedFullPath, sourceExport.ClassName);
+                    var existingRedirectedObject = destPackage.FindExport(sourceExport.InstancedFullPath, sourceExport.ClassName);
+                    if (existingRedirectedObject != null)
+                    {
+                        // Object that was redirected to is already in the package.
+                        return existingRedirectedObject;
+                    }
                 }
 
                 // 07/20/2024 - Add custom way to handle donor importing for users of LEC
@@ -1837,12 +1872,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     associatedFiles.Add("BIOP_MP_COMMON.pcc");
                 }
                 else if (package.FilePath.Contains("DLC_CON_MP"))
-            {
+                {
                     // Files here should be able to link to the MP_COMMON package
                     // This isn't 100% bulletproof
-                associatedFiles.Add("BIOP_MP_COMMON.pcc");
+                    associatedFiles.Add("BIOP_MP_COMMON.pcc");
+                }
             }
-            } 
 
 
             return associatedFiles;
