@@ -184,8 +184,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             //Port Shaders
-            //var portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(sourceExports); // CrossGen Disabled
-            bool allowedToPortShaders = destPcc.Game == sourcePcc.Game;
+            // 08/24/2026 - Allow ports between LMP/LE3 as they are using same shader sets
+            bool allowedToPortShaders = destPcc.Game == sourcePcc.Game
+#if DEBUG
+                || (sourcePcc.Game.IsLEGame() && destPcc.Game.IsLEGame3()
+#endif
+                );
             bool isCrossGame = destPcc.Game != sourcePcc.Game;
             ShaderCache portingCache = null;
 
