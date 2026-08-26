@@ -731,6 +731,33 @@ namespace LegendaryExplorerCore.Unreal
     }
 
     /// <summary>
+    /// Identifies the object a <see cref="Property"/> was actually read from when it was inherited via
+    /// <see cref="PropertyCollectionExtensions.GetPropertiesIncludingInherited"/> rather than being set
+    /// explicitly on the export that was asked for. Deliberately does not hold a reference to the source
+    /// <see cref="ExportEntry"/> (or its package) itself - that source object may live in a different
+    /// package than the one the property is being used from, and holding onto it would keep that other
+    /// package's <see cref="IMEPackage"/> alive for as long as the property is.
+    /// </summary>
+    /// <param name="Kind">Whether the source is a specific archetype instance, or a class's default object.</param>
+    /// <param name="InstancedFullPath">Instanced full path of the archetype/class-default object the value came from.</param>
+    /// <param name="PackageFileName">File name (no extension, no directory) of the package the source object lives in.</param>
+    public sealed record PropertySource(PropertySourceKind Kind, string InstancedFullPath, string PackageFileName)
+    {
+        public override string ToString() => $"{Kind} '{InstancedFullPath}' in {PackageFileName}";
+    }
+
+    /// <summary>
+    /// The kind of object a <see cref="Property"/> was inherited from. See <see cref="PropertySource"/>.
+    /// </summary>
+    public enum PropertySourceKind
+    {
+        /// <summary>Inherited from a specific archetype instance (a subobject template).</summary>
+        Archetype,
+        /// <summary>Inherited from a class's default object (a "Default__ClassName" export) - the end of the archetype chain.</summary>
+        ClassDefault
+    }
+
+    /// <summary>
     /// Base class for all the Unreal property types that go in <see cref="PropertyCollection"/>
     /// </summary>
     public abstract class Property
@@ -759,6 +786,17 @@ namespace LegendaryExplorerCore.Unreal
         /// The name of this property
         /// </summary>
         public NameReference Name { get; set; }
+
+        /// <summary>
+        /// Where this property's value actually came from, when read via
+        /// <see cref="PropertyCollectionExtensions.GetPropertiesIncludingInherited"/>. Null (the default) means
+        /// the property was read directly from the export it was requested from - the case for every other
+        /// property-reading codepath, and for any property an export sets explicitly itself even when read
+        /// through <see cref="PropertyCollectionExtensions.GetPropertiesIncludingInherited"/>.
+        /// This is a purely in-memory annotation: it is not serialized, has no effect on <see cref="WriteTo"/>,
+        /// and should never be relied on to write this property back to a different export than it was read from.
+        /// </summary>
+        public PropertySource InheritedFrom { get; set; }
 
         protected internal Property(NameReference? name)
         {
@@ -2342,6 +2380,65 @@ namespace LegendaryExplorerCore.Unreal
                 return enumVal;
             }
             return defaultVal;
+        }
+
+        /// <summary>
+        /// Gets this export's properties merged with any properties it does not explicitly set, inherited from
+        /// its archetype chain. This mirrors how the engine resolves an object's effective property values at
+        /// runtime: a property explicitly serialized on the export always wins; anything left unset falls
+        /// through to the nearest archetype in the chain (<see cref="ExportEntry.Archetype"/>, then that
+        /// archetype's own archetype, and so on) that does set it. A property left unset all the way up the
+        /// chain is simply absent from the result - same as an unset property on a single export, the caller
+        /// should still fall back to the type's native default (e.g. via <c>GetPropVal</c>/<c>?? default</c>).
+        /// Every returned property's <see cref="Property.InheritedFrom"/> says where it actually came from:
+        /// null for a property <paramref name="export"/> sets itself, or a <see cref="PropertySource"/>
+        /// identifying the archetype/class-default it was inherited from otherwise.
+        /// </summary>
+        /// <remarks>
+        /// The returned collection is for reading only. Properties inherited from an archetype are the exact
+        /// same <see cref="Property"/> instances read from that archetype's export, not copies - do not write
+        /// this collection back to <paramref name="export"/> (via <see cref="ExportEntry.WriteProperties"/>),
+        /// as that would incorrectly bake inherited values in as if they had been explicitly set on it.
+        /// </remarks>
+        /// <param name="export">Export to get the effective properties of.</param>
+        /// <param name="cache">Cache used to resolve archetypes that are imports (e.g. defined in a higher-tier package).</param>
+        /// <param name="includeNoneProperties">Passed through to each underlying <see cref="ExportEntry.GetProperties"/> call along the chain.</param>
+        public static PropertyCollection GetPropertiesIncludingInherited(this ExportEntry export, PackageCache cache = null, bool includeNoneProperties = false)
+        {
+            var merged = new PropertyCollection();
+            var visited = new HashSet<(string filePath, int uIndex)>();
+
+            ExportEntry current = export;
+            while (current != null && visited.Add((current.FileRef.FilePath, current.UIndex)))
+            {
+                PropertySource source = current == export ? null : new PropertySource(
+                    current.IsDefaultObject ? PropertySourceKind.ClassDefault : PropertySourceKind.Archetype,
+                    current.InstancedFullPath,
+                    current.FileRef.FileNameNoExtension);
+
+                foreach (var prop in current.GetProperties(includeNoneProperties: includeNoneProperties, packageCache: cache))
+                {
+                    if (merged.GetProp<Property>(prop.Name, prop.StaticArrayIndex) == null)
+                    {
+                        prop.InheritedFrom = source;
+                        merged.Add(prop);
+                    }
+                }
+
+                current = current.HasArchetype ? ResolveArchetypeExport(current.Archetype, cache) : null;
+            }
+
+            return merged;
+        }
+
+        private static ExportEntry ResolveArchetypeExport(IEntry archetype, PackageCache cache)
+        {
+            return archetype switch
+            {
+                ExportEntry exp => exp,
+                ImportEntry imp when EntryImporter.TryResolveImport(imp, out var resolvedExp, cache) => resolvedExp,
+                _ => null
+            };
         }
 
         public static bool TryResolveObjectProp<T>(this PropertyCollection props, IMEPackage pcc, string propName, out T export) where T : class, IEntry
