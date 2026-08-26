@@ -243,7 +243,10 @@ namespace LegendaryExplorerCore.Shaders
         /// </summary>
         /// <param name="destFile"></param>
         /// <param name="shadersToAdd"></param>
-        public static void AddShadersToFile(IMEPackage destFile, ShaderCache shadersToAdd)
+        /// <param name="overwrite">If true, entries already present in the destination cache are replaced with the incoming
+        /// version instead of being left alone. Needed to force-refresh a material whose shader map already exists locally
+        /// (e.g. from a prior install) but is stale.</param>
+        public static void AddShadersToFile(IMEPackage destFile, ShaderCache shadersToAdd, bool overwrite = false)
         {
             const string seekfreeshadercache = "SeekFreeShaderCache";
             var destCacheExport = destFile.FindExport(seekfreeshadercache);
@@ -266,15 +269,27 @@ namespace LegendaryExplorerCore.Shaders
 
             foreach ((StaticParameterSet key, MaterialShaderMap materialShaderMap) in shadersToAdd.MaterialShaderMaps)
             {
-                destCache.MaterialShaderMaps.TryAdd(key, materialShaderMap);
+                if (overwrite)
+                {
+                    destCache.MaterialShaderMaps[key] = materialShaderMap;
+                }
+                else
+                {
+                    destCache.MaterialShaderMaps.TryAdd(key, materialShaderMap);
+                }
             }
 
             foreach ((Guid key, Shader shader) in shadersToAdd.Shaders)
             {
-                destCache.Shaders.TryAdd(key, shader);
+                if (overwrite)
+                {
+                    destCache.Shaders[key] = shader;
+                }
+                else
+                {
+                    destCache.Shaders.TryAdd(key, shader);
+                }
             }
-
-            
 
             destCacheExport.WriteBinary(destCache);
         }
