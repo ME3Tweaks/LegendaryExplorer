@@ -43,6 +43,11 @@ namespace LegendaryExplorerCore.UDK
 
 
         internal List<ExportEntry> LightmapsToTrash { get; set; } = new();
+
+        /// <summary>
+        /// List of sublevel names to ignore when importing static lighting. This is useful for levels that have sublevels that are not relevant to the lighting bake or should not be modified.
+        /// </summary>
+        public string[] IgnoredSublevelNames { get; set; }
     }
 
     public static class StaticLightingImporter
@@ -64,6 +69,8 @@ namespace LegendaryExplorerCore.UDK
             {
                 foreach (var subLevel in persistentPackage.AdditionalPackagesToCook)
                 {
+                    if (setup.IgnoredSublevelNames != null && setup.IgnoredSublevelNames.Contains(subLevel, StringComparer.OrdinalIgnoreCase))
+                        continue;
                     var mePath = Path.Combine(basePath, subLevel + ".pcc");
                     using var mePackage = (MEPackage)MEPackageHandler.OpenMEPackage(mePath);
                     using var udkPackage = GetUDKMapPackage(subLevel, setup.UDKMapsBasePath);
