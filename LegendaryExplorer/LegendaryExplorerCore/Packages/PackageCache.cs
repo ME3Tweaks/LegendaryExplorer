@@ -35,7 +35,15 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public readonly CaseInsensitiveConcurrentDictionary<DateTime> LastAccessMap = new();
 
-        public PackageCache() { }
+        /// <summary>
+        /// Default value assigned to <see cref="DiskIOSyncLock"/> for every newly constructed <see cref="PackageCache"/>. Host applications that need to synchronize package reads against concurrent writes elsewhere in the process can set this once at startup instead of threading a lock through every cache instance.
+        /// </summary>
+        public static Lock DefaultDiskIOSyncLock { get; set; }
+
+        public PackageCache()
+        {
+            DiskIOSyncLock = DefaultDiskIOSyncLock;
+        }
 
         /// <summary>
         /// The list of packages that will not be dropped from last access staleness
@@ -53,6 +61,12 @@ namespace LegendaryExplorerCore.Packages
         /// Defaults to <value>true</value>
         /// </summary>
         public bool AlwaysOpenFromDisk { get; init; } = true;
+
+        /// <summary>
+        /// If provided, all disk I/O performed when this cache opens a package (and, for <see cref="TieredPackageCache"/>, its chained children) will be done inside a lock on this object.
+        /// Use this to prevent concurrent read/write access to the same file when packages are being read on one thread while being written to (e.g. saved) on another.
+        /// </summary>
+        public Lock DiskIOSyncLock { get; set; }
 
         /// <summary>
         /// Thread-safe package cache fetch. Can be passed to various methods to help expedite operations by preventing package reopening.
@@ -82,7 +96,7 @@ namespace LegendaryExplorerCore.Packages
                     if (File.Exists(packagePath))
                     {
                         //Debug.WriteLine($@"PackageCache {guid} load: {packagePath} - custom open method: {(openPackageMethod != null)}");
-                        package = openPackageMethod?.Invoke(packagePath) ?? MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: AlwaysOpenFromDisk);
+                        package = openPackageMethod?.Invoke(packagePath) ?? MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: AlwaysOpenFromDisk, diskIOSyncLock: DiskIOSyncLock);
                         InsertIntoCache(package);
                         return package;
                     }

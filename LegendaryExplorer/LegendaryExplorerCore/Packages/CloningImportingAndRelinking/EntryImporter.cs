@@ -1690,7 +1690,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 }
                 else
                 {
-                    return MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: true);
+                    return MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: true, diskIOSyncLock: cache.DiskIOSyncLock);
                 }
             }
 
