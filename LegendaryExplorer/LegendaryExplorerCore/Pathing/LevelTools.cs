@@ -43,7 +43,10 @@ namespace LegendaryExplorerCore.Pathing
                 if (!component.GetRootName().CaseInsensitiveEquals("TheWorld"))
                     continue;
 
-                var props = component.GetProperties();
+                // Use inherited properties too - placed Pawn components (BioH conversation actors, spawned
+                // NPCs, etc.) very often don't set StaticMesh/SkeletalMesh/Materials on the instance itself;
+                // they inherit them from their archetype chain, same as the engine resolves them at runtime.
+                var props = component.GetPropertiesIncludingInherited(cache);
 
                 ObjectProperty meshProp = props.GetProp<ObjectProperty>("StaticMesh");
                 meshProp ??= props.GetProp<ObjectProperty>("SkeletalMesh");
@@ -356,9 +359,16 @@ namespace LegendaryExplorerCore.Pathing
             {
                 for (uint t = 0; t < element.NumTriangles; t++)
                 {
-                    int i0 = indices[(int)(element.FirstIndex + t * 3)];
-                    int i1 = indices[(int)(element.FirstIndex + t * 3 + 1)];
-                    int i2 = indices[(int)(element.FirstIndex + t * 3 + 2)];
+                    uint baseIndex = element.FirstIndex + t * 3;
+                    if (baseIndex + 2 >= indices.Length)
+                        break; // Element metadata doesn't match this mesh's index buffer - stop rather than throw.
+
+                    int i0 = indices[(int)baseIndex];
+                    int i1 = indices[(int)baseIndex + 1];
+                    int i2 = indices[(int)baseIndex + 2];
+
+                    if (i0 >= positions.Length || i1 >= positions.Length || i2 >= positions.Length)
+                        continue;
 
                     float l1 = Vector3.Distance(positions[i0], positions[i1]);
                     float l2 = Vector3.Distance(positions[i0], positions[i2]);
@@ -406,9 +416,15 @@ namespace LegendaryExplorerCore.Pathing
                 for (int t = 0; t < section.NumTriangles; t++)
                 {
                     uint baseIndex = section.BaseIndex + (uint)(t * 3);
+                    if (baseIndex + 2 >= indices.Length)
+                        break; // Section metadata doesn't match this mesh's index buffer - stop rather than throw.
+
                     int i0 = indices[(int)baseIndex];
                     int i1 = indices[(int)baseIndex + 1];
                     int i2 = indices[(int)baseIndex + 2];
+
+                    if (i0 >= vertexData.Length || i1 >= vertexData.Length || i2 >= vertexData.Length)
+                        continue;
 
                     float l1 = Vector3.Distance(vertexData[i0].Position, vertexData[i1].Position);
                     float l2 = Vector3.Distance(vertexData[i0].Position, vertexData[i2].Position);
