@@ -83,8 +83,48 @@
                 <StackPanel Grid.Column="2" VerticalAlignment="Center">
                     <Button Content="Replace" Command="{Binding ReplaceAudioCommand}" VerticalContentAlignment="Center" VerticalAlignment="Center" Margin="0,0,5,0">
                         <Button.Style>
+                            <!-- BasedOn can't reference the theme's Button style ({x:Type Button} in
+                                 Controls.Shared.xaml) because that dictionary is only merged into the
+                                 window's resources at runtime (dark mode toggle), not visible as a
+                                 StaticResource at this file's parse time - and BasedOn doesn't support
+                                 DynamicResource. So this local style (needed only for the conditional
+                                 ToolTip text below) duplicates the theme's actual Button
+                                 Setters/Template/Triggers rather than losing them outright, same approach
+                                 used for ColorPicker/WatermarkComboBox/BusyIndicator elsewhere. -->
                             <Style TargetType="Button">
                                 <Setter Property="ToolTip" Value="Change audio by importing a Wave file"/>
+                                <Setter Property="Background" Value="{DynamicResource Theme.Background.Control}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+                                <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Setter Property="Padding" Value="6,1"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+                                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                                   Margin="{TemplateBinding Padding}" RecognizesAccessKey="True"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.ControlHover}"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.ControlPressed}"/>
+                                                </Trigger>
+                                                <Trigger Property="IsKeyboardFocused" Value="True">
+                                                    <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Theme.BorderFocus}"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Disabled}"/>
+                                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.Panel}"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
                                 <Style.Triggers>
                                     <Trigger Property="IsEnabled" Value="False">
                                         <Setter Property="ToolTip" Value="Change audio by importing a Wave file&#x0a;You may only replace audio from a package file, not an audio bank"/>
@@ -218,7 +258,7 @@
                                         <Border Margin="0" DockPanel.Dock="Bottom" Padding="2,0,2,0" BorderThickness="1" BorderBrush="Red" Background="AntiqueWhite" 
                                                 CornerRadius="2" HorizontalAlignment="Left" 
                                                 Visibility="{Binding Converter={StaticResource HIRCObjectTypeVisibilityConverter},ConverterParameter=2}">
-                                            <TextBlock Text="{Binding State,Converter={StaticResource HIRCMediaFetchTypeConverter}}" FontWeight="Bold"/>
+                                            <TextBlock Text="{Binding State,Converter={StaticResource HIRCMediaFetchTypeConverter}}" FontWeight="Bold" Foreground="Black"/>
                                         </Border>
                                         <TextBlock Text="{Binding Path=ObjType, Converter={StaticResource HIRCObjectTypeConverter}}" FontStyle="Italic"/>
                                         <DockPanel.ContextMenu>
@@ -233,7 +273,7 @@
                                     </DockPanel>
                                     <DataTemplate.Triggers>
                                         <DataTrigger Binding="{Binding Path=DataChanged}" Value="true">
-                                            <Setter Property="Background" Value="Yellow" TargetName="HIRCContainer"/>
+                                            <Setter Property="Background" Value="{DynamicResource Theme.Background.Modified}" TargetName="HIRCContainer"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem }}}" Value="True">
                                             <Setter Property="TextBlock.FontWeight" Value="Bold"/>
@@ -242,8 +282,34 @@
                                 </DataTemplate>
                             </ListBox.Resources>
                             <ListBox.ItemContainerStyle>
+                                <!-- Explicitly-assigned ItemContainerStyle bypasses the theme's implicit
+                                     ListBoxItem style the same way Button.Style/TabItem local styles do
+                                     elsewhere in this app - the ObjType/"Embedded" text here has no
+                                     Foreground of its own, relying on inheriting a readable one from the
+                                     container, so it fell back to Aero2's stock (near-unreadable-on-dark)
+                                     default instead. Duplicated here rather than losing it. -->
                                 <Style TargetType="ListBoxItem">
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+                                    <Setter Property="Padding" Value="2"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Border x:Name="Bd" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.ControlHover}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.Selected}"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
                                 </Style>
                             </ListBox.ItemContainerStyle>
                         </ListBox>
@@ -276,7 +342,7 @@
                                     </Button.Style>
                                 </Button>
                                 <Button Name="ToggleHexboxWidth_Button" Content="Toggle Hexbox Width" ToolTip="Toggle between 4 and 16 byte widths" Click="HIRC_ToggleHexboxWidth_Click"/>
-                                <Separator Name="SaveToggle_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                                <Separator Name="SaveToggle_Separator" Style="{DynamicResource {x:Static ToolBar.SeparatorStyleKey}}" />
                             </ToolBar>
                             <sharedUi:WindowsFormsHostEx x:Name="HIRC_Hexbox_Host" Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                                 <hb1:HexBox MinBytesPerLine="4" MaxBytesPerLine="16" ColumnInfoVisible="True" LineInfoVisible="True" Font="Courier New,10" BoldFont="Consolas,10" StringViewVisible="True" SelectionStartChanged="Soundpanel_HIRCHexbox_SelectionChanged" VScrollBarVisible="True">

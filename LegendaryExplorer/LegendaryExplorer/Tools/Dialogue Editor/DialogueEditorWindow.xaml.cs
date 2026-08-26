@@ -1,6 +1,7 @@
 ﻿using LegendaryExplorer.Dialogs;
 using LegendaryExplorer.DialogueEditor.DialogueEditorExperiments;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc.Themes;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
 using LegendaryExplorer.SharedUI.Interfaces;
@@ -260,7 +261,8 @@ namespace LegendaryExplorer.DialogueEditor
             RecentsController.InitRecentControl(Toolname, Recents_MenuItem, LoadFile);
 
             graphEditor = (ConvGraphEditor)GraphHost.Child;
-            graphEditor.BackColor = Color.FromArgb(130, 130, 130);
+            ApplyGraphEditorTheme();
+            ThemeManager.ThemeChanged += GraphEditorTheme_Changed;
             graphEditor.Camera.MouseDown += backMouseDown_Handler;
             graphEditor.Camera.MouseUp += back_MouseUp;
 
@@ -395,6 +397,16 @@ namespace LegendaryExplorer.DialogueEditor
             FileQueuedForLoad = export.FileRef.FilePath;
             ExportQueuedForFocusing = export;
         }
+        private void ApplyGraphEditorTheme()
+        {
+            // ConvGraphEditor is a WinForms (Piccolo) canvas hosted via WindowsFormsHost - it sits outside
+            // the WPF resource system, so its background needs an explicit push rather than DynamicResource.
+            graphEditor.BackColor = ThemeManager.IsDarkMode ? Color.FromArgb(45, 45, 48) : Color.FromArgb(130, 130, 130);
+            graphEditor.Invalidate();
+        }
+
+        private void GraphEditorTheme_Changed(object sender, EventArgs e) => ApplyGraphEditorTheme();
+
         private void LoadCommands()
         {
             OpenCommand = new GenericCommand(OpenPackage);
@@ -511,6 +523,7 @@ namespace LegendaryExplorer.DialogueEditor
             );
 
             //Code here remove these objects from leaking the window memory
+            ThemeManager.ThemeChanged -= GraphEditorTheme_Changed;
             graphEditor.Camera.MouseDown -= backMouseDown_Handler;
             graphEditor.Camera.MouseUp -= back_MouseUp;
             graphEditor.Click -= graphEditor_Click;

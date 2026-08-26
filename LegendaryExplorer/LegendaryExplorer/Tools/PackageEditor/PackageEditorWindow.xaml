@@ -328,15 +328,15 @@
                     <Separator/>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="24">
                         <xctk:WatermarkComboBox Watermark="Class Selector" Name="ClassDropdown_Combobox" Width="140" ItemsPanel="{StaticResource VSP}" ItemsSource="{Binding ClassDropdownList}" IsTextSearchEnabled="True" KeyUp="ClassDropdown_Combobox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" VerticalContentAlignment="Center"/>
-                        <Button Content="Find object by class" Click="FindObjectByClass_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type Button}}" Padding="10,0"/>
+                        <Button Content="Find object by class" Click="FindObjectByClass_Click" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{DynamicResource {x:Type Button}}" Padding="10,0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="24">
                         <xctk:WatermarkTextBox Watermark="{Binding SearchHintText}" Name="Search_TextBox" Width="90" KeyUp="Searchbox_OnKeyUpHandler" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" VerticalContentAlignment="Center" ToolTip="Press CTRL+F to automatically jump to this box"/>
-                        <Button Content="Search" Click="SearchButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type Button}}"  Padding="10,0"/>
+                        <Button Content="Search" Click="SearchButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{DynamicResource {x:Type Button}}"  Padding="10,0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="24">
                         <xctk:WatermarkTextBox Watermark="{Binding GotoHintText}" Name="Goto_TextBox" Width="70" KeyUp="Goto_TextBox_KeyUp" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}"  VerticalContentAlignment="Center" ToolTip="Press CTRL+G to automatically jump to this box"/>
-                        <Button Content="Goto #" Click="GotoButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type Button}}" Padding="7,0"/>
+                        <Button Content="Goto #" Click="GotoButton_Clicked" IsEnabled="{Binding Pcc, Converter={StaticResource NullEnabledConverter}}" Style="{DynamicResource {x:Type Button}}" Padding="7,0"/>
                     </StackPanel>
                     <!--This is outside so that it doesn't hide the whole box if it is too long to show -->
                     <TextBlock Name="Goto_Preview_TextBox" VerticalAlignment="Center" Foreground="Gray" Margin="5,0,0,0"/>
@@ -393,12 +393,14 @@
                                 <controls:TreeViewEntryContainer.ToolTip>TestTrigger</controls:TreeViewEntryContainer.ToolTip>
                                 <DockPanel>
 
-                                    <TextBlock DockPanel.Dock="Bottom" Text="{Binding SubText}"  FontSize="10" Foreground="{Binding Path=ForegroundColor}" TextWrapping="Wrap" VerticalAlignment="Center" MaxWidth="300" HorizontalAlignment="Left"  Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
+                                    <TextBlock DockPanel.Dock="Bottom" Text="{Binding SubText}"  FontSize="10" TextWrapping="Wrap" VerticalAlignment="Center" MaxWidth="300" HorizontalAlignment="Left"  Visibility="{Binding SubText, Converter={StaticResource NullVisibilityConverter}}" >
                                         <TextBlock.Style>
                                             <Style TargetType="{x:Type TextBlock}">
+                                                <Setter Property="Foreground" Value="{Binding Path=ForegroundColor}"/>
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Path=Entry.EntryHasPendingChanges}" Value="true">
-                                                        <Setter Property="Background" Value="Yellow"/>
+                                                        <Setter Property="Background" Value="{DynamicResource Theme.Background.Modified}"/>
+                                                        <Setter Property="Foreground" Value="Black"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -406,12 +408,14 @@
                                     </TextBlock>
                                     <StackPanel Orientation="Horizontal">
                                         <Image Width="16" Height="16" Margin="0,0,3,0" Source="{Binding Entry, Converter={StaticResource EntryFileTypeIconPathConverter}}" Visibility="{Binding Entry, Converter={StaticResource EntryFileTypeConverter}}" />
-                                        <TextBlock  Text="{Binding DisplayName}" Foreground="{Binding Path=ForegroundColor}" VerticalAlignment="Center">
+                                        <TextBlock  Text="{Binding DisplayName}" VerticalAlignment="Center">
                                             <TextBlock.Style>
                                                 <Style TargetType="{x:Type TextBlock}">
+                                                    <Setter Property="Foreground" Value="{Binding Path=ForegroundColor}"/>
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding Path=Entry.EntryHasPendingChanges}" Value="true">
-                                                            <Setter Property="Background" Value="Yellow"/>
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Background.Modified}"/>
+                                                            <Setter Property="Foreground" Value="Black"/>
                                                         </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
@@ -427,13 +431,13 @@
                             </controls:TreeViewEntryContainer>
                         </HierarchicalDataTemplate>
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                      Color="LightBlue" />
+                      Color="{DynamicResource Theme.Color.Selected}" />
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
-                      Color="Black" />
+                      Color="{DynamicResource Theme.Color.OnAccent}" />
                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
-                      Color="LightBlue" />
+                      Color="{DynamicResource Theme.Color.Selected}" />
                         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-                      Color="Black" />
+                      Color="{DynamicResource Theme.Color.OnAccent}" />
 
                     </TreeView.Resources>
                     <TreeView.ItemContainerStyle>
@@ -444,10 +448,6 @@
                             <EventSetter Event="Selected" Handler="OnSelected"/>-->
                         </Style>
                     </TreeView.ItemContainerStyle>
-
-                    <!--<i:Interaction.Behaviors>
-                        <vhelp:TreeViewHelper BoundSelectedItem="{Binding SelectedItem}" />
-                    </i:Interaction.Behaviors>-->
                     <b:Interaction.Behaviors>
                         <peregrineTreeView:NodeTreeSelectionBehavior SelectedItem="{Binding SelectedItem}" />
                     </b:Interaction.Behaviors>
@@ -479,19 +479,19 @@
                             Check the menus for keyboard shortcuts. Check out CTRL+P: It pops out the currently viewed tab!
                             <LineBreak/>
                             <LineBreak/>
-                            <Hyperlink NavigateUri="https://github.com/ME3Tweaks/ME3Explorer/wiki/Package-Editor-Basics" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                            <Hyperlink NavigateUri="https://github.com/ME3Tweaks/ME3Explorer/wiki/Package-Editor-Basics" misc:HyperlinkExtensions.IsExternal="True">
                                 <Run Text="View the Package Editor basics wiki article"/>
                             </Hyperlink>
                             <LineBreak/>
                             <LineBreak/>
                             If you have issues, please report them to one of the following places:
                             <LineBreak/>
-                            - <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.ME3TweaksDiscordInviteURL)}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                            - <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.ME3TweaksDiscordInviteURL)}" misc:HyperlinkExtensions.IsExternal="True">
                                 <Run Text="The ME3Tweaks Discord (Legendary_Explorer channel)"/>
                             </Hyperlink>
                             <LineBreak/>
                             - The issues list on GitHub at 
-                            <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.BugReportURL), Mode=OneWay}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                            <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.BugReportURL), Mode=OneWay}" misc:HyperlinkExtensions.IsExternal="True">
                                 <Run Text="{Binding Path=(misc:AppLinks.BugReportURL), Mode=OneWay}"/>
                             </Hyperlink>
                             </TextBlock>

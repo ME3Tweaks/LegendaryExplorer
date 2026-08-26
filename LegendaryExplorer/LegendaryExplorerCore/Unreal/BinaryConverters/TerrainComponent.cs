@@ -4,11 +4,12 @@ using System.Numerics;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class TerrainComponent : ObjectBinary
+    public partial class TerrainComponent : ObjectBinary
     {
         public Vector3[] CollisionVertices;
         public TerrainBVNode[] BVTree;
         public TerrainPatchBounds[] PatchBounds;
+        [UIndexRefContainer]
         public LightMap LightMap;
 
         protected override void Serialize(SerializingContainer sc)

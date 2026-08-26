@@ -5,10 +5,12 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class ModelComponent : ObjectBinary
+    public partial class ModelComponent : ObjectBinary
     {
+        [UIndexRef("Model")]
         public UIndex Model;
         public int ZoneIndex;
+        [UIndexRefContainer]
         public ModelElement[] Elements;
         public ushort ComponentIndex;
         public ushort[] Nodes;
@@ -49,12 +51,16 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         }
     }
 
-    public class ModelElement
+    public partial class ModelElement
     {
+        [UIndexRefContainer]
         public LightMap LightMap;
+        [UIndexRef("ModelComponent")]
         public UIndex Component;
+        [UIndexRef("MaterialInterface")]
         public UIndex Material;
         public ushort[] Nodes;
+        [UIndexRef("ShadowMap2D")]
         public UIndex[] ShadowMaps;
         public Guid[] IrrelevantLights;
     }

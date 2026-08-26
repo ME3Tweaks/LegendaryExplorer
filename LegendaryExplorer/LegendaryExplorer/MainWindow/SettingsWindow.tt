@@ -8,7 +8,7 @@
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".xaml" #>
-<Window x:Class="LegendaryExplorer.MainWindow.SettingsWindow"
+<misc:NotifyPropertyChangedWindowBase x:Class="LegendaryExplorer.MainWindow.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -16,11 +16,12 @@
         xmlns:local="clr-namespace:LegendaryExplorer.MainWindow"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:settings="clr-namespace:LegendaryExplorer.Misc.AppSettings"
+        xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
         d:DataContext="{Binding RelativeSource={RelativeSource Self}}"
         mc:Ignorable="d"
         Title="Legendary Explorer Settings" Height="450" Width="550">
     <DockPanel>
-        <TextBlock DockPanel.Dock="Top"  Padding="5" Margin="0,0,0,3"  Background="LightGray" TextWrapping="Wrap" Text="Global settings for all tools. Settings will auto-update and auto-save on selection."/>
+        <TextBlock DockPanel.Dock="Top"  Padding="5" Margin="0,0,0,3"  Background="{DynamicResource Theme.Background.InfoBar}" TextWrapping="Wrap" Text="Global settings for all tools. Settings will auto-update and auto-save on selection."/>
 
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="5">
             <Button Padding="3" ToolTip="Saves all settings directly to settings file"
@@ -112,4 +113,4 @@
 
         </TabControl>
     </DockPanel>
-</Window>
+</misc:NotifyPropertyChangedWindowBase>

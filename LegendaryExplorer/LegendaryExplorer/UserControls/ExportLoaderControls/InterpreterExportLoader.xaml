@@ -52,10 +52,10 @@
                 <Button Name="ToggleHexbox_Button" ToolTip="Toggle Hexbox" Command="{Binding ToggleHexBoxCommand}">
                     <fa:ImageAwesome Icon="Solid_Microchip" Height="16" Width="16" Foreground="CornflowerBlue"/>
                 </Button>
-                <Separator Name="SaveToggle_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                <Separator Name="SaveToggle_Separator" Style="{DynamicResource {x:Static ToolBar.SeparatorStyleKey}}" />
                 <Button Content="Add Property" ToolTip="Add a property from this class or a superclass to this object" Command="{Binding AddPropertyCommand}"/>
 
-                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                <Separator Style="{DynamicResource {x:Static ToolBar.SeparatorStyleKey}}" />
                 <Label IsEnabled="False">Array:</Label>
                 <Button Name="AddArrayElement_Button" ToolTip="Add a new element to the selected array"
                     Command="{Binding AddArrayElementCommand}"
@@ -78,11 +78,12 @@
             </ToolBar>
             <ToolBar ToolBarTray.IsLocked="True" OverflowMode="Never" Band="2">
                 <TextBox Width="80" Name="Value_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" TextChanged="Value_TextBox_TextChanged" 
-                     IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Margin="0" Style="{StaticResource {x:Type TextBox}}" ToolBar.OverflowMode="Never"/>
+                     IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Margin="0" Style="{DynamicResource {x:Type TextBox}}" ToolBar.OverflowMode="Never"/>
                 <ComboBox Name="Value_ObjectComboBox"
-                      MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" 
-                      Style="{StaticResource {x:Type ComboBox}}" 
-                      IsTextSearchEnabled="True" TextSearch.TextPath="UIndex" 
+                      MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property"
+                      Style="{DynamicResource {x:Type ComboBox}}"
+                      Background="{DynamicResource Theme.Background.Control}" Foreground="{DynamicResource Theme.Foreground.Primary}" BorderBrush="{DynamicResource Theme.Border}"
+                      IsTextSearchEnabled="True" TextSearch.TextPath="UIndex"
                       KeyDown="ValueTextBox_KeyDown" ToolBar.OverflowMode="Never">
                     <ComboBox.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -90,7 +91,9 @@
                         </ItemsPanelTemplate>
                     </ComboBox.ItemsPanel>
                 </ComboBox>
-                <ComboBox Name="Value_ComboBox" MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" Style="{StaticResource {x:Type ComboBox}}" IsTextSearchEnabled="True" ToolBar.OverflowMode="Never">
+                <ComboBox Name="Value_ComboBox" MinWidth="80" VerticalAlignment="Center" ToolTip="Value for this property" Style="{DynamicResource {x:Type ComboBox}}"
+                      Background="{DynamicResource Theme.Background.Control}" Foreground="{DynamicResource Theme.Foreground.Primary}" BorderBrush="{DynamicResource Theme.Border}"
+                      IsTextSearchEnabled="True" ToolBar.OverflowMode="Never">
                     <ComboBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <VirtualizingStackPanel />
@@ -113,8 +116,8 @@
                 </ComboBox>
                 <TextBlock Text="Index:" Name="NameIndexPrefix_TextBlock" VerticalAlignment="Center" Margin="5,0,2,0" ToolBar.OverflowMode="Never"/>
                 <TextBox Width="30" Name="NameIndex_TextBox" VerticalAlignment="Center" ToolTip="Value for this property" KeyDown="ValueTextBox_KeyDown" 
-                     IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Style="{StaticResource {x:Type TextBox}}" ToolBar.OverflowMode="Never"/>
-                <Button Name="Set_Button" Content="Set" ToolTip="Sets the selected property to this value" Click="SetValue_Click" VerticalAlignment="Stretch" Padding="10,0,10,0" Style="{StaticResource {x:Type Button}}" ToolBar.OverflowMode="Never"/>
+                     IsEnabled="{Binding CurrentLoadedExport, Converter={StaticResource NullEnabledConverter}}" Style="{DynamicResource {x:Type TextBox}}" ToolBar.OverflowMode="Never"/>
+                <Button Name="Set_Button" Content="Set" ToolTip="Sets the selected property to this value" Click="SetValue_Click" VerticalAlignment="Stretch" Padding="10,0,10,0" Style="{DynamicResource {x:Type Button}}" ToolBar.OverflowMode="Never"/>
                 <TextBlock Name="ParsedValue_TextBlock" VerticalAlignment="Center" Foreground="Gray" Margin="5,0,0,0"/>
             </ToolBar>
         </WrapPanel>
@@ -181,10 +184,12 @@
                             </b:Interaction.Triggers>
                         </Border>
                         <HierarchicalDataTemplate.Triggers>
+                            <!-- Light-mode property-type colors (unchanged from before dark mode existed). -->
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="ObjectProperty" />
                                     <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d6c3f"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88fffec4"/>
@@ -193,6 +198,7 @@
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="FloatProperty" />
                                     <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#004f46"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#4400ffaa"/>
@@ -201,6 +207,7 @@
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="IntProperty" />
                                     <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#664f46"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#AAffeae2"/>
@@ -209,6 +216,7 @@
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="StrProperty" />
                                     <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#071f06"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#6632aaf4"/>
@@ -217,6 +225,7 @@
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="ArrayProperty" />
                                     <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#382c4c"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#99ffe2ba"/>
@@ -225,6 +234,7 @@
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="BoolProperty" />
                                     <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#43563a"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88ecffe2"/>
@@ -233,6 +243,7 @@
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="StructProperty" />
                                     <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#593953"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88f4beea"/>
@@ -241,6 +252,7 @@
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="ByteProperty" />
                                     <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#474647"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88afaeaf"/>
@@ -249,6 +261,7 @@
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="EnumProperty" />
                                     <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#390268"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#66A972ff"/>
@@ -257,6 +270,7 @@
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="BioMask4Property" />
                                     <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#474647"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88afaeaf"/>
@@ -265,6 +279,7 @@
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="NameProperty" />
                                     <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#4a5568"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88e2edff"/>
@@ -273,6 +288,7 @@
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="Unknown" />
                                     <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="White"/>
                                 <Setter TargetName="PropertyItem_EditableValue" Property="Foreground" Value="White"/>
@@ -283,20 +299,144 @@
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding RawPropertyType}" Value="None" />
                                     <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="False" />
                                 </MultiDataTrigger.Conditions>
                                 <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#6d4818"/>
                                 <Setter TargetName="PropertyItem_Container" Property="Background" Value="#88ffb759"/>
                             </MultiDataTrigger>
+
+                            <!-- Dark-mode property-type colors: same hue family as the light-mode set above,
+                                 retuned to bright/light foregrounds and low-alpha dark washes so they stay
+                                 legible and distinguishable against a dark tree background. -->
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="ObjectProperty" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#D8D48F"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#33716E3E"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="FloatProperty" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#4EC9B0"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#332D6F5E"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="IntProperty" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#DBAC97"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#336F5A4A"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="StrProperty" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#8FCE87"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#333A5A7A"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="ArrayProperty" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#C9A9E0"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#335A4A70"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="BoolProperty" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#A8D8A0"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#334A6142"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="StructProperty" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#E0A9D6"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#336B4E66"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="ByteProperty" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#B5B4B5"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#334C4B4C"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="EnumProperty" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#C9A0E8"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#334E2F70"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="BioMask4Property" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#B5B4B5"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#334C4B4C"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="NameProperty" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#A8BFDD"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#33425A76"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="Unknown" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="White"/>
+                                <Setter TargetName="PropertyItem_EditableValue" Property="Foreground" Value="White"/>
+                                <Setter TargetName="PropertyItem_ParsedValue" Property="Foreground" Value="White"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#FF7A1F1F"/>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding RawPropertyType}" Value="None" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Interpreter_Colorize)}" Value="True" />
+                                    <Condition Binding="{Binding Path=(appsettings:Settings.Global_DarkModeEnabled)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="PropertyItem_DisplayType" Property="Foreground" Value="#E0B980"/>
+                                <Setter TargetName="PropertyItem_Container" Property="Background" Value="#337A5C34"/>
+                            </MultiDataTrigger>
                         </HierarchicalDataTemplate.Triggers>
                     </HierarchicalDataTemplate>
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
-                      Color="LightBlue" />
+                      Color="{DynamicResource Theme.Color.Selected}" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
-                      Color="Black" />
+                      Color="{DynamicResource Theme.Color.OnAccent}" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
-                      Color="LightBlue" />
+                      Color="{DynamicResource Theme.Color.Selected}" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}"
-                      Color="Black" />
+                      Color="{DynamicResource Theme.Color.OnAccent}" />
                 </controls:StretchingTreeView.Resources>
                 <controls:StretchingTreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">

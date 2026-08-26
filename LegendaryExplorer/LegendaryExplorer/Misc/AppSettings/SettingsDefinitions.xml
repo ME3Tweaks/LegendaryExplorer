@@ -109,6 +109,8 @@
   <setting name="Global_PropertyParsing_ParseUnknownArrayTypeAsObject" type="bool" defaultvalue="false" settingsbridgename="ParseUnknownArrayTypesAsObject"/>
   <setting name="Global_Analytics_Enabled" type="bool" defaultvalue="true" category="General"
            friendlyName="Enable Analytics"/>
+  <setting name="Global_DarkModeEnabled" type="bool" defaultvalue="false" category="General"
+           friendlyName="Enable Dark Theme"/>
   <setting name="Global_ME1Directory" type="string" defaultvalue="" settingsbridgename="ME1Directory" category="General" isDirectorySelect="true"
            friendlyName="Mass Effect 1 (Original Trilogy) Directory"/>
   <setting name="Global_ME2Directory" type="string" defaultvalue="" settingsbridgename="ME2Directory" category="General" isDirectorySelect="true"

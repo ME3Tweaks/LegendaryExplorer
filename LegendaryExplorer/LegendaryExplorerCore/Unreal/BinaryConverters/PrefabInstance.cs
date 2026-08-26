@@ -4,9 +4,12 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class PrefabInstance : ObjectBinary
+    public partial class PrefabInstance : ObjectBinary
     {
+        [UIndexRef("Object", UIndexRefFlags.Key)]
+        [UIndexRef("Object", UIndexRefFlags.Value)]
         public UMultiMap<UIndex, UIndex> ArchetypeToInstanceMap; //TODO: Make this a UMap
+        [UIndexRef("Object", UIndexRefFlags.Key)]
         public UMultiMap<UIndex, int> ObjectMap; //TODO: Make this a UMap
 
         protected override void Serialize(SerializingContainer sc)

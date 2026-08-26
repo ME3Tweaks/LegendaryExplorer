@@ -1,7 +1,8 @@
-﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<misc:NotifyPropertyChangedWindowBase xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     x:Class="LegendaryExplorer.Dialogs.AddStringRangeDialog"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    WindowStartupLocation="CenterOwner" 
+    xmlns:misc="clr-namespace:LegendaryExplorer.Misc"
+    WindowStartupLocation="CenterOwner"
     SizeToContent="WidthAndHeight"
     MinWidth="350"
     MinHeight="150"
@@ -37,4 +38,4 @@
             <Button Content="_Cancel" IsCancel="True" Margin="5" Width="60" Height="25" Name="btnCancel" Click="btnCancel_Click" />
         </StackPanel>
     </StackPanel>
-</Window>
+</misc:NotifyPropertyChangedWindowBase>

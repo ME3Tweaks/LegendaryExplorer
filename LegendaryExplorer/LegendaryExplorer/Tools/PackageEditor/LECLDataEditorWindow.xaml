@@ -16,7 +16,7 @@
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
     <StackPanel>
-        <TextBlock  Background="LightGray" Padding="5" Text="LECL Metadata is information stored in package files that is used only by modding tools to improve the developer experience. LECL features are only available for Legendary Edition package files." TextWrapping="Wrap"/>
+        <TextBlock  Background="{DynamicResource Theme.Background.InfoBar}" Foreground="{DynamicResource Theme.Foreground.Primary}" Padding="5" Text="LECL Metadata is information stored in package files that is used only by modding tools to improve the developer experience. LECL features are only available for Legendary Edition package files." TextWrapping="Wrap"/>
         <StackPanel Margin="5">
             <GroupBox Header="Import resolution">
                 <StackPanel>

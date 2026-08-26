@@ -6,8 +6,9 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class FracturedStaticMesh : StaticMesh
+    public partial class FracturedStaticMesh : StaticMesh
     {
+        [UIndexRef("StaticMesh")]
         public UIndex SourceStaticMesh;
         public FragmentInfo[] Fragments;
         public int CoreFragmentIndex;

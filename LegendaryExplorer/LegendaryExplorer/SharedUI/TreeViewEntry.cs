@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorer.Misc.Themes;
 using LegendaryExplorer.Tools.TlkManagerNS;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
 using LegendaryExplorerCore.Gammtek.IO;
@@ -545,8 +546,16 @@ namespace LegendaryExplorer.SharedUI
             }
         }
 
-        private static SolidColorBrush ImportEntryBrush => SystemColors.GrayTextBrush;
-        private static SolidColorBrush ExportEntryBrush => SystemColors.ControlTextBrush;
+        private static readonly SolidColorBrush DarkImportEntryBrush = FrozenBrush(0x9D, 0x9D, 0x9D);
+        private static readonly SolidColorBrush DarkExportEntryBrush = FrozenBrush(0xDC, 0xDC, 0xDC);
+        private static SolidColorBrush FrozenBrush(byte r, byte g, byte b)
+        {
+            var brush = new SolidColorBrush(Color.FromRgb(r, g, b));
+            brush.Freeze();
+            return brush;
+        }
+        private static SolidColorBrush ImportEntryBrush => ThemeManager.IsDarkMode ? DarkImportEntryBrush : SystemColors.GrayTextBrush;
+        private static SolidColorBrush ExportEntryBrush => ThemeManager.IsDarkMode ? DarkExportEntryBrush : SystemColors.ControlTextBrush;
 
         public override string ToString()
         {

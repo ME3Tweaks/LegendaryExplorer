@@ -267,6 +267,24 @@ namespace LegendaryExplorerCore.Packages
             NameCount = names.Count;
         }
 
+        /// <summary>
+        /// Restores the import list to a previous snapshot, e.g. after a speculative port that ended up being
+        /// discarded. Unhooks change notifications from any import that isn't part of the restored list.
+        /// </summary>
+        public void restoreImports(List<ImportEntry> list)
+        {
+            foreach (var imp in imports)
+            {
+                if (!list.Contains(imp))
+                {
+                    imp.PropertyChanged -= importChanged;
+                }
+            }
+            imports = list;
+            ImportCount = imports.Count;
+            InvalidateLookupTable();
+        }
+
         private void mapNames()
         {
             nameLookupTable.Clear();

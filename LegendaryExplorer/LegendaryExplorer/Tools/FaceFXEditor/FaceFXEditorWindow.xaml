@@ -62,12 +62,12 @@
                         <LineBreak />
                         Read these tutorials for more details: 
                         <Hyperlink NavigateUri="https://github.com/ME3Tweaks/LegendaryExplorer/wiki/Principles-of-Facial-Animation-in-LE3"
-                                   Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                                   Foreground="{DynamicResource Theme.Accent}" misc:HyperlinkExtensions.IsExternal="True">
                             <Run Text="Principles of Facial Animation" />
                         </Hyperlink>
                         <LineBreak />
                         <Hyperlink NavigateUri="https://github.com/ME3Tweaks/LegendaryExplorer/wiki/Creating-Custom-FaceFX-using-FaceFX-Editor"
-                                   Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                                   Foreground="{DynamicResource Theme.Accent}" misc:HyperlinkExtensions.IsExternal="True">
                             <Run Text="Creating Custom FaceFX using FaceFX Editor" />
                         </Hyperlink>
                         <LineBreak />
@@ -76,13 +76,13 @@
                         <LineBreak />
                         -
                         <Hyperlink NavigateUri="{Binding Source={x:Static misc:AppLinks.ME3TweaksDiscordInviteURL}, Mode=OneTime}"
-                                   Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                                   Foreground="{DynamicResource Theme.Accent}" misc:HyperlinkExtensions.IsExternal="True">
                             <Run Text="The ME3Tweaks Discord (Legendary_Explorer channel)" />
                         </Hyperlink>
                         <LineBreak />
                         - The issues list on GitHub at
                         <Hyperlink NavigateUri="{Binding Source={x:Static misc:AppLinks.BugReportURL}, Mode=OneTime}"
-                                   Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                                   Foreground="{DynamicResource Theme.Accent}" misc:HyperlinkExtensions.IsExternal="True">
                             <Run Text="{Binding Source={x:Static misc:AppLinks.BugReportURL}, Mode=OneTime}" />
                         </Hyperlink>
                         </TextBlock>
@@ -102,7 +102,7 @@
                         </ComboBox>
                         <Button Content="Load" Command="{Binding LoadAnimsetCommand}"
                             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" />
-                        <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" Width="1" />
+                        <Separator Style="{DynamicResource {x:Static ToolBar.SeparatorStyleKey}}" Width="1" />
                     </ToolBar>
                     <exportLoaderControls:FaceFXAnimSetEditorControl x:Name="editorControl" />
                 </DockPanel>

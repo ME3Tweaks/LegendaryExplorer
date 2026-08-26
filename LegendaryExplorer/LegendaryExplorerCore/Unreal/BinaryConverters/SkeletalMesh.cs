@@ -9,9 +9,10 @@ using UIndex = System.Int32;
 
 namespace LegendaryExplorerCore.Unreal.BinaryConverters
 {
-    public class SkeletalMesh : ObjectBinary
+    public partial class SkeletalMesh : ObjectBinary
     {
         public BoxSphereBounds Bounds;
+        [UIndexRef("MaterialInterface")]
         public UIndex[] Materials;
         public Vector3 Origin;
         public Rotator RotOrigin;
@@ -21,6 +22,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public UMultiMap<NameReference, int> NameIndexMap; //TODO: Make this a UMap
         public PerPolyBoneCollisionData[] PerPolyBoneKDOPs;
         public string[] BoneBreakNames; //ME3 and UDK
+        [UIndexRef("ApexClothingAsset")]
         public UIndex[] ClothingAssets; //ME3 and UDK
         public uint unk1; //UDK
         public uint unk2; //UDK

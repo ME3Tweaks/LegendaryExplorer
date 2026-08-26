@@ -90,7 +90,7 @@
                             <Style TargetType="Button">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding IsDirty}" Value="true">
-                                        <Setter Property="Background" Value="Yellow"/>
+                                        <Setter Property="Background" Value="{DynamicResource Theme.Background.Modified}"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -102,7 +102,7 @@
                     <Button Name="RedoMenuItem" Click="Redo_Clicked" ToolTip="Redo (Ctrl-Y)" IsEnabled="{Binding CanRedo, Converter={StaticResource BoolEnabledConverter}, Mode=OneWay}">
                         <fa:ImageAwesome Icon="Solid_Redo" Width="16"/>
                     </Button>
-                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                    <Separator Style="{DynamicResource {x:Static ToolBar.SeparatorStyleKey}}" />
                     <RadioButton GroupName="WidgetMode" ToolTip="Translate" Command="{Binding ToggleTranslateCommand}" IsChecked="True">
                         Translate
                     </RadioButton>
@@ -115,14 +115,14 @@
                     <RadioButton GroupName="WidgetMode" ToolTip="Uniform Scale" Command="{Binding ToggleUniformScaleCommand}">
                         Uniform Scale
                     </RadioButton>
-                    <Separator Name="SaveToggle_Separator" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                    <Separator Name="SaveToggle_Separator" Style="{DynamicResource {x:Static ToolBar.SeparatorStyleKey}}" />
                     <ToggleButton Content="Local Coords" ToolTip="Use local coordinates for the transform widget" IsChecked="{Binding UseLocalCoordsForWidget}"/>
-                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                    <Separator Style="{DynamicResource {x:Static ToolBar.SeparatorStyleKey}}" />
                     <ToggleButton Content="Show Collision" ToolTip="Show collision meshes" IsChecked="{Binding ShowCollision}"/>
                     <ToggleButton Content="Show Volumes" ToolTip="Show volume wireframes" IsChecked="{Binding ShowVolumes}"/>
                     <ToggleButton Content="Show Volumetric Meshes" IsChecked="{Binding ShowVolumetrics}"
                                   ToolTip="Volumetrics are large spheroids used for fog, dust, etc. Since LEX can't display those effects, they just get in the way."/>
-                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+                    <Separator Style="{DynamicResource {x:Static ToolBar.SeparatorStyleKey}}" />
                     <ToggleButton Content="Top Down" ToolTip="Toggle top-down orthographic view (Numpad 5)" IsChecked="{Binding IsOrthographicView}"/>
                 </ToolBar>
             </WrapPanel>
@@ -156,7 +156,7 @@
                 <DockPanel Grid.Column="0" >
                     <StackPanel  DockPanel.Dock="Top" Orientation="Horizontal" VerticalAlignment="Center" Margin="5,0,0,0" Height="24">
                         <xctk:WatermarkTextBox Watermark="UIndex" Name="Goto_TextBox" Width="70" KeyUp="Goto_TextBox_KeyUp" IsEnabled="{Binding HasAnyFileOpen}"  VerticalContentAlignment="Center"/>
-                        <Button Content="Goto #" Click="GotoButton_Clicked" IsEnabled="{Binding HasAnyFileOpen}" Style="{StaticResource {x:Type Button}}" Padding="7,0"/>
+                        <Button Content="Goto #" Click="GotoButton_Clicked" IsEnabled="{Binding HasAnyFileOpen}" Style="{DynamicResource {x:Type Button}}" Padding="7,0"/>
                     </StackPanel>
                     <xctk:WatermarkTextBox DockPanel.Dock="Top" Watermark="Search actors..." Name="ActorFilter_TextBox" Margin="5,2,5,2" Height="22"
                                            KeyUp="ActorFilter_TextBox_KeyUp" IsEnabled="{Binding HasAnyFileOpen}" VerticalContentAlignment="Center"/>
@@ -207,7 +207,7 @@
                                 </StackPanel>
                                 <DataTemplate.Triggers>
                                     <DataTrigger Binding="{Binding IsDirty}" Value="true">
-                                        <Setter Property="Background" Value="Yellow" TargetName="ExportContainer"/>
+                                        <Setter Property="Background" Value="{DynamicResource Theme.Background.Modified}" TargetName="ExportContainer"/>
                                     </DataTrigger>
                                 </DataTemplate.Triggers>
                             </DataTemplate>
@@ -343,11 +343,11 @@
                 This is a work in progress, and only displays some of the actors in a level.
                 If you have issues with Level Editor, please report them to one of the following places:
                 <LineBreak/>
-            - <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.ME3TweaksDiscordInviteURL), Mode=OneTime}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+            - <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.ME3TweaksDiscordInviteURL), Mode=OneTime}" Foreground="{DynamicResource Theme.Accent}" misc:HyperlinkExtensions.IsExternal="True">
                 <Run Text="The ME3Tweaks Discord (#Legendary_Explorer channel)"/>
             </Hyperlink>                                <LineBreak/>
                  - The issues list on GitHub at
-                <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.BugReportURL), Mode=OneTime}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                <Hyperlink NavigateUri="{Binding Path=(misc:AppLinks.BugReportURL), Mode=OneTime}" Foreground="{DynamicResource Theme.Accent}" misc:HyperlinkExtensions.IsExternal="True">
                     <Run Text="{Binding Path=(misc:AppLinks.BugReportURL), Mode=OneTime}"/>
                 </Hyperlink>
                     </TextBlock>

@@ -13,7 +13,7 @@
         AllowDrop="True"
         Closed="Root_Closed">
     <DockPanel>
-        <TextBlock DockPanel.Dock="Top"  Padding="5" Background="LightGray" TextWrapping="Wrap" Text="Coalesced Compiler converts Coalesced.bin files from ME3 and Legendary Edition into a folder with editable .XML or .INI files. Select a .bin, .xml, or .extractedbin file to convert in either direction. You can also drag and drop a file onto this window to select as source."/>
+        <TextBlock DockPanel.Dock="Top"  Padding="5" Background="{DynamicResource Theme.Background.InfoBar}" Foreground="{DynamicResource Theme.Foreground.Primary}" TextWrapping="Wrap" Text="Coalesced Compiler converts Coalesced.bin files from ME3 and Legendary Edition into a folder with editable .XML or .INI files. Select a .bin, .xml, or .extractedbin file to convert in either direction. You can also drag and drop a file onto this window to select as source."/>
 
         <!-- Compile/Decompile -->
         <DockPanel DockPanel.Dock="Bottom" Margin="5">

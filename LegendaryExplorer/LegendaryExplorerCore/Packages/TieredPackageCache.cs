@@ -93,6 +93,11 @@ public class TieredPackageCache : PackageCache
     public TieredPackageCache(TieredPackageCache parent) : base()
     {
         ParentCache = parent;
+        if (parent != null)
+        {
+            // Chained caches inherit their parent's lock so callers don't have to set it on every tier
+            DiskIOSyncLock = parent.DiskIOSyncLock;
+        }
     }
 
     /// <summary>
@@ -250,7 +255,7 @@ public class TieredPackageCache : PackageCache
                     package = openPackageMethod?.Invoke(packagePath);
                     if (package == null)
                     {
-                        package = MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: AlwaysOpenFromDisk);
+                        package = MEPackageHandler.OpenMEPackage(packagePath, forceLoadFromDisk: AlwaysOpenFromDisk, diskIOSyncLock: DiskIOSyncLock);
                         if (!IsCacheForGame(package.Game))
                         {
                             Debug.WriteLine($"TieredPackageCache WARNING: LOADING PACKAGE FOR A DIFFERENT GAME INTO THIS CACHE! File: {packagePath}");

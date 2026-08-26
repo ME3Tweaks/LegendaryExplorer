@@ -287,6 +287,11 @@ namespace LegendaryExplorer.Misc.AppSettings
             get => _global_analytics_enabled;
             set => SetProperty(ref _global_analytics_enabled, value);
         }
+        private static bool _global_darkmodeenabled = false;
+        public static bool Global_DarkModeEnabled {
+            get => _global_darkmodeenabled;
+            set => SetProperty(ref _global_darkmodeenabled, value);
+        }
         private static string _global_me1directory = "";
         public static string Global_ME1Directory {
             get => _global_me1directory;
@@ -468,6 +473,7 @@ namespace LegendaryExplorer.Misc.AppSettings
             TFCCompactor_LastStagingPath = TryGetSetting(settingsJson, "tfccompactor_laststagingpath", "");
             Global_PropertyParsing_ParseUnknownArrayTypeAsObject = TryGetSetting(settingsJson, "global_propertyparsing_parseunknownarraytypeasobject", false);
             Global_Analytics_Enabled = TryGetSetting(settingsJson, "global_analytics_enabled", true);
+            Global_DarkModeEnabled = TryGetSetting(settingsJson, "global_darkmodeenabled", false);
             Global_ME1Directory = TryGetSetting(settingsJson, "global_me1directory", "");
             Global_ME2Directory = TryGetSetting(settingsJson, "global_me2directory", "");
             Global_ME3Directory = TryGetSetting(settingsJson, "global_me3directory", "");
@@ -552,6 +558,7 @@ namespace LegendaryExplorer.Misc.AppSettings
                     settingsJson["tfccompactor_laststagingpath"] = TFCCompactor_LastStagingPath.ToString();
                     settingsJson["global_propertyparsing_parseunknownarraytypeasobject"] = Global_PropertyParsing_ParseUnknownArrayTypeAsObject.ToString();
                     settingsJson["global_analytics_enabled"] = Global_Analytics_Enabled.ToString();
+                    settingsJson["global_darkmodeenabled"] = Global_DarkModeEnabled.ToString();
                     settingsJson["global_me1directory"] = Global_ME1Directory.ToString();
                     settingsJson["global_me2directory"] = Global_ME2Directory.ToString();
                     settingsJson["global_me3directory"] = Global_ME3Directory.ToString();

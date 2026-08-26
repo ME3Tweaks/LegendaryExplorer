@@ -403,7 +403,7 @@
                                                             <DataTrigger
                                                                 Binding="{Binding Path=EntryHasPendingChanges}"
                                                                 Value="true">
-                                                                <Setter Property="Background" Value="Yellow" />
+                                                                <Setter Property="Background" Value="{DynamicResource Theme.Background.Modified}" />
                                                                 <Setter Property="ToolTip"
                                                                         Value="This export has been modified but the file has not yet been saved" />
                                                             </DataTrigger>
@@ -414,13 +414,52 @@
                                                     <ColumnDefinition Width="40" />
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding UIndex}" />
-                                                <TextBlock Grid.Column="1" Text="{Binding Path=ObjectName.Instanced}" />
+                                                <TextBlock Text="{Binding UIndex}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="{x:Type TextBlock}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
+                                                                    <Setter Property="Foreground" Value="Black" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                                <TextBlock Grid.Column="1" Text="{Binding Path=ObjectName.Instanced}">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="{x:Type TextBlock}">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
+                                                                    <Setter Property="Foreground" Value="Black" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
                                             </Grid>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                     <ListBox.ItemContainerStyle>
-                                        <Style>
+                                        <Style TargetType="{x:Type ListBoxItem}">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="Padding" Value="2"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                                        <Border x:Name="Bd" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                                            <ContentPresenter/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.ControlHover}"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsSelected" Value="True">
+                                                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.Selected}"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
                                             <Style.Triggers>
                                                 <Trigger Property="Selector.IsSelected" Value="True">
                                                     <Setter Property="TextElement.FontWeight" Value="Bold" />
@@ -429,7 +468,21 @@
                                         </Style>
                                     </ListBox.ItemContainerStyle>
                                     <ListBox.Resources>
-                                        <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+                                        <Style TargetType="ListBox">
+                                        <Setter Property="Background" Value="{DynamicResource Theme.Background.Panel}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+                                        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBox">
+                                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+                                                        <ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                                        </ScrollViewer>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
                                             <Style.Triggers>
                                                 <DataTrigger
                                                     Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=Items.Count}"
@@ -647,11 +700,11 @@
                             <LineBreak />
                             If you have issues with Pathfinding Editor, please report them to one of the following places:
                             <LineBreak/>
-                            - <Hyperlink NavigateUri="{Binding Source={x:Static misc:AppLinks.ME3TweaksDiscordInviteURL}, Mode=OneTime}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                            - <Hyperlink NavigateUri="{Binding Source={x:Static misc:AppLinks.ME3TweaksDiscordInviteURL}, Mode=OneTime}" Foreground="{DynamicResource Theme.Accent}" misc:HyperlinkExtensions.IsExternal="True">
                                 <Run Text="The ME3Tweaks Discord (Legendary_Explorer channel)"/>
                             </Hyperlink>                                <LineBreak/>
                             - The issues list on GitHub at 
-                            <Hyperlink NavigateUri="{Binding Source={x:Static misc:AppLinks.BugReportURL}, Mode=OneTime}" Foreground="#FF182574" misc:HyperlinkExtensions.IsExternal="True">
+                            <Hyperlink NavigateUri="{Binding Source={x:Static misc:AppLinks.BugReportURL}, Mode=OneTime}" Foreground="{DynamicResource Theme.Accent}" misc:HyperlinkExtensions.IsExternal="True">
                                 <Run Text="{Binding Source={x:Static misc:AppLinks.BugReportURL}, Mode=OneTime}"/>
                             </Hyperlink>
                         </TextBlock>
@@ -663,9 +716,9 @@
                            Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}, FallbackValue=Visible}">
                     <DockPanel DockPanel.Dock="Left">
                         <Expander DockPanel.Dock="Left" Name="CombatZonesSMC_Expander" ExpandDirection="Right"
-                                  IsExpanded="False" Background="Orange" Padding="2" MaxWidth="310">
+                                  IsExpanded="False" Background="{DynamicResource Theme.Accent.Warm}" Padding="2" MaxWidth="310">
                             <Expander.Header>
-                                <TextBlock Text="Zones &amp; Actor Collections" VerticalAlignment="Center"
+                                <TextBlock Text="Zones &amp; Actor Collections" Foreground="Black" VerticalAlignment="Center"
                                            Margin="0,0,4,0">
                                     <TextBlock.LayoutTransform>
                                         <RotateTransform Angle="-90" />
@@ -673,7 +726,7 @@
                                 </TextBlock>
                             </Expander.Header>
                             <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,3,4,3">
-                                <StackPanel Background="White">
+                                <StackPanel Background="{DynamicResource Theme.Background.Panel}">
                                     <TextBlock Text="Actor Collections" Margin="5,5,5,0" FontWeight="Bold"
                                                TextAlignment="Center" />
                                     <TextBlock Text="Select items to show actors in that collection" Foreground="Gray"
@@ -723,7 +776,7 @@
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}"
                                                                      Value="true">
-                                                            <Setter Property="Background" Value="Yellow" />
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Background.Modified}" />
                                                             <Setter Property="ToolTip"
                                                                     Value="This export has been modified but the file has not yet been saved" />
                                                         </DataTrigger>
@@ -734,13 +787,52 @@
                                                 <ColumnDefinition Width="40" />
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock Text="{Binding UIndex}" />
-                                            <TextBlock Grid.Column="1" Text="{Binding Path=ObjectName.Instanced}" />
+                                            <TextBlock Text="{Binding UIndex}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="{x:Type TextBlock}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
+                                                                <Setter Property="Foreground" Value="Black" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            <TextBlock Grid.Column="1" Text="{Binding Path=ObjectName.Instanced}">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="{x:Type TextBlock}">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}" Value="true">
+                                                                <Setter Property="Foreground" Value="Black" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
                                         </Grid>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                                 <ListBox.ItemContainerStyle>
-                                    <Style>
+                                    <Style TargetType="{x:Type ListBoxItem}">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Padding" Value="2"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                                    <Border x:Name="Bd" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                                                        <ContentPresenter/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.ControlHover}"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsSelected" Value="True">
+                                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource Theme.Background.Selected}"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
                                         <Style.Triggers>
                                             <Trigger Property="Selector.IsSelected" Value="True">
                                                 <Setter Property="TextElement.FontWeight" Value="Bold" />
@@ -749,7 +841,21 @@
                                     </Style>
                                 </ListBox.ItemContainerStyle>
                                 <ListBox.Resources>
-                                    <Style TargetType="ListBox" BasedOn="{StaticResource {x:Type ListBox}}">
+                                    <Style TargetType="ListBox">
+                                        <Setter Property="Background" Value="{DynamicResource Theme.Background.Panel}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource Theme.Foreground.Primary}"/>
+                                        <Setter Property="BorderBrush" Value="{DynamicResource Theme.Border}"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBox">
+                                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+                                                        <ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                                                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                                        </ScrollViewer>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
                                         <Style.Triggers>
                                             <DataTrigger
                                                 Binding="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=Items.Count}"

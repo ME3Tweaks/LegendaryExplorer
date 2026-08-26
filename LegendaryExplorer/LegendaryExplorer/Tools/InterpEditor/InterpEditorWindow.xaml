@@ -144,7 +144,7 @@
                                                     <Style.Triggers>
                                                         <DataTrigger Binding="{Binding Path=EntryHasPendingChanges}"
                                                                      Value="true">
-                                                            <Setter Property="Background" Value="Yellow" />
+                                                            <Setter Property="Background" Value="{DynamicResource Theme.Background.Modified}" />
                                                             <Setter Property="ToolTip"
                                                                     Value="This export has been modified but the file has not yet been saved" />
                                                         </DataTrigger>

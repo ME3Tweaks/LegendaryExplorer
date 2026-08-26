@@ -119,6 +119,7 @@
 		<PackageReference Include="BinaryPack" Version="1.0.3" />
 		<PackageReference Include="CliWrap" Version="3.8.2" />
 		<PackageReference Include="ClosedXML" Version="0.104.2" />
+		<PackageReference Include="DarkNet" Version="2.3.0" />
 		<PackageReference Include="FontAwesome5" Version="2.1.11" />
 		<PackageReference Include="gong-wpf-dragdrop" Version="4.0.0" />
 		<PackageReference Include="Gu.Wpf.DataGrid2D" Version="0.2.4" />
