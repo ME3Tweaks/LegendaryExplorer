@@ -1593,9 +1593,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <param name="localization"></param>
         /// <param name="localDirFiles">Used to improve performance by not having to enumerate local files and testing their existence</param>
         /// <returns></returns>
-        public static bool CanResolveImport(ImportEntry entry, PackageCache cache, string localization = "INT", IEnumerable<string> localDirFiles = null)
+        public static bool CanResolveImport(ImportEntry entry, PackageCache cache, string localization = "INT", IEnumerable<string> localDirFiles = null, Func<string, PackageCache, IMEPackage> fileResolver = null)
         {
-            var exp = ResolveImport(entry, cache, localization, true, localDirFiles);
+            var exp = ResolveImport(entry, cache, localization, true, localDirFiles, fileResolver: fileResolver);
             return exp != null;
         }
 
