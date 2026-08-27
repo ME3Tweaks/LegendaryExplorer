@@ -6,6 +6,7 @@ using LegendaryExplorerCore.DebugTools;
 using LegendaryExplorerCore.Diagnostics;
 using LegendaryExplorerCore.Gammtek.Extensions.Collections.Generic;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Shaders;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 
@@ -66,24 +67,33 @@ namespace LegendaryExplorerCore.Packages
             // Step 0: Convert imports to exports where necessary.
             foreach (var entry in package.Imports.Where(x => x.ClassName == "Package" && EntryOrdering.HasExportChildren(x)).ToList())
             {
+                var origName = entry.ObjectName;
                 var import = EntryImporter.ResolveImport(entry, cache); // Should we cache here?
+                entry.ObjectName = RESYNTH_TEMP_NAME; // Rename so we can safely re-add under the original name.
+
+                IEntry newEntry;
                 if (import != null)
                 {
-                    var origName = entry.ObjectName;
-                    entry.ObjectName = RESYNTH_TEMP_NAME; // Rename so we can safely re-import.
-
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, import, package, entry.Parent, true,
-                        new RelinkerOptionsPackage(), out var newEntry);
+                        new RelinkerOptionsPackage(), out newEntry);
                     if (newEntry is ImportEntry)
                     {
                         Debugger.Break(); // This should not be an import...
                     }
-                    foreach (var obj in entry.GetChildren())
-                    {
-                        obj.Parent = newEntry;
-                    }
-                    EntryPruner.TrashEntryAndDescendants(entry); // Get rid of the original before we port
                 }
+                else
+                {
+                    // Could not resolve the import to real export data (e.g. source package not loaded/found).
+                    // It still has export children locally (per HasExportChildren above), so stub it out as a
+                    // plain Package export instead of leaving it as an import.
+                    newEntry = ExportCreator.CreatePackageExport(package, origName, entry.Parent);
+                }
+
+                foreach (var obj in entry.GetChildren())
+                {
+                    obj.Parent = newEntry;
+                }
+                EntryPruner.TrashEntryAndDescendants(entry); // Get rid of the original before we port
             }
 
             // Step 1: Port names
@@ -132,7 +142,7 @@ namespace LegendaryExplorerCore.Packages
             }
 
             var newPackage = MEPackageHandler.CreateMemoryEmptyPackage("RebuildingPackage.pcc", package.Game);
-            
+
             var theWorld = package.FindExport("TheWorld");
             if (theWorld != null)
             {
@@ -146,6 +156,37 @@ namespace LegendaryExplorerCore.Packages
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
                         objReferencer, newPackage, null, true, new RelinkerOptionsPackage() { Cache = cache },
                         out var portedReferencer);
+                }
+            }
+
+            // SeekFreeShaderCache doesn't have any direct references, so we need to port it over separately.
+            // Otherwise, the new package will have no local shaders.
+            var seekFreeShaderCache = package.FindExport("SeekFreeShaderCache");
+            if (seekFreeShaderCache != null)
+            {
+                // Porting the cache is speculative - if it compacts down to nothing we're going to throw it away.
+                // Snapshot the name/import tables first so we can roll back exactly what the port adds; otherwise
+                // trashing the export leaves its class/name chain (e.g. Engine.ShaderCache) behind as unreferenced
+                // entries, which defeats the point of dumping unreferenced data in the first place.
+                var namesBeforePort = newPackage.Names.ToList();
+                var importsBeforePort = newPackage.Imports.ToList();
+
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
+                    seekFreeShaderCache, newPackage, null, true, new RelinkerOptionsPackage() { Cache = cache },
+                    out var portedCache);
+
+                // Once it is ported over, compact it to remove any useless data in it
+                ShaderCacheManipulator.CompactSeekFreeShaderCaches(newPackage);
+
+                // If after compaction it has no shader maps, delete it.
+                var compactedCache = (ExportEntry)portedCache;
+                if (compactedCache.GetBinaryData<ShaderCache>().MaterialShaderMaps.Count == 0)
+                {
+                    // Undo the names/imports the port added before trashing the export to remove
+                    // the names and imports
+                    newPackage.restoreNames(namesBeforePort);
+                    newPackage.restoreImports(importsBeforePort);
+                    EntryPruner.TrashEntryAndDescendants(compactedCache);
                 }
             }
 

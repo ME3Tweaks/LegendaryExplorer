@@ -611,56 +611,7 @@ namespace LegendaryExplorerCore.Textures
 
         private static byte[] convertToFormat(PixelFormat srcFormat, byte[] src, int w, int h, PixelFormat dstFormat, bool dxt1HasAlpha = false, byte dxt1Threshold = 128)
         {
-#if WINDOWS
             return TexConverter.ConvertTexture(src, (uint)w, (uint)h, srcFormat, dstFormat);
-#else
-            byte[] tempData;
-
-            switch (dstFormat)
-            {
-                case PixelFormat.DXT1:
-                case PixelFormat.DXT3:
-                case PixelFormat.DXT5:
-                case PixelFormat.ATI2:
-                    tempData = convertRawToARGB(src, ref w, ref h, srcFormat);
-                    if (dstFormat is PixelFormat.BC5)
-                    {
-                        // Swap R and G
-                        //ShiftChannels(src, 1);
-                    }
-                    if (w < 4 || h < 4)
-                    {
-                        // Block compression works on whole 4x4 blocks; pad undersized mips before compressing
-                        tempData = padARGBTo4(tempData, ref w, ref h);
-                    }
-                    tempData = Image.compressMipmap(dstFormat, tempData, w, h, dxt1HasAlpha, dxt1Threshold);
-                    break;
-                case PixelFormat.ARGB:
-                    tempData = convertRawToARGB(src, ref w, ref h, srcFormat);
-                    break;
-                case PixelFormat.RGB:
-                    tempData = convertRawToRGB(src, w, h, srcFormat);
-                    break;
-                case PixelFormat.V8U8:
-                    tempData = convertRawToARGB(src, ref w, ref h, srcFormat);
-                    tempData = ARGBtoV8U8(tempData, w, h);
-                    break;
-                case PixelFormat.G8:
-                    tempData = convertRawToARGB(src, ref w, ref h, srcFormat);
-                    tempData = ARGBtoG8(tempData, w, h);
-                    break;
-                case PixelFormat.BC5:
-                    tempData = convertRawToBC(src, w, h, dstFormat);
-                    break;
-                case PixelFormat.BC7:
-                    tempData = convertRawToBC(src, w, h, dstFormat);
-                    break;
-                default:
-                    throw new Exception("not supported format");
-            }
-
-            return tempData;
-#endif
         }
 
         private static byte[] convertRawToBC(byte[] imageBytes, int w, int h, PixelFormat dstFormat)

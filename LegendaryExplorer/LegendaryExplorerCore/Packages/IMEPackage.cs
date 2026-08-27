@@ -231,6 +231,11 @@ namespace LegendaryExplorerCore.Packages
         void restoreNames(List<string> list);
 
         /// <summary>
+        /// Used to rollback changes to an import table for certain operations. Unless you really know what you're doing, you probably shouldn't use this, as lots of things will break if misused.
+        /// </summary>
+        void restoreImports(List<ImportEntry> list);
+
+        /// <summary>
         /// Removes trashed imports and exports if they are at the end of their respective lists
         /// can only remove from the end because doing otherwise would mess up the indexing
         /// </summary>

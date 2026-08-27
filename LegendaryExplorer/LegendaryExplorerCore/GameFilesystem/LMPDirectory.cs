@@ -2,9 +2,6 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using LegendaryExplorerCore.Misc;
-#if WINDOWS
-using Microsoft.Win32;
-#endif
 
 namespace LegendaryExplorerCore.GameFilesystem
 {
@@ -237,9 +234,7 @@ namespace LegendaryExplorerCore.GameFilesystem
             }
             else
             {
-#if WINDOWS
                 if (LEDirectory.LookupDefaultPath()) ReloadDefaultGamePath(false);
-#endif
             }
         }
 

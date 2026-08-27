@@ -270,7 +270,7 @@ namespace LegendaryExplorerCore.Helpers
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <param name="predicate"></param>
-        /// <returns></returns>
+        /// <returns>True if something was removed</returns>
         public static bool RemoveAll<T>(this IList<T> list, Predicate<T> predicate)
         {
             bool removed = false;

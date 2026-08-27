@@ -563,7 +563,7 @@ namespace LegendaryExplorerCore.UDK
                         }
 
                         // It's an import. We should test resolving it...
-                        var canResolve = EntryImporter.CanResolveImport(meshImport, cache);
+                        var canResolve = EntryImporter.CanResolveImport(meshImport, cache, fileResolver: delegatesROP?.SourceCustomImportFileResolver);
                         if (!canResolve)
                         {
                             LECLog.Warning($"Skipping actor {parent.InstancedFullPath} SMC {smc.ObjectName.Instanced} - it's an import but we could not resolve it.");

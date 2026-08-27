@@ -4,6 +4,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.Unreal.Collections;
 using LegendaryExplorerCore.Unreal;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -30,6 +31,11 @@ namespace LegendaryExplorerCore.Pathing
             LECLog.Information($"Calculating TextureToInstancesMap for {package.FileNameNoExtension}");
             var textureToInstancesMap = new Dictionary<IEntry, List<StreamableTextureInstance>>();
 
+            // Per-mesh cache: the texel factor is a property of the mesh asset itself (mirrors
+            // UStaticMesh/USkeletalMesh::CachedStreamingTextureFactors), so it only needs to be
+            // computed once even if the mesh is placed many times.
+            var texelFactorCache = new Dictionary<ExportEntry, float>();
+
             // Look at all components
             foreach (var component in package.Exports.Where(x => x.IsA("Component")))
             {
@@ -37,13 +43,21 @@ namespace LegendaryExplorerCore.Pathing
                 if (!component.GetRootName().CaseInsensitiveEquals("TheWorld"))
                     continue;
 
-                var props = component.GetProperties();
+                // Use inherited properties too - placed Pawn components (BioH conversation actors, spawned
+                // NPCs, etc.) very often don't set StaticMesh/SkeletalMesh/Materials on the instance itself;
+                // they inherit them from their archetype chain, same as the engine resolves them at runtime.
+                var props = component.GetPropertiesIncludingInherited(cache);
 
                 ObjectProperty meshProp = props.GetProp<ObjectProperty>("StaticMesh");
                 meshProp ??= props.GetProp<ObjectProperty>("SkeletalMesh");
 
                 if (meshProp == null)
                     continue; // Not supported by this code.
+
+                // We need the mesh regardless of whether the component overrides its materials,
+                // since its Bounds and UV density (texel factor) drive the streaming instance.
+                if (!meshProp.TryResolveExport(package, cache, out var mdl))
+                    continue;
 
                 // List of materials this mesh uses
                 List<IEntry> texturesOnMesh = new List<IEntry>();
@@ -60,15 +74,25 @@ namespace LegendaryExplorerCore.Pathing
                     }
                 }
 
-                // if we don't have any materials set on component, we have to pull it off the mesh.
-                // resolve the mesh export
-                if (materials.Count == 0 && meshProp.TryResolveExport(package, cache, out var mdl))
+                BoxSphereBounds meshBounds;
+                float meshTexelFactor;
+
+                switch (mdl.ClassName)
                 {
-                    switch (mdl.ClassName)
-                    {
-                        case "StaticMesh":
+                    case "StaticMesh":
+                        {
+                            var bin = ObjectBinary.From<StaticMesh>(mdl);
+                            meshBounds = bin.Bounds;
+
+                            if (!texelFactorCache.TryGetValue(mdl, out meshTexelFactor))
                             {
-                                var bin = ObjectBinary.From<StaticMesh>(mdl);
+                                meshTexelFactor = ComputeStaticMeshTexelFactor(bin);
+                                texelFactorCache[mdl] = meshTexelFactor;
+                            }
+
+                            // if we don't have any materials set on component, we have to pull it off the mesh.
+                            if (materials.Count == 0)
+                            {
                                 foreach (var mat in bin.GetMaterials())
                                 {
                                     if (mdl.FileRef.TryGetEntry(mat, out var matEntry))
@@ -80,12 +104,23 @@ namespace LegendaryExplorerCore.Pathing
                                             materials.Add(resolvedExp);
                                     }
                                 }
-
-                                break;
                             }
-                        case "SkeletalMesh":
+
+                            break;
+                        }
+                    case "SkeletalMesh":
+                        {
+                            var bin = ObjectBinary.From<SkeletalMesh>(mdl);
+                            meshBounds = bin.Bounds;
+
+                            if (!texelFactorCache.TryGetValue(mdl, out meshTexelFactor))
                             {
-                                var bin = ObjectBinary.From<SkeletalMesh>(mdl);
+                                meshTexelFactor = ComputeSkeletalMeshTexelFactor(bin);
+                                texelFactorCache[mdl] = meshTexelFactor;
+                            }
+
+                            if (materials.Count == 0)
+                            {
                                 foreach (var mat in bin.Materials)
                                 {
                                     if (mdl.FileRef.TryGetEntry(mat, out var matEntry))
@@ -97,18 +132,25 @@ namespace LegendaryExplorerCore.Pathing
                                             materials.Add(resolvedExp);
                                     }
                                 }
-
-                                break;
                             }
-                    }
+
+                            break;
+                        }
+                    default:
+                        continue; // Not supported by this code.
                 }
 
                 // We now have the list of materials.
-                // Get actor location.
-                var actorLocation = GetActorLocationFromComponent(component);
+                // Get the component's actual world transform (translation, rotation, and scale) -
+                // not just its location, since bounds and texel factor both depend on scale.
+                var worldMatrix = GetComponentWorldTransform(component);
 
-                if (actorLocation is { X: 0, Y: 0, Z: 0 })
+                if (worldMatrix.Translation is { X: 0, Y: 0, Z: 0 })
                     continue;
+
+                float streamingDistanceMultiplier = props.GetProp<FloatProperty>("StreamingDistanceMultiplier")?.Value ?? 1f;
+                var worldBounds = meshBounds.TransformBy(worldMatrix);
+                float worldTexelFactor = meshTexelFactor * streamingDistanceMultiplier * GetMaximumAxisScale(worldMatrix);
 
                 // Get list of textures on the materials.
                 foreach (var mat in materials.Distinct())
@@ -228,10 +270,10 @@ namespace LegendaryExplorerCore.Pathing
                     {
                         BoundingSphere = new Sphere()
                         {
-                            Center = new Vector3(actorLocation.X, actorLocation.Y, actorLocation.Z),
-                            W = 500 // Radius. I guess we could technically take the size of the mesh. But do I care that much?
+                            Center = worldBounds.Origin,
+                            W = worldBounds.SphereRadius
                         },
-                        TexelFactor = 50 // I have no ideal how to calculate this
+                        TexelFactor = worldTexelFactor
                     });
                 }
             }
@@ -254,37 +296,165 @@ namespace LegendaryExplorerCore.Pathing
 
         }
 
-        // Todo: Merge all the uses of these.
-        private static Point3D GetActorLocationFromComponent(ExportEntry exportEntry)
+        /// <summary>
+        /// Gets the LocalToWorld transformation matrix for the component - either the actor it's attached to,
+        /// or its per-instance transform if it's part of a collection actor (StaticMeshCollectionActor/StaticLightCollectionActor).
+        /// </summary>
+        private static Matrix4x4 GetComponentWorldTransform(ExportEntry component)
         {
-            // I don't like working with structs.
-            // So we use Point3D instead.
-            if (exportEntry.HasParent)
+            if (component.HasParent)
             {
-                if (exportEntry.IsA("StaticMeshComponent") && exportEntry.Parent.IsA("StaticMeshCollectionActor")
-                 || exportEntry.IsA("LightComponent") && exportEntry.Parent.IsA("StaticLightCollectionActor"))
+                if (component.IsA("StaticMeshComponent") && component.Parent.IsA("StaticMeshCollectionActor")
+                 || component.IsA("LightComponent") && component.Parent.IsA("StaticLightCollectionActor"))
                 {
                     // collection actor
-                    if (StaticCollectionActor.TryGetStaticCollectionActorAndIndex(exportEntry,
+                    if (StaticCollectionActor.TryGetStaticCollectionActorAndIndex(component,
                             out StaticCollectionActor sca, out int index))
                     {
-                        float PosX;
-                        float PosY;
-                        float PosZ;
-                        ((PosX, PosY, PosZ), (_, _, _), (_, _, _)) = sca.GetDecomposedTransformationForIndex(index);
-                        return new Point3D(PosX, PosY, PosZ);
+                        return sca.LocalToWorldTransforms[index];
                     }
                 }
-                else
+                else if (component.Parent is ExportEntry actor)
                 {
                     // Use parent of component, which should be the actor
-                    return LevelTools.GetLocation(exportEntry.Parent as ExportEntry);
+                    return ActorUtils.GetLocalToWorld(actor);
                 }
             }
 
-            // Unknown location... components should always be nested
+            // Unknown transform... components should always be nested
             Debugger.Break();
-            return new Point3D();
+            return Matrix4x4.Identity;
+        }
+
+        /// <summary>
+        /// Equivalent of UE3's FMatrix::GetMaximumAxisScale() - the largest scale factor applied by any of the matrix's axes.
+        /// </summary>
+        private static float GetMaximumAxisScale(Matrix4x4 m)
+        {
+            float x = m.M11 * m.M11 + m.M12 * m.M12 + m.M13 * m.M13;
+            float y = m.M21 * m.M21 + m.M22 * m.M22 + m.M23 * m.M23;
+            float z = m.M31 * m.M31 + m.M32 * m.M32 + m.M33 * m.M33;
+            return MathF.Sqrt(Math.Max(x, Math.Max(y, z)));
+        }
+
+        // SMALL_NUMBER squared, matching UE3's Square(SMALL_NUMBER) degenerate-UV check.
+        private const float SmallNumberSquared = 1e-8f * 1e-8f;
+
+        /// <summary>
+        /// Equivalent of UE3's UStaticMesh::GetStreamingTextureFactor(0) - the local-space "world units per UV unit"
+        /// ratio used to decide how far away a texture needs to start streaming in at higher resolution.
+        /// </summary>
+        private static float ComputeStaticMeshTexelFactor(StaticMesh mesh)
+        {
+            if (mesh.LODModels.Length == 0)
+                return 0f;
+
+            var lod = mesh.LODModels[0];
+            var positions = lod.PositionVertexBuffer.VertexData;
+            var indices = lod.IndexBuffer;
+            var vb = lod.VertexBuffer;
+
+            var texelRatios = new List<float>();
+            foreach (var element in lod.Elements)
+            {
+                for (uint t = 0; t < element.NumTriangles; t++)
+                {
+                    uint baseIndex = element.FirstIndex + t * 3;
+                    if (baseIndex + 2 >= indices.Length)
+                        break; // Element metadata doesn't match this mesh's index buffer - stop rather than throw.
+
+                    int i0 = indices[(int)baseIndex];
+                    int i1 = indices[(int)baseIndex + 1];
+                    int i2 = indices[(int)baseIndex + 2];
+
+                    if (i0 >= positions.Length || i1 >= positions.Length || i2 >= positions.Length)
+                        continue;
+
+                    float l1 = Vector3.Distance(positions[i0], positions[i1]);
+                    float l2 = Vector3.Distance(positions[i0], positions[i2]);
+
+                    Vector2 uv0 = GetVertexUV(vb, i0);
+                    Vector2 uv1 = GetVertexUV(vb, i1);
+                    Vector2 uv2 = GetVertexUV(vb, i2);
+                    float t1 = Vector2.Distance(uv0, uv1);
+                    float t2 = Vector2.Distance(uv0, uv2);
+
+                    if (MathF.Abs(t1 * t2) > SmallNumberSquared)
+                    {
+                        texelRatios.Add(MathF.Max(l1 / t1, l2 / t2));
+                    }
+                }
+            }
+
+            return PercentileTexelRatio(texelRatios);
+        }
+
+        private static Vector2 GetVertexUV(StaticMeshVertexBuffer vb, int vertexIndex)
+        {
+            var vertex = vb.VertexData[vertexIndex];
+            if (vb.bUseFullPrecisionUVs)
+                return vertex.FullPrecisionUVs[0];
+            var uv = vertex.HalfPrecisionUVs[0];
+            return new Vector2(uv.X, uv.Y);
+        }
+
+        /// <summary>
+        /// Equivalent of UE3's USkeletalMesh::GetStreamingTextureFactor(0).
+        /// </summary>
+        private static float ComputeSkeletalMeshTexelFactor(SkeletalMesh mesh)
+        {
+            if (mesh.LODModels.Length == 0)
+                return 0f;
+
+            var lod = mesh.LODModels[0];
+            var indices = lod.IndexBuffer;
+            var vertexData = lod.VertexBufferGPUSkin.VertexData;
+
+            var texelRatios = new List<float>();
+            foreach (var section in lod.Sections)
+            {
+                for (int t = 0; t < section.NumTriangles; t++)
+                {
+                    uint baseIndex = section.BaseIndex + (uint)(t * 3);
+                    if (baseIndex + 2 >= indices.Length)
+                        break; // Section metadata doesn't match this mesh's index buffer - stop rather than throw.
+
+                    int i0 = indices[(int)baseIndex];
+                    int i1 = indices[(int)baseIndex + 1];
+                    int i2 = indices[(int)baseIndex + 2];
+
+                    if (i0 >= vertexData.Length || i1 >= vertexData.Length || i2 >= vertexData.Length)
+                        continue;
+
+                    float l1 = Vector3.Distance(vertexData[i0].Position, vertexData[i1].Position);
+                    float l2 = Vector3.Distance(vertexData[i0].Position, vertexData[i2].Position);
+
+                    Vector2 uv0 = new Vector2(vertexData[i0].UV.X, vertexData[i0].UV.Y);
+                    Vector2 uv1 = new Vector2(vertexData[i1].UV.X, vertexData[i1].UV.Y);
+                    Vector2 uv2 = new Vector2(vertexData[i2].UV.X, vertexData[i2].UV.Y);
+                    float t1 = Vector2.Distance(uv0, uv1);
+                    float t2 = Vector2.Distance(uv0, uv2);
+
+                    if (MathF.Abs(t1 * t2) > SmallNumberSquared)
+                    {
+                        texelRatios.Add(MathF.Max(l1 / t1, l2 / t2));
+                    }
+                }
+            }
+
+            return PercentileTexelRatio(texelRatios);
+        }
+
+        // Disregards the upper 25% of texel ratios (backfacing/non-visible surfaces that map a small
+        // number of texels to a large area) by taking the value at the 75th percentile, same as the engine.
+        private static float PercentileTexelRatio(List<float> texelRatios)
+        {
+            if (texelRatios.Count == 0)
+                return 0f;
+
+            texelRatios.Sort();
+            int idx = Math.Clamp((int)(texelRatios.Count * 0.75f), 0, texelRatios.Count - 1);
+            return texelRatios[idx];
         }
 
         // Location based stuff
