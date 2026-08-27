@@ -1515,6 +1515,15 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         parsedValue = $"{sp.GetProp<IntProperty>("NumVariations").Value} material variants | {sp.GetProp<IntProperty>("MaterialsPerVariation").Value} materials per variant";
                     }
+                    else if (sp.StructType is "SFXOnlineComponentDescription")
+                    {
+                        var className = sp.GetProp<ObjectProperty>("ClassName");
+                        var resolved = parsingExport.FileRef.GetEntry(className.Value);
+                        var componentType = sp.GetProp<EnumProperty>("ComponentType");
+                        var platform = sp.GetProp<NameProperty>("PlatformName");
+
+                        parsedValue = $"({(platform.Value == "None" ? "All" : platform.Value)}) {componentType.Value} = {resolved?.ObjectName}";
+                    }
                     else
                     {
                         parsedValue = sp.StructType;
