@@ -1,0 +1,45 @@
+﻿using System.IO;
+using System.Windows.Input;
+using LegendaryExplorer.Misc.AppSettings;
+using LegendaryExplorerCore.Packages;
+using Microsoft.Win32;
+
+namespace LegendaryExplorer.GameInterop.InteropTargets
+{
+    public class LMPInteropTarget : InteropTarget
+    {
+        public override MEGame Game => MEGame.LMP;
+        public override bool CanExecuteConsoleCommands => true;
+        public override bool CanUpdateTOC => false;
+        public override bool CanUseLLE => true;
+
+        // THIS ALL NEEDS UPDATED
+        public static int InteropASIVersion => 10;
+        public override string InteropASIDownloadLink => "https://github.com/ME3Tweaks/LExASIs/releases/tag/LE3LEXInterop-v10";
+        public override string InteropASIMD5 => "a1207a44e1a3321cf8ed2279ba600086";
+        public override string BinkBypassMD5 { get; }
+        public override string OriginalBinkMD5 => "1f00452ad61a944556399e2ad5292b35";
+
+        public override InteropModInfo ModInfo { get; } = new("DLC_MOD_InteropLMP")
+        {
+            LiveEditorFilename = "LMPLiveEditor"
+        };
+        public override string ProcessName => "MassEffectMultiplayer";
+        public override uint GameMessageSignature => 0x02AC00C5;
+        public override void SelectGamePath()
+        {
+            OpenFileDialog ofd = new()
+            {
+                Title = "Select Mass Effect LE Launcher executable",
+                Filter = "MassEffectLauncher.exe|MassEffectLauncher.exe"
+            };
+            if (ofd.ShowDialog() == true)
+            {
+                string gamePath = Path.GetDirectoryName(Path.GetDirectoryName(ofd.FileName));
+
+                Settings.Global_LEDirectory = gamePath;
+                CommandManager.InvalidateRequerySuggested();
+            }
+        }
+    }
+}
