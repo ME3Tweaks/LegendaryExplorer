@@ -1737,6 +1737,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns>List of filenames of potential files imported from - this does not include filepaths and not all files will be guaranteed to exist</returns>
         public static List<string> GetPossibleImportFiles(IMEPackage package, ImportEntry entry, string localization = @"INT", string gameRootOverride = null)
         {
+            if (package.Game == MEGame.UDK)
+            {
+                // Imports point directly to files in UDK. No point looking elsewhere.
+                return new List<string>([entry.GetLinker() + ".upk"]);
+            }
+
             var gameFiles = MELoadedFiles.GetFilesLoadedInGame(package.Game, forceUseCached: true, gameRootOverride: gameRootOverride);
 
             List<string> filesToCheck = new List<string>();
