@@ -44,9 +44,10 @@ namespace LegendaryExplorerCore.Shaders
         private static Dictionary<Guid, int> LE2ShaderOffsets;
         private static Dictionary<Guid, int> LE1ShaderOffsets;
 
-        private static int[] OffsetOfShaderTypeCRCMap = new int[7];
-        private static int[] OffsetOfVertexFactoryTypeCRCMap = new int[7];
-        private static long[] CachedRefShaderCacheSize = new long[7];
+        // These need updated if you add to MEGame enum as they are indexed by the MEGame value.
+        private static int[] OffsetOfShaderTypeCRCMap = new int[9];
+        private static int[] OffsetOfVertexFactoryTypeCRCMap = new int[9];
+        private static long[] CachedRefShaderCacheSize = new long[9];
 
         private static Dictionary<Guid, int> ShaderOffsets(MEGame game) => game switch
         {
@@ -66,7 +67,7 @@ namespace LegendaryExplorerCore.Shaders
         private static int ME2MaterialShaderMapsOffset = 132795914;
         private static int ME1MaterialShaderMapsOffset = 69550225;
 
-        private static int LMPMaterialShaderMapsOffset = 0; // TODO: FIX THIS FOR FINAL SHIP
+        private static int LMPMaterialShaderMapsOffset = 1263553925; // TODO: FIX THIS FOR FINAL SHIP
         private static int LE3MaterialShaderMapsOffset = 1263553925;
         private static int LE2MaterialShaderMapsOffset = 1014140890;
         private static int LE1MaterialShaderMapsOffset = 720539980;
@@ -75,7 +76,7 @@ namespace LegendaryExplorerCore.Shaders
         private static long ME2RefShaderCacheSize = 151649957;
         private static long ME1RefShaderCacheSize = 76618220;
 
-        private static long LMPRefShaderCacheSize = 0; // TODO: FIX THIS FOR FINAL SHIP
+        private static long LMPRefShaderCacheSize = 1296009525; // TODO: FIX THIS FOR FINAL SHIP
         private static long LE3RefShaderCacheSize = 1296009525;
         private static long LE2RefShaderCacheSize = 1035352391;
         private static long LE1RefShaderCacheSize = 731880291;
