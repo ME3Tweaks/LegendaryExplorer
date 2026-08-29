@@ -16,7 +16,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
     {
         private readonly IMEPackage Pcc;
         private ExportEntry Default__Export;
-        private ExportEntry Default__Archetype;
+        private IEntry Default__Archetype;
         private bool ShouldStripTransients;
         private bool IsStructDefaults;
         private bool IsFromT3D;
@@ -96,8 +96,8 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             compiler.Default__Archetype = defaultsExport.Archetype switch
             {
-                ImportEntry defaultArchetypeImport => EntryImporter.ResolveImport(defaultArchetypeImport, usop?.Cache, "INT", gameRootOverride: usop?.GamePathOverride, fileResolver: usop?.CustomFileResolver),
-                ExportEntry defaultArchetypeExport => defaultArchetypeExport,
+                ImportEntry imp => (IEntry)EntryImporter.ResolveImport(imp, usop?.Cache, "INT", gameRootOverride: usop?.GamePathOverride, fileResolver: usop?.CustomFileResolver) ?? imp,
+                ExportEntry exp => exp,
                 _ => null
             };
 
@@ -249,12 +249,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 string defaultObjectPath = Default__Export.InstancedFullPath;
                 string subObjPath = subExport.InstancedFullPath;
                 string subPath = subObjPath[(defaultObjectPath.Length + 1)..];
-                ExportEntry subObjArchetype = Default__Archetype.FileRef.FindExport($"{defaultArchetypePath}.{subPath}");
+                IEntry subObjArchetype = Default__Archetype.FileRef.FindEntry($"{defaultArchetypePath}.{subPath}");
                 if (subObjArchetype is null)
                 {
                     //sometimes the subobjects have a flat structure under the Default__
                     subPath = objName.Instanced;
-                    subObjArchetype = Default__Archetype.FileRef.FindExport($"{defaultArchetypePath}.{subPath}");
+                    subObjArchetype = Default__Archetype.FileRef.FindEntry($"{defaultArchetypePath}.{subPath}");
                 }
 
                 if (subObjArchetype is not null && subObjArchetype.ClassName.CaseInsensitiveEquals(subExport.ClassName))
@@ -321,10 +321,19 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             var type = nameRef.ResolveType();
             var literal = assignStatement.Value;
-            var propName = NameReference.FromInstancedString(nameRef.Name);
+            var propName = NameReference.FromInstancedString(GetPropName(nameRef));
             Property prop = MakeProperty(propName, type, literal, subObjectDict);
             prop.StaticArrayIndex = staticArrayIndex;
             return prop;
+
+            static string GetPropName(SymbolReference nameRef)
+            {
+                if (nameRef.Node is VariableDeclaration { Name: string varName })
+                {
+                    return varName;
+                }
+                return nameRef.Name;
+            }
         }
 
         private Property MakeProperty(NameReference propName, VariableType type, Expression literal, Dictionary<NameReference, ExportEntry> subObjectDict = null)
