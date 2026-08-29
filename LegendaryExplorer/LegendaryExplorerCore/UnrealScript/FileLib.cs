@@ -298,7 +298,15 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                     foreach (string fileName in Enumerable.Reverse(associatedFiles))
                     {
-                        if (gameFiles.TryGetValue(fileName, out string path) && File.Exists(path))
+                        if (usop.CustomFileResolver != null && usop.CustomFileResolver.Invoke(fileName, usop.Cache) != null)
+                        {
+                            // Custom resolution, given a cache, will be relatively fast on a second invocation
+                            if (!ResolveAllClassesInPackage(usop.CustomFileResolver.Invoke(fileName, usop.Cache), ref _baseSymbols, InitializationLog, usop))
+                            {
+                                return false;
+                            }
+                        }
+                        else if (gameFiles.TryGetValue(fileName, out string path) && File.Exists(path))
                         {
                             IMEPackage pcc = usop.Cache.GetCachedPackage(path, true);
                             if (!ResolveAllClassesInPackage(pcc, ref _baseSymbols, InitializationLog, usop))
