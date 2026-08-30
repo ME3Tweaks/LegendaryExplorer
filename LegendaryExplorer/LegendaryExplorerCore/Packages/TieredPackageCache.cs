@@ -23,6 +23,12 @@ public class TieredPackageCache : PackageCache
     /// Use to profile how often all tiered caches load files by name. You can find hot files using this to promote them to a higher tier for performance.
     /// </summary>
     public static Dictionary<MEGame, CaseInsensitiveDictionary<int>> StaticTieredHeatMap { get; } = new();
+
+    /// <summary>
+    /// Tracks the unique call stacks that triggered each disk load, keyed by filename, with how many times each stack has caused a load.
+    /// Lets a hot file in <see cref="StaticTieredHeatMap"/> be traced back to the code that keeps opening it.
+    /// </summary>
+    public static Dictionary<MEGame, CaseInsensitiveDictionary<Dictionary<string, int>>> StaticTieredHeatMapCallStacks { get; } = new();
 #endif
 
     /// <summary>
@@ -90,7 +96,8 @@ public class TieredPackageCache : PackageCache
     /// Creates a tiered cache with the parent cache to look into if necessary
     /// </summary>
     /// <param name="parent">Parent cache to look into</param>
-    public TieredPackageCache(TieredPackageCache parent) : base()
+    /// <param name="debugName">Human-readable name identifying where this cache was created, for memory leak diagnostics. See <see cref="PackageCache.DebugName"/></param>
+    public TieredPackageCache(TieredPackageCache parent, string debugName = null) : base(debugName)
     {
         ParentCache = parent;
         if (parent != null)
@@ -105,10 +112,11 @@ public class TieredPackageCache : PackageCache
     /// </summary>
     /// <param name="filenameOnlyMode">If the cache only operates on filename and not filepath</param>
     /// <param name="canPromoteInto">If the newly chained cache can be promoted into by its possible future children</param>
+    /// <param name="debugName">Human-readable name identifying where this cache was created, for memory leak diagnostics. Defaults to a name derived from the parent's name if not given.</param>
     /// <returns></returns>
-    public TieredPackageCache ChainNewCache(bool filenameOnlyMode = false, bool canPromoteInto = false)
+    public TieredPackageCache ChainNewCache(bool filenameOnlyMode = false, bool canPromoteInto = false, string debugName = null)
     {
-        var cache = new TieredPackageCache(this) { FilenameOnlyMode = filenameOnlyMode, CanBePromotedInto = canPromoteInto };
+        var cache = new TieredPackageCache(this, debugName ?? (DebugName != null ? $"{DebugName} > chain" : null)) { FilenameOnlyMode = filenameOnlyMode, CanBePromotedInto = canPromoteInto };
         return cache;
     }
 
@@ -118,10 +126,11 @@ public class TieredPackageCache : PackageCache
     /// <param name="game">What game this cache will be for</param>
     /// <param name="filenameOnlyMode">If key lookups should be done on filename alone</param>
     /// <param name="gameRootPath">Used to override game path</param>
+    /// <param name="debugName">Human-readable name identifying where this cache was created, for memory leak diagnostics. Defaults to "Global {game} cache" if not given.</param>
     /// <returns></returns>
-    public static TieredPackageCache GetGlobalPackageCache(MEGame game, bool filenameOnlyMode = false, bool triggerOnFirstUse = true, string gameRootPath = null)
+    public static TieredPackageCache GetGlobalPackageCache(MEGame game, bool filenameOnlyMode = false, bool triggerOnFirstUse = true, string gameRootPath = null, string debugName = null)
     {
-        var cache = new TieredPackageCache(null)
+        var cache = new TieredPackageCache(null, debugName ?? $"Global {game} cache")
         {
             FilenameOnlyMode = filenameOnlyMode,
             Game = game,
@@ -278,6 +287,23 @@ public class TieredPackageCache : PackageCache
                             gameMap.TryGetValue(fname, out var currentNum);
                             currentNum++;
                             gameMap[fname] = currentNum;
+
+                            // Track the call stack that caused this load so hot files can be traced back to their call site.
+                            if (!StaticTieredHeatMapCallStacks.TryGetValue(package.Game, out var stackMap))
+                            {
+                                stackMap = new CaseInsensitiveDictionary<Dictionary<string, int>>();
+                                StaticTieredHeatMapCallStacks[package.Game] = stackMap;
+                            }
+
+                            if (!stackMap.TryGetValue(fname, out var traceCounts))
+                            {
+                                traceCounts = new Dictionary<string, int>();
+                                stackMap[fname] = traceCounts;
+                            }
+
+                            var trace = new StackTrace(true).ToString();
+                            traceCounts.TryGetValue(trace, out var traceCount);
+                            traceCounts[trace] = traceCount + 1;
                         }
                     }
 #endif
