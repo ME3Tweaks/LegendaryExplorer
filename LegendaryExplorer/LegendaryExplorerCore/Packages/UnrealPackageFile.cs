@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using LegendaryExplorerCore.Gammtek.Collections.Specialized;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -667,7 +668,7 @@ namespace LegendaryExplorerCore.Packages
             return false;
         }
 
-#endregion
+        #endregion
 
         #region IEntry
         /// <summary>
@@ -919,16 +920,31 @@ namespace LegendaryExplorerCore.Packages
             return tlks;
         }
 
-        public bool HasDuplicateObjects()
+        /// <summary>
+        /// Returns if the lookup table is the same size as the count of imports and exports put together. If you exclude trash, this lookup is a bit slower.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasDuplicateObjects(bool excludeTrash = false)
         {
-            if (lookupTableNeedsToBeRegenerated)
+            if (excludeTrash)
             {
-                RebuildLookupTable();
+                if (this is IMEPackage ime)
+                {
+                    return EntryChecker.CheckForDuplicateIndices(ime).Count > 0;
+                }
+                throw new Exception("Cannot check for duplicate objects with excludeTrash=true on a package that is not an IMEPackage");
             }
-
-            lock (_findEntrySyncObj)
+            else
             {
-                return EntryLookupTable?.Count != (ImportCount + ExportCount);
+                if (lookupTableNeedsToBeRegenerated)
+                {
+                    RebuildLookupTable();
+                }
+
+                lock (_findEntrySyncObj)
+                {
+                    return EntryLookupTable?.Count != (ImportCount + ExportCount);
+                }
             }
         }
 
@@ -1115,7 +1131,7 @@ namespace LegendaryExplorerCore.Packages
         /// List of stack traces for when the RefCount was incremented
         /// </summary>
         public List<string> RegisterStackTraces = new();
-        
+
         /// <summary>
         /// Stack trace for how this package object was created - used for memory leak tracing
         /// </summary>

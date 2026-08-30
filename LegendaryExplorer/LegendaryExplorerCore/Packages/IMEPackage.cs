@@ -352,10 +352,11 @@ namespace LegendaryExplorerCore.Packages
         public void setFlags(EPackageFlags newFlags);
 
         /// <summary>
-        /// Compares the size of the imports + exports table against the lookup table and returns true if they don't match, indicating that some objects have duplicate names.
+        /// Returns if the package has duplicate objects. If <paramref name="excludeTrash"/> is true, trash package objects are excluded.
         /// </summary>
+        /// <param name="excludeTrash">If trash package objects should be excluded from duplicate detection.</param>
         /// <returns></returns>
-        public bool HasDuplicateObjects();
+        public bool HasDuplicateObjects(bool excludeTrash = false);
     }
 
     /// <summary>
