@@ -107,7 +107,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     return subnodes; // no binary data
 
                 bin.JumpTo(binarystart);
-                if (Pcc.Game is not (MEGame.ME3 or MEGame.LE3) || (Pcc.FilePath != null && Pcc.FilePath.EndsWith(".upk")))
+                if (!Pcc.Game.IsGame3() || (Pcc.FilePath != null && Pcc.FilePath.EndsWith(".upk")))
                 {
                     ReadBulkData(bin, subnodes, "SourceArt");
                 }

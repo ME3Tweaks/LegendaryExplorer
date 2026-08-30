@@ -473,7 +473,7 @@ namespace LegendaryExplorer.Tools.ScriptDebugger
             set => SetProperty(ref _cancelScriptDBBusyCommand, value);
         }
 
-        public static MEGame[] SupportedGames { get; } = [MEGame.LE1, MEGame.LE2, MEGame.LE3];
+        public static MEGame[] SupportedGames { get; } = [MEGame.LE1, MEGame.LE2, MEGame.LE3, MEGame.LMP];
 
         public void SetScriptDBBusy(string scriptDBBusyText, Action onCancel = null)
         {

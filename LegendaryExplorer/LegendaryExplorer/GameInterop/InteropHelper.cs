@@ -199,6 +199,7 @@ namespace LegendaryExplorer.GameInterop
                     MEGame.LE1 => ASIModIDs.LE1_LEX_INTEROP,
                     MEGame.LE2 => ASIModIDs.LE2_LEX_INTEROP,
                     MEGame.LE3 => ASIModIDs.LE3_LEX_INTEROP,
+                    MEGame.LMP => ASIModIDs.LMP_LEX_INTEROP,
                     _ => 0
                 };
 
@@ -283,6 +284,9 @@ namespace LegendaryExplorer.GameInterop
                         break;
                     case MEGame.LE3:
                         requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LE3_LEX_INTEROP, LE3InteropTarget.InteropASIVersion);
+                        break;
+                    case MEGame.LMP:
+                        requestedInstall = ModManagerIntegration.RequestASIInstallation(game, ASIModIDs.LMP_LEX_INTEROP, LMPInteropTarget.InteropASIVersion);
                         break;
                 }
             }
