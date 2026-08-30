@@ -19,7 +19,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
     /// <summary>
     /// Specifies options used for relinking, as well as containing objects that can be passed through the entry porting process without having to modify method signatures.
     /// </summary>
-    public class RelinkerOptionsPackage
+    public class RelinkerOptionsPackage : IDisposable
     {
 #if DEBUG
         /// <summary>
@@ -175,6 +175,77 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// Set to true to ignore the game check when porting materials between games. Only use if you know what you're doing.
         /// </summary>
         public bool ForceAllowMaterialPorting { get; set; }
+
+        /// <summary>
+        /// Cache used to look up source-game packages during cross-game function relinking (see <see cref="IsCrossGame"/>
+        /// and <see cref="Relinker.RelinkAll"/>). Lazily created by <see cref="GetOrCreateCrossGameFunctionSourceCache"/>
+        /// on first use and reused for every relink call that shares this RelinkerOptionsPackage instance, instead of a
+        /// new cache being created per call.
+        /// </summary>
+        public TieredPackageCache CrossGameFunctionSourceCache { get; private set; }
+
+        /// <summary>
+        /// If <see cref="CrossGameFunctionSourceCache"/> was lazily created by this instance (rather than supplied via
+        /// <see cref="SetCrossGameFunctionSourceCache"/>), and should therefore be disposed by <see cref="Dispose"/>.
+        /// </summary>
+        private bool _ownsCrossGameFunctionSourceCache;
+
+        /// <summary>
+        /// Supplies an existing chained cache to use for cross-game function relinking (see
+        /// <see cref="CrossGameFunctionSourceCache"/>) instead of one being lazily created. The caller retains
+        /// ownership - this RelinkerOptionsPackage will not dispose a cache supplied this way.
+        /// </summary>
+        public void SetCrossGameFunctionSourceCache(TieredPackageCache cache)
+        {
+            CrossGameFunctionSourceCache = cache;
+            _ownsCrossGameFunctionSourceCache = false;
+        }
+
+        /// <summary>
+        /// Returns the cache to use for cross-game function source package lookups, lazily creating and caching one
+        /// on this instance for <paramref name="sourceGame"/> if the caller hasn't supplied one via
+        /// <see cref="SetCrossGameFunctionSourceCache"/>. Chains off <see cref="Cache"/> when that's already a
+        /// <see cref="TieredPackageCache"/> not in filename-only mode (avoiding a second, independent global cache
+        /// hierarchy); otherwise chains off a fresh global root for <paramref name="sourceGame"/>. Called by
+        /// <see cref="Relinker.RelinkAll"/> - not normally something callers need to call directly.
+        /// </summary>
+        internal TieredPackageCache GetOrCreateCrossGameFunctionSourceCache(MEGame sourceGame)
+        {
+            if (CrossGameFunctionSourceCache == null)
+            {
+                // Filename-only mode is excluded: a same-named file from the source game could otherwise incorrectly
+                // resolve to the destination game's copy if chained onto it.
+                var parent = Cache is TieredPackageCache { FilenameOnlyMode: false } destTiered
+                    ? destTiered
+                    : TieredPackageCache.GetGlobalPackageCache(sourceGame, debugName: $"RelinkerOptionsPackage cross-game function relink root ({sourceGame})");
+
+                CrossGameFunctionSourceCache = parent.ChainNewCache(debugName: $"RelinkerOptionsPackage cross-game function relink cache ({sourceGame})");
+                _ownsCrossGameFunctionSourceCache = true;
+            }
+
+            return CrossGameFunctionSourceCache;
+        }
+
+        /// <summary>
+        /// Invoked, if not null, before a cross-game function relink compiles a function (see
+        /// <see cref="Relinker.RelinkAll"/>), given the source function export and its decompiled source text.
+        /// Return the text that should actually be compiled - e.g. to substitute a hand-authored override in place
+        /// of the decompiled source. Return the passed-in text unchanged to leave the function as-is.
+        /// </summary>
+        public Func<ExportEntry, string, string> CrossGameFunctionSourceOverride { get; set; }
+
+        /// <summary>
+        /// Disposes <see cref="CrossGameFunctionSourceCache"/> if it was lazily created by this instance. Callers
+        /// that want this cleanup should wrap their RelinkerOptionsPackage in a <c>using</c> block; existing callers
+        /// that don't dispose their instance are unaffected (same as before this cache existed).
+        /// </summary>
+        public void Dispose()
+        {
+            if (_ownsCrossGameFunctionSourceCache)
+            {
+                CrossGameFunctionSourceCache?.Dispose();
+            }
+        }
     }
 
     public static class Relinker
@@ -224,9 +295,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 var functionsToRelink = rop.CrossPackageMap.Keys.OfType<ExportEntry>().Where(x => x.ClassName == "Function").ToList();
                 if (functionsToRelink.Any())
                 {
+                    // Reused for every cross-game function relink that shares this rop instance (instead of a new
+                    // cache root being created per call) via RelinkerOptionsPackage.GetOrCreateCrossGameFunctionSourceCache.
+                    // Disposed when rop is, if rop owns it - see RelinkerOptionsPackage.Dispose.
                     UnrealScriptOptionsPackage usopSource = new UnrealScriptOptionsPackage()
                     {
-                        Cache = TieredPackageCache.GetGlobalPackageCache(rop.CrossPackageMap.First().Key.Game).ChainNewCache(), // Cross game source will use its own cache
+                        Cache = rop.GetOrCreateCrossGameFunctionSourceCache(rop.CrossPackageMap.First().Key.Game), // Cross game source will use its own cache
                         CustomFileResolver = rop.SourceCustomImportFileResolver,
                     };
 
@@ -300,7 +374,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                             // Debug.WriteLine($"Recompiling function after cross game porting: {targetFuncExp.InstancedFullPath}");
 
-                            (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(targetFuncExp, sourceInfo.text, destFL, usopDest);
+                            var textToCompile = rop.CrossGameFunctionSourceOverride?.Invoke(f, sourceInfo.text) ?? sourceInfo.text;
+                            (_, MessageLog log) = UnrealScriptCompiler.CompileFunction(targetFuncExp, textToCompile, destFL, usopDest);
                             if (log.AllErrors.Any())
                             {
                                 rop.RelinkReport.Add(new EntryStringPair(targetFuncExp, $"{targetFuncExp.UIndex} {targetFuncExp.InstancedFullPath} binary relinking failed. Could not recompile function. Errors: {string.Join("\n", log.AllErrors.Select(x => x.Message))}"));
