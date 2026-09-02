@@ -187,9 +187,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // 08/24/2026 - Allow ports between LMP/LE3 as they are using same shader sets
             bool allowedToPortShaders = destPcc.Game == sourcePcc.Game
 #if DEBUG
-                || (sourcePcc.Game.IsLEGame() && destPcc.Game.IsLEGame3()
+                || (sourcePcc.Game.IsLEGame() && destPcc.Game.IsLEGame3())
 #endif
-                );
+                ;
             bool isCrossGame = destPcc.Game != sourcePcc.Game;
             ShaderCache portingCache = null;
 
