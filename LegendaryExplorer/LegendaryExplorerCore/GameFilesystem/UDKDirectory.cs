@@ -151,11 +151,6 @@ namespace LegendaryExplorerCore.GameFilesystem
             set => _DefaultGamePath = value;
         }
 
-        static UDKDirectory()
-        {
-            ReloadDefaultGamePath();
-        }
-
         /// <summary>
         /// Reloads the default ME3 game path, either from LEC settings or from the registry
         /// </summary>

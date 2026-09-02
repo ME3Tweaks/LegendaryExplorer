@@ -24,6 +24,77 @@ namespace LegendaryExplorerCore.Packages
         /// Object used for synchronizing for threads
         /// </summary>
         public readonly Lock syncObj = new();
+
+        /// <summary>
+        /// Human-readable name identifying where/why this cache was created. Used for memory leak diagnostics.
+        /// Falls back to a generic name (see <see cref="DisplayName"/>) if not set.
+        /// </summary>
+        public string DebugName { get; set; }
+
+        /// <summary>
+        /// <see cref="DebugName"/> if set, otherwise a generic fallback based on the type and guid.
+        /// </summary>
+        public string DisplayName => DebugName ?? $"{GetType().Name}#{guid.ToString("N").Substring(0, 8)}";
+
+        /// <summary>
+        /// If <see cref="Dispose"/> has been called on this cache.
+        /// </summary>
+        public bool IsDisposed { get; private set; }
+
+        /// <summary>
+        /// Live weak-referenced registry of every <see cref="PackageCache"/> ever constructed, used to diagnose caches
+        /// that are not being disposed/collected. See <see cref="GetTrackedCacheReport"/>.
+        /// </summary>
+        private static readonly List<WeakReference<PackageCache>> TrackedCaches = new();
+        private static readonly Lock TrackedCachesSyncObj = new();
+
+        /// <summary>
+        /// Snapshot of a tracked <see cref="PackageCache"/> for leak diagnostics.
+        /// </summary>
+        public sealed class TrackedCacheInfo
+        {
+            public string DebugName { get; init; }
+            public Guid Guid { get; init; }
+            public string TypeName { get; init; }
+            public bool IsDisposed { get; init; }
+            public int PackageCount { get; init; }
+            public List<string> PackagePaths { get; init; }
+        }
+
+        /// <summary>
+        /// Returns a snapshot of every <see cref="PackageCache"/> that is still reachable (not yet garbage collected),
+        /// including its debug name, disposed state, and currently cached packages. Useful for tracing down caches
+        /// that are being held alive somewhere and never disposed.
+        /// </summary>
+        /// <param name="pruneCollectedEntries">If entries for already-collected caches should be removed from the tracking list</param>
+        public static List<TrackedCacheInfo> GetTrackedCacheReport(bool pruneCollectedEntries = true)
+        {
+            var result = new List<TrackedCacheInfo>();
+            lock (TrackedCachesSyncObj)
+            {
+                for (int i = TrackedCaches.Count - 1; i >= 0; i--)
+                {
+                    if (TrackedCaches[i].TryGetTarget(out var cache))
+                    {
+                        result.Add(new TrackedCacheInfo
+                        {
+                            DebugName = cache.DisplayName,
+                            Guid = cache.guid,
+                            TypeName = cache.GetType().Name,
+                            IsDisposed = cache.IsDisposed,
+                            PackageCount = cache.Cache.Count,
+                            PackagePaths = cache.Cache.Keys.ToList()
+                        });
+                    }
+                    else if (pruneCollectedEntries)
+                    {
+                        TrackedCaches.RemoveAt(i);
+                    }
+                }
+            }
+
+            return result;
+        }
         /// <summary>
         /// Cache that should only be accessed read-only. Subclasses of this can reference this shared cache object
         /// </summary>
@@ -40,9 +111,14 @@ namespace LegendaryExplorerCore.Packages
         /// </summary>
         public static Lock DefaultDiskIOSyncLock { get; set; }
 
-        public PackageCache()
+        public PackageCache(string debugName = null)
         {
             DiskIOSyncLock = DefaultDiskIOSyncLock;
+            DebugName = debugName;
+            lock (TrackedCachesSyncObj)
+            {
+                TrackedCaches.Add(new WeakReference<PackageCache>(this));
+            }
         }
 
         /// <summary>
@@ -284,6 +360,7 @@ namespace LegendaryExplorerCore.Packages
         public virtual void Dispose()
         {
             ReleasePackages();
+            IsDisposed = true;
         }
 
         /// <summary>

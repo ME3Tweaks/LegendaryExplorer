@@ -1538,7 +1538,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 MEGame.LE1 => le1FilesSafeToImportFrom,
                 MEGame.LE2 => le2FilesSafeToImportFrom,
                 MEGame.LE3 => le3FilesSafeToImportFrom,
-                MEGame.LMP => le3FilesSafeToImportFrom, // Should we change this to support BIOP_MPCommon?
+                MEGame.LMP => lmpFilesSafeToImportFrom,
                 MEGame.UDK => FileLib.BaseFileNames(MEGame.UDK),
                 _ => throw new Exception($"Cannot lookup safe files for {game}")
             };
@@ -1776,6 +1776,12 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns>List of filenames of potential files imported from - this does not include filepaths and not all files will be guaranteed to exist</returns>
         public static List<string> GetPossibleImportFiles(IMEPackage package, ImportEntry entry, string localization = @"INT", string gameRootOverride = null)
         {
+            if (package.Game == MEGame.UDK)
+            {
+                // Imports point directly to files in UDK. No point looking elsewhere.
+                return new List<string>([entry.GetLinker() + ".upk"]);
+            }
+
             var gameFiles = MELoadedFiles.GetFilesLoadedInGame(package.Game, forceUseCached: true, gameRootOverride: gameRootOverride);
 
             List<string> filesToCheck = new List<string>();
