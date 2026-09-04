@@ -659,7 +659,15 @@ namespace LegendaryExplorerCore.Textures
 
             if (dstFormat != pixelFormat || (dstFormat == PixelFormat.DXT1 && !dxt1HasAlpha))
             {
-                byte[] top = convertToFormat(PixelFormat.ARGB, tempData, width, height, dstFormat, dxt1HasAlpha, dxt1Threshold);
+                // tempData is already ARGB by this point, so a target of ARGB needs no conversion at
+                // all. Handing that no-op to the native converter fails - and fails opaquely, with an
+                // ArgumentException out of Marshal ("Value does not fall within the expected range")
+                // rather than anything naming the formats - which makes correctMips(ARGB) look broken
+                // when it is the one target that needs no work. The downscale loop below already has
+                // this case right; only the top mip was missing it.
+                byte[] top = dstFormat == PixelFormat.ARGB
+                    ? tempData
+                    : convertToFormat(PixelFormat.ARGB, tempData, width, height, dstFormat, dxt1HasAlpha, dxt1Threshold);
                 mipMaps.RemoveAt(0);
                 mipMaps.Add(new MipMap(top, width, height, dstFormat));
                 pixelFormat = dstFormat;
