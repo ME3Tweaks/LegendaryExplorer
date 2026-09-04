@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
@@ -41,6 +42,14 @@ namespace LegendaryExplorerCore.Textures
         /// TFC type, such as 'Textures', 'Lighting', etc. Should probably always just use Textures
         /// </summary>
         public string TFCType { get; set; }
+
+        /// <summary>
+        /// Opt-in filter to split candidate textures by root position: null (default) compacts everything matching
+        /// <see cref="TFCsToCompact"/> with no further filtering (the historical behavior). Set true to only compact
+        /// root textures (idxLink == 0 - lightmaps are always root), or false to only compact non-root textures.
+        /// Used by callers that build separate Lighting/Textures TFCs from the same source pool.
+        /// </summary>
+        public bool? RootTexturesOnly { get; set; }
 
         /// <summary>
         /// If the TFC should use indexing. This is true for LE, false for OT
@@ -102,6 +111,29 @@ namespace LegendaryExplorerCore.Textures
         /// Maps mip level -> compressed size in TFC
         /// </summary>
         public Dictionary<int, int> MipCompressedSizeMap = new();
+    }
+
+    /// <summary>
+    /// A texture queued to be copied into a new TFC. Built up serially, then its mip data is
+    /// read/converted in parallel (<see cref="MipBuffers"/>), and finally written out serially.
+    /// </summary>
+    file sealed class TextureCopyWorkItem
+    {
+        public TextureCopyWorkItem(TextureMapPackageEntry texInfo, TFCInfo destTFCInfo, string entryDisplayName)
+        {
+            TexInfo = texInfo;
+            DestTFCInfo = destTFCInfo;
+            EntryDisplayName = entryDisplayName;
+        }
+
+        public TextureMapPackageEntry TexInfo { get; }
+        public TFCInfo DestTFCInfo { get; }
+        public string EntryDisplayName { get; }
+
+        /// <summary>
+        /// Per-mip data ready to write to the destination TFC, populated by the parallel read/convert phase.
+        /// </summary>
+        public byte[][] MipBuffers { get; set; }
     }
 
     public class TFCCompactor
@@ -206,56 +238,118 @@ namespace LegendaryExplorerCore.Textures
 
             // Packages are not updated in this step so if something goes wrong it doesn't blow up the files
             progressDelegate?.Invoke("Building TFC files", 0, 0);
+
+            // Phase 1 (serial): decide which textures need copying and which output TFC each goes to.
+            // CRC de-duplication and destination-TFC selection both depend on state that changes as
+            // each texture is claimed, so this has to stay a single pass.
+            var copyWorkItems = new List<TextureCopyWorkItem>();
             foreach (var v in textureMap.CalculatedMap)
             {
-                var entries = v.GetAllTextureEntries().ToList();
-                foreach (var entry in entries)
+                foreach (var entry in v.GetAllTextureEntries())
                 {
-                    if (compactor.infoPackage.TFCsToCompact.Contains(entry.Instances[0].TFCName))
+                    if (!compactor.infoPackage.TFCsToCompact.Contains(entry.Instances[0].TFCName))
+                        continue;
+
+                    if (compactor.infoPackage.RootTexturesOnly is { } rootTexturesOnly && entry.Instances[0].IsRootTexture != rootTexturesOnly)
+                        continue;
+
+                    if (compactor.CRCMap.ContainsKey(entry.GetCRC()))
+                        continue; // Texture doesn't need ported into TFC
+
+                    // texture has not been copied to TFC
+                    var texInfo = entry.Instances[0];
+                    var diskSize = entry.GetExternalDiskSize();
+                    var destTFCInfo = compactor.GetOutTFC(diskSize); // Get TFC to write to
+                    compactor.CRCMap[texInfo.CRC] = destTFCInfo; // Claim now so repeated CRCs aren't queued twice
+
+                    copyWorkItems.Add(new TextureCopyWorkItem(texInfo, destTFCInfo, entry.InstancedFullPath));
+                }
+            }
+
+            // Phase 2 (parallel): read + decompress/recompress each texture's mip data into memory.
+            // This is the CPU-heavy part and each texture is independent of the others. Source TFCs
+            // are opened with FileShare.Read (the File.OpenRead default) so concurrent readers of the
+            // same source TFC don't block each other; each work item gets its own handle rather than
+            // sharing one FileStream across threads.
+            int totalToCopy = copyWorkItems.Count;
+            int completedCount = 0;
+            int highestReported = 0;
+            var progressLock = new object();
+            Parallel.ForEach(copyWorkItems, workItem =>
+            {
+                var texInfo = workItem.TexInfo;
+                workItem.MipBuffers = new byte[texInfo.CompressedMipInfos.Count][];
+
+                using var inStream = File.OpenRead(gameFiles[$"{texInfo.TFCName}.tfc"]);
+                for (int i = 0; i < texInfo.CompressedMipInfos.Count; i++)
+                {
+                    var mipInfo = texInfo.CompressedMipInfos[i];
+                    inStream.Seek(mipInfo.Offset, SeekOrigin.Begin);
+
+                    if (NeedsCompressionConverted(mipInfo.StorageType, textureMap.Game))
                     {
-                        if (compactor.CRCMap.TryGetValue(entry.GetCRC(), out var portedInfo))
-                        {
-                            // Texture doesn't need ported into TFC
-                        }
-                        else
-                        {
-                            // texture has not been copied to TFC
-                            var texInfo = entry.Instances[0];
-                            var diskSize = entry.GetExternalDiskSize();
-                            var destTFCInfo = compactor.GetOutTFC(diskSize); // Get TFC to write to
-                            var destTFCPath = Path.Combine(infoPackage.StagingPath, $"{destTFCInfo.TFCName}.tfc");
-                            using var outStream = File.Open(destTFCPath, FileMode.Append, FileAccess.Write);
+                        Debug.WriteLine($@"Converting external storage type from {mipInfo.StorageType} to {GetTargetExternalStorageType(textureMap.Game)}");
+                        var decompressed = new byte[mipInfo.UncompressedSize];
+                        TextureCompression.DecompressTexture(decompressed, inStream, mipInfo.StorageType, mipInfo.UncompressedSize, mipInfo.CompressedSize);
 
-                            for (int i = 0; i < texInfo.CompressedMipInfos.Count; i++)
-                            {
-                                using var inStream = File.OpenRead(gameFiles[$"{texInfo.TFCName}.tfc"]);
-                                var mipInfo = texInfo.CompressedMipInfos[i];
-                                destTFCInfo.MipOffsetMap[i] = (int)outStream.Position;
-                                inStream.Seek(mipInfo.Offset, SeekOrigin.Begin);
-
-                                if (NeedsCompressionConverted(mipInfo.StorageType, textureMap.Game))
-                                {
-                                    Debug.WriteLine($@"Converting external storage type from {mipInfo.StorageType} to {GetTargetExternalStorageType(textureMap.Game)}");
-                                    var decompressed = new byte[mipInfo.UncompressedSize];
-                                    TextureCompression.DecompressTexture(decompressed, inStream, mipInfo.StorageType, mipInfo.UncompressedSize, mipInfo.CompressedSize);
-
-                                    // Recompress texture
-                                    var compressed = TextureCompression.CompressTexture(decompressed, GetTargetExternalStorageType(textureMap.Game));
-                                    outStream.Write(compressed);
-                                    destTFCInfo.MipCompressedSizeMap[i] = compressed.Length;
-                                }
-                                else
-                                {
-                                    Debug.WriteLine($@"Copying texture data to TFC: {entry.InstancedFullPath}, mip {i}, offset: {outStream.Position:X8}");
-                                    inStream.CopyToEx(outStream, mipInfo.CompressedSize);
-                                    destTFCInfo.MipCompressedSizeMap[i] = mipInfo.CompressedSize;
-                                }
-                            }
-
-                            // Add to the map
-                            compactor.CRCMap[texInfo.CRC] = destTFCInfo;
-                        }
+                        // Recompress texture
+                        workItem.MipBuffers[i] = TextureCompression.CompressTexture(decompressed, GetTargetExternalStorageType(textureMap.Game));
                     }
+                    else
+                    {
+                        var raw = new byte[mipInfo.CompressedSize];
+                        inStream.ReadExactly(raw);
+                        workItem.MipBuffers[i] = raw;
+                    }
+                }
+
+                int done = Interlocked.Increment(ref completedCount);
+
+                // Threads can finish (and reach this point) in a different order than they acquire
+                // the lock below, so a lower `done` value can arrive here after a higher one already
+                // has. Only forward strictly-increasing values so the reported progress never goes
+                // backwards, even though individual textures complete out of order.
+                lock (progressLock)
+                {
+                    if (done > highestReported)
+                    {
+                        highestReported = done;
+                        progressDelegate?.Invoke("Building TFC files", done, totalToCopy);
+                    }
+                }
+            });
+
+            // Phase 3 (serial): write the precomputed buffers to their destination TFCs in order,
+            // recording offsets as we go (offsets depend on write order within a TFC, so this can't
+            // be parallelized). One stream per destination TFC is kept open and reused instead of
+            // reopening the file for every texture.
+            var openOutputStreams = new Dictionary<string, FileStream>();
+            try
+            {
+                foreach (var workItem in copyWorkItems)
+                {
+                    var destTFCInfo = workItem.DestTFCInfo;
+                    if (!openOutputStreams.TryGetValue(destTFCInfo.TFCName, out var outStream))
+                    {
+                        var destTFCPath = Path.Combine(infoPackage.StagingPath, $"{destTFCInfo.TFCName}.tfc");
+                        outStream = File.Open(destTFCPath, FileMode.Append, FileAccess.Write);
+                        openOutputStreams[destTFCInfo.TFCName] = outStream;
+                    }
+
+                    for (int i = 0; i < workItem.MipBuffers.Length; i++)
+                    {
+                        Debug.WriteLine($@"Writing texture data to TFC: {workItem.EntryDisplayName}, mip {i}, offset: {outStream.Position:X8}");
+                        destTFCInfo.MipOffsetMap[i] = (int)outStream.Position;
+                        destTFCInfo.MipCompressedSizeMap[i] = workItem.MipBuffers[i].Length;
+                        outStream.Write(workItem.MipBuffers[i]);
+                    }
+                }
+            }
+            finally
+            {
+                foreach (var s in openOutputStreams.Values)
+                {
+                    s.Dispose();
                 }
             }
 
@@ -364,8 +458,15 @@ namespace LegendaryExplorerCore.Textures
                     destPath = Path.Combine(dlcFolderDir, infoPackage.Game.CookedDirName());
                 }
 
-                // Delete all existing TFCs
+                // Delete existing TFCs. When RootTexturesOnly is set, the caller is building separate Lighting/Textures
+                // TFCs from the same source pool via multiple calls, so only this pass's own TFCType is wiped -
+                // otherwise this pass would delete the sibling TFC another pass just built. Callers not using the
+                // split (RootTexturesOnly is null) keep the original behavior of wiping every TFC in the folder.
                 var tfcsToDelete = Directory.GetFileSystemEntries(dlcFolderDir, "*.tfc", SearchOption.AllDirectories).Where(x => !x.StartsWith(infoPackage.StagingPath));
+                if (infoPackage.RootTexturesOnly.HasValue)
+                {
+                    tfcsToDelete = tfcsToDelete.Where(x => Path.GetFileName(x).StartsWith(infoPackage.TFCType, StringComparison.OrdinalIgnoreCase));
+                }
                 foreach (var tfc in tfcsToDelete)
                 {
                     File.Delete(tfc);

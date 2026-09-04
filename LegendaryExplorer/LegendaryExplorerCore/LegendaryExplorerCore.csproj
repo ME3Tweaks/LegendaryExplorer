@@ -125,8 +125,7 @@
   <ItemGroup>
     <!-- Emits the VerifyUIndexRefs methods for types with [UIndexRef] fields, and warns about
          UIndex fields in BinaryConverters that haven't been annotated yet. -->
-    <ProjectReference Include="..\LegendaryExplorerCore.SourceGenerators\LegendaryExplorerCore.SourceGenerators.csproj"
-                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\LegendaryExplorerCore.SourceGenerators\LegendaryExplorerCore.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>
