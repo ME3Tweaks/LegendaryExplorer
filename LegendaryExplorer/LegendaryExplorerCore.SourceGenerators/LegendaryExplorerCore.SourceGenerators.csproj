@@ -10,9 +10,7 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <!-- RS2008/RS1032 are for analyzer packages shipped to third parties; these diagnostics are internal to this repo. -->
     <NoWarn>$(NoWarn);RS2008;RS1032</NoWarn>
-    <!-- Mirrors the configurations used by the rest of the solution so that building
-         LegendaryExplorerCore with -c WinDebug etc. resolves this project reference. -->
-    <Configurations>Debug;Release;WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
+    <Configurations>Debug;Release;WinAzureRelease;WinAzureTest</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
