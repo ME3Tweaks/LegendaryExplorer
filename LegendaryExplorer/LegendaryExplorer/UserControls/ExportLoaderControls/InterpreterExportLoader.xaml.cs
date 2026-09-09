@@ -1524,6 +1524,11 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
 
                         parsedValue = $"({(platform.Value == "None" ? "All" : platform.Value)}) {componentType.Value} = {resolved?.ObjectName}";
                     }
+                    else if (sp.StructType is "SimpleVOEvent")
+                    {
+                        var eventName = sp.GetProp<NameProperty>("EventName");
+                        parsedValue = $"Event: {eventName.Value.Instanced}";
+                    }
                     else
                     {
                         parsedValue = sp.StructType;
