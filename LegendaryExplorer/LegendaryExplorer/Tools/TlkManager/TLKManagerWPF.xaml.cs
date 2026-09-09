@@ -689,7 +689,7 @@ namespace LegendaryExplorer.Tools.TlkManagerNS
             Task.Run(() =>
             {
                 var tlkmountmap = new List<(string, int)>();
-                var tlks = Directory.EnumerateFiles(LE3Directory.BioGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false)).ToList();
+                var tlks = Directory.EnumerateFiles(LMPDirectory.BioGamePath, "*.tlk", SearchOption.AllDirectories).Select(x => new LoadedTLK(x, false)).ToList();
                 tlks.ForEach(x => x.LoadMountPriority());
                 tlks.Sort((a, b) => a.mountpriority.CompareTo(b.mountpriority));
                 return tlks;
