@@ -119,6 +119,19 @@ namespace LegendaryExplorerCore.Shaders
                 {
                     staticParamSets.Add(ObjectBinary.From<MaterialInstance>(export).SM3StaticParameterSet);
                 }
+                else if (export.IsA("Terrain"))
+                {
+                    var terrain = ObjectBinary.From<Terrain>(export);
+                    var ids = terrain.CachedTerrainMaterials.Select(x => (StaticParameterSet)x.ID);
+                    foreach (var ctm in terrain.CachedTerrainMaterials)
+                    {
+                        staticParamSets.Add((StaticParameterSet)ctm.ID);
+                        foreach (var matid in ctm.MaterialIds)
+                        {
+                            staticParamSets.Add((StaticParameterSet)matid);
+                        }
+                    }
+                }
             }
 
             //can happen if list of exports passed in does not contain any materials
@@ -317,6 +330,18 @@ namespace LegendaryExplorerCore.Shaders
                 else if (export.IsA("MaterialInstance") && export.GetProperty<BoolProperty>("bHasStaticPermutationResource"))
                 {
                     staticParamSetsToMaterialsDict.AddToListAt(ObjectBinary.From<MaterialInstance>(export).SM3StaticParameterSet, export);
+                }
+                else if (export.IsA("Terrain"))
+                {
+                    var terrain = ObjectBinary.From<Terrain>(export);
+                    foreach(var ctm in terrain.CachedTerrainMaterials)
+                    {
+                        staticParamSetsToMaterialsDict.AddToListAt((StaticParameterSet)ctm.ID, export);
+                        foreach(var matid in ctm.MaterialIds)
+                        {
+                            staticParamSetsToMaterialsDict.AddToListAt((StaticParameterSet)matid, export);
+                        }
+                    }
                 }
             }
             if (staticParamSetsToMaterialsDict.Count is 0)
