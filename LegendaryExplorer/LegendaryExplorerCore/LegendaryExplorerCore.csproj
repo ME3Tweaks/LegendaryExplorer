@@ -112,7 +112,7 @@
     <PackageReference Include="MSTest.TestFramework" Version="4.0.2" Condition="$(Configuration.Contains('Azure'))" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="All" />
-    <PackageReference Include="Serilog" Version="4.3.0" />
+    <PackageReference Include="Serilog" Version="4.4.0" />
     <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
     <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.6" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
@@ -125,8 +125,7 @@
   <ItemGroup>
     <!-- Emits the VerifyUIndexRefs methods for types with [UIndexRef] fields, and warns about
          UIndex fields in BinaryConverters that haven't been annotated yet. -->
-    <ProjectReference Include="..\LegendaryExplorerCore.SourceGenerators\LegendaryExplorerCore.SourceGenerators.csproj"
-                      OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\LegendaryExplorerCore.SourceGenerators\LegendaryExplorerCore.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>

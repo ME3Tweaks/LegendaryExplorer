@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Enumeration;
 using System.Linq;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
@@ -48,11 +49,18 @@ namespace LegendaryExplorerCore.GameFilesystem
         /// <param name="includeAFCs">If true, files with the .afc extension will be included</param>
         /// <param name="gameRootOverride">Optional: override game path root</param>
         /// <param name="forceUseCached">Optional: Set to true to forcibly use the cached version if available; ignoring the tfc/afc check for rebuilding. Only use if you know what you're doing; this is to improve performance in certain scenarios</param>
-        /// <param name="additionalExtensions">Optional: Additional file extensions to include, besides .tfc and .afc. Null or empty array will not include any additional extensions</param>
+        /// <param name="additionalExtensions">Optional: Additional file extensions or file patterns to include, besides .tfc and .afc. Null or empty array will not include any additional entries</param>
         /// <param name="includeModDLC">Optional: If false, DLC folders that are not from the vanilla game will be skipped.</param>
         /// <returns>Case insensitive dictionary where key is filename and value is file path</returns>
         public static CaseInsensitiveDictionary<string> GetFilesLoadedInGame(MEGame game, bool forceReload = false, bool includeTFCs = false, bool includeAFCs = false, string gameRootOverride = null, bool forceUseCached = false, string[] additionalExtensions = null, bool includeModDLC = true)
         {
+            var additionalSearchPatterns = NormalizeFileSearchPatterns(additionalExtensions).ToList();
+            bool includesWildcardPattern = additionalExtensions?.Any(IsWildcardPattern) == true;
+            if (includesWildcardPattern && !forceUseCached)
+            {
+                forceReload = true;
+            }
+
             //Override: Do not use cached items
             if (!forceReload && gameRootOverride == null)
             {
@@ -218,16 +226,97 @@ namespace LegendaryExplorerCore.GameFilesystem
             {
                 return !includeTFCs || dict.Keys.Any(x => x.EndsWith(".tfc"));
             }
-            
+
             bool HasAFCs(CaseInsensitiveDictionary<string> dict)
             {
                 return !includeAFCs || dict.Keys.Any(x => x.EndsWith(".afc"));
             }
-            
+
             bool HasOtherFileExtensions(CaseInsensitiveDictionary<string> dict)
             {
-                return (additionalExtensions is not {Length: >0} ) || dict.Keys.Any(x => additionalExtensions.Contains(Path.GetExtension(x)));
+                return additionalSearchPatterns.Count == 0 || additionalSearchPatterns.All(pattern => dict.Keys.Any(fileName => FileSystemName.MatchesSimpleExpression(pattern, fileName, ignoreCase: true)));
             }
+        }
+
+        /// <summary>
+        /// Gets a dictionary of all files in the given game. Loaded-file override rules are applied first,
+        /// then any remaining files outside of cooked folders are added by filename.
+        /// </summary>
+        /// <param name="game">Game to get files for</param>
+        /// <param name="forceReload">If false, loaded file data may be taken from cache. If true, loaded file data will be regenerated.</param>
+        /// <param name="gameRootOverride">Optional: override game path root</param>
+        /// <param name="includeModDLC">Optional: If false, DLC folders that are not from the vanilla game will be skipped.</param>
+        /// <returns>Case insensitive dictionary where key is filename and value is file path</returns>
+        public static CaseInsensitiveDictionary<string> GetAllFilesLoadedInGame(MEGame game, bool forceReload = false, string gameRootOverride = null, bool includeModDLC = true)
+        {
+            var allFiles = new CaseInsensitiveDictionary<string>(GetFilesLoadedInGame(game, forceReload, includeTFCs: true, includeAFCs: true, gameRootOverride: gameRootOverride, additionalExtensions: ["*"], includeModDLC: includeModDLC));
+
+            var bgPath = MEDirectories.GetBioGamePath(game, gameRootOverride);
+            if (bgPath == null)
+            {
+                return allFiles;
+            }
+
+            IEnumerable<string> directories;
+            if (game is MEGame.UDK)
+            {
+                directories = new[] { UDKDirectory.GetScriptPath(gameRootOverride), bgPath };
+            }
+            else
+            {
+                directories = MELoadedDLC.GetEnabledDLCFolders(game, gameRootOverride)
+                    .OrderBy(dir => MELoadedDLC.GetMountPriority(dir, game))
+                    .Prepend(bgPath);
+            }
+
+            foreach (string directory in directories)
+            {
+                if (!includeModDLC && Path.GetFileName(directory) is string dlcName && dlcName.StartsWith("DLC_") && !MELoadedDLC.IsOfficialDLC(directory, game))
+                {
+                    continue;
+                }
+
+                foreach (string filePath in Directory.EnumerateFiles(directory, "*", SearchOption.AllDirectories))
+                {
+                    if (IsUnderCookedDirectory(game, directory, filePath))
+                    {
+                        continue;
+                    }
+
+                    string fileName = Path.GetFileName(filePath);
+                    if (fileName == null || allFiles.ContainsKey(fileName))
+                    {
+                        continue;
+                    }
+
+                    allFiles[fileName] = filePath;
+                }
+            }
+
+            if (game is not MEGame.UDK)
+            {
+                string gameRootPath = gameRootOverride ?? MEDirectories.GetDefaultGamePath(game);
+                if (!string.IsNullOrEmpty(gameRootPath) && !string.Equals(gameRootPath, bgPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    foreach (string filePath in Directory.EnumerateFiles(gameRootPath, "*", SearchOption.AllDirectories))
+                    {
+                        if (IsInDirectoryOrSubdirectory(bgPath, filePath))
+                        {
+                            continue;
+                        }
+
+                        string fileName = Path.GetFileName(filePath);
+                        if (fileName == null || allFiles.ContainsKey(fileName))
+                        {
+                            continue;
+                        }
+
+                        allFiles[fileName] = filePath;
+                    }
+                }
+            }
+
+            return allFiles;
         }
 
         public static bool TryGetHighestMountedFile(IMEPackage pcc, out string filePath) => TryGetHighestMountedFile(pcc.Game, Path.GetFileName(pcc.FilePath), out filePath);
@@ -373,37 +462,86 @@ namespace LegendaryExplorerCore.GameFilesystem
         }
 
         /// <summary>
-        /// Gets all game files from a specified BioGame or DLC folder. Package files will always be included, other extensions can be specified.
-        /// Only returns files that are in the CookedPC subfolder of the input folder.
+        /// Gets all game files from a specified BioGame or DLC folder. Package files will always be included, other extensions or file patterns can be specified.
+        /// Only returns files that are in the cooked subfolder of the input folder.
         /// </summary>
         /// <param name="game">Game you are searching files for. This determines extensions that are used.</param>
-        /// <param name="directory">Path to DLC or Basegame directory to search in. Files will be enumerated from the CookedPC subfolder of this path.</param>
+        /// <param name="directory">Path to DLC or Basegame directory to search in. Files will be enumerated from the cooked subfolder of this path.</param>
         /// <param name="includeTFCs">If true, files with the .tfc extension will be included</param>
         /// <param name="includeAFCs">If true, files with the .afc extension will be included</param>
-        /// <param name="additionalExtensions">Array of additional extensions to be included. Only the extension should be passed in, EG: ".isb"</param>
-        /// <returns>Full paths to all matching files in the input Cooked directory</returns>
+        /// <param name="additionalExtensions">Array of additional extensions or search patterns to be included. Examples: ".isb", "*.bin", "*"</param>
+        /// <returns>Full paths to all matching files in the input cooked directory</returns>
         public static IEnumerable<string> GetCookedFiles(MEGame game, string directory, bool includeTFCs = false, bool includeAFCs = false, string[] additionalExtensions = null)
         {
             if (game == MEGame.ME1)
             {
-                var patterns = ME1FilePatterns.ToList();
-                if (additionalExtensions != null)
-                    patterns.AddRange(additionalExtensions);
-                return patterns.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game.CookedDirName()), pattern, SearchOption.AllDirectories));
+                var me1Patterns = ME1FilePatterns.Concat(NormalizeFileSearchPatterns(additionalExtensions)).ToList();
+                return me1Patterns.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game.CookedDirName()), pattern, SearchOption.AllDirectories));
             }
             if (game is MEGame.UDK)
             {
-                return UDKFilePatterns.SelectMany(pattern => Directory.EnumerateFiles(directory, pattern, SearchOption.AllDirectories));
+                return UDKFilePatterns.Concat(NormalizeFileSearchPatterns(additionalExtensions)).Distinct(StringComparer.OrdinalIgnoreCase)
+                    .SelectMany(pattern => Directory.EnumerateFiles(directory, pattern, SearchOption.AllDirectories));
             }
 
-            List<string> extensions = new List<string>();
-            if (includeTFCs) extensions.Add("*.tfc");
-            if (includeAFCs) extensions.Add("*.afc");
-            if (additionalExtensions != null)
-                extensions.AddRange(additionalExtensions.Select(x => $"*{x}"));
-            extensions.Add("*.pcc"); //This is last, as any of the lookup methods will see if any of these files types exist in-order.
-                                         //By putting PCCs last, the lookups will be searched first when using includeTFC or includeAFC.
-            return extensions.SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game.CookedDirName()), pattern, SearchOption.AllDirectories));
+            List<string> patterns = new List<string>();
+            if (includeTFCs) patterns.Add("*.tfc");
+            if (includeAFCs) patterns.Add("*.afc");
+            patterns.AddRange(NormalizeFileSearchPatterns(additionalExtensions));
+            patterns.Add("*.pcc"); //This is last, as any of the lookup methods will see if any of these files types exist in-order.
+                                    //By putting PCCs last, the lookups will be searched first when using includeTFC or includeAFC.
+            return patterns.Distinct(StringComparer.OrdinalIgnoreCase)
+                .SelectMany(pattern => Directory.EnumerateFiles(Path.Combine(directory, game.CookedDirName()), pattern, SearchOption.AllDirectories));
+        }
+
+        private static IEnumerable<string> NormalizeFileSearchPatterns(IEnumerable<string> additionalExtensions)
+        {
+            if (additionalExtensions == null)
+            {
+                yield break;
+            }
+
+            foreach (string extensionOrPattern in additionalExtensions)
+            {
+                if (string.IsNullOrWhiteSpace(extensionOrPattern))
+                {
+                    continue;
+                }
+
+                if (IsWildcardPattern(extensionOrPattern))
+                {
+                    yield return extensionOrPattern;
+                    continue;
+                }
+
+                yield return extensionOrPattern.StartsWith('.') ? $"*{extensionOrPattern}" : $"*.{extensionOrPattern.TrimStart('.')}";
+            }
+        }
+
+        private static bool IsWildcardPattern(string pattern)
+        {
+            return pattern.Contains('*') || pattern.Contains('?');
+        }
+
+        private static bool IsUnderCookedDirectory(MEGame game, string directory, string filePath)
+        {
+            if (game is MEGame.UDK)
+            {
+                return false;
+            }
+
+            return IsInDirectoryOrSubdirectory(Path.Combine(directory, game.CookedDirName()), filePath);
+        }
+
+        private static bool IsInDirectoryOrSubdirectory(string directoryPath, string filePath)
+        {
+            if (string.IsNullOrEmpty(directoryPath))
+            {
+                return false;
+            }
+
+            string normalizedDirectoryPath = Path.TrimEndingDirectorySeparator(directoryPath) + Path.DirectorySeparatorChar;
+            return filePath.StartsWith(normalizedDirectoryPath, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>

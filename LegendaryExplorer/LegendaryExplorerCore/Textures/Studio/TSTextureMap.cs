@@ -33,12 +33,30 @@ namespace LegendaryExplorerCore.Textures.Studio
         {
             var parent = EnsureParent(exportEntry, selectedFolder, textureMapMemoryEntries, additionalTFCs, generatorDelegate, addRootNodeDelegate);
 
-            if (!textureMapMemoryEntries.TryGetValue(exportEntry.InstancedFullPath, out var memoryEntry))
+            // Root-level textures (idxLink == 0, parent == null here - e.g. baked lightmap components like
+            // DirectionalMaxComponent0_2) have no parent chain to qualify their name, and the auto-generated
+            // names UnrealEd assigns them are reused by every level's lighting rebuild, so InstancedFullPath
+            // alone collides across different level files even though the actual pixel data differs. Qualify
+            // the map key with the owning package's filename in that case; non-root textures keep their
+            // existing key since their parent chain already makes InstancedFullPath globally meaningful.
+            var mapKey = parent == null
+                ? $"{Path.GetFileNameWithoutExtension(exportEntry.FileRef.FilePath)}\0{exportEntry.InstancedFullPath}"
+                : exportEntry.InstancedFullPath;
+
+            if (!textureMapMemoryEntries.TryGetValue(mapKey, out var memoryEntry))
             {
                 memoryEntry = generatorDelegate(exportEntry);
                 memoryEntry.Parent = parent;
-                textureMapMemoryEntries[exportEntry.InstancedFullPath] = memoryEntry;
-                parent?.Children.Add(memoryEntry);
+                textureMapMemoryEntries[mapKey] = memoryEntry;
+                if (parent != null)
+                {
+                    parent.Children.Add(memoryEntry);
+                }
+                else
+                {
+                    // No parent means this node would otherwise never be reachable from rootNodes.
+                    addRootNodeDelegate?.Invoke(memoryEntry);
+                }
             }
 
             // Add our instance to the memory entry
@@ -206,6 +224,12 @@ namespace LegendaryExplorerCore.Textures.Studio
         /// <returns></returns>
         public IEnumerable<TextureMapMemoryEntry> GetAllTextureEntries()
         {
+            // A root-level texture (e.g. a baked lightmap component) is itself a leaf with no children,
+            // so it must report itself here - otherwise it's unreachable from a rootNodes traversal.
+            if (IsTexture)
+            {
+                return new[] { this };
+            }
             return Children.OfType<TextureMapMemoryEntry>().Where(x => !x.IsTexture).SelectMany(x => x.GetAllTextureEntries()).Concat(Children.OfType<TextureMapMemoryEntry>().Where(x => x.IsTexture));
         }
 
@@ -246,6 +270,7 @@ namespace LegendaryExplorerCore.Textures.Studio
             RelativePackagePath = exportEntry.FileRef.FilePath.Substring(basePath.Length).TrimStart('\\', '/');
             PackageName = Path.GetFileName(RelativePackagePath);
             ExportPath = exportEntry.InstancedFullPath;
+            IsRootTexture = exportEntry.idxLink == 0;
 
             var tex2D = ObjectBinary.From<UTexture2D>(exportEntry);
             NumMips = tex2D.Mips.Count;
@@ -328,6 +353,11 @@ namespace LegendaryExplorerCore.Textures.Studio
         public string TFCName { get; set; }
 
         public Guid TFCGuid { get; set; }
+
+        /// <summary>
+        /// If this texture export sits at the root of its package (idxLink == 0). Lightmaps are always root textures.
+        /// </summary>
+        public bool IsRootTexture { get; set; }
 
         /// <summary>
         /// The name of the package

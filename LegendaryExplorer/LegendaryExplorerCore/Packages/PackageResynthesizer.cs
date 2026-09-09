@@ -38,11 +38,15 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="dumpUnreferencedObjects">Only ports objects referenced by ObjectReferencer and TheWorld, which will dump unreferenced objects.</param>
         public static IMEPackage ResynthesizePackage(IMEPackage package, PackageCache cache, bool dumpUnreferencedObjects = false)
         {
+            // Keep a reference to the original package: DumpUnreferencedObjects below reassigns `package` to a
+            // reduced intermediate that never carries SeekFreeShaderCache (it isn't reachable from TheWorld or
+            // ObjectReferencer), so the shader cache always needs to be sourced from here, not from `package`.
+            var sourcePackage = package;
             if (dumpUnreferencedObjects)
             {
                 package = DumpUnreferencedObjects(package, cache);
             }
-            var hasDuplicates = package.HasDuplicateObjects();
+            var hasDuplicates = package.HasDuplicateObjects(true);
             if (hasDuplicates)
             {
                 LECLog.Warning($"Cannot resynthesisize {package.FileNameNoExtension}: Package has duplicate named objects");
@@ -120,15 +124,70 @@ namespace LegendaryExplorerCore.Packages
             }
 
             // Step 3: Create imports and stub out exports
+            // SeekFreeShaderCache is excluded from this walk (see EntryOrdering) and ported separately below,
+            // once newPackage's real material set is completely known.
             var ordering = new EntryOrdering(null, package);
             PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Stubbing);
             PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Resolving);
             PortOrdering(ordering, newPackage, null, ESynthesisMode.Synth_Transferring);
             newPackage.SetInternalFilepath(package.FilePath);
 
+            // Done as the very last step, against the fully-built package, so the decision reflects reality:
+            // compacting any earlier (e.g. against a package that's still partway through being reconstructed,
+            // which is what this used to do inside DumpUnreferencedObjects) risks judging against an incomplete
+            // material set and wiping shaders that are still genuinely used in the final output.
+            PortAndCompactShaderCache(sourcePackage, newPackage, cache);
+
             //12/24/2025 - Fix bad forced export
             PackageDiags.FixBadForcedExport(package);
             return newPackage;
+        }
+
+        /// <summary>
+        /// Ports SeekFreeShaderCache into the fully-reconstructed destination package, then compacts it against
+        /// the destination's real (final) material set and drops it entirely if nothing survives compaction.
+        /// </summary>
+        private static void PortAndCompactShaderCache(IMEPackage sourcePackage, IMEPackage destPackage, PackageCache cache)
+        {
+            var seekFreeShaderCache = sourcePackage.FindExport("SeekFreeShaderCache");
+            if (seekFreeShaderCache == null)
+                return;
+
+            // Porting the cache is speculative - if it compacts down to nothing we're going to throw it away.
+            // Snapshot the name/import tables first so we can splice out exactly what the port adds if that
+            // happens; otherwise trashing the export leaves its class/name chain (e.g. Engine.ShaderCache) behind
+            // as unreferenced entries, which defeats the point of dumping unreferenced data in the first place.
+            var namesBeforePort = destPackage.Names.ToList();
+            var importsBeforePort = destPackage.Imports.ToList();
+
+            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
+                seekFreeShaderCache, destPackage, null, true, new RelinkerOptionsPackage() { Cache = cache },
+                out var portedCache);
+
+            // Once it is ported over, compact it against destPackage's real, final material set to remove any
+            // useless data in it.
+            ShaderCacheManipulator.CompactSeekFreeShaderCaches(destPackage);
+
+            // If after compaction it has no shader maps, delete it.
+            var compactedCache = (ExportEntry)portedCache;
+            if (compactedCache.GetBinaryData<ShaderCache>().MaterialShaderMaps.Count == 0)
+            {
+                // Trash first, before touching the name/import tables: TrashEntryAndDescendants needs to read
+                // them (via GetAllDescendants -> RebuildLookupTable) to walk descendants and rename the entry, so
+                // reverting the tables first corrupts that read (the export's own name index would already be
+                // out of range). Trashing a trailing, childless export like this one (it was just ported in dead
+                // last, and SeekFreeShaderCache has no children of its own) also fully removes it from the
+                // package via the cleanup already built into TrashEntries/RemoveTrailingTrash - once that's
+                // happened, everything the port (and trashing itself) added to the tables is genuinely
+                // unreferenced, so it's safe to truncate straight back to their pre-port length.
+                EntryPruner.TrashEntryAndDescendants(compactedCache);
+
+                if (!destPackage.Exports.Contains(compactedCache))
+                {
+                    destPackage.restoreNames(namesBeforePort);
+                    destPackage.restoreImports(importsBeforePort);
+                }
+            }
         }
 
         public static IMEPackage DumpUnreferencedObjects(IMEPackage package, PackageCache cache)
@@ -159,36 +218,10 @@ namespace LegendaryExplorerCore.Packages
                 }
             }
 
-            // SeekFreeShaderCache doesn't have any direct references, so we need to port it over separately.
-            // Otherwise, the new package will have no local shaders.
-            var seekFreeShaderCache = package.FindExport("SeekFreeShaderCache");
-            if (seekFreeShaderCache != null)
-            {
-                // Porting the cache is speculative - if it compacts down to nothing we're going to throw it away.
-                // Snapshot the name/import tables first so we can roll back exactly what the port adds; otherwise
-                // trashing the export leaves its class/name chain (e.g. Engine.ShaderCache) behind as unreferenced
-                // entries, which defeats the point of dumping unreferenced data in the first place.
-                var namesBeforePort = newPackage.Names.ToList();
-                var importsBeforePort = newPackage.Imports.ToList();
-
-                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneAllDependencies,
-                    seekFreeShaderCache, newPackage, null, true, new RelinkerOptionsPackage() { Cache = cache },
-                    out var portedCache);
-
-                // Once it is ported over, compact it to remove any useless data in it
-                ShaderCacheManipulator.CompactSeekFreeShaderCaches(newPackage);
-
-                // If after compaction it has no shader maps, delete it.
-                var compactedCache = (ExportEntry)portedCache;
-                if (compactedCache.GetBinaryData<ShaderCache>().MaterialShaderMaps.Count == 0)
-                {
-                    // Undo the names/imports the port added before trashing the export to remove
-                    // the names and imports
-                    newPackage.restoreNames(namesBeforePort);
-                    newPackage.restoreImports(importsBeforePort);
-                    EntryPruner.TrashEntryAndDescendants(compactedCache);
-                }
-            }
+            // Note: SeekFreeShaderCache is intentionally NOT ported here. It isn't reachable from TheWorld or
+            // ObjectReferencer (nothing references it via a normal UObject property), and deciding what to keep in
+            // it requires the package's real, final material set - so it's ported and compacted once, centrally,
+            // by ResynthesizePackage.PortAndCompactShaderCache after the whole package is built.
 
             CopyPackageHeader(package, newPackage);
 
@@ -357,7 +390,9 @@ namespace LegendaryExplorerCore.Packages
             //ConvertToExport = entry is ImportEntry ientry && HasExportChildren(ientry);
 
             package ??= entry.FileRef;
-            var exports = package.Exports.Where(x => x.Parent == entry && !x.IsTrash()).ToList();
+            // SeekFreeShaderCache is excluded here - ResynthesizePackage ports and compacts it separately, once
+            // the rest of the package (and therefore its real material set) is fully built. See PortAndCompactShaderCache.
+            var exports = package.Exports.Where(x => x.Parent == entry && !x.IsTrash() && x.ObjectName != "SeekFreeShaderCache").ToList();
             var imports = package.Imports.Where(x => x.Parent == entry && !x.IsTrash()).ToList();
 
             exports.Sort(new EntrySorter());
