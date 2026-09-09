@@ -33,7 +33,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     if (existingObject is null or UConst)
                     {
                         var uConst = (UConst)existingObject;
-                        CompileConst(constAST, parent, ref uConst);
+                        CompileConst(constAST, parent, ref uConst, usop);
                         uConst.Export.WriteBinary(uConst);
                         return;
                     }
@@ -42,7 +42,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     if (existingObject is null or UEnum)
                     {
                         var uEnum = (UEnum)existingObject;
-                        CompileEnum(enumAST, parent, ref uEnum);
+                        CompileEnum(enumAST, parent, ref uEnum, usop);
                         uEnum.Export.WriteBinary(uEnum);
                         return;
                     }
@@ -100,7 +100,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ExportEntry classExport;
             if (refClassObj is null)
             {
-                classExport = CreateNewExport(pcc, className, "Class", parent, UClass.Create(), useTrash: false);
+                classExport = CreateNewExport(pcc, className, "Class", parent, usop, UClass.Create(), useTrash: false);
                 refClassObj = classExport.GetBinaryData<UClass>();
                 classExport.ObjectFlags = EObjectFlags.Public | EObjectFlags.LoadForClient | EObjectFlags.LoadForServer | EObjectFlags.LoadForEdit | EObjectFlags.Standalone;
             }
@@ -186,13 +186,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     case Const @const:
                         existingConsts.Remove(@const.Name, out UConst uConst);
                         childrenHaveBeenAdded |= uConst is null;
-                        CompileConst(@const, classExport, ref uConst);
+                        CompileConst(@const, classExport, ref uConst, usop);
                         compiledConsts.Add(uConst);
                         break;
                     case Enumeration enumeration:
                         existingEnums.Remove(enumeration.Name, out UEnum uEnum);
                         childrenHaveBeenAdded |= uEnum is null;
-                        CompileEnum(enumeration, classExport, ref uEnum);
+                        CompileEnum(enumeration, classExport, ref uEnum, usop);
                         compiledEnums.Add(uEnum);
                         break;
                     case Struct @struct:
@@ -322,16 +322,16 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
 
             return FinishClassCompilation;
 
-            void FinishClassCompilation(UnrealScriptOptionsPackage usop2)
+            void FinishClassCompilation(UnrealScriptOptionsPackage usop)
             {
-                IEntry superClass = classAST.Parent is Class super ? CompilerUtils.ResolveClass(super, pcc, usop2) : null;
+                IEntry superClass = classAST.Parent is Class super ? CompilerUtils.ResolveClass(super, pcc, usop) : null;
                 classExport.SuperClass = superClass;
                 classObj.SuperClass = superClass?.UIndex ?? 0;
-                classObj.OuterClass = classAST.OuterClass is Class outerClass ? CompilerUtils.ResolveClass(outerClass, pcc, usop2).UIndex : 0;
+                classObj.OuterClass = classAST.OuterClass is Class outerClass ? CompilerUtils.ResolveClass(outerClass, pcc, usop).UIndex : 0;
 
                 if (pcc.Game.IsGame3())
                 {
-                    classObj.VirtualFunctionTable = classAST.VirtualFunctionTable.Select(func => CompilerUtils.ResolveFunction(func, pcc, usop2).UIndex).ToArray();
+                    classObj.VirtualFunctionTable = classAST.VirtualFunctionTable.Select(func => CompilerUtils.ResolveFunction(func, pcc, usop).UIndex).ToArray();
                 }
 
                 if (classAST.ReplicationBlock.Statements.Count is 0)
@@ -342,13 +342,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 else
                 {
                     //must occur before the property stubs finish compiling so that replication offsets can be set
-                    ByteCodeCompilerVisitor.Compile(classAST, classObj, usop2);
+                    ByteCodeCompilerVisitor.Compile(classAST, classObj, usop);
                 }
 
                 //finish compiling all the stubs
                 foreach (Action<UnrealScriptOptionsPackage> completion in completions)
                 {
-                    completion(usop2);
+                    completion(usop);
                 }
 
                 IEnumerable<UField> allChildren = compiledProperties.Values.Cast<UField>().Concat(compiledFunctions).Concat(compiledStates).Concat(compiledStructs).Concat(compiledEnums).Concat(compiledConsts);
@@ -412,13 +412,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                         }
                         vfTablePropertyUIndex = vfTableProperty.Export.UIndex;
                     }
-                    classObj.Interfaces.Add(new UClass.ImplementedInterface(CompilerUtils.ResolveClass(interfaceClass, pcc, usop2).UIndex, vfTablePropertyUIndex));
+                    classObj.Interfaces.Add(new UClass.ImplementedInterface(CompilerUtils.ResolveClass(interfaceClass, pcc, usop).UIndex, vfTablePropertyUIndex));
                 }
 
                 classObj.DLLBindName = "None";
 
                 var defaultsExport = pcc.GetEntry(classObj.Defaults) as ExportEntry;
-                ScriptPropertiesCompiler.CompileDefault__Object(classAST.DefaultProperties, classExport, ref defaultsExport, usop2);
+                ScriptPropertiesCompiler.CompileDefault__Object(classAST.DefaultProperties, classExport, ref defaultsExport, usop);
                 classObj.Defaults = defaultsExport.UIndex;
 
                 //classObj.ComponentNameToDefaultObjectMap.Clear();
@@ -449,7 +449,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ExportEntry stateExport;
             if (refStateObj is null)
             {
-                stateExport = CreateNewExport(parent.FileRef, stateName, "State", parent, UState.Create());
+                stateExport = CreateNewExport(parent.FileRef, stateName, "State", parent, usop, UState.Create());
                 refStateObj = stateExport.GetBinaryData<UState>();
             }
             else
@@ -626,7 +626,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             string friendlyName = funcAST.FriendlyName ?? functionName;
             if (refFuncObj is null)
             {
-                funcExport = CreateNewExport(parent.FileRef, functionName, "Function", parent, new UFunction { ScriptBytes = [], FriendlyName = friendlyName });
+                funcExport = CreateNewExport(parent.FileRef, functionName, "Function", parent, usop, new UFunction { ScriptBytes = [], FriendlyName = friendlyName });
                 refFuncObj = funcExport.GetBinaryData<UFunction>();
             }
             else
@@ -729,7 +729,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             ExportEntry structExport;
             if (refStructObj is null)
             {
-                structExport = CreateNewExport(parent.FileRef, structName, "ScriptStruct", parent, UScriptStruct.Create());
+                structExport = CreateNewExport(parent.FileRef, structName, "ScriptStruct", parent, usop, UScriptStruct.Create());
                 refStructObj = structExport.GetBinaryData<UScriptStruct>();
             }
             else
@@ -858,7 +858,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     _ => throw new ArgumentOutOfRangeException(nameof(className), className, "")
                 };
                 tmp.Category = "None";
-                refPropObj = (UProperty)ObjectBinary.From(CreateNewExport(parent.FileRef, propName, className, parent, tmp));
+                refPropObj = (UProperty)ObjectBinary.From(CreateNewExport(parent.FileRef, propName, className, parent, usop, tmp));
             }
             else
             {
@@ -954,13 +954,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
         }
 
-        private static void CompileEnum(Enumeration enumAST, IEntry parent, ref UEnum enumObj)
+        private static void CompileEnum(Enumeration enumAST, IEntry parent, ref UEnum enumObj, UnrealScriptOptionsPackage usop)
         {
             var enumName = NameReference.FromInstancedString(enumAST.Name);
             ExportEntry enumExport;
             if (enumObj is null)
             {
-                enumExport = CreateNewExport(parent.FileRef, enumName, "Enum", parent, UEnum.Create());
+                enumExport = CreateNewExport(parent.FileRef, enumName, "Enum", parent, usop, UEnum.Create());
                 enumObj = enumExport.GetBinaryData<UEnum>();
             }
             else
@@ -973,13 +973,13 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             enumObj.Names = values.ToArray();
         }
 
-        private static void CompileConst(Const constAST, IEntry parent, ref UConst constObj)
+        private static void CompileConst(Const constAST, IEntry parent, ref UConst constObj, UnrealScriptOptionsPackage usop)
         {
             var constName = NameReference.FromInstancedString(constAST.Name);
             ExportEntry constExport;
             if (constObj is null)
             {
-                constExport = CreateNewExport(parent.FileRef, constName, "Const", parent, UConst.Create());
+                constExport = CreateNewExport(parent.FileRef, constName, "Const", parent, usop, UConst.Create());
                 constObj = constExport.GetBinaryData<UConst>();
             }
             else
@@ -1124,9 +1124,9 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             return (constMembers, enumMembers, structMembers, propMembers, funcMembers, stateMembers);
         }
 
-        private static ExportEntry CreateNewExport(IMEPackage pcc, NameReference name, string className, IEntry parent, UField binary = null, IEntry super = null, bool useTrash = true)
+        private static ExportEntry CreateNewExport(IMEPackage pcc, NameReference name, string className, IEntry parent, UnrealScriptOptionsPackage usop, UField binary = null, IEntry super = null, bool useTrash = true)
         {
-            IEntry classEntry = className.CaseInsensitiveEquals("Class") ? null : EntryImporter.EnsureClassIsInFile(pcc, className, new RelinkerOptionsPackage());
+            IEntry classEntry = className.CaseInsensitiveEquals("Class") ? null : EntryImporter.EnsureClassIsInFile(pcc, className, new RelinkerOptionsPackage() { GamePathOverride = usop?.GamePathOverride}, gamePathOverride: usop?.GamePathOverride);
 
             //reuse trash exports
             if (useTrash && pcc.TryGetTrash(out ExportEntry trashExport))

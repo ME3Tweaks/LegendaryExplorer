@@ -188,37 +188,26 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             //Port Shaders
-            // 08/24/2026 - Allow ports between LMP/LE3 as they are using same shader sets
-            bool allowedToPortShaders = destPcc.Game == sourcePcc.Game
-#if DEBUG
-                || (sourcePcc.Game.IsLEGame() && destPcc.Game.IsLEGame3())
-#endif
-                ;
-            bool isCrossGame = destPcc.Game != sourcePcc.Game;
+            {
+                // This is purposely scoped to prevent variables from leaking into scope
+
+                // 09/08/2026 - Allow porting LE3 <-> LMP as they are both based on LE3
+                bool allowedToPortShaders = destPcc.Game == sourcePcc.Game || (destPcc.Game.IsLEGame3() && sourcePcc.Game.IsLEGame3());
             ShaderCache portingCache = null;
 
-            // Allow LE1 <-> LE3 for now
-            /*if ((destPcc.Game == MEGame.LE1 && sourcePcc.Game == MEGame.LE3) ||
-                (destPcc.Game == MEGame.LE3 && sourcePcc.Game == MEGame.LE1))
+                // Logic here needs checked
+                if (allowedToPortShaders)
             {
-                portingCache = ShaderCacheManipulator.GetAllShadersForMaterials(rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList(), rop.GamePathOverride);
-                allowedToPortShaders = true;
-            }*/
-
-            if (portingCache == null && !isCrossGame)
+                    portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList(), rop.GamePathOverride);
+                    if (portingCache is not null)
             {
-                portingCache = ShaderCacheManipulator.GetLocalShadersForMaterials(rop.CrossPackageMap.Keys.OfType<ExportEntry>().ToList(), rop.GamePathOverride);
+                        ShaderCacheManipulator.AddShadersToFile(destPcc, portingCache);
+                    }
             }
-
-            if (!rop.ForceAllowMaterialPorting && !allowedToPortShaders)
+                else if (!rop.ForceAllowMaterialPorting)
             {
                 rop.ErrorOccurredCallback?.Invoke($"You cannot port Materials from {sourcePcc.Game} into {destPcc.Game}");
             }
-
-
-            if (portingCache is not null)
-            {
-                ShaderCacheManipulator.AddShadersToFile(destPcc, portingCache);
             }
 
             // Reindex - disabled for now as it causes issues
