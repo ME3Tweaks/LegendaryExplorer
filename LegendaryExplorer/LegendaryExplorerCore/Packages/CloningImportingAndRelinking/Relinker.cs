@@ -868,7 +868,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                 // END CROSSGEN-V
 
-                if (rop.PortImportsMemorySafe && !rop.IsCrossGame)
+
+                if (rop.PortImportsMemorySafe /* && !rop.IsCrossGame*/)
                 {
                     if (importFullName.HasParent)
                     {
@@ -1044,7 +1045,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             // Typically global files are not ForceExport'd 
             // which means objects in them will sit at the root instead of under a package export
-            if (rop.GenerateImportsForGlobalFiles && EntryImporter.IsSafeToImportFrom(sourceFilePath, relinkingExport.FileRef))
+            if (rop.GenerateImportsForGlobalFiles && EntryImporter.IsSafeToImportFrom(sourceFilePath, relinkingExport.FileRef) && !rop.IsCrossGame)
             {
                 importingFromGlobalFile = true;
                 instancedFullPath = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}.{instancedFullPath}";
