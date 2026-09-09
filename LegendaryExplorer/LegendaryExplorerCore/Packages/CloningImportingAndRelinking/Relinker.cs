@@ -235,6 +235,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public Func<ExportEntry, string, string> CrossGameFunctionSourceOverride { get; set; }
 
         /// <summary>
+        /// Enables some extra code paths that retry entry lookup using memory paths rather than the existing InstancedFullPath. Set as an option here because it may break backwards compatibilty if on by default.
+        /// </summary>
+        public bool AllowMemoryPathLookups { get; set; }
+
+        /// <summary>
         /// Disposes <see cref="CrossGameFunctionSourceCache"/> if it was lazily created by this instance. Callers
         /// that want this cleanup should wrap their RelinkerOptionsPackage in a <c>using</c> block; existing callers
         /// that don't dispose their instance are unaffected (same as before this cache existed).

@@ -121,6 +121,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 {
                     //importing an export (check if it exists first, if it does, just link to it)
                     newEntry = destPcc.FindEntry(sourceEntry.InstancedFullPath); // 12/09/2023 - Change from FindExport to FindEntry
+                    if (newEntry == null && rop.AllowMemoryPathLookups)
+                    {
+                        newEntry = destPcc.FindEntry(sourceEntry.MemoryFullPath); // 09/07/2026 - Use memory path lookups - useful for decook work
+                    }
                     if (newEntry == null)
                     {
                         // 12/09/2023 - Add ability to convert directly to import
@@ -988,6 +992,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             }
 
             var foundEntry = destinationPCC.FindEntry(importFullNameInstanced);
+            if (foundEntry == null && rop.AllowMemoryPathLookups)
+            {
+                foundEntry = destinationPCC.FindEntry(destinationPCC.FileNameNoExtension + "." + importFullNameInstanced);
+            }
             if (foundEntry != null)
             {
                 return foundEntry;
