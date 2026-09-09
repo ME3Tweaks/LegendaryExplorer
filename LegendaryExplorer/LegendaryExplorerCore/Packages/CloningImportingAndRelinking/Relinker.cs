@@ -141,6 +141,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public bool CheckImportsWhenExportingToPackage { get; set; } = true;
 
         /// <summary>
+        /// Determines whether a parent encountered by <see cref="EntryExporter.PortParents"/> should be replaced
+        /// in the destination by a Package export with the same name, rather than porting the original object. A null
+        /// value preserves the normal parent porting behavior.
+        /// </summary>
+        public delegate bool PortParentAsPackageDelegate(IEntry parent);
+
+        /// <summary>
+        /// Optional selector for parents that should be converted to same-named Package entries while porting.
+        /// </summary>
+        public PortParentAsPackageDelegate PortParentAsPackage { get; set; }
+
+        /// <summary>
         /// When relinking only objects within the same package, setting this to true will force imports to be considered for relink. This is useful for repointing import references to different objects.
         /// </summary>
         public bool ForceSamePackageImportRelink { get; set; }
@@ -1045,7 +1057,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // because it's fairly easy to swap; others could probably be implemented here and in ImportExport().
             // To allow all items to substitute, use the ROP's RelinkAllowDifferingClassesInRelink item.
             IEntry existingEntry = FindExistingEntry(instancedFullPath, relinkingExport, sourceExport, rop);
-
             if (existingEntry != null)
             {
 #if DEBUG
@@ -1070,20 +1081,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     IEntry parent = null;
                     if (sourceExport.Parent != null && !rop.CrossPackageMap.TryGetValue(sourceExport.Parent, out parent))
                     {
-                        //if (sourceExport.Parent is ExportEntry parExp)
-                        //{
-                        //    // Parent is export
-                        //    // How to find parent UIndex from here if it might not yet exist?
-
-                        //    // Note: This doesn't work if it's nested deeper than one link we can find. Might be best to put this in a loop to ensure parent creation?
-
-                        //    // Port parents recursively
-
-                        //    var parParLink = parExp.Parent != null ? relinkingExport.FileRef.FindEntry(parExp.ParentInstancedFullPath) : null; // This is pretty weak...
-                        //    parent = relinkingExport.FileRef.FindEntry(parExp.InstancedFullPath) ?? EntryImporter.ImportExport(relinkingExport.FileRef, parExp, parParLink?.UIndex ?? 0, true, crossPCCObjectMappingList, targetGameDB: targetGameDonorDB);
-                        //}
-                        //else
-                        //{
                         //Parent is import
                         parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentInstancedFullPath, importingPCC, relinkingExport.FileRef, rop);
 
