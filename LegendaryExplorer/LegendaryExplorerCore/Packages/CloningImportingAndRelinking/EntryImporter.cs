@@ -1638,7 +1638,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 // package will be inspected. This allows you to resolve
                 // package lookups outside of game
                 var customResolvedPackage = fileResolver?.Invoke(fileName, cache);
-                if (customResolvedPackage != null)
+                if (customResolvedPackage != null && customResolvedPackage.Game == entry.Game) // Prevents wrong game package from being resolved.
                 {
                     var export = FindExportInPackage(customResolvedPackage, fileName, entryFullPath);
                     if (export != null)
