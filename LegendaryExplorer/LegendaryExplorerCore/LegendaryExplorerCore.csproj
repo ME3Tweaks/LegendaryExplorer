@@ -28,7 +28,7 @@
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <DefineConstants>TRACE;DEBUG;WINDOWS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -41,7 +41,7 @@
 		   
 		   -->
 	<Optimize>true</Optimize>
-    <DefineConstants>WINDOWS</DefineConstants>
+    <!--<DefineConstants></DefineConstants>-->
   </PropertyGroup>
 
   <!-- Nightly release from Azure -->
