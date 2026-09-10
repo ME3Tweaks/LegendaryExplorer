@@ -104,14 +104,20 @@ namespace LegendaryExplorerCore.Coalesced.Config
                         {
                             if (targetSection.TryGetValue(incomingProperty.Name, out var values))
                             {
+                                bool shouldAdd = true;
                                 for (int i = values.Count - 1; i >= 0; i--)
                                 {
                                     if (values[i].Value == prop.Value)
                                     {
-                                        LECLog.Debug($@"ConfigMerge::MergeEntry - Not adding duplicate value {incomingProperty.Name}->{prop.Value} on {targetSection.Name}",
-                                            shouldLog: DebugConfigMerge);
-                                        continue;
+                                        LECLog.Debug($@"ConfigMerge::MergeEntry - Not adding duplicate value {incomingProperty.Name}->{prop.Value} on {targetSection.Name}", shouldLog: DebugConfigMerge);
+                                        shouldAdd = false;
+                                        break;
                                     }
+                                }
+                                if (shouldAdd == false)
+                                {
+                                    // Skip adding.
+                                    continue;
                                 }
                             }
                             // It's new just add the whole thing or did not find existing one
