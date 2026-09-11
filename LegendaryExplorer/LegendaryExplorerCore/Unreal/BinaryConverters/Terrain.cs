@@ -163,11 +163,6 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 mres = new TerrainMaterialResource();
             }
 
-            // Original code serializes it as MaterialResource
-            //MaterialResource materialResource = mres;
-            //Serialize(ref materialResource);
-
-
             Serialize(ref mres.CompileErrors, Serialize);
             Serialize(ref mres.TextureDependencyLengthMap, Serialize, Serialize);
             Serialize(ref mres.MaxTextureDependencyLength);
@@ -175,7 +170,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             Serialize(ref mres.NumUserTexCoords);
             if (Game >= MEGame.ME3)
             {
-                Serialize(ref mres.UniformExpressionTextures, Serialize);
+                // FTerrainMaterialResource serializes this inherited base field through the same
+                // UObject-reference path as FMaterialResource. For purposes of reading ShaderClient
+                // data it must use SerializeObjectRef or it won't read properly.
+                Serialize(ref mres.UniformExpressionTextures, SerializeObjectRef);
             }
             else
             {
@@ -238,7 +236,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             }
 
             // Extra data on terrain material
-            Serialize(ref mres.Terrain);
+            SerializeObjectRef(ref mres.Terrain); // Must be object ref as it may come from packageless
             Serialize(ref mres.Mask);
             Serialize(ref mres.MaterialIds, Serialize);
             if (Game >= MEGame.ME3)

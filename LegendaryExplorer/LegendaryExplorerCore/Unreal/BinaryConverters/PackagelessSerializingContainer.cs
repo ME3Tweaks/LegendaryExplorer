@@ -82,6 +82,13 @@ public class PackagelessWithObjectsSerializingContainer(Stream stream, IMEPackag
         var len = stream.ReadInt32();
         var objectIfp = stream.ReadStringUnicode(len * 2);
         var foundEntry = pcc.FindEntry(objectIfp);
+        if (foundEntry == null && objectIfp.Contains(".TheWorld."))
+        {
+            // Strip linker off, try again.
+            // The owning package may have been named differently in game
+            var localifp = objectIfp.Substring(objectIfp.IndexOf('.') + 1);
+            foundEntry = pcc.FindEntry(localifp);
+        }
         if (foundEntry == null)
         {
             Debug.WriteLine($"Could not find {objectIfp} in package, value will be set to null");

@@ -141,6 +141,18 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public bool CheckImportsWhenExportingToPackage { get; set; } = true;
 
         /// <summary>
+        /// Determines whether a parent encountered by <see cref="EntryExporter.PortParents"/> should be replaced
+        /// in the destination by a Package export with the same name, rather than porting the original object. A null
+        /// value preserves the normal parent porting behavior.
+        /// </summary>
+        public delegate bool PortParentAsPackageDelegate(IEntry parent);
+
+        /// <summary>
+        /// Optional selector for parents that should be converted to same-named Package entries while porting.
+        /// </summary>
+        public PortParentAsPackageDelegate PortParentAsPackage { get; set; }
+
+        /// <summary>
         /// When relinking only objects within the same package, setting this to true will force imports to be considered for relink. This is useful for repointing import references to different objects.
         /// </summary>
         public bool ForceSamePackageImportRelink { get; set; }
@@ -233,6 +245,11 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// of the decompiled source. Return the passed-in text unchanged to leave the function as-is.
         /// </summary>
         public Func<ExportEntry, string, string> CrossGameFunctionSourceOverride { get; set; }
+
+        /// <summary>
+        /// Enables some extra code paths that retry entry lookup using memory paths rather than the existing InstancedFullPath. Set as an option here because it may break backwards compatibilty if on by default.
+        /// </summary>
+        public bool AllowMemoryPathLookups { get; set; }
 
         /// <summary>
         /// Disposes <see cref="CrossGameFunctionSourceCache"/> if it was lazily created by this instance. Callers
@@ -851,7 +868,8 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
                 // END CROSSGEN-V
 
-                if (rop.PortImportsMemorySafe && !rop.IsCrossGame)
+
+                if (rop.PortImportsMemorySafe /* && !rop.IsCrossGame*/)
                 {
                     if (importFullName.HasParent)
                     {
@@ -1027,7 +1045,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
 
             // Typically global files are not ForceExport'd 
             // which means objects in them will sit at the root instead of under a package export
-            if (rop.GenerateImportsForGlobalFiles && EntryImporter.IsSafeToImportFrom(sourceFilePath, relinkingExport.FileRef))
+            if (rop.GenerateImportsForGlobalFiles && EntryImporter.IsSafeToImportFrom(sourceFilePath, relinkingExport.FileRef) && !rop.IsCrossGame)
             {
                 importingFromGlobalFile = true;
                 instancedFullPath = $"{Path.GetFileNameWithoutExtension(sourceFilePath)}.{instancedFullPath}";
@@ -1040,7 +1058,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
             // because it's fairly easy to swap; others could probably be implemented here and in ImportExport().
             // To allow all items to substitute, use the ROP's RelinkAllowDifferingClassesInRelink item.
             IEntry existingEntry = FindExistingEntry(instancedFullPath, relinkingExport, sourceExport, rop);
-
             if (existingEntry != null)
             {
 #if DEBUG
@@ -1065,20 +1082,6 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     IEntry parent = null;
                     if (sourceExport.Parent != null && !rop.CrossPackageMap.TryGetValue(sourceExport.Parent, out parent))
                     {
-                        //if (sourceExport.Parent is ExportEntry parExp)
-                        //{
-                        //    // Parent is export
-                        //    // How to find parent UIndex from here if it might not yet exist?
-
-                        //    // Note: This doesn't work if it's nested deeper than one link we can find. Might be best to put this in a loop to ensure parent creation?
-
-                        //    // Port parents recursively
-
-                        //    var parParLink = parExp.Parent != null ? relinkingExport.FileRef.FindEntry(parExp.ParentInstancedFullPath) : null; // This is pretty weak...
-                        //    parent = relinkingExport.FileRef.FindEntry(parExp.InstancedFullPath) ?? EntryImporter.ImportExport(relinkingExport.FileRef, parExp, parParLink?.UIndex ?? 0, true, crossPCCObjectMappingList, targetGameDB: targetGameDonorDB);
-                        //}
-                        //else
-                        //{
                         //Parent is import
                         parent = EntryImporter.GetOrAddCrossImportOrPackage(sourceExport.ParentInstancedFullPath, importingPCC, relinkingExport.FileRef, rop);
 
