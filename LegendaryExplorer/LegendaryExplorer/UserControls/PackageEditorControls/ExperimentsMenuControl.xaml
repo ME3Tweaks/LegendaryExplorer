@@ -86,6 +86,7 @@
             <MenuItem Header="Print loaded packages to debug console" Click="PrintLoadedPackages_Clicked"/>
             <MenuItem Header="Search ObjectInfo keys for value" Click="ObjectInfosSearch_Click"/>
             <MenuItem Header="Open hosted shader export loader" Click="OpenHostedExportLoader_Shader_Click"/>
+            <MenuItem Header="View terrain materials" Click="ViewTerrainMaterials_Click"/>
             <MenuItem Header="Test TLKSystem" Click="TestTLKSystem_Click"/>
         </MenuItem>
         <MenuItem Header="Useful for Mgamerz (maybe)">

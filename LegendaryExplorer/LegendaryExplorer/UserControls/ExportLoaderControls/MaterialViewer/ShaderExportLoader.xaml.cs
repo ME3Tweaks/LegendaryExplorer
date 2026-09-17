@@ -242,7 +242,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
         }
 
-        public IEnumerable<TreeViewMeshShaderMap> GetMeshShaderMaps(MaterialShaderMap msm, ShaderCache localShaderCache = null)
+        public IEnumerable<TreeViewMeshShaderMap> GetMeshShaderMaps(MaterialShaderMap msm, ShaderCache localShaderCache = null, MEGame? game = null)
         {
             var result = new List<TreeViewMeshShaderMap>();
             bool isFirst = true;
@@ -256,7 +256,7 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
                     {
                         Id = shaderReference.Id,
                         ShaderType = shaderReference.ShaderType,
-                        Game = Pcc.Game,
+                        Game = game ?? Pcc.Game,
                         Parent = tvmsm,
                     };
                     if (localShaderCache != null && localShaderCache.Shaders.TryGetValue(shaderReference.Id, out Shader shader))
@@ -273,6 +273,65 @@ namespace LegendaryExplorer.UserControls.ExportLoaderControls
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Loads shaders for a terrain material directly by its cached material ID Guid.
+        /// </summary>
+        public void LoadByMaterialId(Guid materialId, IMEPackage pcc)
+        {
+            ForceHideRecents = true;
+            OnDemand_Panel.Visibility = Visibility.Collapsed;
+            LoadedContent_Panel.Visibility = Visibility.Visible;
+            IsBusy = true;
+            BusyText = "Loading Shaders";
+
+
+            var sps = (StaticParameterSet)materialId;
+            Task.Run(() =>
+            {
+                try
+                {
+                    if (pcc.Exports.FirstOrDefault(exp => exp.ClassName == "ShaderCache") is { } seekFreeShaderCacheExport)
+                    {
+                        var seekFreeShaderCache = ObjectBinary.From<ShaderCache>(seekFreeShaderCacheExport);
+                        if (seekFreeShaderCache.MaterialShaderMaps.TryGetValue(sps, out MaterialShaderMap msm))
+                        {
+                            string topInfoText =
+                                $"Shaders in #{seekFreeShaderCacheExport.UIndex} SeekFreeShaderCache (Index {seekFreeShaderCache.MaterialShaderMaps.IndexOf(new(sps, msm))})";
+                            return (GetMeshShaderMaps(msm, seekFreeShaderCache, game: pcc.Game), topInfoText);
+                        }
+                    }
+
+                    if (!RefShaderCacheReader.IsShaderOffsetsDictInitialized(pcc.Game))
+                    {
+                        BusyText = "Calculating Shader offsets\n(May take ~15s)";
+                    }
+
+                    MaterialShaderMap msmFromGlobalCache = RefShaderCacheReader.GetMaterialShaderMap(pcc.Game, sps, out int fileOffset);
+                    if (msmFromGlobalCache != null)
+                    {
+                        var topInfoText = $"Shaders in {RefShaderCacheReader.ShaderCacheName(pcc.Game)} at 0x{fileOffset:X8}";
+                        return (GetMeshShaderMaps(msmFromGlobalCache, game: pcc.Game), topInfoText);
+                    }
+                }
+                catch (Exception)
+                {
+                    //
+                }
+
+                return (null, "MaterialShaderMap not found!");
+            }).ContinueWithOnUIThread(prevTask =>
+            {
+                MeshShaderMaps.ClearEx();
+                (IEnumerable<TreeViewMeshShaderMap> treeviewItems, string topInfoText) = prevTask.Result;
+                TopInfoText = topInfoText;
+                if (treeviewItems != null)
+                {
+                    MeshShaderMaps.AddRange(treeviewItems);
+                }
+                IsBusy = false;
+            });
         }
 
         public override void UnloadExport()
