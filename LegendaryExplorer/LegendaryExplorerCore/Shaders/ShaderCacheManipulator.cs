@@ -21,15 +21,29 @@ namespace LegendaryExplorerCore.Shaders
             //figure out which MaterialShaderMaps to keep
             foreach (ExportEntry export in pcc.Exports)
             {
-                // this should be IsA() as DecalMaterial subclasses
-                // also should take into account TerrainMaterial
-                if (export.ClassName == "Material")
+                if (export.IsA("Material"))
                 {
                     staticParamSetsInFile.Add((StaticParameterSet)ObjectBinary.From<Material>(export).SM3MaterialResource.ID);
                 }
                 else if (export.IsA("MaterialInstance") && export.GetProperty<BoolProperty>("bHasStaticPermutationResource"))
                 {
                     staticParamSetsInFile.Add(ObjectBinary.From<MaterialInstance>(export).SM3StaticParameterSet);
+                }
+                else if (export.IsA("Terrain"))
+                {
+                    // Mirrors GetLocalShadersForMaterials/GetBrokenMaterials: a terrain's own combined-layer
+                    // shader maps (CachedTerrainMaterials[i].ID) and its individual layer materials
+                    // (MaterialIds) both need to survive compaction; neither is reachable through the
+                    // Material/MaterialInstance branches above since Terrain isn't a material export.
+                    var terrain = ObjectBinary.From<Terrain>(export);
+                    foreach (var ctm in terrain.CachedTerrainMaterials)
+                    {
+                        staticParamSetsInFile.Add((StaticParameterSet)ctm.ID);
+                        foreach (var matid in ctm.MaterialIds)
+                        {
+                            staticParamSetsInFile.Add((StaticParameterSet)matid);
+                        }
+                    }
                 }
             }
             RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSetsInFile, pcc.Game, gamePathOverride);
@@ -62,7 +76,7 @@ namespace LegendaryExplorerCore.Shaders
 
             foreach (ExportEntry export in materials)
             {
-                if (export.ClassName == "Material")
+                if (export.IsA("Material"))
                 {
                     staticParamSets.Add((StaticParameterSet)ObjectBinary.From<Material>(export).SM3MaterialResource.ID);
                 }
@@ -111,7 +125,7 @@ namespace LegendaryExplorerCore.Shaders
 
             foreach (ExportEntry export in materials)
             {
-                if (export.ClassName == "Material")
+                if (export.IsA("Material"))
                 {
                     staticParamSets.Add((StaticParameterSet)ObjectBinary.From<Material>(export).SM3MaterialResource.ID);
                 }
@@ -323,7 +337,7 @@ namespace LegendaryExplorerCore.Shaders
 
             foreach (ExportEntry export in pcc.Exports)
             {
-                if (export.ClassName == "Material")
+                if (export.IsA("Material"))
                 {
                     staticParamSetsToMaterialsDict.AddToListAt((StaticParameterSet)ObjectBinary.From<Material>(export).SM3MaterialResource.ID, export);
                 }
@@ -383,7 +397,7 @@ namespace LegendaryExplorerCore.Shaders
 
             var staticParamSetsToMaterialsDict = new Dictionary<StaticParameterSet, List<ExportEntry>>();
 
-            if (export.ClassName == "Material")
+            if (export.IsA("Material"))
             {
                 staticParamSetsToMaterialsDict.AddToListAt((StaticParameterSet)ObjectBinary.From<Material>(export).SM3MaterialResource.ID, export);
             }

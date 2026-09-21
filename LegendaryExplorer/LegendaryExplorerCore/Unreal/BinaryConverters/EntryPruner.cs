@@ -53,7 +53,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             // 02/04/2023: #353 Remove from ClientDestroyedActorContent and TextureToInstancesMap
             var level = pcc.FindExport("TheWorld.PersistentLevel");
-            if (level != null)
+            if (level != null && level.ClassName == "Level")
             {
                 var l = ObjectBinary.From<Level>(level);
                 var trashed = false;

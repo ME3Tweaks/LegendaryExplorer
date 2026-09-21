@@ -4573,6 +4573,30 @@ defaultproperties
             hosted.Show();
         }
 
+        internal static void ViewTerrainMaterials(ExportEntry exp)
+        {
+            if (exp.ClassName != "Terrain")
+            {
+                return;
+            }
+
+            var terrain = ObjectBinary.From<Terrain>(exp);
+            if (terrain.CachedTerrainMaterials is not { Length: > 0 })
+            {
+                MessageBox.Show("No cached terrain materials found on this export.", "View Terrain Materials");
+                return;
+            }
+
+            var firstMaterialId = terrain.CachedTerrainMaterials[0].ID;
+            var loader = new ShaderExportLoader { AutoLoad = true };
+            var hosted = new ExportLoaderHostedWindow(loader)
+            {
+                Title = $"Shader Viewer - Terrain {exp.UIndex} {exp.InstancedFullPath} - {exp.FileRef.FilePath}"
+            };
+            hosted.Show();
+            loader.LoadByMaterialId(firstMaterialId, exp.FileRef);
+        }
+
         internal static void TestTLKSystem(PackageEditorWindow packageEditorWindow)
         {
             MEGame[] games = [MEGame.ME1, MEGame.ME2, MEGame.ME3, MEGame.LE1, MEGame.LE2, MEGame.LE3];
