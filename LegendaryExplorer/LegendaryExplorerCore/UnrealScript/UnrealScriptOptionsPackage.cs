@@ -40,6 +40,11 @@ namespace LegendaryExplorerCore.UnrealScript
         public Func<string, List<string>> GetVTableFromDonor { get; set; }
 
         /// <summary>
+        /// EXTREMELY DANGEROUS: If editing native structs is allowed. Seriously, don't turn this on unless you really know what you're doing.
+        /// </summary>
+        public bool AllowNativeStructEdits { get; set; } = false;
+
+        /// <summary>
         /// When doing bulk-compiles of non-base files, providing this can significantly improve performance.
         /// It must be an initialized FileLib for the last file in the game's base file list, as defined in <see cref="FileLib.BaseFileNames"/>
         /// </summary>
