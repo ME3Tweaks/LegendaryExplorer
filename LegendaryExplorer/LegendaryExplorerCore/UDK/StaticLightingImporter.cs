@@ -109,6 +109,28 @@ namespace LegendaryExplorerCore.UDK
                 smc.WriteBinary(meBin);
             }
 
+            // Decal Components
+            foreach (var dc in mePackage.Exports.Where(x => x.IsA("DecalComponent")).ToList())
+            {
+                var meBin = ObjectBinary.From<DecalComponent>(dc);
+                if (setup.ShouldKeepLightMap != null && setup.ShouldKeepLightMap(dc))
+                {
+                    foreach (var staticRec in meBin.StaticReceivers)
+                    {
+                        KeepLightMapTextures(staticRec.LightMap, mePackage, setup);
+                    }
+                }
+                else
+                {
+                    foreach (var staticRec in meBin.StaticReceivers)
+                    {
+                        ClearLightmap(staticRec.LightMap, mePackage, setup);
+                    }
+                }
+
+                dc.WriteBinary(meBin);
+            }
+
             foreach (var mc in mePackage.Exports.Where(x => x.IsA("ModelComponent")).ToList())
             {
                 var meBin = ObjectBinary.From<ModelComponent>(mc);
@@ -367,6 +389,45 @@ namespace LegendaryExplorerCore.UDK
                 else
                 {
                     Debug.WriteLine($"Did not find UDK SMC in remapping: {smc.InstancedFullPath}");
+                }
+            }
+
+            // DecalComponent
+            foreach (var dc in mePackage.Exports.Where(x => x.IsA("DecalComponent")).ToList())
+            {
+                if (setup.ShouldKeepLightMap?.Invoke(dc) ?? false)
+                {
+                    continue; // Do not install this lightmap.
+                }
+                meToUdkRemapping.TryGetValue(dc, out var udkDc);
+                if (udkDc == null)
+                {
+                    udkDc = udkPackage.FindExport(dc.InstancedFullPath);
+                }
+
+                if (udkDc != null)
+                {
+                    var meBin = ObjectBinary.From<DecalComponent>(dc);
+                    var uBin = ObjectBinary.From<DecalComponent>(udkDc);
+                    var originalReceivers = meBin.StaticReceivers;
+
+                    meBin.StaticReceivers = uBin.StaticReceivers;
+                    for (int i = 0; i < meBin.StaticReceivers.Length; i++)
+                    {
+                        var sr = meBin.StaticReceivers[i];
+
+                        // Relink Component back to its original value
+                        sr.Component = originalReceivers[i].Component;
+
+                        // References will be updated since it's a copy of UDK version.
+                        PortLightMaps(sr.LightMap, dc, udkPackage);
+                    }
+
+                    dc.WriteBinary(meBin);
+                }
+                else
+                {
+                    Debug.WriteLine($"Did not find UDK DC in remapping: {dc.InstancedFullPath}");
                 }
             }
 
