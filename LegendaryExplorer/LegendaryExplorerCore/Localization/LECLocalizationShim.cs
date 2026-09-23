@@ -92,6 +92,8 @@ namespace LegendaryExplorerCore.Localization
                     return string.Format("{0} [Nested Property] references entry {1} {2}, but it appears to be wrong type. Property type expects a class (or subclass) {3}, but the referenced one is of type {4}", parms);
                 case string_interp_warningWrongObjectPropertyTypingWrongMessage:
                     return string.Format("{0} {1} references entry {2} {3}, but it appears to be wrong type. Property type expects an instance of an object of class (or subclass) {4}, but the referenced one is of type {5}", parms);
+
+                // BINARY REFERENCES
                 case string_interp_warningWrongBinaryReferenceTyping:
                     return string.Format("{0} Binary reference {1} references entry {2} {3}, but it appears to be wrong type. It should be an instance of an object of class (or subclass) {4}, but the referenced one is of type {5}", parms);
                 case string_interp_nested_warningWrongObjectPropertyTypingWrongMessage:
