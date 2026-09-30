@@ -15,6 +15,10 @@ namespace LegendaryExplorerCore.Textures.Studio
     {
         public static Dictionary<uint, TextureMapEntry> LoadTextureMap(MEGame game)
         {
+            // LMP is built from LE3's content and has no precomputed map of its own
+            if (game == MEGame.LMP)
+                game = MEGame.LE3;
+
             // Read the vanilla file name table
             List<string> packageNames;
             using (MemoryStream vanillaInfoStream = LegendaryExplorerCoreUtilities.LoadEmbeddedFile($"Precomputed.FileTable.vanilla{game}.bin"))
