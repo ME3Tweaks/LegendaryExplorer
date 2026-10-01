@@ -1062,6 +1062,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.ConvertExportToImport(GetPEWindow());
         }
 
+        private void ConvertAllImportableExportsToImports_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ConvertAllImportableExportsToImports(GetPEWindow());
+        }
+
         private void FromPackageUScriptFromFolder_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.CompilePackageUScriptFromFolder(GetPEWindow());
