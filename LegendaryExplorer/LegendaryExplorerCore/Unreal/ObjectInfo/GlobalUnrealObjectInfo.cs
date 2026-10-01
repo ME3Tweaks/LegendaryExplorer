@@ -965,7 +965,12 @@ namespace LegendaryExplorerCore.Unreal.ObjectInfo
                             if (type is not null)
                             {
                                 bool transient = Enums.Has(uProperty.PropertyFlags, UnrealFlags.EPropertyFlags.Transient);
-                                info.properties.Add(childExport.ObjectName.Instanced, new PropertyInfo((PropertyType)type, reference, transient, uProperty.ArraySize));
+                                // Key by the NameReference itself, not its Instanced string: the implicit
+                                // string -> NameReference conversion doesn't split "_N" suffixes, so
+                                // "Unnamed_1" would become ("Unnamed_1", 0) and never match the ("Unnamed", 2)
+                                // that real property tags carry - RemoveIncompatibleProperties then strips
+                                // every numbered member (e.g. LightingChannels.Unnamed_1) on cross-game ports.
+                                info.properties.Add(childExport.ObjectName, new PropertyInfo((PropertyType)type, reference, transient, uProperty.ArraySize));
                             }
                             break;
                     }
