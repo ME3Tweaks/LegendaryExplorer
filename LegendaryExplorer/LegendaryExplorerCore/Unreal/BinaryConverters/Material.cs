@@ -108,15 +108,44 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         [UIndexRefContainer]
         public MaterialResource SM2StaticPermutationResource;
         public StaticParameterSet SM2StaticParameterSet;
+
+        /// <summary>
+        /// UDK only: whether a low quality (MSQ_LOW) permutation follows the high quality one. UDK keeps the
+        /// high quality permutation in the SM3 fields and the low quality one in the SM2 fields.
+        /// </summary>
+        public bool UDKHasLowQualityPermutation;
+
         protected override void Serialize(SerializingContainer sc)
         {
+            if (sc.Game == MEGame.UDK)
+            {
+                // UDK (package version > 857) starts with a bitmask of the quality levels that follow: bit 0 is
+                // high, bit 1 is low. Each set bit is a resource followed by a parameter set. Without the mask,
+                // UDK reads the resource's first int as the mask, loads nothing, and fails with a serial size
+                // mismatch. See UMaterialInstance::Serialize (UDK.exe 0x7ff64de6e440).
+                int qualityMask = UDKHasLowQualityPermutation ? 3 : 1;
+                sc.Serialize(ref qualityMask);
+                if (sc.IsLoading)
+                {
+                    UDKHasLowQualityPermutation = (qualityMask & 2) != 0;
+                }
+                if ((qualityMask & 1) != 0)
+                {
+                    sc.Serialize(ref SM3StaticPermutationResource);
+                    sc.Serialize(ref SM3StaticParameterSet);
+                }
+                if (UDKHasLowQualityPermutation)
+                {
+                    sc.Serialize(ref SM2StaticPermutationResource);
+                    sc.Serialize(ref SM2StaticParameterSet);
+                }
+                return;
+            }
+
             sc.Serialize(ref SM3StaticPermutationResource);
             sc.Serialize(ref SM3StaticParameterSet);
-            if (sc.Game != MEGame.UDK)
-            {
-                sc.Serialize(ref SM2StaticPermutationResource);
-                sc.Serialize(ref SM2StaticParameterSet);
-            }
+            sc.Serialize(ref SM2StaticPermutationResource);
+            sc.Serialize(ref SM2StaticParameterSet);
         }
 
         public static MaterialInstance Create()
@@ -136,7 +165,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
             names.AddRange(SM3StaticPermutationResource.GetNames(game));
             names.AddRange(SM3StaticParameterSet.GetNames(game));
-            if (game != MEGame.UDK)
+            if (game != MEGame.UDK || UDKHasLowQualityPermutation)
             {
                 names.AddRange(SM2StaticPermutationResource.GetNames(game));
                 names.AddRange(SM2StaticParameterSet.GetNames(game, "ShaderModel2StaticParameterSet."));
@@ -148,7 +177,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override void ForEachUIndex<TAction>(MEGame game, in TAction action)
         {
             SM3StaticPermutationResource.ForEachUIndex(game, action, "SM3StaticPermutationResource.");
-            if (game is not MEGame.UDK)
+            if (game is not MEGame.UDK || UDKHasLowQualityPermutation)
             {
                 SM2StaticPermutationResource.ForEachUIndex(game, action, "SM2StaticPermutationResource.");
             }
