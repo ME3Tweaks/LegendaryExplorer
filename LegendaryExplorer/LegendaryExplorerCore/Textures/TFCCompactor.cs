@@ -52,15 +52,6 @@ namespace LegendaryExplorerCore.Textures
         public bool? RootTexturesOnly { get; set; }
 
         /// <summary>
-        /// Opt-in: only modify textures whose external data is moved into the new TFC(s). Textures with no external data
-        /// (package stored, even if they still have TFC properties), and textures in TFCs not listed in
-        /// <see cref="TFCsToCompact"/>, are left exactly as they are instead of being cleaned up. Packages that contain no
-        /// moved textures are therefore not saved. Used when the compacted result must differ from the input as little as
-        /// possible, such as when the differences are shipped as patches.
-        /// </summary>
-        public bool OnlyUpdateRelocatedTextures { get; set; }
-
-        /// <summary>
         /// If the TFC should use indexing. This is true for LE, false for OT
         /// </summary>
         public bool UseIndexing { get; set; }
@@ -262,7 +253,7 @@ namespace LegendaryExplorerCore.Textures
                     if (compactor.infoPackage.RootTexturesOnly is { } rootTexturesOnly && entry.Instances[0].IsRootTexture != rootTexturesOnly)
                         continue;
 
-                    if (compactor.infoPackage.OnlyUpdateRelocatedTextures && entry.Instances[0].CompressedMipInfos.Count == 0)
+                    if (entry.Instances[0].CompressedMipInfos.Count == 0)
                         continue; // No external data to move
 
                     if (compactor.CRCMap.ContainsKey(entry.GetCRC()))
@@ -405,10 +396,19 @@ namespace LegendaryExplorerCore.Textures
                             continue; // PCC Stored
                         }
 
-                        if (infoPackage.OnlyUpdateRelocatedTextures && (tu.CompressedMipInfos.Count == 0 || !infoPackage.TFCsToCompact.Contains(tu.TFCName) || !compactor.CRCMap.ContainsKey(tu.CRC)))
+                        if (tu.CompressedMipInfos.Count == 0 || !infoPackage.TFCsToCompact.Contains(tu.TFCName))
                         {
-                            continue; // None of this texture's data was moved, so leave it untouched
+                            // None of this texture's data is being moved (e.g. package stored textures that still have TFC
+                            // properties), so leave it untouched. Packages with nothing moved are then not modified or saved.
+                            continue;
                         }
+
+                        if (!compactor.CRCMap.TryGetValue(tu.CRC, out var updateInfo))
+                        {
+                            Debug.WriteLine($"CRC not found in map 0x{tu.CRC:X8}, {tu.ExportPath} in {tu.TFCName}");
+                            continue;
+                        }
+
                         var exportToUpdate = package.FindExport(tu.ExportPath);
                         if (exportToUpdate == null)
                         {
@@ -421,36 +421,22 @@ namespace LegendaryExplorerCore.Textures
                         t2d.Mips.RemoveAll(x => x.StorageType == StorageTypes.empty); // Remove empty mips
 
                         // Update offset
-                        if (compactor.CRCMap.TryGetValue(tu.CRC, out var updateInfo))
+                        for (int i = 0; i < updateInfo.MipOffsetMap.Count; i++)
                         {
-                            for (int i = 0; i < updateInfo.MipOffsetMap.Count; i++)
-                            {
-                                t2d.Mips[i].DataOffset = updateInfo.MipOffsetMap[i];
+                            t2d.Mips[i].DataOffset = updateInfo.MipOffsetMap[i];
 
-                                // For conversions
-                                t2d.Mips[i].StorageType = GetTargetExternalStorageType(textureMap.Game); //tfc compactor changes external types so this should be OK?
-                                t2d.Mips[i].CompressedSize = updateInfo.MipCompressedSizeMap[i];
-                            }
-
-                            exportToUpdate.WriteBinary(t2d);
-
-                            // Update TFC properties
-                            var properties = exportToUpdate.GetProperties();
-                            properties.AddOrReplaceProp(new FGuid(updateInfo.TFCGuid).ToStructProperty("TFCFileGuid"));
-                            properties.AddOrReplaceProp(new NameProperty(updateInfo.TFCName, "TextureFileCacheName"));
-                            exportToUpdate.WriteProperties(properties);
-                        }
-                        else if (infoPackage.TFCsToCompact.Contains(tu.TFCName))
-                        {
-                            Debug.WriteLine($"CRC not found in map 0x{tu.CRC:X8}, {tu.ExportPath} in {tu.TFCName}");
+                            // For conversions
+                            t2d.Mips[i].StorageType = GetTargetExternalStorageType(textureMap.Game); //tfc compactor changes external types so this should be OK?
+                            t2d.Mips[i].CompressedSize = updateInfo.MipCompressedSizeMap[i];
                         }
 
-                        if (!tu.HasExternalReferences)
-                        {
-                            // Remove external reference properties
-                            exportToUpdate.RemoveProperty("TFCFileGuid");
-                            exportToUpdate.RemoveProperty("TextureFileCacheName");
-                        }
+                        exportToUpdate.WriteBinary(t2d);
+
+                        // Update TFC properties
+                        var properties = exportToUpdate.GetProperties();
+                        properties.AddOrReplaceProp(new FGuid(updateInfo.TFCGuid).ToStructProperty("TFCFileGuid"));
+                        properties.AddOrReplaceProp(new NameProperty(updateInfo.TFCName, "TextureFileCacheName"));
+                        exportToUpdate.WriteProperties(properties);
                     }
 
                     if (package.IsModified)
