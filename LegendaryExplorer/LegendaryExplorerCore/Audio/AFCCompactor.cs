@@ -437,7 +437,7 @@ namespace LegendaryExplorerCore.Audio
                 notifyStatusUpdate?.Invoke($"Updating {Path.GetFileName(pccPath)}");
                 using var pack = MEPackageHandler.OpenMEPackage(pccPath);
                 bool shouldSave = false;
-                List<ExportEntry> wwiseStreamExports = pack.Exports.Where(x => x.ClassName == "WwiseStream").ToList();
+                List<ExportEntry> wwiseStreamExports = pack.Exports.Where(x => !x.IsDefaultObject && x.ClassName == "WwiseStream").ToList();
                 foreach (ExportEntry exp in wwiseStreamExports)
                 {
                     // Check if this needs updated by finding it in the reference map
