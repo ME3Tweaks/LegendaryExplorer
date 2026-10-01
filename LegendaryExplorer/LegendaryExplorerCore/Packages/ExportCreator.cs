@@ -54,13 +54,21 @@ namespace LegendaryExplorerCore.Packages
         /// <param name="packageName"></param>
         /// <param name="parent"></param>
         /// <param name="relinkResultsAvailable"></param>
+        /// <param name="cache"></param>
+        /// <param name="forcedExport"></param>
+        /// <param name="reuseExisting">If an existing Package export at the same instanced full path should be returned instead of a new one being created.
+        /// Set this to false when the caller needs one distinct export per call - e.g. <see cref="PackageResynthesizer"/> stubbing out a package that legally
+        /// contains several objects sharing an instanced full path (differing only by class), where collapsing them onto one export loses objects.</param>
         /// <returns></returns>
-        public static ExportEntry CreatePackageExport(this IMEPackage pcc, NameReference packageName, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null, PackageCache cache = null, bool forcedExport = true)
+        public static ExportEntry CreatePackageExport(this IMEPackage pcc, NameReference packageName, IEntry parent = null, Action<List<EntryStringPair>> relinkResultsAvailable = null, PackageCache cache = null, bool forcedExport = true, bool reuseExisting = true)
         {
-            var testName = parent != null ? NameReference.FromInstancedString($"{parent.InstancedFullPath}.{packageName.Instanced}") : packageName;
-            var testEntry = pcc.FindExport(testName.Instanced, "Package");
-            if (testEntry != null)
-                return testEntry;
+            if (reuseExisting)
+            {
+                var testName = parent != null ? NameReference.FromInstancedString($"{parent.InstancedFullPath}.{packageName.Instanced}") : packageName;
+                var testEntry = pcc.FindExport(testName.Instanced, "Package");
+                if (testEntry != null)
+                    return testEntry;
+            }
 
             var rop = new RelinkerOptionsPackage { ImportExportDependencies = true, Cache = cache };
             var exp = new ExportEntry(pcc, parent, packageName)

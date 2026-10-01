@@ -35,6 +35,8 @@ namespace LegendaryExplorerCore.Pathing
             // UStaticMesh/USkeletalMesh::CachedStreamingTextureFactors), so it only needs to be
             // computed once even if the mesh is placed many times.
             var texelFactorCache = new Dictionary<ExportEntry, float>();
+            // Same, measured over the mesh's lightmap UVs (UStaticMesh::GetStreamingTextureFactor(LightMapCoordinateIndex))
+            var lightmapTexelFactorCache = new Dictionary<ExportEntry, float>();
 
             // Look at all components
             foreach (var component in package.Exports.Where(x => x.IsA("Component")))
@@ -76,12 +78,14 @@ namespace LegendaryExplorerCore.Pathing
 
                 BoxSphereBounds meshBounds;
                 float meshTexelFactor;
+                StaticMesh staticMeshBin = null;
 
                 switch (mdl.ClassName)
                 {
                     case "StaticMesh":
                         {
                             var bin = ObjectBinary.From<StaticMesh>(mdl);
+                            staticMeshBin = bin;
                             meshBounds = bin.Bounds;
 
                             if (!texelFactorCache.TryGetValue(mdl, out meshTexelFactor))
@@ -147,6 +151,14 @@ namespace LegendaryExplorerCore.Pathing
 
                 if (worldMatrix.Translation is { X: 0, Y: 0, Z: 0 })
                     continue;
+
+                // The component's own scale sits in front of the owner transform. Collection actor matrices leave it
+                // out, so without this, scaled collection components get the wrong bounds (checked against vanilla LE3
+                // TextureToInstancesMap centers: ~0 error with it, 50-90 units without).
+                var componentScale = (props.GetProp<FloatProperty>("Scale")?.Value ?? 1f)
+                                     * (props.GetProp<StructProperty>("Scale3D") is { } scale3DProp ? CommonStructs.GetVector3(scale3DProp) : Vector3.One);
+                if (componentScale != Vector3.One)
+                    worldMatrix = Matrix4x4.CreateScale(componentScale) * worldMatrix;
 
                 float streamingDistanceMultiplier = props.GetProp<FloatProperty>("StreamingDistanceMultiplier")?.Value ?? 1f;
                 var worldBounds = meshBounds.TransformBy(worldMatrix);
@@ -276,6 +288,18 @@ namespace LegendaryExplorerCore.Pathing
                         TexelFactor = worldTexelFactor
                     });
                 }
+
+                // Lightmap and shadow map textures are referenced from the component's binary, not its materials
+                if (staticMeshBin != null && component.ClassName == "StaticMeshComponent")
+                {
+                    if (!lightmapTexelFactorCache.TryGetValue(mdl, out float meshLightmapFactor))
+                    {
+                        int lightmapUVIndex = mdl.GetProperty<IntProperty>("LightMapCoordinateIndex")?.Value ?? 1;
+                        meshLightmapFactor = ComputeStaticMeshTexelFactor(staticMeshBin, lightmapUVIndex);
+                        lightmapTexelFactorCache[mdl] = meshLightmapFactor;
+                    }
+                    AddLightingTextureInstances(component, worldBounds, meshLightmapFactor * GetMaximumAxisScale(worldMatrix), textureToInstancesMap);
+                }
             }
             // We now have location and list of textures
             // Build the map.
@@ -294,6 +318,67 @@ namespace LegendaryExplorerCore.Pathing
 
             levelExp.WriteBinary(level);
 
+        }
+
+        /// <summary>
+        /// Adds streaming instances for a static mesh component's LOD0 lightmap and shadow map textures, following
+        /// UStaticMeshComponent::GetStreamingTextureInfo: TexelFactor = lightmap-UV texel factor * max axis scale / min(CoordinateScale).
+        /// Only lightmap texture slots 1 and 2 of an LMT_2D lightmap are listed, which is what vanilla LE3 and UDK maps contain
+        /// (slot 3 and LMT_4or6 lightmaps never appear in their TextureToInstancesMaps).
+        /// Checked against vanilla LE3 and ME3 maps: exact for many instances, otherwise up to ~2x higher than the stored factor,
+        /// which errs toward streaming more resolution rather than less.
+        /// </summary>
+        private static void AddLightingTextureInstances(ExportEntry component, BoxSphereBounds worldBounds, float worldLightmapFactor,
+            Dictionary<IEntry, List<StreamableTextureInstance>> textureToInstancesMap)
+        {
+            var package = component.FileRef;
+            var bin = ObjectBinary.From<StaticMeshComponent>(component);
+            if (bin.LODData.Length == 0)
+                return;
+            var lod = bin.LODData[0];
+
+            void Add(int textureUIndex, Vector2 coordinateScale)
+            {
+                if (textureUIndex == 0 || !package.TryGetUExport(textureUIndex, out var texture))
+                    return;
+                float minScale = MathF.Min(coordinateScale.X, coordinateScale.Y);
+                if (minScale <= 1e-8f)
+                    return;
+
+                if (!textureToInstancesMap.TryGetValue(texture, out var instances))
+                {
+                    instances = new List<StreamableTextureInstance>();
+                    textureToInstancesMap[texture] = instances;
+                }
+
+                instances.Add(new StreamableTextureInstance
+                {
+                    BoundingSphere = new Sphere
+                    {
+                        Center = worldBounds.Origin,
+                        W = worldBounds.SphereRadius
+                    },
+                    TexelFactor = worldLightmapFactor / minScale
+                });
+            }
+
+            if (lod.LightMap is LightMap_2D lightMap)
+            {
+                Add(lightMap.Texture1, lightMap.CoordinateScale);
+                Add(lightMap.Texture2, lightMap.CoordinateScale);
+            }
+
+            foreach (int shadowMapUIndex in lod.ShadowMaps)
+            {
+                if (!package.TryGetUExport(shadowMapUIndex, out var shadowMap) || shadowMap.ClassName != "ShadowMap2D")
+                    continue;
+                var shadowMapProps = shadowMap.GetProperties();
+                if (shadowMapProps.GetProp<ObjectProperty>("Texture") is { } textureProp
+                    && shadowMapProps.GetProp<StructProperty>("CoordinateScale") is { } scaleProp)
+                {
+                    Add(textureProp.Value, new Vector2(scaleProp.GetProp<FloatProperty>("X").Value, scaleProp.GetProp<FloatProperty>("Y").Value));
+                }
+            }
         }
 
         /// <summary>
@@ -341,10 +426,10 @@ namespace LegendaryExplorerCore.Pathing
         private const float SmallNumberSquared = 1e-8f * 1e-8f;
 
         /// <summary>
-        /// Equivalent of UE3's UStaticMesh::GetStreamingTextureFactor(0) - the local-space "world units per UV unit"
+        /// Equivalent of UE3's UStaticMesh::GetStreamingTextureFactor(uvIndex) - the local-space "world units per UV unit"
         /// ratio used to decide how far away a texture needs to start streaming in at higher resolution.
         /// </summary>
-        private static float ComputeStaticMeshTexelFactor(StaticMesh mesh)
+        private static float ComputeStaticMeshTexelFactor(StaticMesh mesh, int uvIndex = 0)
         {
             if (mesh.LODModels.Length == 0)
                 return 0f;
@@ -353,6 +438,9 @@ namespace LegendaryExplorerCore.Pathing
             var positions = lod.PositionVertexBuffer.VertexData;
             var indices = lod.IndexBuffer;
             var vb = lod.VertexBuffer;
+            if (vb.NumTexCoords == 0)
+                return 0f;
+            uvIndex = Math.Clamp(uvIndex, 0, (int)vb.NumTexCoords - 1);
 
             var texelRatios = new List<float>();
             foreach (var element in lod.Elements)
@@ -373,9 +461,9 @@ namespace LegendaryExplorerCore.Pathing
                     float l1 = Vector3.Distance(positions[i0], positions[i1]);
                     float l2 = Vector3.Distance(positions[i0], positions[i2]);
 
-                    Vector2 uv0 = GetVertexUV(vb, i0);
-                    Vector2 uv1 = GetVertexUV(vb, i1);
-                    Vector2 uv2 = GetVertexUV(vb, i2);
+                    Vector2 uv0 = GetVertexUV(vb, i0, uvIndex);
+                    Vector2 uv1 = GetVertexUV(vb, i1, uvIndex);
+                    Vector2 uv2 = GetVertexUV(vb, i2, uvIndex);
                     float t1 = Vector2.Distance(uv0, uv1);
                     float t2 = Vector2.Distance(uv0, uv2);
 
@@ -389,12 +477,12 @@ namespace LegendaryExplorerCore.Pathing
             return PercentileTexelRatio(texelRatios);
         }
 
-        private static Vector2 GetVertexUV(StaticMeshVertexBuffer vb, int vertexIndex)
+        private static Vector2 GetVertexUV(StaticMeshVertexBuffer vb, int vertexIndex, int uvIndex = 0)
         {
             var vertex = vb.VertexData[vertexIndex];
             if (vb.bUseFullPrecisionUVs)
-                return vertex.FullPrecisionUVs[0];
-            var uv = vertex.HalfPrecisionUVs[0];
+                return vertex.FullPrecisionUVs[uvIndex];
+            var uv = vertex.HalfPrecisionUVs[uvIndex];
             return new Vector2(uv.X, uv.Y);
         }
 

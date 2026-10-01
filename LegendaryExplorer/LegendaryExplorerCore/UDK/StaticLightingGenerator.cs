@@ -70,6 +70,18 @@ namespace LegendaryExplorerCore.UDK
         /// </summary>
         public List<ExportEntry> LightActors { get; } = new();
 
+        public List<ExportEntry> DecalActors { get; } = new();
+
+        /// <summary>Source component UIndex to its generated UDK component, before package reform.</summary>
+        public Dictionary<int, ExportEntry> PortedMeshComponents { get; } = new();
+
+        /// <summary>
+        /// Light GUIDs which had a referenced shadow map in the source level set. UDK's regular static-light
+        /// defaults use direct lightmaps, so these lights must explicitly opt out to make Lightmass rebuild
+        /// their shadow maps.
+        /// </summary>
+        public ISet<Guid> ShadowMappedLightGuids { get; set; }
+
         /// <summary>
         /// Root package exports containing meshes that are exports
         /// </summary>
@@ -88,10 +100,12 @@ namespace LegendaryExplorerCore.UDK
         /// <param name="delegatesROP">Only the delegates on this are used in the inner methods, such as for custom resolving of assets</param>
         /// <returns></returns>
         public static string GenerateUDKFileForLevel(IMEPackage pcc, string mapOutputPath = null,
-            string assetsOutputPath = null, string decookedMaterialsFolder = null, RelinkerOptionsPackage delegatesROP = null)
+            string assetsOutputPath = null, string decookedMaterialsFolder = null, RelinkerOptionsPackage delegatesROP = null,
+            ISet<Guid> shadowMappedLightGuids = null)
         {
             decookedMaterialsFolder ??= Path.Combine(UDKDirectory.SharedPath, $"{pcc.Game}MaterialPort");
             var assetInfo = GenerateAssetsPackage(pcc, assetsOutputPath, decookedMaterialsFolder);
+            assetInfo.ShadowMappedLightGuids = shadowMappedLightGuids;
 
             MELoadedFiles.InvalidateCaches();
 
@@ -128,6 +142,7 @@ namespace LegendaryExplorerCore.UDK
                 }
 
                 PortStaticMeshActors(assetInfo, packageCache, delegatesROP);
+                PortDecalActors(assetInfo, packageCache, decookedMaterialsFolder, assetsOutputPath, delegatesROP);
 
                 #region Terrain
 
@@ -174,6 +189,25 @@ namespace LegendaryExplorerCore.UDK
                 {
                     EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, actor,
                         udkPackage2, assetInfo.LevelExport, true, new RelinkerOptionsPackage(packageCache) { PortExportsAsImportsWhenPossible = true }, out IEntry result);
+                    levelBin.Actors.Add(result.UIndex);
+                }
+
+                // Clone decals after their receivers. Cross-package relinking must use the already
+                // generated mesh actors rather than pull the original collection actors into UDK.
+                var decalROP = new RelinkerOptionsPackage(packageCache) { PortExportsAsImportsWhenPossible = true };
+                foreach (var component in assetInfo.PortedMeshComponents.Values)
+                {
+                    var finalComponent = udkPackage2.FindExport(component.InstancedFullPath);
+                    if (finalComponent != null)
+                    {
+                        decalROP.CrossPackageMap[component] = finalComponent;
+                        decalROP.CrossPackageMap[component.Parent] = finalComponent.Parent;
+                    }
+                }
+                foreach (ExportEntry actor in assetInfo.DecalActors)
+                {
+                    EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.CloneTreeAsChild, actor,
+                        udkPackage2, finalLevelExport, true, decalROP, out IEntry result);
                     levelBin.Actors.Add(result.UIndex);
                 }
 
@@ -269,11 +303,6 @@ namespace LegendaryExplorerCore.UDK
         private static void PortLightActors(UDKAssetInfo assetInfo, PackageCache cache)
         {
             {
-                IEntry pointLightClass = assetInfo.TempPackage.GetEntryOrAddImport("Engine.PointLight", "Class");
-                IEntry spotLightClass = assetInfo.TempPackage.GetEntryOrAddImport("Engine.SpotLight", "Class");
-                IEntry directionalLightClass =
-                    assetInfo.TempPackage.GetEntryOrAddImport("Engine.DirectionalLight", "Class");
-
                 int plaIndex = 1;
                 int plcIndex = 1;
                 int slaIndex = 1;
@@ -282,10 +311,26 @@ namespace LegendaryExplorerCore.UDK
                 int dlcIndex = 1;
                 foreach (ExportEntry lightComponent in assetInfo.SourcePackage.Exports)
                 {
-                    if (!(lightComponent.Parent is ExportEntry parent && assetInfo.ActorsInLevel.Contains(parent.UIndex)))
+                    if (lightComponent.ClassName is not ("PointLightComponent" or "SpotLightComponent" or "DirectionalLightComponent")
+                        || !(lightComponent.Parent is ExportEntry parent && assetInfo.ActorsInLevel.Contains(parent.UIndex)))
                     {
                         continue;
                     }
+
+                    var ownerMobility = GetLightOwnerMobility(parent);
+                    if (ownerMobility == LightOwnerMobility.Movable)
+                    {
+                        // Lit at runtime in game. Baking it would freeze its light into the lightmaps wherever it stood when the level was exported.
+                        LECLog.Information($"Not exporting light {lightComponent.InstancedFullPath} to UDK: owner {parent.ClassName} is not a static or toggleable light");
+                        continue;
+                    }
+
+                    // Toggleable lights get UDK's toggleable classes, whose templates keep them out of the lightmaps (shadow maps only),
+                    // so they can still be switched and animated at runtime.
+                    string actorClassSuffix = ownerMobility == LightOwnerMobility.Toggleable ? "Toggleable" : "";
+                    IEntry LightActorClass(string baseClassName) => assetInfo.TempPackage.GetEntryOrAddImport($"Engine.{baseClassName}{actorClassSuffix}", "Class");
+                    IEntry LightComponentTemplate(string baseClassName, string componentName, string componentClassName) =>
+                        GetLightActorTemplate(assetInfo.TempPackage, baseClassName + actorClassSuffix, componentName, componentClassName);
 
                     var originalIFP = lightComponent.InstancedFullPath;
 
@@ -326,7 +371,8 @@ namespace LegendaryExplorerCore.UDK
                                 }
                             }
 
-                            var pla = new ExportEntry(assetInfo.TempPackage, assetInfo.LevelExport, new NameReference("PointLight", plaIndex++), EntryImporter.CreateStack(MEGame.UDK, pointLightClass.UIndex))
+                            IEntry pointLightClass = LightActorClass("PointLight");
+                            var pla = new ExportEntry(assetInfo.TempPackage, assetInfo.LevelExport, new NameReference(pointLightClass.ObjectName.Name, plaIndex++), EntryImporter.CreateStack(MEGame.UDK, pointLightClass.UIndex))
                             {
                                 Class = pointLightClass,
                             };
@@ -362,8 +408,12 @@ namespace LegendaryExplorerCore.UDK
 
                             var plce = portedPLC as ExportEntry;
                             plce.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
-                            plce.Archetype = assetInfo.TempPackage.GetEntryOrAddImport(
-                                "Engine.Default__PointLight.PointLightComponent0", "PointLightComponent", "Engine");
+                            plce.Archetype = LightComponentTemplate("PointLight", "PointLightComponent0", "PointLightComponent");
+                            SetDirectLightMapMode(lightComponent, plce, assetInfo.ShadowMappedLightGuids);
+                            if (ownerMobility == LightOwnerMobility.Toggleable)
+                            {
+                                KeepToggleableLightOutOfLightmaps(plce);
+                            }
                             assetInfo.LightActors.Add(pla);
                             break;
                         case "SpotLightComponent":
@@ -398,8 +448,9 @@ namespace LegendaryExplorerCore.UDK
                                 }
                             }
 
+                            IEntry spotLightClass = LightActorClass("SpotLight");
                             var sla = new ExportEntry(assetInfo.TempPackage, assetInfo.LevelExport,
-                                new NameReference("SpotLight", slaIndex++),
+                                new NameReference(spotLightClass.ObjectName.Name, slaIndex++),
                                 EntryImporter.CreateStack(MEGame.UDK, spotLightClass.UIndex))
                             {
                                 Class = spotLightClass
@@ -434,8 +485,12 @@ namespace LegendaryExplorerCore.UDK
                             sla.WriteProperties(slaProps);
                             var slce = portedSLC as ExportEntry;
                             slce.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
-                            slce.Archetype = assetInfo.TempPackage.GetEntryOrAddImport(
-                                "Engine.Default__SpotLight.SpotLightComponent0", "SpotLightComponent", "Engine");
+                            slce.Archetype = LightComponentTemplate("SpotLight", "SpotLightComponent0", "SpotLightComponent");
+                            SetDirectLightMapMode(lightComponent, slce, assetInfo.ShadowMappedLightGuids);
+                            if (ownerMobility == LightOwnerMobility.Toggleable)
+                            {
+                                KeepToggleableLightOutOfLightmaps(slce);
+                            }
 
                             assetInfo.LightActors.Add(sla);
                             break;
@@ -471,8 +526,9 @@ namespace LegendaryExplorerCore.UDK
                                 }
                             }
 
+                            IEntry directionalLightClass = LightActorClass("DirectionalLight");
                             var dla = new ExportEntry(assetInfo.TempPackage, assetInfo.LevelExport,
-                                new NameReference("DirectionalLight", dlaIndex++),
+                                new NameReference(directionalLightClass.ObjectName.Name, dlaIndex++),
                                 EntryImporter.CreateStack(MEGame.UDK, directionalLightClass.UIndex))
                             {
                                 Class = directionalLightClass
@@ -507,15 +563,156 @@ namespace LegendaryExplorerCore.UDK
                             dla.WriteProperties(dlaProps);
                             var dlce = portedDLC as ExportEntry;
                             dlce.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
-                            dlce.Archetype = assetInfo.TempPackage.GetEntryOrAddImport(
-                                "Engine.Default__DirectionalLight.DirectionalLightComponent0",
-                                "DirectionalLightComponent", "Engine");
+                            dlce.Archetype = LightComponentTemplate("DirectionalLight", "DirectionalLightComponent0", "DirectionalLightComponent");
+                            SetDirectLightMapMode(lightComponent, dlce, assetInfo.ShadowMappedLightGuids);
+                            if (ownerMobility == LightOwnerMobility.Toggleable)
+                            {
+                                KeepToggleableLightOutOfLightmaps(dlce);
+                            }
 
                             assetInfo.LightActors.Add(dla);
                             break;
                     }
                 }
             }
+        }
+
+        private enum LightOwnerMobility
+        {
+            /// <summary>Baked into lightmaps (or shadow maps, per UseDirectLightMap)</summary>
+            Static,
+            /// <summary>Can be switched or animated at runtime: static shadowing only, lighting stays dynamic</summary>
+            Toggleable,
+            /// <summary>Moves at runtime: no static lighting at all</summary>
+            Movable
+        }
+
+        /// <summary>
+        /// Classifies a light by the actor that owns it. The component classes are shared between static, toggleable
+        /// and movable lights, so only the owner says whether the light can take part in static lighting.
+        /// </summary>
+        private static LightOwnerMobility GetLightOwnerMobility(ExportEntry owner)
+        {
+            if (owner.ClassName.EndsWith("Toggleable"))
+            {
+                return LightOwnerMobility.Toggleable;
+            }
+
+            if (owner.ClassName.EndsWith("Movable"))
+            {
+                return LightOwnerMobility.Movable;
+            }
+
+            if (owner.IsA("StaticLightCollectionActor") || owner.IsA("Light"))
+            {
+                return LightOwnerMobility.Static;
+            }
+
+            // Light attached to some other actor (pawn, interp actor, etc.)
+            return LightOwnerMobility.Movable;
+        }
+
+        /// <summary>
+        /// Gets the import for a default subobject of an Engine light actor class, e.g. Engine.Default__PointLightToggleable.PointLightComponent0.
+        /// The Default__ object is added first, as GetEntryOrAddImport would otherwise create it as a Core Package import.
+        /// </summary>
+        private static IEntry GetLightActorTemplate(IMEPackage udkPackage, string actorClassName, string subobjectName, string subobjectClassName)
+        {
+            udkPackage.GetEntryOrAddImport($"Engine.Default__{actorClassName}", actorClassName, "Engine");
+            return udkPackage.GetEntryOrAddImport($"Engine.Default__{actorClassName}.{subobjectName}", subobjectClassName, "Engine");
+        }
+
+        /// <summary>
+        /// UDK's toggleable light templates set LightmassSettings.IndirectLightingScale to 0, but a LightmassSettings struct carried over
+        /// from the source light replaces that. Toggleable lights never appear in the source game's lightmaps, so keep their indirect
+        /// lighting out as well - once a light is in a mesh's lightmap, the game treats it as already applied and stops drawing it.
+        /// </summary>
+        private static void KeepToggleableLightOutOfLightmaps(ExportEntry udkLight)
+        {
+            if (udkLight.GetProperty<StructProperty>("LightmassSettings") is { } lightmassSettings)
+            {
+                lightmassSettings.Properties.AddOrReplaceProp(new FloatProperty(0f, "IndirectLightingScale"));
+                udkLight.WriteProperty(lightmassSettings);
+            }
+        }
+
+        private static void SetDirectLightMapMode(ExportEntry sourceLight, ExportEntry udkLight, ISet<Guid> shadowMappedLightGuids)
+        {
+            if (shadowMappedLightGuids == null)
+            {
+                return;
+            }
+
+            Guid lightGuid = CommonStructs.GetGuid(sourceLight.GetProperty<StructProperty>("LightGuid"));
+            if (lightGuid != Guid.Empty && shadowMappedLightGuids.Contains(lightGuid))
+            {
+                // PointLight/SpotLight/DirectionalLight default to true in UDK. False makes Lightmass retain
+                // the light as a separate static light and generate ShadowMap1D/ShadowMap2D data for it.
+                udkLight.WriteProperty(new BoolProperty(false, "UseDirectLightMap"));
+            }
+        }
+
+        /// <summary>
+        /// Gets the light GUIDs used by shadow maps which are actually referenced by level components.
+        /// Scan every package in a streamed level set and union the results before converting any package,
+        /// because a light in the persistent map can cast shadows onto components in a sublevel.
+        /// </summary>
+        public static HashSet<Guid> GetUsedShadowMapLightGuids(IMEPackage package)
+        {
+            var shadowMapUIndexes = new HashSet<int>();
+
+            foreach (ExportEntry smc in package.Exports.Where(x => x.IsA("StaticMeshComponent")))
+            {
+                var binary = ObjectBinary.From<StaticMeshComponent>(smc);
+                foreach (StaticMeshComponentLODInfo lod in binary.LODData)
+                {
+                    shadowMapUIndexes.UnionWith(lod.ShadowMaps);
+                    shadowMapUIndexes.UnionWith(lod.ShadowVertexBuffers);
+                }
+            }
+
+            foreach (ExportEntry mc in package.Exports.Where(x => x.IsA("ModelComponent")))
+            {
+                var binary = ObjectBinary.From<ModelComponent>(mc);
+                foreach (ModelElement element in binary.Elements)
+                {
+                    shadowMapUIndexes.UnionWith(element.ShadowMaps);
+                }
+            }
+
+            foreach (ExportEntry dc in package.Exports.Where(x => x.IsA("DecalComponent")))
+            {
+                var binary = ObjectBinary.From<DecalComponent>(dc);
+                foreach (StaticReceiverData receiver in binary.StaticReceivers)
+                {
+                    if (receiver.ShadowMap1D != null)
+                    {
+                        shadowMapUIndexes.UnionWith(receiver.ShadowMap1D);
+                    }
+                }
+            }
+
+            var lightGuids = new HashSet<Guid>();
+            foreach (int shadowMapUIndex in shadowMapUIndexes)
+            {
+                if (!package.TryGetUExport(shadowMapUIndex, out ExportEntry shadowMap))
+                {
+                    continue;
+                }
+
+                Guid lightGuid = shadowMap.ClassName switch
+                {
+                    "ShadowMap1D" => ObjectBinary.From<ShadowMap1D>(shadowMap).LightGuid,
+                    "ShadowMap2D" => CommonStructs.GetGuid(shadowMap.GetProperty<StructProperty>("LightGuid")),
+                    _ => Guid.Empty
+                };
+                if (lightGuid != Guid.Empty)
+                {
+                    lightGuids.Add(lightGuid);
+                }
+            }
+
+            return lightGuids;
         }
 
         private static void PortStaticMeshActors(UDKAssetInfo assetInfo, PackageCache cache, RelinkerOptionsPackage delegatesROP)
@@ -637,6 +834,7 @@ namespace LegendaryExplorerCore.UDK
                                                              CustomRelinkUIndex = delegatesROP?.CustomRelinkUIndex,
                                                          }, out IEntry result);
                     ((ExportEntry)result).Archetype = staticMeshComponentArchetype;
+                    assetInfo.PortedMeshComponents[smc.UIndex] = (ExportEntry)result;
                     props = new PropertyCollection
                             {
                                 new ObjectProperty(result.UIndex, "StaticMeshComponent"),
@@ -673,6 +871,173 @@ namespace LegendaryExplorerCore.UDK
             {
                 sm.Parent = udkifyImport;
             }
+        }
+
+        private static void PortDecalActors(UDKAssetInfo assetInfo, PackageCache cache,
+            string decookedMaterialsFolder, string assetsOutputPath, RelinkerOptionsPackage delegatesROP)
+        {
+            // MILAN CHANGE - Mgamerz - 2026-09-30
+            // Let UDK regenerate decal projection data against the geometry it actually bakes.
+            // ME3's cooked receiver buffers cannot simply be carried into an editor map.
+            var actorClass = assetInfo.TempPackage.GetEntryOrAddImport("Engine.DecalActor", "Class");
+            assetInfo.TempPackage.GetEntryOrAddImport("Engine.Default__DecalActor", "DecalActor", "Engine");
+            var componentArchetype = assetInfo.TempPackage.GetEntryOrAddImport(
+                "Engine.Default__DecalActor.NewDecalComponent", "DecalComponent", "Engine");
+            using var materialCache = new PackageCache();
+            using var decalMaterials = MEPackageHandler.CreateAndOpenPackage(Path.Combine(
+                assetsOutputPath ?? UDKDirectory.SharedPath, assetInfo.SourcePackage.FileNameNoExtension + "DecalMaterials.upk"), MEGame.UDK);
+            var generatedMaterials = new Dictionary<IEntry, ExportEntry>();
+
+            ExportEntry FindDecookedAsset(IEntry source)
+            {
+                var file = Path.Combine(decookedMaterialsFolder, source.GetLinker() + ".upk");
+                if (!File.Exists(file)) return null;
+                var path = source.InstancedFullPath;
+                var prefix = source.GetLinker() + ".";
+                if (path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) path = path.Substring(prefix.Length);
+                return materialCache.GetCachedPackage(file).FindExport(path, source.ClassName);
+            }
+
+            IEntry ImportMaterial(IEntry source, IMEPackage destination)
+            {
+                var decooked = FindDecookedAsset(source);
+                if (decooked != null) return CreateImportsFor(decooked, destination);
+                var sourceExport = source as ExportEntry ?? EntryImporter.ResolveImport((ImportEntry)source, cache,
+                    fileResolver: delegatesROP?.SourceCustomImportFileResolver);
+                if (sourceExport == null || (sourceExport.ClassName != "MaterialInstanceConstant"
+                    && sourceExport.ClassName != "MaterialInstanceTimeVarying"))
+                    throw new InvalidDataException($"No decooked decal material for {source.InstancedFullPath}");
+                if (!generatedMaterials.TryGetValue(sourceExport, out var generated))
+                {
+                    // Some placed decal instances were never referenced by meshes and are absent from
+                    // the decooked corpus. Keep their parameters and use the decooked parent graph.
+                    var props = sourceExport.GetProperties();
+                    var parent = props.GetProp<ObjectProperty>("Parent")?.ResolveToEntry(sourceExport.FileRef);
+                    if (parent == null) throw new InvalidDataException($"Decal instance {sourceExport.InstancedFullPath} has no parent");
+                    var importedParent = ImportMaterial(parent, decalMaterials);
+                    props.RemoveAll(x => x is ObjectProperty);
+                    props.AddOrReplaceProp(new ObjectProperty(importedParent.UIndex, "Parent"));
+                    if (props.GetProp<ArrayProperty<StructProperty>>("TextureParameterValues") is { } textures)
+                    {
+                        foreach (var texture in textures)
+                        {
+                            var value = texture.GetProp<ObjectProperty>("ParameterValue");
+                            if (value == null || value.Value == 0) continue;
+                            var sourceTexture = value.ResolveToEntry(sourceExport.FileRef);
+                            var decookedTexture = FindDecookedAsset(sourceTexture);
+                            if (decookedTexture == null)
+                                throw new InvalidDataException($"No decooked texture for decal instance {sourceTexture.InstancedFullPath}");
+                            value.Value = CreateImportsFor(decookedTexture, decalMaterials).UIndex;
+                        }
+                    }
+                    // Assets must live under exports rather than an import into their own package.
+                    var root = decalMaterials.FindExport("DecalInstances")
+                        ?? ExportCreator.CreatePackageExport(decalMaterials, "DecalInstances", forcedExport: false);
+                    generated = new ExportEntry(decalMaterials, root, new NameReference(sourceExport.ObjectName.Name,
+                        generatedMaterials.Count + 1), properties: props)
+                    {
+                        Class = decalMaterials.GetEntryOrAddImport("Engine." + sourceExport.ClassName, "Class"),
+                        ObjectFlags = UnrealFlags.EObjectFlags.Public | UnrealFlags.EObjectFlags.Standalone
+                    };
+                    decalMaterials.AddExport(generated);
+                    if (props.GetProp<BoolProperty>("bHasStaticPermutationResource")?.Value == true)
+                    {
+                        var binary = MaterialInstance.Create();
+                        binary.SM3StaticParameterSet = ObjectBinary.From<MaterialInstance>(sourceExport).SM3StaticParameterSet;
+                        generated.WriteBinary(binary);
+                    }
+                    else generated.WriteBinary(Array.Empty<byte>());
+                    generatedMaterials[sourceExport] = generated;
+                }
+                return destination == decalMaterials ? generated : CreateImportsFor(generated, destination);
+            }
+            foreach (var dc in assetInfo.SourcePackage.Exports.Where(x => x.IsA("DecalComponent")).ToList())
+            {
+                if (dc.Parent is not ExportEntry sourceActor || !sourceActor.IsA("DecalActor")
+                    || !assetInfo.ActorsInLevel.Contains(sourceActor.UIndex)
+                    || (dc.ObjectFlags & UnrealFlags.EObjectFlags.ArchetypeObject) != 0)
+                    continue;
+
+                var originalPath = dc.InstancedFullPath;
+                dc.CondenseArchetypes();
+                var properties = dc.GetProperties();
+                var sourceMaterial = properties.GetProp<ObjectProperty>("DecalMaterial")?.ResolveToEntry(assetInfo.SourcePackage);
+                if (sourceMaterial == null)
+                {
+                    LECLog.Warning($"Skipping decal {originalPath}: no DecalMaterial");
+                    continue;
+                }
+
+                // Use the existing decooked decal shader graph, never the ordinary mesh-material fallback.
+                var udkMaterial = ImportMaterial(sourceMaterial, assetInfo.TempPackage);
+
+                var sourceFilter = properties.GetProp<ArrayProperty<ObjectProperty>>("Filter");
+                var filterMode = properties.GetProp<EnumProperty>("FilterMode")?.Value.Name;
+                var filteredActors = new HashSet<int>();
+                if (sourceFilter != null)
+                {
+                    foreach (var filteredActor in sourceFilter)
+                    {
+                        foreach (var pair in assetInfo.PortedMeshComponents)
+                        {
+                            if (assetInfo.SourcePackage.GetUExport(pair.Key).idxLink == filteredActor.Value)
+                                filteredActors.Add(pair.Value.idxLink);
+                        }
+                    }
+                }
+                // An empty FM_Affect list would change a targeted decal into a different projection.
+                if (filterMode == "FM_Affect" && filteredActors.Count == 0)
+                {
+                    LECLog.Warning($"Skipping decal {originalPath}: none of its filtered receivers were exported");
+                    continue;
+                }
+
+                properties.RemoveNamedProperty("DecalMaterial");
+                properties.RemoveNamedProperty("DecalReceivers");
+                properties.RemoveNamedProperty("Filter");
+                properties.RemoveNamedProperty("ReceiverImages");
+                properties.RemoveAll(x => x is ObjectProperty);
+                dc.WriteProperties(properties);
+                dc.WriteBinary(DecalComponent.Create());
+
+                // Native static decals need no script state. Keeping RF_HasStack here causes
+                // the same-game clone's StateFrame conversion to misalign UDK property tags.
+                var actor = new ExportEntry(assetInfo.TempPackage, assetInfo.LevelExport, sourceActor.ObjectName)
+                    { Class = actorClass };
+                assetInfo.TempPackage.AddExport(actor);
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild, dc,
+                    assetInfo.TempPackage, actor, true, new RelinkerOptionsPackage(cache)
+                    {
+                        PortExportsAsImportsWhenPossible = true,
+                        CustomDonorImporter = delegatesROP?.CustomDonorImporter,
+                        CustomImportDependency = delegatesROP?.CustomImportDependency,
+                        CustomRelinkUIndex = delegatesROP?.CustomRelinkUIndex
+                    }, out IEntry imported);
+                var component = (ExportEntry)imported;
+                component.Archetype = componentArchetype;
+                component.WriteProperty(new ObjectProperty(udkMaterial.UIndex, "DecalMaterial"));
+                component.WriteProperty(new BoolProperty(true, "bStaticDecal"));
+                if (sourceFilter != null)
+                {
+                    component.WriteProperty(new ArrayProperty<ObjectProperty>(
+                        filteredActors.Select(x => new ObjectProperty(x)), "Filter"));
+                }
+                var actorProperties = new PropertyCollection
+                {
+                    new ObjectProperty(component.UIndex, "Decal"),
+                    new ArrayProperty<ObjectProperty>(new[] { new ObjectProperty(component.UIndex) }, "Components"),
+                    new NameProperty(new NameReference(originalPath, dc.UIndex), "Tag")
+                };
+                foreach (var propertyName in new[] { "Location", "Rotation", "DrawScale", "DrawScale3D" })
+                {
+                    var property = sourceActor.GetProperties().GetProp<Property>(propertyName);
+                    if (property != null) actorProperties.Add(property);
+                }
+                actor.WriteProperties(actorProperties);
+                assetInfo.DecalActors.Add(actor);
+            }
+            if (generatedMaterials.Count > 0) decalMaterials.Save();
+            // END MILAN CHANGE
         }
 
         private static UDKAssetInfo GenerateAssetsPackage(IMEPackage pcc, string assetsOutputPath, string decookedMaterialsFolder)
@@ -1276,23 +1641,19 @@ namespace LegendaryExplorerCore.UDK
 
         private static void UDKifySpotLights(UDKAssetInfo assetInfo, IEnumerable<ExportEntry> spotLightComponents)
         {
-            // This forces these to be created. Due to issues in parent creation of this method
-            // they have the wrong package file.
-            assetInfo.TempPackage.GetEntryOrAddImport("Engine.Default__PointLight", null, packageFile: "Engine");
-            assetInfo.TempPackage.GetEntryOrAddImport("Engine.Default__SpotLight", null, packageFile: "Engine");
-            assetInfo.TempPackage.GetEntryOrAddImport("Engine.Default__DirectionalLight", null, packageFile: "Engine");
-
             var drawLightRadiusComponentClass = assetInfo.TempPackage.GetEntryOrAddImport("Engine.DrawLightRadiusComponent", "Class");
             var drawLightConeComponentClass = assetInfo.TempPackage.GetEntryOrAddImport("Engine.DrawLightConeComponent", "Class");
-            var drawLightRadiusArchetype = assetInfo.TempPackage.GetEntryOrAddImport("Engine.Default__SpotLight.DrawLightRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");
-            var drawLightSourceRadiusArchetype = assetInfo.TempPackage.GetEntryOrAddImport("Engine.Default__SpotLight.DrawLightSourceRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");
-            var drawInnerConeArchetype = assetInfo.TempPackage.GetEntryOrAddImport("Engine.Default__SpotLight.DrawInnerCone0", packageFile: "Engine", className: "DrawLightConeComponent");
-            var drawOuterConeArchetype = assetInfo.TempPackage.GetEntryOrAddImport("Engine.Default__SpotLight.DrawOuterCone0", packageFile: "Engine", className: "DrawLightConeComponent");
             int dlcIndex = 1;
             int dlrIndex = 1;
             byte[] prePropBinary = new byte[8];
             foreach (ExportEntry slc in spotLightComponents)
             {
+                // SpotLight or SpotLightToggleable
+                string actorClassName = slc.Parent.ClassName;
+                var drawLightRadiusArchetype = GetLightActorTemplate(assetInfo.TempPackage, actorClassName, "DrawLightRadius0", "DrawLightRadiusComponent");
+                var drawLightSourceRadiusArchetype = GetLightActorTemplate(assetInfo.TempPackage, actorClassName, "DrawLightSourceRadius0", "DrawLightRadiusComponent");
+                var drawInnerConeArchetype = GetLightActorTemplate(assetInfo.TempPackage, actorClassName, "DrawInnerCone0", "DrawLightConeComponent");
+                var drawOuterConeArchetype = GetLightActorTemplate(assetInfo.TempPackage, actorClassName, "DrawOuterCone0", "DrawLightConeComponent");
                 var lightingChannels = slc.GetProperty<StructProperty>("LightingChannels");
                 var innerConeAngle = slc.GetProperty<FloatProperty>("InnerConeAngle")?.Value ?? 0f;
                 var outerConeAngle = slc.GetProperty<FloatProperty>("OuterConeAngle")?.Value ?? 44f;
@@ -1353,17 +1714,15 @@ namespace LegendaryExplorerCore.UDK
 
         private static void UDKifyPointLights(UDKAssetInfo assetInfo, IEnumerable<ExportEntry> pointLightComponents)
         {
-            assetInfo.TempPackage.GetEntryOrAddImport("Engine.Default__PointLight", "PointLight", packageFile: "Engine");
-            assetInfo.TempPackage.GetEntryOrAddImport("Engine.Default__SpotLight", "SpotLight", packageFile: "Engine");
-            assetInfo.TempPackage.GetEntryOrAddImport("Engine.Default__DirectionalLight", "DirectionalLight", packageFile: "Engine");
-
             var drawLightRadiusComponentClass = assetInfo.TempPackage.GetEntryOrAddImport("Engine.DrawLightRadiusComponent", "Class");
-            var drawLightRadiusArchetype = assetInfo.TempPackage.GetEntryOrAddImport("Engine.Default__PointLight.DrawLightRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");
-            var drawLightSourceRadiusArchetype = assetInfo.TempPackage.GetEntryOrAddImport("Engine.Default__PointLight.DrawLightSourceRadius0", packageFile: "Engine", className: "DrawLightRadiusComponent");
             int dlrIndex = 1;
             byte[] prePropBinary = new byte[8];
             foreach (ExportEntry plc in pointLightComponents)
             {
+                // PointLight or PointLightToggleable
+                string actorClassName = plc.Parent.ClassName;
+                var drawLightRadiusArchetype = GetLightActorTemplate(assetInfo.TempPackage, actorClassName, "DrawLightRadius0", "DrawLightRadiusComponent");
+                var drawLightSourceRadiusArchetype = GetLightActorTemplate(assetInfo.TempPackage, actorClassName, "DrawLightSourceRadius0", "DrawLightRadiusComponent");
                 var lightingChannels = plc.GetProperty<StructProperty>("LightingChannels");
                 float radius = plc.GetProperty<FloatProperty>("Radius")?.Value ?? 1024f;
                 var drawLightRadius = new ExportEntry(assetInfo.TempPackage, plc.Parent, new NameReference("DrawLightRadiusComponent", dlrIndex++), prePropBinary, new PropertyCollection

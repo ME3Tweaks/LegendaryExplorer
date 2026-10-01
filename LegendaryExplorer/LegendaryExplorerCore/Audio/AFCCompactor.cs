@@ -43,11 +43,17 @@ namespace LegendaryExplorerCore.Audio
             /// <param name="game">Game to search for AFCs in. Basegame folder and all official DLC folders (including SFARs) will be searched</param>
             /// <param name="currentScanningFileCallback">Callback invoked on every AFC found with the path to the AFC</param>
             /// <param name="debugOut">Callback invoked with debug information on every AFC found</param>
+            /// <param name="searchGame">If false, only <paramref name="inputPath"/> is searched, and the game's installation is not used</param>
             /// <returns>An <see cref="AFCInventory"/> of every .afc file found</returns>
-            public static AFCInventory GetInventory(string inputPath, MEGame game, Action<string> currentScanningFileCallback = null, Action<string> debugOut = null)
+            public static AFCInventory GetInventory(string inputPath, MEGame game, Action<string> currentScanningFileCallback = null, Action<string> debugOut = null, bool searchGame = true)
             {
                 var inventory = new AFCInventory();
                 inventory.LocalFolderAFCFiles.ReplaceAll(Directory.GetFiles(inputPath, "*.afc", SearchOption.AllDirectories));
+                if (!searchGame)
+                {
+                    debugOut?.Invoke($"AFC inventory is limited to the input path: {inputPath}");
+                    return inventory;
+                }
 
                 debugOut?.Invoke($"Beginning AFC references scan. Input path: {inputPath}, game {game}");
                 inventory.BasegameAFCFiles.ReplaceAll(MELoadedFiles.GetCookedFiles(game, GameFilesystem.MEDirectories.GetBioGamePath(game), includeAFCs: true).Where(x => Path.GetExtension(x) == ".afc"));
@@ -284,18 +290,35 @@ namespace LegendaryExplorerCore.Audio
             return (missingAFCReferences, referencedAFCAudio);
         }
 
+        /// <summary>
+        /// Builds a new AFC out of the given audio references, and updates every WwiseStream in the packages under <paramref name="inputPath"/>
+        /// that references them to point to the new AFC. Packages with nothing to update are not saved.
+        /// </summary>
+        /// <param name="game">Game the packages are for</param>
+        /// <param name="inputPath">Folder containing the packages to update. The new AFC is placed in its CookedPC folder</param>
+        /// <param name="newAFCBaseName">Name of the new AFC, without extension</param>
+        /// <param name="referencesToCompact">Audio to put into the new AFC. Audio referenced more than once is only copied once</param>
+        /// <param name="notifyBrokenAudio">Invoked with references that could not be compacted. Return true to continue without them (they are not updated)</param>
+        /// <param name="notifyProgress">Progress callback</param>
+        /// <param name="notifyStatusUpdate">Status callback</param>
+        /// <param name="notifyFinalAfcPath">Invoked with the path of the new AFC</param>
+        /// <param name="debugOut">Debug information callback</param>
+        /// <param name="searchGameForAFCs">If false, AFCs are only looked for in <paramref name="inputPath"/>, and the game's installation is not used</param>
+        /// <returns>False if compaction was aborted due to broken audio</returns>
         public static bool CompactAFC(MEGame game, string inputPath, string newAFCBaseName, List<ReferencedAudio> referencesToCompact,
             Func<List<(ReferencedAudio, string)>, bool> notifyBrokenAudio,
             Action<long, long> notifyProgress,
             Action<string> notifyStatusUpdate = null,
             Action<string> notifyFinalAfcPath = null,
-            Action<string> debugOut = null)
+            Action<string> debugOut = null,
+            bool searchGameForAFCs = true)
         {
             notifyStatusUpdate?.Invoke("Preparing to compact AFC");
 
-            var afcInventory = AFCInventory.GetInventory(inputPath, game, notifyStatusUpdate, null); //Null lets me know there's something here to add for debug
-            // Order by AFC name so we can just open a single stream to pull from rather than 800 times
-            referencesToCompact = referencesToCompact.OrderBy(x => x.AFCName).ToList();
+            var afcInventory = AFCInventory.GetInventory(inputPath, game, notifyStatusUpdate, null, searchGameForAFCs); //Null lets me know there's something here to add for debug
+            // Order by AFC name so we can just open a single stream to pull from rather than 800 times.
+            // Audio shared by multiple exports only needs to be in the new AFC once.
+            referencesToCompact = referencesToCompact.Distinct().OrderBy(x => x.AFCName).ToList();
 
             #region EXTRACT AND BUILD NEW AFC FILE
             string currentOpenAfc = null;
@@ -365,11 +388,14 @@ namespace LegendaryExplorerCore.Audio
                 {
                     brokenAudio.Add((referencedAudio, $"AFC could not be found: {referencedAudio.AFCName} (Error: {e.Message})"));
                 }
-
-                var test = referenceMap[referencedAudio];
             }
             currentOpenAfcStream?.Dispose();
             Debug.WriteLine($"New AFC size: 0x{memoryNewAfc.Length:X8} ({FileSize.FormatSize(memoryNewAfc.Length)})");
+            if (memoryNewAfc.Length > int.MaxValue)
+            {
+                // WwiseStream offsets are 32-bit
+                throw new Exception($"The compacted AFC would be {FileSize.FormatSize(memoryNewAfc.Length)}, which is larger than an AFC can be (2GB)");
+            }
 
             if (brokenAudio.Any())
             {
@@ -380,11 +406,18 @@ namespace LegendaryExplorerCore.Audio
                 }
             }
 
+            if (referenceMap.Count == 0)
+            {
+                // Nothing could be compacted; don't create an empty AFC
+                notifyStatusUpdate?.Invoke("No audio could be compacted");
+                return true;
+            }
+
             // Write temp to make sure we don't update references and then find out we can't actually write to disk
             var finalAfcPath = inputPath;
             if (!Path.GetFileName(finalAfcPath).StartsWith("CookedPC", StringComparison.InvariantCultureIgnoreCase))
             {
-                finalAfcPath = Path.Combine(finalAfcPath, MEDirectories.CookedName(game));
+                finalAfcPath = Path.Combine(finalAfcPath, game.CookedDirName());
             }
             finalAfcPath = Path.Combine(finalAfcPath, $"{newAFCBaseName}.afc");
             var tempAfcPath = Path.Combine(inputPath, $"TEMP_{newAFCBaseName}.afc");
