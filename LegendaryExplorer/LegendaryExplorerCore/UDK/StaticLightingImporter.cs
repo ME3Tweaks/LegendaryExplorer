@@ -45,6 +45,12 @@ namespace LegendaryExplorerCore.UDK
         internal List<ExportEntry> LightmapsToTrash { get; set; } = new();
 
         /// <summary>
+        /// Output: StaticMeshComponents that received UDK lighting, across every package this setup was used for. Anything
+        /// lit but not in here still carries the lighting it had before the import.
+        /// </summary>
+        public HashSet<ExportEntry> RelitComponents { get; } = new();
+
+        /// <summary>
         /// List of sublevel names to ignore when importing static lighting. This is useful for levels that have sublevels that are not relevant to the lighting bake or should not be modified.
         /// </summary>
         public string[] IgnoredSublevelNames { get; set; }
@@ -74,6 +80,11 @@ namespace LegendaryExplorerCore.UDK
                     var mePath = Path.Combine(basePath, subLevel + ".pcc");
                     using var mePackage = (MEPackage)MEPackageHandler.OpenMEPackage(mePath);
                     using var udkPackage = GetUDKMapPackage(subLevel, setup.UDKMapsBasePath);
+                    if (udkPackage == null)
+                    {
+                        LECLog.Warning($"Sublevel not found for lighting import, skipping: {subLevel}");
+                        continue;
+                    }
                     AssignStaticLighting(mePackage, udkPackage, setup);
                     if (mePackage.IsModified)
                         mePackage.Save();
@@ -103,6 +114,8 @@ namespace LegendaryExplorerCore.UDK
                     foreach (var lod in meBin.LODData)
                     {
                         ClearLightmap(lod.LightMap, mePackage, setup);
+                        ClearShadowMaps(mePackage, ref lod.ShadowMaps, setup);
+                        ClearShadowMaps(mePackage, ref lod.ShadowVertexBuffers, setup);
                     }
                 }
 
@@ -169,15 +182,12 @@ namespace LegendaryExplorerCore.UDK
                 tc.WriteBinary(meBin);
             }
 
-            foreach (var tex in setup.LightmapsToTrash)
+            // Trash in one batch - each TrashEntries call rebuilds the package lookup table and reserializes the level, so
+            // doing it per entry is very slow on levels with many lightmaps/shadowmaps
+            var toTrash = setup.LightmapsToTrash.Where(tex => !tex.ObjectName.Name.StartsWith(setup.KeptLightmapPrefix) && !tex.IsTrash()).ToList();
+            if (toTrash.Count > 0)
             {
-                if (tex.ObjectName.Name.StartsWith(setup.KeptLightmapPrefix) || tex.IsTrash())
-                {
-                    // Do not trash
-                    continue;
-                }
-
-                EntryPruner.TrashEntries(tex.FileRef, [tex]);
+                EntryPruner.TrashEntries(mePackage, toTrash);
             }
             setup.LightmapsToTrash.Clear();
         }
@@ -360,6 +370,9 @@ namespace LegendaryExplorerCore.UDK
 
             // Import the lightmaps
 
+            // Components that received new lighting from UDK, so decals on them can follow suit
+            var relitComponents = new HashSet<ExportEntry>();
+
             // StaticMeshComponent
             foreach (var smc in mePackage.Exports.Where(x => x.IsA("StaticMeshComponent")).ToList())
             {
@@ -380,11 +393,27 @@ namespace LegendaryExplorerCore.UDK
                     meBin.LODData = uBin.LODData;
                     foreach (var lod in meBin.LODData)
                     {
-                        // References will be updated since it's a copy of UDK version.
                         PortLightMaps(lod.LightMap, smc, udkPackage);
+                        PortShadowMaps(ref lod.ShadowMaps, smc, udkPackage);
+                        PortShadowMaps(ref lod.ShadowVertexBuffers, smc, udkPackage);
                     }
 
                     smc.WriteBinary(meBin);
+
+                    // IrrelevantLights lists the lights the bake found have no influence on this component (fully shadowed,
+                    // out of range, or no shared channel). It belongs to the same bake as the lightmap and shadow maps, so
+                    // the list from the original game's bake is stale once the UDK lighting is installed.
+                    if (udkSmc.GetProperty<ArrayProperty<StructProperty>>("IrrelevantLights") is { } irrelevantLights)
+                    {
+                        smc.WriteProperty(irrelevantLights);
+                    }
+                    else
+                    {
+                        smc.RemoveProperty("IrrelevantLights");
+                    }
+
+                    relitComponents.Add(smc);
+                    setup.RelitComponents.Add(smc);
                 }
                 else
                 {
@@ -393,43 +422,8 @@ namespace LegendaryExplorerCore.UDK
             }
 
             // DecalComponent
-            foreach (var dc in mePackage.Exports.Where(x => x.IsA("DecalComponent")).ToList())
-            {
-                if (setup.ShouldKeepLightMap?.Invoke(dc) ?? false)
-                {
-                    continue; // Do not install this lightmap.
-                }
-                meToUdkRemapping.TryGetValue(dc, out var udkDc);
-                if (udkDc == null)
-                {
-                    udkDc = udkPackage.FindExport(dc.InstancedFullPath);
-                }
-
-                if (udkDc != null)
-                {
-                    var meBin = ObjectBinary.From<DecalComponent>(dc);
-                    var uBin = ObjectBinary.From<DecalComponent>(udkDc);
-                    var originalReceivers = meBin.StaticReceivers;
-
-                    meBin.StaticReceivers = uBin.StaticReceivers;
-                    for (int i = 0; i < meBin.StaticReceivers.Length; i++)
-                    {
-                        var sr = meBin.StaticReceivers[i];
-
-                        // Relink Component back to its original value
-                        sr.Component = originalReceivers[i].Component;
-
-                        // References will be updated since it's a copy of UDK version.
-                        PortLightMaps(sr.LightMap, dc, udkPackage);
-                    }
-
-                    dc.WriteBinary(meBin);
-                }
-                else
-                {
-                    Debug.WriteLine($"Did not find UDK DC in remapping: {dc.InstancedFullPath}");
-                }
-            }
+            var importedDecals = ImportDecalStaticReceivers(mePackage, udkPackage, meToUdkRemapping, setup);
+            UpdateDecalStaticReceivers(mePackage, relitComponents, setup, importedDecals);
 
             // Terrain
             foreach (var tcp in meToUdkRemapping.Where(x => x.Key.IsA("TerrainComponent")).ToList())
@@ -507,6 +501,162 @@ namespace LegendaryExplorerCore.UDK
         }
 
         /// <summary>
+        /// Imports projection geometry and lighting generated by UDK, remapping each receiver back to its source component.
+        /// </summary>
+        private static HashSet<ExportEntry> ImportDecalStaticReceivers(MEPackage mePackage, UDKPackage udkPackage,
+            Dictionary<ExportEntry, ExportEntry> meToUdkRemapping, LightingImportSetup setup)
+        {
+            // MILAN CHANGE - Mgamerz - 2026-09-30
+            // Decals are now exported with source component paths in their actor Tags. Receiver
+            // references belong to UDK's split mesh actors and must not be copied as raw UIndexes.
+            var importedDecals = new HashSet<ExportEntry>();
+            var receivers = meToUdkRemapping.ToDictionary(x => x.Value.UIndex, x => x.Key);
+            var exportedReceiverIndices = meToUdkRemapping.Keys
+                .Where(x => !(setup.ShouldKeepLightMap?.Invoke(x) ?? false)).Select(x => x.UIndex).ToHashSet();
+            foreach (var udkDecal in udkPackage.Exports.Where(x => x.IsA("DecalComponent")))
+            {
+                var tag = (udkDecal.Parent as ExportEntry)?.GetProperty<NameProperty>("Tag");
+                var meDecal = tag == null ? null : mePackage.FindExport(tag.Value.Name);
+                if (meDecal == null || !meDecal.IsA("DecalComponent") || (setup.ShouldKeepLightMap?.Invoke(meDecal) ?? false))
+                    continue;
+
+                var original = ObjectBinary.From<DecalComponent>(meDecal);
+                var baked = ObjectBinary.From<DecalComponent>(udkDecal);
+                if (baked.StaticReceivers.Length == 0)
+                {
+                    LECLog.Warning($"UDK decal {udkDecal.InstancedFullPath} has no generated receivers; keeping source projection data");
+                    continue;
+                }
+                // Keep projections onto unexported objects or receivers whose original lighting is retained.
+                var combined = original.StaticReceivers.Where(x => !exportedReceiverIndices.Contains(x.Component)).ToList();
+                foreach (var sr in baked.StaticReceivers)
+                {
+                    if (!receivers.TryGetValue(sr.Component, out var receiver))
+                        throw new InvalidDataException($"Cannot map UDK decal receiver #{sr.Component} for {meDecal.InstancedFullPath}");
+                    if (!exportedReceiverIndices.Contains(receiver.UIndex)) continue;
+                    sr.Component = receiver.UIndex;
+                    PortLightMaps(sr.LightMap, receiver, udkPackage);
+                    sr.ShadowMap1D ??= [];
+                    PortShadowMaps(ref sr.ShadowMap1D, meDecal, udkPackage);
+                    combined.Add(sr);
+                }
+                original.StaticReceivers = combined.ToArray();
+                meDecal.WriteBinary(original);
+                importedDecals.Add(meDecal);
+            }
+            return importedDecals;
+            // END MILAN CHANGE
+        }
+
+        /// <summary>
+        /// Brings legacy decal static receivers in line with the new lighting on their receiving components.
+        /// Older UDK maps contain no DecalActors, so the receiver's data has to be derived from the receiver component.
+        /// Decals whose regenerated receivers were imported from UDK are left intact. This follows what the
+        /// shipping LE3 levels contain: a receiver on a texture-lightmapped mesh stores no lightmap of its own (it is always
+        /// LMT_None), while a receiver on a vertex-lit mesh stores its own per-decal-vertex LMT_1D, plus ShadowMap1D exports
+        /// owned by the DecalActor that mirror the receiving mesh's ShadowVertexBuffers.
+        /// </summary>
+        private static void UpdateDecalStaticReceivers(IMEPackage mePackage, HashSet<ExportEntry> relitComponents,
+            LightingImportSetup setup, HashSet<ExportEntry> importedDecals)
+        {
+            var droppedShadowMaps = new HashSet<int>();
+            var keptShadowMaps = new HashSet<int>();
+            foreach (var dc in mePackage.Exports.Where(x => x.IsA("DecalComponent")).ToList())
+            {
+                if (importedDecals.Contains(dc))
+                {
+                    foreach (var sr in ObjectBinary.From<DecalComponent>(dc).StaticReceivers)
+                        keptShadowMaps.UnionWith(sr.ShadowMap1D ?? []);
+                    continue;
+                }
+                var meBin = ObjectBinary.From<DecalComponent>(dc);
+                bool keepDecal = setup.ShouldKeepLightMap?.Invoke(dc) ?? false;
+                bool modified = false;
+                foreach (var sr in meBin.StaticReceivers)
+                {
+                    sr.ShadowMap1D ??= []; // Not serialized before ME3
+                    if (keepDecal || !mePackage.TryGetUExport(sr.Component, out var receiver) || !relitComponents.Contains(receiver))
+                    {
+                        // Receiver still has the lighting this decal was generated against
+                        keptShadowMaps.UnionWith(sr.ShadowMap1D);
+                        continue;
+                    }
+
+                    var receiverLOD = ObjectBinary.From<StaticMeshComponent>(receiver).LODData.FirstOrDefault();
+                    if (receiverLOD?.LightMap is LightMap_1D)
+                    {
+                        // Per-decal-vertex samples can't be regenerated from the receiver's new vertex lightmap here,
+                        // so leave whatever the decal already had.
+                        if (sr.LightMap is LightMap_1D decalLM1D)
+                        {
+                            decalLM1D.Owner = receiver.UIndex;
+                        }
+                    }
+                    else if (sr.LightMap.LightMapType != ELightMapType.LMT_None)
+                    {
+                        sr.LightMap = new LightMap { LightMapType = ELightMapType.LMT_None };
+                    }
+
+                    var receiverShadowLightGuids = GetShadowMapLightGuids(mePackage, receiverLOD?.ShadowVertexBuffers);
+                    if (sr.ShadowMap1D.Length > 0)
+                    {
+                        var retainedShadowMaps = new List<int>();
+                        foreach (int shadowMapUIndex in sr.ShadowMap1D)
+                        {
+                            if (mePackage.TryGetUExport(shadowMapUIndex, out var shadowMap)
+                                && shadowMap.ClassName == "ShadowMap1D"
+                                && receiverShadowLightGuids.Contains(ObjectBinary.From<ShadowMap1D>(shadowMap).LightGuid))
+                            {
+                                retainedShadowMaps.Add(shadowMapUIndex);
+                                keptShadowMaps.Add(shadowMapUIndex);
+                            }
+                            else
+                            {
+                                droppedShadowMaps.Add(shadowMapUIndex);
+                            }
+                        }
+
+                        sr.ShadowMap1D = retainedShadowMaps.ToArray();
+                    }
+
+                    modified = true;
+                }
+
+                if (modified)
+                {
+                    dc.WriteBinary(meBin);
+                }
+            }
+
+            droppedShadowMaps.ExceptWith(keptShadowMaps);
+            var shadowMapsToTrash = droppedShadowMaps.Select(x => mePackage.TryGetUExport(x, out var sm) ? sm : null)
+                .Where(x => x != null && x.ClassName == "ShadowMap1D" && !x.IsTrash()).ToList();
+            if (shadowMapsToTrash.Count > 0)
+            {
+                EntryPruner.TrashEntries(mePackage, shadowMapsToTrash);
+            }
+        }
+
+        private static HashSet<Guid> GetShadowMapLightGuids(IMEPackage package, int[] shadowMapUIndexes)
+        {
+            var lightGuids = new HashSet<Guid>();
+            if (shadowMapUIndexes == null)
+            {
+                return lightGuids;
+            }
+
+            foreach (int shadowMapUIndex in shadowMapUIndexes)
+            {
+                if (package.TryGetUExport(shadowMapUIndex, out var shadowMap) && shadowMap.ClassName == "ShadowMap1D")
+                {
+                    lightGuids.Add(ObjectBinary.From<ShadowMap1D>(shadowMap).LightGuid);
+                }
+            }
+
+            return lightGuids;
+        }
+
+        /// <summary>
         /// Ports shadowmaps and updates the shadowmaps array with the relinked UIndex values
         /// </summary>
         /// <param name="shadowMaps"></param>
@@ -514,8 +664,6 @@ namespace LegendaryExplorerCore.UDK
         /// <param name="udkPackage"></param>
         private static void PortShadowMaps(ref int[] shadowMaps, ExportEntry mc, UDKPackage udkPackage)
         {
-            // It looks like UDK carries through our busted UDK files when making lighting, so we filter out invalid shadow maps here
-            // instead of keeping them around. I do not know if UDK actually creates shadow maps.
             var finalShadowMapsArray = new List<int>();
             foreach (var shadowMapIdx in shadowMaps)
             {
@@ -523,19 +671,10 @@ namespace LegendaryExplorerCore.UDK
                 {
                     if (shadowMap.ClassName is "ShadowMap1D" or "ShadowMap2D")
                     {
-                        EntryExporter.ExportExportToPackage(shadowMap, mc.FileRef, out var newShadowMap, null, new RelinkerOptionsPackage());
-                        finalShadowMapsArray.Add(shadowMapIdx);
-                        /*
-                        var tindex = shadowMap.GetProperty<ObjectProperty>("Texture");
-                        if (tindex != null)
-                        {
-                            var udkTex = udkPackage.GetUExport(tindex.Value);
-                            if (udkTex != null)
-                            {
-                                PortLightMap(mc.FileRef, ref tindex.Value, udkPackage);
-                                finalShadowMapsArray[Array.IndexOf(shadowMaps, shadowMapIdx)] = shadowMap.UIndex;
-                            }
-                        }*/
+                        EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild,
+                            shadowMap, mc.FileRef, mc, true,
+                            new RelinkerOptionsPackage { ImportExportDependencies = true }, out var newShadowMap);
+                        finalShadowMapsArray.Add(newShadowMap.UIndex);
                     }
                 }
             }
