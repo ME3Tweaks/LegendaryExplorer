@@ -52,6 +52,15 @@ namespace LegendaryExplorerCore.Textures
         public bool? RootTexturesOnly { get; set; }
 
         /// <summary>
+        /// Opt-in: only modify textures whose external data is moved into the new TFC(s). Textures with no external data
+        /// (package stored, even if they still have TFC properties), and textures in TFCs not listed in
+        /// <see cref="TFCsToCompact"/>, are left exactly as they are instead of being cleaned up. Packages that contain no
+        /// moved textures are therefore not saved. Used when the compacted result must differ from the input as little as
+        /// possible, such as when the differences are shipped as patches.
+        /// </summary>
+        public bool OnlyUpdateRelocatedTextures { get; set; }
+
+        /// <summary>
         /// If the TFC should use indexing. This is true for LE, false for OT
         /// </summary>
         public bool UseIndexing { get; set; }
@@ -253,6 +262,9 @@ namespace LegendaryExplorerCore.Textures
                     if (compactor.infoPackage.RootTexturesOnly is { } rootTexturesOnly && entry.Instances[0].IsRootTexture != rootTexturesOnly)
                         continue;
 
+                    if (compactor.infoPackage.OnlyUpdateRelocatedTextures && entry.Instances[0].CompressedMipInfos.Count == 0)
+                        continue; // No external data to move
+
                     if (compactor.CRCMap.ContainsKey(entry.GetCRC()))
                         continue; // Texture doesn't need ported into TFC
 
@@ -391,6 +403,11 @@ namespace LegendaryExplorerCore.Textures
                         if (string.IsNullOrWhiteSpace(tu.TFCName))
                         {
                             continue; // PCC Stored
+                        }
+
+                        if (infoPackage.OnlyUpdateRelocatedTextures && (tu.CompressedMipInfos.Count == 0 || !infoPackage.TFCsToCompact.Contains(tu.TFCName) || !compactor.CRCMap.ContainsKey(tu.CRC)))
+                        {
+                            continue; // None of this texture's data was moved, so leave it untouched
                         }
                         var exportToUpdate = package.FindExport(tu.ExportPath);
                         if (exportToUpdate == null)
