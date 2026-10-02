@@ -57,8 +57,6 @@ namespace LegendaryExplorerCore.Helpers
                 {
                     var binary = ObjectBinary.From<MaterialInstance>(instance);
                     AnalyzeSet(binary.SM3StaticParameterSet, "SM3/High");
-                    if (package.Game != MEGame.UDK || binary.UDKHasLowQualityPermutation)
-                        AnalyzeSet(binary.SM2StaticParameterSet, "SM2/Low");
 
                     void AnalyzeSet(StaticParameterSet set, string quality)
                     {
