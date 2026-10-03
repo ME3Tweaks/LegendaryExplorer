@@ -85,7 +85,7 @@ public unsafe class LEEffect : IDisposable
         {
             IsDepthEnabled = true,
             DepthWriteMask = DepthWriteMask.Zero,
-            DepthComparison = Comparison.LessEqual,
+            DepthComparison = Comparison.GreaterEqual, //depth is reversed, see SceneCamera.ProjectionMatrix
             IsStencilEnabled = false
         });
     }
@@ -131,6 +131,7 @@ public unsafe class LEEffect : IDisposable
     /// <summary>
     /// Redraws the indices just drawn by <see cref="RenderObject"/>, writing to the hit test render target (and adding the selection highlight, if selected).
     /// Must be called immediately after <see cref="RenderObject"/>, as it relies on the vertex shader, input layout, and buffers it set.
+    /// Leaves its own depth state set; the caller must restore theirs.
     /// </summary>
     public void RenderHitProxy(DeviceContext context, LEHitProxyConstants hitProxyConstants, int indexstart, int indexcount)
     {
@@ -141,9 +142,6 @@ public unsafe class LEEffect : IDisposable
         context.OutputMerger.SetDepthStencilState(HitProxyDepthState);
 
         context.DrawIndexed(indexcount, indexstart, 0);
-
-        //restore the default
-        context.OutputMerger.SetDepthStencilState(null);
     }
 
     private void Dispose(bool disposing)

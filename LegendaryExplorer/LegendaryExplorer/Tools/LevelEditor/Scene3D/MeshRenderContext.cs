@@ -85,8 +85,12 @@ public class MeshRenderContext : RenderContext
     private ShaderResourceView SceneColorResourceView;
     public Texture2D DepthBuffer { get; private set; } // also called Depth-Stencil, but we don't use stencil at the moment.
     public DepthStencilView DepthBufferView { get; private set; }
-    protected Texture2D HitBuffer;
+    //The scene is rendered with MSAA, so the hit proxy IDs are rendered into a multisampled target, then copied (not averaged!) into HitBuffer for reading
+    private Texture2D HitBufferMS;
+    private ShaderResourceView HitBufferMSResourceView;
     protected RenderTargetView HitBufferView;
+    protected Texture2D HitBuffer;
+    private RenderTargetView HitBufferResolvedView;
 
     protected D2D.RenderTarget RenderTarget2D;
     private DW.TextFormat statsTextFormat;
@@ -114,12 +118,42 @@ public class MeshRenderContext : RenderContext
     public ShaderResourceView WhiteTexView { get; private set; }
     private RasterizerState FillRasterizerState;
     private RasterizerState WireframeRasterizerState;
+    private RasterizerState CullBackRasterizerState;
+    private RasterizerState CullFrontRasterizerState;
     public SamplerState SampleState { get; private set; }
 
+    /// <summary>
+    /// MSAA sample count of the scene's render targets. 4 if the device supports it.
+    /// </summary>
+    public int SampleCount { get; private set; } = 1;
+    private const int PreferredSampleCount = 4;
+
+    //The depth buffer is reversed (near is 1, far is 0, see SceneCamera.ProjectionMatrix), so depth tests are Greater instead of Less
+    /// <summary>
+    /// Depth tested and written. Should be set whenever another depth state is done being used.
+    /// </summary>
+    public DepthStencilState DefaultDepthState { get; private set; }
     /// <summary>
     /// Depth tested, but not written. For translucent materials
     /// </summary>
     public DepthStencilState TranslucentDepthState { get; private set; }
+
+    /// <summary>
+    /// Sets the rasterizer state for a mesh drawn with the game's shaders, matching UE3's FMeshDrawingPolicy::SetMeshRenderState.
+    /// Two-sided materials aren't culled. Otherwise backfaces are culled, with the winding flipped for meshes whose transform mirrors them.
+    /// </summary>
+    public void SetMeshRasterizerState(bool isTwoSided, bool reverseCulling)
+    {
+        if (Wireframe) return;
+        ImmediateContext.Rasterizer.State = isTwoSided ? FillRasterizerState
+            : reverseCulling ? CullFrontRasterizerState
+            : CullBackRasterizerState;
+    }
+
+    public void RestoreRasterizerState()
+    {
+        ImmediateContext.Rasterizer.State = Wireframe ? WireframeRasterizerState : FillRasterizerState;
+    }
 
     private const int NUM_SAMPLER_SLOTS = 16;
     private SamplerState[] DefaultSamplers;
@@ -377,6 +411,7 @@ public class MeshRenderContext : RenderContext
         if (BackbufferView != null)
         {
             ImmediateContext.OutputMerger.SetRenderTargets(DepthBufferView, SceneColorView, HitBufferView);
+            ImmediateContext.OutputMerger.SetDepthStencilState(DefaultDepthState);
             ClearDepthBuffer();
             ImmediateContext.ClearRenderTargetView(SceneColorView, new RawColor4(
                 MathF.Pow(BackgroundColor.R / 255.0f, DisplayGamma), MathF.Pow(BackgroundColor.G / 255.0f, DisplayGamma), MathF.Pow(BackgroundColor.B / 255.0f, DisplayGamma),
@@ -434,55 +469,88 @@ public class MeshRenderContext : RenderContext
     }
 
     /// <summary>
-    /// Gamma-encodes the linear scene color into the backbuffer
+    /// Resolves the multisampled linear scene color into the gamma-encoded backbuffer, and copies the hit proxy IDs into <see cref="HitBuffer"/>
     /// </summary>
     private void ResolveSceneColor()
     {
         ImmediateContext.Rasterizer.State = FillRasterizerState;
-        ImmediateContext.OutputMerger.SetRenderTargets((DepthStencilView)null, BackbufferView);
+        ImmediateContext.OutputMerger.SetRenderTargets((DepthStencilView)null, BackbufferView, HitBufferResolvedView);
         ImmediateContext.OutputMerger.SetBlendState(null);
         ImmediateContext.InputAssembler.InputLayout = null;
         ImmediateContext.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
         ImmediateContext.VertexShader.Set(ResolveVertexShader);
         ImmediateContext.PixelShader.Set(ResolvePixelShader);
         ImmediateContext.PixelShader.SetShaderResource(0, SceneColorResourceView);
+        ImmediateContext.PixelShader.SetShaderResource(1, HitBufferMSResourceView);
 
         ImmediateContext.Draw(3, 0);
 
-        //SceneColor will be bound as a render target next frame, so it can't stay bound as a shader resource
+        //these will be bound as render targets next frame, so they can't stay bound as shader resources
         ImmediateContext.PixelShader.SetShaderResource(0, null);
-        ImmediateContext.Rasterizer.State = Wireframe ? WireframeRasterizerState : FillRasterizerState;
+        ImmediateContext.PixelShader.SetShaderResource(1, null);
+        RestoreRasterizerState();
     }
 
     public void ClearDepthBuffer()
     {
         if (DepthBufferView != null)
         {
-            ImmediateContext.ClearDepthStencilView(DepthBufferView, DepthStencilClearFlags.Depth, 1.0f, 0);
+            //reversed depth: 0 is the far plane
+            ImmediateContext.ClearDepthStencilView(DepthBufferView, DepthStencilClearFlags.Depth, 0f, 0);
         }
+    }
+
+    //Picks the highest MSAA sample count (up to PreferredSampleCount) that every scene render target format supports
+    private int GetSupportedSampleCount()
+    {
+        for (int count = PreferredSampleCount; count > 1; count /= 2)
+        {
+            if (Device.CheckMultisampleQualityLevels(Format.R16G16B16A16_Float, count) > 0
+                && Device.CheckMultisampleQualityLevels(Format.D32_Float, count) > 0
+                && Device.CheckMultisampleQualityLevels(Format.B8G8R8A8_UNorm, count) > 0)
+            {
+                return count;
+            }
+        }
+        return 1;
+    }
+
+    private RasterizerState CreateRasterizerState(CullMode cullMode, FillMode fillMode = FillMode.Solid, int depthBias = 0)
+    {
+        return new RasterizerState(Device, new RasterizerStateDescription
+        {
+            CullMode = cullMode,
+            FillMode = fillMode,
+            //matches UE3's D3D10/11 RHI, whose CM_CW cull mode is D3D11_CULL_BACK
+            IsFrontCounterClockwise = true,
+            IsMultisampleEnabled = SampleCount > 1,
+            IsAntialiasedLineEnabled = false,
+            DepthBias = depthBias
+        });
     }
 
     public override void CreateResources()
     {
         base.CreateResources();
 
-        // Build a custom rasterizer state that doesn't cull backfaces
-        var frs = new RasterizerStateDescription
-        {
-            CullMode = CullMode.None,
-            FillMode = FillMode.Solid
-        };
-        FillRasterizerState = new RasterizerState(Device, frs);
+        SampleCount = GetSupportedSampleCount();
+
+        //LEX's own shader, and two-sided materials, don't cull backfaces
+        FillRasterizerState = CreateRasterizerState(CullMode.None);
         ImmediateContext.Rasterizer.State = FillRasterizerState;
-        // Build a custom rasterizer state for wireframe drawing
-        var wrs = new RasterizerStateDescription
+        //pulls wireframes towards the camera, so they draw over the surfaces they outline. (Positive, since depth is reversed)
+        WireframeRasterizerState = CreateRasterizerState(CullMode.None, FillMode.Wireframe, depthBias: 10);
+        CullBackRasterizerState = CreateRasterizerState(CullMode.Back);
+        CullFrontRasterizerState = CreateRasterizerState(CullMode.Front);
+
+        DefaultDepthState = new DepthStencilState(Device, new DepthStencilStateDescription
         {
-            CullMode = CullMode.None,
-            FillMode = FillMode.Wireframe,
-            IsAntialiasedLineEnabled = false,
-            DepthBias = -10
-        };
-        WireframeRasterizerState = new RasterizerState(Device, wrs);
+            IsDepthEnabled = true,
+            DepthWriteMask = DepthWriteMask.All,
+            DepthComparison = Comparison.Greater,
+            IsStencilEnabled = false
+        });
+        ImmediateContext.OutputMerger.SetDepthStencilState(DefaultDepthState);
 
         // Set texture sampler state
         var ssd = new SamplerStateDescription
@@ -500,7 +568,7 @@ public class MeshRenderContext : RenderContext
         {
             IsDepthEnabled = true,
             DepthWriteMask = DepthWriteMask.Zero,
-            DepthComparison = Comparison.Less,
+            DepthComparison = Comparison.Greater,
             IsStencilEnabled = false
         });
 
@@ -519,7 +587,7 @@ public class MeshRenderContext : RenderContext
         {
             ResolveVertexShader = new VertexShader(Device, resolveVSBytecode);
         }
-        using (ShaderBytecode resolvePSBytecode = ShaderBytecode.Compile(EmbeddedResources.LevelEditorShader, "PSMainResolve", "ps_5_0").Bytecode)
+        using (ShaderBytecode resolvePSBytecode = ShaderBytecode.Compile($"#define MSAA_SAMPLES {SampleCount}\n" + EmbeddedResources.LevelEditorShader, "PSMainResolve", "ps_5_0").Bytecode)
         {
             ResolvePixelShader = new PixelShader(Device, resolvePSBytecode);
         }
@@ -537,50 +605,34 @@ public class MeshRenderContext : RenderContext
     {
         base.CreateSizeDependentResources(width, height, newBackBuffer);
         BackbufferView = new RenderTargetView(Device, Backbuffer);
-        SceneColor = new Texture2D(Device, new Texture2DDescription
+
+        Texture2D CreateTarget(Format format, BindFlags bindFlags, int sampleCount) => new(Device, new Texture2DDescription
         {
             ArraySize = 1,
-            BindFlags = BindFlags.RenderTarget | BindFlags.ShaderResource,
+            BindFlags = bindFlags,
             CpuAccessFlags = CpuAccessFlags.None,
-            Format = Format.R16G16B16A16_Float,
+            Format = format,
             Height = height,
             Width = width,
             MipLevels = 1,
             OptionFlags = ResourceOptionFlags.None,
-            SampleDescription = new SampleDescription(1, 0),
+            SampleDescription = new SampleDescription(sampleCount, 0),
             Usage = ResourceUsage.Default
         });
+
+        //multisampled scene targets. Their views' dimensions (Texture2DMS or Texture2D) are inferred from the sample count
+        SceneColor = CreateTarget(Format.R16G16B16A16_Float, BindFlags.RenderTarget | BindFlags.ShaderResource, SampleCount);
         SceneColorView = new RenderTargetView(Device, SceneColor);
         SceneColorResourceView = new ShaderResourceView(Device, SceneColor);
-        DepthBuffer = new Texture2D(Device, new Texture2DDescription
-        {
-            ArraySize = 1,
-            BindFlags = BindFlags.DepthStencil,
-            CpuAccessFlags = CpuAccessFlags.None,
-            Format = Format.D32_Float,
-            Height = Height,
-            Width = Width,
-            MipLevels = 1,
-            OptionFlags = ResourceOptionFlags.None,
-            SampleDescription = new SampleDescription(1, 0),
-            Usage = ResourceUsage.Default
-        });
+        DepthBuffer = CreateTarget(Format.D32_Float, BindFlags.DepthStencil, SampleCount);
         DepthBufferView = new DepthStencilView(Device, DepthBuffer);
+        HitBufferMS = CreateTarget(Format.B8G8R8A8_UNorm, BindFlags.RenderTarget | BindFlags.ShaderResource, SampleCount);
+        HitBufferView = new RenderTargetView(Device, HitBufferMS);
+        HitBufferMSResourceView = new ShaderResourceView(Device, HitBufferMS);
 
-        HitBuffer = new Texture2D(Device, new Texture2DDescription
-        {
-            ArraySize = 1,
-            BindFlags = BindFlags.RenderTarget | BindFlags.ShaderResource,
-            CpuAccessFlags = CpuAccessFlags.None,
-            Format = Format.B8G8R8A8_UNorm,
-            Height = Height,
-            Width = Width,
-            MipLevels = 1,
-            OptionFlags = ResourceOptionFlags.None,
-            SampleDescription = new SampleDescription(1, 0),
-            Usage = ResourceUsage.Default
-        });
-        HitBufferView = new RenderTargetView(Device, HitBuffer);
+        //single-sampled, so that it can be copied for reading on the CPU
+        HitBuffer = CreateTarget(Format.B8G8R8A8_UNorm, BindFlags.RenderTarget, 1);
+        HitBufferResolvedView = new RenderTargetView(Device, HitBuffer);
 
         ImmediateContext.OutputMerger.SetRenderTargets(DepthBufferView, SceneColorView, HitBufferView);
         ImmediateContext.Rasterizer.SetViewport(0, 0, Width, Height);
@@ -629,6 +681,12 @@ public class MeshRenderContext : RenderContext
         DepthBuffer = null;
         HitBufferView?.Dispose();
         HitBufferView = null;
+        HitBufferMSResourceView?.Dispose();
+        HitBufferMSResourceView = null;
+        HitBufferMS?.Dispose();
+        HitBufferMS = null;
+        HitBufferResolvedView?.Dispose();
+        HitBufferResolvedView = null;
         HitBuffer?.Dispose();
         HitBuffer = null;
         RenderTarget2D.Dispose();
@@ -658,6 +716,9 @@ public class MeshRenderContext : RenderContext
         DefaultSamplers = null;
         SamplerStateCache.DisposeValuesAndClear();
         TranslucentDepthState?.Dispose();
+        DefaultDepthState?.Dispose();
+        CullBackRasterizerState?.Dispose();
+        CullFrontRasterizerState?.Dispose();
         DefaultEffect?.Dispose();
         LEVertexDefaultVertexShader?.Dispose();
         LEVertexDefaultInputLayout?.Dispose();
@@ -1011,7 +1072,7 @@ public class MeshRenderContext : RenderContext
         var pixelFormat = LegendaryExplorerCore.Textures.Image.getPixelFormatType(unrealTexture.Export.GetProperty<EnumProperty>("Format").Value.Name);
         var format = (Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
         var srgbFormats = IsSRGB(texture2DExport) ? RenderContextExtensions.GetSRGBFormats(format) : null;
-        Texture2D texture = this.LoadUnrealMip(unrealTexture.GetTopMip(), pixelFormat, typelessResource: srgbFormats is not null);
+        Texture2D texture = this.LoadUnrealMipChain(unrealTexture.Mips, unrealTexture.GetTopMip(), pixelFormat, typelessResource: srgbFormats is not null);
         return new LoadedTexture(texture, srgbFormats?.UNorm ?? format, srgbFormats?.SRGB);
     }
 

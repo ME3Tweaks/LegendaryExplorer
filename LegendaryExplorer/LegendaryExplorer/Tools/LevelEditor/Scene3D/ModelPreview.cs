@@ -387,7 +387,10 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
         (VertexShader vs, InputLayout inputLayout) = context.GetCachedVertexShader(material.UnrealVertexShader.Guid, material.UnrealVertexShader.ShaderByteCode);
         effect.PrepDraw(context.ImmediateContext, vs, ps, inputLayout, context.GetCachedBlendState(BlendDescription));
         //translucency is depth tested against the opaque geometry, but doesn't occlude anything itself
-        context.ImmediateContext.OutputMerger.SetDepthStencilState(IsTranslucent ? context.TranslucentDepthState : null);
+        context.ImmediateContext.OutputMerger.SetDepthStencilState(IsTranslucent ? context.TranslucentDepthState : context.DefaultDepthState);
+        //meshes whose transform mirrors them have reversed winding
+        bool reverseCulling = mesh.LocalToWorld.GetDeterminant() < 0;
+        context.SetMeshRasterizerState(material.IsTwoSided, reverseCulling);
 
         Matrix4x4 viewMatrix = camera.ViewMatrix;
         var vsConstants = new LEVSConstants
@@ -396,13 +399,9 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
             CameraPosition = new Vector4(camera.EyePosition, 1),
             PreViewTranslation = Vector4.Zero,
         };
+        //The projection matrix is already reversed (see SceneCamera.ProjectionMatrix), so these are the values UE3 computes for inverted Z
         float depthMul = camera.ProjectionMatrix[2, 2];
         float depthAdd = camera.ProjectionMatrix[3, 2];
-        if (false) //TODO: check if Z is inverted, if so this should be true
-        {
-            depthMul = 1f - depthMul;
-            depthAdd = -depthAdd;
-        }
         var psConstants = new LEPSConstants
         {
             ScreenPositionScaleBias = new Vector4(1f / 2f, 1f / -2f, (context.Height / 2f + 0.5f) / context.Height, (context.Width / 2f + 0.5f) / context.Width),
@@ -425,7 +424,8 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
         }
         finally
         {
-            context.ImmediateContext.OutputMerger.SetDepthStencilState(null);
+            context.ImmediateContext.OutputMerger.SetDepthStencilState(context.DefaultDepthState);
+            context.RestoreRasterizerState();
             //the material's textures may have changed some samplers' address modes, which LEX's shaders don't expect
             context.RestoreDefaultSamplers();
         }

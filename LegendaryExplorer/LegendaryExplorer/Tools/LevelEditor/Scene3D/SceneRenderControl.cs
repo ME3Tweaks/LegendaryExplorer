@@ -116,6 +116,99 @@ public static class RenderContextExtensions
     }
 
     /// <summary>
+    /// Loads <paramref name="topMip"/> and as many of the mips below it as are available, so the texture can be minified without aliasing.
+    /// </summary>
+    /// <param name="mips">All of the texture's mips, largest first</param>
+    public static unsafe Texture2D LoadUnrealMipChain(this RenderContext renderContext, IReadOnlyList<LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo> mips,
+        LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo topMip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat, bool typelessResource = false)
+    {
+        var format = (Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
+        bool isCompressed = format.IsCompressed();
+        int topWidth = topMip.width;
+        int topHeight = topMip.height;
+        //block-compressed textures must have dimensions that are multiples of 4. Tiny ones are padded, and can't have mips below them
+        if (isCompressed && (topWidth % 4 != 0 || topHeight % 4 != 0))
+        {
+            return renderContext.LoadUnrealMip(topMip, pixelFormat, typelessResource);
+        }
+
+        var levels = new List<byte[]>();
+        int topIndex = -1;
+        for (int i = 0; i < mips.Count; i++)
+        {
+            if (mips[i] == topMip) topIndex = i;
+        }
+        for (int i = topIndex; i >= 0 && i < mips.Count; i++)
+        {
+            var mip = mips[i];
+            int level = levels.Count;
+            int expectedWidth = Math.Max(1, topWidth >> level);
+            int expectedHeight = Math.Max(1, topHeight >> level);
+            if (mip.storageType is StorageTypes.empty || mip.width != expectedWidth || mip.height != expectedHeight)
+            {
+                break;
+            }
+            byte[] data;
+            try
+            {
+                data = LECTexture2D.GetTextureData(mip, mip.Export.Game);
+            }
+            catch when (level > 0)
+            {
+                //a missing lower mip shouldn't prevent the texture from loading
+                break;
+            }
+            if (data is null || data.Length < GetMipByteSize(format, expectedWidth, expectedHeight, out _))
+            {
+                if (level == 0) return renderContext.LoadUnrealMip(topMip, pixelFormat, typelessResource);
+                break;
+            }
+            levels.Add(data);
+        }
+
+        Texture2DDescription desc = GetTextureDescription((uint)topWidth, (uint)topHeight, format, false, out _);
+        desc.MipLevels = levels.Count;
+        if (typelessResource && GetSRGBFormats(format) is { } srgbFormats)
+        {
+            desc.Format = srgbFormats.Typeless;
+        }
+
+        var handles = new System.Runtime.InteropServices.GCHandle[levels.Count];
+        var rects = new SharpDX.DataRectangle[levels.Count];
+        try
+        {
+            for (int level = 0; level < levels.Count; level++)
+            {
+                handles[level] = System.Runtime.InteropServices.GCHandle.Alloc(levels[level], System.Runtime.InteropServices.GCHandleType.Pinned);
+                GetMipByteSize(format, Math.Max(1, topWidth >> level), Math.Max(1, topHeight >> level), out int pitch);
+                rects[level] = new SharpDX.DataRectangle(handles[level].AddrOfPinnedObject(), pitch);
+            }
+            return new Texture2D(renderContext.Device, desc, rects);
+        }
+        finally
+        {
+            foreach (var handle in handles)
+            {
+                if (handle.IsAllocated) handle.Free();
+            }
+        }
+    }
+
+    private static int GetMipByteSize(Format format, int width, int height, out int pitch)
+    {
+        if (format.IsCompressed())
+        {
+            int blockSize = format is Format.BC1_UNorm or Format.BC1_UNorm_SRgb or Format.BC4_SNorm or Format.BC4_UNorm ? 8 : 16;
+            int blocksWide = Math.Max(1, (width + 3) / 4);
+            int blocksHigh = Math.Max(1, (height + 3) / 4);
+            pitch = blocksWide * blockSize;
+            return pitch * blocksHigh;
+        }
+        pitch = format.SizeOfInBits() * width / 8;
+        return pitch * height;
+    }
+
+    /// <summary>
     /// For formats that have an sRGB variant, returns the typeless format a texture must be created with to have both UNORM and sRGB views.
     /// Returns null for formats without an sRGB variant (eg. BC4/BC5, which are only used for non-color data).
     /// </summary>

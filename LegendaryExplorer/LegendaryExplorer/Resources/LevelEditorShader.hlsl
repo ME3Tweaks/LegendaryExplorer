@@ -180,19 +180,49 @@ float3 FilmicCurve(float3 x) {
 //so that LEX's shader, primitives, and the background look the same as they always have.
 #define GAME_SHADER_PIXEL_ALPHA 2.0
 
-float4 PSMainResolve(float4 pos : SV_POSITION) : SV_TARGET0 {
-    float4 sceneColor = tex.Load(int3(pos.xy, 0));
-    float3 color = sceneColor.rgb;
-    if (sceneColor.a > GAME_SHADER_PIXEL_ALPHA - 0.5) {
-        //Approximates LE3's FSFXUberPostProcessBlendPixelShader with filmic tonemapping on (the default), and default color grading.
-        //LE3 looks up sceneColor * 0.0616082214 in a LUT generated from the filmic curve, so the LUT spans [0, 16.23].
-        //Normalizing so that the top of that range maps to white is an assumption; the LUT's generation hasn't been reverse engineered.
-        //(LE3 also multiplies by (1.01036298, 1.00000572, 1.16309249) after gamma correction. That's left out: in game it's combined with
-        //per-level color grading, and on its own it gives everything a purple cast)
-        const float WhitePoint = 1 / 0.0616082214;
-        color = FilmicCurve(clamp(color, 0, WhitePoint)) / FilmicCurve(WhitePoint);
+//The scene targets are multisampled. MeshRenderContext compiles PSMainResolve with MSAA_SAMPLES defined as their sample count
+#ifndef MSAA_SAMPLES
+#define MSAA_SAMPLES 1
+#endif
+#if MSAA_SAMPLES > 1
+Texture2DMS<float4, MSAA_SAMPLES> ResolveSceneColor : register(t0);
+Texture2DMS<float4, MSAA_SAMPLES> ResolveHitTest : register(t1);
+#define LOAD_SAMPLE(texture, pixel, sampleIndex) texture.Load(pixel, sampleIndex)
+#else
+Texture2D<float4> ResolveSceneColor : register(t0);
+Texture2D<float4> ResolveHitTest : register(t1);
+#define LOAD_SAMPLE(texture, pixel, sampleIndex) texture.Load(int3(pixel, 0))
+#endif
+
+struct PS_OUT_RESOLVE {
+    float4 color : SV_TARGET0;
+    float4 hitTestID : SV_TARGET1;
+};
+
+PS_OUT_RESOLVE PSMainResolve(float4 pos : SV_POSITION) {
+    PS_OUT_RESOLVE result;
+    int2 pixel = int2(pos.xy);
+    //Each sample is tonemapped before averaging. Averaging HDR values first would let one very bright sample dominate the pixel, leaving aliased edges
+    float3 sum = 0;
+    [unroll]
+    for (int i = 0; i < MSAA_SAMPLES; i++) {
+        float4 sceneColor = LOAD_SAMPLE(ResolveSceneColor, pixel, i);
+        float3 color = sceneColor.rgb;
+        if (sceneColor.a > GAME_SHADER_PIXEL_ALPHA - 0.5) {
+            //Approximates LE3's FSFXUberPostProcessBlendPixelShader with filmic tonemapping on (the default), and default color grading.
+            //LE3 looks up sceneColor * 0.0616082214 in a LUT generated from the filmic curve, so the LUT spans [0, 16.23].
+            //Normalizing so that the top of that range maps to white is an assumption; the LUT's generation hasn't been reverse engineered.
+            //(LE3 also multiplies by (1.01036298, 1.00000572, 1.16309249) after gamma correction. That's left out: in game it's combined with
+            //per-level color grading, and on its own it gives everything a purple cast)
+            const float WhitePoint = 1 / 0.0616082214;
+            color = FilmicCurve(clamp(color, 0, WhitePoint)) / FilmicCurve(WhitePoint);
+        }
+        sum += saturate(color);
     }
-    return float4(pow(saturate(color), 1 / GAMMA), 1);
+    result.color = float4(pow(sum / MSAA_SAMPLES, 1 / GAMMA), 1);
+    //IDs can't be averaged, so one sample is copied
+    result.hitTestID = LOAD_SAMPLE(ResolveHitTest, pixel, 0);
+    return result;
 }
 
 //Game shaders don't write to the hit test render target, so meshes drawn with them are drawn a second time with this pixel shader,

@@ -187,7 +187,8 @@ internal static class ShaderParameterSetters
 
         p.SceneTextureParameters.WriteValues(buffer, context, mesh, mat);
 
-        buffer.WriteVal(p.TwoSidedSign, 1f); //-1 if rendering backface?
+        //UE3 flips this for meshes with reversed culling (see FMaterialPixelShaderParameters::SetMesh). Backfaces aren't rendered in a separate pass
+        buffer.WriteVal(p.TwoSidedSign, mesh.LocalToWorld.GetDeterminant() < 0 ? -1f : 1f);
         buffer.WriteVal(p.InvGamma, 1f / (1f /*GammaCorrection*/ ));
         buffer.WriteVal(p.DecalFarPlaneDistance, 65536f); //actual value is stored on the BioDecalComponent
 
@@ -232,13 +233,9 @@ internal static class ShaderParameterSetters
         }
         if (p.MinZ_MaxZRatio.IsBound())
         {
+            //The projection matrix is already reversed (see SceneCamera.ProjectionMatrix), so these are the values UE3 computes for inverted Z
             float depthMul = context.Camera.ProjectionMatrix[2, 2];
             float depthAdd = context.Camera.ProjectionMatrix[3, 2];
-            if (false) //TODO: check if Z is inverted, if so this should be true
-            {
-                depthMul = 1f - depthMul;
-                depthAdd = -depthAdd;
-            }
             buffer.WriteVal(p.MinZ_MaxZRatio, new Vector4(depthAdd, depthMul, 1f / depthAdd, depthMul / depthAdd));
         }
     }

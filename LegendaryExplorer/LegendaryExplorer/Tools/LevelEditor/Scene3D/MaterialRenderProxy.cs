@@ -79,6 +79,10 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     public EBlendMode BlendMode;
     public bool UseHairPass;
     public bool IsUnlit;
+    /// <summary>
+    /// Backfaces aren't culled
+    /// </summary>
+    public bool IsTwoSided;
     private readonly Dictionary<string, float> ScalarParameterValues = [];
     private readonly Dictionary<string, LinearColor> VectorParameterValues = [];
     private readonly Dictionary<string, string> TextureParameterValues = [];
@@ -204,6 +208,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
         }
 
         UseHairPass = props.GetProp<BoolProperty>("bHairPass") is { Value: true };
+        IsTwoSided = props.GetProp<BoolProperty>("TwoSided") is { Value: true };
         IsUnlit = props.GetProp<EnumProperty>("LightingModel") is {} lightingModelProp && lightingModelProp.Value == "MLM_Unlit";
 
         var expressionsProp = props.GetProp<ArrayProperty<ObjectProperty>>("Expressions");
