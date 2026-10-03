@@ -138,16 +138,41 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
     }
 
-    //The renderer only switches to game shaders once they're loaded, so that it doesn't load them one material at a time on the UI thread
+    private bool _useLevelLighting = true;
+    /// <summary>
+    /// With game shaders: light static meshes with the level's lights, as the game does (see <see cref="MeshRenderContext.UseLevelLighting"/>).
+    /// Otherwise, meshes without a light-map get a preview light.
+    /// </summary>
+    public bool UseLevelLighting
+    {
+        get => _useLevelLighting;
+        set
+        {
+            if (SetProperty(ref _useLevelLighting, value))
+            {
+                if (value && RenderContext.UseGameShaders)
+                {
+                    EnableGameShaders();
+                }
+                else
+                {
+                    RenderContext.UseLevelLighting = value;
+                }
+            }
+        }
+    }
+
+    //The renderer only switches to game shaders (and level lighting) once they're loaded, so that it doesn't load them one material at a time on the UI thread
     private async void EnableGameShaders()
     {
-        if (RenderContext.HasPendingGameShaderLoads)
+        bool prepareLevelLighting = _useLevelLighting && !RenderContext.UseLevelLighting;
+        if (RenderContext.HasPendingGameShaderLoads || prepareLevelLighting)
         {
             IsBusy = true;
             BusyText = "Loading game shaders...";
             try
             {
-                await Task.Run(() => RenderContext.LoadPendingGameShaders(ReportGameShaderLoadProgress)).ConfigureAwait(true);
+                await Task.Run(() => RenderContext.LoadPendingGameShaders(ReportGameShaderLoadProgress, prepareLevelLighting)).ConfigureAwait(true);
             }
             catch (Exception e)
             {
@@ -159,8 +184,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 IsBusy = false;
             }
         }
-        //it may have been turned back off while loading
+        //they may have been turned back off while loading
         RenderContext.UseGameShaders = _useGameShaders;
+        RenderContext.UseLevelLighting = _useLevelLighting;
     }
 
     //Can be called from a background thread
@@ -251,8 +277,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         RenderContext.ShowVolumetrics = ShowVolumetrics;
         RenderContext.ShowHidden = ShowHidden;
         Span<RenderPass> passes = ShowCollision
-            ? [RenderPass.Base, RenderPass.Hair, RenderPass.Translucent, RenderPass.Collision]
-            : [RenderPass.Base, RenderPass.Hair, RenderPass.Translucent];
+            ? [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Translucent, RenderPass.Collision]
+            : [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Translucent];
 
         foreach (RenderPass pass in passes)
         {
@@ -500,6 +526,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             RenderContext.RemoveActor(actor);
             actor.Dispose();
         }
+        RenderContext.RemoveLights(file.Lights);
 
         file.Dispose();
         OpenFiles.Remove(file);
@@ -583,6 +610,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         {
             actor.ResolveAttachment(actors);
         }
+
+        //The level's lights, for rendering static meshes the way the game lights them. (Light actors aren't otherwise shown)
+        RenderContext.RemoveLights(owningFile.Lights);
+        owningFile.Lights = SceneLight.LoadLevelLights(level, RenderContext.PackageCache);
+        RenderContext.AddLights(owningFile.Lights);
         return new(actors, ignoredActorClasses);
     }
 

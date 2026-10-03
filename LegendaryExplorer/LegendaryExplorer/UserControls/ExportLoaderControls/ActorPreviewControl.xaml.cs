@@ -134,8 +134,8 @@ public partial class ActorPreviewControl : ExportLoaderControl, IActorEditorCont
     private void OnRenderScene(object sender, EventArgs e)
     {
         Span<RenderPass> passes = ShowCollision
-            ? [RenderPass.Base, RenderPass.Hair, RenderPass.Translucent, RenderPass.Collision]
-            : [RenderPass.Base, RenderPass.Hair, RenderPass.Translucent];
+            ? [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Translucent, RenderPass.Collision]
+            : [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Translucent];
         foreach (RenderPass pass in passes)
             _actor?.Render(RenderContext, pass);
         RenderContext.DrawUI();

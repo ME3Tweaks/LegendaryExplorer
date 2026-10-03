@@ -4,6 +4,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.BinaryConverters.Shaders;
 using LegendaryExplorerCore.Unreal.Classes;
 using SharpDX.Direct3D11;
 using System;
@@ -69,6 +70,11 @@ public class ModelPreviewLOD<Vertex> where Vertex : IVertexBase
     public List<ModelPreviewSection> Sections;
 
     /// <summary>
+    /// The precomputed lighting of this LOD, if it has any. Only used by the game's shaders
+    /// </summary>
+    public MeshStaticLighting StaticLighting;
+
+    /// <summary>
     /// Creates a new ModelPreviewLOD.
     /// </summary>
     /// <param name="mesh">The geometry of this level of detail.</param>
@@ -85,6 +91,8 @@ public enum RenderPass
     //material types
     Base,
     Hair,
+    //The level's lights, each added onto the opaque geometry they light in its own pass. Must be rendered after the opaque passes
+    Lighting,
     //materials that blend with what's behind them. Must be rendered after the opaque passes, since they don't write depth
     Translucent,
 
@@ -126,6 +134,11 @@ public abstract class ModelPreviewMaterial<Vertex> where Vertex : IVertexBase
     /// <param name="lod">The LOD to render.</param>
     /// <param name="s">Which faces to render.</param>
     public abstract void RenderSection(ModelPreviewLOD<Vertex> lod, ModelPreviewSection s,  MeshRenderContext context);
+
+    /// <summary>
+    /// Renders the level's lights on the given <see cref="ModelPreviewSection"/>, for <see cref="RenderPass.Lighting"/>.
+    /// </summary>
+    public virtual void RenderLighting(ModelPreviewLOD<Vertex> lod, ModelPreviewSection s, MeshRenderContext context) { }
 
     ///Only call from constructor
     protected abstract MaterialInstanceConstantLevelEditor CreateMaterial(MeshRenderContext renderContext, ExportEntry export);
@@ -230,7 +243,8 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
     //used when the material can't be rendered with the game's shaders
     private readonly PreviewTextureCache.TextureEntry FallbackDiffTexture;
 
-    public LEShaderPreviewMaterial(MeshRenderContext renderContext, ExportEntry export) : base(renderContext, export)
+    /// <param name="lightMapType">The type of static light-map the mesh has. Determines which of the material's shaders are used</param>
+    public LEShaderPreviewMaterial(MeshRenderContext renderContext, ExportEntry export, ELightMapType lightMapType) : base(renderContext, export)
     {
         foreach (IEntry textureEntry in Material.Textures)
         {
@@ -245,6 +259,7 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
         }
         var mat = (MaterialRenderProxy)Material;
         mat.TextureMap = TextureMap;
+        mat.QueueGameShaderLoad(lightMapType);
         if (TexturedPreviewMaterial.FindDiffuse(export, Material) is IEntry diffEntry)
         {
             TextureMap.TryGetValue(diffEntry.InstancedFullPath, out FallbackDiffTexture);
@@ -341,6 +356,8 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
 
     private bool LoggedFallback;
 
+    public MaterialRenderProxy RenderProxy => (MaterialRenderProxy)Material;
+
     //same as UE3's IsTranslucentBlendMode
     private bool IsTranslucent => ((MaterialRenderProxy)Material).BlendMode is not (EBlendMode.BLEND_Opaque or EBlendMode.BLEND_Masked);
 
@@ -377,43 +394,43 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
         context.RenderMeshWithDefaultEffect(lod.Mesh, s, FallbackDiffTexture?.TextureView);
     }
 
+    /// <summary>
+    /// Whether the mesh is lit by the level's lights in separate passes (see <see cref="RenderLighting"/>), as the game does for static meshes without a light-map.
+    /// If not (and it has no light-map), it's lit by <see cref="MeshRenderContext.Lighting"/>
+    /// </summary>
+    private static bool UsesLevelLighting(ModelPreviewLOD<LEVertex> lod, MaterialRenderProxy material, MeshRenderContext context) =>
+        context.IsLevelLightingActive && !material.IsUnlit && lod.StaticLighting is { UsesLightEnvironment: false };
+
     private void RenderSectionWithGameShaders(ModelPreviewLOD<LEVertex> lod, ModelPreviewSection s, MeshRenderContext context)
     {
         Mesh<LEVertex> mesh = lod.Mesh;
-        SceneCamera camera = context.Camera;
         var material = (MaterialRenderProxy)Material;
         LEEffect effect = context.LEEffect;
-        PixelShader ps = context.GetCachedPixelShader(material.UnrealPixelShader.Guid, material.UnrealPixelShader.ShaderByteCode);
-        (VertexShader vs, InputLayout inputLayout) = context.GetCachedVertexShader(material.UnrealVertexShader.Guid, material.UnrealVertexShader.ShaderByteCode);
+        (Shader vertexShader, Shader pixelShader) = (material.UnrealVertexShader, material.UnrealPixelShader);
+        bool usePreviewLighting = !material.UsesLightMap;
+        if (!material.UsesLightMap && material.NoLightMapVertexShader is not null && UsesLevelLighting(lod, material, context))
+        {
+            (vertexShader, pixelShader) = (material.NoLightMapVertexShader, material.NoLightMapPixelShader);
+            usePreviewLighting = false;
+        }
+        PixelShader ps = context.GetCachedPixelShader(pixelShader.Guid, pixelShader.ShaderByteCode);
+        (VertexShader vs, InputLayout inputLayout) = context.GetCachedVertexShader(vertexShader.Guid, vertexShader.ShaderByteCode);
         effect.PrepDraw(context.ImmediateContext, vs, ps, inputLayout, context.GetCachedBlendState(BlendDescription));
+        //light-map UVs and samples. Unbound if there aren't any, since the shaders won't read them
+        context.ImmediateContext.InputAssembler.SetVertexBuffers(MeshStaticLighting.VertexStreamSlot,
+            new VertexBufferBinding(lod.StaticLighting?.VertexStream, MeshStaticLighting.VertexStreamStride, 0));
         //translucency is depth tested against the opaque geometry, but doesn't occlude anything itself
         context.ImmediateContext.OutputMerger.SetDepthStencilState(IsTranslucent ? context.TranslucentDepthState : context.DefaultDepthState);
         //meshes whose transform mirrors them have reversed winding
         bool reverseCulling = mesh.LocalToWorld.GetDeterminant() < 0;
         context.SetMeshRasterizerState(material.IsTwoSided, reverseCulling);
 
-        Matrix4x4 viewMatrix = camera.ViewMatrix;
-        var vsConstants = new LEVSConstants
-        {
-            ViewProjectionMatrix = viewMatrix * camera.ProjectionMatrix,
-            CameraPosition = new Vector4(camera.EyePosition, 1),
-            PreViewTranslation = Vector4.Zero,
-        };
-        //The projection matrix is already reversed (see SceneCamera.ProjectionMatrix), so these are the values UE3 computes for inverted Z
-        float depthMul = camera.ProjectionMatrix[2, 2];
-        float depthAdd = camera.ProjectionMatrix[3, 2];
-        var psConstants = new LEPSConstants
-        {
-            ScreenPositionScaleBias = new Vector4(1f / 2f, 1f / -2f, (context.Height / 2f + 0.5f) / context.Height, (context.Width / 2f + 0.5f) / context.Width),
-            MinZ_MaxZRatio = new Vector4(depthAdd, depthMul, 1f / depthAdd, depthMul / depthAdd),
-            DynamicScale = Vector4.One,
-        };
-
         try
         {
-            material.UpdateShaderParams(effect.VertexShaderConstantBuffer, effect.PixelShaderConstantBuffer, context, mesh);
+            material.UpdateShaderParams(effect.VertexShaderConstantBuffer, effect.PixelShaderConstantBuffer, context, mesh, vertexShader, pixelShader,
+                lod.StaticLighting, usePreviewLighting);
 
-            effect.RenderObject(context.ImmediateContext, vsConstants, psConstants, mesh, (int)s.StartIndex, (int)s.TriangleCount * 3);
+            effect.RenderObject(context.ImmediateContext, GetVertexShaderConstants(context), GetPixelShaderConstants(context), mesh, (int)s.StartIndex, (int)s.TriangleCount * 3);
 
             var hitProxyConstants = new LEHitProxyConstants
             {
@@ -429,6 +446,96 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
             //the material's textures may have changed some samplers' address modes, which LEX's shaders don't expect
             context.RestoreDefaultSamplers();
         }
+    }
+
+    //lights add to what's already been rendered
+    private static readonly RenderTargetBlendDescription AdditiveBlendDescription = new()
+    {
+        RenderTargetWriteMask = ColorWriteMaskFlags.Red | ColorWriteMaskFlags.Green | ColorWriteMaskFlags.Blue,
+        BlendOperation = BlendOperation.Add,
+        AlphaBlendOperation = BlendOperation.Add,
+        SourceBlend = BlendOption.One,
+        DestinationBlend = BlendOption.One,
+        SourceAlphaBlend = BlendOption.Zero,
+        DestinationAlphaBlend = BlendOption.One,
+        IsBlendEnabled = true
+    };
+
+    /// <summary>
+    /// Adds each of the level's lights that this section isn't light-mapped for, as UE3's TMeshLightingDrawingPolicy does
+    /// </summary>
+    public override void RenderLighting(ModelPreviewLOD<LEVertex> lod, ModelPreviewSection s, MeshRenderContext context)
+    {
+        var material = (MaterialRenderProxy)Material;
+        //UE3 renders lit translucency differently, and unlit materials have no light shaders
+        if (!context.UseGameShaders || context.Wireframe || IsTranslucent || !UsesLevelLighting(lod, material, context) || !material.CanRenderWithGameShaders)
+        {
+            return;
+        }
+        LightInteraction[] interactions = lod.StaticLighting.GetLightInteractions(lod.Mesh.TransformedBounds);
+        if (interactions.Length == 0)
+        {
+            return;
+        }
+        Mesh<LEVertex> mesh = lod.Mesh;
+        LEEffect effect = context.LEEffect;
+        context.ImmediateContext.InputAssembler.SetVertexBuffers(MeshStaticLighting.VertexStreamSlot,
+            new VertexBufferBinding(lod.StaticLighting.VertexStream, MeshStaticLighting.VertexStreamStride, 0));
+        context.ImmediateContext.OutputMerger.SetDepthStencilState(context.LightPassDepthState);
+        context.SetMeshRasterizerState(material.IsTwoSided, mesh.LocalToWorld.GetDeterminant() < 0);
+        BlendState blendState = context.GetCachedBlendState(AdditiveBlendDescription);
+        LEVSConstants vsConstants = GetVertexShaderConstants(context);
+        LEPSConstants psConstants = GetPixelShaderConstants(context);
+        try
+        {
+            foreach (LightInteraction interaction in interactions)
+            {
+                (Shader vertexShader, Shader pixelShader) = material.GetLightShaders(interaction.Light.Type, interaction.Shadowing);
+                if (vertexShader is null)
+                {
+                    continue;
+                }
+                PixelShader ps = context.GetCachedPixelShader(pixelShader.Guid, pixelShader.ShaderByteCode);
+                (VertexShader vs, InputLayout inputLayout) = context.GetCachedVertexShader(vertexShader.Guid, vertexShader.ShaderByteCode);
+                effect.PrepDraw(context.ImmediateContext, vs, ps, inputLayout, blendState);
+                context.ImmediateContext.InputAssembler.SetVertexBuffers(MeshStaticLighting.ShadowVertexStreamSlot,
+                    new VertexBufferBinding(interaction.ShadowVertexBuffer, MeshStaticLighting.ShadowVertexStreamStride, 0));
+                material.UpdateLightPassShaderParams(effect.VertexShaderConstantBuffer, effect.PixelShaderConstantBuffer, context, mesh, vertexShader, pixelShader, interaction);
+                effect.RenderObject(context.ImmediateContext, vsConstants, psConstants, mesh, (int)s.StartIndex, (int)s.TriangleCount * 3);
+            }
+        }
+        finally
+        {
+            context.ImmediateContext.InputAssembler.SetVertexBuffers(MeshStaticLighting.ShadowVertexStreamSlot, new VertexBufferBinding(null, 0, 0));
+            context.ImmediateContext.OutputMerger.SetDepthStencilState(context.DefaultDepthState);
+            context.RestoreRasterizerState();
+            context.RestoreDefaultSamplers();
+        }
+    }
+
+    private static LEVSConstants GetVertexShaderConstants(MeshRenderContext context)
+    {
+        SceneCamera camera = context.Camera;
+        return new LEVSConstants
+        {
+            ViewProjectionMatrix = camera.ViewMatrix * camera.ProjectionMatrix,
+            CameraPosition = new Vector4(camera.EyePosition, 1),
+            PreViewTranslation = Vector4.Zero,
+        };
+    }
+
+    private static LEPSConstants GetPixelShaderConstants(MeshRenderContext context)
+    {
+        Matrix4x4 projectionMatrix = context.Camera.ProjectionMatrix;
+        //The projection matrix is already reversed (see SceneCamera.ProjectionMatrix), so these are the values UE3 computes for inverted Z
+        float depthMul = projectionMatrix[2, 2];
+        float depthAdd = projectionMatrix[3, 2];
+        return new LEPSConstants
+        {
+            ScreenPositionScaleBias = new Vector4(1f / 2f, 1f / -2f, (context.Height / 2f + 0.5f) / context.Height, (context.Width / 2f + 0.5f) / context.Width),
+            MinZ_MaxZRatio = new Vector4(depthAdd, depthMul, 1f / depthAdd, depthMul / depthAdd),
+            DynamicScale = Vector4.One,
+        };
     }
 
     protected override MaterialInstanceConstantLevelEditor CreateMaterial(MeshRenderContext renderContext, ExportEntry export)
@@ -473,7 +580,8 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
     /// <summary>
     /// Creates a preview of the given <see cref="StaticMesh"/>.
     /// </summary>
-    public ModelPreview(MeshRenderContext renderContext, StaticMesh m, int selectedLOD)
+    /// <param name="staticLighting">A component's precomputed lighting for this LOD. The preview takes ownership of it</param>
+    public ModelPreview(MeshRenderContext renderContext, StaticMesh m, int selectedLOD, MeshStaticLighting staticLighting = null)
     {
         if (selectedLOD < 0)  //PREVIEW BUG WORKAROUND
             return;
@@ -553,11 +661,17 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
             else
             {
                 IEntry matEntry = m.Export.FileRef.GetEntry(element.Material);
-                AddMaterial(renderContext, matEntry);
+                AddMaterial(renderContext, matEntry, staticLighting?.LightMapType ?? ELightMapType.LMT_None);
                 sections.Add(new ModelPreviewSection(matEntry.InstancedFullPath, element.FirstIndex, element.NumTriangles));
             }
         }
-        LODs.Add(new ModelPreviewLOD<TVertex>(new Mesh<TVertex>(renderContext.Device, triangles, vertices), sections));
+        var mesh = new Mesh<TVertex>(renderContext.Device, triangles, vertices);
+        LODs.Add(new ModelPreviewLOD<TVertex>(mesh, sections) { StaticLighting = staticLighting });
+        if (staticLighting is not null)
+        {
+            staticLighting.GetBounds = () => mesh.TransformedBounds;
+            staticLighting.Materials = Materials.Values.Cast<object>().OfType<LEShaderPreviewMaterial>().Select(mat => mat.RenderProxy).ToArray();
+        }
     }
 
     /// <summary>
@@ -623,7 +737,7 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
     /// <summary>
     /// Adds a <see cref="ModelPreviewMaterial"/> to this model, or adds another reference of any conflicting material.
     /// </summary>
-    private void AddMaterial(MeshRenderContext renderContext, IEntry matEntry)
+    private void AddMaterial(MeshRenderContext renderContext, IEntry matEntry, ELightMapType lightMapType = ELightMapType.LMT_None)
     {
         string ifp = matEntry.InstancedFullPath;
         if (!Materials.ContainsKey(ifp))
@@ -644,7 +758,7 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
                     worldVertMats.Add(ifp, new TexturedPreviewMaterial(renderContext, matExport));
                     break;
                 case Dictionary<string, ModelPreviewMaterial<LEVertex>> leVertMats:
-                    leVertMats.Add(ifp, new LEShaderPreviewMaterial(renderContext, matExport));
+                    leVertMats.Add(ifp, new LEShaderPreviewMaterial(renderContext, matExport, lightMapType));
                     break;
             }
         }
@@ -668,10 +782,16 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
                     view.RenderMeshAsWireframe(mesh, section);
                 }
             }
-            else if (Materials.TryGetValue(section.MaterialName, out ModelPreviewMaterial<TVertex> material)
-                && (material.Pass == renderPass || renderPass is RenderPass.ANY))
+            else if (Materials.TryGetValue(section.MaterialName, out ModelPreviewMaterial<TVertex> material))
             {
-                material.RenderSection(LODs[lod], section, view);
+                if (renderPass is RenderPass.Lighting)
+                {
+                    material.RenderLighting(LODs[lod], section, view);
+                }
+                else if (material.Pass == renderPass || renderPass is RenderPass.ANY)
+                {
+                    material.RenderSection(LODs[lod], section, view);
+                }
             }
         }
     }
@@ -693,6 +813,7 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
         foreach (var lod in LODs)
         {
             lod.Mesh.Dispose();
+            lod.StaticLighting?.Dispose();
         }
         LODs.Clear();
     }

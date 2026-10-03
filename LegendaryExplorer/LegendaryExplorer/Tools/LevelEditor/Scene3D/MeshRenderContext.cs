@@ -13,8 +13,10 @@ using SharpDX.Mathematics.Interop;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Color = System.Windows.Media.Color;
@@ -137,6 +139,10 @@ public class MeshRenderContext : RenderContext
     /// Depth tested, but not written. For translucent materials
     /// </summary>
     public DepthStencilState TranslucentDepthState { get; private set; }
+    /// <summary>
+    /// For drawing over geometry that's already been drawn, such as additive light passes: depth tested against itself (GreaterEqual), but not written
+    /// </summary>
+    public DepthStencilState LightPassDepthState { get; private set; }
 
     /// <summary>
     /// Sets the rasterizer state for a mesh drawn with the game's shaders, matching UE3's FMeshDrawingPolicy::SetMeshRenderState.
@@ -264,6 +270,90 @@ public class MeshRenderContext : RenderContext
     //Materials whose game shaders haven't been loaded yet
     private readonly List<MaterialRenderProxy> PendingGameShaderLoads = [];
 
+    private readonly Lock LightsLock = new();
+    //replaced rather than modified, so it can be read without locking
+    private SceneLight[] Lights = [];
+    private int LightsVersion;
+
+    /// <summary>
+    /// Render static meshes lit by the level's lights (<see cref="AddLights"/>), as the game does. Otherwise, or if there are no lights,
+    /// meshes without a light-map are lit by <see cref="Lighting"/>.
+    /// </summary>
+    public bool UseLevelLighting { get; set; } = true;
+
+    /// <summary>
+    /// See <see cref="UseLevelLighting"/>
+    /// </summary>
+    public bool IsLevelLightingActive => UseLevelLighting && Lights.Length > 0;
+
+    /// <summary>
+    /// The level lights in the scene, and a number that changes whenever they do. Thread-safe
+    /// </summary>
+    public SceneLight[] GetLights(out int version)
+    {
+        lock (LightsLock)
+        {
+            version = LightsVersion;
+            return Lights;
+        }
+    }
+
+    /// <summary>
+    /// Adds lights from a level. Thread-safe
+    /// </summary>
+    public void AddLights(IEnumerable<SceneLight> lights)
+    {
+        lock (LightsLock)
+        {
+            Lights = [.. Lights, .. lights];
+            LightsVersion++;
+        }
+    }
+
+    /// <summary>
+    /// Thread-safe
+    /// </summary>
+    public void ClearLights()
+    {
+        lock (LightsLock)
+        {
+            Lights = [];
+            LightsVersion++;
+        }
+    }
+
+    /// <summary>
+    /// Thread-safe
+    /// </summary>
+    public void RemoveLights(IEnumerable<SceneLight> lights)
+    {
+        var toRemove = new HashSet<SceneLight>(lights);
+        lock (LightsLock)
+        {
+            Lights = Lights.Where(light => !toRemove.Contains(light)).ToArray();
+            LightsVersion++;
+        }
+    }
+
+    //every mesh with static lighting, so their light shaders can be loaded ahead of time
+    private readonly HashSet<MeshStaticLighting> StaticLightings = [];
+
+    internal void RegisterStaticLighting(MeshStaticLighting staticLighting)
+    {
+        lock (StaticLightings)
+        {
+            StaticLightings.Add(staticLighting);
+        }
+    }
+
+    internal void UnregisterStaticLighting(MeshStaticLighting staticLighting)
+    {
+        lock (StaticLightings)
+        {
+            StaticLightings.Remove(staticLighting);
+        }
+    }
+
     internal void AddPendingGameShaderLoad(MaterialRenderProxy material)
     {
         lock (PendingGameShaderLoads)
@@ -288,11 +378,13 @@ public class MeshRenderContext : RenderContext
 
     /// <summary>
     /// Loads the game shaders of every material created since the last call, and creates their D3D shaders.
-    /// Loading them can take seconds for a whole level, so call this on a background thread before turning on <see cref="UseGameShaders"/>.
-    /// Otherwise each material's shaders are loaded the first time it's rendered.
+    /// Then loads the light shaders that the level's lights need (see <see cref="MeshStaticLighting.GetLightInteractions"/>).
+    /// Loading them can take seconds for a whole level, so call this on a background thread before turning on <see cref="UseGameShaders"/>,
+    /// and after adding a level's lights. Otherwise shaders are loaded the first time they're needed.
     /// </summary>
-    /// <param name="reportProgress">Called with the number of materials loaded so far, and the total</param>
-    public void LoadPendingGameShaders(Action<int, int> reportProgress = null)
+    /// <param name="reportProgress">Called with the number of items loaded so far, and the total</param>
+    /// <param name="prepareLevelLighting">Also load the light shaders, even if <see cref="UseLevelLighting"/> is off (for before turning it on)</param>
+    public void LoadPendingGameShaders(Action<int, int> reportProgress = null, bool prepareLevelLighting = false)
     {
         MaterialRenderProxy[] materials;
         lock (PendingGameShaderLoads)
@@ -300,6 +392,15 @@ public class MeshRenderContext : RenderContext
             materials = [.. PendingGameShaderLoads];
             PendingGameShaderLoads.Clear();
         }
+        MeshStaticLighting[] staticLightings = [];
+        if (UseLevelLighting || prepareLevelLighting)
+        {
+            lock (StaticLightings)
+            {
+                staticLightings = [.. StaticLightings];
+            }
+        }
+        int total = materials.Length + staticLightings.Length;
         for (int i = 0; i < materials.Length; i++)
         {
             MaterialRenderProxy material = materials[i];
@@ -308,8 +409,18 @@ public class MeshRenderContext : RenderContext
             {
                 GetCachedVertexShader(material.UnrealVertexShader.Guid, material.UnrealVertexShader.ShaderByteCode);
                 GetCachedPixelShader(material.UnrealPixelShader.Guid, material.UnrealPixelShader.ShaderByteCode);
+                if (material.NoLightMapVertexShader is not null)
+                {
+                    GetCachedVertexShader(material.NoLightMapVertexShader.Guid, material.NoLightMapVertexShader.ShaderByteCode);
+                    GetCachedPixelShader(material.NoLightMapPixelShader.Guid, material.NoLightMapPixelShader.ShaderByteCode);
+                }
             }
-            reportProgress?.Invoke(i + 1, materials.Length);
+            reportProgress?.Invoke(i + 1, total);
+        }
+        for (int i = 0; i < staticLightings.Length; i++)
+        {
+            staticLightings[i].PrepareLightShaders();
+            reportProgress?.Invoke(materials.Length + i + 1, total);
         }
     }
 
@@ -571,6 +682,13 @@ public class MeshRenderContext : RenderContext
             DepthComparison = Comparison.Greater,
             IsStencilEnabled = false
         });
+        LightPassDepthState = new DepthStencilState(Device, new DepthStencilStateDescription
+        {
+            IsDepthEnabled = true,
+            DepthWriteMask = DepthWriteMask.Zero,
+            DepthComparison = Comparison.GreaterEqual,
+            IsStencilEnabled = false
+        });
 
         // Load the default texture
         DefaultTexture = this.LoadTextureFromFile(Path.Combine(AppDirectories.ExecFolder, "Default.png"));
@@ -716,6 +834,7 @@ public class MeshRenderContext : RenderContext
         DefaultSamplers = null;
         SamplerStateCache.DisposeValuesAndClear();
         TranslucentDepthState?.Dispose();
+        LightPassDepthState?.Dispose();
         DefaultDepthState?.Dispose();
         CullBackRasterizerState?.Dispose();
         CullFrontRasterizerState?.Dispose();
@@ -786,7 +905,7 @@ public class MeshRenderContext : RenderContext
             {
                 shader = new VertexShader(Device, shaderBytecode);
                 VertexShaderCache.Add(id, shader);
-                inputLayout = new InputLayout(Device, shaderBytecode, LEVertex.InputElements);
+                inputLayout = new InputLayout(Device, shaderBytecode, [.. LEVertex.InputElements, .. MeshStaticLighting.InputElements]);
                 InputLayoutCache.Add(id, inputLayout);
             }
             return (shader, inputLayout);

@@ -384,10 +384,11 @@ public class PreviewTextureCache : IDisposable
     /// <summary>
     /// Queues a texture for eventual loading.
     /// </summary>
-    public TextureEntry LoadTexture(IEntry textureEntry, PackageCache packageCache = null)
+    /// <param name="cacheKey">Textures are cached by their path, unless this is given. For textures whose paths aren't unique between packages</param>
+    public TextureEntry LoadTexture(IEntry textureEntry, PackageCache packageCache = null, string cacheKey = null)
     {
         string ifp = textureEntry.InstancedFullPath;
-        if (AssetCache.TryGetValue(ifp, out TextureEntry entry))
+        if (AssetCache.TryGetValue(cacheKey ?? ifp, out TextureEntry entry))
         {
             entry.LastUsageTime = DateTime.Now;
             return entry;
@@ -400,7 +401,7 @@ public class PreviewTextureCache : IDisposable
             }
             if (textureEntry is ExportEntry textureExport)
             {
-                if (AssetCache.TryGetValue(textureExport.InstancedFullPath, out entry))
+                if (AssetCache.TryGetValue(cacheKey ?? textureExport.InstancedFullPath, out entry))
                 {
                     entry.LastUsageTime = DateTime.Now;
                     return entry;
@@ -408,7 +409,7 @@ public class PreviewTextureCache : IDisposable
                 try
                 {
                     entry = textureExport.ClassName is "TextureFlipBook" ? new FlipBookTextureEntry(RenderContext, textureExport) : new TextureEntry(RenderContext, textureExport);
-                    AssetCache.Add(entry.InstanceFullPath, entry);
+                    AssetCache.Add(cacheKey ?? entry.InstanceFullPath, entry);
                     return entry;
                 }
                 catch

@@ -233,6 +233,7 @@ public class LevelEditorRenderContext : MeshRenderContext
     public void UnloadLevel()
     {
         EmptyCaches();
+        ClearLights();
         HitProxies.Reset();
         DrawList_3D.DisposeAndClear();
         DrawList_UI.Clear();

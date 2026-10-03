@@ -126,6 +126,8 @@
                                   ToolTip="Show actors and meshes that aren't rendered in game (bHidden on the actor, or HiddenGame on the component)"/>
                     <ToggleButton Content="Game Shaders" IsChecked="{Binding UseGameShaders}"
                                   ToolTip="Render materials with the game's own shaders (Legendary Edition only). Experimental. Materials that can't be rendered this way use LEX's shader."/>
+                    <ToggleButton Content="Level Lighting" IsChecked="{Binding UseLevelLighting}" IsEnabled="{Binding UseGameShaders}"
+                                  ToolTip="With game shaders: light static meshes with the level's lights and their precomputed shadows, as the game does. Otherwise, meshes without a light-map get a preview light."/>
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                     <ToggleButton Content="Top Down" ToolTip="Toggle top-down orthographic view (Numpad 5)" IsChecked="{Binding IsOrthographicView}"/>
                 </ToolBar>

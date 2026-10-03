@@ -19,12 +19,21 @@ internal static class ShaderParameterSetters
     /// <summary>
     /// Writes the parameters for one of the base pass vertex shaders that <see cref="MaterialRenderProxy.SelectShaders"/> can choose
     /// </summary>
-    public static void WriteBasePassVertexShaderValues(Shader vertexShader, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
+    public static void WriteBasePassVertexShaderValues(Shader vertexShader, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat,
+        MeshStaticLighting staticLighting)
     {
         switch (vertexShader)
         {
             case TBasePassVertexShader<FNullPolicy, FNullPolicy> noLightMapShader:
                 noLightMapShader.WriteValues(buffer, context, mesh, mat);
+                break;
+            case TBasePassVertexShader<FLightMapTexturePolicy.VertexParametersType, FNullPolicy> lightMapTextureShader:
+                lightMapTextureShader.WriteValues(buffer, context, mesh, mat);
+                buffer.WriteVal(lightMapTextureShader.LightMapVertexParams.LightmapCoordinateScaleBias, RequireLightMap(staticLighting).CoordinateScaleBias);
+                break;
+            case TBasePassVertexShader<FVertexLightMapPolicy.VertexParametersType, FNullPolicy> vertexLightMapShader:
+                vertexLightMapShader.WriteValues(buffer, context, mesh, mat);
+                buffer.WriteArray(vertexLightMapShader.LightMapVertexParams.LightMapScale, RequireLightMap(staticLighting).Scales);
                 break;
             //used for both FDirectionalLightLightMapPolicy and FSHLightLightMapPolicy
             case TBasePassVertexShader<FDirectionalLightPolicy.VertexParametersType, FNullPolicy> directionalLightShader:
@@ -42,19 +51,34 @@ internal static class ShaderParameterSetters
     /// <summary>
     /// Writes the parameters for one of the base pass pixel shaders that <see cref="MaterialRenderProxy.SelectShaders"/> can choose
     /// </summary>
-    public static void WriteBasePassPixelShaderValues(Shader pixelShader, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
+    /// <param name="usePreviewLighting">Light the mesh with <see cref="MeshRenderContext.Lighting"/>, rather than the level's lighting</param>
+    public static void WriteBasePassPixelShaderValues(Shader pixelShader, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat,
+        MeshStaticLighting staticLighting, bool usePreviewLighting)
     {
         switch (pixelShader)
         {
+            //also the vertex light-map policies, whose light-map parameters are all in the vertex shader
             case TBasePassPixelShader<FNullPolicy> noLightMapShader:
-                noLightMapShader.WriteValues(buffer, context, mesh, mat);
+                noLightMapShader.WriteValues(buffer, context, mesh, mat, usePreviewLighting);
+                break;
+            //A light-map holds all the static lighting, ambient included
+            case TBasePassPixelShader<FLightMapTexturePolicy.PixelParametersType> lightMapTextureShader:
+                lightMapTextureShader.WriteValues(buffer, context, mesh, mat, usePreviewSky: false);
+                SetLightMapTextures(context, lightMapTextureShader.PixelParams.LightMapTextures, RequireLightMap(staticLighting));
+                buffer.WriteArray(lightMapTextureShader.PixelParams.LightMapScale, staticLighting.Scales);
+                break;
+            case TBasePassPixelShader<FCustomLightMapTexturePolicy.PixelParametersType> customLightMapTextureShader:
+                customLightMapTextureShader.WriteValues(buffer, context, mesh, mat, usePreviewSky: false);
+                SetLightMapTextures(context, customLightMapTextureShader.PixelParams.LightMapTextures, RequireLightMap(staticLighting));
+                buffer.WriteArray(customLightMapTextureShader.PixelParams.LightMapScale, staticLighting.Scales);
+                buffer.WriteArray(customLightMapTextureShader.PixelParams.LightMapBias, staticLighting.Biases);
                 break;
             case TBasePassPixelShader<FDirectionalLightLightMapPolicy.PixelParametersType> directionalLightShader:
-                directionalLightShader.WriteValues(buffer, context, mesh, mat);
+                directionalLightShader.WriteValues(buffer, context, mesh, mat, usePreviewSky: true);
                 WriteDirectionalLight(buffer, context, directionalLightShader.PixelParams.LightColorAndFalloffExponent, directionalLightShader.PixelParams.bReceiveDynamicShadows);
                 break;
             case TBasePassPixelShader<FSHLightLightMapPolicy.PixelParametersType> shLightShader:
-                shLightShader.WriteValues(buffer, context, mesh, mat);
+                shLightShader.WriteValues(buffer, context, mesh, mat, usePreviewSky: true);
                 WriteDirectionalLight(buffer, context, shLightShader.PixelParams.LightColorAndFalloffExponent, shLightShader.PixelParams.bReceiveDynamicShadows);
                 //All 0, so that the SH contributes nothing. The sky lighting provides ambient instead.
                 //(Layout, if this is ever used: float4[7]. [0] is the RGB constant term, then 2 float4s each of the remaining 8 coefficients for R, G, then B)
@@ -75,6 +99,24 @@ internal static class ShaderParameterSetters
         }
     }
 
+    private static MeshStaticLighting RequireLightMap(MeshStaticLighting staticLighting) =>
+        staticLighting is { LightMapType: not ELightMapType.LMT_None } ? staticLighting
+            : throw new InvalidOperationException("These shaders render a static light-map, but the mesh doesn't have one");
+
+    /// <summary>
+    /// Binds a light-map's textures to the consecutive slots of an array parameter (LightMapTextures[N])
+    /// </summary>
+    private static void SetLightMapTextures(MeshRenderContext context, FShaderResourceParameter param, MeshStaticLighting lightMap)
+    {
+        for (int i = 0; i < param.NumResources; i++)
+        {
+            PreviewTextureCache.TextureEntry texture = i < lightMap.Textures.Length ? lightMap.Textures[i] : null;
+            context.ImmediateContext.PixelShader.SetShaderResource(param.BaseIndex + i, texture?.LinearTextureView ?? context.WhiteTexView);
+            //UE3 samples light-maps bilinearly with the default (wrap) addressing
+            context.ImmediateContext.PixelShader.SetSampler(param.SamplerIndex + i, context.GetSamplerState(TextureAddressMode.Wrap, TextureAddressMode.Wrap));
+        }
+    }
+
     public static void WriteValues<LightMapPolicy, DensityPolicy>(this TBasePassVertexShader<LightMapPolicy, DensityPolicy> shader,
         Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
         where LightMapPolicy : struct, IVertexParametersType where DensityPolicy : struct, IVertexShaderParametersType
@@ -88,8 +130,9 @@ internal static class ShaderParameterSetters
         shader.MaterialParameters.WriteValues(buffer, context, mesh, mat);
         //TODO: DensityPolicy params
     }
+    /// <param name="usePreviewSky">Add <see cref="MeshRenderContext.Lighting"/>'s sky lighting (if the shader has a sky light)</param>
     public static void WriteValues<LightMapPolicy>(this TBasePassPixelShader<LightMapPolicy> shader,
-        Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
+        Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat, bool usePreviewSky)
         where LightMapPolicy : struct, IPixelParametersType
     {
         shader.MaterialParameters.WriteValues(buffer, context, mesh, mat);
@@ -98,7 +141,7 @@ internal static class ShaderParameterSetters
         buffer.WriteVal(shader.AmbientColorAndSkyFactor, drawUnlit ? new LinearColor(1, 1, 1, 0) : new LinearColor(0, 0, 0, 1));
         Vector3 upperSkyColor = Vector3.Zero;
         Vector3 lowerSkyColor = Vector3.Zero;
-        if (!drawUnlit)
+        if (!drawUnlit && usePreviewSky)
         {
             LinearColor upper = context.Lighting.UpperSkyColor;
             LinearColor lower = context.Lighting.LowerSkyColor;
@@ -114,6 +157,134 @@ internal static class ShaderParameterSetters
             //no idea what this should be
             buffer.WriteVal(shader.TranslucencyDepth, Vector4.One);
         }
+    }
+
+    /// <summary>
+    /// Writes the parameters for a TLightVertexShader, as UE3's TMeshLightingDrawingPolicy sets them
+    /// </summary>
+    public static void WriteLightVertexShaderValues(Shader vertexShader, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat,
+        LightInteraction interaction)
+    {
+        SceneLight light = interaction.Light;
+        //FPointLightPolicy and FSpotLightPolicy: (Position + PreViewTranslation, InvRadius). PreViewTranslation is always 0 here
+        var lightPositionAndInvRadius = new Vector4(light.Position, 1 / light.Radius);
+        //FShadowTexturePolicy (and FSignedDistanceFieldShadowTexturePolicy, which shares its vertex parameters) binds this to LightmapCoordinateScaleBias
+        Vector4 shadowCoordinateScaleBias = interaction.ShadowMap?.CoordinateScaleBias ?? Vector4.Zero;
+        switch (vertexShader)
+        {
+            case TLightVertexShader<FPointLightPolicy.VertexParametersType, FNullPolicy> pointLightShader:
+                pointLightShader.WriteValues(buffer, context, mesh, mat);
+                buffer.WriteVal(pointLightShader.LightTypeVertexParams.LightPositionAndInvRadius, lightPositionAndInvRadius);
+                break;
+            case TLightVertexShader<FPointLightPolicy.VertexParametersType, FShadowTexturePolicy.VertexParametersType> pointLightShadowTextureShader:
+                pointLightShadowTextureShader.WriteValues(buffer, context, mesh, mat);
+                buffer.WriteVal(pointLightShadowTextureShader.LightTypeVertexParams.LightPositionAndInvRadius, lightPositionAndInvRadius);
+                buffer.WriteVal(pointLightShadowTextureShader.ShadowingVertexParams.LightmapCoordinateScaleBias, shadowCoordinateScaleBias);
+                break;
+            case TLightVertexShader<FSpotLightPolicy.VertexParametersType, FNullPolicy> spotLightShader:
+                spotLightShader.WriteValues(buffer, context, mesh, mat);
+                buffer.WriteVal(spotLightShader.LightTypeVertexParams.LightPositionAndInvRadius, lightPositionAndInvRadius);
+                break;
+            case TLightVertexShader<FSpotLightPolicy.VertexParametersType, FShadowTexturePolicy.VertexParametersType> spotLightShadowTextureShader:
+                spotLightShadowTextureShader.WriteValues(buffer, context, mesh, mat);
+                buffer.WriteVal(spotLightShadowTextureShader.LightTypeVertexParams.LightPositionAndInvRadius, lightPositionAndInvRadius);
+                buffer.WriteVal(spotLightShadowTextureShader.ShadowingVertexParams.LightmapCoordinateScaleBias, shadowCoordinateScaleBias);
+                break;
+            default:
+                throw new NotSupportedException($"{vertexShader.ShaderType} is not supported by the renderer");
+        }
+    }
+
+    /// <summary>
+    /// Writes the parameters for a TLightPixelShader, as UE3's TMeshLightingDrawingPolicy sets them
+    /// </summary>
+    public static void WriteLightPixelShaderValues(Shader pixelShader, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat,
+        LightInteraction interaction)
+    {
+        SceneLight light = interaction.Light;
+        //w is the falloff exponent. (UE3 also scales the color by the primitive's DominantShadowFactor for dominant lights, which LE levels don't use)
+        var lightColorAndFalloffExponent = new Vector4(light.Color, light.FalloffExponent);
+        switch (pixelShader)
+        {
+            case TLightPixelShader<FPointLightPolicy.PixelParametersType, FNullPolicy> pointLightShader:
+                pointLightShader.WriteValues(buffer, context, mesh, mat);
+                buffer.WriteVal(pointLightShader.LightTypePixelParams.LightColorAndFalloffExponent, lightColorAndFalloffExponent);
+                break;
+            case TLightPixelShader<FPointLightPolicy.PixelParametersType, FShadowTexturePolicy.PixelParametersType> pointLightShadowTextureShader:
+                pointLightShadowTextureShader.WriteValues(buffer, context, mesh, mat);
+                buffer.WriteVal(pointLightShadowTextureShader.LightTypePixelParams.LightColorAndFalloffExponent, lightColorAndFalloffExponent);
+                SetShadowTexture(context, pointLightShadowTextureShader.ShadowingPixelParams.ShadowTexture, interaction);
+                break;
+            case TLightPixelShader<FPointLightPolicy.PixelParametersType, FSignedDistanceFieldShadowTexturePolicy.PixelParametersType> pointLightDistanceFieldShader:
+                pointLightDistanceFieldShader.WriteValues(buffer, context, mesh, mat);
+                buffer.WriteVal(pointLightDistanceFieldShader.LightTypePixelParams.LightColorAndFalloffExponent, lightColorAndFalloffExponent);
+                SetShadowTexture(context, pointLightDistanceFieldShader.ShadowingPixelParams.ShadowTexture, interaction);
+                buffer.WriteVal(pointLightDistanceFieldShader.ShadowingPixelParams.DistanceFieldParameters, GetDistanceFieldParameters(light));
+                break;
+            case TLightPixelShader<FSpotLightPolicy.PixelParametersType, FNullPolicy> spotLightShader:
+                spotLightShader.WriteValues(buffer, context, mesh, mat);
+                WriteSpotLight(buffer, spotLightShader.LightTypePixelParams, light, lightColorAndFalloffExponent);
+                break;
+            case TLightPixelShader<FSpotLightPolicy.PixelParametersType, FShadowTexturePolicy.PixelParametersType> spotLightShadowTextureShader:
+                spotLightShadowTextureShader.WriteValues(buffer, context, mesh, mat);
+                WriteSpotLight(buffer, spotLightShadowTextureShader.LightTypePixelParams, light, lightColorAndFalloffExponent);
+                SetShadowTexture(context, spotLightShadowTextureShader.ShadowingPixelParams.ShadowTexture, interaction);
+                break;
+            case TLightPixelShader<FSpotLightPolicy.PixelParametersType, FSignedDistanceFieldShadowTexturePolicy.PixelParametersType> spotLightDistanceFieldShader:
+                spotLightDistanceFieldShader.WriteValues(buffer, context, mesh, mat);
+                WriteSpotLight(buffer, spotLightDistanceFieldShader.LightTypePixelParams, light, lightColorAndFalloffExponent);
+                SetShadowTexture(context, spotLightDistanceFieldShader.ShadowingPixelParams.ShadowTexture, interaction);
+                buffer.WriteVal(spotLightDistanceFieldShader.ShadowingPixelParams.DistanceFieldParameters, GetDistanceFieldParameters(light));
+                break;
+            default:
+                throw new NotSupportedException($"{pixelShader.ShaderType} is not supported by the renderer");
+        }
+
+        static void WriteSpotLight(Span<byte> buffer, FSpotLightPolicy.PixelParametersType p, SceneLight light, Vector4 lightColorAndFalloffExponent)
+        {
+            buffer.WriteVal(p.SpotAngles, new Vector4(light.CosOuterCone, light.InvCosConeDifference, 0, 0));
+            buffer.WriteVal(p.SpotDirection, light.Direction);
+            buffer.WriteVal(p.LightColorAndFalloffExponent, lightColorAndFalloffExponent);
+        }
+
+        //FSignedDistanceFieldShadowTexturePolicy::ElementDataType, with the material's DistanceFieldPenumbraScale at its default of 1
+        static Vector3 GetDistanceFieldParameters(SceneLight light)
+        {
+            float penumbraSize = Math.Min(light.DistanceFieldShadowMapPenumbraSize, 1);
+            return new Vector3(-0.5f + penumbraSize * 0.5f, 1 / penumbraSize, light.DistanceFieldShadowMapShadowExponent);
+        }
+
+        static void SetShadowTexture(MeshRenderContext context, FShaderResourceParameter param, LightInteraction interaction)
+        {
+            //shadow maps hold linear values
+            context.ImmediateContext.PixelShader.SetShaderResource(param.BaseIndex, interaction.ShadowMap?.Texture.TextureView ?? context.WhiteTexView);
+            context.ImmediateContext.PixelShader.SetSampler(param.SamplerIndex, context.GetSamplerState(TextureAddressMode.Wrap, TextureAddressMode.Wrap));
+        }
+    }
+
+    public static void WriteValues<LightTypePolicy, ShadowingTypePolicy>(this TLightVertexShader<LightTypePolicy, ShadowingTypePolicy> shader,
+        Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
+        where LightTypePolicy : struct, IVertexParametersType where ShadowingTypePolicy : struct, IVertexParametersType
+    {
+        if (shader.VertexFactoryParameters.Parameters is not FLocalVertexFactoryShaderParameters vertexFactoryParams)
+        {
+            throw new NotSupportedException($"{shader.VertexFactoryParameters.VertexFactoryType} is not supported by the renderer");
+        }
+        vertexFactoryParams.WriteValues(buffer, context, mesh, mat);
+        shader.MaterialParameters.WriteValues(buffer, context, mesh, mat);
+    }
+
+    public static void WriteValues<LightTypePolicy, ShadowingTypePolicy>(this TLightPixelShader<LightTypePolicy, ShadowingTypePolicy> shader,
+        Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
+        where LightTypePolicy : struct, IPixelParametersType where ShadowingTypePolicy : struct, IPixelParametersType
+    {
+        shader.MaterialParameters.WriteValues(buffer, context, mesh, mat);
+        //The dynamic shadows of the light, in screen space. There aren't any, so it's all lit
+        if (shader.LightAttenuationTexture.IsBound())
+        {
+            context.ImmediateContext.PixelShader.SetShaderResource(shader.LightAttenuationTexture.BaseIndex, context.WhiteTexView);
+        }
+        buffer.WriteVal(shader.bReceiveDynamicShadows, 0);
     }
 
     public static void WriteValues(this ref FMaterialVertexShaderParameters p, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
@@ -275,6 +446,19 @@ internal static class ShaderParameterSetters
         {
             buffer.WriteVal(scalarParam.Param, scalarValues[scalarParam.Index / 4][scalarParam.Index % 4]);
         }
+    }
+
+    /// <summary>
+    /// Writes as many elements as the parameter (an array) has room for
+    /// </summary>
+    private static void WriteArray(this Span<byte> buff, FShaderParameter param, ReadOnlySpan<Vector4> values)
+    {
+        if (!param.IsBound())
+        {
+            return;
+        }
+        ReadOnlySpan<byte> bytes = System.Runtime.InteropServices.MemoryMarshal.AsBytes(values);
+        bytes[..Math.Min(bytes.Length, param.NumBytes)].CopyTo(buff[param.BaseIndex..]);
     }
 
     private static unsafe void WriteVal<T>(this Span<byte> buff, FShaderParameter param, T val) where T : unmanaged
