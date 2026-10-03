@@ -731,7 +731,7 @@ namespace LegendaryExplorerCore.UDK
             var componentArchetype = assetInfo.TempPackage.GetEntryOrAddImport(
                 "Engine.Default__DecalActor.NewDecalComponent", "DecalComponent", "Engine");
             using var materialCache = new PackageCache();
-            using var decalMaterials = MEPackageHandler.CreateAndOpenPackage(Path.Combine(
+            using var decalMaterials = MEPackageHandler.CreateMemoryEmptyPackage(Path.Combine(
                 assetsOutputPath ?? UDKDirectory.SharedPath, assetInfo.SourcePackage.FileNameNoExtension + "DecalMaterials.upk"), MEGame.UDK);
             var generatedMaterials = new Dictionary<IEntry, ExportEntry>();
 
@@ -883,7 +883,8 @@ namespace LegendaryExplorerCore.UDK
                 actor.WriteProperties(actorProperties);
                 assetInfo.DecalActors.Add(actor);
             }
-            if (generatedMaterials.Count > 0) decalMaterials.Save();
+            // Keep packages with no exports in memory; UDK cannot use an empty asset package.
+            if (decalMaterials.ExportCount > 0) decalMaterials.Save();
             // END MILAN CHANGE
         }
 
@@ -898,8 +899,7 @@ namespace LegendaryExplorerCore.UDK
             pcc.SetInternalFilepath(Path.Combine(Directory.GetParent(pcc.FilePath).FullName,$"ForceExportsResolver_{pcc.FileNameNoExtension}.pcc"));
 
             string meshFile = Path.Combine(assetsOutputPath ?? UDKDirectory.SharedPath, $"{assetInfo.MeshAssetPackageName}.upk");
-            MEPackageHandler.CreateAndSavePackage(meshFile, MEGame.UDK);
-            using IMEPackage meshPackage = MEPackageHandler.OpenUDKPackage(meshFile);
+            using IMEPackage meshPackage = MEPackageHandler.CreateMemoryEmptyPackage(meshFile, MEGame.UDK);
             meshPackage.GetEntryOrAddImport("Core.Package", "Class");
 
             IEntry defMat = meshPackage.GetEntryOrAddImport("EngineMaterials.DefaultMaterial", "Material", "Engine");
