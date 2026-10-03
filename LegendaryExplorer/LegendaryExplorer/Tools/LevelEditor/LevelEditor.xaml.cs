@@ -118,6 +118,14 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         set => SetProperty(ref _showHidden, value);
     }
 
+    private readonly ViewFrustum viewFrustum = new();
+    private bool _useFrustumCulling = true;
+    public bool UseFrustumCulling
+    {
+        get => _useFrustumCulling;
+        set => SetProperty(ref _useFrustumCulling, value);
+    }
+
     private bool _useGameShaders;
     public bool UseGameShaders
     {
@@ -273,6 +281,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private void RenderScene(object sender, EventArgs e)
     {
+        // Match MeshRenderContext.CreateRasterizerState, which disables near/far depth clipping.
+        if (UseFrustumCulling) viewFrustum.Update(RenderContext.Camera.ViewProjectionMatrix, depthClipEnabled: false);
+        RenderContext.CullingFrustum = UseFrustumCulling ? viewFrustum : null;
         RenderContext.ShowVolumes = ShowVolumes;
         RenderContext.ShowVolumetrics = ShowVolumetrics;
         RenderContext.ShowHidden = ShowHidden;

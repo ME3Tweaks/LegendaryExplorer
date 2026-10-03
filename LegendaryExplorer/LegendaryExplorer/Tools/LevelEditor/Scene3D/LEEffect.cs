@@ -27,6 +27,14 @@ public unsafe class LEEffect : IDisposable
     private readonly DepthStencilState HitProxyDepthState;
     private const int HIT_PROXY_CONSTANT_BUFFER_SLOT = 3;
 
+    // Reset at each mesh section, since other effects can change the context's bindings.
+    public readonly PixelShaderResourceBindings PixelShaderResources = new();
+
+    public Matrix4x4 ViewMatrix { get; private set; }
+    public Matrix4x4 ViewProjectionMatrix { get; private set; }
+    public Matrix4x4 InverseViewProjectionMatrix { get; private set; }
+    public LEPSConstants SharedPixelConstants { get; private set; }
+
     private bool disposedValue;
 
     public const int CONSTANT_BUFFER_MAX_SIZE = 2560;
@@ -106,15 +114,46 @@ public unsafe class LEEffect : IDisposable
         context.PixelShader.SetConstantBuffer(2, PixelShaderConstants);
     }
 
-    public void RenderObject(DeviceContext context, LEVSConstants vsSharedConstants, LEPSConstants psSharedConstants, Mesh<LEVertex> mesh, int indexstart, int indexcount)
+    /// <summary>
+    /// Updates view constants once per frame. These buffers belong to this effect and
+    /// remain valid even when another effect temporarily changes the context's bindings.
+    /// </summary>
+    public void BeginFrame(MeshRenderContext context)
+    {
+        ViewMatrix = context.Camera.ViewMatrix;
+        Matrix4x4 projection = context.Camera.ProjectionMatrix;
+        ViewProjectionMatrix = ViewMatrix * projection;
+        Matrix4x4.Invert(ViewMatrix, out Matrix4x4 inverseView);
+        Matrix4x4.Invert(projection, out Matrix4x4 inverseProjection);
+        InverseViewProjectionMatrix = inverseProjection * inverseView;
+        var vertexConstants = new LEVSConstants
+        {
+            ViewProjectionMatrix = ViewProjectionMatrix,
+            CameraPosition = new Vector4(context.Camera.EyePosition, 1),
+            PreViewTranslation = Vector4.Zero
+        };
+        // The projection already uses reversed depth.
+        float depthMul = projection.M33;
+        float depthAdd = projection.M43;
+        var pixelConstants = new LEPSConstants
+        {
+            ScreenPositionScaleBias = new Vector4(0.5f, -0.5f, (context.Height / 2f + 0.5f) / context.Height, (context.Width / 2f + 0.5f) / context.Width),
+            MinZ_MaxZRatio = new Vector4(depthAdd, depthMul, 1f / depthAdd, depthMul / depthAdd),
+            DynamicScale = Vector4.One
+        };
+        SharedPixelConstants = pixelConstants;
+        context.ImmediateContext.UpdateSubresource(ref vertexConstants, VertexShaderConstants);
+        context.ImmediateContext.UpdateSubresource(ref pixelConstants, PixelShaderConstants);
+    }
+
+    public void RenderObject(DeviceContext context, Mesh<LEVertex> mesh, int indexstart, int indexcount)
     {
         if (mesh.Vertices.Count is 0)
         {
             return;
         }
-        // Push new data into the shaders' constant buffers
-        context.UpdateSubresource(ref vsSharedConstants, VertexShaderConstants);
-        context.UpdateSubresource(ref psSharedConstants, PixelShaderConstants);
+        PixelShaderResources.Apply(context.PixelShader);
+        // Push per-draw data. View constants were uploaded by BeginFrame.
         //TODO: copy only the portion that is used
         context.UpdateSubresource(VertexShaderGlobals, 0, null, (IntPtr)VertexShaderConstantBufferAlloc, 0, 0);
         context.UpdateSubresource(PixelShaderGlobals, 0, null, (IntPtr)PixelShaderConstantBufferAlloc, 0, 0);

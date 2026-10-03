@@ -7,6 +7,7 @@ using LegendaryExplorerCore.Unreal.BinaryConverters.Shaders;
 using LegendaryExplorerCore.Unreal.Classes;
 using SharpDX.Direct3D11;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -132,6 +133,9 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     /// </summary>
     public bool IsTwoSided;
 
+    // materials that displace vertices disqualify the mesh from culling 
+    public bool HasUndisplacedVertices { get; private set; }
+
     /// <summary>
     /// The type of static light-map the mesh this material is on has. Set by <see cref="QueueGameShaderLoad"/>, since it determines which shaders are loaded
     /// </summary>
@@ -176,7 +180,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
 
     //Light shaders are loaded as they're needed, since there are many combinations of light type and shadowing, and most are never used.
     private ExportEntry LightShaderMapOwner;
-    private readonly Dictionary<(SceneLightType, StaticShadowingType), (Shader, Shader)> LightShaders = [];
+    private readonly ConcurrentDictionary<(SceneLightType, StaticShadowingType), (Shader, Shader)> LightShaders = new();
 
     //The material chain is read from most to least derived. The first Material, or MaterialInstance with a StaticPermutationResource,
     //owns the shaders the game will use. Everything after that point only contributes parameter values.
@@ -282,6 +286,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
         bool isShaderMapOwner = !FoundShaderMapOwner;
         if (isShaderMapOwner)
         {
+            HasUndisplacedVertices = !parsedMaterial.SM3MaterialResource.bUsesMaterialVertexPositionOffset;
             FoundShaderMapOwner = true;
             foreach (int uIndex in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
             {
@@ -364,9 +369,13 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
         {
             return (null, null);
         }
+        if (LightShaders.TryGetValue((lightType, shadowing), out (Shader, Shader) lightShaders))
+        {
+            return lightShaders;
+        }
         lock (LightShaders)
         {
-            if (LightShaders.TryGetValue((lightType, shadowing), out (Shader, Shader) lightShaders))
+            if (LightShaders.TryGetValue((lightType, shadowing), out lightShaders))
             {
                 return lightShaders;
             }
@@ -408,7 +417,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
                     //the light just isn't rendered on this material
                 }
             }
-            LightShaders.Add((lightType, shadowing), lightShaders);
+            LightShaders[(lightType, shadowing)] = lightShaders;
             return lightShaders;
         }
     }
@@ -466,6 +475,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
                 gameShaderError = $"Failed to parse {matInst.InstancedFullPath}: {e.Message}";
                 return;
             }
+            HasUndisplacedVertices = !binary.SM3StaticPermutationResource.bUsesMaterialVertexPositionOffset;
             foreach (int uIndex in binary.SM3StaticPermutationResource.UniformExpressionTextures)
             {
                 Uniform2DTextureExpressions.Add(matInst.FileRef.GetEntry(uIndex)?.InstancedFullPath);

@@ -124,6 +124,8 @@
                                   ToolTip="Volumetrics are large spheroids used for fog, dust, etc. Since LEX can't display those effects, they just get in the way."/>
                     <ToggleButton Content="Show Hidden" IsChecked="{Binding ShowHidden}"
                                   ToolTip="Show actors and meshes that aren't rendered in game (bHidden on the actor, or HiddenGame on the component)"/>
+                    <ToggleButton Content="Frustum Culling" IsChecked="{Binding UseFrustumCulling}"
+                                  ToolTip="Skip meshes outside the camera view. Turn off to compare performance or investigate missing geometry."/>
                     <ToggleButton Content="Game Shaders" IsChecked="{Binding UseGameShaders}"
                                   ToolTip="Render materials with the game's own shaders (Legendary Edition only). Experimental. Materials that can't be rendered this way use LEX's shader."/>
                     <ToggleButton Content="Level Lighting" IsChecked="{Binding UseLevelLighting}" IsEnabled="{Binding UseGameShaders}"

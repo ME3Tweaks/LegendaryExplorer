@@ -11,6 +11,7 @@ using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using SharpDX.Mathematics.Interop;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -41,6 +42,9 @@ public struct ScreenLabel(float x, float y, string text)
 /// </summary>
 public class MeshRenderContext : RenderContext
 {
+    // Set by views that opt into culling; null keeps the existing preview behavior.
+    public ViewFrustum CullingFrustum { get; set; }
+
     /// <summary>
     /// The current flags for rendering textures. This renderer does not support 'SetAlphaAsBlack' or 'ReconstructZ'
     /// </summary>
@@ -99,6 +103,7 @@ public class MeshRenderContext : RenderContext
     private DW.TextFormat errorTextFormat;
     private DW.TextFormat labelTextFormat;
     private D2D.SolidColorBrush statsTextBrush;
+    private D2D.SolidColorBrush statsShadowBrush;
     private D2D.SolidColorBrush errorTextBrush;
     private D2D.SolidColorBrush labelTextBrush;
     private D2D.SolidColorBrush labelBackgroundBrush;
@@ -248,9 +253,8 @@ public class MeshRenderContext : RenderContext
     public event EventHandler RenderScene;
 
     private readonly Dictionary<RenderTargetBlendDescription, BlendState> BlendStateCache = new(new BlendDescComparer());
-    private readonly Dictionary<Guid, VertexShader> VertexShaderCache = [];
-    private readonly Dictionary<Guid, InputLayout> InputLayoutCache = [];
-    private readonly Dictionary<Guid, PixelShader> PixelShaderCache = [];
+    private readonly ConcurrentDictionary<Guid, (VertexShader Shader, InputLayout InputLayout)> VertexShaderCache = new();
+    private readonly ConcurrentDictionary<Guid, PixelShader> PixelShaderCache = new();
     //parsing a package's ShaderCache is expensive, and every material in the package needs it
     private readonly Dictionary<IMEPackage, ShaderCache> SeekFreeShaderCaches = [];
     public readonly PreviewTextureCache TextureCache;
@@ -533,6 +537,7 @@ public class MeshRenderContext : RenderContext
             {
                 try
                 {
+                    if (UseGameShaders) LEEffect.BeginFrame(this);
                     RenderScene?.Invoke(null, EventArgs.Empty);
                 }
                 catch (Exception e)
@@ -559,7 +564,10 @@ public class MeshRenderContext : RenderContext
                 if (App.IsDebug)
                 {
                     var size = RenderTarget2D.Size;
-                    RenderTarget2D.DrawText($"{FPS} fps\n{Camera.Position}", statsTextFormat, new RawRectangleF(0, 0, size.Width, size.Height), statsTextBrush);
+                    string stats = $"{FPS} fps\n{Camera.Position}";
+                    // White text with a dark shadow stays readable over both the scene and background.
+                    RenderTarget2D.DrawText(stats, statsTextFormat, new RawRectangleF(5, 5, size.Width - 3, size.Height - 3), statsShadowBrush);
+                    RenderTarget2D.DrawText(stats, statsTextFormat, new RawRectangleF(4, 4, size.Width - 4, size.Height - 4), statsTextBrush);
                 }
 
                 foreach (ref readonly var label in CollectionsMarshal.AsSpan(ScreenLabels))
@@ -760,7 +768,8 @@ public class MeshRenderContext : RenderContext
 
         using var factory = new D2D.Factory(D2D.FactoryType.SingleThreaded, App.IsDebug ? D2D.DebugLevel.Information : D2D.DebugLevel.None);
         RenderTarget2D = new D2D.RenderTarget(factory, newBackBuffer.QueryInterface<Surface>(), new D2D.RenderTargetProperties(new D2D.PixelFormat(Format.Unknown, D2D.AlphaMode.Premultiplied)));
-        statsTextBrush = new D2D.SolidColorBrush(RenderTarget2D, new RawColor4(0, 0, 0, 1), new D2D.BrushProperties { Opacity = 1 });
+        statsTextBrush = new D2D.SolidColorBrush(RenderTarget2D, new RawColor4(1, 1, 1, 1), new D2D.BrushProperties { Opacity = 1 });
+        statsShadowBrush = new D2D.SolidColorBrush(RenderTarget2D, new RawColor4(0, 0, 0, 1), new D2D.BrushProperties { Opacity = 1 });
         errorTextBrush = new D2D.SolidColorBrush(RenderTarget2D, new RawColor4(0.2f, 0, 0, 1), new D2D.BrushProperties { Opacity = 1 });
         using var dwFactory = new DW.Factory(DW.FactoryType.Shared);
         statsTextFormat = new DW.TextFormat(dwFactory, "Verdana", 12)
@@ -812,6 +821,7 @@ public class MeshRenderContext : RenderContext
         errorTextFormat?.Dispose();
         labelTextFormat?.Dispose();
         statsTextBrush?.Dispose();
+        statsShadowBrush?.Dispose();
         errorTextBrush?.Dispose();
         labelTextBrush?.Dispose();
         labelBackgroundBrush?.Dispose();
@@ -891,36 +901,43 @@ public class MeshRenderContext : RenderContext
         return blendState;
     }
 
-    //Locked, since shaders can be created on a background thread by LoadPendingGameShaders. (Creating D3D11 resources is thread-safe)
+    // Cache hits do not take a lock. Creation is serialized to avoid duplicate D3D resources
+    // when the background shader loader and render thread request the same shader.
     public (VertexShader, InputLayout) GetCachedVertexShader(Guid id, byte[] shaderBytecode)
     {
+        if (VertexShaderCache.TryGetValue(id, out var cached)) return cached;
         lock (VertexShaderCache)
         {
-            InputLayout inputLayout;
-            if (VertexShaderCache.TryGetValue(id, out VertexShader shader))
+            if (!VertexShaderCache.TryGetValue(id, out cached))
             {
-                inputLayout = InputLayoutCache[id];
+                var shader = new VertexShader(Device, shaderBytecode);
+                InputLayout inputLayout;
+                try
+                {
+                    inputLayout = new InputLayout(Device, shaderBytecode, [.. LEVertex.InputElements, .. MeshStaticLighting.InputElements]);
+                }
+                catch
+                {
+                    shader.Dispose();
+                    throw;
+                }
+                cached = (shader, inputLayout);
+                VertexShaderCache[id] = cached;
             }
-            else
-            {
-                shader = new VertexShader(Device, shaderBytecode);
-                VertexShaderCache.Add(id, shader);
-                inputLayout = new InputLayout(Device, shaderBytecode, [.. LEVertex.InputElements, .. MeshStaticLighting.InputElements]);
-                InputLayoutCache.Add(id, inputLayout);
-            }
-            return (shader, inputLayout);
+            return cached;
         }
     }
 
     public PixelShader GetCachedPixelShader(Guid id, byte[] shaderBytecode)
     {
+        if (PixelShaderCache.TryGetValue(id, out PixelShader shader)) return shader;
         lock (PixelShaderCache)
         {
-            if (!PixelShaderCache.TryGetValue(id, out PixelShader shader))
+            if (!PixelShaderCache.TryGetValue(id, out shader))
             {
                 //The game's bytecode is used as-is. Base pass shaders write 0 to alpha; materials mask that out with their blend state.
                 shader = new PixelShader(Device, shaderBytecode);
-                PixelShaderCache.Add(id, shader);
+                PixelShaderCache[id] = shader;
             }
             return shader;
         }
@@ -953,8 +970,12 @@ public class MeshRenderContext : RenderContext
         BlendStateCache.DisposeValuesAndClear();
         lock (VertexShaderCache)
         {
-            VertexShaderCache.DisposeValuesAndClear();
-            InputLayoutCache.DisposeValuesAndClear();
+            foreach (var cached in VertexShaderCache.Values)
+            {
+                cached.Shader.Dispose();
+                cached.InputLayout.Dispose();
+            }
+            VertexShaderCache.Clear();
         }
         lock (PixelShaderCache)
         {

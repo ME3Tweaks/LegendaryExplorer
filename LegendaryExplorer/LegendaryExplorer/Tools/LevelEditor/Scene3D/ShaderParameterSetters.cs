@@ -111,9 +111,9 @@ internal static class ShaderParameterSetters
         for (int i = 0; i < param.NumResources; i++)
         {
             PreviewTextureCache.TextureEntry texture = i < lightMap.Textures.Length ? lightMap.Textures[i] : null;
-            context.ImmediateContext.PixelShader.SetShaderResource(param.BaseIndex + i, texture?.LinearTextureView ?? context.WhiteTexView);
+            context.LEEffect.PixelShaderResources.Set(param.BaseIndex + i, texture?.LinearTextureView ?? context.WhiteTexView);
             //UE3 samples light-maps bilinearly with the default (wrap) addressing
-            context.ImmediateContext.PixelShader.SetSampler(param.SamplerIndex + i, context.GetSamplerState(TextureAddressMode.Wrap, TextureAddressMode.Wrap));
+            context.LEEffect.PixelShaderResources.SetSampler(param.SamplerIndex + i, context.GetSamplerState(TextureAddressMode.Wrap, TextureAddressMode.Wrap));
         }
     }
 
@@ -257,8 +257,8 @@ internal static class ShaderParameterSetters
         static void SetShadowTexture(MeshRenderContext context, FShaderResourceParameter param, LightInteraction interaction)
         {
             //shadow maps hold linear values
-            context.ImmediateContext.PixelShader.SetShaderResource(param.BaseIndex, interaction.ShadowMap?.Texture.TextureView ?? context.WhiteTexView);
-            context.ImmediateContext.PixelShader.SetSampler(param.SamplerIndex, context.GetSamplerState(TextureAddressMode.Wrap, TextureAddressMode.Wrap));
+            context.LEEffect.PixelShaderResources.Set(param.BaseIndex, interaction.ShadowMap?.Texture.TextureView ?? context.WhiteTexView);
+            context.LEEffect.PixelShaderResources.SetSampler(param.SamplerIndex, context.GetSamplerState(TextureAddressMode.Wrap, TextureAddressMode.Wrap));
         }
     }
 
@@ -282,7 +282,7 @@ internal static class ShaderParameterSetters
         //The dynamic shadows of the light, in screen space. There aren't any, so it's all lit
         if (shader.LightAttenuationTexture.IsBound())
         {
-            context.ImmediateContext.PixelShader.SetShaderResource(shader.LightAttenuationTexture.BaseIndex, context.WhiteTexView);
+            context.LEEffect.PixelShaderResources.Set(shader.LightAttenuationTexture.BaseIndex, context.WhiteTexView);
         }
         buffer.WriteVal(shader.bReceiveDynamicShadows, 0);
     }
@@ -331,30 +331,26 @@ internal static class ShaderParameterSetters
         foreach (TUniformParameter<FShaderResourceParameter> texParam in p.UniformPixel2DShaderResourceParameters)
         {
             PreviewTextureCache.TextureEntry texture = tex2dParamValues[texParam.Index];
-            context.ImmediateContext.PixelShader.SetShaderResource(texParam.Param.BaseIndex, texture?.LinearTextureView ?? context.WhiteTexView);
+            context.LEEffect.PixelShaderResources.Set(texParam.Param.BaseIndex, texture?.LinearTextureView ?? context.WhiteTexView);
             if (texture is not null)
             {
                 //materials can rely on clamping, e.g. to confine a decal-like texture to one region of the UVs
-                context.ImmediateContext.PixelShader.SetSampler(texParam.Param.SamplerIndex, context.GetSamplerState(texture.AddressU, texture.AddressV));
+                context.LEEffect.PixelShaderResources.SetSampler(texParam.Param.SamplerIndex, context.GetSamplerState(texture.AddressU, texture.AddressV));
             }
         }
         foreach (TUniformParameter<FShaderResourceParameter> cubeParam in p.UniformPixelCubeShaderResourceParameters)
         {
             ShaderResourceView view = cubeMapParamValues[cubeParam.Index]?.LinearTextureView ?? context.WhiteTextureCubeView;
-            context.ImmediateContext.PixelShader.SetShaderResource(cubeParam.Param.BaseIndex, view);
+            context.LEEffect.PixelShaderResources.Set(cubeParam.Param.BaseIndex, view);
         }
 
-        SceneCamera camera = context.Camera;
+        LEEffect effect = context.LEEffect;
         buffer.WriteVal(p.LocalToWorld, mesh.LocalToWorld);
         buffer.WriteVal(p.WorldToLocal, mesh.WorldToLocal);
-        Matrix4x4 viewMatrix = camera.ViewMatrix;
         //float3x3 shader parameters have each row padded to 4 floats, so a Matrix4x4's layout matches (the 4th column lands in the padding)
-        buffer.WriteVal(p.WorldToView, viewMatrix);
-        Matrix4x4.Invert(viewMatrix, out Matrix4x4 inverseViewMatrix);
-        Matrix4x4 projectionMatrix = camera.ProjectionMatrix;
-        Matrix4x4.Invert(projectionMatrix, out Matrix4x4 inverseProjectionMatrix);
-        buffer.WriteVal(p.InvViewProjection, inverseProjectionMatrix * inverseViewMatrix);
-        buffer.WriteVal(p.ViewProjection, viewMatrix * projectionMatrix);
+        buffer.WriteVal(p.WorldToView, effect.ViewMatrix);
+        buffer.WriteVal(p.InvViewProjection, effect.InverseViewProjectionMatrix);
+        buffer.WriteVal(p.ViewProjection, effect.ViewProjectionMatrix);
 
         p.SceneTextureParameters.WriteValues(buffer, context, mesh, mat);
 
@@ -379,7 +375,7 @@ internal static class ShaderParameterSetters
         if (p.ScreenDoorNoiseTexture.IsBound())
         {
             //only sampled when EnableScreenDoorFade is set, which it never is
-            context.ImmediateContext.PixelShader.SetShaderResource(p.ScreenDoorNoiseTexture.BaseIndex, null);
+            context.LEEffect.PixelShaderResources.Set(p.ScreenDoorNoiseTexture.BaseIndex, null);
         }
         //Bioware addition: (DirectScale, IndirectScale, 0, 0), see FMaterialPixelShaderParameters::SetMesh in LE3
         buffer.WriteVal(p.WrapLightingParameters, new Vector4(PreviewLighting.WrapLightingDirectScale, PreviewLighting.WrapLightingIndirectScale, 0, 0));
@@ -390,24 +386,21 @@ internal static class ShaderParameterSetters
         //TODO: SceneColor and SceneDepth aren't available to materials yet. Unbound textures sample as 0
         if (p.SceneColorTexture.IsBound())
         {
-            context.ImmediateContext.PixelShader.SetShaderResource(p.SceneColorTexture.BaseIndex, null);
+            context.LEEffect.PixelShaderResources.Set(p.SceneColorTexture.BaseIndex, null);
         }
         if (p.SceneDepthTexture.IsBound())
         {
-            context.ImmediateContext.PixelShader.SetShaderResource(p.SceneDepthTexture.BaseIndex, null);
+            context.LEEffect.PixelShaderResources.Set(p.SceneDepthTexture.BaseIndex, null);
         }
 
         if (p.ScreenPositionScaleBias.IsBound())
         {
-            buffer.WriteVal(p.ScreenPositionScaleBias, new Vector4(1f / 2f, 1f / -2f, (context.Height / 2f + 0.5f) / context.Height, (context.Width / 2f + 0.5f) / context.Width));
+            buffer.WriteVal(p.ScreenPositionScaleBias, context.LEEffect.SharedPixelConstants.ScreenPositionScaleBias);
 
         }
         if (p.MinZ_MaxZRatio.IsBound())
         {
-            //The projection matrix is already reversed (see SceneCamera.ProjectionMatrix), so these are the values UE3 computes for inverted Z
-            float depthMul = context.Camera.ProjectionMatrix[2, 2];
-            float depthAdd = context.Camera.ProjectionMatrix[3, 2];
-            buffer.WriteVal(p.MinZ_MaxZRatio, new Vector4(depthAdd, depthMul, 1f / depthAdd, depthMul / depthAdd));
+            buffer.WriteVal(p.MinZ_MaxZRatio, context.LEEffect.SharedPixelConstants.MinZ_MaxZRatio);
         }
     }
 
