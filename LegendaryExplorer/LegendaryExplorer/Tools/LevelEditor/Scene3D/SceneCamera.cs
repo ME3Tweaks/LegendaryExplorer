@@ -122,6 +122,11 @@ public class SceneCamera
         }
     }
 
+    /// <summary>
+    /// The world-space position the scene is viewed from. In orbit mode, <see cref="Position"/> is the point being orbited, not the camera's location.
+    /// </summary>
+    public Vector3 EyePosition => FirstPerson || IsOrthographic ? Position : Position - CameraForward * FocusDepth;
+
     public SceneCamera()
     {
         CalcViewMatrix();

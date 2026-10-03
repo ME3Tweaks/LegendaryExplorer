@@ -203,6 +203,10 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     public virtual bool IsVolume => false;
     public bool IsVolumetricMesh { get; protected set; }
+    /// <summary>
+    /// The actor's bHidden is set, so none of its components are rendered in game. (Individual components can also be hidden, see <see cref="PrimitiveComponentProxy.HiddenGame"/>)
+    /// </summary>
+    public bool IsHidden { get; }
 
     public TransformSnapshot SnapshotTransform() => new(location, rotation, drawScale, drawScale3D);
 
@@ -222,6 +226,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         PropertyCollection props = Properties;
 
         props.ReadProp(ref Tag);
+        IsHidden = props.GetProp<BoolProperty>("bHidden")?.Value ?? false;
 
         DisplayText = Export.ObjectName.Instanced;
         if (!Tag.Name.CaseInsensitiveEquals(Export.ClassName))
@@ -413,6 +418,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     {
         foreach (var component in Components)
         {
+            if (component.HiddenGame && !context.ShowHidden) continue;
             component.Render(context, pass);
         }
     }
@@ -780,6 +786,7 @@ public class PrefabInstanceProxy : ActorProxy
         {
             if (actor.IsVolume && !context.ShowVolumes) continue;
             if (actor.IsVolumetricMesh && !context.ShowVolumetrics) continue;
+            if (actor.IsHidden && !context.ShowHidden) continue;
             actor.Render(context, pass);
         }
     }

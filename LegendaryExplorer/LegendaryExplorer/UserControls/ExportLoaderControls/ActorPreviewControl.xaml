@@ -14,6 +14,8 @@
             <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
                 <CheckBox Content="Wireframe" IsChecked="{Binding ShowWireframe}" VerticalAlignment="Center" Margin="4,0"/>
                 <CheckBox Content="Collision" IsChecked="{Binding ShowCollision}" VerticalAlignment="Center" Margin="4,0"/>
+                <CheckBox Content="Game Shaders" IsChecked="{Binding UseGameShaders}" VerticalAlignment="Center" Margin="4,0"
+                          ToolTip="Render materials with the game's own shaders (Legendary Edition only). Experimental. Materials that can't be rendered this way use LEX's shader."/>
             </ToolBar>
             <scene3D:SceneRenderControl x:Name="SceneViewer"/>
         </DockPanel>

@@ -517,6 +517,13 @@ namespace LegendaryExplorerCore.Shaders
 
         //if MaterialInstanceConstant, bHasStaticPermutationResource _must_ be true!
         public static (MaterialShaderMap, Shader[]) GetMaterialShaderMapAndShaders(ExportEntry material, params string[] shaderTypes)
+            => GetMaterialShaderMapAndShaders(material, (Func<IMEPackage, ShaderCache>)null, shaderTypes);
+
+        /// <param name="material">A Material, or a MaterialInstance with a StaticPermutationResource</param>
+        /// <param name="getSeekFreeShaderCache">Gets the parsed SeekFreeShaderCache of a package, or null if it doesn't have one.
+        /// For callers that want to avoid re-parsing the same ShaderCache for each material in a package. If null, the package's ShaderCache is parsed.</param>
+        /// <param name="shaderTypes">The FLocalVertexFactory shader types to retrieve</param>
+        public static (MaterialShaderMap, Shader[]) GetMaterialShaderMapAndShaders(ExportEntry material, Func<IMEPackage, ShaderCache> getSeekFreeShaderCache, params string[] shaderTypes)
         {
             StaticParameterSet sps = material.ClassName switch
             {
@@ -524,9 +531,13 @@ namespace LegendaryExplorerCore.Shaders
                 _ => ObjectBinary.From<MaterialInstance>(material).SM3StaticParameterSet
             };
             var shaders = new Shader[shaderTypes.Length];
-            if (material.FileRef.FindExport("SeekFreeShaderCache", "ShaderCache") is { } seekFreeShaderCacheExport)
+            ShaderCache seekFreeShaderCache = getSeekFreeShaderCache is not null
+                ? getSeekFreeShaderCache(material.FileRef)
+                : material.FileRef.FindExport("SeekFreeShaderCache", "ShaderCache") is { } seekFreeShaderCacheExport
+                    ? ObjectBinary.From<ShaderCache>(seekFreeShaderCacheExport)
+                    : null;
+            if (seekFreeShaderCache is not null)
             {
-                var seekFreeShaderCache = ObjectBinary.From<ShaderCache>(seekFreeShaderCacheExport);
                 if (seekFreeShaderCache.MaterialShaderMaps.TryGetValue(sps, out MaterialShaderMap msm))
                 {
                     foreach (MeshShaderMap meshShaderMap in msm.MeshShaderMaps)

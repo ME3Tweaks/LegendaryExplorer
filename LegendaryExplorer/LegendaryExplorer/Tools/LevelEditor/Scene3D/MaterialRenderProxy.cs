@@ -13,14 +13,68 @@ using System.Numerics;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 
-//update the name strings too
-using PixelShaderType = TBasePassPixelShader<FNullPolicy>;
-using VertexShaderType = TBasePassVertexShader<FNullPolicy, FNullPolicy>;
 public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
 {
-    private const string VERTEX_SHADER_TYPE_NAME = "TBasePassVertexShaderFNoLightMapPolicyFNoDensityPolicy";
-    private const string LIT_PIXEL_SHADER_TYPE_NAME = "TBasePassPixelShaderFNoLightMapPolicySkyLight";
-    private const string UNLIT_PIXEL_SHADER_TYPE_NAME = "TBasePassPixelShaderFNoLightMapPolicyNoSkyLight";
+    internal const string VERTEX_FACTORY_TYPE_NAME = "FLocalVertexFactory";
+
+    /// <summary>
+    /// A base pass vertex shader and pixel shader that render together. Which pair the game uses is determined by the light-map policy.
+    /// </summary>
+    private readonly record struct BasePassShaderTypes(string VertexShaderType, string PixelShaderType);
+
+    /// <summary>
+    /// Light-map policies that render one directional light plus sky lighting (see <see cref="PreviewLighting"/>), in order of preference
+    /// </summary>
+    private static readonly BasePassShaderTypes[] LitShaderTypes =
+    [
+        new("TBasePassVertexShaderFDirectionalLightLightMapPolicyFNoDensityPolicy", "TBasePassPixelShaderFDirectionalLightLightMapPolicySkyLight"),
+        //SH light is the directional light plus an SH ambient term. The SH is left at 0, since the sky provides ambient
+        new("TBasePassVertexShaderFSHLightLightMapPolicyFNoDensityPolicy", "TBasePassPixelShaderFSHLightLightMapPolicySkyLight"),
+    ];
+
+    /// <summary>
+    /// Light-map policies with no direct light, in order of preference. Unlit materials only have these
+    /// </summary>
+    private static readonly BasePassShaderTypes[] UnlitShaderTypes =
+    [
+        new("TBasePassVertexShaderFNoLightMapPolicyFNoDensityPolicy", "TBasePassPixelShaderFNoLightMapPolicySkyLight"),
+        new("TBasePassVertexShaderFNoLightMapPolicyFNoDensityPolicy", "TBasePassPixelShaderFNoLightMapPolicyNoSkyLight"),
+    ];
+
+    /// <summary>
+    /// Every shader type that <see cref="SelectShaders"/> can choose from
+    /// </summary>
+    internal static readonly string[] ShaderTypeNames = LitShaderTypes.Concat(UnlitShaderTypes)
+        .SelectMany(types => new[] { types.VertexShaderType, types.PixelShaderType })
+        .Distinct().ToArray();
+
+    /// <summary>
+    /// Picks the vertex and pixel shader to render with. Lit materials use a lit pair if they have one, otherwise they fall back to an unlit pair.
+    /// </summary>
+    /// <param name="shaders">A material's shaders. Nulls are ignored</param>
+    /// <returns>Nulls if the material has no usable pair</returns>
+    internal static (Shader vertexShader, Shader pixelShader) SelectShaders(IEnumerable<Shader> shaders, bool isUnlit)
+    {
+        var shadersByType = new Dictionary<string, Shader>();
+        foreach (Shader shader in shaders)
+        {
+            if (shader is not null)
+            {
+                shadersByType.TryAdd(shader.ShaderType.Name, shader);
+            }
+        }
+
+        IEnumerable<BasePassShaderTypes> candidates = isUnlit ? UnlitShaderTypes : LitShaderTypes.Concat(UnlitShaderTypes);
+        foreach (BasePassShaderTypes types in candidates)
+        {
+            if (shadersByType.TryGetValue(types.VertexShaderType, out Shader vertexShader)
+                && shadersByType.TryGetValue(types.PixelShaderType, out Shader pixelShader))
+            {
+                return (vertexShader, pixelShader);
+            }
+        }
+        return (null, null);
+    }
 
     public EBlendMode BlendMode;
     public bool UseHairPass;
@@ -40,11 +94,93 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     private readonly List<PreviewTextureCache.TextureEntry> CachedTexture2DParameters = [];
     private readonly List<PreviewTextureCache.TextureEntry> CachedCubeTextureParameters = [];
 
-    public VertexShaderType UnrealVertexShader;
-    public PixelShaderType UnrealPixelShader;
+    /// <summary>
+    /// A TBasePassVertexShader. See <see cref="SelectShaders"/>
+    /// </summary>
+    public Shader UnrealVertexShader;
+    /// <summary>
+    /// A TBasePassPixelShader. See <see cref="SelectShaders"/>
+    /// </summary>
+    public Shader UnrealPixelShader;
+
+    //The material chain is read from most to least derived. The first Material, or MaterialInstance with a StaticPermutationResource,
+    //owns the shaders the game will use. Everything after that point only contributes parameter values.
+    private bool FoundShaderMapOwner;
+    private ExportEntry ShaderMapOwner;
+    //Shaders aren't loaded in the constructor, since that's expensive and they aren't needed if game shaders are never turned on.
+    //See MeshRenderContext.LoadPendingGameShaders
+    private volatile bool AttemptedShaderLoad;
+    private readonly object ShaderLoadLock = new();
+    private readonly MeshRenderContext Context;
+
+    private string gameShaderError;
+    /// <summary>
+    /// Why this material can't be rendered with the game's shaders. Null if it can. Loads the shaders if they haven't been already.
+    /// </summary>
+    public string GameShaderError
+    {
+        get
+        {
+            LoadGameShaders();
+            return gameShaderError;
+        }
+    }
+
+    /// <summary>
+    /// Loads the shaders if they haven't been already.
+    /// </summary>
+    public bool CanRenderWithGameShaders => GameShaderError is null;
 
     public MaterialRenderProxy(MeshRenderContext context, ExportEntry export) : base(export, context.PackageCache, true)
     {
+        Context = context;
+        if (!Game.IsLEGame())
+        {
+            gameShaderError = "Game shaders are only supported for Legendary Edition games";
+            AttemptedShaderLoad = true;
+        }
+        else
+        {
+            context.AddPendingGameShaderLoad(this);
+        }
+    }
+
+    /// <summary>
+    /// Call if rendering with game shaders fails, so that this material falls back to the LEX shader
+    /// </summary>
+    public void MarkGameShadersFailed(Exception e)
+    {
+        gameShaderError = e.Message;
+    }
+
+    /// <summary>
+    /// Loads the game's shaders for this material, if they haven't been already. Thread-safe.
+    /// </summary>
+    public void LoadGameShaders()
+    {
+        if (AttemptedShaderLoad) return;
+        lock (ShaderLoadLock)
+        {
+            if (AttemptedShaderLoad) return;
+            if (gameShaderError is null)
+            {
+                if (ShaderMapOwner is null)
+                {
+                    gameShaderError = "Could not find the Material that owns this material's shaders";
+                }
+                else
+                {
+                    LoadShaders(ShaderMapOwner);
+                    ShaderMapOwner = null;
+                    if (gameShaderError is null && (ShaderMap is null || UnrealVertexShader is null || UnrealPixelShader is null))
+                    {
+                        gameShaderError = "Could not find the material's shaders";
+                    }
+                }
+            }
+            //set last, so that other threads don't see a partially loaded material
+            AttemptedShaderLoad = true;
+        }
     }
 
     protected override void ReadBaseMaterial(ExportEntry mat, PackageCache assetCache, Material parsedMaterial)
@@ -56,9 +192,11 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
         var props = mat.GetProperties(packageCache: assetCache);
         Enum.TryParse(props.GetProp<EnumProperty>("BlendMode")?.Value ?? "BLEND_Opaque", out BlendMode);
 
-        //if the MIC had a StaticPermutationResource, this is already set
-        if (Uniform2DTextureExpressions.IsEmpty())
+        //if a MIC had a StaticPermutationResource, the shaders came from that instead
+        bool isShaderMapOwner = !FoundShaderMapOwner;
+        if (isShaderMapOwner)
         {
+            FoundShaderMapOwner = true;
             foreach (int uIndex in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
             {
                 Uniform2DTextureExpressions.Add(mat.FileRef.GetEntry(uIndex)?.InstancedFullPath);
@@ -78,11 +216,12 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
                 if (expressionProps?.GetProp<NameProperty>("ParameterName") is {} paramNameProp)
                 {
                     //this will run after ReadMaterialInstanceConstant, so we don't want to overwrite any values specified there
-                    if (expressionProps.GetProp<FloatProperty>("DefaultValue") is { } defaultfloatProp)
+                    Property defaultValueProp = expressionProps.GetProp<Property>("DefaultValue");
+                    if (defaultValueProp is FloatProperty defaultfloatProp)
                     {
                         ScalarParameterValues.TryAdd(paramNameProp.Value.Instanced, defaultfloatProp.Value);
                     }
-                    else if (expressionProps.GetProp<StructProperty>("DefaultValue") is {} defaultVectorProp)
+                    else if (defaultValueProp is StructProperty defaultVectorProp)
                     {
                         VectorParameterValues.TryAdd(paramNameProp.Value.Instanced, CommonStructs.GetLinearColor(defaultVectorProp));
                     }
@@ -99,19 +238,28 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
             }
         }
 
-        //if the MIC had a StaticPermutationResource, this is already set
-        if (ShaderMap is null)
+        if (isShaderMapOwner)
         {
-            LoadShaders(mat);
+            ShaderMapOwner = mat;
         }
     }
 
     private void LoadShaders(ExportEntry mat)
     {
-        (ShaderMap, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndShaders(mat, VERTEX_SHADER_TYPE_NAME, LIT_PIXEL_SHADER_TYPE_NAME, UNLIT_PIXEL_SHADER_TYPE_NAME);
+        try
+        {
+            (ShaderMap, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndShaders(mat, Context.GetSeekFreeShaderCache,
+                ShaderTypeNames);
 
-        UnrealVertexShader = (VertexShaderType)shaders[0];
-        UnrealPixelShader = (PixelShaderType)(shaders[1] ?? shaders[2]);
+            (UnrealVertexShader, UnrealPixelShader) = SelectShaders(shaders, IsUnlit);
+        }
+        catch (Exception e)
+        {
+            ShaderMap = null;
+            UnrealVertexShader = null;
+            UnrealPixelShader = null;
+            gameShaderError = $"Failed to load shaders for {mat.InstancedFullPath}: {e.Message}";
+        }
     }
 
     protected override void ReadMaterialInstanceConstant(ExportEntry matInst, PropertyCollection props)
@@ -154,13 +302,24 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
             }
         }
 
-        if (ObjectBinary.From(matInst) is MaterialInstance binary)
+        if (!FoundShaderMapOwner && props.GetProp<BoolProperty>("bHasStaticPermutationResource") is { Value: true })
         {
+            FoundShaderMapOwner = true;
+            MaterialInstance binary;
+            try
+            {
+                binary = ObjectBinary.From<MaterialInstance>(matInst);
+            }
+            catch (Exception e)
+            {
+                gameShaderError = $"Failed to parse {matInst.InstancedFullPath}: {e.Message}";
+                return;
+            }
             foreach (int uIndex in binary.SM3StaticPermutationResource.UniformExpressionTextures)
             {
                 Uniform2DTextureExpressions.Add(matInst.FileRef.GetEntry(uIndex)?.InstancedFullPath);
             }
-            LoadShaders(matInst);
+            ShaderMapOwner = matInst;
         }
     }
 
@@ -177,8 +336,8 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
         //}
         vertexConstantBuffer.Clear();
         pixelConstantBuffer.Clear();
-        UnrealVertexShader?.WriteValues(vertexConstantBuffer, context, mesh, this);
-        UnrealPixelShader?.WriteValues(pixelConstantBuffer, context, mesh, this);
+        ShaderParameterSetters.WriteBasePassVertexShaderValues(UnrealVertexShader, vertexConstantBuffer, context, mesh, this);
+        ShaderParameterSetters.WriteBasePassPixelShaderValues(UnrealPixelShader, pixelConstantBuffer, context, mesh, this);
         //System.Diagnostics.Debug.WriteLine(string.Join(',', vertexConstantBuffer.ToArray()));
         //System.Diagnostics.Debug.WriteLine(string.Join(',', pixelConstantBuffer.ToArray()));
     }
@@ -205,8 +364,8 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
         CachedVertexVectorParameters.Clear();
 
         var uniformContext = new UniformExpressionRenderContext(
-            ScalarParameterValues, VectorParameterValues, 
-            context.Time, context.Time, GetFlipBookTextureOffset);
+            ScalarParameterValues, VectorParameterValues,
+            context.Time, context.Time, GetFlipBookTextureOffset, GetFlipBookTextureScale);
 
         UpdateExpressions(uniformContext,
             ShaderMap.UniformVertexVectorExpressions, ShaderMap.UniformVertexScalarExpressions,
@@ -223,8 +382,8 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
         CachedCubeTextureParameters.Clear();
 
         var uniformContext = new UniformExpressionRenderContext(
-            ScalarParameterValues, VectorParameterValues, 
-            context.Time, context.Time, GetFlipBookTextureOffset);
+            ScalarParameterValues, VectorParameterValues,
+            context.Time, context.Time, GetFlipBookTextureOffset, GetFlipBookTextureScale);
 
         UpdateExpressions(uniformContext,
             ShaderMap.UniformPixelVectorExpressions, ShaderMap.UniformPixelScalarExpressions,
@@ -236,14 +395,23 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
 
     private LinearColor GetFlipBookTextureOffset(UniformExpressionRenderContext context, int texIndex)
     {
-        if ((uint)texIndex < Uniform2DTextureExpressions.Count 
+        return GetFlipBookTexture(texIndex)?.GetTextureOffset(context) ?? LinearColor.Black;
+    }
+
+    private LinearColor GetFlipBookTextureScale(UniformExpressionRenderContext context, int texIndex)
+    {
+        return GetFlipBookTexture(texIndex)?.GetTextureScale() ?? LinearColor.Black;
+    }
+
+    private PreviewTextureCache.FlipBookTextureEntry GetFlipBookTexture(int texIndex)
+    {
+        if ((uint)texIndex < Uniform2DTextureExpressions.Count
             && Uniform2DTextureExpressions[texIndex] is { } texifp
-            && TextureMap.TryGetValue(texifp, out var texture)
-            && texture is PreviewTextureCache.FlipBookTextureEntry flipBookTexture)
+            && TextureMap.TryGetValue(texifp, out var texture))
         {
-            return flipBookTexture.GetTextureOffset(context);
+            return texture as PreviewTextureCache.FlipBookTextureEntry;
         }
-        return LinearColor.Black;
+        return null;
     }
 
     private void UpdateTextureExpressions(MaterialUniformExpressionTexture[] textureExpressions, List<PreviewTextureCache.TextureEntry> textureCache)

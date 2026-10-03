@@ -5,6 +5,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
@@ -78,6 +79,10 @@ public class MeshRenderContext : RenderContext
 
     #region Size-Dependent Resources
     public RenderTargetView BackbufferView { get; private set; }
+    //The scene is rendered into this linear HDR target, then gamma-encoded into the backbuffer, as the game does
+    protected Texture2D SceneColor;
+    private RenderTargetView SceneColorView;
+    private ShaderResourceView SceneColorResourceView;
     public Texture2D DepthBuffer { get; private set; } // also called Depth-Stencil, but we don't use stencil at the moment.
     public DepthStencilView DepthBufferView { get; private set; }
     protected Texture2D HitBuffer;
@@ -93,6 +98,13 @@ public class MeshRenderContext : RenderContext
     private D2D.SolidColorBrush labelBackgroundBrush;
     #endregion
     public GenericEffect<WorldConstants> DefaultEffect { get; private set; }
+    //lets LEVertex meshes be drawn with DefaultEffect's pixel shader
+    private VertexShader LEVertexDefaultVertexShader;
+    private InputLayout LEVertexDefaultInputLayout;
+    private VertexShader ResolveVertexShader;
+    //tonemaps pixels rendered with game shaders, to match how the game displays HDR scene color
+    private PixelShader ResolvePixelShader;
+    private const float DisplayGamma = 2.2f;
     public LEEffect LEEffect { get; private set; }
     private Texture2D DefaultTexture;
     private Texture2D WhiteTextureCube;
@@ -103,6 +115,53 @@ public class MeshRenderContext : RenderContext
     private RasterizerState FillRasterizerState;
     private RasterizerState WireframeRasterizerState;
     public SamplerState SampleState { get; private set; }
+
+    /// <summary>
+    /// Depth tested, but not written. For translucent materials
+    /// </summary>
+    public DepthStencilState TranslucentDepthState { get; private set; }
+
+    private const int NUM_SAMPLER_SLOTS = 16;
+    private SamplerState[] DefaultSamplers;
+
+    /// <summary>
+    /// Sets every pixel shader sampler slot to <see cref="SampleState"/>, which LEX's shaders expect
+    /// </summary>
+    public void RestoreDefaultSamplers()
+    {
+        if (DefaultSamplers is null)
+        {
+            DefaultSamplers = new SamplerState[NUM_SAMPLER_SLOTS];
+            Array.Fill(DefaultSamplers, SampleState);
+        }
+        ImmediateContext.PixelShader.SetSamplers(0, DefaultSamplers);
+    }
+
+    private readonly Dictionary<(TextureAddressMode, TextureAddressMode), SamplerState> SamplerStateCache = [];
+
+    /// <summary>
+    /// Gets a sampler like <see cref="SampleState"/>, with the given address modes
+    /// </summary>
+    public SamplerState GetSamplerState(TextureAddressMode addressU, TextureAddressMode addressV)
+    {
+        if (addressU is TextureAddressMode.Wrap && addressV is TextureAddressMode.Wrap)
+        {
+            return SampleState;
+        }
+        if (!SamplerStateCache.TryGetValue((addressU, addressV), out SamplerState samplerState))
+        {
+            samplerState = new SamplerState(Device, new SamplerStateDescription
+            {
+                AddressU = addressU,
+                AddressV = addressV,
+                AddressW = TextureAddressMode.Wrap,
+                Filter = Filter.Anisotropic,
+                MaximumAnisotropy = 8
+            });
+            SamplerStateCache.Add((addressU, addressV), samplerState);
+        }
+        return samplerState;
+    }
     public readonly SceneCamera Camera = new();
     private bool wireframe;
     public bool Wireframe
@@ -152,8 +211,92 @@ public class MeshRenderContext : RenderContext
     private readonly Dictionary<Guid, VertexShader> VertexShaderCache = [];
     private readonly Dictionary<Guid, InputLayout> InputLayoutCache = [];
     private readonly Dictionary<Guid, PixelShader> PixelShaderCache = [];
+    //parsing a package's ShaderCache is expensive, and every material in the package needs it
+    private readonly Dictionary<IMEPackage, ShaderCache> SeekFreeShaderCaches = [];
     public readonly PreviewTextureCache TextureCache;
     public readonly PackageCache PackageCache;
+
+    /// <summary>
+    /// Render meshes with the game's shaders. Materials that can't be rendered with them fall back to LEX's shader.
+    /// Only applies to meshes made of <see cref="LEVertex"/>.
+    /// </summary>
+    public bool UseGameShaders { get; set; }
+
+    /// <summary>
+    /// Lighting for meshes rendered with the game's shaders
+    /// </summary>
+    public PreviewLighting Lighting { get; } = new();
+
+    //Materials whose game shaders haven't been loaded yet
+    private readonly List<MaterialRenderProxy> PendingGameShaderLoads = [];
+
+    internal void AddPendingGameShaderLoad(MaterialRenderProxy material)
+    {
+        lock (PendingGameShaderLoads)
+        {
+            PendingGameShaderLoads.Add(material);
+        }
+    }
+
+    /// <summary>
+    /// Whether any materials have been created whose game shaders haven't been loaded by <see cref="LoadPendingGameShaders"/>
+    /// </summary>
+    public bool HasPendingGameShaderLoads
+    {
+        get
+        {
+            lock (PendingGameShaderLoads)
+            {
+                return PendingGameShaderLoads.Count > 0;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Loads the game shaders of every material created since the last call, and creates their D3D shaders.
+    /// Loading them can take seconds for a whole level, so call this on a background thread before turning on <see cref="UseGameShaders"/>.
+    /// Otherwise each material's shaders are loaded the first time it's rendered.
+    /// </summary>
+    /// <param name="reportProgress">Called with the number of materials loaded so far, and the total</param>
+    public void LoadPendingGameShaders(Action<int, int> reportProgress = null)
+    {
+        MaterialRenderProxy[] materials;
+        lock (PendingGameShaderLoads)
+        {
+            materials = [.. PendingGameShaderLoads];
+            PendingGameShaderLoads.Clear();
+        }
+        for (int i = 0; i < materials.Length; i++)
+        {
+            MaterialRenderProxy material = materials[i];
+            material.LoadGameShaders();
+            if (Device is not null && material.CanRenderWithGameShaders)
+            {
+                GetCachedVertexShader(material.UnrealVertexShader.Guid, material.UnrealVertexShader.ShaderByteCode);
+                GetCachedPixelShader(material.UnrealPixelShader.Guid, material.UnrealPixelShader.ShaderByteCode);
+            }
+            reportProgress?.Invoke(i + 1, materials.Length);
+        }
+    }
+
+    /// <summary>
+    /// Gets the parsed SeekFreeShaderCache of a package, or null if it doesn't have one. Results are cached until <see cref="EmptyCaches"/>.
+    /// </summary>
+    public ShaderCache GetSeekFreeShaderCache(IMEPackage pcc)
+    {
+        lock (SeekFreeShaderCaches)
+        {
+            if (!SeekFreeShaderCaches.TryGetValue(pcc, out ShaderCache shaderCache))
+            {
+                if (pcc.FindExport("SeekFreeShaderCache", "ShaderCache") is { } seekFreeShaderCacheExport)
+                {
+                    shaderCache = ObjectBinary.From<ShaderCache>(seekFreeShaderCacheExport);
+                }
+                SeekFreeShaderCaches.Add(pcc, shaderCache);
+            }
+            return shaderCache;
+        }
+    }
 
     public MeshRenderContext()
     {
@@ -233,20 +376,14 @@ public class MeshRenderContext : RenderContext
         // Clear the color and depth buffers
         if (BackbufferView != null)
         {
+            ImmediateContext.OutputMerger.SetRenderTargets(DepthBufferView, SceneColorView, HitBufferView);
             ClearDepthBuffer();
-            ImmediateContext.ClearRenderTargetView(BackbufferView, new RawColor4(BackgroundColor.R / 255.0f, BackgroundColor.G / 255.0f, BackgroundColor.B / 255.0f, BackgroundColor.A / 255.0f));
+            ImmediateContext.ClearRenderTargetView(SceneColorView, new RawColor4(
+                MathF.Pow(BackgroundColor.R / 255.0f, DisplayGamma), MathF.Pow(BackgroundColor.G / 255.0f, DisplayGamma), MathF.Pow(BackgroundColor.B / 255.0f, DisplayGamma),
+                0)); //alpha marks pixels rendered with game shaders, see PSMainResolve
             if (HitBufferView is not null) ImmediateContext.ClearRenderTargetView(HitBufferView, new RawColor4(1f, 1f, 1f, 1f));
 
-            if (ErrorText is not null)
-            {
-                RenderTarget2D.BeginDraw();
-                {
-                    var size = RenderTarget2D.Size;
-                    RenderTarget2D.DrawText($"{ErrorText}", errorTextFormat, new RawRectangleF(0, 0, size.Width, size.Height), errorTextBrush);
-                }
-                RenderTarget2D.EndDraw();
-            }
-            else
+            if (ErrorText is null)
             {
                 try
                 {
@@ -256,6 +393,18 @@ public class MeshRenderContext : RenderContext
                 {
                     ErrorText = e.FlattenException();
                 }
+            }
+
+            ResolveSceneColor();
+
+            if (ErrorText is not null)
+            {
+                RenderTarget2D.BeginDraw();
+                {
+                    var size = RenderTarget2D.Size;
+                    RenderTarget2D.DrawText($"{ErrorText}", errorTextFormat, new RawRectangleF(0, 0, size.Width, size.Height), errorTextBrush);
+                }
+                RenderTarget2D.EndDraw();
             }
 
             //render D2D overlay
@@ -282,6 +431,27 @@ public class MeshRenderContext : RenderContext
         }
 
         base.Render();
+    }
+
+    /// <summary>
+    /// Gamma-encodes the linear scene color into the backbuffer
+    /// </summary>
+    private void ResolveSceneColor()
+    {
+        ImmediateContext.Rasterizer.State = FillRasterizerState;
+        ImmediateContext.OutputMerger.SetRenderTargets((DepthStencilView)null, BackbufferView);
+        ImmediateContext.OutputMerger.SetBlendState(null);
+        ImmediateContext.InputAssembler.InputLayout = null;
+        ImmediateContext.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
+        ImmediateContext.VertexShader.Set(ResolveVertexShader);
+        ImmediateContext.PixelShader.Set(ResolvePixelShader);
+        ImmediateContext.PixelShader.SetShaderResource(0, SceneColorResourceView);
+
+        ImmediateContext.Draw(3, 0);
+
+        //SceneColor will be bound as a render target next frame, so it can't stay bound as a shader resource
+        ImmediateContext.PixelShader.SetShaderResource(0, null);
+        ImmediateContext.Rasterizer.State = Wireframe ? WireframeRasterizerState : FillRasterizerState;
     }
 
     public void ClearDepthBuffer()
@@ -324,12 +494,15 @@ public class MeshRenderContext : RenderContext
             MaximumAnisotropy = 8
         };
         SampleState = new SamplerState(Device, ssd);
-        //just set all the sample state slots.
-        const int numSampleStates = 16;
-        for (int i = 0; i < numSampleStates; i++)
+        RestoreDefaultSamplers();
+
+        TranslucentDepthState = new DepthStencilState(Device, new DepthStencilStateDescription
         {
-            ImmediateContext.PixelShader.SetSampler(i, SampleState);
-        }
+            IsDepthEnabled = true,
+            DepthWriteMask = DepthWriteMask.Zero,
+            DepthComparison = Comparison.Less,
+            IsStencilEnabled = false
+        });
 
         // Load the default texture
         DefaultTexture = this.LoadTextureFromFile(Path.Combine(AppDirectories.ExecFolder, "Default.png"));
@@ -337,24 +510,48 @@ public class MeshRenderContext : RenderContext
 
         // Load the default position-texture shader
         DefaultEffect = new GenericEffect<WorldConstants>(Device, EmbeddedResources.LevelEditorShader);
+        using (ShaderBytecode leVertexVSBytecode = ShaderBytecode.Compile(EmbeddedResources.LevelEditorShader, "VSMainLEVertex", "vs_5_0").Bytecode)
+        {
+            LEVertexDefaultVertexShader = new VertexShader(Device, leVertexVSBytecode);
+            LEVertexDefaultInputLayout = new InputLayout(Device, leVertexVSBytecode, LEVertex.InputElements);
+        }
+        using (ShaderBytecode resolveVSBytecode = ShaderBytecode.Compile(EmbeddedResources.LevelEditorShader, "VSMainResolve", "vs_5_0").Bytecode)
+        {
+            ResolveVertexShader = new VertexShader(Device, resolveVSBytecode);
+        }
+        using (ShaderBytecode resolvePSBytecode = ShaderBytecode.Compile(EmbeddedResources.LevelEditorShader, "PSMainResolve", "ps_5_0").Bytecode)
+        {
+            ResolvePixelShader = new PixelShader(Device, resolvePSBytecode);
+        }
 
         //create fallback textures
-        var whiteCubeData = new Fixed6<byte[]>();
-        whiteCubeData[0] = whiteCubeData[1] = whiteCubeData[2] = whiteCubeData[3] = whiteCubeData[4] = whiteCubeData[5] = [255, 255, 255, 255];
-        WhiteTextureCube = this.LoadTextureCube(1, Format.R8G8B8A8_UNorm, whiteCubeData);
+        WhiteTextureCube = CreateWhiteTextureCube();
         WhiteTextureCubeView = new ShaderResourceView(Device, WhiteTextureCube);
-        WhiteTex = new Texture2D(Device, new Texture2DDescription{ Width = 1, Height = 1, MipLevels = 1, ArraySize = 1, Format = Format.R8G8B8A8_UNorm, SampleDescription = new SampleDescription(1, 0), BindFlags = BindFlags.ShaderResource});
-        int white = int.MaxValue;
-        Device.ImmediateContext.UpdateSubresource(ref white, WhiteTex, rowPitch: 8);
+        WhiteTex = CreateWhiteTexture();
         WhiteTexView = new ShaderResourceView(Device, WhiteTex);
 
-        LEEffect = new LEEffect(Device);
+        LEEffect = new LEEffect(Device, EmbeddedResources.LevelEditorShader);
     }
 
     public override void CreateSizeDependentResources(int width, int height, Texture2D newBackBuffer)
     {
         base.CreateSizeDependentResources(width, height, newBackBuffer);
         BackbufferView = new RenderTargetView(Device, Backbuffer);
+        SceneColor = new Texture2D(Device, new Texture2DDescription
+        {
+            ArraySize = 1,
+            BindFlags = BindFlags.RenderTarget | BindFlags.ShaderResource,
+            CpuAccessFlags = CpuAccessFlags.None,
+            Format = Format.R16G16B16A16_Float,
+            Height = height,
+            Width = width,
+            MipLevels = 1,
+            OptionFlags = ResourceOptionFlags.None,
+            SampleDescription = new SampleDescription(1, 0),
+            Usage = ResourceUsage.Default
+        });
+        SceneColorView = new RenderTargetView(Device, SceneColor);
+        SceneColorResourceView = new ShaderResourceView(Device, SceneColor);
         DepthBuffer = new Texture2D(Device, new Texture2DDescription
         {
             ArraySize = 1,
@@ -385,7 +582,7 @@ public class MeshRenderContext : RenderContext
         });
         HitBufferView = new RenderTargetView(Device, HitBuffer);
 
-        ImmediateContext.OutputMerger.SetRenderTargets(DepthBufferView, BackbufferView, HitBufferView);
+        ImmediateContext.OutputMerger.SetRenderTargets(DepthBufferView, SceneColorView, HitBufferView);
         ImmediateContext.Rasterizer.SetViewport(0, 0, Width, Height);
 
         Camera.aspect = (float)Width / Height;
@@ -420,6 +617,12 @@ public class MeshRenderContext : RenderContext
         ImmediateContext.OutputMerger.SetRenderTargets((RenderTargetView)null);
         BackbufferView.Dispose();
         BackbufferView = null;
+        SceneColorResourceView?.Dispose();
+        SceneColorResourceView = null;
+        SceneColorView?.Dispose();
+        SceneColorView = null;
+        SceneColor?.Dispose();
+        SceneColor = null;
         DepthBufferView.Dispose();
         DepthBufferView = null;
         DepthBuffer.Dispose();
@@ -452,7 +655,14 @@ public class MeshRenderContext : RenderContext
         WhiteTextureCube?.Dispose();
         WhiteTex?.Dispose();
         SampleState?.Dispose();
+        DefaultSamplers = null;
+        SamplerStateCache.DisposeValuesAndClear();
+        TranslucentDepthState?.Dispose();
         DefaultEffect?.Dispose();
+        LEVertexDefaultVertexShader?.Dispose();
+        LEVertexDefaultInputLayout?.Dispose();
+        ResolveVertexShader?.Dispose();
+        ResolvePixelShader?.Dispose();
         LEEffect?.Dispose();
         FillRasterizerState?.Dispose();
         WireframeRasterizerState?.Dispose();
@@ -501,56 +711,75 @@ public class MeshRenderContext : RenderContext
         return blendState;
     }
 
+    //Locked, since shaders can be created on a background thread by LoadPendingGameShaders. (Creating D3D11 resources is thread-safe)
     public (VertexShader, InputLayout) GetCachedVertexShader(Guid id, byte[] shaderBytecode)
     {
-        InputLayout inputLayout;
-        if (VertexShaderCache.TryGetValue(id, out VertexShader shader))
+        lock (VertexShaderCache)
         {
-            inputLayout = InputLayoutCache[id];
+            InputLayout inputLayout;
+            if (VertexShaderCache.TryGetValue(id, out VertexShader shader))
+            {
+                inputLayout = InputLayoutCache[id];
+            }
+            else
+            {
+                shader = new VertexShader(Device, shaderBytecode);
+                VertexShaderCache.Add(id, shader);
+                inputLayout = new InputLayout(Device, shaderBytecode, LEVertex.InputElements);
+                InputLayoutCache.Add(id, inputLayout);
+            }
+            return (shader, inputLayout);
         }
-        else
-        {
-            shader = new VertexShader(Device, shaderBytecode);
-            VertexShaderCache.Add(id, shader);
-            inputLayout = new InputLayout(Device, shaderBytecode, LEVertex.InputElements);
-            InputLayoutCache.Add(id, inputLayout);
-        }
-        return (shader, inputLayout);
     }
 
     public PixelShader GetCachedPixelShader(Guid id, byte[] shaderBytecode)
     {
-        if (!PixelShaderCache.TryGetValue(id, out PixelShader shader))
+        lock (PixelShaderCache)
         {
-            string code = HLSLDecompiler.DecompileShader(shaderBytecode, false);
-            //HACK: LE shaders seem to always output pixels with no alpha (Maybe it's inverted? Investigate transparent mats) 
-            code = code.Replace("o0.w = 0;", "o0.w = 1;", StringComparison.Ordinal);
-            //3DMigoto outputs "inf" for the infinity constant, but that's not valid HLSL
-            code = code.Replace("// 3Dmigoto declarations", "// 3Dmigoto declarations\n" +
-                                                            "#define inf 1.#INF");
-            try
+            if (!PixelShaderCache.TryGetValue(id, out PixelShader shader))
             {
-                shaderBytecode = ShaderBytecode.Compile(code, "main", "ps_5_0");
+                //The game's bytecode is used as-is. Base pass shaders write 0 to alpha; materials mask that out with their blend state.
+                shader = new PixelShader(Device, shaderBytecode);
+                PixelShaderCache.Add(id, shader);
             }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message);
-            }
-
-            shader = new PixelShader(Device, shaderBytecode);
-            PixelShaderCache.Add(id, shader);
+            return shader;
         }
-        return shader;
+    }
+
+    /// <summary>
+    /// Renders a section of a game-shader mesh with LEX's default shader. Used for materials that can't be rendered with game shaders.
+    /// </summary>
+    public void RenderMeshWithDefaultEffect(Mesh<LEVertex> mesh, ModelPreviewSection section, ShaderResourceView diffuseTexture)
+    {
+        DefaultEffect.PrepDraw(ImmediateContext, AlphaBlendState, GetWorldConstants(mesh.LocalToWorld));
+        ImmediateContext.InputAssembler.InputLayout = LEVertexDefaultInputLayout;
+        ImmediateContext.VertexShader.Set(LEVertexDefaultVertexShader);
+        DefaultEffect.RenderObject(ImmediateContext, mesh, (int)section.StartIndex, (int)section.TriangleCount * 3,
+            Wireframe ? null : diffuseTexture ?? DefaultTextureView);
     }
 
     public override void EmptyCaches()
     {
         PackageCache?.ReleasePackages();
+        lock (SeekFreeShaderCaches)
+        {
+            SeekFreeShaderCaches.Clear();
+        }
+        lock (PendingGameShaderLoads)
+        {
+            PendingGameShaderLoads.Clear();
+        }
         TextureCache?.ExpungeStaleCacheItems();
         BlendStateCache.DisposeValuesAndClear();
-        VertexShaderCache.DisposeValuesAndClear();
-        InputLayoutCache.DisposeValuesAndClear();
-        PixelShaderCache.DisposeValuesAndClear();
+        lock (VertexShaderCache)
+        {
+            VertexShaderCache.DisposeValuesAndClear();
+            InputLayoutCache.DisposeValuesAndClear();
+        }
+        lock (PixelShaderCache)
+        {
+            PixelShaderCache.DisposeValuesAndClear();
+        }
     }
 
     private System.Drawing.Point mouseDownPos;
@@ -765,17 +994,28 @@ public class MeshRenderContext : RenderContext
 
     public bool WorldToPixel(Vector3 point, out Vector2 pixel) => ScreenToPixel(WorldToScreen(point), out pixel);
 
-    public Texture2D LoadUnrealTexture(ExportEntry texture2DExport)
+    /// <summary>
+    /// A texture loaded from an Unreal texture, and the formats its views should be created with.
+    /// </summary>
+    /// <param name="ViewFormat">Format for a view that reads the raw texel values (what LEX's shader expects)</param>
+    /// <param name="SRGBViewFormat">If the texture holds sRGB-encoded color, a format for a view that converts to linear (what the game's shaders expect). Otherwise null.</param>
+    public readonly record struct LoadedTexture(Texture2D Texture, Format ViewFormat, Format? SRGBViewFormat);
+
+    public LoadedTexture LoadUnrealTexture(ExportEntry texture2DExport)
     {
         if (texture2DExport.ClassName is "TextureRenderTarget2D" or "TextureMovie")
         {
-            return WhiteTex;
+            return new LoadedTexture(CreateWhiteTexture(), Format.R8G8B8A8_UNorm, null);
         }
         var unrealTexture = new LECTexture2D(texture2DExport);
-        return this.LoadUnrealMip(unrealTexture.GetTopMip(), LegendaryExplorerCore.Textures.Image.getPixelFormatType(unrealTexture.Export.GetProperty<EnumProperty>("Format").Value.Name));
+        var pixelFormat = LegendaryExplorerCore.Textures.Image.getPixelFormatType(unrealTexture.Export.GetProperty<EnumProperty>("Format").Value.Name);
+        var format = (Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
+        var srgbFormats = IsSRGB(texture2DExport) ? RenderContextExtensions.GetSRGBFormats(format) : null;
+        Texture2D texture = this.LoadUnrealMip(unrealTexture.GetTopMip(), pixelFormat, typelessResource: srgbFormats is not null);
+        return new LoadedTexture(texture, srgbFormats?.UNorm ?? format, srgbFormats?.SRGB);
     }
 
-    public Texture2D LoadUnrealTextureCube(ExportEntry textureCubeExport, PackageCache packageCache = null)
+    public LoadedTexture LoadUnrealTextureCube(ExportEntry textureCubeExport, PackageCache packageCache = null)
     {
         if (textureCubeExport.ClassName != "TextureCube") throw new ArgumentException("Expected a TextureCube export.", nameof(textureCubeExport));
 
@@ -787,7 +1027,7 @@ public class MeshRenderContext : RenderContext
             ObjectProperty faceProp = props.GetProp<ObjectProperty>(facePropNames[i]);
             if (faceProp is null)
             {
-                return WhiteTextureCube;
+                return new LoadedTexture(CreateWhiteTextureCube(), Format.R8G8B8A8_UNorm, null);
             }
             faceTextures[i] = new(faceProp.ResolveToExport(textureCubeExport.FileRef, packageCache));
         }
@@ -801,7 +1041,27 @@ public class MeshRenderContext : RenderContext
         {
             pixelData[i] = LECTexture2D.GetTextureData(faceTextures[i].GetTopMip(), textureCubeExport.Game);
         }
-        return this.LoadTextureCube(size, format, pixelData);
+        var srgbFormats = IsSRGB(faceTextures[0].Export) ? RenderContextExtensions.GetSRGBFormats(format) : null;
+        Texture2D texture = this.LoadTextureCube(size, format, pixelData, srgbFormats?.Typeless);
+        return new LoadedTexture(texture, srgbFormats?.UNorm ?? format, srgbFormats?.SRGB);
+    }
+
+    //UTexture.SRGB defaults to true
+    private static bool IsSRGB(ExportEntry textureExport) => textureExport.GetProperty<BoolProperty>("SRGB")?.Value ?? true;
+
+    private Texture2D CreateWhiteTexture()
+    {
+        var tex = new Texture2D(Device, new Texture2DDescription { Width = 1, Height = 1, MipLevels = 1, ArraySize = 1, Format = Format.R8G8B8A8_UNorm, SampleDescription = new SampleDescription(1, 0), BindFlags = BindFlags.ShaderResource });
+        int white = -1;
+        ImmediateContext.UpdateSubresource(ref white, tex, rowPitch: 4);
+        return tex;
+    }
+
+    private Texture2D CreateWhiteTextureCube()
+    {
+        var whiteCubeData = new Fixed6<byte[]>();
+        whiteCubeData[0] = whiteCubeData[1] = whiteCubeData[2] = whiteCubeData[3] = whiteCubeData[4] = whiteCubeData[5] = [255, 255, 255, 255];
+        return this.LoadTextureCube(1, Format.R8G8B8A8_UNorm, whiteCubeData);
     }
 }
 

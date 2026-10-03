@@ -11,8 +11,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
-//change this to switch between game and LEX shaders for LevelEditor
-using VertexType = LegendaryExplorer.Tools.LevelEditor.Scene3D.WorldVertex;
+//LEVertex meshes can be rendered with either the game's shaders or LEX's, see MeshRenderContext.UseGameShaders
+using VertexType = LegendaryExplorer.Tools.LevelEditor.Scene3D.LEVertex;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
 
@@ -71,11 +71,17 @@ public class PrimitiveComponentProxy : NotifyPropertyChangedBase, IDisposable
 
     public bool IsVisible { get; set; } = true;
 
+    /// <summary>
+    /// Not rendered in game. Only shown in the level editor when <see cref="LevelEditorRenderContext.ShowHidden"/> is set
+    /// </summary>
+    public bool HiddenGame { get; }
+
     protected PrimitiveComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent)
     {
         Actor = parent;
         Export = componentExport;
         Properties = componentExport.GetCondensedProperties();
+        HiddenGame = Properties.GetProp<BoolProperty>("HiddenGame")?.Value ?? false;
 
         var rotationProp = Properties.GetProp<StructProperty>("Rotation");
         var translationProp = Properties.GetProp<StructProperty>("Translation");

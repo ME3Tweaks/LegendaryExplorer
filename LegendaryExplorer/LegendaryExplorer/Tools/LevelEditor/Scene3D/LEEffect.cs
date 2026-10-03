@@ -5,6 +5,7 @@ using SharpDX.DXGI;
 using System;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using Vector3 = System.Numerics.Vector3;
 using Vector4 = System.Numerics.Vector4;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
@@ -19,6 +20,13 @@ public unsafe class LEEffect : IDisposable
     private readonly void* VertexShaderConstantBufferAlloc;
     private readonly void* PixelShaderConstantBufferAlloc;
 
+    //for writing to the hit test render target, which game shaders don't do
+    private readonly SharpDX.Direct3D11.Buffer HitProxyConstantBuffer;
+    private readonly PixelShader HitProxyPixelShader;
+    private readonly BlendState HitProxyBlendState;
+    private readonly DepthStencilState HitProxyDepthState;
+    private const int HIT_PROXY_CONSTANT_BUFFER_SLOT = 3;
+
     private bool disposedValue;
 
     public const int CONSTANT_BUFFER_MAX_SIZE = 2560;
@@ -26,7 +34,7 @@ public unsafe class LEEffect : IDisposable
     public Span<byte> VertexShaderConstantBuffer => new(VertexShaderConstantBufferAlloc, CONSTANT_BUFFER_MAX_SIZE);
     public Span<byte> PixelShaderConstantBuffer => new(PixelShaderConstantBufferAlloc, CONSTANT_BUFFER_MAX_SIZE);
 
-    public LEEffect(SharpDX.Direct3D11.Device device)
+    public LEEffect(SharpDX.Direct3D11.Device device, string levelEditorShaderCode)
     {
         // Create constant buffer
         VertexShaderGlobals = new SharpDX.Direct3D11.Buffer(device, CONSTANT_BUFFER_MAX_SIZE, ResourceUsage.Default, BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
@@ -36,6 +44,50 @@ public unsafe class LEEffect : IDisposable
 
         VertexShaderConstantBufferAlloc = NativeMemory.Alloc(CONSTANT_BUFFER_MAX_SIZE);
         PixelShaderConstantBufferAlloc = NativeMemory.Alloc(CONSTANT_BUFFER_MAX_SIZE);
+
+        HitProxyConstantBuffer = new SharpDX.Direct3D11.Buffer(device, Utilities.SizeOf<LEHitProxyConstants>(), ResourceUsage.Default, BindFlags.ConstantBuffer, CpuAccessFlags.None, ResourceOptionFlags.None, 0);
+        using (var psBytecode = SharpDX.D3DCompiler.ShaderBytecode.Compile(levelEditorShaderCode, "PSMainHitProxy", "ps_5_0").Bytecode)
+        {
+            HitProxyPixelShader = new PixelShader(device, psBytecode);
+        }
+        var hitBlendDesc = new BlendStateDescription
+        {
+            AlphaToCoverageEnable = false,
+            IndependentBlendEnable = true,
+        };
+        //scene color: multiply in the selection highlight, and replace alpha with a marker that this pixel was rendered with game shaders
+        hitBlendDesc.RenderTarget[0] = new RenderTargetBlendDescription
+        {
+            IsBlendEnabled = true,
+            SourceBlend = BlendOption.DestinationColor,
+            DestinationBlend = BlendOption.Zero,
+            BlendOperation = BlendOperation.Add,
+            SourceAlphaBlend = BlendOption.One,
+            DestinationAlphaBlend = BlendOption.Zero,
+            AlphaBlendOperation = BlendOperation.Add,
+            RenderTargetWriteMask = ColorWriteMaskFlags.All
+        };
+        //hit test target: overwrite
+        hitBlendDesc.RenderTarget[1] = new RenderTargetBlendDescription
+        {
+            IsBlendEnabled = false,
+            SourceBlend = BlendOption.One,
+            DestinationBlend = BlendOption.Zero,
+            BlendOperation = BlendOperation.Add,
+            SourceAlphaBlend = BlendOption.One,
+            DestinationAlphaBlend = BlendOption.Zero,
+            AlphaBlendOperation = BlendOperation.Add,
+            RenderTargetWriteMask = ColorWriteMaskFlags.All
+        };
+        HitProxyBlendState = new BlendState(device, hitBlendDesc);
+        //The same vertex shader is used, so depth will be identical. Only draw where the mesh is the frontmost surface.
+        HitProxyDepthState = new DepthStencilState(device, new DepthStencilStateDescription
+        {
+            IsDepthEnabled = true,
+            DepthWriteMask = DepthWriteMask.Zero,
+            DepthComparison = Comparison.LessEqual,
+            IsStencilEnabled = false
+        });
     }
 
     /// <summary>
@@ -76,6 +128,24 @@ public unsafe class LEEffect : IDisposable
         context.DrawIndexed(indexcount, indexstart, 0);
     }
 
+    /// <summary>
+    /// Redraws the indices just drawn by <see cref="RenderObject"/>, writing to the hit test render target (and adding the selection highlight, if selected).
+    /// Must be called immediately after <see cref="RenderObject"/>, as it relies on the vertex shader, input layout, and buffers it set.
+    /// </summary>
+    public void RenderHitProxy(DeviceContext context, LEHitProxyConstants hitProxyConstants, int indexstart, int indexcount)
+    {
+        context.UpdateSubresource(ref hitProxyConstants, HitProxyConstantBuffer);
+        context.PixelShader.Set(HitProxyPixelShader);
+        context.PixelShader.SetConstantBuffer(HIT_PROXY_CONSTANT_BUFFER_SLOT, HitProxyConstantBuffer);
+        context.OutputMerger.SetBlendState(HitProxyBlendState);
+        context.OutputMerger.SetDepthStencilState(HitProxyDepthState);
+
+        context.DrawIndexed(indexcount, indexstart, 0);
+
+        //restore the default
+        context.OutputMerger.SetDepthStencilState(null);
+    }
+
     private void Dispose(bool disposing)
     {
         if (!disposedValue)
@@ -86,6 +156,10 @@ public unsafe class LEEffect : IDisposable
                 VertexShaderConstants.Dispose();
                 PixelShaderGlobals.Dispose();
                 PixelShaderConstants.Dispose();
+                HitProxyConstantBuffer.Dispose();
+                HitProxyPixelShader.Dispose();
+                HitProxyBlendState.Dispose();
+                HitProxyDepthState.Dispose();
             }
 
             NativeMemory.Free(VertexShaderConstantBufferAlloc);
@@ -114,6 +188,13 @@ public struct LEVSConstants
     [FieldOffset(16 * 0)] public Matrix4x4 ViewProjectionMatrix;
     [FieldOffset(16 * 4)] public Vector4 CameraPosition;
     [FieldOffset(16 * 5)] public Vector4 PreViewTranslation;
+}
+
+[StructLayout(LayoutKind.Sequential)]
+public struct LEHitProxyConstants
+{
+    public Vector3 HitProxyID;
+    public RenderContext.ShaderFlags Flags;
 }
 
 [StructLayout(LayoutKind.Explicit)]

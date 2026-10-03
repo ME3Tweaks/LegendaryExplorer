@@ -32,6 +32,10 @@ public class LevelEditorRenderContext : MeshRenderContext
 
     public bool ShowVolumes;
     public bool ShowVolumetrics;
+    /// <summary>
+    /// Show actors and components that aren't rendered in game (bHidden or HiddenGame)
+    /// </summary>
+    public bool ShowHidden;
 
     private bool IsReadOnly;
 

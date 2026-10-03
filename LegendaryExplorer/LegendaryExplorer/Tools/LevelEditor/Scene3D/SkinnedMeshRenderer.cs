@@ -1,5 +1,6 @@
 using System;
 using System.Numerics;
+using LegendaryExplorerCore.Gammtek;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.Animation;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -15,6 +16,8 @@ public struct SkinVertex
 {
     public Vector3 BindPosition;  // Unreal space (Z-up)
     public Vector3 BindNormal;    // Unreal space
+    public Vector3 BindTangent;   // Unreal space
+    public float BinormalSign;    // -1 or 1
     public Vector2 UV;
     public int Bone0, Bone1, Bone2, Bone3;       // skeleton-wide bone indices
     public float Weight0, Weight1, Weight2, Weight3; // normalized weights
@@ -45,6 +48,8 @@ public class SkinnedMeshRenderer
                 ref var skinVert = ref _skinVertices[v];
                 skinVert.BindPosition = sv.Position;
                 skinVert.BindNormal = (Vector3)sv.TangentZ;
+                skinVert.BindTangent = (Vector3)sv.TangentX;
+                skinVert.BinormalSign = ((Vector4)sv.TangentZ).W < 0 ? -1f : 1f;
                 skinVert.UV = sv.UV;
                 ResolveInfluences(ref skinVert, sv.InfluenceBones, sv.InfluenceWeights, chunk);
             }
@@ -59,6 +64,8 @@ public class SkinnedMeshRenderer
                 ref var skinVert = ref _skinVertices[v];
                 skinVert.BindPosition = gv.Position;
                 skinVert.BindNormal = (Vector3)gv.TangentZ;
+                skinVert.BindTangent = (Vector3)gv.TangentX;
+                skinVert.BinormalSign = ((Vector4)gv.TangentZ).W < 0 ? -1f : 1f;
                 skinVert.UV = gv.UV;
                 ResolveInfluences(ref skinVert, gv.InfluenceBones, gv.InfluenceWeights, chunk);
             }
@@ -115,6 +122,29 @@ public class SkinnedMeshRenderer
     /// </summary>
     public void UpdateSkinning(DeviceContext context, Mesh<WorldVertex> mesh, AnimPlayer animPlayer)
     {
+        UpdateSkinning(context, mesh, animPlayer, static (in SkinVertex sv, Vector3 position, Vector3 normal, Vector3 _) =>
+            new WorldVertex(position, new Vector4(normal.X, normal.Z, normal.Y, 1), sv.UV));
+    }
+
+    /// <summary>
+    /// Performs CPU skinning for a mesh rendered with the game's shaders. Unlike the <see cref="WorldVertex"/> overload,
+    /// the tangent basis is skinned too, and the normals are left in Unreal space.
+    /// </summary>
+    public void UpdateSkinning(DeviceContext context, Mesh<LEVertex> mesh, AnimPlayer animPlayer)
+    {
+        UpdateSkinning(context, mesh, animPlayer, static (in SkinVertex sv, Vector3 position, Vector3 normal, Vector3 tangent) =>
+        {
+            Fixed4<Vector4> uvs = default;
+            uvs[0] = new Vector4(sv.UV, 0, 0);
+            return (LEVertex)LEVertex.Create(position, tangent, new Vector4(normal, sv.BinormalSign), uvs);
+        });
+    }
+
+    private delegate TVertex SkinnedVertexBuilder<out TVertex>(in SkinVertex sv, Vector3 position, Vector3 normal, Vector3 tangent);
+
+    private void UpdateSkinning<TVertex>(DeviceContext context, Mesh<TVertex> mesh, AnimPlayer animPlayer, SkinnedVertexBuilder<TVertex> buildVertex)
+        where TVertex : IVertexBase
+    {
         NeedsUpdate = false;
         if (_skinVertices == null || mesh == null) return;
 
@@ -136,10 +166,9 @@ public class SkinnedMeshRenderer
             // Transform bind position and normal in Unreal space
             var skinnedPos = Vector3.Transform(sv.BindPosition, blended);
             var skinnedNormal = Vector3.TransformNormal(sv.BindNormal, blended);
+            var skinnedTangent = Vector3.TransformNormal(sv.BindTangent, blended);
 
-            var rendererNormal = new Vector4(skinnedNormal.X, skinnedNormal.Z, skinnedNormal.Y, 1);
-
-            mesh.Vertices[i] = new WorldVertex(skinnedPos, rendererNormal, sv.UV);
+            mesh.Vertices[i] = buildVertex(in sv, skinnedPos, skinnedNormal, skinnedTangent);
         }
 
         mesh.UpdateVertices(context);

@@ -225,6 +225,55 @@ namespace LegendaryExplorerCore.Shaders
             return paramSets;
         }
 
+        /// <summary>
+        /// Reads every MaterialShaderMap in the reference shader cache in a single pass.
+        /// If a map fails to parse, the exception is returned in place of the map, and enumeration continues.
+        /// </summary>
+        public static IEnumerable<(StaticParameterSet StaticParameterSet, MaterialShaderMap ShaderMap, Exception Error)> EnumerateMaterialShaderMaps(MEGame game, string gamePathOverride = null)
+        {
+            string filePath = ShaderFilePath(game);
+            if (!File.Exists(filePath))
+            {
+                yield break;
+            }
+            using FileStream fs = File.OpenRead(filePath);
+            using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad: true);
+            ReadNames(fs, shaderCachePackage);
+            int offsetOfShaderCacheOffset = shaderCachePackage.ExportOffset + 36;
+            PopulateOffsets(game, offsetOfShaderCacheOffset);
+            var sc = new SerializingContainer(fs, shaderCachePackage, true);
+            sc.ms.JumpTo(MaterialShaderMapsOffset(game, gamePathOverride));
+            int count = fs.ReadInt32();
+            for (int i = 0; i < count; i++)
+            {
+                StaticParameterSet sps = null;
+                sc.Serialize(ref sps);
+
+                //find where the next map starts first, so that a parsing failure doesn't stop the enumeration
+                long msmStart = sc.ms.Position;
+                if (game >= MEGame.ME3)
+                {
+                    sc.ms.Skip(8);
+                }
+                int nextMSMOffset = sc.ms.ReadInt32();
+                sc.ms.JumpTo(msmStart);
+
+                MaterialShaderMap msm = null;
+                Exception error = null;
+                try
+                {
+                    sc.Serialize(ref msm);
+                }
+                catch (Exception e)
+                {
+                    msm = null;
+                    error = e;
+                }
+                sc.ms.JumpTo(nextMSMOffset);
+                yield return (sps, msm, error);
+            }
+        }
+
         public static MaterialShaderMap GetMaterialShaderMap(MEGame game, StaticParameterSet staticParameterSet, out int fileOffset, string gamePathOverride = null)
         {
             fileOffset = -1;
@@ -232,8 +281,7 @@ namespace LegendaryExplorerCore.Shaders
             if (File.Exists(filePath))
             {
                 using FileStream fs = File.OpenRead(filePath);
-                using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad: true);
-                ReadNames(fs, shaderCachePackage);
+                IMEPackage shaderCachePackage = GetShaderCachePackage(game, fs);
 
                 int offsetOfShaderCacheOffset = shaderCachePackage.ExportOffset + 36;
                 PopulateOffsets(game, offsetOfShaderCacheOffset);
@@ -243,20 +291,42 @@ namespace LegendaryExplorerCore.Shaders
                 }
 
                 var sc = new SerializingContainer(fs, shaderCachePackage, true);
-                sc.ms.JumpTo(MaterialShaderMapsOffset(game, gamePathOverride));
+                if (GetMaterialShaderMapOffsets(game, sc, fs.Length, gamePathOverride).TryGetValue(staticParameterSet, out int msmOffset))
+                {
+                    sc.ms.JumpTo(msmOffset);
+                    fileOffset = sc.FileOffset;
+                    MaterialShaderMap msm = null;
+                    sc.Serialize(ref msm);
+                    return msm;
+                }
+            }
 
-                int count = fs.ReadInt32();
+            return null;
+        }
+
+        //Offset of each MaterialShaderMap, keyed by its StaticParameterSet. Built on first use, so that looking up a MaterialShaderMap
+        //doesn't have to read through every StaticParameterSet before it (~20ms per lookup for LE3)
+        private static readonly Dictionary<StaticParameterSet, int>[] MaterialShaderMapOffsets = new Dictionary<StaticParameterSet, int>[7];
+        private static readonly long[] MaterialShaderMapOffsetsFileSize = new long[7];
+
+        private static Dictionary<StaticParameterSet, int> GetMaterialShaderMapOffsets(MEGame game, SerializingContainer sc, long fileSize, string gamePathOverride)
+        {
+            lock (MaterialShaderMapOffsets)
+            {
+                if (MaterialShaderMapOffsets[(int)game] is { } cachedOffsets && MaterialShaderMapOffsetsFileSize[(int)game] == fileSize)
+                {
+                    return cachedOffsets;
+                }
+
+                var offsets = new Dictionary<StaticParameterSet, int>();
+                sc.ms.JumpTo(MaterialShaderMapsOffset(game, gamePathOverride));
+                int count = sc.ms.ReadInt32();
                 for (int i = 0; i < count; i++)
                 {
                     StaticParameterSet sps = null;
                     sc.Serialize(ref sps);
-                    if (sps == staticParameterSet)
-                    {
-                        fileOffset = sc.FileOffset;
-                        MaterialShaderMap msm = null;
-                        sc.Serialize(ref msm);
-                        return msm;
-                    }
+                    //if there are duplicates, the first one wins, as it would if the file was searched linearly
+                    offsets.TryAdd(sps, (int)sc.ms.Position);
 
                     if (game >= MEGame.ME3)
                     {
@@ -266,9 +336,11 @@ namespace LegendaryExplorerCore.Shaders
                     int nextMSMOffset = sc.ms.ReadInt32();
                     sc.ms.Skip(nextMSMOffset - sc.ms.Position);
                 }
-            }
 
-            return null;
+                MaterialShaderMapOffsets[(int)game] = offsets;
+                MaterialShaderMapOffsetsFileSize[(int)game] = fileSize;
+                return offsets;
+            }
         }
 
         public static string GetD3D9ShaderDissasembly(MEGame game, Guid shaderGuid)
@@ -356,6 +428,36 @@ namespace LegendaryExplorerCore.Shaders
             }
         }
 
+        //The header and name table of each game's ref shader cache. Reading them takes a few ms, which adds up when shaders are looked up for many materials.
+        //Only used for reading, so it's safe to share between threads.
+        private static readonly IMEPackage[] ShaderCachePackages = new IMEPackage[7];
+        private static readonly long[] ShaderCachePackagesFileSize = new long[7];
+
+        /// <summary>
+        /// Gets the header and name table of the ref shader cache that <paramref name="fs"/> was just opened on. Do not dispose the result.
+        /// </summary>
+        private static IMEPackage GetShaderCachePackage(MEGame game, FileStream fs)
+        {
+            lock (ShaderCachePackages)
+            {
+                long fileSize = fs.Length;
+                if (ShaderCachePackages[(int)game] is { } cachedPackage)
+                {
+                    if (ShaderCachePackagesFileSize[(int)game] == fileSize)
+                    {
+                        return cachedPackage;
+                    }
+                    cachedPackage.Dispose();
+                }
+                //read just the header of the package, then read the name list
+                IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad: true);
+                ReadNames(fs, shaderCachePackage);
+                ShaderCachePackages[(int)game] = shaderCachePackage;
+                ShaderCachePackagesFileSize[(int)game] = fileSize;
+                return shaderCachePackage;
+            }
+        }
+
         private static void ReadNames(FileStream fs, IMEPackage shaderCachePackage)
         {
             fs.JumpTo(shaderCachePackage.NameOffset);
@@ -420,9 +522,7 @@ namespace LegendaryExplorerCore.Shaders
             if (File.Exists(filePath))
             {
                 using FileStream fs = File.OpenRead(filePath);
-                //read just the header of the package, then read the name list
-                using IMEPackage shaderCachePackage = MEPackageHandler.OpenMEPackageFromStream(fs, quickLoad: true);
-                ReadNames(fs, shaderCachePackage);
+                IMEPackage shaderCachePackage = GetShaderCachePackage(game, fs);
                 var sc = new SerializingContainer(fs, shaderCachePackage, true);
 
                 int offsetOfShaderCacheOffset = shaderCachePackage.ExportOffset + 36;

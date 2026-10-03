@@ -3,6 +3,8 @@ using LegendaryExplorer.Tools.LevelEditor.Scene3D;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -34,12 +36,59 @@ public partial class ActorPreviewControl : ExportLoaderControl, IActorEditorCont
         set => SetProperty(ref _showCollision, value);
     }
 
+    private bool _useGameShaders;
+    public bool UseGameShaders
+    {
+        get => _useGameShaders;
+        set
+        {
+            if (SetProperty(ref _useGameShaders, value))
+            {
+                if (value)
+                {
+                    EnableGameShaders();
+                }
+                else
+                {
+                    RenderContext.UseGameShaders = false;
+                }
+            }
+        }
+    }
+
+    //The renderer only switches to game shaders once they're loaded, since the first load can take a second or two
+    private async void EnableGameShaders()
+    {
+        if (RenderContext.HasPendingGameShaderLoads)
+        {
+            IsBusy = true;
+            BusyText = "Loading game shaders...";
+            try
+            {
+                await Task.Run(() => RenderContext.LoadPendingGameShaders()).ConfigureAwait(true);
+            }
+            catch (Exception e)
+            {
+                //materials that failed to load will be retried, and fall back to LEX's shader, when rendered
+                Debug.WriteLine($"Failed to load game shaders: {e}");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+        //it may have been turned back off while loading
+        RenderContext.UseGameShaders = _useGameShaders;
+    }
+
     public ActorPreviewControl() : base("Actor Preview")
     {
         DataContext = this;
         InitializeComponent();
         SceneViewer.Context = RenderContext;
         RenderContext.Camera.FirstPerson = false;
+        //this previews a single actor, so show it even if it's hidden in game
+        RenderContext.ShowHidden = true;
         SceneViewer.Loaded += SceneViewer_Loaded;
         SceneViewer.Unloaded += SceneViewer_Unloaded;
     }
@@ -85,8 +134,8 @@ public partial class ActorPreviewControl : ExportLoaderControl, IActorEditorCont
     private void OnRenderScene(object sender, EventArgs e)
     {
         Span<RenderPass> passes = ShowCollision
-            ? [RenderPass.Base, RenderPass.Hair, RenderPass.Collision]
-            : [RenderPass.Base, RenderPass.Hair];
+            ? [RenderPass.Base, RenderPass.Hair, RenderPass.Translucent, RenderPass.Collision]
+            : [RenderPass.Base, RenderPass.Hair, RenderPass.Translucent];
         foreach (RenderPass pass in passes)
             _actor?.Render(RenderContext, pass);
         RenderContext.DrawUI();
@@ -127,6 +176,13 @@ public partial class ActorPreviewControl : ExportLoaderControl, IActorEditorCont
             RenderContext.ErrorText = ex.FlattenException();
         }
         IsBusy = false;
+
+        if (UseGameShaders && RenderContext.HasPendingGameShaderLoads)
+        {
+            //load the new actor's shaders in the background
+            RenderContext.UseGameShaders = false;
+            EnableGameShaders();
+        }
     }
 
     public override void UnloadExport()

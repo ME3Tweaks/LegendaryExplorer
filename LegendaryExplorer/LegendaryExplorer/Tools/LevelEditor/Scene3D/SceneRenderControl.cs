@@ -35,9 +35,11 @@ public enum MouseButtons
 
 public static class RenderContextExtensions
 {
-    public static unsafe Texture2D LoadTexture(this RenderContext renderContext, uint width, uint height, Format format, byte[] pixelData)
+    /// <param name="resourceFormat">Format to create the texture with, if different from <paramref name="format"/>. (eg. a typeless format, so that it can have both UNORM and sRGB views)</param>
+    public static unsafe Texture2D LoadTexture(this RenderContext renderContext, uint width, uint height, Format format, byte[] pixelData, Format? resourceFormat = null)
     {
         Texture2DDescription texture2DDescription = GetTextureDescription(width, height, format, false, out int pitch);
+        texture2DDescription.Format = resourceFormat ?? format;
         fixed (byte* pixelDataPointer = pixelData)
         {
             return new Texture2D(renderContext.Device, texture2DDescription, new SharpDX.DataRectangle((IntPtr)pixelDataPointer, pitch));
@@ -75,9 +77,10 @@ public static class RenderContextExtensions
         return texture2DDescription;
     }
 
-    public static Texture2D LoadTextureCube(this RenderContext renderContext, uint size, Format format, Fixed6<byte[]> faceData)
+    public static Texture2D LoadTextureCube(this RenderContext renderContext, uint size, Format format, Fixed6<byte[]> faceData, Format? resourceFormat = null)
     {
         Texture2DDescription texture2DDescription = GetTextureDescription(size, size, format, true, out int pitch);
+        texture2DDescription.Format = resourceFormat ?? format;
         var tex = new Texture2D(renderContext.Device, texture2DDescription);
 
         for (int i = 0; i < faceData.Length; i++)
@@ -96,7 +99,7 @@ public static class RenderContextExtensions
         return renderContext.LoadTexture(width, height, format, pixelData);
     }
 
-    public static Texture2D LoadUnrealMip(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat)
+    public static Texture2D LoadUnrealMip(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat, bool typelessResource = false)
     {
         // Todo: Needs way to set black alpha
         var imagebytes = LECTexture2D.GetTextureData(mip, mip.Export.Game);
@@ -108,8 +111,25 @@ public static class RenderContextExtensions
             mipWidth = (mipWidth < 4) ? 4 : mipWidth;
             mipHeight = (mipHeight < 4) ? 4 : mipHeight;
         }
-        return renderContext.LoadTexture(mipWidth, mipHeight, mipFormat, imagebytes);
+        Format? resourceFormat = typelessResource ? GetSRGBFormats(mipFormat)?.Typeless : null;
+        return renderContext.LoadTexture(mipWidth, mipHeight, mipFormat, imagebytes, resourceFormat);
     }
+
+    /// <summary>
+    /// For formats that have an sRGB variant, returns the typeless format a texture must be created with to have both UNORM and sRGB views.
+    /// Returns null for formats without an sRGB variant (eg. BC4/BC5, which are only used for non-color data).
+    /// </summary>
+    public static (Format Typeless, Format UNorm, Format SRGB)? GetSRGBFormats(Format format) => format switch
+    {
+        Format.BC1_UNorm or Format.BC1_UNorm_SRgb => (Format.BC1_Typeless, Format.BC1_UNorm, Format.BC1_UNorm_SRgb),
+        Format.BC2_UNorm or Format.BC2_UNorm_SRgb => (Format.BC2_Typeless, Format.BC2_UNorm, Format.BC2_UNorm_SRgb),
+        Format.BC3_UNorm or Format.BC3_UNorm_SRgb => (Format.BC3_Typeless, Format.BC3_UNorm, Format.BC3_UNorm_SRgb),
+        Format.BC7_UNorm or Format.BC7_UNorm_SRgb => (Format.BC7_Typeless, Format.BC7_UNorm, Format.BC7_UNorm_SRgb),
+        Format.R8G8B8A8_UNorm or Format.R8G8B8A8_UNorm_SRgb => (Format.R8G8B8A8_Typeless, Format.R8G8B8A8_UNorm, Format.R8G8B8A8_UNorm_SRgb),
+        Format.B8G8R8A8_UNorm or Format.B8G8R8A8_UNorm_SRgb => (Format.B8G8R8A8_Typeless, Format.B8G8R8A8_UNorm, Format.B8G8R8A8_UNorm_SRgb),
+        Format.B8G8R8X8_UNorm or Format.B8G8R8X8_UNorm_SRgb => (Format.B8G8R8X8_Typeless, Format.B8G8R8X8_UNorm, Format.B8G8R8X8_UNorm_SRgb),
+        _ => null
+    };
 
     public static Mesh<WorldVertex> GetMeshFromAggGeom(this RenderContext renderContext, StructProperty aggGeom)
     {

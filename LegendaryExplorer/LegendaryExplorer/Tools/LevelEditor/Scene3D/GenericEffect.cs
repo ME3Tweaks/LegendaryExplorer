@@ -60,7 +60,7 @@ public sealed class GenericEffect<ConstantBufferData> : IDisposable where Consta
         context.UpdateSubresource(ref constantData, ConstantBuffer);
     }
 
-    public void RenderObject(DeviceContext context, Mesh<WorldVertex> mesh, int indexstart, int indexcount, params ReadOnlySpan<ShaderResourceView> textures)
+    public void RenderObject<TVertex>(DeviceContext context, Mesh<TVertex> mesh, int indexstart, int indexcount, params ReadOnlySpan<ShaderResourceView> textures) where TVertex : IVertexBase
     {
         if (mesh.Vertices.Count is 0)
         {
@@ -68,7 +68,7 @@ public sealed class GenericEffect<ConstantBufferData> : IDisposable where Consta
         }
 
         // Setup buffers for rendering
-        context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(mesh.VertexBuffer, WorldVertex.Stride, 0));
+        context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(mesh.VertexBuffer, TVertex.Stride, 0));
         context.InputAssembler.SetIndexBuffer(mesh.IndexBuffer, Format.R32_UInt, 0);
         context.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
 

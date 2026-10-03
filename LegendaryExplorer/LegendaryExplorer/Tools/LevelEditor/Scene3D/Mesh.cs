@@ -33,13 +33,13 @@ public class Mesh<TVertex> : IDisposable where TVertex : IVertexBase
         {
             localToWorld = value;
             TransformedBounds = BaseBounds.TransformBy(localToWorld);
-            Matrix4x4.Invert(LocalToWorld, out Matrix4x4 wtl);
-            worldToLocal = new SharpDX.Matrix3x3(wtl.M11, wtl.M12, wtl.M13, wtl.M21, wtl.M22, wtl.M23, wtl.M31, wtl.M32, wtl.M33);
+            Matrix4x4.Invert(LocalToWorld, out worldToLocal);
         }
     }
 
-    private SharpDX.Matrix3x3 worldToLocal = SharpDX.Matrix3x3.Identity;
-    public SharpDX.Matrix3x3 WorldToLocal => worldToLocal;
+    //A Matrix4x4 rather than a 3x3, so that it can be written to float3x3 shader parameters, whose rows are padded to 4 floats
+    private Matrix4x4 worldToLocal = Matrix4x4.Identity;
+    public Matrix4x4 WorldToLocal => worldToLocal;
 
     // Creates a new blank mesh.
 
@@ -225,9 +225,13 @@ public struct LEVertex : IVertexBase
 
     public void ToFloats(Span<float> floats) => MemoryMarshal.CreateSpan(ref Unsafe.As<LEVertex, float>(ref this), Stride / 4).CopyTo(floats);
 
+    /// <param name="tangent">TangentX, in [-1,1]</param>
+    /// <param name="normal">TangentZ, in [-1,1]. W is the binormal sign</param>
     public static IVertexBase Create(Vector3 position, Vector3 tangent, Vector4 normal, Fixed4<Vector4> uvs)
     {
-        return new LEVertex(new Vector4(position, 1), tangent, normal, Vector4.Zero, uvs);
+        //The game's vertex shaders expect tangents in the packed UBYTE4N form, and unpack them with "* 2 - 1".
+        //Vertex color defaults to white, which matches the engine's null color vertex buffer.
+        return new LEVertex(new Vector4(position, 1), tangent * 0.5f + new Vector3(0.5f), normal * 0.5f + new Vector4(0.5f), Vector4.One, uvs);
     }
     public static unsafe int Stride => sizeof(Vector4) + sizeof(Vector3) + sizeof(Vector4) + sizeof(Vector4) + sizeof(Vector4) * 3 + sizeof(Vector2);
 

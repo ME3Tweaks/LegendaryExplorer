@@ -122,6 +122,10 @@
                     <ToggleButton Content="Show Volumes" ToolTip="Show volume wireframes" IsChecked="{Binding ShowVolumes}"/>
                     <ToggleButton Content="Show Volumetric Meshes" IsChecked="{Binding ShowVolumetrics}"
                                   ToolTip="Volumetrics are large spheroids used for fog, dust, etc. Since LEX can't display those effects, they just get in the way."/>
+                    <ToggleButton Content="Show Hidden" IsChecked="{Binding ShowHidden}"
+                                  ToolTip="Show actors and meshes that aren't rendered in game (bHidden on the actor, or HiddenGame on the component)"/>
+                    <ToggleButton Content="Game Shaders" IsChecked="{Binding UseGameShaders}"
+                                  ToolTip="Render materials with the game's own shaders (Legendary Edition only). Experimental. Materials that can't be rendered this way use LEX's shader."/>
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                     <ToggleButton Content="Top Down" ToolTip="Toggle top-down orthographic view (Numpad 5)" IsChecked="{Binding IsOrthographicView}"/>
                 </ToolBar>

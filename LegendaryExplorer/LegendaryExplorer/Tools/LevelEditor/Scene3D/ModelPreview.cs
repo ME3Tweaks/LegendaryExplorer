@@ -85,7 +85,9 @@ public enum RenderPass
     //material types
     Base,
     Hair,
-    
+    //materials that blend with what's behind them. Must be rendered after the opaque passes, since they don't write depth
+    Translucent,
+
     //special types
     Collision,
 
@@ -135,28 +137,28 @@ public class TexturedPreviewMaterial : ModelPreviewMaterial<WorldVertex>
 
     public TexturedPreviewMaterial(MeshRenderContext renderContext, ExportEntry export) : base(renderContext, export)
     {
-        string matPackage = export.Parent?.InstancedFullPath.ToLower();
-        MaterialInstanceConstantLevelEditor mat = Material;
         Properties.Add("Name", export.ObjectName.Instanced);
-        string diffuseIFP = FindDiffuse(matPackage, mat);
-        if (diffuseIFP is not null && Material.Textures.FirstOrDefault(entry => entry.InstancedFullPath == diffuseIFP) is IEntry diffEntry)
+        if (FindDiffuse(export, Material) is IEntry diffEntry)
         {
             DiffTexture = renderContext.TextureCache.LoadTexture(diffEntry, renderContext.PackageCache);
         }
     }
 
-    private string FindDiffuse(string matPackage, MaterialInstanceConstantLevelEditor mat)
+    /// <summary>
+    /// Guesses which of a material's textures is the diffuse texture, based on texture names.
+    /// </summary>
+    internal static IEntry FindDiffuse(ExportEntry matExport, MaterialInstanceConstantLevelEditor mat)
     {
-        string diffuseIFP;
+        string matPackage = matExport.Parent?.InstancedFullPath.ToLower();
+        string matName = matExport.ObjectName.Instanced;
         foreach (var textureEntry in mat.Textures)
         {
             var texObjectName = textureEntry.InstancedFullPath.ToLower();
             if ((matPackage == null || texObjectName.StartsWith(matPackage)) && texObjectName.Contains("diff"))
             {
                 // we have found the diffuse texture!
-                diffuseIFP = textureEntry.InstancedFullPath;
-                Debug.WriteLine("Diffuse texture of new material <" + Properties["Name"] + "> is " + diffuseIFP);
-                return diffuseIFP;
+                Debug.WriteLine("Diffuse texture of new material <" + matName + "> is " + textureEntry.InstancedFullPath);
+                return textureEntry;
             }
         }
 
@@ -166,9 +168,8 @@ public class TexturedPreviewMaterial : ModelPreviewMaterial<WorldVertex>
             if (texObjectName.Contains("diff") || texObjectName.Contains("tex"))
             {
                 // we have found the diffuse texture!
-                diffuseIFP = textureEntry.InstancedFullPath;
-                Debug.WriteLine("Diffuse texture of new material <" + Properties["Name"] + "> is " + diffuseIFP);
-                return diffuseIFP;
+                Debug.WriteLine("Diffuse texture of new material <" + matName + "> is " + textureEntry.InstancedFullPath);
+                return textureEntry;
             }
         }
         foreach (var texparam in mat.Textures)
@@ -178,9 +179,8 @@ public class TexturedPreviewMaterial : ModelPreviewMaterial<WorldVertex>
             if (texObjectName.Contains("detail"))
             {
                 // I guess a detail texture is good enough if we didn't return for a diffuse texture earlier...
-                diffuseIFP = texparam.InstancedFullPath;
-                Debug.WriteLine("Diffuse (Detail) texture of new material <" + Properties["Name"] + "> is " + diffuseIFP);
-                return diffuseIFP;
+                Debug.WriteLine("Diffuse (Detail) texture of new material <" + matName + "> is " + texparam.InstancedFullPath);
+                return texparam;
             }
         }
         foreach (var texparam in mat.Textures)
@@ -189,9 +189,8 @@ public class TexturedPreviewMaterial : ModelPreviewMaterial<WorldVertex>
             if (!texObjectName.Contains("norm") && !texObjectName.Contains("opac"))
             {
                 //Anything is better than nothing I suppose
-                diffuseIFP = texparam.InstancedFullPath;
-                Debug.WriteLine("Using first found texture (last resort)  of new material <" + Properties["Name"] + "> as diffuse: " + diffuseIFP);
-                return diffuseIFP;
+                Debug.WriteLine("Using first found texture (last resort)  of new material <" + matName + "> as diffuse: " + texparam.InstancedFullPath);
+                return texparam;
             }
         }
         return null;
@@ -228,22 +227,31 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
 
     public readonly Dictionary<string, PreviewTextureCache.TextureEntry> TextureMap = [];
 
+    //used when the material can't be rendered with the game's shaders
+    private readonly PreviewTextureCache.TextureEntry FallbackDiffTexture;
+
     public LEShaderPreviewMaterial(MeshRenderContext renderContext, ExportEntry export) : base(renderContext, export)
     {
         foreach (IEntry textureEntry in Material.Textures)
         {
-            if (!TextureMap.ContainsKey(textureEntry.FullPath))
+            if (!TextureMap.ContainsKey(textureEntry.InstancedFullPath))
             {
                 PreviewTextureCache.TextureEntry texture = renderContext.TextureCache.LoadTexture(textureEntry, renderContext.PackageCache);
                 if (texture is not null)
                 {
-                    TextureMap.Add(textureEntry.FullPath, texture);
+                    TextureMap.Add(textureEntry.InstancedFullPath, texture);
                 }
             }
         }
         var mat = (MaterialRenderProxy)Material;
         mat.TextureMap = TextureMap;
-        Pass = mat.UseHairPass ? RenderPass.Hair : default;
+        if (TexturedPreviewMaterial.FindDiffuse(export, Material) is IEntry diffEntry)
+        {
+            TextureMap.TryGetValue(diffEntry.InstancedFullPath, out FallbackDiffTexture);
+        }
+        Pass = mat.UseHairPass ? RenderPass.Hair
+            : IsTranslucent ? RenderPass.Translucent
+            : RenderPass.Base;
         BlendDescription = mat.BlendMode switch
         {
             EBlendMode.BLEND_Opaque => new RenderTargetBlendDescription
@@ -326,51 +334,102 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
             },
             _ => throw new ArgumentOutOfRangeException(),
         };
+        //The game's base pass shaders write 0 to the alpha channel of the color target.
+        //Don't let that through to the backbuffer, or the scene will be transparent when composited.
+        BlendDescription.RenderTargetWriteMask = ColorWriteMaskFlags.Red | ColorWriteMaskFlags.Green | ColorWriteMaskFlags.Blue;
     }
 
+    private bool LoggedFallback;
 
+    //same as UE3's IsTranslucentBlendMode
+    private bool IsTranslucent => ((MaterialRenderProxy)Material).BlendMode is not (EBlendMode.BLEND_Opaque or EBlendMode.BLEND_Masked);
 
     /// <summary>
-    /// Renders the given <see cref="ModelPreviewSection"/> of a <see cref="ModelPreviewLOD"/> using the game's shader. 
+    /// Renders the given <see cref="ModelPreviewSection"/> of a <see cref="ModelPreviewLOD"/> using the game's shader, if <see cref="MeshRenderContext.UseGameShaders"/> is set.
+    /// Otherwise, or if that isn't possible, renders with LEX's shader.
     /// </summary>
     /// <param name="lod">The LOD to render.</param>
     /// <param name="s">Which faces to render.</param>
     /// <param name="context"></param>
-        public override void RenderSection(ModelPreviewLOD<LEVertex> lod, ModelPreviewSection s, MeshRenderContext context)
+    public override void RenderSection(ModelPreviewLOD<LEVertex> lod, ModelPreviewSection s, MeshRenderContext context)
+    {
+        if (context.UseGameShaders)
         {
-            Mesh<LEVertex> mesh = lod.Mesh;
-            SceneCamera camera = context.Camera;
             var material = (MaterialRenderProxy)Material;
-            LEEffect effect = context.LEEffect;
-            PixelShader ps = context.GetCachedPixelShader(material.UnrealPixelShader.Guid, material.UnrealPixelShader.ShaderByteCode);
-            (VertexShader vs, InputLayout inputLayout) = context.GetCachedVertexShader(material.UnrealVertexShader.Guid, material.UnrealVertexShader.ShaderByteCode);
-            effect.PrepDraw(context.ImmediateContext, vs, ps, inputLayout, context.GetCachedBlendState(BlendDescription));
-
-            Matrix4x4 viewMatrix = camera.ViewMatrix;
-            var vsConstants = new LEVSConstants
+            if (material.CanRenderWithGameShaders)
             {
-                ViewProjectionMatrix = viewMatrix * camera.ProjectionMatrix,
-                CameraPosition = new Vector4(camera.Position, 1),
-                PreViewTranslation = Vector4.Zero,
-            };
-            float depthMul = camera.ProjectionMatrix[2, 2];
-            float depthAdd = camera.ProjectionMatrix[3, 2];
-            if (false) //TODO: check if Z is inverted, if so this should be true
-            {
-                depthMul = 1f - depthMul;
-                depthAdd = -depthAdd;
+                try
+                {
+                    RenderSectionWithGameShaders(lod, s, context);
+                    return;
+                }
+                catch (Exception e)
+                {
+                    material.MarkGameShadersFailed(e);
+                }
             }
-            var psConstants = new LEPSConstants
+            if (!LoggedFallback)
             {
-                ScreenPositionScaleBias = new Vector4(1f / 2f, 1f / -2f, (context.Height / 2f + 0.5f) / context.Height, (context.Width / 2f + 0.5f) / context.Width),
-                MinZ_MaxZRatio = new Vector4(depthAdd, depthMul, 1f / depthAdd, depthMul / depthAdd),
-                DynamicScale = Vector4.One,
-            };
+                LoggedFallback = true;
+                Debug.WriteLine($"{InstancedFullPath} will be rendered with the LEX shader: {material.GameShaderError}");
+            }
+        }
+        context.RenderMeshWithDefaultEffect(lod.Mesh, s, FallbackDiffTexture?.TextureView);
+    }
 
+    private void RenderSectionWithGameShaders(ModelPreviewLOD<LEVertex> lod, ModelPreviewSection s, MeshRenderContext context)
+    {
+        Mesh<LEVertex> mesh = lod.Mesh;
+        SceneCamera camera = context.Camera;
+        var material = (MaterialRenderProxy)Material;
+        LEEffect effect = context.LEEffect;
+        PixelShader ps = context.GetCachedPixelShader(material.UnrealPixelShader.Guid, material.UnrealPixelShader.ShaderByteCode);
+        (VertexShader vs, InputLayout inputLayout) = context.GetCachedVertexShader(material.UnrealVertexShader.Guid, material.UnrealVertexShader.ShaderByteCode);
+        effect.PrepDraw(context.ImmediateContext, vs, ps, inputLayout, context.GetCachedBlendState(BlendDescription));
+        //translucency is depth tested against the opaque geometry, but doesn't occlude anything itself
+        context.ImmediateContext.OutputMerger.SetDepthStencilState(IsTranslucent ? context.TranslucentDepthState : null);
+
+        Matrix4x4 viewMatrix = camera.ViewMatrix;
+        var vsConstants = new LEVSConstants
+        {
+            ViewProjectionMatrix = viewMatrix * camera.ProjectionMatrix,
+            CameraPosition = new Vector4(camera.EyePosition, 1),
+            PreViewTranslation = Vector4.Zero,
+        };
+        float depthMul = camera.ProjectionMatrix[2, 2];
+        float depthAdd = camera.ProjectionMatrix[3, 2];
+        if (false) //TODO: check if Z is inverted, if so this should be true
+        {
+            depthMul = 1f - depthMul;
+            depthAdd = -depthAdd;
+        }
+        var psConstants = new LEPSConstants
+        {
+            ScreenPositionScaleBias = new Vector4(1f / 2f, 1f / -2f, (context.Height / 2f + 0.5f) / context.Height, (context.Width / 2f + 0.5f) / context.Width),
+            MinZ_MaxZRatio = new Vector4(depthAdd, depthMul, 1f / depthAdd, depthMul / depthAdd),
+            DynamicScale = Vector4.One,
+        };
+
+        try
+        {
             material.UpdateShaderParams(effect.VertexShaderConstantBuffer, effect.PixelShaderConstantBuffer, context, mesh);
 
             effect.RenderObject(context.ImmediateContext, vsConstants, psConstants, mesh, (int)s.StartIndex, (int)s.TriangleCount * 3);
+
+            var hitProxyConstants = new LEHitProxyConstants
+            {
+                HitProxyID = context.CurrentHitTestId,
+                Flags = context.RenderFlags
+            };
+            effect.RenderHitProxy(context.ImmediateContext, hitProxyConstants, (int)s.StartIndex, (int)s.TriangleCount * 3);
         }
+        finally
+        {
+            context.ImmediateContext.OutputMerger.SetDepthStencilState(null);
+            //the material's textures may have changed some samplers' address modes, which LEX's shaders don't expect
+            context.RestoreDefaultSamplers();
+        }
+    }
 
     protected override MaterialInstanceConstantLevelEditor CreateMaterial(MeshRenderContext renderContext, ExportEntry export)
     {

@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Numerics;
@@ -110,6 +111,67 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         set => SetProperty(ref _showVolumetrics, value);
     }
 
+    private bool _showHidden = false;
+    public bool ShowHidden
+    {
+        get => _showHidden;
+        set => SetProperty(ref _showHidden, value);
+    }
+
+    private bool _useGameShaders;
+    public bool UseGameShaders
+    {
+        get => _useGameShaders;
+        set
+        {
+            if (SetProperty(ref _useGameShaders, value))
+            {
+                if (value)
+                {
+                    EnableGameShaders();
+                }
+                else
+                {
+                    RenderContext.UseGameShaders = false;
+                }
+            }
+        }
+    }
+
+    //The renderer only switches to game shaders once they're loaded, so that it doesn't load them one material at a time on the UI thread
+    private async void EnableGameShaders()
+    {
+        if (RenderContext.HasPendingGameShaderLoads)
+        {
+            IsBusy = true;
+            BusyText = "Loading game shaders...";
+            try
+            {
+                await Task.Run(() => RenderContext.LoadPendingGameShaders(ReportGameShaderLoadProgress)).ConfigureAwait(true);
+            }
+            catch (Exception e)
+            {
+                //materials that failed to load will be retried, and fall back to LEX's shader, when rendered
+                Debug.WriteLine($"Failed to load game shaders: {e}");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+        //it may have been turned back off while loading
+        RenderContext.UseGameShaders = _useGameShaders;
+    }
+
+    //Can be called from a background thread
+    private void ReportGameShaderLoadProgress(int loaded, int total)
+    {
+        if (loaded % 10 == 0 || loaded == total)
+        {
+            Dispatcher.InvokeAsync(() => BusyText = $"Loading game shaders ({loaded}/{total})...");
+        }
+    }
+
     public bool UseLocalCoordsForWidget
     {
         get => RenderContext.TransformWidget.UseLocalCoords;
@@ -187,9 +249,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     {
         RenderContext.ShowVolumes = ShowVolumes;
         RenderContext.ShowVolumetrics = ShowVolumetrics;
+        RenderContext.ShowHidden = ShowHidden;
         Span<RenderPass> passes = ShowCollision
-            ? [RenderPass.Base, RenderPass.Hair, RenderPass.Collision]
-            : [RenderPass.Base, RenderPass.Hair];
+            ? [RenderPass.Base, RenderPass.Hair, RenderPass.Translucent, RenderPass.Collision]
+            : [RenderPass.Base, RenderPass.Hair, RenderPass.Translucent];
 
         foreach (RenderPass pass in passes)
         {
@@ -205,6 +268,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             ActorProxy actor = RenderContext.DrawList_3D[i];
             if (actor.IsVolume && !ShowVolumes) continue;
             if (actor.IsVolumetricMesh && !ShowVolumetrics) continue;
+            if (actor.IsHidden && !ShowHidden) continue;
             int hitID = actor.HitID;
             RenderContext.CurrentHitTestId = new Vector3((hitID & 0xFF) / 255f, ((hitID >> 8) & 0xFF) / 255f, ((hitID >> 16) & 0xFF) / 255f);
             if (actor == selectedActor)
@@ -345,7 +409,16 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         IsBusy = true;
         BusyText = $"Loading {Path.GetFileName(path)}...";
 
-        var (actors, ignoredClasses) = await Task.Run(() => LoadActors(levelBin, openFile)).ConfigureAwait(true);
+        bool loadGameShaders = RenderContext.UseGameShaders;
+        var (actors, ignoredClasses) = await Task.Run(() =>
+        {
+            var result = LoadActors(levelBin, openFile);
+            if (loadGameShaders)
+            {
+                RenderContext.LoadPendingGameShaders(ReportGameShaderLoadProgress);
+            }
+            return result;
+        }).ConfigureAwait(true);
         var sorted = actors.OrderBy(actor => actor.Export.UIndex).ToList();
         openFile.Actors.AddRange(sorted);
         Actors.AddRange(sorted);

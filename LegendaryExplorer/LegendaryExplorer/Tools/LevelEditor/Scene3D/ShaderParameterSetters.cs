@@ -16,35 +16,94 @@ namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 
 internal static class ShaderParameterSetters
 {
-    public static void WriteValues<LightMapPolicy, DensityPolicy>(this TBasePassVertexShader<LightMapPolicy, DensityPolicy> shader, 
-        Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat) 
+    /// <summary>
+    /// Writes the parameters for one of the base pass vertex shaders that <see cref="MaterialRenderProxy.SelectShaders"/> can choose
+    /// </summary>
+    public static void WriteBasePassVertexShaderValues(Shader vertexShader, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
+    {
+        switch (vertexShader)
+        {
+            case TBasePassVertexShader<FNullPolicy, FNullPolicy> noLightMapShader:
+                noLightMapShader.WriteValues(buffer, context, mesh, mat);
+                break;
+            //used for both FDirectionalLightLightMapPolicy and FSHLightLightMapPolicy
+            case TBasePassVertexShader<FDirectionalLightPolicy.VertexParametersType, FNullPolicy> directionalLightShader:
+                directionalLightShader.WriteValues(buffer, context, mesh, mat);
+                //w = 1 means directional, rather than a point light
+                buffer.WriteVal(directionalLightShader.LightMapVertexParams.LightDirection, new Vector4(context.Lighting.GetLightDirection(context.Camera), 1));
+                break;
+            case null:
+                break;
+            default:
+                throw new NotSupportedException($"{vertexShader.ShaderType} is not supported by the renderer");
+        }
+    }
+
+    /// <summary>
+    /// Writes the parameters for one of the base pass pixel shaders that <see cref="MaterialRenderProxy.SelectShaders"/> can choose
+    /// </summary>
+    public static void WriteBasePassPixelShaderValues(Shader pixelShader, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
+    {
+        switch (pixelShader)
+        {
+            case TBasePassPixelShader<FNullPolicy> noLightMapShader:
+                noLightMapShader.WriteValues(buffer, context, mesh, mat);
+                break;
+            case TBasePassPixelShader<FDirectionalLightLightMapPolicy.PixelParametersType> directionalLightShader:
+                directionalLightShader.WriteValues(buffer, context, mesh, mat);
+                WriteDirectionalLight(buffer, context, directionalLightShader.PixelParams.LightColorAndFalloffExponent, directionalLightShader.PixelParams.bReceiveDynamicShadows);
+                break;
+            case TBasePassPixelShader<FSHLightLightMapPolicy.PixelParametersType> shLightShader:
+                shLightShader.WriteValues(buffer, context, mesh, mat);
+                WriteDirectionalLight(buffer, context, shLightShader.PixelParams.LightColorAndFalloffExponent, shLightShader.PixelParams.bReceiveDynamicShadows);
+                //All 0, so that the SH contributes nothing. The sky lighting provides ambient instead.
+                //(Layout, if this is ever used: float4[7]. [0] is the RGB constant term, then 2 float4s each of the remaining 8 coefficients for R, G, then B)
+                buffer.WriteVal(shLightShader.PixelParams.WorldIncidentLighting, new Fixed7<Vector4>());
+                break;
+            case null:
+                break;
+            default:
+                throw new NotSupportedException($"{pixelShader.ShaderType} is not supported by the renderer");
+        }
+
+        static void WriteDirectionalLight(Span<byte> buffer, MeshRenderContext context, FShaderParameter lightColorParam, FShaderParameter bReceiveDynamicShadowsParam)
+        {
+            LinearColor lightColor = context.Lighting.LightColor;
+            //w is the falloff exponent, which is unused for directional lights
+            buffer.WriteVal(lightColorParam, new Vector4(lightColor.R, lightColor.G, lightColor.B, 0));
+            buffer.WriteVal(bReceiveDynamicShadowsParam, 0);
+        }
+    }
+
+    public static void WriteValues<LightMapPolicy, DensityPolicy>(this TBasePassVertexShader<LightMapPolicy, DensityPolicy> shader,
+        Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
         where LightMapPolicy : struct, IVertexParametersType where DensityPolicy : struct, IVertexShaderParametersType
     {
         if (shader.VertexFactoryParameters.Parameters is not FLocalVertexFactoryShaderParameters vertexFactoryParams)
         {
             throw new NotSupportedException($"{shader.VertexFactoryParameters.VertexFactoryType} is not supported by the renderer");
         }
-        //TODO: LightMapPolicy params
         vertexFactoryParams.WriteValues(buffer, context, mesh, mat);
         shader.HeightFogParameters.WriteValues(buffer, context, mesh, mat);
         shader.MaterialParameters.WriteValues(buffer, context, mesh, mat);
         //TODO: DensityPolicy params
     }
-    public static void WriteValues<LightMapPolicy>(this TBasePassPixelShader<LightMapPolicy> shader, 
-        Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat) 
-        where LightMapPolicy : struct, IPixelParametersType 
+    public static void WriteValues<LightMapPolicy>(this TBasePassPixelShader<LightMapPolicy> shader,
+        Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
+        where LightMapPolicy : struct, IPixelParametersType
     {
-        //TODO: LightMapPolicy params
         shader.MaterialParameters.WriteValues(buffer, context, mesh, mat);
         bool drawUnlit = mat.IsUnlit;
-        bool skylight = !drawUnlit;
+        //Matches UE3: lit materials get their ambient from the sky, unlit ones are just their emissive
         buffer.WriteVal(shader.AmbientColorAndSkyFactor, drawUnlit ? new LinearColor(1, 1, 1, 0) : new LinearColor(0, 0, 0, 1));
         Vector3 upperSkyColor = Vector3.Zero;
         Vector3 lowerSkyColor = Vector3.Zero;
-        if (skylight)
+        if (!drawUnlit)
         {
-            upperSkyColor = new Vector3(1, 1, 1);
-            lowerSkyColor = new Vector3(1, 1, 1);
+            LinearColor upper = context.Lighting.UpperSkyColor;
+            LinearColor lower = context.Lighting.LowerSkyColor;
+            upperSkyColor = new Vector3(upper.R, upper.G, upper.B);
+            lowerSkyColor = new Vector3(lower.R, lower.G, lower.B);
         }
         buffer.WriteVal(shader.UpperSkyColor, upperSkyColor);
         buffer.WriteVal(shader.LowerSkyColor, lowerSkyColor);
@@ -59,7 +118,7 @@ internal static class ShaderParameterSetters
 
     public static void WriteValues(this ref FMaterialVertexShaderParameters p, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
     {
-        buffer.WriteVal(p.CameraWorldPosition, context.Camera.Position);
+        buffer.WriteVal(p.CameraWorldPosition, context.Camera.EyePosition);
         buffer.WriteVal(p.ObjectWorldPositionAndRadius, new Vector4(mesh.TransformedBounds.Origin, mesh.TransformedBounds.SphereRadius));
         buffer.WriteVal(p.ObjectOrientation, mesh.LocalToWorld.GetAxis(2).Normal());
         buffer.WriteVal(p.WindDirectionAndSpeed, Vector4.Zero);
@@ -69,7 +128,7 @@ internal static class ShaderParameterSetters
         (List<Vector4> scalarParamValues, List<Vector4> vectorParamValues) = mat.GetCachedVertexParameters(context);
         foreach (TUniformParameter<FShaderParameter> scalarParam in p.UniformVertexScalarShaderParameters)
         {
-            buffer.WriteVal(scalarParam.Param, scalarParamValues[scalarParam.Index / 4][scalarParam.Index % 4]);
+            WriteScalarUniform(buffer, scalarParam, scalarParamValues);
         }
         foreach (TUniformParameter<FShaderParameter> vectorParam in p.UniformVertexVectorShaderParameters)
         {
@@ -78,7 +137,7 @@ internal static class ShaderParameterSetters
     }
     public static void WriteValues(this ref FMaterialPixelShaderParameters p, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
     {
-        buffer.WriteVal(p.CameraWorldPosition, context.Camera.Position);
+        buffer.WriteVal(p.CameraWorldPosition, context.Camera.EyePosition);
         buffer.WriteVal(p.ObjectWorldPositionAndRadius, new Vector4(mesh.TransformedBounds.Origin, mesh.TransformedBounds.SphereRadius));
         buffer.WriteVal(p.ObjectOrientation, mesh.LocalToWorld.GetAxis(2).Normal());
         buffer.WriteVal(p.WindDirectionAndSpeed, Vector4.Zero);
@@ -92,7 +151,7 @@ internal static class ShaderParameterSetters
 
         foreach (TUniformParameter<FShaderParameter> scalarParam in p.UniformPixelScalarShaderParameters)
         {
-            buffer.WriteVal(scalarParam.Param, scalarParamValues[scalarParam.Index / 4][scalarParam.Index % 4]);
+            WriteScalarUniform(buffer, scalarParam, scalarParamValues);
         }
         foreach (TUniformParameter<FShaderParameter> vectorParam in p.UniformPixelVectorShaderParameters)
         {
@@ -100,12 +159,17 @@ internal static class ShaderParameterSetters
         }
         foreach (TUniformParameter<FShaderResourceParameter> texParam in p.UniformPixel2DShaderResourceParameters)
         {
-            ShaderResourceView view = tex2dParamValues[texParam.Index]?.TextureView ?? context.WhiteTexView;
-            context.ImmediateContext.PixelShader.SetShaderResource(texParam.Param.BaseIndex, view);
+            PreviewTextureCache.TextureEntry texture = tex2dParamValues[texParam.Index];
+            context.ImmediateContext.PixelShader.SetShaderResource(texParam.Param.BaseIndex, texture?.LinearTextureView ?? context.WhiteTexView);
+            if (texture is not null)
+            {
+                //materials can rely on clamping, e.g. to confine a decal-like texture to one region of the UVs
+                context.ImmediateContext.PixelShader.SetSampler(texParam.Param.SamplerIndex, context.GetSamplerState(texture.AddressU, texture.AddressV));
+            }
         }
         foreach (TUniformParameter<FShaderResourceParameter> cubeParam in p.UniformPixelCubeShaderResourceParameters)
         {
-            ShaderResourceView view = cubeMapParamValues[cubeParam.Index]?.TextureView ?? context.WhiteTextureCubeView;
+            ShaderResourceView view = cubeMapParamValues[cubeParam.Index]?.LinearTextureView ?? context.WhiteTextureCubeView;
             context.ImmediateContext.PixelShader.SetShaderResource(cubeParam.Param.BaseIndex, view);
         }
 
@@ -113,7 +177,8 @@ internal static class ShaderParameterSetters
         buffer.WriteVal(p.LocalToWorld, mesh.LocalToWorld);
         buffer.WriteVal(p.WorldToLocal, mesh.WorldToLocal);
         Matrix4x4 viewMatrix = camera.ViewMatrix;
-        buffer.WriteVal(p.WorldToView, new Matrix3x3(viewMatrix.M11, viewMatrix.M12, viewMatrix.M13, viewMatrix.M21, viewMatrix.M22, viewMatrix.M23, viewMatrix.M31, viewMatrix.M32, viewMatrix.M33));
+        //float3x3 shader parameters have each row padded to 4 floats, so a Matrix4x4's layout matches (the 4th column lands in the padding)
+        buffer.WriteVal(p.WorldToView, viewMatrix);
         Matrix4x4.Invert(viewMatrix, out Matrix4x4 inverseViewMatrix);
         Matrix4x4 projectionMatrix = camera.ProjectionMatrix;
         Matrix4x4.Invert(projectionMatrix, out Matrix4x4 inverseProjectionMatrix);
@@ -141,25 +206,22 @@ internal static class ShaderParameterSetters
         }
         if (p.ScreenDoorNoiseTexture.IsBound())
         {
-            Debugger.Break();
+            //only sampled when EnableScreenDoorFade is set, which it never is
             context.ImmediateContext.PixelShader.SetShaderResource(p.ScreenDoorNoiseTexture.BaseIndex, null);
         }
-        if (p.WrapLightingParameters.IsBound())
-        {
-            Debugger.Break();
-        }
+        //Bioware addition: (DirectScale, IndirectScale, 0, 0), see FMaterialPixelShaderParameters::SetMesh in LE3
+        buffer.WriteVal(p.WrapLightingParameters, new Vector4(PreviewLighting.WrapLightingDirectScale, PreviewLighting.WrapLightingIndirectScale, 0, 0));
     }
 
     public static void WriteValues(this ref FSceneTextureShaderParameters p, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
     {
+        //TODO: SceneColor and SceneDepth aren't available to materials yet. Unbound textures sample as 0
         if (p.SceneColorTexture.IsBound())
         {
-            Debugger.Break();
             context.ImmediateContext.PixelShader.SetShaderResource(p.SceneColorTexture.BaseIndex, null);
         }
         if (p.SceneDepthTexture.IsBound())
         {
-            Debugger.Break();
             context.ImmediateContext.PixelShader.SetShaderResource(p.SceneDepthTexture.BaseIndex, null);
         }
 
@@ -202,6 +264,20 @@ internal static class ShaderParameterSetters
             buffer.WriteVal(p.LocalToWorld, mesh.LocalToWorld);
             buffer.WriteVal(p.WorldToLocal, mesh.WorldToLocal);
             buffer.WriteVal(p.LocalToWorldRotDeterminantFlip, mesh.LocalToWorld.GetDeterminant() >= 0 ? 1f : -1f);
+    }
+
+    //Scalar uniform expressions are packed 4 to a float4 (UniformPixelScalars_N etc.). A parameter bound to a whole float4
+    //has that float4's index, so all 4 components must be written, not just the first.
+    private static void WriteScalarUniform(Span<byte> buffer, TUniformParameter<FShaderParameter> scalarParam, List<Vector4> scalarValues)
+    {
+        if (scalarParam.Param.NumBytes > sizeof(float))
+        {
+            buffer.WriteVal(scalarParam.Param, scalarValues[scalarParam.Index]);
+        }
+        else
+        {
+            buffer.WriteVal(scalarParam.Param, scalarValues[scalarParam.Index / 4][scalarParam.Index % 4]);
+        }
     }
 
     private static unsafe void WriteVal<T>(this Span<byte> buff, FShaderParameter param, T val) where T : unmanaged

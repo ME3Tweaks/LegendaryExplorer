@@ -149,6 +149,7 @@
         <MenuItem Header="Convert To Different Game Format" Click="ConvertToDifferentGameFormat_Click"/>
         <MenuItem Header="Dump All Shaders in File" Click="DumpAllShaders_Click"/>
         <MenuItem Header="Dump FLocalVertexFactory Shaders for Selected Material" Click="DumpMaterialShaders_Click"/>
+        <MenuItem Header="Scan LE3 RefShaderCache for game shader renderer compatibility" Click="ScanGameShaderRendererCompatibility_Click"/>
         <MenuItem Header="Open this map in game" Click="OpenMapInGame_Click"/>
         <MenuItem Header="Run PropertyCollection test" Click="RunPropertyCollectionTest"/>
         <MenuItem Header="UDKify" Click="UDKifyTest"/>

@@ -72,11 +72,12 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
                     if (expressionProps?.GetProp<NameProperty>("ParameterName") is {} paramNameProp)
                     {
                         //this will run after ReadMaterialInstanceConstant, so we don't want to overwrite any values specified there
-                        if (expressionProps.GetProp<FloatProperty>("DefaultValue") is { } defaultfloatProp)
+                        Property defaultValueProp = expressionProps.GetProp<Property>("DefaultValue");
+                        if (defaultValueProp is FloatProperty defaultfloatProp)
                         {
                             ScalarParameterValues.TryAdd(paramNameProp.Value.Instanced, defaultfloatProp.Value);
                         }
-                        else if (expressionProps.GetProp<StructProperty>("DefaultValue") is {} defaultVectorProp)
+                        else if (defaultValueProp is StructProperty defaultVectorProp)
                         {
                             VectorParameterValues.TryAdd(paramNameProp.Value.Instanced, CommonStructs.GetLinearColor(defaultVectorProp));
                         }
