@@ -1239,7 +1239,16 @@ namespace LegendaryExplorerCore.UDK
             {
                 // Reform package without trash or extra packages
                 // This isn't a resynth; this also filters out unreferenced content
-                ReformPackage(meshPackage).Save();
+                using var reformedPackage = ReformPackage(meshPackage);
+                if (reformedPackage.ExportCount > 0)
+                {
+                    reformedPackage.Save();
+                }
+                else
+                {
+                    // Reforming can discard all exports even when the working package had some.
+                    File.Delete(meshFile);
+                }
 
                 TestReferences(meshPackage);
                 // meshPackage.Save();
