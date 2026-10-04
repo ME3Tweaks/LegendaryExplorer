@@ -43,6 +43,21 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     public string DisplayText { get; }
 
+    // Use the resolved proxy type so subclasses and collection components are
+    // categorized consistently, regardless of their export names or tags.
+    public string Category => this switch
+    {
+        { IsVolume: true } => "Volumes",
+        { IsVolumetricMesh: true } => "Volumetric meshes",
+        PawnProxy => "Pawns",
+        SkeletalMeshActorProxy or SFXStuntActorProxy => "Skeletal meshes",
+        DynamicSMActorProxy or BioArtPlaceableProxy => "Environment",
+        StaticMeshActorProxy or StaticMeshComponentActorProxy => "Static meshes",
+        PrefabInstanceProxy => "Prefabs",
+        SFXDroppedPickupProxy or SFXDroppedAmmoProxy or SFXDroppedGrenadeProxy => "Pickups",
+        _ => "Other"
+    };
+
     private bool isDirty;
     public bool IsDirty
     {
@@ -784,9 +799,7 @@ public class PrefabInstanceProxy : ActorProxy
     {
         foreach (var actor in Actors)
         {
-            if (actor.IsVolume && !context.ShowVolumes) continue;
-            if (actor.IsVolumetricMesh && !context.ShowVolumetrics) continue;
-            if (actor.IsHidden && !context.ShowHidden) continue;
+            if (!context.IsActorVisible(actor)) continue;
             actor.Render(context, pass);
         }
     }

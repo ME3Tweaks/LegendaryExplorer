@@ -30,8 +30,27 @@ public class LevelEditorRenderContext : MeshRenderContext
 
     public readonly BatchedPrimitives Primitives = new();
 
-    public bool ShowVolumes;
-    public bool ShowVolumetrics;
+    private readonly Dictionary<string, OutlinerCategoryState> _categories = [];
+
+    public OutlinerCategoryState GetCategoryState(string category)
+    {
+        if (!_categories.TryGetValue(category, out var state))
+        {
+            _categories[category] = state = new OutlinerCategoryState(category);
+        }
+        return state;
+    }
+
+    public bool IsActorVisible(ActorProxy actor)
+        => GetCategoryState(actor.Category).IsVisible && (!actor.IsHidden || ShowHidden);
+
+    private bool IsHitProxyVisible(IHitProxy hitProxy) => hitProxy switch
+    {
+        ActorProxy actor => IsActorVisible(actor),
+        AxisHitProxy => TransformWidget.Attach is { } actor && IsActorVisible(actor),
+        _ => true
+    };
+
     /// <summary>
     /// Show actors and components that aren't rendered in game (bHidden or HiddenGame)
     /// </summary>
@@ -149,7 +168,9 @@ public class LevelEditorRenderContext : MeshRenderContext
 
         for (int i = 0; i < indexes.Length; i += 1)
         {
-            if (HitProxies.TryGetAt(indexes[i], out IHitProxy hitProxy) && (selected is null || selected.HitPriority < hitProxy.HitPriority))
+            if (HitProxies.TryGetAt(indexes[i], out IHitProxy hitProxy)
+                && IsHitProxyVisible(hitProxy)
+                && (selected is null || selected.HitPriority < hitProxy.HitPriority))
             {
                 selected = hitProxy;
             }
@@ -203,6 +224,7 @@ public class LevelEditorRenderContext : MeshRenderContext
     {
         foreach (UIElement uiElem in DrawList_UI)
         {
+            if (uiElem == TransformWidget && TransformWidget.Attach is { } actor && !IsActorVisible(actor)) continue;
             uiElem.Draw(this);
         }
         Primitives.Render(this);

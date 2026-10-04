@@ -57,7 +57,95 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public ObservableCollectionExtended<OpenLevelFile> OpenFiles { get; } = [];
     public ObservableCollectionExtended<ActorProxy> Actors { get; } = [];
     public ICollectionView ActorsView { get; }
+    public ListCollectionView PendingChangesView { get; }
     private string _actorFilterText = "";
+
+    // Store expansion by group identity, not its recycled visual container.
+    // A level subgroup has independent state within each category.
+    private readonly Dictionary<(string Category, object Name), OutlinerGroupState> _outlinerGroupStates = [];
+
+    internal OutlinerGroupState GetOutlinerGroupState(CollectionViewGroup group)
+    {
+        string category = null;
+        if (GroupActorsByCategory && group.IsBottomLevel)
+        {
+            category = ActorsView.Groups.Cast<CollectionViewGroup>()
+                .FirstOrDefault(parent => parent.Items.Contains(group))?.Name as string;
+        }
+        var key = (category, group.Name);
+        if (!_outlinerGroupStates.TryGetValue(key, out var state))
+        {
+            _outlinerGroupStates[key] = state = new OutlinerGroupState
+            {
+                Category = group.Name is string name ? RenderContext.GetCategoryState(name) : null
+            };
+        }
+        return state;
+    }
+
+    private void RevealActorInOutliner(ActorProxy actor)
+    {
+        foreach (CollectionViewGroup group in ActorsView.Groups)
+        {
+            if (group.IsBottomLevel)
+            {
+                if (group.Name == actor.OwningFile) GetOutlinerGroupState(group).IsExpanded = true;
+            }
+            else if (Equals(group.Name, actor.Category))
+            {
+                GetOutlinerGroupState(group).IsExpanded = true;
+                foreach (CollectionViewGroup level in group.Items)
+                {
+                    if (level.Name == actor.OwningFile) GetOutlinerGroupState(level).IsExpanded = true;
+                }
+            }
+        }
+        MeshExportsList.UpdateLayout();
+        MeshExportsList.ScrollIntoView(actor);
+    }
+
+    private bool _groupActorsByCategory = true;
+    public bool GroupActorsByCategory
+    {
+        get => _groupActorsByCategory;
+        set
+        {
+            if (SetProperty(ref _groupActorsByCategory, value))
+            {
+                OnPropertyChanged(nameof(GroupActorsByLevel));
+                UpdateOutlinerGrouping();
+            }
+        }
+    }
+
+    public bool GroupActorsByLevel
+    {
+        get => !GroupActorsByCategory;
+        set { if (value) GroupActorsByCategory = false; }
+    }
+
+    private void UpdateOutlinerGrouping()
+    {
+        var selection = SelectedActor;
+        using (ActorsView.DeferRefresh())
+        {
+            ActorsView.GroupDescriptions.Clear();
+            ActorsView.SortDescriptions.Clear();
+            if (GroupActorsByCategory)
+            {
+                ActorsView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ActorProxy.Category)));
+                ActorsView.SortDescriptions.Add(new SortDescription(nameof(ActorProxy.Category), ListSortDirection.Ascending));
+            }
+            // Keep package identity and package actions available in both modes.
+            ActorsView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ActorProxy.OwningFile)));
+            ActorsView.SortDescriptions.Add(new SortDescription(nameof(ActorProxy.OwningFileName), ListSortDirection.Ascending));
+            ActorsView.SortDescriptions.Add(new SortDescription(nameof(ActorProxy.DisplayText), ListSortDirection.Ascending));
+            ActorsView.SortDescriptions.Add(new SortDescription("Export.UIndex", ListSortDirection.Ascending));
+        }
+        // Refresh can temporarily clear ListBox selection. Restore without moving the camera.
+        SelectActor(selection, false);
+        if (selection is not null) MeshExportsList?.ScrollIntoView(selection);
+    }
 
     private bool _hasAnyFileOpen;
     public bool HasAnyFileOpen
@@ -97,20 +185,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         set => SetProperty(ref _showCollision, value);
     }
 
-    private bool _showVolumes = false;
-    public bool ShowVolumes
-    {
-        get => _showVolumes;
-        set => SetProperty(ref _showVolumes, value);
-    }
-
-    private bool _showVolumetrics = false;
-    public bool ShowVolumetrics
-    {
-        get => _showVolumetrics;
-        set => SetProperty(ref _showVolumetrics, value);
-    }
-
     private bool _showHidden = false;
     public bool ShowHidden
     {
@@ -126,7 +200,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         set => SetProperty(ref _useFrustumCulling, value);
     }
 
-    private bool _useGameShaders;
+    private bool _useGameShaders = true;
     public bool UseGameShaders
     {
         get => _useGameShaders;
@@ -251,11 +325,23 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     public LevelEditor()
     {
-        RenderContext = new LevelEditorRenderContext();
+        RenderContext = new LevelEditorRenderContext
+        {
+            UseGameShaders = _useGameShaders
+        };
         RenderContext.TransformWidget.OnDragComplete = OnWidgetDragComplete;
         ActorsView = CollectionViewSource.GetDefaultView(Actors);
         ActorsView.Filter = ActorFilter;
-        ActorsView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(ActorProxy.OwningFile)));
+        UpdateOutlinerGrouping();
+
+        // A separate view keeps the change list independent of outliner searching/grouping.
+        // Live filtering also updates it for viewport drags, undo, redo and commits.
+        PendingChangesView = new ListCollectionView(Actors)
+        {
+            Filter = actor => actor is ActorProxy { IsDirty: true }
+        };
+        PendingChangesView.LiveFilteringProperties.Add(nameof(ActorProxy.IsDirty));
+        PendingChangesView.IsLiveFiltering = true;
 
         LoadCommands();
         InitializeComponent();
@@ -263,6 +349,14 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
         SceneViewer.Context = RenderContext;
         UndoHistory.PropertyChanged += UndoHistory_PropertyChanged;
+        OpenFiles.CollectionChanged += (_, _) =>
+        {
+            foreach (var key in _outlinerGroupStates.Keys
+                         .Where(key => key.Name is OpenLevelFile file && !OpenFiles.Contains(file)).ToArray())
+            {
+                _outlinerGroupStates.Remove(key);
+            }
+        };
     }
 
     private string FileQueuedForLoad;
@@ -284,8 +378,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         // Match MeshRenderContext.CreateRasterizerState, which disables near/far depth clipping.
         if (UseFrustumCulling) viewFrustum.Update(RenderContext.Camera.ViewProjectionMatrix, depthClipEnabled: false);
         RenderContext.CullingFrustum = UseFrustumCulling ? viewFrustum : null;
-        RenderContext.ShowVolumes = ShowVolumes;
-        RenderContext.ShowVolumetrics = ShowVolumetrics;
         RenderContext.ShowHidden = ShowHidden;
         Span<RenderPass> passes = ShowCollision
             ? [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Translucent, RenderPass.Collision]
@@ -303,9 +395,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         for (int i = 0; i < RenderContext.DrawList_3D.Count; i++)
         {
             ActorProxy actor = RenderContext.DrawList_3D[i];
-            if (actor.IsVolume && !ShowVolumes) continue;
-            if (actor.IsVolumetricMesh && !ShowVolumetrics) continue;
-            if (actor.IsHidden && !ShowHidden) continue;
+            if (!RenderContext.IsActorVisible(actor)) continue;
             int hitID = actor.HitID;
             RenderContext.CurrentHitTestId = new Vector3((hitID & 0xFF) / 255f, ((hitID >> 8) & 0xFF) / 255f, ((hitID >> 16) & 0xFF) / 255f);
             if (actor == selectedActor)
@@ -319,8 +409,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private void ViewportActorSelect(ActorProxy actor)
     {
-        SelectActor(actor, false);
-        MeshExportsList.ScrollIntoView(selectedActor);
+        if (actor is null) SelectActor(null, false);
+        else SelectAndRevealActor(actor, false);
     }
 
     private void SelectActor(ActorProxy actor, bool focus)
@@ -334,11 +424,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             }
             if (selectedActor is not null)
             {
-                if (focus)
-                {
-                    FocusOnBounds(selectedActor.GetBounds());
-                    RenderContext.TransformWidget.Attach = selectedActor;
-                }
                 selectedActor.PropertyChanged += OnActorPropertyChanged;
                 _preEditSnapshot = selectedActor.SnapshotTransform();
             }
@@ -346,6 +431,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             {
                 _preEditSnapshot = null;
             }
+        }
+        if (focus && selectedActor is not null)
+        {
+            FocusOnBounds(selectedActor.GetBounds());
+            RenderContext.TransformWidget.Attach = selectedActor;
         }
     }
 
@@ -679,6 +769,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public ICommand UndoCommand { get; set; }
     public ICommand RedoCommand { get; set; }
     public ICommand ToggleOrthoViewCommand { get; set; }
+    public ICommand FocusFileCommand { get; set; }
+    public ICommand SelectChangedActorCommand { get; set; }
     private void LoadCommands()
     {
         OpenFileCommand = new GenericCommand(OpenFile);
@@ -698,6 +790,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         {
             if (SelectedActor is not null)
             {
+                SelectAndRevealActor(SelectedActor, false);
                 FocusOnBounds(SelectedActor.GetBounds());
             }
         }, () => PackageIsLoaded() && SelectedActor is not null);
@@ -716,6 +809,20 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         UndoCommand = new GenericCommand(Undo, () => UndoHistory.CanUndo);
         RedoCommand = new GenericCommand(Redo, () => UndoHistory.CanRedo);
         ToggleOrthoViewCommand = new GenericCommand(() => IsOrthographicView = !IsOrthographicView);
+        FocusFileCommand = new RelayCommand(parameter =>
+        {
+            if (parameter is OpenLevelFile file && file.Actors.FirstOrDefault() is { } actor)
+            {
+                SelectAndRevealActor(actor);
+            }
+        });
+        SelectChangedActorCommand = new RelayCommand(parameter =>
+        {
+            if (parameter is ActorProxy actor)
+            {
+                SelectAndRevealActor(actor);
+            }
+        });
     }
 
     #endregion
@@ -1169,13 +1276,22 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     {
         if (string.IsNullOrEmpty(_actorFilterText)) return true;
         return obj is ActorProxy actor &&
-               actor.Export.ObjectName.Instanced.Contains(_actorFilterText, StringComparison.OrdinalIgnoreCase);
+               (actor.DisplayText.Contains(_actorFilterText, StringComparison.OrdinalIgnoreCase)
+                || actor.Export.ClassName.Contains(_actorFilterText, StringComparison.OrdinalIgnoreCase)
+                || (int.TryParse(_actorFilterText.TrimStart('#'), out int index) && actor.Export.UIndex == index));
     }
 
-    private void ActorFilter_TextBox_KeyUp(object sender, KeyEventArgs e)
+    private void ActorFilter_TextBox_TextChanged(object sender, TextChangedEventArgs e)
     {
-        _actorFilterText = ActorFilter_TextBox.Text;
+        _actorFilterText = ((TextBox)sender).Text.Trim();
         ActorsView.Refresh();
+    }
+
+    private void SelectAndRevealActor(ActorProxy actor, bool focus = true)
+    {
+        if (!ActorFilter(actor)) ActorFilter_TextBox.Clear();
+        SelectActor(actor, focus);
+        RevealActorInOutliner(actor);
     }
 
     private void Goto_TextBox_KeyUp(object sender, KeyEventArgs e)
@@ -1191,7 +1307,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         if (int.TryParse(Goto_TextBox.Text, out int uIdx)
             && Actors.FirstOrDefault(a => a.Export.UIndex == uIdx) is ActorProxy actor)
         {
-            SelectedActor = actor;
+            SelectAndRevealActor(actor);
         }
     }
 
