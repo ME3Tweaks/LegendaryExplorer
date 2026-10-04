@@ -216,38 +216,73 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 {
                     RenderContext.UseGameShaders = false;
                 }
+                OnPropertyChanged(nameof(CanConfigureLevelLighting));
             }
         }
     }
 
-    private bool _useLevelLighting = true;
-    /// <summary>
-    /// With game shaders: light static meshes with the level's lights, as the game does (see <see cref="MeshRenderContext.UseLevelLighting"/>).
-    /// Otherwise, meshes without a light-map get a preview light.
-    /// </summary>
-    public bool UseLevelLighting
+    private ViewportLightingMode _lightingMode = ViewportLightingMode.Level;
+    public ViewportLightingMode LightingMode
     {
-        get => _useLevelLighting;
+        get => _lightingMode;
         set
         {
-            if (SetProperty(ref _useLevelLighting, value))
+            if (SetProperty(ref _lightingMode, value))
             {
-                if (value && RenderContext.UseGameShaders)
+                OnPropertyChanged(nameof(IsLevelLighting));
+                OnPropertyChanged(nameof(IsPreviewLighting));
+                OnPropertyChanged(nameof(IsUnlit));
+                OnPropertyChanged(nameof(LightingMenuHeader));
+                OnPropertyChanged(nameof(CanConfigureLevelLighting));
+                if (value == ViewportLightingMode.Level && RenderContext.UseGameShaders)
                 {
                     EnableGameShaders();
                 }
                 else
                 {
-                    RenderContext.UseLevelLighting = value;
+                    RenderContext.LightingMode = value;
                 }
             }
         }
     }
 
+    public bool IsLevelLighting => LightingMode == ViewportLightingMode.Level;
+    public bool IsPreviewLighting => LightingMode == ViewportLightingMode.Preview;
+    public bool IsUnlit => LightingMode == ViewportLightingMode.Unlit;
+    public bool CanConfigureLevelLighting => IsLevelLighting && UseGameShaders;
+    public string LightingMenuHeader => LightingMode switch
+    {
+        ViewportLightingMode.Unlit => "Unlit ▾",
+        ViewportLightingMode.Preview => "Preview lighting ▾",
+        _ => "Level lighting ▾"
+    };
+
+    public bool UseDynamicLighting
+    {
+        get => RenderContext.UseDynamicLighting;
+        set
+        {
+            RenderContext.UseDynamicLighting = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool UseLightMaps
+    {
+        get => RenderContext.UseLightMaps;
+        set
+        {
+            RenderContext.UseLightMaps = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public ICommand SetLightingModeCommand { get; private set; }
+
     //The renderer only switches to game shaders (and level lighting) once they're loaded, so that it doesn't load them one material at a time on the UI thread
     private async void EnableGameShaders()
     {
-        bool prepareLevelLighting = _useLevelLighting && !RenderContext.UseLevelLighting;
+        bool prepareLevelLighting = IsLevelLighting && RenderContext.LightingMode != ViewportLightingMode.Level;
         if (RenderContext.HasPendingGameShaderLoads || prepareLevelLighting)
         {
             IsBusy = true;
@@ -268,7 +303,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
         //they may have been turned back off while loading
         RenderContext.UseGameShaders = _useGameShaders;
-        RenderContext.UseLevelLighting = _useLevelLighting;
+        RenderContext.LightingMode = _lightingMode;
     }
 
     //Can be called from a background thread
@@ -773,6 +808,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public ICommand SelectChangedActorCommand { get; set; }
     private void LoadCommands()
     {
+        SetLightingModeCommand = new RelayCommand(mode => LightingMode = (ViewportLightingMode)mode);
         OpenFileCommand = new GenericCommand(OpenFile);
         AddFileCommand = new GenericCommand(AddFile);
         SaveAllCommand = new GenericCommand(SaveAllFiles, PackageIsLoaded);

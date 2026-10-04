@@ -136,7 +136,7 @@ internal static class ShaderParameterSetters
         where LightMapPolicy : struct, IPixelParametersType
     {
         shader.MaterialParameters.WriteValues(buffer, context, mesh, mat);
-        bool drawUnlit = mat.IsUnlit;
+        bool drawUnlit = mat.IsUnlit || context.IsUnlit;
         //Matches UE3: lit materials get their ambient from the sky, unlit ones are just their emissive
         buffer.WriteVal(shader.AmbientColorAndSkyFactor, drawUnlit ? new LinearColor(1, 1, 1, 0) : new LinearColor(0, 0, 0, 1));
         Vector3 upperSkyColor = Vector3.Zero;

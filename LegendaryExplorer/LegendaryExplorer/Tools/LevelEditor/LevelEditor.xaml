@@ -271,12 +271,21 @@
                                 <Button DockPanel.Dock="Right" Command="{Binding FocusSelectedCommand}" ToolTip="Focus the camera on the selected actor (F)" Padding="7,4" VerticalAlignment="Top"><StackPanel Orientation="Horizontal"><fa:ImageAwesome Icon="Solid_Expand" Width="12" Margin="0,0,6,0" Foreground="{StaticResource EditorText}"/><TextBlock Text="Focus Selected"/></StackPanel></Button>
                                 <WrapPanel>
                                     <ToggleButton Content="Game Shaders" IsChecked="{Binding UseGameShaders}" Padding="7,4" ToolTip="Use the game's shaders (Legendary Edition only). Unsupported materials use the preview shader."/>
-                                    <ToggleButton Content="Level Lighting" IsChecked="{Binding UseLevelLighting}" IsEnabled="{Binding UseGameShaders}" Padding="7,4" ToolTip="Use level lights and precomputed shadows with game shaders."/>
+                                    <Menu Background="Transparent">
+                                        <MenuItem x:Name="LightingMenu" Header="{Binding LightingMenuHeader}" Padding="7,4" ToolTip="Choose viewport lighting and isolate baked or dynamic lighting.">
+                                            <MenuItem x:Name="LevelLightingMenuItem" Header="Level lighting" IsChecked="{Binding IsLevelLighting, Mode=OneWay}" Command="{Binding SetLightingModeCommand}" CommandParameter="{x:Static scene3D:ViewportLightingMode.Level}" StaysOpenOnClick="True" ToolTip="Use the level's baked lighting and non-baked lights. Requires game shaders; unsupported materials use preview lighting."/>
+                                            <MenuItem x:Name="PreviewLightingMenuItem" Header="Preview lighting" IsChecked="{Binding IsPreviewLighting, Mode=OneWay}" Command="{Binding SetLightingModeCommand}" CommandParameter="{x:Static scene3D:ViewportLightingMode.Preview}" StaysOpenOnClick="True" ToolTip="Use a neutral preview light, without the level's lights or lightmaps."/>
+                                            <MenuItem x:Name="UnlitMenuItem" Header="Unlit" IsChecked="{Binding IsUnlit, Mode=OneWay}" Command="{Binding SetLightingModeCommand}" CommandParameter="{x:Static scene3D:ViewportLightingMode.Unlit}" StaysOpenOnClick="True" ToolTip="Show material colors without dynamic lighting or lightmaps."/>
+                                            <Separator/>
+                                            <MenuItem x:Name="DynamicLightingMenuItem" Header="Dynamic lights" IsCheckable="True" IsChecked="{Binding UseDynamicLighting}" IsEnabled="{Binding CanConfigureLevelLighting}" StaysOpenOnClick="True" ToolTip="Include non-baked light contributions and their precomputed shadows. Lights baked into a lightmap remain part of that lightmap."/>
+                                            <MenuItem x:Name="LightMapsMenuItem" Header="Lightmaps" IsCheckable="True" IsChecked="{Binding UseLightMaps}" IsEnabled="{Binding CanConfigureLevelLighting}" StaysOpenOnClick="True" ToolTip="Include baked texture and vertex lighting. Turn off Dynamic lights to view baked lighting alone."/>
+                                        </MenuItem>
+                                    </Menu>
                                     <ToggleButton Content="Top Down" IsChecked="{Binding IsOrthographicView}" Padding="7,4" ToolTip="Toggle top-down orthographic view (Numpad 5)"/>
                                     <Menu Background="Transparent">
                                         <MenuItem Header="Show ▾" Padding="7,4">
-                                            <MenuItem Header="Collision" IsCheckable="True" IsChecked="{Binding ShowCollision}"/>
-                                            <MenuItem Header="Hidden Actors" IsCheckable="True" IsChecked="{Binding ShowHidden}"/>
+                                            <MenuItem Header="Collision" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding ShowCollision}"/>
+                                            <MenuItem Header="Hidden Actors" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding ShowHidden}"/>
                                         </MenuItem>
                                     </Menu>
                                 </WrapPanel>

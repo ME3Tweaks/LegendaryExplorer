@@ -382,15 +382,15 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
             {
                 try
                 {
-                    RenderSectionWithGameShaders(lod, s, context);
-                    return;
+                    if (RenderSectionWithGameShaders(lod, s, context))
+                        return;
                 }
                 catch (Exception e)
                 {
                     material.MarkGameShadersFailed(e);
                 }
             }
-            if (!LoggedFallback)
+            if (!material.CanRenderWithGameShaders && !LoggedFallback)
             {
                 LoggedFallback = true;
                 Debug.WriteLine($"{InstancedFullPath} will be rendered with the LEX shader: {material.GameShaderError}");
@@ -404,21 +404,17 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
     /// If not (and it has no light-map), it's lit by <see cref="MeshRenderContext.Lighting"/>
     /// </summary>
     private static bool UsesLevelLighting(ModelPreviewLOD<LEVertex> lod, MaterialRenderProxy material, MeshRenderContext context) =>
-        context.IsLevelLightingActive && !material.IsUnlit && lod.StaticLighting is { UsesLightEnvironment: false };
+        context.LightingMode == ViewportLightingMode.Level && !material.IsUnlit && lod.StaticLighting is { UsesLightEnvironment: false };
 
-    private void RenderSectionWithGameShaders(ModelPreviewLOD<LEVertex> lod, ModelPreviewSection s, MeshRenderContext context)
+    private bool RenderSectionWithGameShaders(ModelPreviewLOD<LEVertex> lod, ModelPreviewSection s, MeshRenderContext context)
     {
         Mesh<LEVertex> mesh = lod.Mesh;
         var material = (MaterialRenderProxy)Material;
         LEEffect effect = context.LEEffect;
         effect.PixelShaderResources.Reset();
-        (Shader vertexShader, Shader pixelShader) = (material.UnrealVertexShader, material.UnrealPixelShader);
-        bool usePreviewLighting = !material.UsesLightMap;
-        if (!material.UsesLightMap && material.NoLightMapVertexShader is not null && UsesLevelLighting(lod, material, context))
-        {
-            (vertexShader, pixelShader) = (material.NoLightMapVertexShader, material.NoLightMapPixelShader);
-            usePreviewLighting = false;
-        }
+        (Shader vertexShader, Shader pixelShader) = material.GetBasePassShaders(context, UsesLevelLighting(lod, material, context), out bool usePreviewLighting);
+        if (vertexShader is null || pixelShader is null)
+            return false;
         PixelShader ps = context.GetCachedPixelShader(pixelShader.Guid, pixelShader.ShaderByteCode);
         (VertexShader vs, InputLayout inputLayout) = context.GetCachedVertexShader(vertexShader.Guid, vertexShader.ShaderByteCode);
         effect.PrepDraw(context.ImmediateContext, vs, ps, inputLayout, context.GetCachedBlendState(BlendDescription));
@@ -452,6 +448,7 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
             //the material's textures may have changed some samplers' address modes, which LEX's shaders don't expect
             context.RestoreDefaultSamplers();
         }
+        return true;
     }
 
     //lights add to what's already been rendered
@@ -474,7 +471,9 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
     {
         var material = (MaterialRenderProxy)Material;
         //UE3 renders lit translucency differently, and unlit materials have no light shaders
-        if (!context.UseGameShaders || context.Wireframe || IsTranslucent || !UsesLevelLighting(lod, material, context) || !material.CanRenderWithGameShaders)
+        if (!context.UseGameShaders || !context.IsLevelLightingActive || context.Wireframe || IsTranslucent
+            || !UsesLevelLighting(lod, material, context) || !material.CanRenderWithGameShaders
+            || material.GetBasePassShaders(context, usesLevelLights: true, out _).vertexShader is null)
         {
             return;
         }

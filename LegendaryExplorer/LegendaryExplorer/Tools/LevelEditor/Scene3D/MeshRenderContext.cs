@@ -27,6 +27,13 @@ using LECTexture2D = LegendaryExplorerCore.Unreal.Classes.Texture2D;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 
+public enum ViewportLightingMode
+{
+    Level,
+    Preview,
+    Unlit
+}
+
 /// <summary>
 /// A text label to be drawn at a screen-space position as a D2D overlay.
 /// </summary>
@@ -280,15 +287,21 @@ public class MeshRenderContext : RenderContext
     private int LightsVersion;
 
     /// <summary>
-    /// Render static meshes lit by the level's lights (<see cref="AddLights"/>), as the game does. Otherwise, or if there are no lights,
-    /// meshes without a light-map are lit by <see cref="Lighting"/>.
+    /// Select level lighting, a neutral preview light, or material colors without lighting.
     /// </summary>
-    public bool UseLevelLighting { get; set; } = true;
+    public ViewportLightingMode LightingMode { get; set; } = ViewportLightingMode.Level;
+
+    public bool UseDynamicLighting { get; set; } = true;
+    public bool UseLightMaps { get; set; } = true;
+    public bool IsUnlit => LightingMode == ViewportLightingMode.Unlit;
+    public bool AreLightMapsActive => LightingMode == ViewportLightingMode.Level && UseLightMaps;
+    public bool IsDynamicLightingActive => LightingMode == ViewportLightingMode.Preview
+        || (LightingMode == ViewportLightingMode.Level && UseDynamicLighting);
 
     /// <summary>
-    /// See <see cref="UseLevelLighting"/>
+    /// Whether the level has lights to render in additive passes.
     /// </summary>
-    public bool IsLevelLightingActive => UseLevelLighting && Lights.Length > 0;
+    public bool IsLevelLightingActive => LightingMode == ViewportLightingMode.Level && UseDynamicLighting && Lights.Length > 0;
 
     /// <summary>
     /// The level lights in the scene, and a number that changes whenever they do. Thread-safe
@@ -387,7 +400,7 @@ public class MeshRenderContext : RenderContext
     /// and after adding a level's lights. Otherwise shaders are loaded the first time they're needed.
     /// </summary>
     /// <param name="reportProgress">Called with the number of items loaded so far, and the total</param>
-    /// <param name="prepareLevelLighting">Also load the light shaders, even if <see cref="UseLevelLighting"/> is off (for before turning it on)</param>
+    /// <param name="prepareLevelLighting">Also load the light shaders before switching back to level lighting.</param>
     public void LoadPendingGameShaders(Action<int, int> reportProgress = null, bool prepareLevelLighting = false)
     {
         MaterialRenderProxy[] materials;
@@ -397,7 +410,7 @@ public class MeshRenderContext : RenderContext
             PendingGameShaderLoads.Clear();
         }
         MeshStaticLighting[] staticLightings = [];
-        if (UseLevelLighting || prepareLevelLighting)
+        if (LightingMode == ViewportLightingMode.Level || prepareLevelLighting)
         {
             lock (StaticLightings)
             {
@@ -417,6 +430,11 @@ public class MeshRenderContext : RenderContext
                 {
                     GetCachedVertexShader(material.NoLightMapVertexShader.Guid, material.NoLightMapVertexShader.ShaderByteCode);
                     GetCachedPixelShader(material.NoLightMapPixelShader.Guid, material.NoLightMapPixelShader.ShaderByteCode);
+                }
+                if (material.PreviewVertexShader is not null)
+                {
+                    GetCachedVertexShader(material.PreviewVertexShader.Guid, material.PreviewVertexShader.ShaderByteCode);
+                    GetCachedPixelShader(material.PreviewPixelShader.Guid, material.PreviewPixelShader.ShaderByteCode);
                 }
             }
             reportProgress?.Invoke(i + 1, total);
@@ -880,7 +898,8 @@ public class MeshRenderContext : RenderContext
 
     public WorldConstants GetWorldConstants(Matrix4x4 localToWorld)
     {
-        return new WorldConstants(Matrix4x4.Transpose(Camera.ProjectionMatrix), Matrix4x4.Transpose(Camera.ViewMatrix), Matrix4x4.Transpose(localToWorld), RenderFlags, CurrentHitTestId);
+        ShaderFlags flags = IsUnlit ? RenderFlags | ShaderFlags.Unlit : RenderFlags;
+        return new WorldConstants(Matrix4x4.Transpose(Camera.ProjectionMatrix), Matrix4x4.Transpose(Camera.ViewMatrix), Matrix4x4.Transpose(localToWorld), flags, CurrentHitTestId);
     }
 
     public BlendState GetCachedBlendState(RenderTargetBlendDescription renderTargetBlendDesc)

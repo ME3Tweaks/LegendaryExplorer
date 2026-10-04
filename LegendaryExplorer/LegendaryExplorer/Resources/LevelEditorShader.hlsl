@@ -89,6 +89,7 @@ VS_OUT VSMainLEVertex(VS_IN_LEVERTEX input) {
 #define FLAG_ENABLEALPHACHANNEL (1 << 5)
 
 //level editor flags
+#define FLAG_UNLIT (1 << 28)
 #define FLAG_WIREFRAME (1 << 29)
 #define FLAG_SELECTED (1 << 30)
 #define FLAG_PRIMITIVE (1 << 31)
@@ -128,6 +129,7 @@ PS_OUT PSMain(PS_IN input) {
 	float3 toLight = normalize(float3(0.6, 1, 0.3)); // the direction to the fake directional light
 	float lambert = saturate(dot(toLight, input.normal));
 	lambert = lambert * 0.5 + 0.5; // a super simple way to fake some ambient lighting in. wildly inaccurate though.
+	if ((Flags & FLAG_UNLIT) != 0) lambert = 1.0;
 	result.color = float4(textureValue.xyz * lambert, 1.0);
 	
 	// use the input normal (negative values are clamped to zero (black))

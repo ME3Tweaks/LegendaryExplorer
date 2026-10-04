@@ -172,11 +172,32 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
 
     /// <summary>
     /// For lit materials, base pass shaders without any lighting (FNoLightMapPolicy). The game uses these for meshes without a light-map,
-    /// which the level's lights are then rendered on in separate passes. Null for unlit materials, or if the material doesn't have them.
+    /// which the level's lights are then rendered on in separate passes. Also used for the Unlit viewport mode.
     /// </summary>
     public Shader NoLightMapVertexShader;
     /// <inheritdoc cref="NoLightMapVertexShader"/>
     public Shader NoLightMapPixelShader;
+
+    //Always excludes baked lighting, even for materials whose default pair uses a light-map.
+    public Shader PreviewVertexShader;
+    public Shader PreviewPixelShader;
+
+    /// <summary>
+    /// Selects a cached base-pass pair without changing the material or reloading the level.
+    /// Missing variants return null so the caller can use the preview shader for this draw only.
+    /// </summary>
+    public (Shader vertexShader, Shader pixelShader) GetBasePassShaders(MeshRenderContext context, bool usesLevelLights, out bool usePreviewLighting)
+    {
+        usePreviewLighting = false;
+        if (context.IsUnlit || IsUnlit)
+            return (NoLightMapVertexShader, NoLightMapPixelShader);
+        if (context.AreLightMapsActive && UsesLightMap)
+            return (UnrealVertexShader, UnrealPixelShader);
+        if (!context.IsDynamicLightingActive || usesLevelLights)
+            return (NoLightMapVertexShader, NoLightMapPixelShader);
+        usePreviewLighting = true;
+        return (PreviewVertexShader, PreviewPixelShader);
+    }
 
     //Light shaders are loaded as they're needed, since there are many combinations of light type and shadowing, and most are never used.
     private ExportEntry LightShaderMapOwner;
@@ -345,10 +366,8 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
 
             (UnrealVertexShader, UnrealPixelShader) = SelectShaders(shaders, IsUnlit, LightMapType, out bool usesLightMap);
             UsesLightMap = usesLightMap;
-            if (!IsUnlit)
-            {
-                (NoLightMapVertexShader, NoLightMapPixelShader) = SelectShaders(shaders, isUnlit: true);
-            }
+            (NoLightMapVertexShader, NoLightMapPixelShader) = SelectShaders(shaders, isUnlit: true);
+            (PreviewVertexShader, PreviewPixelShader) = SelectShaders(shaders, IsUnlit);
         }
         catch (Exception e)
         {

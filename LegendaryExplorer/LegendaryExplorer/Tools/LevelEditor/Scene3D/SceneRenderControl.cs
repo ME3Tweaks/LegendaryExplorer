@@ -277,6 +277,7 @@ public abstract class RenderContext
         EnableAlphaChannel = 1 << 5,
 
         //level editor flags
+        Unlit = 1 << 28,
         Wireframe = 1 << 29,
         Selected = 1 << 30,
         PrimitiveRendering = 1 << 31,
