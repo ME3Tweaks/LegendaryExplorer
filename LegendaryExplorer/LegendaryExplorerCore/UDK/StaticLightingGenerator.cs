@@ -302,278 +302,125 @@ namespace LegendaryExplorerCore.UDK
 
         private static void PortLightActors(UDKAssetInfo assetInfo, PackageCache cache)
         {
+            // Per base light class: next actor index and next component index.
+            var actorIndices = new Dictionary<string, int>();
+            var componentIndices = new Dictionary<string, int>();
+            foreach (ExportEntry lightComponent in assetInfo.SourcePackage.Exports)
             {
-                int plaIndex = 1;
-                int plcIndex = 1;
-                int slaIndex = 1;
-                int slcIndex = 1;
-                int dlaIndex = 1;
-                int dlcIndex = 1;
-                foreach (ExportEntry lightComponent in assetInfo.SourcePackage.Exports)
+                // Sky lights are baked by UE3 Lightmass like any other static light (ME3's MP maps have them
+                // in StaticLightCollectionActors), so leaving them out changes the bake.
+                string baseClassName = lightComponent.ClassName switch
                 {
-                    if (lightComponent.ClassName is not ("PointLightComponent" or "SpotLightComponent" or "DirectionalLightComponent")
-                        || !(lightComponent.Parent is ExportEntry parent && assetInfo.ActorsInLevel.Contains(parent.UIndex)))
+                    "PointLightComponent" => "PointLight",
+                    "SpotLightComponent" => "SpotLight",
+                    "DirectionalLightComponent" => "DirectionalLight",
+                    "SkyLightComponent" => "SkyLight",
+                    _ => null
+                };
+                if (baseClassName == null || !(lightComponent.Parent is ExportEntry parent && assetInfo.ActorsInLevel.Contains(parent.UIndex)))
+                {
+                    continue;
+                }
+
+                var ownerMobility = GetLightOwnerMobility(parent);
+                if (ownerMobility == LightOwnerMobility.Movable)
+                {
+                    // Lit at runtime in game. Baking it would freeze its light into the lightmaps wherever it stood when the level was exported.
+                    LECLog.Information($"Not exporting light {lightComponent.InstancedFullPath} to UDK: owner {parent.ClassName} is not a static or toggleable light");
+                    continue;
+                }
+
+                // Toggleable lights get UDK's toggleable classes, whose templates keep them out of the lightmaps (shadow maps only),
+                // so they can still be switched and animated at runtime.
+                string actorClassSuffix = ownerMobility == LightOwnerMobility.Toggleable ? "Toggleable" : "";
+                string componentClassName = lightComponent.ClassName;
+                var originalIFP = lightComponent.InstancedFullPath;
+
+                lightComponent.CondenseArchetypes();
+                int componentIndex = componentIndices.GetValueOrDefault(baseClassName, 1);
+                componentIndices[baseClassName] = componentIndex + 1;
+                lightComponent.ObjectName = new NameReference(componentClassName, componentIndex);
+
+                StructProperty locationProp;
+                StructProperty rotationProp;
+                StructProperty scaleProp;
+                if (parent.ClassName == "StaticLightCollectionActor")
+                {
+                    if (!assetInfo.ComponentToMatrixMap.TryGetValue(lightComponent.UIndex, out Matrix4x4 m))
                     {
                         continue;
                     }
 
-                    var ownerMobility = GetLightOwnerMobility(parent);
-                    if (ownerMobility == LightOwnerMobility.Movable)
+                    (Vector3 posVec, Vector3 scaleVec, Rotator rotator) = m.UnrealDecompose();
+                    locationProp = CommonStructs.Vector3Prop(posVec, "Location");
+                    rotationProp = CommonStructs.RotatorProp(rotator, "Rotation");
+                    scaleProp = CommonStructs.Vector3Prop(scaleVec, "DrawScale3D");
+                }
+                else
+                {
+                    locationProp = parent.GetProperty<StructProperty>("Location");
+                    rotationProp = parent.GetProperty<StructProperty>("Rotation");
+                    scaleProp = parent.GetProperty<StructProperty>("DrawScale3D");
+                    if (parent.GetProperty<FloatProperty>("DrawScale")?.Value is float scale)
                     {
-                        // Lit at runtime in game. Baking it would freeze its light into the lightmaps wherever it stood when the level was exported.
-                        LECLog.Information($"Not exporting light {lightComponent.InstancedFullPath} to UDK: owner {parent.ClassName} is not a static or toggleable light");
-                        continue;
-                    }
+                        Vector3 scaleVec = Vector3.One;
+                        if (scaleProp != null)
+                        {
+                            scaleVec = CommonStructs.GetVector3(scaleProp);
+                        }
 
-                    // Toggleable lights get UDK's toggleable classes, whose templates keep them out of the lightmaps (shadow maps only),
-                    // so they can still be switched and animated at runtime.
-                    string actorClassSuffix = ownerMobility == LightOwnerMobility.Toggleable ? "Toggleable" : "";
-                    IEntry LightActorClass(string baseClassName) => assetInfo.TempPackage.GetEntryOrAddImport($"Engine.{baseClassName}{actorClassSuffix}", "Class");
-                    IEntry LightComponentTemplate(string baseClassName, string componentName, string componentClassName) =>
-                        GetLightActorTemplate(assetInfo.TempPackage, baseClassName + actorClassSuffix, componentName, componentClassName);
-
-                    var originalIFP = lightComponent.InstancedFullPath;
-
-                    StructProperty locationProp;
-                    StructProperty rotationProp;
-                    StructProperty scaleProp;
-                    switch (lightComponent.ClassName)
-                    {
-                        case "PointLightComponent":
-                            lightComponent.CondenseArchetypes();
-                            lightComponent.ObjectName = new NameReference("PointLightComponent", plcIndex++);
-                            if (parent.ClassName == "StaticLightCollectionActor")
-                            {
-                                if (!assetInfo.ComponentToMatrixMap.TryGetValue(lightComponent.UIndex, out Matrix4x4 m))
-                                {
-                                    continue;
-                                }
-
-                                (Vector3 posVec, Vector3 scaleVec, Rotator rotator) = m.UnrealDecompose();
-                                locationProp = CommonStructs.Vector3Prop(posVec, "Location");
-                                rotationProp = CommonStructs.RotatorProp(rotator, "Rotation");
-                                scaleProp = CommonStructs.Vector3Prop(scaleVec, "DrawScale3D");
-                            }
-                            else
-                            {
-                                locationProp = parent.GetProperty<StructProperty>("Location");
-                                rotationProp = parent.GetProperty<StructProperty>("Rotation");
-                                scaleProp = parent.GetProperty<StructProperty>("DrawScale3D");
-                                if (parent.GetProperty<FloatProperty>("DrawScale")?.Value is float scale)
-                                {
-                                    Vector3 scaleVec = Vector3.One;
-                                    if (scaleProp != null)
-                                    {
-                                        scaleVec = CommonStructs.GetVector3(scaleProp);
-                                    }
-
-                                    scaleProp = CommonStructs.Vector3Prop(scaleVec * scale, "DrawScale3D");
-                                }
-                            }
-
-                            IEntry pointLightClass = LightActorClass("PointLight");
-                            var pla = new ExportEntry(assetInfo.TempPackage, assetInfo.LevelExport, new NameReference(pointLightClass.ObjectName.Name, plaIndex++), EntryImporter.CreateStack(MEGame.UDK, pointLightClass.UIndex))
-                            {
-                                Class = pointLightClass,
-                            };
-                            pla.ObjectFlags |= UnrealFlags.EObjectFlags.HasStack;
-
-                            assetInfo.TempPackage.AddExport(pla);
-
-                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild,
-                                lightComponent, assetInfo.TempPackage, pla, true,
-                                new RelinkerOptionsPackage(cache),
-                                out IEntry portedPLC);
-                            var plaProps = new PropertyCollection
-                            {
-                                new ObjectProperty(portedPLC.UIndex, "LightComponent"),
-                                new NameProperty(new NameReference(originalIFP, lightComponent.UIndex), "Tag")
-                            };
-                            if (locationProp != null)
-                            {
-                                plaProps.Add(locationProp);
-                            }
-
-                            if (rotationProp != null)
-                            {
-                                plaProps.Add(rotationProp);
-                            }
-
-                            if (scaleProp != null)
-                            {
-                                plaProps.Add(scaleProp);
-                            }
-
-                            pla.WriteProperties(plaProps);
-
-                            var plce = portedPLC as ExportEntry;
-                            plce.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
-                            plce.Archetype = LightComponentTemplate("PointLight", "PointLightComponent0", "PointLightComponent");
-                            SetDirectLightMapMode(lightComponent, plce, assetInfo.ShadowMappedLightGuids);
-                            if (ownerMobility == LightOwnerMobility.Toggleable)
-                            {
-                                KeepToggleableLightOutOfLightmaps(plce);
-                            }
-                            assetInfo.LightActors.Add(pla);
-                            break;
-                        case "SpotLightComponent":
-                            lightComponent.CondenseArchetypes();
-                            lightComponent.ObjectName = new NameReference("SpotLightComponent", slcIndex++);
-                            if (parent.ClassName == "StaticLightCollectionActor")
-                            {
-                                if (!assetInfo.ComponentToMatrixMap.TryGetValue(lightComponent.UIndex, out Matrix4x4 m))
-                                {
-                                    continue;
-                                }
-
-                                (Vector3 posVec, Vector3 scaleVec, Rotator rotator) = m.UnrealDecompose();
-                                locationProp = CommonStructs.Vector3Prop(posVec, "Location");
-                                rotationProp = CommonStructs.RotatorProp(rotator, "Rotation");
-                                scaleProp = CommonStructs.Vector3Prop(scaleVec, "DrawScale3D");
-                            }
-                            else
-                            {
-                                locationProp = parent.GetProperty<StructProperty>("Location");
-                                rotationProp = parent.GetProperty<StructProperty>("Rotation");
-                                scaleProp = parent.GetProperty<StructProperty>("DrawScale3D");
-                                if (parent.GetProperty<FloatProperty>("DrawScale")?.Value is float scale)
-                                {
-                                    Vector3 scaleVec = Vector3.One;
-                                    if (scaleProp != null)
-                                    {
-                                        scaleVec = CommonStructs.GetVector3(scaleProp);
-                                    }
-
-                                    scaleProp = CommonStructs.Vector3Prop(scaleVec * scale, "DrawScale3D");
-                                }
-                            }
-
-                            IEntry spotLightClass = LightActorClass("SpotLight");
-                            var sla = new ExportEntry(assetInfo.TempPackage, assetInfo.LevelExport,
-                                new NameReference(spotLightClass.ObjectName.Name, slaIndex++),
-                                EntryImporter.CreateStack(MEGame.UDK, spotLightClass.UIndex))
-                            {
-                                Class = spotLightClass
-                            };
-                            sla.ObjectFlags |= UnrealFlags.EObjectFlags.HasStack;
-                            assetInfo.TempPackage.AddExport(sla);
-
-                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild,
-                                lightComponent, assetInfo.TempPackage, sla, true,
-                                new RelinkerOptionsPackage(cache),
-                                out IEntry portedSLC);
-                            var slaProps = new PropertyCollection
-                            {
-                                new ObjectProperty(portedSLC.UIndex, "LightComponent"),
-                                new NameProperty(new NameReference(originalIFP, lightComponent.UIndex), "Tag")
-                            };
-                            if (locationProp != null)
-                            {
-                                slaProps.Add(locationProp);
-                            }
-
-                            if (rotationProp != null)
-                            {
-                                slaProps.Add(rotationProp);
-                            }
-
-                            if (scaleProp != null)
-                            {
-                                slaProps.Add(scaleProp);
-                            }
-
-                            sla.WriteProperties(slaProps);
-                            var slce = portedSLC as ExportEntry;
-                            slce.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
-                            slce.Archetype = LightComponentTemplate("SpotLight", "SpotLightComponent0", "SpotLightComponent");
-                            SetDirectLightMapMode(lightComponent, slce, assetInfo.ShadowMappedLightGuids);
-                            if (ownerMobility == LightOwnerMobility.Toggleable)
-                            {
-                                KeepToggleableLightOutOfLightmaps(slce);
-                            }
-
-                            assetInfo.LightActors.Add(sla);
-                            break;
-                        case "DirectionalLightComponent":
-                            lightComponent.CondenseArchetypes();
-                            lightComponent.ObjectName = new NameReference("DirectionalLightComponent", dlcIndex++);
-                            if (parent.ClassName == "StaticLightCollectionActor")
-                            {
-                                if (!assetInfo.ComponentToMatrixMap.TryGetValue(lightComponent.UIndex, out Matrix4x4 m))
-                                {
-                                    continue;
-                                }
-
-                                (Vector3 posVec, Vector3 scaleVec, Rotator rotator) = m.UnrealDecompose();
-                                locationProp = CommonStructs.Vector3Prop(posVec, "Location");
-                                rotationProp = CommonStructs.RotatorProp(rotator, "Rotation");
-                                scaleProp = CommonStructs.Vector3Prop(scaleVec, "DrawScale3D");
-                            }
-                            else
-                            {
-                                locationProp = parent.GetProperty<StructProperty>("Location");
-                                rotationProp = parent.GetProperty<StructProperty>("Rotation");
-                                scaleProp = parent.GetProperty<StructProperty>("DrawScale3D");
-                                if (parent.GetProperty<FloatProperty>("DrawScale")?.Value is float scale)
-                                {
-                                    Vector3 scaleVec = Vector3.One;
-                                    if (scaleProp != null)
-                                    {
-                                        scaleVec = CommonStructs.GetVector3(scaleProp);
-                                    }
-
-                                    scaleProp = CommonStructs.Vector3Prop(scaleVec * scale, "DrawScale3D");
-                                }
-                            }
-
-                            IEntry directionalLightClass = LightActorClass("DirectionalLight");
-                            var dla = new ExportEntry(assetInfo.TempPackage, assetInfo.LevelExport,
-                                new NameReference(directionalLightClass.ObjectName.Name, dlaIndex++),
-                                EntryImporter.CreateStack(MEGame.UDK, directionalLightClass.UIndex))
-                            {
-                                Class = directionalLightClass
-                            };
-                            dla.ObjectFlags |= UnrealFlags.EObjectFlags.HasStack;
-                            assetInfo.TempPackage.AddExport(dla);
-
-                            EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild,
-                                lightComponent, assetInfo.TempPackage, dla, true,
-                                new RelinkerOptionsPackage(cache),
-                                out IEntry portedDLC);
-                            var dlaProps = new PropertyCollection
-                            {
-                                new ObjectProperty(portedDLC.UIndex, "LightComponent"),
-                                new NameProperty(new NameReference(originalIFP, lightComponent.UIndex), "Tag")
-                            };
-                            if (locationProp != null)
-                            {
-                                dlaProps.Add(locationProp);
-                            }
-
-                            if (rotationProp != null)
-                            {
-                                dlaProps.Add(rotationProp);
-                            }
-
-                            if (scaleProp != null)
-                            {
-                                dlaProps.Add(scaleProp);
-                            }
-
-                            dla.WriteProperties(dlaProps);
-                            var dlce = portedDLC as ExportEntry;
-                            dlce.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
-                            dlce.Archetype = LightComponentTemplate("DirectionalLight", "DirectionalLightComponent0", "DirectionalLightComponent");
-                            SetDirectLightMapMode(lightComponent, dlce, assetInfo.ShadowMappedLightGuids);
-                            if (ownerMobility == LightOwnerMobility.Toggleable)
-                            {
-                                KeepToggleableLightOutOfLightmaps(dlce);
-                            }
-
-                            assetInfo.LightActors.Add(dla);
-                            break;
+                        scaleProp = CommonStructs.Vector3Prop(scaleVec * scale, "DrawScale3D");
                     }
                 }
+
+                IEntry lightActorClass = assetInfo.TempPackage.GetEntryOrAddImport($"Engine.{baseClassName}{actorClassSuffix}", "Class");
+                int actorIndex = actorIndices.GetValueOrDefault(baseClassName, 1);
+                actorIndices[baseClassName] = actorIndex + 1;
+                var lightActor = new ExportEntry(assetInfo.TempPackage, assetInfo.LevelExport,
+                    new NameReference(lightActorClass.ObjectName.Name, actorIndex),
+                    EntryImporter.CreateStack(MEGame.UDK, lightActorClass.UIndex))
+                {
+                    Class = lightActorClass
+                };
+                lightActor.ObjectFlags |= UnrealFlags.EObjectFlags.HasStack;
+                assetInfo.TempPackage.AddExport(lightActor);
+
+                EntryImporter.ImportAndRelinkEntries(EntryImporter.PortingOption.AddSingularAsChild,
+                    lightComponent, assetInfo.TempPackage, lightActor, true,
+                    new RelinkerOptionsPackage(cache),
+                    out IEntry portedComponent);
+                var actorProps = new PropertyCollection
+                {
+                    new ObjectProperty(portedComponent.UIndex, "LightComponent"),
+                    new NameProperty(new NameReference(originalIFP, lightComponent.UIndex), "Tag")
+                };
+                if (locationProp != null)
+                {
+                    actorProps.Add(locationProp);
+                }
+
+                if (rotationProp != null)
+                {
+                    actorProps.Add(rotationProp);
+                }
+
+                if (scaleProp != null)
+                {
+                    actorProps.Add(scaleProp);
+                }
+
+                lightActor.WriteProperties(actorProps);
+
+                var componentExport = portedComponent as ExportEntry;
+                componentExport.ObjectFlags |= UnrealFlags.EObjectFlags.Transactional;
+                componentExport.Archetype = GetLightActorTemplate(assetInfo.TempPackage, baseClassName + actorClassSuffix, componentClassName + "0", componentClassName);
+                SetDirectLightMapMode(lightComponent, componentExport, assetInfo.ShadowMappedLightGuids);
+                if (ownerMobility == LightOwnerMobility.Toggleable)
+                {
+                    KeepToggleableLightOutOfLightmaps(componentExport);
+                }
+
+                assetInfo.LightActors.Add(lightActor);
             }
         }
 
@@ -884,7 +731,7 @@ namespace LegendaryExplorerCore.UDK
             var componentArchetype = assetInfo.TempPackage.GetEntryOrAddImport(
                 "Engine.Default__DecalActor.NewDecalComponent", "DecalComponent", "Engine");
             using var materialCache = new PackageCache();
-            using var decalMaterials = MEPackageHandler.CreateAndOpenPackage(Path.Combine(
+            using var decalMaterials = MEPackageHandler.CreateMemoryEmptyPackage(Path.Combine(
                 assetsOutputPath ?? UDKDirectory.SharedPath, assetInfo.SourcePackage.FileNameNoExtension + "DecalMaterials.upk"), MEGame.UDK);
             var generatedMaterials = new Dictionary<IEntry, ExportEntry>();
 
@@ -1036,7 +883,8 @@ namespace LegendaryExplorerCore.UDK
                 actor.WriteProperties(actorProperties);
                 assetInfo.DecalActors.Add(actor);
             }
-            if (generatedMaterials.Count > 0) decalMaterials.Save();
+            // Keep packages with no exports in memory; UDK cannot use an empty asset package.
+            if (decalMaterials.ExportCount > 0) decalMaterials.Save();
             // END MILAN CHANGE
         }
 
@@ -1051,8 +899,7 @@ namespace LegendaryExplorerCore.UDK
             pcc.SetInternalFilepath(Path.Combine(Directory.GetParent(pcc.FilePath).FullName,$"ForceExportsResolver_{pcc.FileNameNoExtension}.pcc"));
 
             string meshFile = Path.Combine(assetsOutputPath ?? UDKDirectory.SharedPath, $"{assetInfo.MeshAssetPackageName}.upk");
-            MEPackageHandler.CreateAndSavePackage(meshFile, MEGame.UDK);
-            using IMEPackage meshPackage = MEPackageHandler.OpenUDKPackage(meshFile);
+            using IMEPackage meshPackage = MEPackageHandler.CreateMemoryEmptyPackage(meshFile, MEGame.UDK);
             meshPackage.GetEntryOrAddImport("Core.Package", "Class");
 
             IEntry defMat = meshPackage.GetEntryOrAddImport("EngineMaterials.DefaultMaterial", "Material", "Engine");
@@ -1392,7 +1239,16 @@ namespace LegendaryExplorerCore.UDK
             {
                 // Reform package without trash or extra packages
                 // This isn't a resynth; this also filters out unreferenced content
-                ReformPackage(meshPackage).Save();
+                using var reformedPackage = ReformPackage(meshPackage);
+                if (reformedPackage.ExportCount > 0)
+                {
+                    reformedPackage.Save();
+                }
+                else
+                {
+                    // Reforming can discard all exports even when the working package had some.
+                    File.Delete(meshFile);
+                }
 
                 TestReferences(meshPackage);
                 // meshPackage.Save();
