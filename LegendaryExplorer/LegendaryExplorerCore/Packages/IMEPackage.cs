@@ -382,6 +382,14 @@ namespace LegendaryExplorerCore.Packages
         public ExportEntry LoadExport(ExportEntry exportEntry, bool loadParents = false);
 
         /// <summary>
+        /// Opens a bounded, read-only view of an export's serialized data without allocating or
+        /// installing its data block. Position/Length are relative to the export. The source package
+        /// stream must remain open; disposing this view does not close it. Not thread-safe. Reads
+        /// reflect the original package stream, not edits to an already-loaded export.
+        /// </summary>
+        public Stream OpenExportDataStream(ExportEntry exportEntry);
+
+        /// <summary>
         /// Unloads export data from memory. Optionally can unload parent exports as well, up until the first import encountered.
         /// </summary>
         /// <param name="uIndex">The export uindex to unload</param>

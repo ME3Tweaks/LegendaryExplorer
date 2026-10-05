@@ -748,14 +748,25 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     shader = new TLightVertexShader<FPointLightPolicy.VertexParametersType, FNullPolicy>();
                     break;
                 case "TLightPixelShaderFSphericalHarmonicLightPolicyFNoStaticShadowingPolicy":
+                case "TLightPixelShaderFSphericalHarmonicLightPolicyFShadowVertexBufferPolicy":
                     shader = new TLightPixelShader<FSphericalHarmonicLightPolicy.PixelParametersType, FNullPolicy>();
+                    break;
+                case "TLightPixelShaderFSphericalHarmonicLightPolicyFShadowTexturePolicy":
+                    shader = new TLightPixelShader<FSphericalHarmonicLightPolicy.PixelParametersType, FShadowTexturePolicy.PixelParametersType>();
+                    break;
+                case "TLightPixelShaderFSphericalHarmonicLightPolicyFSignedDistanceFieldShadowTexturePolicy":
+                    shader = new TLightPixelShader<FSphericalHarmonicLightPolicy.PixelParametersType, FSignedDistanceFieldShadowTexturePolicy.PixelParametersType>();
                     break;
                 case "TLightPixelShaderFPointLightPolicyFNoStaticShadowingPolicy":
                 case "TLightPixelShaderFPointLightPolicyFShadowVertexBufferPolicy":
                     shader = new TLightPixelShader<FPointLightPolicy.PixelParametersType, FNullPolicy>();
                     break;
                 case "TLightVertexShaderFSphericalHarmonicLightPolicyFNoStaticShadowingPolicy":
+                case "TLightVertexShaderFSphericalHarmonicLightPolicyFShadowVertexBufferPolicy":
                     shader = new TLightVertexShader<FNullPolicy, FNullPolicy>();
+                    break;
+                case "TLightVertexShaderFSphericalHarmonicLightPolicyFShadowTexturePolicy":
+                    shader = new TLightVertexShader<FNullPolicy, FShadowTexturePolicy.VertexParametersType>();
                     break;
                 case "FModShadowMeshVertexShader":
                     shader = new FModShadowMeshVertexShader();
@@ -862,6 +873,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     break;
                 case "TBasePassVertexShaderFNoLightMapPolicyFSphereDensityPolicy":
                 case "TBasePassVertexShaderFNoLightMapPolicyFLinearHalfspaceDensityPolicy":
+                case "TBasePassVertexShaderFNoLightMapPolicyFConeDensityPolicy":
                 case "TBasePassVertexShaderFNoLightMapPolicyFConstantDensityPolicy":
                     shader = new TBasePassVertexShader<FNullPolicy, FConstantDensityPolicy.VertexShaderParametersType>();
                     break;
@@ -907,6 +919,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 case "TBasePassPixelShaderFDirectionalLightMapTexturePolicyNoSkyLight":
                     shader = new TBasePassPixelShader<FLightMapTexturePolicy.PixelParametersType>();
                     break;
+                case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFConeDensityPolicy":
+                case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFConeDensityPolicy":
+                case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFConeDensityPolicy":
+                case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFConeDensityPolicy":
                 case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
                 case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFConstantDensityPolicy":
                 case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFSphereDensityPolicy":
@@ -921,6 +937,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFConstantDensityPolicy":
                     shader = new TBasePassVertexShader<FVertexLightMapPolicy.VertexParametersType, FConstantDensityPolicy.VertexShaderParametersType>();
                     break;
+                case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFConeDensityPolicy":
+                case "TBasePassVertexShaderFSHLightLightMapPolicyFConeDensityPolicy":
                 case "TBasePassVertexShaderFSHLightLightMapPolicyFSphereDensityPolicy":
                 case "TBasePassVertexShaderFSHLightLightMapPolicyFLinearHalfspaceDensityPolicy":
                 case "TBasePassVertexShaderFSHLightLightMapPolicyFConstantDensityPolicy":
@@ -929,6 +947,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFConstantDensityPolicy":
                     shader = new TBasePassVertexShader<FDirectionalLightLightMapPolicy.VertexParametersType, FConstantDensityPolicy.VertexShaderParametersType>();
                     break;
+                case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFConeDensityPolicy":
+                case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFConeDensityPolicy":
+                case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFConeDensityPolicy":
+                case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFConeDensityPolicy":
                 case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFConstantDensityPolicy":
                 case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
                 case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFSphereDensityPolicy":
@@ -947,11 +969,13 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     shader = new FFogVolumeApplyPixelShader();
                     break;
                 case "TFogIntegralPixelShader<FSphereDensityPolicy>":
+                case "TFogIntegralPixelShader<FConeDensityPolicy>":
                 case "TFogIntegralPixelShader<FLinearHalfspaceDensityPolicy>":
                 case "TFogIntegralPixelShader<FConstantDensityPolicy>":
                     shader = new TFogIntegralPixelShader();
                     break;
                 case "TFogIntegralVertexShader<FSphereDensityPolicy>":
+                case "TFogIntegralVertexShader<FConeDensityPolicy>":
                 case "TFogIntegralVertexShader<FLinearHalfspaceDensityPolicy>":
                 case "TFogIntegralVertexShader<FConstantDensityPolicy>":
                     shader = new TFogIntegralVertexShader();

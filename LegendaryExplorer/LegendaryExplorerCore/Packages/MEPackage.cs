@@ -1554,6 +1554,16 @@ namespace LegendaryExplorerCore.Packages
         //is only set when lazy loading
         private readonly Stream decompressionStream;
 
+        Stream ILazyLoadPackage.OpenExportDataStream(ExportEntry export)
+        {
+            ArgumentNullException.ThrowIfNull(export);
+            if (!ReferenceEquals(export.FileRef, this) || !TryGetUExport(export.UIndex, out var owned) || !ReferenceEquals(export, owned))
+                throw new ArgumentException("The export must belong to this package.", nameof(export));
+            if (decompressionStream is null)
+                throw new InvalidOperationException("Export stream views require a lazy-loaded package.");
+            return new BoundedReadOnlyStream(decompressionStream, export.DataOffset, export.DataSize);
+        }
+
         ExportEntry ILazyLoadPackage.LoadExport(ExportEntry export, bool loadParents)
         {
             // If the export is already loaded do not load it again

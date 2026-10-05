@@ -13,7 +13,8 @@ public abstract class Shader
     {
         Vertex = 0,
         Pixel = 1,
-        PixelUDK = 3 // This is a hack
+        PixelSM5 = 3, // LE3 SM5 shipping targets (hull/domain occupy 1/2); retain OT Pixel=1.
+        PixelUDK = 3 // Compatibility alias for the SM5 pixel frequency.
     }
 
     public NameReference ShaderType;
@@ -120,6 +121,7 @@ public class UnparsedShader : Shader
                     case "TDepthOnlyVertexShader<1>":
                     case "FVelocityVertexShader":
                     case "TFogIntegralVertexShader<FConstantDensityPolicy>":
+                    case "TFogIntegralVertexShader<FConeDensityPolicy>":
                     case "TFogIntegralVertexShader<FLinearHalfspaceDensityPolicy>":
                     case "TFogIntegralVertexShader<FSphereDensityPolicy>":
                     case "FShadowDepthVertexShader":
