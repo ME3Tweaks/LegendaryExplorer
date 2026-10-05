@@ -16,12 +16,32 @@ public sealed record UdkTextureEncodingDecision(string SourceFormat, string Targ
 /// <summary>UDK-compatible texture intermediates without another lossy block conversion.</summary>
 public static class UdkTextureEncodingPolicy
 {
+    public static bool IsNormalCompression(string compression) => compression?.ToUpperInvariant() is
+        "TC_NORMALMAP" or "TC_NORMALMAPHQ" or "TC_NORMALMAPALPHA" or "TC_NORMALMAPUNCOMPRESSED"
+        or "TC_NORMALMAPBC5" or "TC_NORMALMAPBC7";
+
+    public static bool IsTwoChannelNormal(string format, string compression) =>
+        IsNormalCompression(compression) && format is "PF_V8U8" or "PF_BC5" or "PF_NormalMap_HQ" or "PF_NormalMap_LQ";
+
+    /// <summary>Rebuilds Z from XY in an ARGB image: X in byte 2, Y in byte 1, Z written to byte 0.</summary>
+    public static void ReconstructNormalZ(Image image)
+    {
+        if (image.pixelFormat != PixelFormat.ARGB) throw new ArgumentException("Normal reconstruction requires ARGB pixels.", nameof(image));
+        foreach (var mip in image.mipMaps)
+        for (int i = 0; i + 3 < mip.data.Length; i += 4)
+        {
+            double x = mip.data[i + 2] / 255d * 2 - 1, y = mip.data[i + 1] / 255d * 2 - 1;
+            double z = Math.Sqrt(Math.Max(0, 1 - x * x - y * y));
+            mip.data[i] = (byte)Math.Clamp(Math.Round((z + 1) * 127.5), 0, 255);
+        }
+    }
+
     public static UdkTextureEncodingDecision Plan(string format, string compression, bool requireThreeChannels = false)
     {
-        bool normal = TextureEncodingPolicy.IsNormalCompression(compression);
+        bool normal = IsNormalCompression(compression);
         if (requireThreeChannels)
         {
-            if (!TextureEncodingPolicy.IsTwoChannelNormal(format, compression))
+            if (!IsTwoChannelNormal(format, compression))
                 throw new InvalidOperationException("An XYZ sampler intermediate requires a declared two-channel normal.");
             return new(format, "PF_A8R8G8B8", "TC_Normalmap", true, true);
         }
@@ -65,7 +85,7 @@ public static class UdkTextureEncodingPolicy
         {
             var rgba = Image.LoadFromRaw(Texture2D.GetTextureData(m, texture.Game), sourceFormat, m.width, m.height);
             rgba.correctMips(PixelFormat.ARGB);
-            if (decision.ReconstructZ) TextureEncodingPolicy.ReconstructNormalZ(rgba);
+            if (decision.ReconstructZ) ReconstructNormalZ(rgba);
             return rgba.mipMaps[0];
         }).ToList();
         if (mips.Count == 0) throw new InvalidOperationException($"No resident or resolvable mips: {texture.InstancedFullPath}.");
