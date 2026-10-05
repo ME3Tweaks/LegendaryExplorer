@@ -1,4 +1,4 @@
-﻿using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Gammtek.IO;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Memory;
@@ -880,14 +880,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
                     else if (format.Value.Name == "PF_BC7")
                     {
-                        // UDK doesn't support BC7
-                        // Don't remove these properties as they are needed to load data out of a TFC
-                        //props.RemoveNamedProperty("TextureFileCacheName");
-                        //props.RemoveNamedProperty("TFCFileGuid");
-                        props.RemoveNamedProperty("LODGroup");
-                        props.AddOrReplaceProp(new EnumProperty("PF_DXT1", "EPixelFormat", MEGame.UDK, "Format"));
-                        props.AddOrReplaceProp(new EnumProperty("TC_NormalMap", "TextureCompressionSettings", MEGame.UDK, "CompressionSettings"));
-                        // Texture data is converted in ConvertPostPropBinary()
+                        UdkTextureEncodingPolicy.PrepareProperties(props, UdkTextureEncodingPolicy.Plan(sourceExport));
                     }
                 }
             }
