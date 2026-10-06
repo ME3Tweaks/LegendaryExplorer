@@ -161,7 +161,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public ushort ChunkIndex;
         public uint BaseIndex;
         public int NumTriangles; //ushort in ME1 and ME2
-        public byte TriangleSorting; //UDK
+        public byte TriangleSorting; //UDK, ME3 WiiU
     }
 
     public class SkelMeshChunk
@@ -264,7 +264,17 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             Serialize(ref sms.MaterialIndex);
             Serialize(ref sms.ChunkIndex);
             Serialize(ref sms.BaseIndex);
-            if (Game >= MEGame.ME3)
+            if (Pcc?.Platform == MEPackage.GamePlatform.WiiU)
+            {
+                // WiiU: NumTriangles is a ushort, followed by TriangleSorting and an unknown byte
+                ushort tmp = (ushort)sms.NumTriangles;
+                Serialize(ref tmp);
+                sms.NumTriangles = tmp;
+                Serialize(ref sms.TriangleSorting);
+                byte unknown = 0;
+                Serialize(ref unknown);
+            }
+            else if (Game >= MEGame.ME3)
             {
                 Serialize(ref sms.NumTriangles);
             }
@@ -407,6 +417,12 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     Serialize(ref gsv.TangentZ);
                     Serialize(ref gsv.InfluenceBones);
                     Serialize(ref gsv.InfluenceWeights);
+                    if (IsLoading && Pcc?.Platform == MEPackage.GamePlatform.WiiU)
+                    {
+                        // WiiU stores influences byte-reversed
+                        gsv.InfluenceBones = new Influences(gsv.InfluenceBones[3], gsv.InfluenceBones[2], gsv.InfluenceBones[1], gsv.InfluenceBones[0]);
+                        gsv.InfluenceWeights = new Influences(gsv.InfluenceWeights[3], gsv.InfluenceWeights[2], gsv.InfluenceWeights[1], gsv.InfluenceWeights[0]);
+                    }
                     if (Game >= MEGame.ME3)
                     {
                         Serialize(ref gsv.Position);

@@ -218,7 +218,14 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <returns></returns>
         public static byte[] GetTextureData(Texture2DMipInfo mipToLoad, MEGame game, string gamePathToUse = null, bool decompress = true, List<string> additionalTFCs = null)
         {
-            return GetTextureData(game, mipToLoad.Mip, mipToLoad.storageType, decompress, mipToLoad.uncompressedSize, mipToLoad.compressedSize, mipToLoad.externalOffset, mipToLoad.TextureCacheName, gamePathToUse, additionalTFCs, mipToLoad.Export?.FileRef.FilePath);
+            var data = GetTextureData(game, mipToLoad.Mip, mipToLoad.storageType, decompress, mipToLoad.uncompressedSize, mipToLoad.compressedSize, mipToLoad.externalOffset, mipToLoad.TextureCacheName, gamePathToUse, additionalTFCs, mipToLoad.Export?.FileRef.FilePath);
+            if (decompress && data != null && mipToLoad.Export?.FileRef.Platform == MEPackage.GamePlatform.WiiU)
+            {
+                // WiiU texture data is GX2 tiled
+                var format = mipToLoad.Export.GetProperty<EnumProperty>(@"Format")?.Value.Name;
+                data = GX2Tiling.Untile(data, mipToLoad.width, mipToLoad.height, Image.getPixelFormatType(format));
+            }
+            return data;
         }
 
         /// <summary>
@@ -372,7 +379,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
                     {
                         using var fs = new FileStream(filename, FileMode.Open, FileAccess.Read);
                         fs.Seek(externalOffset, SeekOrigin.Begin);
-                        if (storageType is StorageTypes.extLZO or StorageTypes.extZlib or StorageTypes.extOodle)
+                        if (storageType is StorageTypes.extLZO or StorageTypes.extZlib or StorageTypes.extOodle or StorageTypes.extLZMA)
                         {
                             if (decompress)
                             {
