@@ -68,10 +68,10 @@ public class LE3LightShaderObjectTests
         var candidates = GetKnownShaderTypeRegistrations().Where(t => t.Name.Contains("FSphericalHarmonicLightPolicy", StringComparison.Ordinal) &&
             !t.Name.EndsWith("FNoStaticShadowingPolicy", StringComparison.Ordinal)).SelectMany(t => GetKnownVertexFactoryRegistrations().Select(v =>
             { Assert.IsTrue(TryGetKnownPermutationEnvironment(t.Name, v.Name, out var environment)); return environment.CreateCandidate(); })).ToArray();
-        Assert.AreEqual(66, candidates.Length);
+        Assert.AreEqual(6 * GetKnownVertexFactoryRegistrations().Count, candidates.Length);
         var plan = compiler.BuildProvisionalCompilePlan(compiler.TranslateMaterialHlsl(CommentTemplate()), MaterialResource.Create(), candidates);
         Assert.IsTrue(plan.Success, string.Join("; ", plan.Errors)); Assert.AreEqual(0, plan.Jobs.Count);
-        Assert.AreEqual(66, plan.ExcludedTargets.Count);
+        Assert.AreEqual(candidates.Length, plan.ExcludedTargets.Count);
         Assert.IsFalse(ComparePlannedPermutations(plan, Array.Empty<ShaderPermutationIdentity>()).IsCompleteShaderSet);
         Assert.IsTrue(plan.Decisions.All(d => d.Disposition == ShaderCompileDisposition.Excluded && d.Gate == ShaderCompileGate.ShaderTypeShouldCache));
         Assert.IsTrue(TryGetKnownShaderTypeRegistration("TLightVertexShaderFSphericalHarmonicLightPolicyFSignedDistanceFieldShadowTexturePolicy", out _));

@@ -820,6 +820,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 "FMaterialUniformExpressionClamp" => new MaterialUniformExpressionClamp(),
                 "FMaterialUniformExpressionConstant" => new MaterialUniformExpressionConstant(),
                 "FMaterialUniformExpressionFmod" => new MaterialUniformExpressionFmod(),
+                "FMaterialUniformExpressionBIOMod" => new MaterialUniformExpressionBIOMod(),
+                "FMaterialUniformExpressionBIOSineSubtend" => new MaterialUniformExpressionBIOSineSubtend(),
                 "FMaterialUniformExpressionMax" => new MaterialUniformExpressionMax(),
                 "FMaterialUniformExpressionMin" => new MaterialUniformExpressionMin(),
                 "FMaterialUniformExpressionFoldedMath" => new MaterialUniformExpressionFoldedMath(),
@@ -1061,6 +1063,38 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             outVal.G = tempA.G % tempB.G;
             outVal.B = tempA.B % tempB.B;
             outVal.A = tempA.A % tempB.A;
+        }
+    }
+
+    public class MaterialUniformExpressionBIOSineSubtend : MaterialUniformExpressionBinaryOp
+    {
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            LinearColor a = LinearColor.Black;
+            A.GetNumberValue(context, ref a);
+            LinearColor b = LinearColor.Black;
+            B.GetNumberValue(context, ref b);
+            // Native CPU evaluation uses all original child lanes, not shader-coerced widths.
+            float dot = b.G * a.G + b.R * a.R;
+            dot += b.B * a.B;
+            dot += b.A * a.A;
+            float squaredSine = 1f - dot * dot;
+            // Ordered comparisons deliberately map an unordered (NaN) result to zero.
+            float clamped = !(squaredSine >= 0f) ? 0f : squaredSine >= 1f ? 1f : squaredSine;
+            float result = MathF.Sqrt(clamped);
+            outVal = new LinearColor(result, result, result, result);
+        }
+    }
+
+    public class MaterialUniformExpressionBIOMod : MaterialUniformExpressionBinaryOp
+    {
+        public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
+        {
+            LinearColor a = LinearColor.Black;
+            A.GetNumberValue(context, ref a);
+            LinearColor b = LinearColor.Black;
+            B.GetNumberValue(context, ref b);
+            outVal = new LinearColor(a.R % b.R, a.G % b.G, a.B % b.B, a.A % b.A);
         }
     }
 

@@ -43,25 +43,29 @@ public class LE3LightmapPolicyTests
         var job = compiler.BuildProvisionalCompileJob(compiler.TranslateMaterialHlsl(template),
             LegendaryExplorerCore.Unreal.BinaryConverters.MaterialResource.Create(), environment.Target, candidate.EnvironmentMacros);
         Assert.AreEqual(simple && usage, job.Macros.ContainsKey("SIMPLE_TEXTURE_LIGHTMAP"));
-        Assert.AreEqual(!simple && usage, job.Macros.ContainsKey("USING_VECTORLIGHTMAPS"));
-        Assert.AreEqual(!simple && usage, job.Macros.ContainsKey("VERTEX_LIGHTMAP"));
-        Assert.AreEqual(simple && usage ? "1" : "2", job.Macros["NUM_LIGHTMAP_COEFFICIENTS"]);
-        Assert.AreEqual("2", candidate.EnvironmentMacros["NUM_LIGHTMAP_COEFFICIENTS"]);
+        bool shippingProfile = density != "Cone";
+        Assert.AreEqual(!simple && (usage || shippingProfile), job.Macros.ContainsKey("USING_VECTORLIGHTMAPS"));
+        Assert.AreEqual(!simple && (usage || shippingProfile), job.Macros.ContainsKey("VERTEX_LIGHTMAP"));
+        Assert.AreEqual(simple && (usage || shippingProfile) ? "1" : "2", job.Macros["NUM_LIGHTMAP_COEFFICIENTS"]);
+        Assert.AreEqual(simple && shippingProfile ? "1" : "2", candidate.EnvironmentMacros["NUM_LIGHTMAP_COEFFICIENTS"]);
         Assert.IsFalse(candidate.EnvironmentMacros.ContainsKey("SIMPLE_TEXTURE_LIGHTMAP"));
-        Assert.IsFalse(candidate.EnvironmentMacros.ContainsKey("USING_VECTORLIGHTMAPS"));
+        Assert.AreEqual(!simple && shippingProfile, candidate.EnvironmentMacros.ContainsKey("USING_VECTORLIGHTMAPS"));
+        Assert.AreEqual(simple && shippingProfile, candidate.EnvironmentMacros.ContainsKey("TEXTURE_LIGHTMAP"));
+        foreach (var macro in environment.MacroDefinitions.Where(m => m.Name is "TEXTURE_LIGHTMAP" or "VERTEX_LIGHTMAP" or "USING_VECTORLIGHTMAPS"))
+            Assert.AreEqual(ShaderEnvironmentEvidence.ShippingBytecode, macro.Evidence);
     }
 
 
     [TestMethod]
     [DataRow("FCustomSimpleLightMapTexturePolicy", "Cone", "", 2)]
-    [DataRow("FCustomSimpleLightMapTexturePolicy", "Constant", "", 2)]
+    [DataRow("FCustomSimpleLightMapTexturePolicy", "Constant", "TEXTURE_LIGHTMAP", 1)]
     [DataRow("FCustomSimpleVertexLightMapPolicy", "Cone", "", 2)]
     [DataRow("FCustomSimpleVertexLightMapPolicy", "Constant", "SIMPLE_VERTEX_LIGHTMAP", 1)]
     [DataRow("FCustomVectorLightMapTexturePolicy", "Cone", "", 2)]
     [DataRow("FCustomVectorLightMapTexturePolicy", "Constant", "TEXTURE_LIGHTMAP", 2)]
     [DataRow("FCustomVectorVertexLightMapPolicy", "Cone", "", 2)]
-    [DataRow("FCustomVectorVertexLightMapPolicy", "Constant", "", 2)]
-    [DataRow("FCustomVectorVertexLightMapPolicy", "LinearHalfspace", "", 2)]
+    [DataRow("FCustomVectorVertexLightMapPolicy", "Constant", "VERTEX_LIGHTMAP", 2)]
+    [DataRow("FCustomVectorVertexLightMapPolicy", "LinearHalfspace", "VERTEX_LIGHTMAP", 2)]
     [DataRow("FDirectionalLightLightMapPolicy", "Cone", "ENABLE_DIRECTIONAL_LIGHT", 2)]
     [DataRow("FDirectionalLightLightMapPolicy", "Constant", "ENABLE_DIRECTIONAL_LIGHT", 2)]
     [DataRow("FDirectionalLightMapTexturePolicy", "Cone", "", 2)]
@@ -73,13 +77,13 @@ public class LE3LightmapPolicyTests
     [DataRow("FSHLightLightMapPolicy", "Constant", "ENABLE_DIRECTIONAL_LIGHT", 2)]
     [DataRow("FSimpleLightMapTexturePolicy", "Cone", "TEXTURE_LIGHTMAP", 1)]
     [DataRow("FSimpleVertexLightMapPolicy", "Cone", "SIMPLE_VERTEX_LIGHTMAP", 1)]
-    [DataRow("FCustomSimpleLightMapTexturePolicy", "LinearHalfspace", "", 2)]
-    [DataRow("FCustomSimpleLightMapTexturePolicy", "Sphere", "", 2)]
+    [DataRow("FCustomSimpleLightMapTexturePolicy", "LinearHalfspace", "TEXTURE_LIGHTMAP", 1)]
+    [DataRow("FCustomSimpleLightMapTexturePolicy", "Sphere", "TEXTURE_LIGHTMAP", 1)]
     [DataRow("FCustomSimpleVertexLightMapPolicy", "LinearHalfspace", "SIMPLE_VERTEX_LIGHTMAP", 1)]
     [DataRow("FCustomSimpleVertexLightMapPolicy", "Sphere", "SIMPLE_VERTEX_LIGHTMAP", 1)]
     [DataRow("FCustomVectorLightMapTexturePolicy", "LinearHalfspace", "TEXTURE_LIGHTMAP", 2)]
     [DataRow("FCustomVectorLightMapTexturePolicy", "Sphere", "TEXTURE_LIGHTMAP", 2)]
-    [DataRow("FCustomVectorVertexLightMapPolicy", "Sphere", "", 2)]
+    [DataRow("FCustomVectorVertexLightMapPolicy", "Sphere", "VERTEX_LIGHTMAP", 2)]
     [DataRow("FDirectionalLightLightMapPolicy", "LinearHalfspace", "ENABLE_DIRECTIONAL_LIGHT", 2)]
     [DataRow("FDirectionalLightLightMapPolicy", "Sphere", "ENABLE_DIRECTIONAL_LIGHT", 2)]
     [DataRow("FDirectionalLightMapTexturePolicy", "LinearHalfspace", "TEXTURE_LIGHTMAP", 2)]
@@ -112,10 +116,20 @@ public class LE3LightmapPolicyTests
                 "FGPUSkinVertexFactory" => 1, "FGPUSkinMorphVertexFactory" => 2,
                 "FInstancedStaticMeshVertexFactory" => 1, "FGPUSkinDecalVertexFactory" => 2,
                 "FLocalDecalVertexFactory" => 2, "FGPUSkinMorphDecalVertexFactory" => 3, "FSplineMeshVertexFactory" => 1,
-                "FParticleInstancedMeshVertexFactory" => extra == "SIMPLE_VERTEX_LIGHTMAP" ? 1 : 2, _ => 0
+                "FParticleInstancedMeshVertexFactory" => extra == "SIMPLE_VERTEX_LIGHTMAP" ? 1 : 2,
+                "FParticleVertexFactory" or "FParticleBeamTrailVertexFactory" => 3, "FParticleSubUVVertexFactory" => 4,
+                "FParticleDynamicParameterVertexFactory" or "FParticleBeamTrailDynamicParameterVertexFactory" => extra == "SIMPLE_VERTEX_LIGHTMAP" ? 4 : 5,
+                "FParticleSubUVDynamicParameterVertexFactory" => extra == "SIMPLE_VERTEX_LIGHTMAP" ? 5 : 6,
+                "FLensFlareVertexFactory" => extra == "SIMPLE_VERTEX_LIGHTMAP" ? 2 : 3,
+                "FFluidVertexFactory" or "FFluidTessellationVertexFactory" => 1,
+                "FTerrainVertexFactory" => 1, "FTerrainMorphVertexFactory" or "FTerrainDecalVertexFactory" => 2,
+                "FTerrainFullMorphVertexFactory" or "FTerrainMorphDecalVertexFactory" => 3,
+                "FTerrainFullMorphDecalVertexFactory" => 4, _ => 0
             };
-            Assert.AreEqual(6 + factoryMacros + (extra.Length == 0 ? 0 : 1), macros.Count);
+            bool shippingVectorProfile = policy == "FCustomVectorVertexLightMapPolicy" && density != "Cone";
+            Assert.AreEqual(6 + factoryMacros + (extra.Length == 0 ? 0 : 1) + (shippingVectorProfile ? 1 : 0), macros.Count);
             if (extra.Length != 0) Assert.AreEqual("1", macros[extra]);
+            if (shippingVectorProfile) Assert.AreEqual("1", macros["USING_VECTORLIGHTMAPS"]);
             Assert.IsFalse(macros.ContainsKey("FOGVOLUMEDENSITY_NONE"));
             Assert.IsFalse(macros.ContainsKey("ENABLE_SH_LIGHT"));
             Assert.IsFalse(macros.ContainsKey("TRANSLUCENCY_ONEPASS_DYNAMICALLY_SHADOWED"));
@@ -255,7 +269,7 @@ public class LE3LightmapPolicyTests
         Assert.IsFalse(new VertexFactoryRegistration("Unresolved", "Unresolved", true, true).CreateCacheContext().SupportsDynamicLighting.HasValue);
         foreach (var factory in GetKnownVertexFactoryRegistrations())
         {
-            bool expectedDynamic = factory.Name != "FLocalVertexFactoryApex";
+            bool expectedDynamic = factory.Name is not ("FLocalVertexFactoryApex" or "FLensFlareVertexFactory");
             Assert.AreEqual(expectedDynamic, factory.SupportsDynamicLighting);
             Assert.AreEqual(expectedDynamic, factory.CreateCacheContext().SupportsDynamicLighting);
             Assert.IsTrue(TryGetKnownPermutationEnvironment(name, factory.Name, out var environment));

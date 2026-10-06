@@ -14,7 +14,7 @@ public class LE3MaterialShaderCompoundTests
     [TestMethod]
     [DataRow(false)]
     [DataRow(true)]
-    public void NestedCoordinateTextureAccessOrdersSamplerSlotsSeparatelyFromGlobalTextureIdentity(bool half)
+    public void NestedCoordinateTextureAccessOrdersSamplerSlotsAndGlobalTextureIdentityTogether(bool half)
     {
         GlobalTest.Init();
         using var package = MEPackageHandler.CreateMemoryEmptyPackage("LE3NestedTexture.pcc", MEGame.LE3);
@@ -38,8 +38,8 @@ public class LE3MaterialShaderCompoundTests
         }).TranslateMaterialHlsl(Template(), half);
         Assert.IsTrue(result.Success, string.Join("; ", result.Errors));
         CollectionAssert.AreEqual(new[] { outerTexture.UIndex, innerTexture.UIndex }, reads.ToArray());
-        CollectionAssert.AreEqual(reads.ToArray(), result.UniformExpressionTextures.ToArray());
-        CollectionAssert.AreEqual(new[] { 1, 0 }, result.Uniform2DTextureExpressions.Select(t => t.TextureIndex).ToArray());
+        CollectionAssert.AreEqual(new[] { innerTexture.UIndex, outerTexture.UIndex }, result.UniformExpressionTextures.ToArray());
+        CollectionAssert.AreEqual(new[] { 0, 1 }, result.Uniform2DTextureExpressions.Select(t => t.TextureIndex).ToArray());
         foreach (string root in new[] { "Normal", "DiffuseColor" })
         {
             string code = result.PropertyCode[root];
@@ -327,7 +327,7 @@ public class LE3MaterialShaderCompoundTests
     [TestMethod]
     [DataRow(false)]
     [DataRow(true)]
-    public void BumpOffsetUsesSuppliedCoordinatesAndFoldedScalarUniform(bool half)
+    public void BumpOffsetAccessesDynamicScalarBeforeForceCastAndDoesNotFoldHeightArithmetic(bool half)
     {
         GlobalTest.Init();
         using var package = MEPackageHandler.CreateMemoryEmptyPackage("LE3BumpOffsetUniform.pcc", MEGame.LE3);
@@ -343,16 +343,12 @@ public class LE3MaterialShaderCompoundTests
         var result = new LE3MaterialShaderCompiler(material).TranslateMaterialHlsl(Template(), half);
         Assert.IsTrue(result.Success, string.Join("; ", result.Errors));
         string type = half ? "half" : "float";
-        Assert.AreEqual($"\t{type}2 Local0 = (UniformPixelScalars_0.z * Parameters.TangentCameraVector.rg);\r\n" +
-            $"\t{type}2 Local1 = (Local0 + {type}2(2.00000000,3.00000000));\r\n\treturn Local1", result.PropertyCode["Distortion"]);
-        Assert.AreEqual(3, result.UniformPixelScalarExpressions.Count);
-        var sum = (MaterialUniformExpressionFoldedMath)result.UniformPixelScalarExpressions[2];
-        Assert.AreEqual(MaterialUniformExpressionFoldedMath.EFoldedMathOperation.Add, sum.Op);
-        var product = (MaterialUniformExpressionFoldedMath)sum.A;
-        Assert.AreEqual(MaterialUniformExpressionFoldedMath.EFoldedMathOperation.Mul, product.Op);
-        Assert.AreEqual(0.25f, ((MaterialUniformExpressionConstant)product.A).Value.R);
-        Assert.IsInstanceOfType<MaterialUniformExpressionScalarParameter>(product.B);
-        Assert.AreEqual(-0.5f, ((MaterialUniformExpressionConstant)sum.B).Value.R);
+        Assert.AreEqual($"\t{type} Local0 = ({type}(0.25000000) * UniformPixelScalars_0.x);\r\n" +
+            $"\t{type} Local1 = (Local0 + {type}(-0.50000000));\r\n" +
+            $"\t{type}2 Local2 = (Local1 * Parameters.TangentCameraVector.rg);\r\n" +
+            $"\t{type}2 Local3 = (Local2 + {type}2(2.00000000,3.00000000));\r\n\treturn Local3", result.PropertyCode["Distortion"]);
+        Assert.AreEqual(1, result.UniformPixelScalarExpressions.Count);
+        Assert.IsInstanceOfType<MaterialUniformExpressionScalarParameter>(result.UniformPixelScalarExpressions.Single());
         Assert.AreEqual(0u, result.NumUserTexCoords);
     }
 

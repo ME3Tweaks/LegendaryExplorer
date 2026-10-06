@@ -59,13 +59,13 @@ public class LE3MaterialShaderResourceTests
         Assert.AreSame(sources, result.SourceSnapshot);
         Assert.AreEqual(template, sources.ReadSource("MaterialTemplate"));
         Assert.AreEqual(2, reads, "Metadata cached across roots, not re-read per sample.");
-        CollectionAssert.AreEqual(new[] { outerTexture.UIndex, innerTexture.UIndex }, result.UniformExpressionTextures.ToArray());
-        CollectionAssert.AreEqual(new[] { 1, 0 }, result.Uniform2DTextureExpressions.Select(t => t.TextureIndex).ToArray());
-        Assert.AreEqual(4, result.UniformPixelVectorExpressions.Count);
+        CollectionAssert.AreEqual(new[] { innerTexture.UIndex, outerTexture.UIndex }, result.UniformExpressionTextures.ToArray());
+        CollectionAssert.AreEqual(new[] { 0, 1 }, result.Uniform2DTextureExpressions.Select(t => t.TextureIndex).ToArray());
+        Assert.AreEqual(3, result.UniformPixelVectorExpressions.Count);
         Assert.AreEqual("SelectionColor", ((MaterialUniformExpressionVectorParameter)result.UniformPixelVectorExpressions[0]).ParameterName.Name);
         Assert.AreEqual("SSS_Color", ((MaterialUniformExpressionVectorParameter)result.UniformPixelVectorExpressions[2]).ParameterName.Name);
         // Native code-access side effects retain Time, both products and periodic hints, plus
-        // the two-sided scalar even though the final multiply is a packed vector tree.
+        // the two-sided scalar; ForceCast accesses it before the local color multiply.
         Assert.AreEqual(6, result.UniformPixelScalarExpressions.Count);
         Assert.AreEqual("SSS_Mask", result.UniformPixelScalarExpressions.OfType<MaterialUniformExpressionScalarParameter>().Single().ParameterName.Name);
         Assert.IsTrue(result.UsesTime);
@@ -77,15 +77,14 @@ public class LE3MaterialShaderResourceTests
         }
         StringAssert.Contains(result.PropertyCode["EmissiveColor"], "UniformPixelVector_0.rgb");
         StringAssert.Contains(result.PropertyCode["DiffuseColor"], "(float(1.00000000) - UniformPixelVector_0.rgb)");
-        Assert.AreEqual("\treturn UniformPixelVector_3.rgb", result.PropertyCode["TwoSidedLightingMask"]);
-        var folded = (MaterialUniformExpressionFoldedMath)result.UniformPixelVectorExpressions[3];
-        Assert.AreEqual("SSS_Mask", ((MaterialUniformExpressionScalarParameter)folded.A).ParameterName.Name);
-        Assert.AreSame(result.UniformPixelVectorExpressions[2], folded.B);
-        Assert.AreEqual(resourceFloat, result.ForcesFloatTexCoords);
+        Assert.AreEqual("\tfloat4 Local27 = (UniformPixelScalars_1.y * UniformPixelVector_2);\r\n\treturn Local27.rgb", result.PropertyCode["TwoSidedLightingMask"]);
+        Assert.IsFalse(result.UniformPixelVectorExpressions.Any(e => e is MaterialUniformExpressionFoldedMath));
+        Assert.IsTrue(result.ForcesFloatTexCoords, "Selected Panner clocks force float UVs even without the caller override.");
+        StringAssert.Contains(result.MaterialHlsl, "float2 TexCoords[NUM_MATERIAL_TEXCOORDS];");
     }
 
     [TestMethod]
-    public void ResourceDefaultsIncludeSelectionColorAndNativeGreyColorConversion()
+    public void ResourceDefaultsIncludeSelectionColorAndNativeOrdinaryBlackColorFallback()
     {
         GlobalTest.Init();
         using var package = MEPackageHandler.CreateMemoryEmptyPackage("LE3ResourceDefaults.pcc", MEGame.LE3);
@@ -98,8 +97,8 @@ public class LE3MaterialShaderResourceTests
         Assert.AreEqual(14, result.PropertyCode.Count);
         Assert.AreEqual("\treturn float3(0.00000000,0.00000000,1.00000000)", result.PropertyCode["Normal"]);
         Assert.AreEqual("\tfloat3 Local0 = (float3(0.00000000,0.00000000,0.00000000) + UniformPixelVector_0.rgb);\r\n\treturn Local0", result.PropertyCode["EmissiveColor"]);
-        Assert.AreEqual("\tfloat3 Local1 = (float(1.00000000) - UniformPixelVector_0.rgb);\r\n\tfloat3 Local2 = (float3(0.21951972,0.21951972,0.21951972) * Local1);\r\n\treturn Local2", result.PropertyCode["DiffuseColor"]);
-        Assert.AreEqual("\treturn float3(0.21951972,0.21951972,0.21951972)", result.PropertyCode["SpecularColor"]);
+        Assert.AreEqual("\tfloat3 Local1 = (float(1.00000000) - UniformPixelVector_0.rgb);\r\n\tfloat3 Local2 = (float3(0.00000000,0.00000000,0.00000000) * Local1);\r\n\treturn Local2", result.PropertyCode["DiffuseColor"]);
+        Assert.AreEqual("\treturn float3(0.00000000,0.00000000,0.00000000)", result.PropertyCode["SpecularColor"]);
         Assert.AreEqual("\treturn float(15.00000000)", result.PropertyCode["SpecularPower"]);
         foreach (string name in new[] { "DiffusePower", "Opacity", "OpacityMask" }) Assert.AreEqual("\treturn float(1.00000000)", result.PropertyCode[name]);
         Assert.AreEqual("\treturn (float(0.00000000) * float3(1.00000000,1.00000000,1.00000000))", result.PropertyCode["TwoSidedLightingMask"]);
@@ -230,7 +229,7 @@ public class LE3MaterialShaderResourceTests
     }
 
     [TestMethod]
-    public void ConnectedResourceWorldPositionOffsetFailsClosedButAuthoredPathStillWorks()
+    public void ConnectedResourceWorldPositionOffsetCompilesAsAVertexPropertyAndMatchesTheAuthoredPath()
     {
         GlobalTest.Init();
         using var package = MEPackageHandler.CreateMemoryEmptyPackage("LE3ResourceWpo.pcc", MEGame.LE3);
@@ -238,10 +237,12 @@ public class LE3MaterialShaderResourceTests
         var offset = package.CreateExport("Offset", "MaterialExpressionConstant3Vector", material, indexed: false);
         material.WriteProperty(Input("WorldPositionOffset", offset.UIndex));
         var compiler = new LE3MaterialShaderCompiler(material);
-        Assert.IsTrue(compiler.TranslateMaterialHlsl(Template()).Success);
+        var authored = compiler.TranslateMaterialHlsl(Template());
+        Assert.IsTrue(authored.Success, string.Join("; ", authored.Errors));
         var result = compiler.TranslateMaterialResourceHlsl(Template());
-        Assert.IsFalse(result.Success); Assert.IsNull(result.MaterialHlsl);
-        Assert.IsTrue(result.Errors.Any(e => e.Contains("WorldPositionOffset is not verified")));
+        Assert.IsTrue(result.Success, string.Join("; ", result.Errors));
+        Assert.IsNotNull(result.MaterialHlsl);
+        Assert.AreEqual(authored.PropertyCode["WorldPositionOffset"], result.PropertyCode["WorldPositionOffset"]);
     }
 
     [TestMethod]
