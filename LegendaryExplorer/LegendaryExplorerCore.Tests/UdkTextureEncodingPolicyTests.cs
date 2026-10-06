@@ -75,7 +75,7 @@ public class UdkTextureEncodingPolicyTests
         var source = Image.LoadFromRaw(Enumerable.Range(0,16).SelectMany(_=>pixel).ToArray(),PixelFormat.ARGB,4,4);
         new Texture2D(texture).Replace(source,texture.GetProperties(),isPackageStored:true);
         var original = new Texture2D(texture).ToImage(PixelFormat.ARGB);
-        TextureEncodingPolicy.ReconstructNormalZ(original);
+        UdkTextureEncodingPolicy.ReconstructNormalZ(original);
         var decision = UdkTextureEncodingPolicy.Plan(texture,true);
         var converted = UdkTextureEncodingPolicy.CreateImage(texture,decision);
         CollectionAssert.AreEqual(original.mipMaps[0].data,converted.mipMaps[0].data);

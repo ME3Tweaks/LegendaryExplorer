@@ -57,6 +57,8 @@ namespace LegendaryExplorerCore.Helpers
                 {
                     var binary = ObjectBinary.From<MaterialInstance>(instance);
                     AnalyzeSet(binary.SM3StaticParameterSet, "SM3/High");
+                    if (package.Game != MEGame.UDK || binary.UDKHasLowQualityPermutation)
+                        AnalyzeSet(binary.SM2StaticParameterSet, "SM2/Low");
 
                     void AnalyzeSet(StaticParameterSet set, string quality)
                     {
@@ -198,7 +200,7 @@ namespace LegendaryExplorerCore.Helpers
             // Infer it only for the same explicitly established affine normal encoding; other
             // missing metadata remains unresolved, including all LE packages.
             bool nativeAffineDefault = compression is null && instance.FileRef.Game == MEGame.UDK && format is not null
-                && new[] { "PF_DXT1", "PF_DXT5" }.Contains(format.Value.Name, StringComparer.OrdinalIgnoreCase)
+                && new[] { "PF_DXT1", "PF_DXT5", "PF_A8R8G8B8" }.Contains(format.Value.Name, StringComparer.OrdinalIgnoreCase)
                 && HasSignedRgbNormalRange(texture);
             if (nativeAffineDefault) compression = new NameReference("TC_Default");
             finding = finding with { TextureCompression = compression?.Instanced, TextureFormat = format?.Instanced,
@@ -227,7 +229,7 @@ namespace LegendaryExplorerCore.Helpers
                 // (analysis address 0x7ff64de12410) treats the copied byte 10 and target byte 0 identically.
                 // Require the explicit signed RGB range and linear sampling before accepting this case.
                 "TC_DEFAULT" => instance.FileRef.Game == MEGame.UDK
-                    && new[] { "PF_DXT1", "PF_DXT5" }.Contains(format.Value.Name, StringComparer.OrdinalIgnoreCase)
+                    && new[] { "PF_DXT1", "PF_DXT5", "PF_A8R8G8B8" }.Contains(format.Value.Name, StringComparer.OrdinalIgnoreCase)
                     && HasSignedRgbNormalRange(texture),
                 _ => false
             };
