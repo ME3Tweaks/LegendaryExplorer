@@ -308,17 +308,17 @@ namespace LegendaryExplorerCore.Shaders
                     result.Add("TBasePassVertexShader" + policy + "F" + density + "DensityPolicy", new(policy, density));
             }
             // Exact initializer-backed pairs only; not the Cartesian product of policy templates.
-            Add("FCustomSimpleLightMapTexturePolicy", "Cone", "Constant");
-            Add("FCustomSimpleVertexLightMapPolicy", "Cone", "Constant");
-            Add("FCustomVectorLightMapTexturePolicy", "Cone", "Constant");
-            Add("FCustomVectorVertexLightMapPolicy", "Cone", "Constant", "LinearHalfspace");
-            Add("FDirectionalLightLightMapPolicy", "Cone", "Constant");
-            Add("FDirectionalLightMapTexturePolicy", "Cone", "Constant");
-            Add("FDirectionalVertexLightMapPolicy", "Cone", "Constant");
+            Add("FCustomSimpleLightMapTexturePolicy", "Cone", "Constant", "LinearHalfspace", "Sphere");
+            Add("FCustomSimpleVertexLightMapPolicy", "Cone", "Constant", "LinearHalfspace", "Sphere");
+            Add("FCustomVectorLightMapTexturePolicy", "Cone", "Constant", "LinearHalfspace", "Sphere");
+            Add("FCustomVectorVertexLightMapPolicy", "Cone", "Constant", "LinearHalfspace", "Sphere");
+            Add("FDirectionalLightLightMapPolicy", "Cone", "Constant", "LinearHalfspace", "Sphere");
+            Add("FDirectionalLightMapTexturePolicy", "Cone", "Constant", "LinearHalfspace", "Sphere");
+            Add("FDirectionalVertexLightMapPolicy", "Cone", "Constant", "LinearHalfspace", "Sphere");
             Add("FNoLightMapPolicy", "Cone");
-            Add("FSHLightLightMapPolicy", "Cone", "Constant");
-            Add("FSimpleLightMapTexturePolicy", "Cone");
-            Add("FSimpleVertexLightMapPolicy", "Cone");
+            Add("FSHLightLightMapPolicy", "Cone", "Constant", "LinearHalfspace", "Sphere");
+            Add("FSimpleLightMapTexturePolicy", "Cone", "Constant", "LinearHalfspace", "Sphere");
+            Add("FSimpleVertexLightMapPolicy", "Cone", "Constant", "LinearHalfspace", "Sphere");
             return result;
         }
         private static readonly IReadOnlyList<VertexFactoryRegistration> KnownVertexFactories = Array.AsReadOnly(new[]
@@ -326,10 +326,19 @@ namespace LegendaryExplorerCore.Shaders
             new VertexFactoryRegistration("FLocalVertexFactory", "LocalVertexFactory", true, true, true, true),
             new VertexFactoryRegistration("FGPUSkinVertexFactory", "GpuSkinVertexFactory", true, false, true, false),
             new VertexFactoryRegistration("FGPUSkinMorphVertexFactory", "GpuSkinVertexFactory", true, false, true, false),
-            new VertexFactoryRegistration("FInstancedStaticMeshVertexFactory", "LocalVertexFactory", true, true, true, true)
+            new VertexFactoryRegistration("FInstancedStaticMeshVertexFactory", "LocalVertexFactory", true, true, true, true),
+            new VertexFactoryRegistration("FGPUSkinDecalVertexFactory", "GpuSkinVertexFactory", true, false, true, false),
+            new VertexFactoryRegistration("FLocalDecalVertexFactory", "LocalVertexFactory", true, true, true, false),
+            new VertexFactoryRegistration("FGPUSkinMorphDecalVertexFactory", "GpuSkinVertexFactory", true, false, true, false),
+            new VertexFactoryRegistration("FSplineMeshVertexFactory", "LocalVertexFactory", true, true, true, true),
+            new VertexFactoryRegistration("FParticleInstancedMeshVertexFactory", "MeshInstancedVertexFactory", true, false, true, false),
+            new VertexFactoryRegistration("FLocalVertexFactoryApex", "LocalVertexFactory", true, false, false, false),
+            new VertexFactoryRegistration("FGPUSkinVertexFactoryApex", "ApexGpuSkinVertexFactory_1Bone", true, false, true, false)
         });
 
-        /// <summary>Snapshot of the recovered subset; not the engine's complete registration list.</summary>
+        /// <summary>Observed static material-shader registrations for the targeted LE3 binary.
+        /// Global shader types are excluded; this inventory does not establish a complete native
+        /// required shader set, especially with the separately recovered factory subset.</summary>
         public static IReadOnlyList<ShaderTypeRegistration> GetKnownShaderTypeRegistrations()
             => Array.AsReadOnly(KnownShaderTypes.Values.OrderBy(r => r.Name, StringComparer.Ordinal).ToArray());
 
@@ -344,8 +353,8 @@ namespace LegendaryExplorerCore.Shaders
         }
 
         /// <summary>
-        /// Initial explicit registration inventory, verified against LE3 11.3.2 static initializers
-        /// and packed descriptors. This is not the complete engine registration list.
+        /// Explicit material registration inventory, verified against the targeted LE3 binary's
+        /// static initializers and packed descriptors. Global shader registrations are excluded.
         /// </summary>
         public static bool TryGetKnownShaderTypeRegistration(string shaderTypeName, out ShaderTypeRegistration registration)
         {
@@ -360,6 +369,11 @@ namespace LegendaryExplorerCore.Shaders
             {
                 foreach (string name in names) registrations.Add(name, new(name, source, "Main", stage, IsMeshMaterial: true));
             }
+            registrations.Add("FLightFunctionVertexShader", new("FLightFunctionVertexShader", "LightFunctionVertexShader", "Main", ShaderStage.Vertex, false));
+            registrations.Add("FLightFunctionPixelShader", new("FLightFunctionPixelShader", "LightFunctionPixelShader", "Main", ShaderStage.Pixel, false));
+            registrations.Add("FRadialBlurVertexShader", new("FRadialBlurVertexShader", "RadialBlurScreenShader", "MainRadialBlurVS", ShaderStage.Vertex, false));
+            registrations.Add("FRadialBlurPixelShader", new("FRadialBlurPixelShader", "RadialBlurScreenShader", "MainRadialBlurPS", ShaderStage.Pixel, false));
+            registrations.Add("FRadialBlurVelocityPixelShader", new("FRadialBlurVelocityPixelShader", "RadialBlurScreenShader", "MainRadialBlurVelocityPS", ShaderStage.Pixel, false));
             Add("BasePassPixelShader", ShaderStage.Pixel,
                 "TBasePassPixelShaderFNoLightMapPolicyNoSkyLight", "TBasePassPixelShaderFNoLightMapPolicySkyLight");
             Add("BasePassPixelShader", ShaderStage.Pixel,
@@ -412,6 +426,8 @@ namespace LegendaryExplorerCore.Shaders
             }
             Add("SphericalHarmonicLightPixelShader", ShaderStage.Pixel,
                 "TLightPixelShaderFSphericalHarmonicLightPolicyFSignedDistanceFieldShadowTexturePolicy");
+            Add("SphericalHarmonicLightVertexShader", ShaderStage.Vertex,
+                "TLightVertexShaderFSphericalHarmonicLightPolicyFSignedDistanceFieldShadowTexturePolicy");
             Add("DirectionalLightVertexShader", ShaderStage.Vertex, "TLightVertexShaderFDirectionalLightPolicyFShadowTexturePolicy");
             Add("DirectionalLightPixelShader", ShaderStage.Pixel, "TLightPixelShaderFDirectionalLightPolicyFShadowTexturePolicy");
             Add("PointLightPixelShader", ShaderStage.Pixel, "TLightPixelShaderFPointLightPolicyFShadowTexturePolicy");
@@ -511,8 +527,13 @@ namespace LegendaryExplorerCore.Shaders
             out KnownPermutationEnvironment environment)
         {
             environment = null;
-            if (!TryGetKnownShaderTypeRegistration(shaderTypeName, out var shader) ||
-                !TryGetKnownVertexFactoryRegistration(vertexFactoryTypeName, out var factory)) return false;
+            if (!TryGetKnownShaderTypeRegistration(shaderTypeName, out var shader)) return false;
+            VertexFactoryRegistration factory = null;
+            if (shader.IsMeshMaterial)
+            {
+                if (!TryGetKnownVertexFactoryRegistration(vertexFactoryTypeName, out factory)) return false;
+            }
+            else if (vertexFactoryTypeName != null) return false;
 
             var definitions = new List<ShaderEnvironmentMacro>();
             void Add(string name, string value = "1", ShaderEnvironmentEvidence evidence = ShaderEnvironmentEvidence.ShaderClientReconstruction)
@@ -543,7 +564,7 @@ namespace LegendaryExplorerCore.Shaders
             KnownFoggedBasePassVertexTypes.TryGetValue(shaderTypeName, out var foggedEnvironment);
             if (foggedEnvironment != null)
                 simpleLightmap = foggedEnvironment.LightmapPolicy is "FSimpleLightMapTexturePolicy" or "FSimpleVertexLightMapPolicy" ||
-                    foggedEnvironment is { LightmapPolicy: "FCustomSimpleVertexLightMapPolicy", Density: "Constant" };
+                    foggedEnvironment is { LightmapPolicy: "FCustomSimpleVertexLightMapPolicy", Density: "Constant" or "LinearHalfspace" or "Sphere" };
             Add("NUM_LIGHTMAP_COEFFICIENTS", simpleLightmap ? "1" : "2");
 
             // Explicit identities only: neither class-name substring matching nor shader-source
@@ -553,7 +574,7 @@ namespace LegendaryExplorerCore.Shaders
                 case var foggedName when foggedEnvironment != null:
                     Add("FOGVOLUMEDENSITY_" + (foggedEnvironment.Density switch
                     {
-                        "Cone" => "CONEDENSITY", "Constant" => "CONSTANT", "LinearHalfspace" => "LINEARHALFSPACE",
+                        "Cone" => "CONEDENSITY", "Constant" => "CONSTANT", "LinearHalfspace" => "LINEARHALFSPACE", "Sphere" => "SPHEREDENSITY",
                         _ => throw new InvalidOperationException("Unverified fog density.")
                     }), evidence: ShaderEnvironmentEvidence.LE3RegistrationCallback);
                     // These extras reproduce exact ShaderClient policy injections, not NoDensity templates.
@@ -561,10 +582,10 @@ namespace LegendaryExplorerCore.Shaders
                         Add("ENABLE_DIRECTIONAL_LIGHT");
                     if (foggedEnvironment.LightmapPolicy == "FDirectionalVertexLightMapPolicy") Add("VERTEX_LIGHTMAP");
                     if (foggedEnvironment.LightmapPolicy == "FSimpleVertexLightMapPolicy" ||
-                        foggedEnvironment is { LightmapPolicy: "FCustomSimpleVertexLightMapPolicy", Density: "Constant" })
+                        foggedEnvironment is { LightmapPolicy: "FCustomSimpleVertexLightMapPolicy", Density: "Constant" or "LinearHalfspace" or "Sphere" })
                         Add("SIMPLE_VERTEX_LIGHTMAP");
                     if (foggedEnvironment.LightmapPolicy == "FSimpleLightMapTexturePolicy" ||
-                        foggedEnvironment.Density == "Constant" && foggedEnvironment.LightmapPolicy is
+                        foggedEnvironment.Density is "Constant" or "LinearHalfspace" or "Sphere" && foggedEnvironment.LightmapPolicy is
                             "FCustomVectorLightMapTexturePolicy" or "FDirectionalLightMapTexturePolicy")
                         Add("TEXTURE_LIGHTMAP");
                     break;
@@ -793,10 +814,20 @@ namespace LegendaryExplorerCore.Shaders
                 case "TLightVertexShaderFSphericalHarmonicLightPolicyFShadowTexturePolicy":
                     Add("STATICLIGHTING_TEXTUREMASK", evidence: ShaderEnvironmentEvidence.LE3RegistrationCallback);
                     break;
+                case "TLightVertexShaderFSphericalHarmonicLightPolicyFSignedDistanceFieldShadowTexturePolicy":
+                    // ac31cf0 -> aa9c470 composes aa9c590's texture mask with the SDF define.
+                    Add("STATICLIGHTING_TEXTUREMASK", evidence: ShaderEnvironmentEvidence.LE3RegistrationCallback);
+                    Add("STATICLIGHTING_SIGNEDDISTANCEFIELD", evidence: ShaderEnvironmentEvidence.LE3RegistrationCallback);
+                    break;
                 case "TLightVertexShaderFSphericalHarmonicLightPolicyFShadowVertexBufferPolicy":
                     Add("STATICLIGHTING_VERTEXMASK", evidence: ShaderEnvironmentEvidence.LE3RegistrationCallback);
                     break;
                 case "FVelocityVertexShader":
+                case "FLightFunctionVertexShader":
+                case "FLightFunctionPixelShader":
+                case "FRadialBlurVertexShader":
+                case "FRadialBlurPixelShader":
+                case "FRadialBlurVelocityPixelShader":
                 case "TLightPixelShaderFSphericalHarmonicLightPolicyFShadowTexturePolicy":
                 case "TLightPixelShaderFSphericalHarmonicLightPolicyFShadowVertexBufferPolicy":
                 case "TLightPixelShaderFSphericalHarmonicLightPolicyFSignedDistanceFieldShadowTexturePolicy":
@@ -824,12 +855,27 @@ namespace LegendaryExplorerCore.Shaders
             }
 
             // ShaderClient's live GPUSkin callback and LE3 captures agree on matrix skinning.
-            if (factory.Name is "FGPUSkinVertexFactory" or "FGPUSkinMorphVertexFactory")
+            if (factory?.Name is "FGPUSkinVertexFactory" or "FGPUSkinMorphVertexFactory" or "FGPUSkinDecalVertexFactory" or "FGPUSkinMorphDecalVertexFactory")
                 Add("QUAT_SKINNING", "0", ShaderEnvironmentEvidence.LE3RegistrationCallback);
-            if (factory.Name == "FGPUSkinMorphVertexFactory")
+            if (factory?.Name is "FGPUSkinMorphVertexFactory" or "FGPUSkinMorphDecalVertexFactory")
                 Add("GPUSKIN_MORPH_BLEND", "1", ShaderEnvironmentEvidence.LE3RegistrationCallback);
-            if (factory.Name == "FInstancedStaticMeshVertexFactory")
+            if (factory?.Name == "FInstancedStaticMeshVertexFactory")
                 Add("USE_INSTANCING", "1", ShaderEnvironmentEvidence.LE3RegistrationCallback);
+            if (factory?.Name == "FSplineMeshVertexFactory")
+                Add("USE_SPLINEDEFORM", "1", ShaderEnvironmentEvidence.LE3RegistrationCallback);
+            if (factory?.Name == "FParticleInstancedMeshVertexFactory")
+            {
+                Add("COLOR_OVER_LIFE", "1", ShaderEnvironmentEvidence.LE3RegistrationCallback);
+                // ShaderClient supplies this factory default in addition to shader policy defines.
+                if (!definitions.Any(m => m.Name == "SIMPLE_VERTEX_LIGHTMAP")) Add("SIMPLE_VERTEX_LIGHTMAP");
+            }
+            if (factory?.Name is "FGPUSkinDecalVertexFactory" or "FGPUSkinMorphDecalVertexFactory")
+                Add("GPUSKIN_DECAL", "1", ShaderEnvironmentEvidence.LE3RegistrationCallback);
+            if (factory?.Name == "FLocalDecalVertexFactory")
+            {
+                Add("DECAL_FACTORY", "1", ShaderEnvironmentEvidence.LE3RegistrationCallback);
+                Add("WORLD_COORDS", "1", ShaderEnvironmentEvidence.ShaderClientReconstruction);
+            }
 
             uint flags = shaderTypeName is
                 "TLightPixelShaderFSFXPointLightPolicyFNoStaticShadowingPolicy" or
@@ -863,18 +909,21 @@ namespace LegendaryExplorerCore.Shaders
                 or "TLightVertexShaderFSphericalHarmonicLightPolicyFShadowTexturePolicy"
                 or "TLightPixelShaderFSphericalHarmonicLightPolicyFShadowTexturePolicy"
                 or "TLightVertexShaderFSphericalHarmonicLightPolicyFShadowVertexBufferPolicy"
+                or "TLightVertexShaderFSphericalHarmonicLightPolicyFSignedDistanceFieldShadowTexturePolicy"
                 or "TLightPixelShaderFSphericalHarmonicLightPolicyFShadowVertexBufferPolicy"
                 or "TLightPixelShaderFSphericalHarmonicLightPolicyFSignedDistanceFieldShadowTexturePolicy" ||
                 KnownFoggedBasePassVertexTypes.ContainsKey(shaderTypeName) ||
-                factory.Name is "FGPUSkinMorphVertexFactory" or "FInstancedStaticMeshVertexFactory"
+                !shader.IsMeshMaterial || factory?.Name is "FGPUSkinMorphVertexFactory" or "FInstancedStaticMeshVertexFactory" or
+                    "FGPUSkinDecalVertexFactory" or "FLocalDecalVertexFactory" or "FGPUSkinMorphDecalVertexFactory" or "FSplineMeshVertexFactory" or
+                    "FParticleInstancedMeshVertexFactory" or "FLocalVertexFactoryApex" or "FGPUSkinVertexFactoryApex"
                 ? ShaderEnvironmentEvidence.ShaderClientReconstruction
                 : ShaderEnvironmentEvidence.ShippingBytecode;
             environment = new KnownPermutationEnvironment
             {
-                Target = shader.CreateTarget(flags, factory.Name, factory.SourceFileName),
+                Target = shader.CreateTarget(flags, factory?.Name, factory?.SourceFileName),
                 CompileFlagsEvidence = flagEvidence,
                 MacroDefinitions = definitions.AsReadOnly(),
-                VertexFactoryContext = factory.CreateCacheContext()
+                VertexFactoryContext = factory?.CreateCacheContext()
             };
             return true;
         }
@@ -1043,6 +1092,8 @@ namespace LegendaryExplorerCore.Shaders
         /// properties: some virtual getters add blend/lighting eligibility checks. NumUserTexCoords
         /// is translation-derived; planners populate it when constructing their own context, while
         /// callers supplying an explicit context must provide the matching translated count.
+        /// DecalFactoryFallback is the caller-resolved native +0xa8 result: false for ordinary
+        /// resources, null when a derived resource's implementation has not been resolved.
         /// </summary>
         public sealed record ShouldCacheMaterialContext(
             bool IsUnlit,
@@ -1067,7 +1118,13 @@ namespace LegendaryExplorerCore.Shaders
             bool IsTwoSided = false,
             uint NumUserTexCoords = 0,
             bool UsedWithMorphTargets = false,
-            bool UsedWithInstancedMeshes = false);
+            bool UsedWithInstancedMeshes = false,
+            bool? DecalFactoryFallback = false,
+            bool UsedWithSplineMeshes = false,
+            bool UsedWithInstancedMeshParticles = false,
+            bool IsLightFunction = false,
+            bool UsedWithRadialBlur = false,
+            bool UsedWithAPEXMeshes = false);
 
         /// <summary>Caller-resolved engine-wide cache gates, not material properties. The default
         /// is ordinary PC SM5 compilation with debug viewmodes allowed, not cooking or seek-free
@@ -1148,7 +1205,15 @@ namespace LegendaryExplorerCore.Shaders
                 IsTwoSided: properties.GetProp<BoolProperty>("TwoSided")?.Value == true,
                 // Resource virtuals +0x128/+0x138 read stored usage bits, not graph contents.
                 UsedWithMorphTargets: properties.GetProp<BoolProperty>("bUsedWithMorphTargets")?.Value == true,
-                UsedWithInstancedMeshes: properties.GetProp<BoolProperty>("bUsedWithInstancedMeshes")?.Value == true);
+                UsedWithInstancedMeshes: properties.GetProp<BoolProperty>("bUsedWithInstancedMeshes")?.Value == true,
+                // Native resource +0x140 reads UMaterial+0x3c4 bit0 (ab52580).
+                UsedWithSplineMeshes: properties.GetProp<BoolProperty>("bUsedWithSplineMeshes")?.Value == true,
+                // Native resource +0x108 reads UMaterial+0x3c0 bit25 (ab523c0).
+                UsedWithInstancedMeshParticles: properties.GetProp<BoolProperty>("bUsedWithInstancedMeshParticles")?.Value == true,
+                IsLightFunction: properties.GetProp<BoolProperty>("bUsedAsLightFunction")?.Value == true,
+                UsedWithRadialBlur: properties.GetProp<BoolProperty>("bUsedWithRadialBlur")?.Value == true,
+                // Resource +0x148 (ab522c0) reads UMaterial+0x3c4 bit1.
+                UsedWithAPEXMeshes: properties.GetProp<BoolProperty>("bUsedWithAPEXMeshes")?.Value == true);
         }
 
         // Observed in captured LE3 compile jobs. Individual shader registrations may add flags such
@@ -1212,11 +1277,23 @@ namespace LegendaryExplorerCore.Shaders
 
             switch (shaderTypeName)
             {
+                case "FLightFunctionVertexShader":
+                case "FLightFunctionPixelShader":
+                    // aaffce0 tail-calls resource+78 (ab52200), UMaterial+3c0 bit11.
+                    shouldCache = materialContext.IsLightFunction;
+                    return true;
+                case "FRadialBlurVertexShader":
+                case "FRadialBlurPixelShader":
+                case "FRadialBlurVelocityPixelShader":
+                    // abcb6b0 reads resource+130 (ab524e0, bit30), then special+90.
+                    shouldCache = materialContext.UsedWithRadialBlur || materialContext.IsSpecialEngineMaterial;
+                    return true;
                 case "TLightVertexShaderFSphericalHarmonicLightPolicyFShadowTexturePolicy":
                 case "TLightPixelShaderFSphericalHarmonicLightPolicyFShadowTexturePolicy":
                 case "TLightVertexShaderFSphericalHarmonicLightPolicyFShadowVertexBufferPolicy":
                 case "TLightPixelShaderFSphericalHarmonicLightPolicyFShadowVertexBufferPolicy":
                 case "TLightPixelShaderFSphericalHarmonicLightPolicyFSignedDistanceFieldShadowTexturePolicy":
+                case "TLightVertexShaderFSphericalHarmonicLightPolicyFSignedDistanceFieldShadowTexturePolicy":
                     // ac35fe0/ac36030 perform preliminary checks, then unconditionally return zero.
                     shouldCache = false;
                     return true;
@@ -1609,7 +1686,7 @@ namespace LegendaryExplorerCore.Shaders
         /// </summary>
         public static bool TryEvaluateKnownVertexFactoryShouldCache(string vertexFactoryTypeName,
             ShouldCacheMaterialContext materialContext, ShouldCacheVertexFactoryContext vertexFactoryContext,
-            out bool shouldCache)
+            out bool shouldCache, ShouldCacheEnvironmentContext environmentContext = null)
         {
             ArgumentNullException.ThrowIfNull(vertexFactoryTypeName);
             ArgumentNullException.ThrowIfNull(materialContext);
@@ -1644,6 +1721,45 @@ namespace LegendaryExplorerCore.Shaders
                 // aaffc10 composes instanced usage, Local's non-terrain gate and a decal veto.
                 shouldCache = (materialContext.UsedWithInstancedMeshes || materialContext.IsSpecialEngineMaterial) &&
                     !materialContext.IsTerrainMaterial && !materialContext.UsedWithDecals;
+                return true;
+            }
+            if (vertexFactoryTypeName is "FLocalVertexFactoryApex" or "FGPUSkinVertexFactoryApex")
+            {
+                // ab64b40 has no terrain/decal veto or inherited Local cache gate.
+                shouldCache = materialContext.UsedWithAPEXMeshes || materialContext.IsSpecialEngineMaterial;
+                return true;
+            }
+            if (vertexFactoryTypeName == "FSplineMeshVertexFactory")
+            {
+                // ac36090 also rejects platform 3; this compiler exclusively emits LE3 SM5 (5).
+                shouldCache = (materialContext.UsedWithSplineMeshes || materialContext.IsSpecialEngineMaterial) &&
+                    !materialContext.IsTerrainMaterial && !materialContext.UsedWithDecals;
+                return true;
+            }
+            if (vertexFactoryTypeName == "FParticleInstancedMeshVertexFactory")
+            {
+                // ab74ee0 does not compose Local's terrain veto or ordinary instanced mesh usage.
+                shouldCache = (materialContext.UsedWithInstancedMeshParticles || materialContext.IsSpecialEngineMaterial) &&
+                    !materialContext.UsedWithDecals;
+                return true;
+            }
+            if (vertexFactoryTypeName is "FGPUSkinDecalVertexFactory" or "FLocalDecalVertexFactory" or "FGPUSkinMorphDecalVertexFactory")
+            {
+                shouldCache = false;
+                bool gpu = vertexFactoryTypeName != "FLocalDecalVertexFactory";
+                // aaffad0 shares the decal entry gate, then aaff9c0's morph/skeletal gate.
+                if (vertexFactoryTypeName == "FGPUSkinMorphDecalVertexFactory" &&
+                    !materialContext.UsedWithMorphTargets && !materialContext.IsSpecialEngineMaterial)
+                    return true;
+                // Independent vetoes make an unknown fallback irrelevant to the final result.
+                if (gpu ? !(materialContext.UsedWithSkeletalMesh || materialContext.UsedWithFracturedMeshes ||
+                            materialContext.IsSpecialEngineMaterial) : materialContext.IsTerrainMaterial)
+                    return true;
+                bool ordinaryGate = materialContext.UsedWithDecals || materialContext.IsSpecialEngineMaterial &&
+                    (environmentContext ?? new ShouldCacheEnvironmentContext()).AllowsDebugViewModes;
+                if (!ordinaryGate && materialContext.DecalFactoryFallback is not bool)
+                    return false;
+                shouldCache = ordinaryGate || materialContext.DecalFactoryFallback == true;
                 return true;
             }
 
@@ -3574,7 +3690,8 @@ namespace LegendaryExplorerCore.Shaders
                         throw new ArgumentException("Mesh candidates require a vertex-factory context; non-mesh candidates must omit it.");
                     }
 
-                    // ShaderClient filters ordinary materials' VFs before evaluating cache gates.
+                    // Native completeness ab3e400 and ShaderClient filter materials-capable VFs
+                    // before the type -> material-resource -> vertex-factory cache gates.
                     if (mesh && !candidate.VertexFactoryContext.UsedWithMaterials)
                     {
                         excluded.Add(target);
@@ -3620,7 +3737,7 @@ namespace LegendaryExplorerCore.Shaders
                     if (mesh)
                     {
                         if (!TryEvaluateKnownVertexFactoryShouldCache(target.VertexFactoryTypeName, materialContext,
-                                candidate.VertexFactoryContext, out bool vertexFactoryCaches))
+                                candidate.VertexFactoryContext, out bool vertexFactoryCaches, environmentContext))
                         {
                             string reason = $"{identity}: vertex-factory ShouldCache is unresolved.";
                             errors.Add(reason);
@@ -3679,10 +3796,17 @@ namespace LegendaryExplorerCore.Shaders
             };
             var candidates = new List<ShaderCompileCandidate>();
             foreach (var shader in GetKnownShaderTypeRegistrations())
-            foreach (var factory in GetKnownVertexFactoryRegistrations())
             {
-                if (!TryGetKnownPermutationEnvironment(shader.Name, factory.Name, out var environment))
-                    throw new InvalidOperationException($"Missing recovered environment for {factory.Name}/{shader.Name}.");
+                if (shader.IsMeshMaterial)
+                {
+                    foreach (var factory in GetKnownVertexFactoryRegistrations()) AddCandidate(shader.Name, factory.Name);
+                }
+                else AddCandidate(shader.Name, null);
+            }
+            void AddCandidate(string shaderName, string factoryName)
+            {
+                if (!TryGetKnownPermutationEnvironment(shaderName, factoryName, out var environment))
+                    throw new InvalidOperationException($"Missing recovered environment for {factoryName ?? "non-mesh"}/{shaderName}.");
                 candidates.Add(environment.CreateCandidate());
             }
             return BuildProvisionalCompilePlan(translation, resource, candidates, environmentContext: environmentContext,
@@ -3804,6 +3928,16 @@ namespace LegendaryExplorerCore.Shaders
                     macros["USING_VECTORLIGHTMAPS"] = "1";
                     macros["VERTEX_LIGHTMAP"] = "1";
                 }
+            }
+
+            // ShaderClient's final policy cleanup runs after both factory and material overrides.
+            // These dynamic/no-light policies cannot inherit a factory's static-lightmap fallback.
+            if (target.ShaderTypeName.Contains("FNoLightMapPolicy", StringComparison.Ordinal) ||
+                target.ShaderTypeName.Contains("FDirectionalLightLightMapPolicy", StringComparison.Ordinal) ||
+                target.ShaderTypeName.Contains("FSHLightLightMapPolicy", StringComparison.Ordinal))
+            {
+                macros.Remove("SIMPLE_VERTEX_LIGHTMAP");
+                macros.Remove("TEXTURE_LIGHTMAP");
             }
 
             return new ShaderCompileJob
@@ -3956,8 +4090,13 @@ namespace LegendaryExplorerCore.Shaders
             var target = compiledShader.Target;
             if (!TryGetKnownShaderTypeRegistration(target.ShaderTypeName, out var registration) ||
                 target.SourceFileName != registration.SourceFileName || target.EntryPoint != registration.EntryPoint ||
-                target.Stage != registration.Stage || !TryGetKnownVertexFactoryRegistration(target.VertexFactoryTypeName, out var factory) ||
-                target.VertexFactoryShaderFileName != factory.SourceFileName)
+                target.Stage != registration.Stage || (target.VertexFactoryTypeName != null) != registration.IsMeshMaterial)
+                return Failure("Shader-object construction requires exact recovered shader registration metadata.");
+            VertexFactoryRegistration factory = null;
+            if (registration.IsMeshMaterial &&
+                (!TryGetKnownVertexFactoryRegistration(target.VertexFactoryTypeName, out factory) ||
+                 target.VertexFactoryShaderFileName != factory.SourceFileName) ||
+                !registration.IsMeshMaterial && target.VertexFactoryShaderFileName != null)
                 return Failure("Shader-object construction requires exact recovered shader and vertex-factory registration metadata.");
 
             var binder = new LE3ShaderParameterBinder(compiledShader.ParameterBindings);
@@ -3966,6 +4105,32 @@ namespace LegendaryExplorerCore.Shaders
             {
                 switch (target.ShaderTypeName)
                 {
+                    case "FLightFunctionVertexShader":
+                        shader = new FLightFunctionVertexShader();
+                        break;
+                    case "FLightFunctionPixelShader":
+                        // aaf2200 explicitly passes optional=1 for all five scene/light fields.
+                        shader = new FLightFunctionPixelShader
+                        {
+                            SceneTextureParameters = binder.BindSceneTextureParameters(),
+                            ScreenToLight = binder.BindConstant("ScreenToLight"),
+                            MaterialParameters = binder.BindMaterialPixelParameters(translation)
+                        };
+                        break;
+                    case "FRadialBlurVertexShader":
+                        shader = new FRadialBlurVertexShader { WorldCenterPos = binder.BindConstant("WorldCenterPos") };
+                        break;
+                    case "FRadialBlurPixelShader":
+                    case "FRadialBlurVelocityPixelShader":
+                        shader = new FRadialBlurPixelShader
+                        {
+                            RadialBlurScale = binder.BindConstant("RadialBlurScale"),
+                            RadialBlurFalloffExp = binder.BindConstant("RadialBlurFalloffExp"),
+                            RadialBlurOpacity = binder.BindConstant("RadialBlurOpacity"),
+                            SceneTextureParameters = binder.BindSceneTextureParameters(),
+                            MaterialParameters = binder.BindMaterialPixelParameters(translation)
+                        };
+                        break;
                     case "TLightVertexShaderFSFXPointLightPolicyFNoStaticShadowingPolicy":
                         shader = CreateLightVertexShader(() => new FSFXPointLightPolicy.VertexParametersType
                         {
@@ -3993,6 +4158,7 @@ namespace LegendaryExplorerCore.Shaders
                             { WorldIncidentLighting = binder.BindConstant("WorldIncidentLighting") }, () => new FNullPolicy());
                         break;
                     case "TLightVertexShaderFSphericalHarmonicLightPolicyFShadowTexturePolicy":
+                    case "TLightVertexShaderFSphericalHarmonicLightPolicyFSignedDistanceFieldShadowTexturePolicy":
                         // Folded b05860: VF, optional coordinate scale/bias, then material VS.
                         shader = CreateLightVertexShader(() => new FNullPolicy(), binder.BindShadowTextureVertexParameters);
                         break;
@@ -4308,6 +4474,15 @@ namespace LegendaryExplorerCore.Shaders
                     case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFConeDensityPolicy":
                     case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFConstantDensityPolicy":
                     case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFConeDensityPolicy":
+                    case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
+                    case "TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFSphereDensityPolicy":
+                    case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
+                    case "TBasePassVertexShaderFCustomVectorLightMapTexturePolicyFSphereDensityPolicy":
+                    case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
+                    case "TBasePassVertexShaderFDirectionalLightMapTexturePolicyFSphereDensityPolicy":
+                    case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFConstantDensityPolicy":
+                    case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy":
+                    case "TBasePassVertexShaderFSimpleLightMapTexturePolicyFSphereDensityPolicy":
                         shader = CreateBasePassVertexShader(() => new FLightMapTexturePolicy.VertexParametersType
                             { LightmapCoordinateScaleBias = binder.BindConstant("LightmapCoordinateScaleBias") }, binder.BindFogDensityParameters);
                         break;
@@ -4319,6 +4494,14 @@ namespace LegendaryExplorerCore.Shaders
                     case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFConeDensityPolicy":
                     case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFConstantDensityPolicy":
                     case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFConeDensityPolicy":
+                    case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
+                    case "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFSphereDensityPolicy":
+                    case "TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFSphereDensityPolicy":
+                    case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
+                    case "TBasePassVertexShaderFDirectionalVertexLightMapPolicyFSphereDensityPolicy":
+                    case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFConstantDensityPolicy":
+                    case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy":
+                    case "TBasePassVertexShaderFSimpleVertexLightMapPolicyFSphereDensityPolicy":
                         shader = CreateBasePassVertexShader(() => new FVertexLightMapPolicy.VertexParametersType
                             { LightMapScale = binder.BindConstant("LightMapScale", optional: false) }, binder.BindFogDensityParameters);
                         break;
@@ -4326,6 +4509,10 @@ namespace LegendaryExplorerCore.Shaders
                     case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFConstantDensityPolicy":
                     case "TBasePassVertexShaderFSHLightLightMapPolicyFConeDensityPolicy":
                     case "TBasePassVertexShaderFSHLightLightMapPolicyFConstantDensityPolicy":
+                    case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFLinearHalfspaceDensityPolicy":
+                    case "TBasePassVertexShaderFDirectionalLightLightMapPolicyFSphereDensityPolicy":
+                    case "TBasePassVertexShaderFSHLightLightMapPolicyFLinearHalfspaceDensityPolicy":
+                    case "TBasePassVertexShaderFSHLightLightMapPolicyFSphereDensityPolicy":
                         shader = CreateBasePassVertexShader(() => new FDirectionalLightLightMapPolicy.VertexParametersType
                             { LightDirectionAndbDirectional = binder.BindConstant("LightDirectionAndbDirectional") }, binder.BindFogDensityParameters);
                         break;
@@ -4543,6 +4730,7 @@ namespace LegendaryExplorerCore.Shaders
             var expected = plan.Jobs.ToDictionary(j => (j.Target.ShaderTypeName, j.Target.VertexFactoryTypeName), j => j.Target);
             var seen = new HashSet<(string, string)>();
             var grouped = new Dictionary<string, MeshShaderMap>(StringComparer.Ordinal);
+            var nonMeshShaders = new UMultiMap<NameReference, ShaderReference>();
             var shaders = new Dictionary<Guid, Shader>();
             foreach (var compiled in compiledShaders)
             {
@@ -4571,6 +4759,11 @@ namespace LegendaryExplorerCore.Shaders
                 }
                 var shader = construction.Shader;
                 shaders.Add(shader.Guid, shader);
+                if (target.VertexFactoryTypeName == null)
+                {
+                    nonMeshShaders.Add(shader.ShaderType, new ShaderReference { ShaderType = shader.ShaderType, Id = shader.Guid });
+                    continue;
+                }
                 // Pixel objects have no serialized VF parameter reference. Group using the job's
                 // registration metadata, never Shader.VertexFactoryType or a guessed class name.
                 if (!grouped.TryGetValue(target.VertexFactoryTypeName, out var meshMap))
@@ -4587,7 +4780,7 @@ namespace LegendaryExplorerCore.Shaders
             var map = new MaterialShaderMap
             {
                 ID = materialResourceId, FriendlyName = friendlyName, StaticParameters = parameters,
-                Shaders = new(), MeshShaderMaps = grouped.Values.ToArray(),
+                Shaders = nonMeshShaders, MeshShaderMaps = grouped.Values.ToArray(),
                 UniformPixelVectorExpressions = translation.UniformPixelVectorExpressions.ToArray(),
                 UniformPixelScalarExpressions = translation.UniformPixelScalarExpressions.ToArray(),
                 Uniform2DTextureExpressions = translation.Uniform2DTextureExpressions.ToArray(),
@@ -4624,7 +4817,8 @@ namespace LegendaryExplorerCore.Shaders
                 foreach (var target in plan.Jobs.Select(j => j.Target).DistinctBy(t => t.ShaderTypeName))
                     cache.ShaderTypeCRCMap.Add(target.ShaderTypeName, sourceCrcs.Compute(target.SourceFileName).Crc);
                 // PS objects omit VF refs, but their jobs still depend on that factory source.
-                foreach (var target in plan.Jobs.Select(j => j.Target).DistinctBy(t => t.VertexFactoryTypeName))
+                foreach (var target in plan.Jobs.Select(j => j.Target).Where(t => t.VertexFactoryTypeName != null)
+                             .DistinctBy(t => t.VertexFactoryTypeName))
                     cache.VertexFactoryTypeCRCMap.Add(target.VertexFactoryTypeName, sourceCrcs.Compute(target.VertexFactoryShaderFileName).Crc);
             }
             catch (Exception exception) when (exception is IOException or InvalidDataException or UnauthorizedAccessException or ArgumentException or InvalidOperationException)

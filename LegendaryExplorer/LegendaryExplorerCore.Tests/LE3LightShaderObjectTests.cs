@@ -20,6 +20,7 @@ public class LE3LightShaderObjectTests
     [DataRow("ShadowVertexBuffer", true)]
     [DataRow("ShadowVertexBuffer", false)]
     [DataRow("SignedDistanceFieldShadowTexture", false)]
+    [DataRow("SignedDistanceFieldShadowTexture", true)]
     public void ShShadowPoliciesRemainExcludedWithNativeStageSpecificMacros(string shadow, bool vertex)
     {
         string name = $"TLight{(vertex ? "Vertex" : "Pixel")}ShaderFSphericalHarmonicLightPolicyF{shadow}Policy";
@@ -36,15 +37,22 @@ public class LE3LightShaderObjectTests
         Assert.IsTrue(TryGetKnownPermutationEnvironment(name, "FLocalVertexFactory", out var environment));
         Assert.AreEqual(ShaderEnvironmentEvidence.ShaderClientReconstruction, environment.CompileFlagsEvidence);
         Assert.AreEqual(vertex ? 0x9000u : 0x9400u, environment.Target.CompileFlags);
-        Assert.AreEqual(vertex ? 6 : 5, environment.MacroDefinitions.Count);
+        bool sdfVertex = vertex && shadow == "SignedDistanceFieldShadowTexture";
+        Assert.AreEqual(vertex ? sdfVertex ? 7 : 6 : 5, environment.MacroDefinitions.Count);
         Assert.IsFalse(environment.MacroDefinitions.Any(m => m.Name == "SIMPLE_VERTEX_LIGHTMAP"));
         var staticLighting = environment.MacroDefinitions.Where(m => m.Name.StartsWith("STATICLIGHTING_", StringComparison.Ordinal)).ToArray();
-        Assert.AreEqual(vertex ? 1 : 0, staticLighting.Length);
+        Assert.AreEqual(vertex ? sdfVertex ? 2 : 1 : 0, staticLighting.Length);
         if (vertex)
         {
-            Assert.AreEqual(shadow == "ShadowTexture" ? "STATICLIGHTING_TEXTUREMASK" : "STATICLIGHTING_VERTEXMASK", staticLighting[0].Name);
+            Assert.AreEqual(shadow.EndsWith("Texture", StringComparison.Ordinal) ? "STATICLIGHTING_TEXTUREMASK" : "STATICLIGHTING_VERTEXMASK", staticLighting[0].Name);
             Assert.AreEqual("1", staticLighting[0].Definition);
             Assert.AreEqual(ShaderEnvironmentEvidence.LE3RegistrationCallback, staticLighting[0].Evidence);
+            if (sdfVertex)
+            {
+                Assert.AreEqual("STATICLIGHTING_SIGNEDDISTANCEFIELD", staticLighting[1].Name);
+                Assert.AreEqual("1", staticLighting[1].Definition);
+                Assert.AreEqual(ShaderEnvironmentEvidence.LE3RegistrationCallback, staticLighting[1].Evidence);
+            }
         }
     }
 
@@ -60,13 +68,13 @@ public class LE3LightShaderObjectTests
         var candidates = GetKnownShaderTypeRegistrations().Where(t => t.Name.Contains("FSphericalHarmonicLightPolicy", StringComparison.Ordinal) &&
             !t.Name.EndsWith("FNoStaticShadowingPolicy", StringComparison.Ordinal)).SelectMany(t => GetKnownVertexFactoryRegistrations().Select(v =>
             { Assert.IsTrue(TryGetKnownPermutationEnvironment(t.Name, v.Name, out var environment)); return environment.CreateCandidate(); })).ToArray();
-        Assert.AreEqual(20, candidates.Length);
+        Assert.AreEqual(66, candidates.Length);
         var plan = compiler.BuildProvisionalCompilePlan(compiler.TranslateMaterialHlsl(CommentTemplate()), MaterialResource.Create(), candidates);
         Assert.IsTrue(plan.Success, string.Join("; ", plan.Errors)); Assert.AreEqual(0, plan.Jobs.Count);
-        Assert.AreEqual(20, plan.ExcludedTargets.Count);
+        Assert.AreEqual(66, plan.ExcludedTargets.Count);
         Assert.IsFalse(ComparePlannedPermutations(plan, Array.Empty<ShaderPermutationIdentity>()).IsCompleteShaderSet);
         Assert.IsTrue(plan.Decisions.All(d => d.Disposition == ShaderCompileDisposition.Excluded && d.Gate == ShaderCompileGate.ShaderTypeShouldCache));
-        Assert.IsFalse(TryGetKnownShaderTypeRegistration("TLightVertexShaderFSphericalHarmonicLightPolicyFSignedDistanceFieldShadowTexturePolicy", out _));
+        Assert.IsTrue(TryGetKnownShaderTypeRegistration("TLightVertexShaderFSphericalHarmonicLightPolicyFSignedDistanceFieldShadowTexturePolicy", out _));
     }
 
     [TestMethod]
@@ -75,6 +83,7 @@ public class LE3LightShaderObjectTests
     [DataRow("ShadowVertexBuffer", true)]
     [DataRow("ShadowVertexBuffer", false)]
     [DataRow("SignedDistanceFieldShadowTexture", false)]
+    [DataRow("SignedDistanceFieldShadowTexture", true)]
     public void ShShadowTypedArchivesPreserveOptionalPolicyAndLightingBindings(string shadow, bool vertex)
     {
         GlobalTest.Init();

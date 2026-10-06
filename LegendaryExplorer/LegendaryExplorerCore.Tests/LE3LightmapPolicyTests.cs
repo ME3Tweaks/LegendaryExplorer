@@ -22,6 +22,12 @@ public class LE3LightmapPolicyTests
     [DataRow("FCustomVectorVertexLightMapPolicy", "Constant", true)]
     [DataRow("FCustomVectorVertexLightMapPolicy", "LinearHalfspace", false)]
     [DataRow("FCustomVectorVertexLightMapPolicy", "LinearHalfspace", true)]
+    [DataRow("FCustomSimpleLightMapTexturePolicy", "LinearHalfspace", false)]
+    [DataRow("FCustomSimpleLightMapTexturePolicy", "LinearHalfspace", true)]
+    [DataRow("FCustomSimpleLightMapTexturePolicy", "Sphere", false)]
+    [DataRow("FCustomSimpleLightMapTexturePolicy", "Sphere", true)]
+    [DataRow("FCustomVectorVertexLightMapPolicy", "Sphere", false)]
+    [DataRow("FCustomVectorVertexLightMapPolicy", "Sphere", true)]
     public void FoggedCustomPolicyMaterialOverridesDoNotMutateTypeEnvironment(string policy, string density, bool usage)
     {
         GlobalTest.Init();
@@ -67,6 +73,27 @@ public class LE3LightmapPolicyTests
     [DataRow("FSHLightLightMapPolicy", "Constant", "ENABLE_DIRECTIONAL_LIGHT", 2)]
     [DataRow("FSimpleLightMapTexturePolicy", "Cone", "TEXTURE_LIGHTMAP", 1)]
     [DataRow("FSimpleVertexLightMapPolicy", "Cone", "SIMPLE_VERTEX_LIGHTMAP", 1)]
+    [DataRow("FCustomSimpleLightMapTexturePolicy", "LinearHalfspace", "", 2)]
+    [DataRow("FCustomSimpleLightMapTexturePolicy", "Sphere", "", 2)]
+    [DataRow("FCustomSimpleVertexLightMapPolicy", "LinearHalfspace", "SIMPLE_VERTEX_LIGHTMAP", 1)]
+    [DataRow("FCustomSimpleVertexLightMapPolicy", "Sphere", "SIMPLE_VERTEX_LIGHTMAP", 1)]
+    [DataRow("FCustomVectorLightMapTexturePolicy", "LinearHalfspace", "TEXTURE_LIGHTMAP", 2)]
+    [DataRow("FCustomVectorLightMapTexturePolicy", "Sphere", "TEXTURE_LIGHTMAP", 2)]
+    [DataRow("FCustomVectorVertexLightMapPolicy", "Sphere", "", 2)]
+    [DataRow("FDirectionalLightLightMapPolicy", "LinearHalfspace", "ENABLE_DIRECTIONAL_LIGHT", 2)]
+    [DataRow("FDirectionalLightLightMapPolicy", "Sphere", "ENABLE_DIRECTIONAL_LIGHT", 2)]
+    [DataRow("FDirectionalLightMapTexturePolicy", "LinearHalfspace", "TEXTURE_LIGHTMAP", 2)]
+    [DataRow("FDirectionalLightMapTexturePolicy", "Sphere", "TEXTURE_LIGHTMAP", 2)]
+    [DataRow("FDirectionalVertexLightMapPolicy", "LinearHalfspace", "VERTEX_LIGHTMAP", 2)]
+    [DataRow("FDirectionalVertexLightMapPolicy", "Sphere", "VERTEX_LIGHTMAP", 2)]
+    [DataRow("FSHLightLightMapPolicy", "LinearHalfspace", "ENABLE_DIRECTIONAL_LIGHT", 2)]
+    [DataRow("FSHLightLightMapPolicy", "Sphere", "ENABLE_DIRECTIONAL_LIGHT", 2)]
+    [DataRow("FSimpleLightMapTexturePolicy", "LinearHalfspace", "TEXTURE_LIGHTMAP", 1)]
+    [DataRow("FSimpleLightMapTexturePolicy", "Sphere", "TEXTURE_LIGHTMAP", 1)]
+    [DataRow("FSimpleLightMapTexturePolicy", "Constant", "TEXTURE_LIGHTMAP", 1)]
+    [DataRow("FSimpleVertexLightMapPolicy", "LinearHalfspace", "SIMPLE_VERTEX_LIGHTMAP", 1)]
+    [DataRow("FSimpleVertexLightMapPolicy", "Sphere", "SIMPLE_VERTEX_LIGHTMAP", 1)]
+    [DataRow("FSimpleVertexLightMapPolicy", "Constant", "SIMPLE_VERTEX_LIGHTMAP", 1)]
     public void FoggedBasePassGatesComposeNativeFogAndLightmapPredicates(string policy, string density, string extra, int coefficients)
     {
         string name = "TBasePassVertexShader" + policy + "F" + density + "DensityPolicy";
@@ -76,14 +103,16 @@ public class LE3LightmapPolicyTests
             Assert.AreEqual(ShaderEnvironmentEvidence.ShaderClientReconstruction, environment.CompileFlagsEvidence);
             Assert.AreEqual(0x9000u, environment.Target.CompileFlags);
             var macros = environment.CreateCandidate().EnvironmentMacros;
-            string densityMacro = "FOGVOLUMEDENSITY_" + (density == "Cone" ? "CONEDENSITY" : density == "Constant" ? "CONSTANT" : "LINEARHALFSPACE");
+            string densityMacro = "FOGVOLUMEDENSITY_" + (density == "Cone" ? "CONEDENSITY" : density == "Constant" ? "CONSTANT" : density == "Sphere" ? "SPHEREDENSITY" : "LINEARHALFSPACE");
             Assert.AreEqual("1", macros[densityMacro]);
             Assert.AreEqual(ShaderEnvironmentEvidence.LE3RegistrationCallback, environment.MacroDefinitions.Single(m => m.Name == densityMacro).Evidence);
             Assert.AreEqual(coefficients.ToString(), macros["NUM_LIGHTMAP_COEFFICIENTS"]);
             int factoryMacros = factory.Name switch
             {
                 "FGPUSkinVertexFactory" => 1, "FGPUSkinMorphVertexFactory" => 2,
-                "FInstancedStaticMeshVertexFactory" => 1, _ => 0
+                "FInstancedStaticMeshVertexFactory" => 1, "FGPUSkinDecalVertexFactory" => 2,
+                "FLocalDecalVertexFactory" => 2, "FGPUSkinMorphDecalVertexFactory" => 3, "FSplineMeshVertexFactory" => 1,
+                "FParticleInstancedMeshVertexFactory" => extra == "SIMPLE_VERTEX_LIGHTMAP" ? 1 : 2, _ => 0
             };
             Assert.AreEqual(6 + factoryMacros + (extra.Length == 0 ? 0 : 1), macros.Count);
             if (extra.Length != 0) Assert.AreEqual("1", macros[extra]);
@@ -111,8 +140,9 @@ public class LE3LightmapPolicyTests
                 expected &= !Bit(3) && vfName == "FLocalVertexFactory" && !Bit(0) && (texture || !Bit(4)) && Bit(8) &&
                     (Bit(1) || Bit(2) && (Bit(5) || usage));
             }
-            else expected &= !Bit(3) && !Bit(0) && Bit(8) && (Bit(2) || Bit(1)) &&
-                (policy != "FDirectionalVertexLightMapPolicy" || !Bit(4));
+            else expected &= (policy.StartsWith("FSimple", StringComparison.Ordinal) || !Bit(3)) &&
+                !Bit(0) && Bit(8) && (Bit(2) || Bit(1)) &&
+                (!policy.Contains("Vertex", StringComparison.Ordinal) || !Bit(4));
             Assert.IsTrue(TryEvaluateKnownShaderTypeShouldCache(name, context, vfName, new(Bit(8), SupportsDynamicLighting: Bit(9)), out bool actual));
             Assert.AreEqual(expected, actual, name + "/" + flags + "/" + blend + "/" + vfName + "/" + fog);
         }
@@ -129,9 +159,11 @@ public class LE3LightmapPolicyTests
     [TestMethod]
     public void FoggedBasePassInventoryDoesNotInventSymmetricRegistrations()
     {
-        Assert.IsFalse(TryGetKnownShaderTypeRegistration("TBasePassVertexShaderFSimpleLightMapTexturePolicyFConstantDensityPolicy", out _));
-        Assert.IsFalse(TryGetKnownShaderTypeRegistration("TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy", out _));
-        Assert.IsFalse(TryGetKnownShaderTypeRegistration("TBasePassVertexShaderFSHLightLightMapPolicyFSphereDensityPolicy", out _));
+        Assert.IsTrue(TryGetKnownShaderTypeRegistration("TBasePassVertexShaderFSimpleLightMapTexturePolicyFConstantDensityPolicy", out _));
+        Assert.IsTrue(TryGetKnownShaderTypeRegistration("TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy", out _));
+        Assert.IsTrue(TryGetKnownShaderTypeRegistration("TBasePassVertexShaderFSHLightLightMapPolicyFSphereDensityPolicy", out _));
+        Assert.IsFalse(TryGetKnownShaderTypeRegistration("TBasePassVertexShaderFUnknownLightMapPolicyFSphereDensityPolicy", out _));
+        Assert.IsFalse(TryGetKnownShaderTypeRegistration("TBasePassPixelShaderFSimpleLightMapTexturePolicyFSphereDensityPolicy", out _));
     }
 
 
@@ -223,8 +255,9 @@ public class LE3LightmapPolicyTests
         Assert.IsFalse(new VertexFactoryRegistration("Unresolved", "Unresolved", true, true).CreateCacheContext().SupportsDynamicLighting.HasValue);
         foreach (var factory in GetKnownVertexFactoryRegistrations())
         {
-            Assert.AreEqual(true, factory.SupportsDynamicLighting);
-            Assert.AreEqual(true, factory.CreateCacheContext().SupportsDynamicLighting);
+            bool expectedDynamic = factory.Name != "FLocalVertexFactoryApex";
+            Assert.AreEqual(expectedDynamic, factory.SupportsDynamicLighting);
+            Assert.AreEqual(expectedDynamic, factory.CreateCacheContext().SupportsDynamicLighting);
             Assert.IsTrue(TryGetKnownPermutationEnvironment(name, factory.Name, out var environment));
             var macros = environment.CreateCandidate().EnvironmentMacros;
             Assert.AreEqual("1", macros["ENABLE_DIRECTIONAL_LIGHT"]);
@@ -337,6 +370,40 @@ public class LE3LightmapPolicyTests
             Assert.AreEqual(usage && environment.Target.Stage == ShaderStage.Vertex, job.Macros.ContainsKey("SIMPLE_TEXTURE_LIGHTMAP"));
             Assert.AreEqual("1", job.Macros["TEXTURE_LIGHTMAP"]);
             Assert.AreEqual("1", job.Macros["NUM_LIGHTMAP_COEFFICIENTS"]);
+        }
+    }
+
+    [TestMethod]
+    [DataRow("TBasePassVertexShaderFNoLightMapPolicyFNoDensityPolicy", true)]
+    [DataRow("TBasePassPixelShaderFNoLightMapPolicySkyLight", true)]
+    [DataRow("TBasePassVertexShaderFDirectionalLightLightMapPolicyFNoDensityPolicy", true)]
+    [DataRow("TBasePassPixelShaderFDirectionalLightLightMapPolicyNoSkyLight", true)]
+    [DataRow("TBasePassVertexShaderFSHLightLightMapPolicyFNoDensityPolicy", true)]
+    [DataRow("TBasePassPixelShaderFSHLightLightMapPolicySkyLight", true)]
+    [DataRow("TBasePassVertexShaderFSimpleVertexLightMapPolicyFNoDensityPolicy", false)]
+    [DataRow("TBasePassPixelShaderFDirectionalLightMapTexturePolicySkyLight", false)]
+    [DataRow("TBasePassVertexShaderFCustomSimpleLightMapTexturePolicyFNoDensityPolicy", false)]
+    public void FinalPolicyCleanupRemovesOnlyDynamicAndNoLightMapFallbacks(string shaderName, bool removes)
+    {
+        GlobalTest.Init();
+        using var package = MEPackageHandler.CreateMemoryEmptyPackage("LE3FinalMacroCleanup.pcc", MEGame.LE3);
+        var material = package.CreateExport("Material", "Material", indexed: false);
+        material.WriteProperty(new BoolProperty(true, "bUsedWithSimpleLightMaps"));
+        var compiler = new LE3MaterialShaderCompiler(material);
+        var translation = compiler.TranslateMaterialHlsl("/*\n%u\n" + string.Concat(Enumerable.Repeat("%s\n", 18)) + "#line %u\n*/");
+        foreach (var factory in GetKnownVertexFactoryRegistrations())
+        {
+            Assert.IsTrue(TryGetKnownPermutationEnvironment(shaderName, factory.Name, out var environment));
+            var macros = environment.CreateCandidate().EnvironmentMacros.ToDictionary(pair => pair.Key, pair => pair.Value);
+            macros["SIMPLE_VERTEX_LIGHTMAP"] = "1";
+            macros["TEXTURE_LIGHTMAP"] = "1";
+            var job = compiler.BuildProvisionalCompileJob(translation, LegendaryExplorerCore.Unreal.BinaryConverters.MaterialResource.Create(),
+                environment.Target, macros);
+            Assert.AreEqual(!removes, job.Macros.ContainsKey("SIMPLE_VERTEX_LIGHTMAP"));
+            Assert.AreEqual(!removes, job.Macros.ContainsKey("TEXTURE_LIGHTMAP"));
+            Assert.AreEqual("1", macros["SIMPLE_VERTEX_LIGHTMAP"], "Caller macro dictionary must remain unchanged.");
+            foreach (var pair in macros.Where(pair => pair.Key is not ("SIMPLE_VERTEX_LIGHTMAP" or "TEXTURE_LIGHTMAP")))
+                Assert.AreEqual(pair.Value, job.Macros[pair.Key], pair.Key);
         }
     }
 

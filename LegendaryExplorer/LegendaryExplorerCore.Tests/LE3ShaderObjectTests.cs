@@ -24,6 +24,14 @@ public class LE3ShaderObjectTests
     [DataRow("TBasePassVertexShaderFDirectionalVertexLightMapPolicyFConeDensityPolicy")]
     [DataRow("TBasePassVertexShaderFDirectionalVertexLightMapPolicyFConstantDensityPolicy")]
     [DataRow("TBasePassVertexShaderFSimpleVertexLightMapPolicyFConeDensityPolicy")]
+    [DataRow("TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy")]
+    [DataRow("TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFSphereDensityPolicy")]
+    [DataRow("TBasePassVertexShaderFCustomVectorVertexLightMapPolicyFSphereDensityPolicy")]
+    [DataRow("TBasePassVertexShaderFDirectionalVertexLightMapPolicyFLinearHalfspaceDensityPolicy")]
+    [DataRow("TBasePassVertexShaderFDirectionalVertexLightMapPolicyFSphereDensityPolicy")]
+    [DataRow("TBasePassVertexShaderFSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy")]
+    [DataRow("TBasePassVertexShaderFSimpleVertexLightMapPolicyFSphereDensityPolicy")]
+    [DataRow("TBasePassVertexShaderFSimpleVertexLightMapPolicyFConstantDensityPolicy")]
     public void FoggedVertexLightmapScaleRemainsRequiredWhenMissingFromReflection(string name)
     {
         GlobalTest.Init();
@@ -65,6 +73,27 @@ public class LE3ShaderObjectTests
     [DataRow("FSHLightLightMapPolicyFConstantDensityPolicy", "Directional")]
     [DataRow("FSimpleLightMapTexturePolicyFConeDensityPolicy", "Texture")]
     [DataRow("FSimpleVertexLightMapPolicyFConeDensityPolicy", "Vertex")]
+    [DataRow("FCustomSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy", "Texture")]
+    [DataRow("FCustomSimpleLightMapTexturePolicyFSphereDensityPolicy", "Texture")]
+    [DataRow("FCustomSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy", "Vertex")]
+    [DataRow("FCustomSimpleVertexLightMapPolicyFSphereDensityPolicy", "Vertex")]
+    [DataRow("FCustomVectorLightMapTexturePolicyFLinearHalfspaceDensityPolicy", "Texture")]
+    [DataRow("FCustomVectorLightMapTexturePolicyFSphereDensityPolicy", "Texture")]
+    [DataRow("FCustomVectorVertexLightMapPolicyFSphereDensityPolicy", "Vertex")]
+    [DataRow("FDirectionalLightLightMapPolicyFLinearHalfspaceDensityPolicy", "Directional")]
+    [DataRow("FDirectionalLightLightMapPolicyFSphereDensityPolicy", "Directional")]
+    [DataRow("FDirectionalLightMapTexturePolicyFLinearHalfspaceDensityPolicy", "Texture")]
+    [DataRow("FDirectionalLightMapTexturePolicyFSphereDensityPolicy", "Texture")]
+    [DataRow("FDirectionalVertexLightMapPolicyFLinearHalfspaceDensityPolicy", "Vertex")]
+    [DataRow("FDirectionalVertexLightMapPolicyFSphereDensityPolicy", "Vertex")]
+    [DataRow("FSHLightLightMapPolicyFLinearHalfspaceDensityPolicy", "Directional")]
+    [DataRow("FSHLightLightMapPolicyFSphereDensityPolicy", "Directional")]
+    [DataRow("FSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy", "Texture")]
+    [DataRow("FSimpleLightMapTexturePolicyFSphereDensityPolicy", "Texture")]
+    [DataRow("FSimpleLightMapTexturePolicyFConstantDensityPolicy", "Texture")]
+    [DataRow("FSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy", "Vertex")]
+    [DataRow("FSimpleVertexLightMapPolicyFSphereDensityPolicy", "Vertex")]
+    [DataRow("FSimpleVertexLightMapPolicyFConstantDensityPolicy", "Vertex")]
     public void FoggedBasePassConstructorsPreservePolicyFogAndDensityArchives(string suffix, string kind)
     {
         GlobalTest.Init();
@@ -1300,9 +1329,10 @@ public class LE3ShaderObjectTests
         using var package = MEPackageHandler.CreateMemoryEmptyPackage("LE3KnownPlan.pcc", MEGame.LE3);
         var compiler = CreateCompiler(package);
         var translation = compiler.TranslateMaterialHlsl(CommentTemplate());
-        var candidates = GetKnownShaderTypeRegistrations().SelectMany(shader => GetKnownVertexFactoryRegistrations().Select(factory =>
+        var candidates = GetKnownShaderTypeRegistrations().SelectMany(shader =>
+            (shader.IsMeshMaterial ? GetKnownVertexFactoryRegistrations().Select(factory => factory.Name) : new string[] { null }).Select(factoryName =>
         {
-            Assert.IsTrue(TryGetKnownPermutationEnvironment(shader.Name, factory.Name, out var environment));
+            Assert.IsTrue(TryGetKnownPermutationEnvironment(shader.Name, factoryName, out var environment));
             return environment.CreateCandidate();
         })).ToArray();
         var explicitPlan = compiler.BuildProvisionalCompilePlan(translation, MaterialResource.Create(), candidates);

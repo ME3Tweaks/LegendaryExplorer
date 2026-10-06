@@ -766,6 +766,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     shader = new TLightVertexShader<FNullPolicy, FNullPolicy>();
                     break;
                 case "TLightVertexShaderFSphericalHarmonicLightPolicyFShadowTexturePolicy":
+                case "TLightVertexShaderFSphericalHarmonicLightPolicyFSignedDistanceFieldShadowTexturePolicy":
                     shader = new TLightVertexShader<FNullPolicy, FShadowTexturePolicy.VertexParametersType>();
                     break;
                 case "FModShadowMeshVertexShader":

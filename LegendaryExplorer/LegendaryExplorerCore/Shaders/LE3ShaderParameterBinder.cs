@@ -236,11 +236,35 @@ public sealed class LE3ShaderParameterBinder
         return vertexFactoryTypeName switch
         {
             "FLocalVertexFactory" => BindLocalVertexFactoryParameters(),
+            "FLocalVertexFactoryApex" => BindLocalVertexFactoryApexParameters(),
+            "FGPUSkinVertexFactoryApex" => BindGPUSkinVertexFactoryApexParameters(),
             "FGPUSkinVertexFactory" or "FGPUSkinMorphVertexFactory" => BindGPUSkinVertexFactoryParameters(),
             "FInstancedStaticMeshVertexFactory" => BindInstancedStaticMeshVertexFactoryParameters(),
+            "FGPUSkinDecalVertexFactory" or "FGPUSkinMorphDecalVertexFactory" => BindGPUSkinDecalVertexFactoryParameters(),
+            "FLocalDecalVertexFactory" => BindLocalDecalVertexFactoryParameters(),
+            "FSplineMeshVertexFactory" => BindSplineMeshVertexFactoryParameters(),
+            "FParticleInstancedMeshVertexFactory" => BindParticleInstancedMeshVertexFactoryParameters(),
             _ => throw new InvalidOperationException($"Unverified LE3 vertex-factory parameter layout: {vertexFactoryTypeName}")
         };
     }
+
+    /// <summary>LE3 ab5bb30: Local archive layout, but LocalToWorld is required.</summary>
+    public FLocalVertexFactoryShaderParameters BindLocalVertexFactoryApexParameters() => new()
+    {
+        LocalToWorld = BindConstant("LocalToWorld", optional: false),
+        LocalToWorldRotDeterminantFlip = BindConstant("LocalToWorldRotDeterminantFlip"),
+        WorldToLocal = BindConstant("WorldToLocal")
+    };
+
+    /// <summary>LE3 ab5baa0: Local/APEX prefix, required bone matrices and factory discriminator.</summary>
+    public FGPUSkinVertexFactoryApexShaderParameters BindGPUSkinVertexFactoryApexParameters() => new()
+    {
+        LocalToWorld = BindConstant("LocalToWorld", optional: false),
+        LocalToWorldRotDeterminantFlip = BindConstant("LocalToWorldRotDeterminantFlip"),
+        WorldToLocal = BindConstant("WorldToLocal"),
+        BoneMatrices = BindConstant("BoneMatrices", optional: false),
+        ApexDummy = BindConstant("ApexDummy", optional: false)
+    };
 
     /// <summary>LE3 aaf1a30: Local prefix, required view translation, optional instancing parameters.</summary>
     public FInstancedStaticMeshVertexFactoryShaderParameters BindInstancedStaticMeshVertexFactoryParameters() => new()
@@ -251,6 +275,55 @@ public sealed class LE3ShaderParameterBinder
         InstancedViewTranslation = BindConstant("InstancedViewTranslation", optional: false),
         InstancingParameters = BindConstant("InstancingParameters")
     };
+
+    /// <summary>LE3 ab69290: three optional fields, with no Local/GPU prefix.</summary>
+    public FParticleInstancedMeshVertexFactoryShaderParameters BindParticleInstancedMeshVertexFactoryParameters() => new()
+    {
+        InvNumVerticesPerInstance = BindConstant("InvNumVerticesPerInstance"),
+        NumVerticesPerInstance = BindConstant("NumVerticesPerInstance"),
+        InstancedPreViewTranslation = BindConstant("InstancedPreViewTranslation")
+    };
+
+    /// <summary>LE3 ac255f0: optional Local prefix followed by fourteen required spline fields.</summary>
+    public FSplineMeshVertexFactoryShaderParameters BindSplineMeshVertexFactoryParameters() => new()
+    {
+        LocalToWorld = BindConstant("LocalToWorld"),
+        LocalToWorldRotDeterminantFlip = BindConstant("LocalToWorldRotDeterminantFlip"),
+        WorldToLocal = BindConstant("WorldToLocal"),
+        SplineStartPos = BindConstant("SplineStartPos", optional: false), SplineStartTangent = BindConstant("SplineStartTangent", optional: false),
+        SplineStartRoll = BindConstant("SplineStartRoll", optional: false), SplineStartScale = BindConstant("SplineStartScale", optional: false),
+        SplineStartOffset = BindConstant("SplineStartOffset", optional: false), SplineEndPos = BindConstant("SplineEndPos", optional: false),
+        SplineEndTangent = BindConstant("SplineEndTangent", optional: false), SplineEndRoll = BindConstant("SplineEndRoll", optional: false),
+        SplineEndScale = BindConstant("SplineEndScale", optional: false), SplineEndOffset = BindConstant("SplineEndOffset", optional: false),
+        SplineXDir = BindConstant("SplineXDir", optional: false), SmoothInterpRollScale = BindConstant("SmoothInterpRollScale", optional: false),
+        MeshMinZ = BindConstant("MeshMinZ", optional: false), MeshRangeZ = BindConstant("MeshRangeZ", optional: false)
+    };
+
+    /// <summary>LE3 ab046b0: all three Local and seven decal fields are optional.</summary>
+    public FLocalDecalVertexFactoryShaderParameters BindLocalDecalVertexFactoryParameters() => new()
+    {
+        LocalToWorld = BindConstant("LocalToWorld"),
+        LocalToWorldRotDeterminantFlip = BindConstant("LocalToWorldRotDeterminantFlip"),
+        WorldToLocal = BindConstant("WorldToLocal"),
+        DecalMatrix = BindConstant("DecalMatrix"), DecalLocation = BindConstant("DecalLocation"),
+        DecalOffset = BindConstant("DecalOffset"), DecalLocalBinormal = BindConstant("DecalLocalBinormal"),
+        DecalLocalTangent = BindConstant("DecalLocalTangent"), DecalLocalNormal = BindConstant("DecalLocalNormal"),
+        DecalBlendInterval = BindConstant("DecalBlendInterval")
+    };
+
+    /// <summary>LE3 aaf1820: the GPU prefix precedes three optional decal fields.</summary>
+    public FGPUSkinDecalVertexFactoryShaderParameters BindGPUSkinDecalVertexFactoryParameters()
+    {
+        var gpu = BindGPUSkinVertexFactoryParameters();
+        return new FGPUSkinDecalVertexFactoryShaderParameters
+        {
+            LocalToWorld = gpu.LocalToWorld, WorldToLocal = gpu.WorldToLocal, BoneMatrices = gpu.BoneMatrices,
+            MaxBoneInfluences = gpu.MaxBoneInfluences, MeshOrigin = gpu.MeshOrigin, MeshExtension = gpu.MeshExtension,
+            WoundEllipse0 = gpu.WoundEllipse0, WoundEllipse1 = gpu.WoundEllipse1,
+            BoneToDecalRow0 = BindConstant("BoneToDecalRow0"), BoneToDecalRow1 = BindConstant("BoneToDecalRow1"),
+            DecalLocation = BindConstant("DecalLocation")
+        };
+    }
 
     /// <summary>LE3 binder 0x7ff74aaf1950: LocalToWorld and BoneMatrices are non-optional.</summary>
     public FGPUSkinVertexFactoryShaderParameters BindGPUSkinVertexFactoryParameters() => new()

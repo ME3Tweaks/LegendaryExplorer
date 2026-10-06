@@ -15,6 +15,67 @@ namespace LegendaryExplorerCore.Tests
     public class LE3MaterialShaderCompilerTests
     {
         [TestMethod]
+        [DataRow(0)]
+        [DataRow(1)]
+        [DataRow(2)]
+        public void NativeResourceGateShortCircuitsAnUnimplementedFactory(int outcome)
+        {
+            GlobalTest.Init();
+            using var package = MEPackageHandler.CreateMemoryEmptyPackage("LE3NativeGateOrdering.pcc", MEGame.LE3);
+            var compiler = new LE3MaterialShaderCompiler(package.CreateExport("Material", "Material", indexed: false));
+            Assert.IsTrue(LE3MaterialShaderCompiler.TryGetKnownPermutationEnvironment(
+                "TBasePassVertexShaderFNoLightMapPolicyFNoDensityPolicy", "FLocalVertexFactory", out var environment));
+            var candidate = environment.CreateCandidate() with { Target = environment.Target with
+                { VertexFactoryTypeName = "FUnimplementedVertexFactory", VertexFactoryShaderFileName = "UnimplementedVF" } };
+            int calls = 0;
+            var plan = compiler.BuildProvisionalCompilePlan(compiler.TranslateMaterialHlsl(MinimalTemplate()), MaterialResource.Create(),
+                [candidate], materialResourceShouldCache: (_, _) => { calls++; return outcome == 0 ? false : outcome == 1 ? true : null; });
+            Assert.AreEqual(1, calls); Assert.AreEqual(0, plan.Jobs.Count);
+            Assert.AreEqual(outcome == 0, plan.Success);
+            Assert.AreEqual(outcome == 0 ? LE3MaterialShaderCompiler.ShaderCompileDisposition.Excluded :
+                LE3MaterialShaderCompiler.ShaderCompileDisposition.Unresolved, plan.Decisions.Single().Disposition);
+            Assert.AreEqual(outcome == 1 ? LE3MaterialShaderCompiler.ShaderCompileGate.VertexFactoryShouldCache :
+                LE3MaterialShaderCompiler.ShaderCompileGate.MaterialResourceShouldCache, plan.Decisions.Single().Gate);
+        }
+
+        [TestMethod]
+        public void NativeMaterialFactoryUsageFilterPrecedesResourceAndUnknownFactoryGates()
+        {
+            GlobalTest.Init();
+            using var package = MEPackageHandler.CreateMemoryEmptyPackage("LE3NativeUsageFilter.pcc", MEGame.LE3);
+            var compiler = new LE3MaterialShaderCompiler(package.CreateExport("Material", "Material", indexed: false));
+            Assert.IsTrue(LE3MaterialShaderCompiler.TryGetKnownPermutationEnvironment(
+                "TBasePassVertexShaderFNoLightMapPolicyFNoDensityPolicy", "FLocalVertexFactory", out var environment));
+            var original = environment.CreateCandidate();
+            var candidate = original with
+            {
+                Target = environment.Target with { VertexFactoryTypeName = "FUnimplementedVertexFactory", VertexFactoryShaderFileName = "UnimplementedVF" },
+                VertexFactoryContext = original.VertexFactoryContext with { UsedWithMaterials = false }
+            };
+            var plan = compiler.BuildProvisionalCompilePlan(compiler.TranslateMaterialHlsl(MinimalTemplate()), MaterialResource.Create(),
+                [candidate], materialResourceShouldCache: (_, _) => throw new InvalidOperationException("Native usage filter must short-circuit."));
+            Assert.IsTrue(plan.Success, string.Join("; ", plan.Errors)); Assert.AreEqual(0, plan.Jobs.Count);
+            Assert.AreEqual(LE3MaterialShaderCompiler.ShaderCompileGate.VertexFactoryUsage, plan.Decisions.Single().Gate);
+        }
+
+        [TestMethod]
+        public void EntirelyExcludedSubsetPreservesExplicitNonemptyFragmentBoundary()
+        {
+            GlobalTest.Init();
+            using var package = MEPackageHandler.CreateMemoryEmptyPackage("LE3NativeEmptyMeshMap.pcc", MEGame.LE3);
+            var compiler = new LE3MaterialShaderCompiler(package.CreateExport("Material", "Material", indexed: false));
+            Assert.IsTrue(LE3MaterialShaderCompiler.TryGetKnownPermutationEnvironment(
+                "TBasePassVertexShaderFNoLightMapPolicyFNoDensityPolicy", "FLocalVertexFactory", out var environment));
+            var translation = compiler.TranslateMaterialHlsl(MinimalTemplate());
+            var plan = compiler.BuildProvisionalCompilePlan(translation, MaterialResource.Create(),
+                [environment.CreateCandidate()], materialResourceShouldCache: (_, _) => false);
+            Assert.IsTrue(plan.Success); Assert.AreEqual(0, plan.Jobs.Count);
+            var fragment = compiler.BuildShaderMapFragment(translation, plan, [], Guid.NewGuid(), "ExcludedSubset");
+            Assert.IsFalse(fragment.Success); Assert.IsFalse(fragment.IsCompleteShaderSet); Assert.IsNull(fragment.Map);
+            StringAssert.Contains(string.Join("; ", fragment.Errors), "nonempty explicit");
+        }
+
+        [TestMethod]
         [DataRow(false, 0)]
         [DataRow(false, 1)]
         [DataRow(false, 2)]
@@ -5232,18 +5293,22 @@ Assert.AreEqual(LE3MaterialShaderCompiler.ShaderEnvironmentEvidence.ShippingByte
             var translation = compiler.TranslateMaterialHlsl(MinimalTemplate());
             var shaders = LE3MaterialShaderCompiler.GetKnownShaderTypeRegistrations();
             var factories = LE3MaterialShaderCompiler.GetKnownVertexFactoryRegistrations();
-            Assert.AreEqual(135, shaders.Count);
-            Assert.AreEqual(4, factories.Count);
-            var candidates = factories.SelectMany(factory => shaders.Select(shader =>
+            Assert.AreEqual(162, shaders.Count);
+            Assert.AreEqual(11, factories.Count);
+            var candidates = factories.SelectMany(factory => shaders.Where(s => s.IsMeshMaterial).Select(shader =>
             {
                 Assert.IsTrue(LE3MaterialShaderCompiler.TryGetKnownPermutationEnvironment(shader.Name, factory.Name, out var environment));
+                return environment.CreateCandidate();
+            })).Concat(shaders.Where(s => !s.IsMeshMaterial).Select(shader =>
+            {
+                Assert.IsTrue(LE3MaterialShaderCompiler.TryGetKnownPermutationEnvironment(shader.Name, null, out var environment));
                 return environment.CreateCandidate();
             })).ToArray();
             var plan = compiler.BuildProvisionalCompilePlan(translation, MaterialResource.Create(), candidates);
             Assert.IsTrue(plan.Success, string.Join(Environment.NewLine, plan.Errors));
-            Assert.AreEqual(540, plan.Decisions.Count);
+            Assert.AreEqual(1732, plan.Decisions.Count);
             Assert.AreEqual(25, plan.Jobs.Count);
-            Assert.AreEqual(515, plan.ExcludedTargets.Count);
+            Assert.AreEqual(1707, plan.ExcludedTargets.Count);
             string[] common =
             [
                 "TBasePassPixelShaderFNoLightMapPolicyNoSkyLight",
@@ -5277,7 +5342,9 @@ Assert.AreEqual(LE3MaterialShaderCompiler.ShaderEnvironmentEvidence.ShippingByte
             Assert.IsTrue(plan.Decisions.Where(d => d.Disposition == LE3MaterialShaderCompiler.ShaderCompileDisposition.Excluded)
                 .All(d => d.Gate == LE3MaterialShaderCompiler.ShaderCompileGate.ShaderTypeShouldCache ||
                     d.Gate == LE3MaterialShaderCompiler.ShaderCompileGate.VertexFactoryShouldCache &&
-                    d.Target.VertexFactoryTypeName is "FGPUSkinMorphVertexFactory" or "FInstancedStaticMeshVertexFactory"));
+                    d.Target.VertexFactoryTypeName is "FGPUSkinMorphVertexFactory" or "FInstancedStaticMeshVertexFactory" or
+                        "FGPUSkinDecalVertexFactory" or "FLocalDecalVertexFactory" or "FGPUSkinMorphDecalVertexFactory" or "FSplineMeshVertexFactory" or
+                        "FParticleInstancedMeshVertexFactory" or "FLocalVertexFactoryApex" or "FGPUSkinVertexFactoryApex"));
             Assert.IsTrue(plan.Jobs.Where(j => j.Target.VertexFactoryTypeName == "FGPUSkinVertexFactory")
                 .All(j => j.Macros["QUAT_SKINNING"] == "0"));
         }
@@ -5286,7 +5353,7 @@ Assert.AreEqual(LE3MaterialShaderCompiler.ShaderEnvironmentEvidence.ShippingByte
         public void KnownPermutationEnvironmentsPreserveMacroAndFlagEvidence()
         {
             int shippingFlagTypes = 0;
-            foreach (var shader in LE3MaterialShaderCompiler.GetKnownShaderTypeRegistrations())
+            foreach (var shader in LE3MaterialShaderCompiler.GetKnownShaderTypeRegistrations().Where(s => s.IsMeshMaterial))
             foreach (var factory in LE3MaterialShaderCompiler.GetKnownVertexFactoryRegistrations())
             {
                 Assert.IsTrue(LE3MaterialShaderCompiler.TryGetKnownPermutationEnvironment(shader.Name, factory.Name, out var environment));
@@ -5311,6 +5378,14 @@ Assert.AreEqual(LE3MaterialShaderCompiler.ShaderEnvironmentEvidence.ShippingByte
                     "TBasePassVertexShaderFSimpleVertexLightMapPolicyFNoDensityPolicy" or
                     "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFNoDensityPolicy" or
                     "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFConstantDensityPolicy" or
+                    "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy" or
+                    "TBasePassVertexShaderFCustomSimpleVertexLightMapPolicyFSphereDensityPolicy" or
+                    "TBasePassVertexShaderFSimpleLightMapTexturePolicyFLinearHalfspaceDensityPolicy" or
+                    "TBasePassVertexShaderFSimpleLightMapTexturePolicyFSphereDensityPolicy" or
+                    "TBasePassVertexShaderFSimpleLightMapTexturePolicyFConstantDensityPolicy" or
+                    "TBasePassVertexShaderFSimpleVertexLightMapPolicyFLinearHalfspaceDensityPolicy" or
+                    "TBasePassVertexShaderFSimpleVertexLightMapPolicyFSphereDensityPolicy" or
+                    "TBasePassVertexShaderFSimpleVertexLightMapPolicyFConstantDensityPolicy" or
                     "TBasePassVertexShaderFSimpleLightMapTexturePolicyFConeDensityPolicy" or
                     "TBasePassVertexShaderFSimpleVertexLightMapPolicyFConeDensityPolicy" or
                     "TBasePassPixelShaderFCustomSimpleVertexLightMapPolicySkyLight" or
@@ -5323,7 +5398,7 @@ Assert.AreEqual(LE3MaterialShaderCompiler.ShaderEnvironmentEvidence.ShippingByte
                 Assert.IsFalse(candidate.EnvironmentMacros.ContainsKey(stageMacro == "VERTEXSHADER" ? "PIXELSHADER" : "VERTEXSHADER"));
                 bool lightPixel = shader.Stage == LE3MaterialShaderCompiler.ShaderStage.Pixel && shader.Name.StartsWith("TLightPixelShader", StringComparison.Ordinal);
                 Assert.AreEqual(lightPixel ? 0x9400u : 0x9000u, candidate.Target.CompileFlags);
-                if (factory.Name is "FGPUSkinVertexFactory" or "FGPUSkinMorphVertexFactory")
+                if (factory.Name is "FGPUSkinVertexFactory" or "FGPUSkinMorphVertexFactory" or "FGPUSkinDecalVertexFactory" or "FGPUSkinMorphDecalVertexFactory")
                 {
                     Assert.AreEqual("0", candidate.EnvironmentMacros["QUAT_SKINNING"]);
                     Assert.AreEqual(LE3MaterialShaderCompiler.ShaderEnvironmentEvidence.LE3RegistrationCallback,
@@ -5386,7 +5461,7 @@ Assert.AreEqual(LE3MaterialShaderCompiler.ShaderEnvironmentEvidence.ShippingByte
             material.WriteProperty(new BoolProperty(true, "bUsedWithStaticLighting"));
             var compiler = new LE3MaterialShaderCompiler(material);
             var candidates = LE3MaterialShaderCompiler.GetKnownVertexFactoryRegistrations().SelectMany(factory =>
-                LE3MaterialShaderCompiler.GetKnownShaderTypeRegistrations().Select(shader =>
+                LE3MaterialShaderCompiler.GetKnownShaderTypeRegistrations().Where(s => s.IsMeshMaterial).Select(shader =>
                 {
                     Assert.IsTrue(LE3MaterialShaderCompiler.TryGetKnownPermutationEnvironment(shader.Name, factory.Name, out var environment));
                     return environment.CreateCandidate();
@@ -5394,7 +5469,7 @@ Assert.AreEqual(LE3MaterialShaderCompiler.ShaderEnvironmentEvidence.ShippingByte
             var plan = compiler.BuildProvisionalCompilePlan(compiler.TranslateMaterialHlsl(MinimalTemplate()), MaterialResource.Create(), candidates);
             Assert.IsTrue(plan.Success, string.Join("; ", plan.Errors));
             Assert.AreEqual(73, plan.Jobs.Count);
-            Assert.AreEqual(467, plan.ExcludedTargets.Count);
+            Assert.AreEqual(1654, plan.ExcludedTargets.Count);
             Assert.IsTrue(plan.Jobs.All(j => j.Target.VertexFactoryTypeName == "FLocalVertexFactory"));
             Assert.IsTrue(plan.Jobs.All(j => j.Macros["MATERIALBLENDING_MASKED"] == "1" &&
                 j.Macros["MATERIAL_LIGHTINGMODEL_PHONG"] == "1" && j.Macros["MATERIAL_TWOSIDED"] == "1"));
