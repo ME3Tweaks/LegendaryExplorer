@@ -70,6 +70,15 @@ public static class FPointLightPolicy
     public struct PixelParametersType : IPixelParametersType
     {
         public FShaderParameter WorldIncidentLighting;
+        /// <summary>
+        /// LE3's native name for this single serialized slot (compiled body 0x7ff74ab93bb0).
+        /// Retain WorldIncidentLighting as the backing field for source/layout compatibility.
+        /// </summary>
+        public FShaderParameter LightColorAndFalloffExponent
+        {
+            readonly get => WorldIncidentLighting;
+            set => WorldIncidentLighting = value;
+        }
         public void Serialize(SerializingContainer sc)
         {
             sc.SerializeUnmanaged(ref WorldIncidentLighting);

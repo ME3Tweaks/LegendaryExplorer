@@ -1,4 +1,5 @@
-﻿<MenuItem x:Class="LegendaryExplorer.UserControls.PackageEditorControls.ExperimentsMenuControl"
+﻿
+    <MenuItem x:Class="LegendaryExplorer.UserControls.PackageEditorControls.ExperimentsMenuControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -43,6 +44,7 @@
     <MenuItem Header="Mgamerz's Programming Circus">
         <MenuItem Header="Useful for developers">
             <MenuItem Header="EXPERIMENTAL: Convert export to import" Click="ConvertExportToImport_Click"/>
+            <MenuItem Header="Convert all importable exports to imports" Click="ConvertAllImportableExportsToImports_Click"/>
             <MenuItem Header="Resynthesize package" Click="ResynthesizePackage_Click"/>
             <MenuItem Header="Self package relink (redirect references)" Click="SelfPackageRelink_Click"/>
             <MenuItem Header="Dump LE1 TLK to XML" Click="DumpLE1TLK_Clicked"/>
@@ -88,6 +90,7 @@
             <MenuItem Header="Open hosted shader export loader" Click="OpenHostedExportLoader_Shader_Click"/>
             <MenuItem Header="View terrain materials" Click="ViewTerrainMaterials_Click"/>
             <MenuItem Header="Test TLKSystem" Click="TestTLKSystem_Click"/>
+            <MenuItem Header="Move bank audio to new AFC" Click="MoveBankAudioToNewAFC_Click"/>
         </MenuItem>
         <MenuItem Header="Useful for Mgamerz (maybe)">
             <MenuItem Header="Mgamerz' Easy Button™" Click="MScanner_Click"/>

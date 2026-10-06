@@ -875,6 +875,23 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
 
     public abstract partial class MaterialUniformExpressionUnaryOp : MaterialUniformExpression
     {
+        // LE3 appFloor/appCeil use float32 double/offset arithmetic, CVTSS2SI,
+        // arithmetic shift, then integer-to-float. Mathematical Floor/Ceiling
+        // differ near zero, at large magnitudes, and for nonfinite values.
+        protected static float NativeFloor(float value) => NativeRoundToInt32((value + value) - 0.5f) >> 1;
+        protected static float NativeCeiling(float value) => -(NativeRoundToInt32(-0.5f - (value + value)) >> 1);
+
+        private static int NativeRoundToInt32(float value)
+        {
+            if (System.Runtime.Intrinsics.X86.Sse.IsSupported)
+                return System.Runtime.Intrinsics.X86.Sse.ConvertToInt32(System.Runtime.Intrinsics.Vector128.CreateScalar(value));
+            // Portable fallback for default round-to-nearest/even and the x86
+            // masked-invalid sentinel, not .NET's saturating float-to-int cast.
+            float rounded = MathF.Round(value, MidpointRounding.ToEven);
+            return float.IsNaN(rounded) || rounded >= 2147483648f || rounded < -2147483648f
+                ? int.MinValue : (int)rounded;
+        }
+
         [UIndexRefContainer]
         public MaterialUniformExpression X;
         public override void Serialize(SerializingContainer sc)
@@ -907,10 +924,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
         {
             X.GetNumberValue(context, ref outVal);
-            outVal.R = MathF.Ceiling(outVal.R);
-            outVal.G = MathF.Ceiling(outVal.G);
-            outVal.B = MathF.Ceiling(outVal.B);
-            outVal.A = MathF.Ceiling(outVal.A);
+            outVal.R = NativeCeiling(outVal.R);
+            outVal.G = NativeCeiling(outVal.G);
+            outVal.B = NativeCeiling(outVal.B);
+            outVal.A = NativeCeiling(outVal.A);
         }
     }
 
@@ -919,10 +936,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
         {
             X.GetNumberValue(context, ref outVal);
-            outVal.R = MathF.Floor(outVal.R);
-            outVal.G = MathF.Floor(outVal.G);
-            outVal.B = MathF.Floor(outVal.B);
-            outVal.A = MathF.Floor(outVal.A);
+            outVal.R = NativeFloor(outVal.R);
+            outVal.G = NativeFloor(outVal.G);
+            outVal.B = NativeFloor(outVal.B);
+            outVal.A = NativeFloor(outVal.A);
         }
     }
 
@@ -931,10 +948,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         public override void GetNumberValue(UniformExpressionRenderContext context, ref LinearColor outVal)
         {
             X.GetNumberValue(context, ref outVal);
-            outVal.R = outVal.R - MathF.Floor(outVal.R);
-            outVal.G = outVal.G - MathF.Floor(outVal.G);
-            outVal.B = outVal.B - MathF.Floor(outVal.B);
-            outVal.A = outVal.A - MathF.Floor(outVal.A);
+            outVal.R = outVal.R - NativeFloor(outVal.R);
+            outVal.G = outVal.G - NativeFloor(outVal.G);
+            outVal.B = outVal.B - NativeFloor(outVal.B);
+            outVal.A = outVal.A - NativeFloor(outVal.A);
         }
     }
 
@@ -944,10 +961,10 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
         {
             LinearColor temp = LinearColor.Black;
             X.GetNumberValue(context, ref temp);
-            outVal.R = temp.R - MathF.Floor(temp.R);
-            outVal.G = temp.G - MathF.Floor(temp.G);
-            outVal.B = temp.B - MathF.Floor(temp.B);
-            outVal.A = temp.A - MathF.Floor(temp.A);
+            outVal.R = temp.R - NativeFloor(temp.R);
+            outVal.G = temp.G - NativeFloor(temp.G);
+            outVal.B = temp.B - NativeFloor(temp.B);
+            outVal.A = temp.A - NativeFloor(temp.A);
         }
     }
 
@@ -1055,10 +1072,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             A.GetNumberValue(context, ref tempA);
             LinearColor tempB = LinearColor.Black;
             B.GetNumberValue(context, ref tempB);
-            outVal.R = MathF.Max(tempA.R, tempB.R);
-            outVal.G = MathF.Max(tempA.G, tempB.G);
-            outVal.B = MathF.Max(tempA.B, tempB.B);
-            outVal.A = MathF.Max(tempA.A, tempB.A);
+            // LE3 MAXSS selects its second operand on equality or unordered comparison.
+            outVal.R = tempA.R > tempB.R ? tempA.R : tempB.R;
+            outVal.G = tempA.G > tempB.G ? tempA.G : tempB.G;
+            outVal.B = tempA.B > tempB.B ? tempA.B : tempB.B;
+            outVal.A = tempA.A > tempB.A ? tempA.A : tempB.A;
         }
     }
 
@@ -1070,10 +1088,11 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             A.GetNumberValue(context, ref tempA);
             LinearColor tempB = LinearColor.Black;
             B.GetNumberValue(context, ref tempB);
-            outVal.R = MathF.Min(tempA.R, tempB.R);
-            outVal.G = MathF.Min(tempA.G, tempB.G);
-            outVal.B = MathF.Min(tempA.B, tempB.B);
-            outVal.A = MathF.Min(tempA.A, tempB.A);
+            // LE3 MINSS selects its second operand on equality or unordered comparison.
+            outVal.R = tempA.R < tempB.R ? tempA.R : tempB.R;
+            outVal.G = tempA.G < tempB.G ? tempA.G : tempB.G;
+            outVal.B = tempA.B < tempB.B ? tempA.B : tempB.B;
+            outVal.A = tempA.A < tempB.A ? tempA.A : tempB.A;
         }
     }
 
@@ -1138,10 +1157,21 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 EFoldedMathOperation.Sub => (LinearColor)(aVec - bVec),
                 EFoldedMathOperation.Mul => (LinearColor)(aVec * bVec),
                 EFoldedMathOperation.Div => new LinearColor(aVec.X / SafeDiv(bVec.X), aVec.Y / SafeDiv(bVec.Y), aVec.Z / SafeDiv(bVec.Z), aVec.W / SafeDiv(bVec.W)),
-                EFoldedMathOperation.Dot => new LinearColor(Vector4.Dot(aVec, bVec)),
+                EFoldedMathOperation.Dot => new LinearColor(OrderedDot(aVec, bVec)),
                 _ => throw new Exception($"Unknown folded math operation {Op}")
             };
             return;
+
+            static float OrderedDot(Vector4 a, Vector4 b)
+            {
+                // LE3 FoldedMath op4 uses separate scalar products and left-associated
+                // additions, then broadcasts. Vector4.Dot can reduce pairwise instead,
+                // changing cancellation-sensitive values (e.g. 1e20 + 1 - 1e20 + 1).
+                float result = b.Y * a.Y + b.X * a.X;
+                result += b.Z * a.Z;
+                result += b.W * a.W;
+                return result;
+            }
 
             static float SafeDiv(float divisor)
             {
@@ -1191,14 +1221,20 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             LinearColor inVal = LinearColor.Black;
             LinearColor minVal = LinearColor.Black;
             LinearColor maxVal = LinearColor.Black;
-            Input.GetNumberValue(context, ref outVal);
-            Min.GetNumberValue(context, ref outVal);
-            Max.GetNumberValue(context, ref outVal);
+            Min.GetNumberValue(context, ref minVal);
+            Max.GetNumberValue(context, ref maxVal);
+            Input.GetNumberValue(context, ref inVal);
 
-            outVal.R = Math.Clamp(inVal.R, minVal.R, maxVal.R);
-            outVal.G = Math.Clamp(inVal.G, minVal.G, maxVal.G);
-            outVal.B = Math.Clamp(inVal.B, minVal.B, maxVal.B);
-            outVal.A = Math.Clamp(inVal.A, minVal.A, maxVal.A);
+            outVal.R = NativeClamp(inVal.R, minVal.R, maxVal.R);
+            outVal.G = NativeClamp(inVal.G, minVal.G, maxVal.G);
+            outVal.B = NativeClamp(inVal.B, minVal.B, maxVal.B);
+            outVal.A = NativeClamp(inVal.A, minVal.A, maxVal.A);
+
+            // LE3 COMISS input,min / JC chooses min for below or unordered;
+            // otherwise MINSS input,max chooses max on equality or unordered.
+            // Reversed bounds do not throw, and NaNs do not follow Math.Clamp.
+            static float NativeClamp(float input, float min, float max) =>
+                input >= min ? input < max ? input : max : min;
         }
         public override bool IsNotFrameDependent => Input.IsNotFrameDependent && Min.IsNotFrameDependent && Max.IsNotFrameDependent;
     }

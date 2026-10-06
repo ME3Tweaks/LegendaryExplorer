@@ -506,6 +506,7 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     HIRCType.SoundSXFSoundVoice when sc.Game.IsOTGame() => SoundSFXVoice.Create(sc, id, len),
                     HIRCType.Event => Event.Create(sc, id),
                     HIRCType.EventAction => EventAction.Create(sc, id, len),
+                    HIRCType.AudioBus or HIRCType.MotionBus or HIRCType.AuxiliaryBus => Bus.Create(sc, type, id, len),
                     _ => new HIRCObject
                     {
                         Type = type,
@@ -668,23 +669,62 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             Global_LE = 0x02,
             GameObject_LE = 0x03
         }
-
         public enum EventActionType : byte
         {
-            Play = 0x40,
-            Stop = 0x10,
-            SetVolume = 0xA0,
-            ResetVolume = 0xB0,
-            SetLPF = 0xE0,
-            ResetLPF = 0xF0,
-            Stop_LE = 0x01,
-            Pause_LE = 0x02,
-            Play_LE = 0x04,
-            SetVolume_LE = 0x0A,
-            ResetVolume_LE = 0x0B,
-            SetLPF_LE = 0x0E,
-            ResetLPF_LE = 0x0F,
-            Break_LE = 0x1C
+            None = 0x00,
+
+            // Core Actions
+            Stop = 0x01,                // Alias: Stop_LE_Alt
+            Pause = 0x02,               // Alias: Pause_LE
+            Resume = 0x03,
+            Play = 0x04,                // Alias: Play_LE
+            PlayAndContinue = 0x05,
+            Mute = 0x06,
+            Unmute = 0x07,
+            SetPitch = 0x08,
+            ResetPitch = 0x09,
+            SetVolume = 0x0A,             // Alias: SetVolume_LE_Alt
+            ResetVolume = 0x0B,           // Alias: ResetVolume_LE_Alt
+            SetBusVolume = 0x0C,
+            ResetBusVolume = 0x0D,
+            SetLPF = 0x0E,                // Alias: SetLPF_LE_Alt
+            ResetLPF = 0x0F,              // Alias: ResetLPF_LE_Alt
+
+            // Extended Actions
+            Stop_LE = 0x10,
+            UseState = 0x10,              // Shared value with Stop_LE (0x10)
+            UnuseState = 0x11,
+            SetState = 0x12,
+            SetGameParameter = 0x13,
+            ResetGameParameter = 0x14,
+            StopEvent = 0x15,
+            PauseEvent = 0x16,
+            ResumeEvent = 0x17,
+            Duck = 0x18,
+            SetSwitch = 0x19,
+            BypassFX = 0x1A,
+            ResetBypassFX = 0x1B,
+            Break = 0x1C,                 // Alias: Break_LE
+            Trigger = 0x1D,
+            Seek = 0x1E,
+            Release = 0x1F,
+
+            SetHPF = 0x20,
+            PlayEvent = 0x21,
+            ResetPlaylist = 0x22,
+
+            ResetHPF = 0x30,
+            SetFX = 0x31,
+            ResetSetFX = 0x32,
+
+            NoOp = 0x40,
+            Play_Legacy = 0x40,           // Shared value with NoOp (0x40)
+
+            // Nibble-Shifted Legacy Values
+            SetVolume_LE = 0xA0,
+            ResetVolume_LE = 0xB0,
+            SetLPF_LE = 0xE0,
+            ResetLPF_LE = 0xF0
         }
 
         public enum EventActionFadeCurve : byte
@@ -740,6 +780,40 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                 action.ReferencedObjectID = sc.ms.ReadUInt32();
                 action.unparsed = sc.ms.ReadBytes(unparsedLength);
                 return action;
+            }
+        }
+
+        /// <summary>
+        /// Bus hierarchy object (AudioBus, MotionBus, AuxiliaryBus). Only the parent bus ID is parsed;
+        /// everything else (positioning, HDR/ducking, effects, RTPCs, state groups) is kept as unparsed bytes.
+        /// </summary>
+        public class Bus : HIRCObject
+        {
+            /// <summary>
+            /// ID of the bus this bus is routed under. 0 for a top-level (master) bus.
+            /// </summary>
+            public uint ParentID;
+
+            public override int DataLength(MEGame game) => unparsed.Length + 8;
+
+            public override byte[] ToBytes(MEGame game)
+            {
+                using MemoryStream ms = WriteHIRCObjectHeader(game);
+                ms.WriteUInt32(ParentID);
+                ms.WriteFromBuffer(unparsed);
+                return ms.ToArray();
+            }
+
+            public static Bus Create(SerializingContainer sc, HIRCType type, uint id, int len)
+            {
+                var bus = new Bus
+                {
+                    Type = type,
+                    ID = id,
+                    ParentID = sc.ms.ReadUInt32()
+                };
+                bus.unparsed = sc.ms.ReadBytes(len - 8);
+                return bus;
             }
         }
     }

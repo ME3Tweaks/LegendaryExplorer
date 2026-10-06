@@ -1,4 +1,5 @@
-﻿using LegendaryExplorer.Misc;
+﻿
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI.Interfaces;
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Gammtek.IO;

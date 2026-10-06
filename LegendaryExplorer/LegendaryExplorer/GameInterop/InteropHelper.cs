@@ -208,7 +208,8 @@ namespace LegendaryExplorer.GameInterop
                     throw new Exception($"Unsupported game passed to {nameof(IsInteropASIInstalled)}");
                 }
 
-                foreach (var asi in ASIModIDs.GetInstalledASIModIds(MEDirectories.GetExecutableFolderPath(game)))
+                var installedASIs = ASIModIDs.GetInstalledASIModIds(MEDirectories.GetExecutableFolderPath(game));
+                foreach (var asi in installedASIs)
                 {
                     if (asi.id == interopId && asi.version >= GameController.GetInteropVersion(game))
                     {

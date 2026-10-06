@@ -2337,40 +2337,69 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// <returns></returns>
         public static ImportEntry ConvertExportToImport(ExportEntry export, string forcedPackageFile = null)
         {
-            string packageFile = ImportEntry.GetPackageFile(export);
-            if (forcedPackageFile == null && GlobalUnrealObjectInfo.GetClasses(export.Game).TryGetValue(export.ClassName, out var classInfo))
-            {
-                // PackageFile on an import is the package file that contains the class of the class
-                // E.g.
-                // Texture_Shepard is of type 'Texture2D'
-                // An import of this would have PackageFile 'Engine'
-                // Because the class of Texture_Shepard is Texture2D and Texture2D is defined in Engine.
-                // Now, how do we find that?
-            }
-            var convertedItem = new ImportEntry(export.FileRef, export.Parent, new NameReference(export.ObjectName.Name + "_TMP", export.ObjectName.Number))
-            {
-                ClassName = export.ClassName,
-                PackageFile = forcedPackageFile ?? packageFile,
-            };
-            export.FileRef.AddImport((ImportEntry)convertedItem);
+            return ConvertExportsToImports([export], forcedPackageFile)[export];
+        }
 
-            // Repoint the object.
-            Relinker.RepointObject(export, convertedItem);
+        /// <summary>
+        /// Experimental: Converts a set of exports in the same package to imports, performing a single same-package relink for all of them.
+        /// Only use if you really know what you're doing!
+        /// </summary>
+        /// <param name="exports">Exports to convert. All must be in the same package.</param>
+        /// <param name="forcedPackageFile">If set, the PackageFile to use on all converted imports</param>
+        /// <returns>Map of original export to the import that replaced it</returns>
+        public static Dictionary<ExportEntry, ImportEntry> ConvertExportsToImports(IReadOnlyCollection<ExportEntry> exports, string forcedPackageFile = null)
+        {
+            var converted = new Dictionary<ExportEntry, ImportEntry>(exports.Count);
+            if (exports.Count == 0)
+                return converted;
 
-            // Move any children to the new import
-            var children = export.FileRef.Exports.Where(x => x.idxLink == export.UIndex).OfType<IEntry>().Concat(export.FileRef.Imports.Where(x => x.idxLink == export.UIndex)).ToList();
-            foreach (var child in children)
+            var package = exports.First().FileRef;
+            if (exports.Any(x => x.FileRef != package))
             {
-                child.idxLink = convertedItem.UIndex;
+                throw new Exception("All exports being converted to imports must be in the same package");
             }
+
+            // PackageFile on an import is the package file that contains the class of the class
+            // E.g.
+            // Texture_Shepard is of type 'Texture2D'
+            // An import of this would have PackageFile 'Engine'
+            // Because the class of Texture_Shepard is Texture2D and Texture2D is defined in Engine.
+            // Now, how do we find that?
+
+            // Create all the imports first. Temp names are used so they don't collide with the exports during relink.
+            var remap = new ListenableDictionary<IEntry, IEntry>();
+            foreach (var export in exports)
+            {
+                var convertedItem = new ImportEntry(package, export.Parent, new NameReference(export.ObjectName.Name + "_TMP", export.ObjectName.Number))
+                {
+                    ClassName = export.ClassName,
+                    PackageFile = forcedPackageFile ?? ImportEntry.GetPackageFile(export),
+                };
+                package.AddImport(convertedItem);
+                converted[export] = convertedItem;
+                remap[export] = convertedItem;
+            }
+
+            // Move any children (including the new imports) from the converted exports to their new imports
+            foreach (var child in package.Exports.OfType<IEntry>().Concat(package.Imports).ToList())
+            {
+                if (child.idxLink > 0 && package.GetUExport(child.idxLink) is { } parentExp && converted.TryGetValue(parentExp, out var newParent))
+                {
+                    child.idxLink = newParent.UIndex;
+                }
+            }
+
+            // Repoint all the objects in one pass.
+            Relinker.RelinkSamePackage(package, remap);
 
             // Cleanup temporary stuff
-            convertedItem.ObjectName = export.ObjectName;
-            EntryPruner.TrashEntries(export.FileRef, new[] { export });
+            foreach (var (export, import) in converted)
+            {
+                import.ObjectName = export.ObjectName;
+            }
+            EntryPruner.TrashEntries(package, converted.Keys);
 
-
-
-            return convertedItem;
+            return converted;
         }
     }
 }

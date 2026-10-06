@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc.ExperimentsTools;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.ToolsetDev.MemoryAnalyzer;
 using LegendaryExplorer.SharedUI.Bases;
@@ -79,6 +80,8 @@ namespace LegendaryExplorer.Tools.WwiseEditor
 
         public ObservableCollectionExtended<ExportEntry> WwiseBankExports { get; } = new();
         public ObservableCollectionExtended<WwiseHircObjNode> CurrentObjects { get; } = new();
+        public ObservableCollectionExtended<WwiseBusTreeEntry> BusHierarchy { get; } = new();
+        public ObservableCollectionExtended<WwiseEventLookup> KnownEvents { get; } = new();
 
         private List<SaveData> SavedPositions;
 
@@ -127,12 +130,165 @@ namespace LegendaryExplorer.Tools.WwiseEditor
                     if (!(value is WExport))
                     {
                         soundPanel.HIRC_ListBox.SelectedIndex = CurrentObjects.IndexOf(value);
+                        binaryInterpreter.TrySelectHIRCItem(GetHIRCItemIndex(value.ID));
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Returns the position of the HIRC object with the given ID within the currently loaded bank's HIRC
+        /// array (file order), or -1 if not found. This is the same order the "Binary Interpreter" tab's HIRC
+        /// items tree is built in, so it's used to jump straight to a given object's full field breakdown there.
+        /// </summary>
+        private int GetHIRCItemIndex(uint id)
+        {
+            int index = 0;
+            foreach (uint hircId in CurrentWwiseBank.HIRCObjects.Keys)
+            {
+                if (hircId == id)
+                {
+                    return index;
+                }
+                index++;
+            }
+
+            return -1;
+        }
+
         private WwiseBankParsed CurrentWwiseBank;
+
+        /// <summary>
+        /// Whether to draw extra edges in the graph showing the actor-mixer hierarchy (which node routes its
+        /// audio through which child), in addition to the normal Event/Action/Sound flow edges.
+        /// </summary>
+        private bool ShowBusRoutingHierarchy;
+
+        private void ShowBusRoutingHierarchy_Click(object sender, RoutedEventArgs e)
+        {
+            ShowBusRoutingHierarchy = ShowBusRoutingHierarchy_MenuItem.IsChecked;
+            if (CurrentWwiseBank != null)
+            {
+                RefreshView();
+            }
+        }
+
+        private void LoadAdditionalWwiseNames_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult source = MessageBox.Show(this,
+                "Select Yes to scan a package file, or No to load a text file containing one Wwise name per line.",
+                "Load Additional Wwise Names", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            if (source == MessageBoxResult.Cancel)
+            {
+                return;
+            }
+
+            OpenFileDialog dialog = new()
+            {
+                Filter = source == MessageBoxResult.Yes
+                    ? GameFileFilters.ME3ME2SaveFileFilter
+                    : "Text files|*.txt|All files|*.*",
+                CustomPlaces = AppDirectories.GameCustomPlaces,
+                Title = source == MessageBoxResult.Yes
+                    ? "Select package to scan for Wwise names"
+                    : "Select text file containing Wwise names"
+            };
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            try
+            {
+                List<string> names = source == MessageBoxResult.Yes
+                    ? ReadPackageNames(dialog.FileName)
+                    : File.ReadLines(dialog.FileName).ToList();
+                int added = graphEditor.AddSupplementalNames(names);
+
+                // Rebuild the visible bank so newly resolved names are reflected in node comments, event-action
+                // titles, and output labels. The resolver itself remains alive across bank/package switches.
+                if (CurrentExport != null)
+                {
+                    RefreshView();
+                }
+
+                MessageBox.Show(this,
+                    $"Loaded {added:N0} new Wwise name{(added == 1 ? "" : "s")} into the current tool session.",
+                    "Wwise Names Loaded", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, $"Unable to load Wwise names:\n{ex.Message}",
+                    "Load Additional Wwise Names", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private static List<string> ReadPackageNames(string filePath)
+        {
+            using IMEPackage package = MEPackageHandler.OpenMEPackage(filePath);
+            return GetPackageNames(package).ToList();
+        }
+
+        private static IEnumerable<string> GetPackageNames(IMEPackage package)
+        {
+            return package.Names
+                .Concat(package.Exports.Select(entry => entry.ObjectName.Instanced))
+                .Concat(package.Imports.Select(entry => entry.ObjectName.Instanced));
+        }
+
+        private void RefreshKnownEvents()
+        {
+            var events = new List<WwiseEventLookup>();
+            foreach (WEvent eventNode in CurrentObjects.OfType<WEvent>())
+            {
+                if (graphEditor.NameResolver.TryResolve(eventNode.ID, out string resolvedName))
+                {
+                    events.Add(new WwiseEventLookup(resolvedName, new[] { eventNode.ID }));
+                }
+            }
+
+            KnownEvents.ReplaceAll(events
+                .GroupBy(eventLookup => eventLookup.Name, System.StringComparer.OrdinalIgnoreCase)
+                .Select(group => new WwiseEventLookup(group.Key, group.SelectMany(eventLookup => eventLookup.IDs)))
+                .OrderBy(eventLookup => eventLookup.Name, System.StringComparer.OrdinalIgnoreCase));
+            KnownEvents_ComboBox.SelectedIndex = -1;
+        }
+
+        private void KnownEvents_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count == 0 || e.AddedItems[0] is not WwiseEventLookup selectedEvent)
+            {
+                return;
+            }
+
+            WwiseHircObjNode node = CurrentObjects.OfType<WEvent>()
+                .FirstOrDefault(eventNode => selectedEvent.Matches(eventNode.ID));
+            node ??= CurrentObjects.OfType<WExport>()
+                .FirstOrDefault(eventExport => eventExport.Export.ClassName == "WwiseEvent" &&
+                    (selectedEvent.Matches(eventExport.ID) ||
+                     selectedEvent.Matches(SharedMethods.CalculateFNV132Hash(eventExport.Export.ObjectName.Instanced))));
+            if (node == null)
+            {
+                return;
+            }
+
+            // Select first so the normal graph selection state and the sound panel stay in sync. Schedule the
+            // camera move after the selection handlers have run; those handlers can invalidate the camera's
+            // current view before the graph node is ready to be focused.
+            panToSelection = false;
+            SelectedNode = node;
+            Dispatcher.BeginInvoke(DispatcherPriority.Render, new Action(() =>
+            {
+                if (!CurrentObjects.Contains(node))
+                {
+                    return;
+                }
+
+                RectangleF bounds = node.GlobalFullBounds;
+                bounds.Inflate(Math.Max(bounds.Width, 120), Math.Max(bounds.Height, 90));
+                graphEditor.Camera.AnimateViewToCenterBounds(bounds, true, 300);
+            }));
+        }
 
         public ICommand OpenCommand { get; set; }
         public ICommand SaveCommand { get; set; }
@@ -206,9 +362,12 @@ namespace LegendaryExplorer.Tools.WwiseEditor
                 Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ContextIdle, null);
                 LoadMEPackage(s);
                 CurrentFile = Path.GetFileName(s);
+                graphEditor.BusNames = WwiseBusNames.ForGame(Pcc.Game);
+                graphEditor.SetPackageNames(GetPackageNames(Pcc));
 
                 graphEditor.nodeLayer.RemoveAllChildren();
                 graphEditor.edgeLayer.RemoveAllChildren();
+                BusHierarchy.ClearEx();
 
                 WwiseBankExports.ReplaceAll(Pcc.Exports.Where(exp => exp.ClassName == "WwiseBank"));
 
@@ -261,6 +420,7 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             graphEditor.UseWaitCursor = true;
 
             CurrentWwiseBank = export.GetBinaryData<WwiseBankParsed>();
+            graphEditor.BusRouting = WwiseBusRouting.Parse(CurrentWwiseBank.BnkFile);
             SetupJSON(export);
             Properties_InterpreterWPF.LoadExport(export);
             binaryInterpreter.LoadExport(export);
@@ -304,6 +464,58 @@ namespace LegendaryExplorer.Tools.WwiseEditor
             {
                 AutoLayout();
             }
+
+            BuildBusHierarchy();
+            RefreshKnownEvents();
+        }
+
+        /// <summary>
+        /// Builds the bus parent/child tree from the parsed <see cref="WwiseBankParsed.Bus"/> objects across every
+        /// WwiseBank export in the loaded package. Most buses are only defined once (often in a shared/init bank)
+        /// and merely referenced elsewhere, so a single bank's HIRC objects are rarely the full picture.
+        /// Names come from a loaded bus ID map (see <see cref="LoadBusNameMap(string)"/>); IDs without a known name
+        /// are labelled by their hex ID, since Wwise bus names aren't stored in cooked banks.
+        /// </summary>
+        private void BuildBusHierarchy()
+        {
+            var buses = new Dictionary<uint, WwiseBankParsed.Bus>();
+            foreach (ExportEntry bankExport in Pcc.Exports.Where(exp => exp.ClassName == "WwiseBank"))
+            {
+                WwiseBankParsed bank = bankExport == CurrentExport ? CurrentWwiseBank : bankExport.GetBinaryData<WwiseBankParsed>();
+                foreach (WwiseBankParsed.Bus bus in bank.HIRCObjects.Values.OfType<WwiseBankParsed.Bus>())
+                {
+                    buses.TryAdd(bus.ID, bus);
+                }
+            }
+
+            Dictionary<uint, WwiseBusTreeEntry> entriesByID = buses.Values.ToDictionary(bus => bus.ID,
+                bus => new WwiseBusTreeEntry(bus, graphEditor.BusNames.GetValueOrDefault(bus.ID)));
+
+            var roots = new List<WwiseBusTreeEntry>();
+            foreach (WwiseBankParsed.Bus bus in buses.Values)
+            {
+                WwiseBusTreeEntry entry = entriesByID[bus.ID];
+                if (bus.ParentID != 0 && entriesByID.TryGetValue(bus.ParentID, out WwiseBusTreeEntry parentEntry))
+                {
+                    parentEntry.Children.Add(entry);
+                }
+                else
+                {
+                    roots.Add(entry);
+                }
+            }
+
+            BusHierarchy.ReplaceAll(roots.OrderBy(r => r.DisplayName));
+        }
+
+        private void BusHierarchy_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue is WwiseBusTreeEntry entry &&
+                CurrentObjects.FirstOrDefault(node => !(node is WExport) && node.ID == entry.ID) is { } nodeToSelect)
+            {
+                panToSelection = true;
+                SelectedNode = nodeToSelect;
+            }
         }
 
         private void GetObjects(WwiseBankParsed bank)
@@ -334,11 +546,25 @@ namespace LegendaryExplorer.Tools.WwiseEditor
                     switch (exportEntry.ClassName)
                     {
                         case "WwiseEvent":
-                            wwiseEvents.AddToListAt((exportEntry.GetProperty<IntProperty>("Id")?.Value ?? 0).ReinterpretAsUint(), exportEntry);
+                        {
+                            uint id = (exportEntry.GetProperty<IntProperty>("Id")?.Value ?? 0).ReinterpretAsUint();
+                            wwiseEvents.AddToListAt(id, exportEntry);
+                            // Wwise IDs are an FNV-1 hash of the lowercased object name. Also index by that hash so
+                            // references still resolve to a name when the export's "Id" property is missing or stale.
+                            uint nameHash = SharedMethods.CalculateFNV132Hash(exportEntry.ObjectName.Instanced);
+                            if (nameHash != id)
+                            {
+                                wwiseEvents.AddToListAt(nameHash, exportEntry);
+                            }
                             break;
+                        }
                         case "WwiseStream":
-                            wwiseStreams.TryAdd((exportEntry.GetProperty<IntProperty>("Id")?.Value ?? 0).ReinterpretAsUint(), exportEntry);
+                        {
+                            uint id = (exportEntry.GetProperty<IntProperty>("Id")?.Value ?? 0).ReinterpretAsUint();
+                            wwiseStreams.TryAdd(id, exportEntry);
+                            wwiseStreams.TryAdd(SharedMethods.CalculateFNV132Hash(exportEntry.ObjectName.Instanced), exportEntry);
                             break;
+                        }
                     }
                 }
                 var referencedExports = new Dictionary<uint, List<WExport>>();
@@ -390,6 +616,29 @@ namespace LegendaryExplorer.Tools.WwiseEditor
                     }
                 }
                 CurrentObjects.AddRange(referencedExports.Values.SelectMany(vals => vals));
+
+                if (ShowBusRoutingHierarchy)
+                {
+                    foreach (var obj in CurrentObjects)
+                    {
+                        if (obj is WExport || !graphEditor.BusRouting.Nodes.TryGetValue(obj.ID, out var nodeInfo) || nodeInfo.Children.Count == 0)
+                        {
+                            continue;
+                        }
+
+                        PPath linkBox = obj.CreateActionLinkBox();
+                        linkBox.Brush = new SolidBrush(Color.Black);
+                        linkBox.Pickable = false;
+                        obj.Outlinks.Add(new WwiseHircObjNode.OutputLink
+                        {
+                            Desc = "Bus Routing Children",
+                            Links = nodeInfo.Children.ToList(),
+                            Edges = new List<ActionEdge>(),
+                            node = linkBox
+                        });
+                    }
+                }
+
                 foreach (var obj in CurrentObjects)
                 {
                     obj.CreateConnections(CurrentObjects);
@@ -633,7 +882,12 @@ namespace LegendaryExplorer.Tools.WwiseEditor
         public void RefreshView()
         {
             //saveView(false);
+            if (Pcc != null)
+            {
+                graphEditor.SetPackageNames(GetPackageNames(Pcc));
+            }
             LoadBank(CurrentExport, false);
+            RefreshKnownEvents();
         }
 
         public override void HandleUpdate(List<PackageUpdate> updates)
