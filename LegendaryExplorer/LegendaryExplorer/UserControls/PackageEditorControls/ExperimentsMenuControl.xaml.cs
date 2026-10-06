@@ -646,6 +646,12 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         // EXPERIMENTS: MGAMERZ---------------------------------------------------
 
         #region Mgamerz's Experiments
+
+        private void MoveBankAudioToNewAFC_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.ExternalizeBankAudio(GetPEWindow());
+        }
+
         private void LEXCustomFilesManager_Click(object sender, RoutedEventArgs e)
         {
             new CustomFilesManagerWindow().Show();

@@ -60,6 +60,11 @@
 
                 <MenuItem Header="View Options" Padding="4">
                     <MenuItem Name="AutoSaveView_MenuItem" Header="Auto-Save View" IsCheckable="True" />
+                    <MenuItem Name="ShowBusRoutingHierarchy_MenuItem" Header="Show Bus Routing Hierarchy" IsCheckable="True"
+                              Click="ShowBusRoutingHierarchy_Click"
+                              ToolTip="Draw extra edges showing which bus ultimately plays each object (actor mixers, containers, sounds), following the actor-mixer parent/child hierarchy" />
+                    <MenuItem Header="Load Additional Wwise Names..." Click="LoadAdditionalWwiseNames_Click"
+                              ToolTip="Load names from another package or a text file so Wwise hash IDs can be resolved" />
                 </MenuItem>
                 <MenuItem Header="Experiments" Padding="4">
                 </MenuItem>
@@ -243,6 +248,21 @@
                         <TabItem Header="Binary Interpreter" >
                             <exportLoaderControls:BinaryInterpreterWPF x:Name="binaryInterpreter" HostingControl="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
                         </TabItem>
+                        <TabItem Header="Bus Hierarchy">
+                            <TreeView Name="BusHierarchy_TreeView" ItemsSource="{Binding BusHierarchy}"
+                                      SelectedItemChanged="BusHierarchy_SelectedItemChanged">
+                                <TreeView.ItemContainerStyle>
+                                    <Style TargetType="{x:Type TreeViewItem}">
+                                        <Setter Property="IsExpanded" Value="True" />
+                                    </Style>
+                                </TreeView.ItemContainerStyle>
+                                <TreeView.ItemTemplate>
+                                    <HierarchicalDataTemplate DataType="{x:Type local:WwiseBusTreeEntry}" ItemsSource="{Binding Children}">
+                                        <TextBlock Text="{Binding DisplayName}" />
+                                    </HierarchicalDataTemplate>
+                                </TreeView.ItemTemplate>
+                            </TreeView>
+                        </TabItem>
                     </TabControl>
                 </Grid>
                 <Grid Grid.Column="0" Grid.Row="0" Name="graphGrid">
@@ -250,6 +270,27 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
+                    <Expander Grid.Column="0" x:Name="GraphNavigationExpander" Header="Navigation"
+                              ExpandDirection="Right" MinWidth="32" VerticalAlignment="Stretch"
+                              Visibility="{Binding Pcc, Converter={StaticResource NullVisibilityConverter}}">
+                        <TabControl Width="260" TabStripPlacement="Top">
+                            <TabItem Header="Events">
+                                <Grid Margin="6">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="Resolved Wwise events" TextWrapping="Wrap" />
+                                    <ComboBox Grid.Row="1" x:Name="KnownEvents_ComboBox" Margin="0,6,0,0"
+                                              ItemsSource="{Binding KnownEvents}"
+                                              DisplayMemberPath="DisplayName"
+                                              SelectionChanged="KnownEvents_SelectionChanged"
+                                              ToolTip="Select an event to center and zoom the graph to its node" />
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                    </Expander>
                     <sharedUi:WindowsFormsHostEx Grid.Column="1" x:Name="GraphHost" VerticalAlignment="Stretch"
                                                  HorizontalAlignment="Stretch"
                                                  Visibility="{Binding Visibility, ElementName=graphImageSub, Converter={StaticResource InverseVisibilityConverter}}">

@@ -42,7 +42,7 @@ public partial class BinaryInterpreterWPF
         var id = bin.ReadUInt32();
         bin.Skip(-4);
         var item = new WwiseItem(id, refName, bin.Position);
-        WwiseIdMap.Add(id, item);
+        WwiseIdMap.TryAdd(id, item);
         var node = MakeUInt32Node(bin, nodeName);
         return node;
     }
@@ -51,7 +51,7 @@ public partial class BinaryInterpreterWPF
     {
         var pos = bin.Position;
         var id = bin.ReadUInt32();
-        var node = new BinInterpNode(pos, $"{name}: {id}") { Length = 4 };
+        var node = new BinInterpNode(pos, $"{name}: {id}", NodeType.StructLeafInt) { Length = 4 };
         if (WwiseIdMap.TryGetValue(id, out var item))
         {
             node.Header += $" (Ref to {item.Name})";
@@ -290,7 +290,13 @@ public partial class BinaryInterpreterWPF
                 }
                 break;
             case HircType.Event:
-                root.Items.Add(MakeArrayNode(bin, "Actions", i => MakeWwiseIdRefNode(bin, i.ToString()), IsExpanded:true));
+                {
+                    var actionCountPos = bin.Position;
+                    var actionCount = version <= 122 ? bin.ReadInt32() : (int)VarCount.ReadResizingUint(bin.BaseStream);
+                    bin.JumpTo(actionCountPos);
+                    root.Items.Add(version <= 122 ? MakeInt32Node(bin, "ActionCount") : MakeWwiseVarCountNode(bin, "ActionCount"));
+                    root.Items.Add(MakeArrayNode(actionCount, bin, "Actions", i => MakeWwiseIdRefNode(bin, i.ToString()), IsExpanded: true));
+                }
                 break;
             case HircType.RandomSequenceContainer:
                 Scan_HIRC_NodeBaseParams(root, bin, version, useFeedback);
@@ -391,14 +397,20 @@ public partial class BinaryInterpreterWPF
                         l.Items.Add(new BinInterpNode(bin.Position - 1, $"RtpcType: {Enum.GetName((RtpcTypeInner)rtpcType)}") { Length = 1 });
                     }
                     if (version <= 56) l.Items.Add(MakeFloatNode(bin, "CrossfadingRtpcDefaultValue"));
-                    root.Items.Add(MakeArrayNode(bin, "AssociatedChildren", j => MakeArrayNode(bin, $"Child {j} Curves", k =>
+                    l.Items.Add(MakeArrayNode(bin, "AssociatedChildren", j =>
                     {
-                        var gItem = new BinInterpNode(bin.Position, $"Graph Item {k}");
-                        gItem.Items.Add(MakeFloatNode(bin, "From"));
-                        gItem.Items.Add(MakeFloatNode(bin, "To"));
-                        gItem.Items.Add(MakeUInt32EnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
-                        return gItem;
-                    })));
+                        var acItem = new BinInterpNode(bin.Position, $"Child {j}");
+                        acItem.Items.Add(MakeWwiseIdRefNode(bin, "ChildId"));
+                        acItem.Items.Add(MakeArrayNode(bin, "Curves", k =>
+                        {
+                            var gItem = new BinInterpNode(bin.Position, $"Graph Item {k}");
+                            gItem.Items.Add(MakeFloatNode(bin, "From"));
+                            gItem.Items.Add(MakeFloatNode(bin, "To"));
+                            gItem.Items.Add(MakeUInt32EnumNode<CurveInterpolation>(bin, "CurveInterpolation"));
+                            return gItem;
+                        }));
+                        return acItem;
+                    }));
                     return l;
                 }));
                 break;
@@ -969,15 +981,21 @@ public partial class BinaryInterpreterWPF
         {
             var rtpc = new BinInterpNode(bin.Position, $"RTPC {i}");
 
-            rtpc.Items.Add(MakeWwiseIdRefNode(bin, "PluginId"));
-            rtpc.Items.Add(MakeBoolByteNode(bin, "IsRendered"));
+            if (version <= 48)
+            {
+                rtpc.Items.Add(MakeWwiseIdRefNode(bin, "PluginId"));
+                rtpc.Items.Add(MakeBoolByteNode(bin, "IsRendered"));
+            }
             rtpc.Items.Add(MakeWwiseIdRefNode(bin, "RTPCId"));
-            var rtpcType = bin.ReadByte();
-            if (version <= 140 && rtpcType == 0x02) rtpcType = 0x04;
-            rtpc.Items.Add(new BinInterpNode(bin.Position - 1, $"RTPCType: {Enum.GetName((RtpcTypeInner)rtpcType)}") { Length = 1 });
-            var accumType = (AccumTypeInner)bin.ReadByte();
-            if (version <= 125) accumType += 1;
-            rtpc.Items.Add(new BinInterpNode(bin.Position - 1, $"AccumType: {Enum.GetName(accumType)}"));
+            if (version > 89)
+            {
+                var rtpcType = bin.ReadByte();
+                if (version <= 140 && rtpcType == 0x02) rtpcType = 0x04;
+                rtpc.Items.Add(new BinInterpNode(bin.Position - 1, $"RTPCType: {Enum.GetName((RtpcTypeInner)rtpcType)}") { Length = 1 });
+                var accumType = (AccumTypeInner)bin.ReadByte();
+                if (version <= 125) accumType += 1;
+                rtpc.Items.Add(new BinInterpNode(bin.Position - 1, $"AccumType: {Enum.GetName(accumType)}"));
+            }
             if(version <= 89) rtpc.Items.Add(MakeUInt32EnumNode<RtpcParameterId>(bin, "ParameterId"));
             else if(version <= 113) rtpc.Items.Add(MakeByteEnumNode<RtpcParameterId>(bin, "ParameterId"));
             else
@@ -1260,16 +1278,17 @@ public partial class BinaryInterpreterWPF
                         node.Items.Add(MakeUInt32HexNode(bin, "Referenced Object ID"));
                         switch (actType)
                         {
-                            case WwiseBankParsed.EventActionType.Play:
-                                node.Items.Add(MakeUInt32Node(bin, "Delay (ms)"));
-                                node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range lower bound (ms)"));
-                                node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range upper bound (ms)"));
-                                node.Items.Add(MakeUInt32Node(bin, "Unknown2"));
-                                node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
-                                node.Items.Add(MakeInt32Node(bin, "Fade-in Randomization Range lower bound (ms)"));
-                                node.Items.Add(MakeInt32Node(bin, "Fade-in Randomization Range upper bound (ms)"));
-                                node.Items.Add(MakeByteNode(bin, "Fade-in curve Shape"));
-                                break;
+                            // Has same ID as Play_LE
+                            //case WwiseBankParsed.EventActionType.Play:
+                            //    node.Items.Add(MakeUInt32Node(bin, "Delay (ms)"));
+                            //    node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range lower bound (ms)"));
+                            //    node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range upper bound (ms)"));
+                            //    node.Items.Add(MakeUInt32Node(bin, "Unknown2"));
+                            //    node.Items.Add(MakeUInt32Node(bin, "Fade-in (ms)"));
+                            //    node.Items.Add(MakeInt32Node(bin, "Fade-in Randomization Range lower bound (ms)"));
+                            //    node.Items.Add(MakeInt32Node(bin, "Fade-in Randomization Range upper bound (ms)"));
+                            //    node.Items.Add(MakeByteNode(bin, "Fade-in curve Shape"));
+                            //    break;
                             case WwiseBankParsed.EventActionType.Stop:
                                 node.Items.Add(MakeUInt32Node(bin, "Delay (ms)"));
                                 node.Items.Add(MakeInt32Node(bin, "Delay Randomization Range lower bound (ms)"));
@@ -1280,7 +1299,7 @@ public partial class BinaryInterpreterWPF
                                 node.Items.Add(MakeInt32Node(bin, "Fade-out Randomization Range upper bound (ms)"));
                                 node.Items.Add(MakeByteNode(bin, "Fade-out curve Shape"));
                                 break;
-                            case WwiseBankParsed.EventActionType.Play_LE:
+                            case WwiseBankParsed.EventActionType.Play:
                                 node.Items.Add(MakeByteNode(bin, "Unknown1"));
                                 bool playHasFadeIn;
                                 node.Items.Add(new BinInterpNode(bin.Position, $"Has Fade In: {playHasFadeIn = (bool)bin.ReadBoolByte()}", NodeType.StructLeafByte) { Length = 1 });
