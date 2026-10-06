@@ -1170,7 +1170,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             int reselectUIndex = 0;
             (Vector3, float, float) savedCamPOV = default;
             Vector3 savedActorPos = default;
-            List<ExportEntry> collectionActorsToUpdate = [];
+            HashSet<ExportEntry> collectionActorsToUpdate = [];
             for (int i = file.Actors.Count - 1; i >= 0; i--)
             {
                 ActorProxy alteredActor = file.Actors[i];
@@ -1185,7 +1185,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                     }
                     if (alteredActor is CollectionActorComponentProxy cacp)
                     {
-                        collectionActorsToUpdate.Add(cacp.Export);
+                        //the whole collection actor gets reloaded, since its components' transforms all live in its binary
+                        collectionActorsToUpdate.Add(cacp.CollectionActorExport);
                         continue;
                     }
                     RemoveActor(alteredActor);
@@ -1201,7 +1202,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             {
                 for (int i = file.Actors.Count - 1; i >= 0; i--)
                 {
-                    if (file.Actors[i] is CollectionActorComponentProxy)
+                    if (file.Actors[i] is CollectionActorComponentProxy cacp && cacp.CollectionActorExport == collectionActor)
                     {
                         RemoveActor(file.Actors[i]);
                     }

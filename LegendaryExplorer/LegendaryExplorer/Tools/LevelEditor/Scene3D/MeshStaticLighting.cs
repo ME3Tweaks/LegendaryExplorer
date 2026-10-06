@@ -68,7 +68,7 @@ public sealed class MeshStaticLighting : IDisposable
     private struct StaticLightingVertex
     {
         public Vector2 LightMapCoordinate;
-        //In the order the game stores them (B, G, R, A), read as B8G8R8A8 like the game's D3DCOLOR streams
+        //In the order the game stores them (B, G, R, A). The game binds these as R8G8B8A8, and its shaders swizzle them back (LightMapA.zyx)
         public uint SampleA;
         public uint SampleB;
     }
@@ -85,8 +85,8 @@ public sealed class MeshStaticLighting : IDisposable
     public static readonly InputElement[] InputElements =
     [
         new InputElement("COLOR", 0, Format.R32G32_Float, 0, VertexStreamSlot),
-        new InputElement("TEXCOORD", 5, Format.B8G8R8A8_UNorm, 8, VertexStreamSlot),
-        new InputElement("TEXCOORD", 6, Format.B8G8R8A8_UNorm, 12, VertexStreamSlot),
+        new InputElement("TEXCOORD", 5, Format.R8G8B8A8_UNorm, 8, VertexStreamSlot),
+        new InputElement("TEXCOORD", 6, Format.R8G8B8A8_UNorm, 12, VertexStreamSlot),
         new InputElement("BLENDWEIGHT", 0, Format.R32_Float, 0, ShadowVertexStreamSlot),
     ];
 
@@ -275,15 +275,9 @@ public sealed class MeshStaticLighting : IDisposable
         staticLighting.UsesLightEnvironment = context.ResolveLightEnvironment(componentExport, condensedProps, staticLighting.OwnerActor,
             out DynamicLightEnvironment lightEnvironment);
         staticLighting.LightEnvironment = lightEnvironment;
-        staticLighting.CastsShadow = condensedProps.GetProp<BoolProperty>("CastShadow") is not { Value: false };
         //Static meshes in levels have static shadowing, so UE3 initializes unset channels to Static. Light environments' primitives don't, so they get Dynamic
-        staticLighting.LightingChannels = LightingChannels.FromProperty(condensedProps.GetProp<StructProperty>("LightingChannels"), default, isInitialized: false,
+        staticLighting.ReadPrimitiveSettings(componentExport, condensedProps,
             staticLighting.UsesLightEnvironment ? LightingChannels.DynamicPrimitiveDefault : LightingChannels.StaticPrimitiveDefault);
-        //StaticMeshComponent's archetypes set bAcceptsLights. Only an explicit false is trusted, in case the archetype chain couldn't be resolved
-        staticLighting.AcceptsLights = condensedProps.GetProp<BoolProperty>("bAcceptsLights") is not { Value: false };
-        staticLighting.AcceptsDynamicLights = condensedProps.GetProp<BoolProperty>("bAcceptsDynamicLights") is not { Value: false };
-        staticLighting.LevelName = componentExport.FileRef.FileNameNoExtension;
-        staticLighting.HasSelfContainedLighting = componentExport.FileRef.Flags.Has(UnrealFlags.EPackageFlags.SelfContainedLighting);
         //FPrimitiveSceneInfo's bStaticShadowing (bUsePrecomputedShadows) and bCastDynamicShadow (CastShadow && bCastDynamicShadow, which MeshComponent defaults to true).
         //StaticMeshActor's component template sets bUsePrecomputedShadows. If it isn't found (in case the archetype chain couldn't be resolved),
         //a mesh with any precomputed lighting, or in a StaticMeshCollectionActor, is taken to have it
@@ -303,6 +297,53 @@ public sealed class MeshStaticLighting : IDisposable
         }
         context.RegisterStaticLighting(staticLighting);
         return staticLighting;
+    }
+
+    /// <summary>
+    /// For a primitive with no precomputed lighting or light environment, such as a skeletal mesh whose light environment is disabled:
+    /// every light that reaches it is rendered dynamically, as UE3 does for a movable primitive. Returns null if that isn't possible
+    /// </summary>
+    /// <param name="condensedProps">The component's properties, including inherited ones</param>
+    public static MeshStaticLighting CreateDynamic(MeshRenderContext context, ExportEntry componentExport, PropertyCollection condensedProps)
+    {
+        if (!componentExport.Game.IsLEGame())
+        {
+            return null;
+        }
+        var staticLighting = new MeshStaticLighting(context)
+        {
+            OwnerActor = componentExport.Parent as ExportEntry
+        };
+        if (componentExport.GetProperty<ArrayProperty<StructProperty>>("IrrelevantLights") is { } irrelevantLights)
+        {
+            foreach (StructProperty guidProp in irrelevantLights)
+            {
+                staticLighting.IrrelevantLights.Add(CommonStructs.GetGuid(guidProp));
+            }
+        }
+        //Without static shadowing, UE3 initializes unset channels to Dynamic
+        staticLighting.ReadPrimitiveSettings(componentExport, condensedProps, LightingChannels.DynamicPrimitiveDefault);
+        //bUsePrecomputedShadows defaults to false
+        staticLighting.HasStaticShadowing = condensedProps.GetProp<BoolProperty>("bUsePrecomputedShadows") is { Value: true };
+        staticLighting.CastsDynamicShadow = staticLighting.CastsShadow && condensedProps.GetProp<BoolProperty>("bCastDynamicShadow") is not { Value: false };
+        staticLighting.IsDynamicShadowCaster = staticLighting.CastsDynamicShadow && condensedProps.GetProp<ObjectProperty>("ShadowParent") is not { Value: not 0 };
+        context.RegisterStaticLighting(staticLighting);
+        return staticLighting;
+    }
+
+    /// <summary>
+    /// The primitive component's settings that decide which lights affect it
+    /// </summary>
+    /// <param name="defaultChannels">The channels UE3 initializes unset lighting channels to</param>
+    private void ReadPrimitiveSettings(ExportEntry componentExport, PropertyCollection condensedProps, LightingChannels defaultChannels)
+    {
+        CastsShadow = condensedProps.GetProp<BoolProperty>("CastShadow") is not { Value: false };
+        LightingChannels = LightingChannels.FromProperty(condensedProps.GetProp<StructProperty>("LightingChannels"), default, isInitialized: false, defaultChannels);
+        //Component archetypes set bAcceptsLights. Only an explicit false is trusted, in case the archetype chain couldn't be resolved
+        AcceptsLights = condensedProps.GetProp<BoolProperty>("bAcceptsLights") is not { Value: false };
+        AcceptsDynamicLights = condensedProps.GetProp<BoolProperty>("bAcceptsDynamicLights") is not { Value: false };
+        LevelName = componentExport.FileRef.FileNameNoExtension;
+        HasSelfContainedLighting = componentExport.FileRef.Flags.Has(UnrealFlags.EPackageFlags.SelfContainedLighting);
     }
 
     private void Load(StaticMeshComponentLODInfo lodInfo, IMEPackage pcc, StaticMesh mesh, int lod)

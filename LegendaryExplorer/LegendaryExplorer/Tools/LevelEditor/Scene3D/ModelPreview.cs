@@ -778,7 +778,8 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
     /// <summary>
     /// Creates a preview of the given <see cref="SkeletalMesh"/>.
     /// </summary>
-    public ModelPreview(MeshRenderContext renderContext, SkeletalMesh m)
+    /// <param name="staticLighting">For level meshes lit by level lighting: the lighting of LOD <paramref name="lightingLOD"/>, the one that's rendered</param>
+    public ModelPreview(MeshRenderContext renderContext, SkeletalMesh m, MeshStaticLighting staticLighting = null, int lightingLOD = 0)
     {
         var mats = new string[m.Materials.Length];
         // STEP 1: MATERIALS
@@ -831,7 +832,19 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
                     sections.Add(new ModelPreviewSection(mats[section.MaterialIndex], section.BaseIndex, (uint)section.NumTriangles));
                 }
             }
-            LODs.Add(new ModelPreviewLOD<TVertex>(mesh, sections));
+            bool isLightingLOD = staticLighting is not null && LODs.Count == lightingLOD;
+            LODs.Add(new ModelPreviewLOD<TVertex>(mesh, sections) { StaticLighting = isLightingLOD ? staticLighting : null });
+            if (isLightingLOD)
+            {
+                staticLighting.GetBounds = () => mesh.TransformedBounds;
+                staticLighting.GetLocalToWorld = () => mesh.LocalToWorld;
+                staticLighting.Materials = Materials.Values.Cast<object>().OfType<LEShaderPreviewMaterial>().Select(mat => mat.RenderProxy).ToArray();
+                staticLighting.DrawShadowCaster = ctx => DrawShadowCasterSections(ctx, mesh, sections);
+            }
+        }
+        if (staticLighting is not null && LODs.Count <= lightingLOD)
+        {
+            staticLighting.Dispose();
         }
     }
 

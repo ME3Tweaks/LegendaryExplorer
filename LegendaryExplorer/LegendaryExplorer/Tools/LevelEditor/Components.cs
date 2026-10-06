@@ -126,9 +126,14 @@ public class PrimitiveComponentProxy : NotifyPropertyChangedBase, IDisposable
 
     public virtual void UpdateScene(MeshRenderContext context, float deltaTime) { }
 
+    /// <summary>
+    /// The transform the component's own transform is relative to
+    /// </summary>
+    protected virtual Matrix4x4 ParentToWorld => Actor.LocalToWorld;
+
     private void UpdateSelfLocalToWorld()
     {
-        var parentMatrix = Actor.LocalToWorld;
+        var parentMatrix = ParentToWorld;
         if (absoluteTranslation)
         {
             parentMatrix.Translation = Vector3.Zero;
@@ -417,6 +422,14 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
     SkinnedMeshRenderer skinnedMeshRenderer;
     AnimSequencePlayer animPlayer;
 
+    /// <summary>
+    /// When set, the component is transformed relative to this component instead of its actor (ParentAnimComponent with bTransformFromAnimParent).
+    /// Must come before this component in its actor's <see cref="ActorProxy.Components"/>, so that it's updated first
+    /// </summary>
+    private readonly PrimitiveComponentProxy TransformParent;
+
+    protected override Matrix4x4 ParentToWorld => TransformParent?.LocalToWorld ?? base.ParentToWorld;
+
     public SkeletalMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent) : base(context, componentExport, parent)
     {
         bool bTransformFromAnimParent = Properties.GetProp<BoolProperty>("bTransformFromAnimParent")?.Value ?? true;
@@ -424,33 +437,44 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
             && Properties.GetProp<ObjectProperty>("ParentAnimComponent")?.ResolveToEntry(Export.FileRef) is ExportEntry parentAnimExport
             && parent.Components.FirstOrDefault(cmp => cmp.Export == parentAnimExport) is { } parentAnimComponent)
         {
-            LocalToWorld = parentAnimComponent.LocalToWorld;
+            TransformParent = parentAnimComponent;
+            base.UpdateLocalToWorld();
         }
         if (Properties.GetProp<ObjectProperty>("SkeletalMesh")?.ResolveToExport(Export.FileRef, context.PackageCache) is ExportEntry meshExport)
         {
             SkeletalMesh skm = meshExport.GetBinaryData<SkeletalMesh>();
+            PropertyCollection condensedProps = null;
+            bool usesLightEnvironment = false;
+            DynamicLightEnvironment lightEnvironment = null;
             if (skm.LODModels.Length > LOD)
             {
                 skm.SetMaterials(MaterialOverrides, true);
                 MaterialOverrides.Clear();
-                Mesh = new ModelPreview<VertexType>(context, skm);
+                //Without a light environment (or with a disabled one), the mesh is lit by the level's lights directly
+                MeshStaticLighting staticLighting = null;
+                if (Export.Game.IsLEGame())
+                {
+                    condensedProps = Export.GetCondensedProperties(context.PackageCache, resolveImports: true, mergeStructs: true);
+                    usesLightEnvironment = context.ResolveLightEnvironment(Export, condensedProps, parent?.Export, out lightEnvironment);
+                    if (!usesLightEnvironment)
+                    {
+                        staticLighting = MeshStaticLighting.CreateDynamic(context, Export, condensedProps);
+                    }
+                }
+                Mesh = new ModelPreview<VertexType>(context, skm, staticLighting, LOD);
                 MeshIFP = meshExport.InstancedFullPath;
                 skinnedMeshRenderer = new SkinnedMeshRenderer();
                 skinnedMeshRenderer.BuildFromSkeletalMesh(meshExport.FileRef.Game, skm.LODModels[LOD]);
                 animPlayer = new AnimSequencePlayer(skm);
             }
             UpdateSelfLocalToWorld();
-            if (Mesh is not null && MeshRenderContext.SupportsLightEnvironments(Export.Game))
+            if (Mesh is not null && lightEnvironment is not null)
             {
-                var condensedProps = Export.GetCondensedProperties(context.PackageCache, resolveImports: true, mergeStructs: true);
-                if (context.ResolveLightEnvironment(Export, condensedProps, parent?.Export, out DynamicLightEnvironment lightEnvironment))
-                {
-                    //MeshComponent's defaults: CastShadow, bCastDynamicShadow
-                    bool castsShadow = condensedProps.GetProp<BoolProperty>("CastShadow") is not { Value: false }
-                                       && condensedProps.GetProp<BoolProperty>("bCastDynamicShadow") is not { Value: false };
-                    JoinLightEnvironment(context, lightEnvironment, LightingChannels.FromProperty(condensedProps.GetProp<StructProperty>("LightingChannels"), default,
-                        isInitialized: false, LightingChannels.DynamicPrimitiveDefault), castsShadow);
-                }
+                //MeshComponent's defaults: CastShadow, bCastDynamicShadow
+                bool castsShadow = condensedProps.GetProp<BoolProperty>("CastShadow") is not { Value: false }
+                                   && condensedProps.GetProp<BoolProperty>("bCastDynamicShadow") is not { Value: false };
+                JoinLightEnvironment(context, lightEnvironment, LightingChannels.FromProperty(condensedProps.GetProp<StructProperty>("LightingChannels"), default,
+                    isInitialized: false, LightingChannels.DynamicPrimitiveDefault), castsShadow);
             }
         }
     }
