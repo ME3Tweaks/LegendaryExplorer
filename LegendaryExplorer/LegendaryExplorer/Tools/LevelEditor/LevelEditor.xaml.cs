@@ -421,6 +421,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         foreach (RenderPass pass in passes)
         {
             DoRenderPass(pass);
+            if (pass is RenderPass.Lighting)
+            {
+                //draws the queued light passes, then light environments' shadows, which darken the lit scene but not translucency
+                RenderContext.EndLightingPass();
+            }
         }
 
         RenderContext.DrawUI();
@@ -663,6 +668,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             actor.Dispose();
         }
         RenderContext.RemoveLights(file.Lights);
+        RenderContext.ForgetLevel(file.Package);
 
         file.Dispose();
         OpenFiles.Remove(file);
@@ -751,6 +757,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         RenderContext.RemoveLights(owningFile.Lights);
         owningFile.Lights = SceneLight.LoadLevelLights(level, RenderContext.PackageCache);
         RenderContext.AddLights(owningFile.Lights);
+        //The level's BSP blocks light environments' visibility traces
+        RenderContext.SetLevelModel(level.Export.FileRef, level.Model);
         return new(actors, ignoredActorClasses);
     }
 

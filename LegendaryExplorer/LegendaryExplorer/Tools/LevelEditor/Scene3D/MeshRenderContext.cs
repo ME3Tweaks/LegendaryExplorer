@@ -1,11 +1,13 @@
 ﻿using LegendaryExplorer.Misc;
 using LegendaryExplorer.Resources;
 using LegendaryExplorerCore.Gammtek;
+using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
@@ -98,6 +100,8 @@ public class MeshRenderContext : RenderContext
     private ShaderResourceView SceneColorResourceView;
     public Texture2D DepthBuffer { get; private set; } // also called Depth-Stencil, but we don't use stencil at the moment.
     public DepthStencilView DepthBufferView { get; private set; }
+    //for reading the depth buffer in shaders, while it isn't bound as the depth target (see LightAttenuationRenderer)
+    private ShaderResourceView DepthBufferResourceView;
     //The scene is rendered with MSAA, so the hit proxy IDs are rendered into a multisampled target, then copied (not averaged!) into HitBuffer for reading
     private Texture2D HitBufferMS;
     private ShaderResourceView HitBufferMSResourceView;
@@ -352,6 +356,538 @@ public class MeshRenderContext : RenderContext
         }
     }
 
+    private readonly LightAttenuationRenderer LightAttenuations;
+
+    /// <summary>
+    /// Whether the actor is shown in this view, so that its meshes cast their dynamic shadows
+    /// </summary>
+    public virtual bool IsActorVisible(ActorProxy actor) => true;
+
+    //light passes queued during RenderPass.Lighting, drawn by EndLightingPass
+    private readonly List<(SceneLight Light, Action<ShaderResourceView> Draw)> PendingLightPasses = [];
+
+    /// <summary>
+    /// For <see cref="RenderPass.Lighting"/>: queues a light pass, which <see cref="EndLightingPass"/> draws with the light's attenuation (null if it has none).
+    /// The draw sets up all its own render state
+    /// </summary>
+    internal void QueueLightPass(SceneLight light, Action<ShaderResourceView> draw) => PendingLightPasses.Add((light, draw));
+
+    //light passes that the modulated shadows don't darken, drawn after them by EndLightingPass
+    private readonly List<Action> PendingPostModulatedShadowPasses = [];
+
+    /// <summary>
+    /// Queues a light pass to be drawn by <see cref="EndLightingPass"/> after the modulated shadows, so that they don't darken it. Only call if
+    /// <see cref="AreModulatedShadowsActive"/>. The draw sets up all its own render state
+    /// </summary>
+    internal void QueuePostModulatedShadowPass(Action draw) => PendingPostModulatedShadowPasses.Add(draw);
+
+    /// <summary>
+    /// Whether light environments' modulated shadows are rendered (by <see cref="EndLightingPass"/>)
+    /// </summary>
+    internal bool AreModulatedShadowsActive => UseGameShaders && IsLevelLightingActive && DepthBufferResourceView is not null && !Camera.IsOrthographic && !Wireframe
+                                               && !ModulatedShadowsFailed;
+
+    /// <summary>
+    /// Call after <see cref="RenderPass.Lighting"/>, before <see cref="RenderPass.Translucent"/>. Draws the queued light passes grouped by light, as UE3 does,
+    /// so each light's dynamic shadows and light function are rendered once, then the light environments' modulated shadows, then the passes they don't darken.
+    /// The scene's render targets are restored.
+    /// </summary>
+    public void EndLightingPass()
+    {
+        try
+        {
+            //GroupBy keeps the order lights were first queued in, and each light's passes in order
+            foreach (IGrouping<SceneLight, (SceneLight Light, Action<ShaderResourceView> Draw)> lightPasses in PendingLightPasses.GroupBy(pass => pass.Light))
+            {
+                ShaderResourceView attenuation = GetLightAttenuation(lightPasses.Key);
+                foreach ((_, Action<ShaderResourceView> draw) in lightPasses)
+                {
+                    draw(attenuation);
+                }
+            }
+            RenderModulatedShadows();
+            foreach (Action draw in PendingPostModulatedShadowPasses)
+            {
+                draw();
+            }
+        }
+        finally
+        {
+            PendingLightPasses.Clear();
+            PendingPostModulatedShadowPasses.Clear();
+        }
+    }
+
+    /// <summary>
+    /// Renders the light's dynamic shadows and light function into a texture of its attenuation across the screen. Changes the render state, then restores
+    /// the scene's render targets and default states
+    /// </summary>
+    /// <returns>Null if the light has neither, or they can't be rendered. Only valid until the next light's is rendered</returns>
+    private ShaderResourceView GetLightAttenuation(SceneLight light)
+    {
+        //positions are reconstructed from the scene depth with a perspective projection
+        if (!LightAttenuationRenderer.MayHaveAttenuation(light) || DepthBufferResourceView is null || Camera.IsOrthographic)
+        {
+            return null;
+        }
+        try
+        {
+            return LightAttenuations.GetAttenuation(light, DepthBufferResourceView);
+        }
+        catch (Exception e)
+        {
+            //(the renderer won't retry it)
+            System.Diagnostics.Debug.WriteLine($"Could not render the attenuation of {light.Export.InstancedFullPath}: {e.Message}");
+            return null;
+        }
+        finally
+        {
+            RestoreSceneRenderState();
+        }
+    }
+
+    private static readonly ShaderResourceView[] NoShaderResources = new ShaderResourceView[CommonShaderStage.InputResourceSlotCount];
+
+    /// <summary>
+    /// Restores what rendering lights' attenuations or modulated shadows changes, even if it failed partway:
+    /// the scene's render targets and viewport, and the default depth, blend, rasterizer and sampler states
+    /// </summary>
+    private void RestoreSceneRenderState()
+    {
+        ImmediateContext.PixelShader.SetShaderResources(0, NoShaderResources);
+        LEEffect.PixelShaderResources.Reset();
+        ImmediateContext.OutputMerger.SetRenderTargets(DepthBufferView, SceneColorView, HitBufferView);
+        ImmediateContext.Rasterizer.SetViewport(0, 0, Width, Height);
+        ImmediateContext.OutputMerger.SetDepthStencilState(DefaultDepthState);
+        ImmediateContext.OutputMerger.SetBlendState(null);
+        RestoreRasterizerState();
+        RestoreDefaultSamplers();
+    }
+
+    private bool ModulatedShadowsFailed;
+
+    /// <summary>
+    /// For the modulated shadows of light environments: multiplies them into the scene color. The scene's render targets are restored.
+    /// </summary>
+    private void RenderModulatedShadows()
+    {
+        if (!AreModulatedShadowsActive)
+        {
+            return;
+        }
+        DynamicLightEnvironment[] lightEnvironments;
+        lock (LightEnvironments)
+        {
+            lightEnvironments = [.. LightEnvironments.Values];
+        }
+        if (lightEnvironments.Length == 0)
+        {
+            return;
+        }
+        try
+        {
+            LightAttenuations.RenderModulatedShadows(lightEnvironments, DepthBufferResourceView, SceneColorView);
+        }
+        catch (Exception e)
+        {
+            //not retried every frame. EmptyCaches and ForgetLevel reset it, for when the level changes
+            ModulatedShadowsFailed = true;
+            System.Diagnostics.Debug.WriteLine($"Could not render light environment shadows: {e.Message}");
+        }
+        finally
+        {
+            RestoreSceneRenderState();
+        }
+    }
+
+    //light environments that have primitives, by their component (and the actor that owns them, since actors can share an archetype's)
+    private readonly Dictionary<(ExportEntry owner, ExportEntry lightEnvironment), DynamicLightEnvironment> LightEnvironments = [];
+    //each level's WorldInfo settings that light environments use: CharacterLightingContrastFactor and bAllowLightEnvSphericalHarmonicLights. Guarded by LightEnvironments
+    private readonly Dictionary<IMEPackage, (float, bool)> WorldLightEnvironmentSettings = [];
+
+    /// <summary>
+    /// Whether light environments are supported for the game. Only LE3's are
+    /// </summary>
+    internal static bool SupportsLightEnvironments(MEGame game) => game is MEGame.LE3;
+
+    /// <summary>
+    /// Finds the light environment a primitive component is lit by: its LightEnvironment, unless that's disabled.
+    /// Characters whose light environment can't be found (since it's set by a class's defaults that can't be read) get one with the class's defaults
+    /// </summary>
+    /// <param name="condensedProps">The component's properties, including inherited ones</param>
+    /// <param name="owner">The actor that owns the component</param>
+    /// <param name="lightEnvironment">The light environment, if it's used and light environments are supported for the game (only LE3's are).
+    /// The component joins it with <see cref="AddLightEnvironmentPrimitive"/></param>
+    /// <returns>Whether the component is lit by a light environment. False if its light environment can't be read</returns>
+    internal bool ResolveLightEnvironment(ExportEntry componentExport, PropertyCollection condensedProps, ExportEntry owner, out DynamicLightEnvironment lightEnvironment)
+    {
+        lightEnvironment = null;
+        try
+        {
+            ExportEntry lightEnvironmentExport = null;
+            if (condensedProps.GetProp<ObjectProperty>("LightEnvironment") is { Value: not 0 } lightEnvironmentProp)
+            {
+                lightEnvironmentExport = lightEnvironmentProp.ResolveToEntry(componentExport.FileRef) switch
+                {
+                    ExportEntry export => export,
+                    ImportEntry import => LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter.ResolveImport(import, PackageCache),
+                    _ => null
+                };
+                //A light environment that belongs to another actor placed in a level is deliberately shared with it. Any other that isn't the actor's own
+                //was inherited from an archetype (at any depth) or class defaults, and belongs to the actor like everything else it inherits: it has its own instance
+                if (owner is not null && lightEnvironmentExport is not null && lightEnvironmentExport.Parent != owner && !IsPlacedActor(lightEnvironmentExport.Parent)
+                    && FindInstancedComponent(owner, lightEnvironmentExport) is { } ownLightEnvironment)
+                {
+                    lightEnvironmentExport = ownLightEnvironment;
+                }
+                if (lightEnvironmentExport is not null
+                    && lightEnvironmentExport.GetCondensedProperties(PackageCache, resolveImports: true).GetProp<BoolProperty>("bEnabled") is { Value: false })
+                {
+                    return false;
+                }
+            }
+            else if (owner is null || !IsCharacterClass(owner))
+            {
+                return false;
+            }
+            if (SupportsLightEnvironments(componentExport.Game))
+            {
+                //a shared light environment is its actor's. An inherited one with no instance of its own is still this actor's alone
+                ExportEntry lightEnvironmentOwner = lightEnvironmentExport?.Parent is ExportEntry outer && outer != owner && IsPlacedActor(outer) ? outer : owner;
+                lightEnvironment = GetLightEnvironment(lightEnvironmentOwner, lightEnvironmentExport);
+            }
+            return true;
+        }
+        catch (Exception e)
+        {
+            System.Diagnostics.Debug.WriteLine($"Could not resolve the light environment of {componentExport.InstancedFullPath}, so it's lit like other meshes: {e.Message}");
+            lightEnvironment = null;
+            return false;
+        }
+
+        //Pawns, stunt actors and SFXSkeletalMeshActors have a BioDynamicLightEnvironmentComponent in their class defaults
+        static bool IsCharacterClass(ExportEntry actor) =>
+            GlobalUnrealObjectInfo.IsA(actor.ClassName, "Pawn", actor.Game)
+            || GlobalUnrealObjectInfo.IsA(actor.ClassName, "SFXStuntActor", actor.Game)
+            || GlobalUnrealObjectInfo.IsA(actor.ClassName, "SFXSkeletalMeshActor", actor.Game);
+
+        //an actor in a level (whose outer is the level), rather than an archetype or class default object
+        static bool IsPlacedActor(IEntry entry) => entry is ExportEntry { IsDefaultObject: false, Parent: ExportEntry { ClassName: "Level" } };
+
+        //the actor's instance of a template component: its subobject of the same name, or else the first of the same class
+        static ExportEntry FindInstancedComponent(ExportEntry actor, ExportEntry template)
+        {
+            ExportEntry sameClass = null;
+            foreach (ExportEntry child in actor.GetChildren<ExportEntry>())
+            {
+                if (child.ClassName != template.ClassName)
+                {
+                    continue;
+                }
+                if (child.ObjectName == template.ObjectName)
+                {
+                    return child;
+                }
+                sameClass ??= child;
+            }
+            return sameClass;
+        }
+    }
+
+    /// <summary>
+    /// The light environment whose LightEnvironment component is <paramref name="lightEnvironmentExport"/>: the existing one, or a new one, which is only kept once
+    /// a primitive joins it (<see cref="AddLightEnvironmentPrimitive"/>). Null if light environments aren't supported for the game (only LE3's are)
+    /// </summary>
+    /// <param name="owner">The actor that owns the light environment</param>
+    /// <param name="lightEnvironmentExport">Null for a character with the class's default light environment</param>
+    private DynamicLightEnvironment GetLightEnvironment(ExportEntry owner, ExportEntry lightEnvironmentExport)
+    {
+        if ((owner ?? lightEnvironmentExport) is not { } entry || !SupportsLightEnvironments(entry.Game))
+        {
+            return null;
+        }
+        IMEPackage level = entry.FileRef;
+        (float contrastFactor, bool allowSHLights) worldSettings;
+        bool hasWorldSettings;
+        //the lock is held briefly, since the render thread takes it every frame: the settings are read (from packages, on the loading thread) outside it
+        lock (LightEnvironments)
+        {
+            if (LightEnvironments.TryGetValue((owner, lightEnvironmentExport), out DynamicLightEnvironment lightEnvironment))
+            {
+                return lightEnvironment;
+            }
+            hasWorldSettings = WorldLightEnvironmentSettings.TryGetValue(level, out worldSettings);
+        }
+        if (!hasWorldSettings)
+        {
+            worldSettings = ReadWorldLightEnvironmentSettings(level);
+            lock (LightEnvironments)
+            {
+                WorldLightEnvironmentSettings[level] = worldSettings;
+            }
+        }
+        LightEnvironmentSettings settings = lightEnvironmentExport is null ? new LightEnvironmentSettings { IsBio = true, SynthesizeSHLight = true }
+            : LightEnvironmentSettings.Read(lightEnvironmentExport, PackageCache);
+        //(if another thread made one for the same component meanwhile, AddLightEnvironmentPrimitive keeps whichever is added first)
+        return new DynamicLightEnvironment(this, owner, lightEnvironmentExport, settings, worldSettings.contrastFactor, worldSettings.allowSHLights);
+    }
+
+    /// <summary>
+    /// The WorldInfo settings that light environments in a level use: CharacterLightingContrastFactor and bAllowLightEnvSphericalHarmonicLights.
+    /// The game reads them from the persistent level's WorldInfo (GWorld->GetWorldInfo(TRUE)), not the streamed-in level's own
+    /// </summary>
+    private (float contrastFactor, bool allowSHLights) ReadWorldLightEnvironmentSettings(IMEPackage level)
+    {
+        //Default__WorldInfo's values
+        (float, bool) settings = (1.5f, true);
+        try
+        {
+            if (FindWorldInfo(FindPersistentLevel(level) ?? level) is { } worldInfo)
+            {
+                PropertyCollection worldProps = worldInfo.GetProperties();
+                settings = (worldProps.GetProp<FloatProperty>("CharacterLightingContrastFactor")?.Value ?? 1.5f,
+                    worldProps.GetProp<BoolProperty>("bAllowLightEnvSphericalHarmonicLights")?.Value ?? true);
+            }
+        }
+        catch (Exception e)
+        {
+            System.Diagnostics.Debug.WriteLine($"Could not read the WorldInfo of {level.FileNameNoExtension}'s persistent level, so the defaults are used: {e.Message}");
+        }
+        return settings;
+
+        //LE3's levels have a BioWorldInfo
+        static ExportEntry FindWorldInfo(IMEPackage pcc) =>
+            pcc.Exports.FirstOrDefault(export => !export.IsDefaultObject && GlobalUnrealObjectInfo.IsA(export.ClassName, "WorldInfo", export.Game));
+    }
+
+    /// <summary>
+    /// The persistent level that streams in <paramref name="level"/>: BioWare names it BioP_{map}, for the levels named Bio?_{map}_..., and its WorldInfo's
+    /// StreamingLevels lists them. Null if it can't be found, or <paramref name="level"/> is a persistent level
+    /// </summary>
+    private IMEPackage FindPersistentLevel(IMEPackage level)
+    {
+        string levelName = level.FileNameNoExtension;
+        string[] nameParts = levelName.Split('_');
+        if (levelName.StartsWith("BioP_", StringComparison.OrdinalIgnoreCase) || nameParts.Length < 2
+            || !MELoadedFiles.GetFilesLoadedInGame(level.Game).TryGetValue($"BioP_{nameParts[1]}.pcc", out string persistentPath)
+            || PackageCache.GetCachedPackage(persistentPath) is not { } persistent)
+        {
+            return null;
+        }
+        //it's only the persistent level if it streams this one in
+        ExportEntry worldInfo = persistent.Exports.FirstOrDefault(export => !export.IsDefaultObject && GlobalUnrealObjectInfo.IsA(export.ClassName, "WorldInfo", export.Game));
+        if (worldInfo?.GetProperty<ArrayProperty<ObjectProperty>>("StreamingLevels") is not { } streamingLevels)
+        {
+            return null;
+        }
+        foreach (ObjectProperty streamingLevelProp in streamingLevels)
+        {
+            if (streamingLevelProp.ResolveToEntry(persistent) is ExportEntry streamingLevel
+                && streamingLevel.GetProperty<NameProperty>("PackageName")?.Value.Instanced.Equals(levelName, StringComparison.OrdinalIgnoreCase) is true)
+            {
+                return persistent;
+            }
+        }
+        return null;
+    }
+
+    /// <summary>
+    /// Adds a primitive to a light environment from <see cref="ResolveLightEnvironment"/>, keeping the light environment
+    /// </summary>
+    /// <returns>The light environment the primitive joined: <paramref name="lightEnvironment"/>, unless another primitive's has been kept for the same component meanwhile</returns>
+    internal DynamicLightEnvironment AddLightEnvironmentPrimitive(DynamicLightEnvironment lightEnvironment, LightEnvironmentPrimitive primitive)
+    {
+        lock (LightEnvironments)
+        {
+            if (!LightEnvironments.TryGetValue((lightEnvironment.Owner, lightEnvironment.Export), out DynamicLightEnvironment kept))
+            {
+                LightEnvironments.Add((lightEnvironment.Owner, lightEnvironment.Export), kept = lightEnvironment);
+            }
+            kept.AddPrimitive(primitive);
+            return kept;
+        }
+    }
+
+    /// <summary>
+    /// Removes a primitive from its light environment, which is forgotten once it has none
+    /// </summary>
+    internal void RemoveLightEnvironmentPrimitive(DynamicLightEnvironment lightEnvironment, LightEnvironmentPrimitive primitive)
+    {
+        //under the same lock as adding, so a primitive can't join a light environment that's being forgotten
+        lock (LightEnvironments)
+        {
+            if (lightEnvironment.RemovePrimitive(primitive) == 0
+                && LightEnvironments.TryGetValue((lightEnvironment.Owner, lightEnvironment.Export), out DynamicLightEnvironment kept) && kept == lightEnvironment)
+            {
+                LightEnvironments.Remove((lightEnvironment.Owner, lightEnvironment.Export));
+            }
+        }
+    }
+
+    private int levelGeometryVersion;
+    private readonly Lock LevelGeometryLock = new();
+    private LevelGeometry LevelGeometry;
+    private int BuiltLevelGeometryVersion = -1;
+    //how many times the geometry has been built, which light environments' cached lighting depends on
+    private int LevelGeometryGeneration;
+    private long LastLevelGeometryBuildTimestamp;
+    //While meshes are loading, unloading or being dragged, the geometry changes every frame. It's rebuilt at most this often, so that the
+    //light environments that trace against it aren't all recomputed every frame
+    private static readonly TimeSpan MinLevelGeometryRebuildInterval = TimeSpan.FromSeconds(0.25);
+    //The triangles of each mesh, so that its instances share them. Weak, since the instances own them: they're freed once every instance is unloaded.
+    //Meshes with no triangles are only remembered by key. Both are guarded by LevelGeometryLock
+    private readonly Dictionary<string, WeakReference<LevelGeometry.TriangleMesh>> LevelGeometryMeshes = [];
+    private readonly HashSet<string> MeshesWithoutLevelGeometry = [];
+    //each open level's BSP, which also blocks visibility traces. Guarded by LevelGeometryLock
+    private readonly Dictionary<IMEPackage, Model> LevelModels = [];
+
+    /// <summary>
+    /// Sets the BSP of a level, which blocks light environments' visibility traces. Only read if light environments are supported for the game
+    /// </summary>
+    /// <param name="modelUIndex">The level's Model</param>
+    public void SetLevelModel(IMEPackage level, int modelUIndex)
+    {
+        Model model = null;
+        if (SupportsLightEnvironments(level.Game) && level.TryGetUExport(modelUIndex, out ExportEntry modelExport))
+        {
+            try
+            {
+                model = modelExport.GetBinaryData<Model>();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine($"Could not read {modelExport.InstancedFullPath}, so it won't block light environments' visibility: {e.Message}");
+            }
+        }
+        lock (LevelGeometryLock)
+        {
+            if (model is null)
+            {
+                LevelModels.Remove(level);
+            }
+            else
+            {
+                LevelModels[level] = model;
+            }
+        }
+        InvalidateLevelGeometry();
+    }
+
+    /// <summary>
+    /// Call when a static mesh that blocks light environments' visibility traces moves, so that <see cref="GetLevelGeometry"/> is rebuilt
+    /// </summary>
+    public void InvalidateLevelGeometry() => Interlocked.Increment(ref levelGeometryVersion);
+
+    /// <summary>
+    /// The level's geometry, for light environments' visibility traces. Rebuilt when it's needed after it changes, at most every <see cref="MinLevelGeometryRebuildInterval"/>
+    /// </summary>
+    /// <param name="generation">Changes whenever the returned geometry does</param>
+    internal LevelGeometry GetLevelGeometry(out int generation)
+    {
+        lock (LevelGeometryLock)
+        {
+            int version = levelGeometryVersion;
+            if (LevelGeometry is null
+                || BuiltLevelGeometryVersion != version && System.Diagnostics.Stopwatch.GetElapsedTime(LastLevelGeometryBuildTimestamp) >= MinLevelGeometryRebuildInterval)
+            {
+                LevelGeometry = new LevelGeometry(GetStaticLightings(), [.. LevelModels.Values]);
+                BuiltLevelGeometryVersion = version;
+                LevelGeometryGeneration++;
+                LastLevelGeometryBuildTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+                PruneLevelGeometryMeshes();
+            }
+            generation = LevelGeometryGeneration;
+            return LevelGeometry;
+        }
+    }
+
+    //forgets the meshes whose instances have all been unloaded. Call under LevelGeometryLock
+    private void PruneLevelGeometryMeshes()
+    {
+        List<string> freed = null;
+        foreach ((string key, WeakReference<LevelGeometry.TriangleMesh> mesh) in LevelGeometryMeshes)
+        {
+            if (!mesh.TryGetTarget(out _))
+            {
+                (freed ??= []).Add(key);
+            }
+        }
+        freed?.ForEach(key => LevelGeometryMeshes.Remove(key));
+    }
+
+    /// <summary>
+    /// The triangles a mesh blocks line checks with, read by <paramref name="readTriangles"/> the first time the mesh is seen. Null if it has none, or they can't be read
+    /// </summary>
+    /// <param name="key">Identifies the mesh</param>
+    internal LevelGeometry.TriangleMesh GetLevelGeometryMesh(string key, Func<(Vector3[] Positions, int[] Indices)> readTriangles)
+    {
+        LevelGeometry.TriangleMesh mesh;
+        lock (LevelGeometryLock)
+        {
+            if (LevelGeometryMeshes.TryGetValue(key, out WeakReference<LevelGeometry.TriangleMesh> cached) && cached.TryGetTarget(out mesh))
+            {
+                return mesh;
+            }
+            if (MeshesWithoutLevelGeometry.Contains(key))
+            {
+                return null;
+            }
+        }
+        //read outside the lock, since it can be slow. Another thread may read the same mesh meanwhile; the first one stored wins
+        try
+        {
+            (Vector3[] positions, int[] indices) = readTriangles();
+            mesh = LevelGeometry.TriangleMesh.Create(positions, indices);
+        }
+        catch (Exception e)
+        {
+            System.Diagnostics.Debug.WriteLine($"Could not read the collision of {key}, so it won't block light environments' visibility: {e.Message}");
+            mesh = null;
+        }
+        lock (LevelGeometryLock)
+        {
+            if (mesh is null)
+            {
+                MeshesWithoutLevelGeometry.Add(key);
+                return null;
+            }
+            if (LevelGeometryMeshes.TryGetValue(key, out WeakReference<LevelGeometry.TriangleMesh> cached) && cached.TryGetTarget(out LevelGeometry.TriangleMesh stored))
+            {
+                return stored;
+            }
+            LevelGeometryMeshes[key] = new WeakReference<LevelGeometry.TriangleMesh>(mesh);
+            return mesh;
+        }
+    }
+
+    /// <summary>
+    /// Forgets what's cached for a level that's been closed: its WorldInfo's light environment settings, and its own meshes' collision triangles, in case it's
+    /// edited and reopened. (Other packages' meshes' triangles are freed once all their instances are unloaded)
+    /// </summary>
+    public void ForgetLevel(IMEPackage level)
+    {
+        lock (LightEnvironments)
+        {
+            WorldLightEnvironmentSettings.Remove(level);
+        }
+        //its lights' light function materials and failures, and the meshes that cast shadows from them, which would keep the level loaded
+        LightAttenuations.ClearMaterials();
+        ModulatedShadowsFailed = false;
+        string keyPrefix = $"{level.FilePath}|";
+        lock (LevelGeometryLock)
+        {
+            //it may hold the level's meshes and BSP. Rebuilt the next time it's needed
+            LevelGeometry = null;
+            LevelModels.Remove(level);
+            MeshesWithoutLevelGeometry.RemoveWhere(key => key.StartsWith(keyPrefix, StringComparison.OrdinalIgnoreCase));
+            foreach (string key in LevelGeometryMeshes.Keys.Where(key => key.StartsWith(keyPrefix, StringComparison.OrdinalIgnoreCase)).ToList())
+            {
+                LevelGeometryMeshes.Remove(key);
+            }
+            PruneLevelGeometryMeshes();
+        }
+    }
+
     //every mesh with static lighting, so their light shaders can be loaded ahead of time
     private readonly HashSet<MeshStaticLighting> StaticLightings = [];
 
@@ -363,11 +899,24 @@ public class MeshRenderContext : RenderContext
         }
     }
 
+    internal MeshStaticLighting[] GetStaticLightings()
+    {
+        lock (StaticLightings)
+        {
+            return [.. StaticLightings];
+        }
+    }
+
     internal void UnregisterStaticLighting(MeshStaticLighting staticLighting)
     {
         lock (StaticLightings)
         {
             StaticLightings.Remove(staticLighting);
+        }
+        if (staticLighting.GeometryMesh is not null)
+        {
+            //it no longer blocks visibility. (The old geometry keeps it alive until it's rebuilt, or the level is forgotten)
+            InvalidateLevelGeometry();
         }
     }
 
@@ -470,6 +1019,7 @@ public class MeshRenderContext : RenderContext
         this.Camera.FocusDepth = 100.0f;
         TextureCache = new PreviewTextureCache(this);
         PackageCache = new PackageCache();
+        LightAttenuations = new LightAttenuationRenderer(this);
     }
 
     public override void Update(float timestep)
@@ -562,6 +1112,11 @@ public class MeshRenderContext : RenderContext
                 {
                     ErrorText = e.FlattenException();
                 }
+                //left over if the lighting pass failed, or the scene renderer doesn't call EndLightingPass. They'd draw out of order, so they're dropped
+                System.Diagnostics.Debug.Assert(PendingLightPasses.Count + PendingPostModulatedShadowPasses.Count == 0 || ErrorText is not null,
+                    "Light passes were queued, but EndLightingPass wasn't called");
+                PendingLightPasses.Clear();
+                PendingPostModulatedShadowPasses.Clear();
             }
 
             ResolveSceneColor();
@@ -768,8 +1323,19 @@ public class MeshRenderContext : RenderContext
         SceneColor = CreateTarget(Format.R16G16B16A16_Float, BindFlags.RenderTarget | BindFlags.ShaderResource, SampleCount);
         SceneColorView = new RenderTargetView(Device, SceneColor);
         SceneColorResourceView = new ShaderResourceView(Device, SceneColor);
-        DepthBuffer = CreateTarget(Format.D32_Float, BindFlags.DepthStencil, SampleCount);
-        DepthBufferView = new DepthStencilView(Device, DepthBuffer);
+        //typeless, so that it can also be read as a texture
+        DepthBuffer = CreateTarget(Format.R32_Typeless, BindFlags.DepthStencil | BindFlags.ShaderResource, SampleCount);
+        DepthBufferView = new DepthStencilView(Device, DepthBuffer, new DepthStencilViewDescription
+        {
+            Format = Format.D32_Float,
+            Dimension = SampleCount > 1 ? DepthStencilViewDimension.Texture2DMultisampled : DepthStencilViewDimension.Texture2D
+        });
+        DepthBufferResourceView = new ShaderResourceView(Device, DepthBuffer, new ShaderResourceViewDescription
+        {
+            Format = Format.R32_Float,
+            Dimension = SampleCount > 1 ? SharpDX.Direct3D.ShaderResourceViewDimension.Texture2DMultisampled : SharpDX.Direct3D.ShaderResourceViewDimension.Texture2D,
+            Texture2D = { MipLevels = 1, MostDetailedMip = 0 }
+        });
         HitBufferMS = CreateTarget(Format.B8G8R8A8_UNorm, BindFlags.RenderTarget | BindFlags.ShaderResource, SampleCount);
         HitBufferView = new RenderTargetView(Device, HitBufferMS);
         HitBufferMSResourceView = new ShaderResourceView(Device, HitBufferMS);
@@ -820,6 +1386,9 @@ public class MeshRenderContext : RenderContext
         SceneColorView = null;
         SceneColor?.Dispose();
         SceneColor = null;
+        LightAttenuations.DisposeSizeDependentResources();
+        DepthBufferResourceView?.Dispose();
+        DepthBufferResourceView = null;
         DepthBufferView.Dispose();
         DepthBufferView = null;
         DepthBuffer.Dispose();
@@ -872,6 +1441,7 @@ public class MeshRenderContext : RenderContext
         ResolveVertexShader?.Dispose();
         ResolvePixelShader?.Dispose();
         LEEffect?.Dispose();
+        LightAttenuations.Dispose();
         FillRasterizerState?.Dispose();
         WireframeRasterizerState?.Dispose();
         EmptyCaches();
@@ -977,6 +1547,8 @@ public class MeshRenderContext : RenderContext
     public override void EmptyCaches()
     {
         PackageCache?.ReleasePackages();
+        LightAttenuations?.ClearMaterials();
+        ModulatedShadowsFailed = false;
         lock (SeekFreeShaderCaches)
         {
             SeekFreeShaderCaches.Clear();
@@ -985,6 +1557,19 @@ public class MeshRenderContext : RenderContext
         {
             PendingGameShaderLoads.Clear();
         }
+        //light environments themselves belong to their meshes' components, which remove them when disposed
+        lock (LightEnvironments)
+        {
+            WorldLightEnvironmentSettings.Clear();
+        }
+        lock (LevelGeometryLock)
+        {
+            LevelGeometryMeshes.Clear();
+            MeshesWithoutLevelGeometry.Clear();
+            LevelModels.Clear();
+            LevelGeometry = null;
+        }
+        InvalidateLevelGeometry();
         TextureCache?.ExpungeStaleCacheItems();
         BlendStateCache.DisposeValuesAndClear();
         lock (VertexShaderCache)

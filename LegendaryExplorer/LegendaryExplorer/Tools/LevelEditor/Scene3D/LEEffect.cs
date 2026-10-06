@@ -137,7 +137,8 @@ public unsafe class LEEffect : IDisposable
         float depthAdd = projection.M43;
         var pixelConstants = new LEPSConstants
         {
-            ScreenPositionScaleBias = new Vector4(0.5f, -0.5f, (context.Height / 2f + 0.5f) / context.Height, (context.Width / 2f + 0.5f) / context.Width),
+            //from clip space to texture coordinates. (H/2 + GPixelCenterOffset) / H, where the offset is 0 for D3D11, whose pixel centers are at half texels
+            ScreenPositionScaleBias = new Vector4(0.5f, -0.5f, 0.5f, 0.5f),
             MinZ_MaxZRatio = new Vector4(depthAdd, depthMul, 1f / depthAdd, depthMul / depthAdd),
             DynamicScale = Vector4.One
         };
@@ -165,6 +166,18 @@ public unsafe class LEEffect : IDisposable
 
         // Draw!!!
         context.DrawIndexed(indexcount, indexstart, 0);
+    }
+
+    /// <summary>
+    /// Draws one triangle that covers the render target, with the shaders set by <see cref="PrepDraw"/> and the pixel shader parameters in <see cref="PixelShaderConstantBuffer"/>.
+    /// The vertex shader must make the triangle's vertices from SV_VertexID, since no vertex buffer is bound.
+    /// </summary>
+    public void RenderFullscreen(DeviceContext context)
+    {
+        PixelShaderResources.Apply(context.PixelShader);
+        context.UpdateSubresource(PixelShaderGlobals, 0, null, (IntPtr)PixelShaderConstantBufferAlloc, 0, 0);
+        context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
+        context.Draw(3, 0);
     }
 
     /// <summary>

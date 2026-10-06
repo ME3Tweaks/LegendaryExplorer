@@ -26,6 +26,8 @@ public class PrimitiveComponentProxy : NotifyPropertyChangedBase, IDisposable
 
     public ActorProxy Actor;
 
+    protected readonly MeshRenderContext RenderContext;
+
     private Rotator rotation;
     private Vector3 translation;
     private Vector3 scale3D;
@@ -80,6 +82,7 @@ public class PrimitiveComponentProxy : NotifyPropertyChangedBase, IDisposable
     {
         Actor = parent;
         Export = componentExport;
+        RenderContext = context;
         Properties = componentExport.GetCondensedProperties();
         HiddenGame = Properties.GetProp<BoolProperty>("HiddenGame")?.Value ?? false;
 
@@ -218,6 +221,54 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
     public int LOD;
     public List<IEntry> MaterialOverrides = [];
 
+    /// <summary>
+    /// How the mesh is part of the light environment that lights it, if it's lit by one
+    /// </summary>
+    private LightEnvironmentPrimitive LightEnvironmentPrimitive;
+    private DynamicLightEnvironment LightEnvironment;
+
+    /// <summary>
+    /// Whether the mesh is in the game's scene: neither it nor its actor is hidden in game
+    /// </summary>
+    protected bool IsInScene() => !HiddenGame && Actor is not { IsHidden: true };
+
+    /// <summary>
+    /// Whether the mesh is shown in the editor, so that it casts its dynamic shadows: neither it nor its actor's category is hidden
+    /// </summary>
+    protected bool IsShown() => IsVisible && (Actor is null || RenderContext.IsActorVisible(Actor));
+
+    /// <summary>
+    /// Adds the mesh to the light environment that lights it, so that the light environment's bounds include it, and it casts the light environment's shadow
+    /// </summary>
+    /// <param name="castsShadow">CastShadow and bCastDynamicShadow, including inherited values</param>
+    /// <param name="staticLighting">For static meshes: its <see cref="MeshStaticLighting.LightEnvironment"/> is set to the light environment joined</param>
+    protected void JoinLightEnvironment(MeshRenderContext context, DynamicLightEnvironment lightEnvironment, LightingChannels lightingChannels, bool castsShadow,
+        MeshStaticLighting staticLighting = null)
+    {
+        if (lightEnvironment is null || Mesh is null || Mesh.LODs.Count <= LOD)
+        {
+            return;
+        }
+        ModelPreviewLOD<VertexType> lod = Mesh.LODs[LOD];
+        int lodIndex = LOD;
+        LightEnvironmentPrimitive = new LightEnvironmentPrimitive
+        {
+            GetBounds = () => lod.Mesh.TransformedBounds,
+            GetLocalToWorld = () => lod.Mesh.LocalToWorld,
+            DrawShadowCaster = castsShadow ? ctx => Mesh?.DrawShadowCaster(ctx, lodIndex) : null,
+            IsInScene = IsInScene,
+            IsShown = IsShown,
+            LightingChannels = lightingChannels,
+        };
+        //another of the light environment's primitives may have joined it first
+        LightEnvironment = context.AddLightEnvironmentPrimitive(lightEnvironment, LightEnvironmentPrimitive);
+        lod.LightEnvironment = LightEnvironment;
+        if (staticLighting is not null)
+        {
+            staticLighting.LightEnvironment = LightEnvironment;
+        }
+    }
+
     protected MeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent) : base(context, componentExport, parent)
     {
         if (Properties.GetProp<ArrayProperty<ObjectProperty>>("Materials") is { } mats)
@@ -237,6 +288,11 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
 
     protected override void Dispose(bool disposing)
     {
+        if (LightEnvironmentPrimitive is not null)
+        {
+            RenderContext.RemoveLightEnvironmentPrimitive(LightEnvironment, LightEnvironmentPrimitive);
+            LightEnvironmentPrimitive = null;
+        }
         Mesh?.Dispose();
         base.Dispose(disposing);
     }
@@ -245,6 +301,7 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
 public class StaticMeshComponentProxy : MeshComponentProxy
 {
     private readonly Mesh<WorldVertex> CollisionMesh;
+    private readonly MeshStaticLighting StaticLighting;
 
     public StaticMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent) : base(context, componentExport, parent)
     {
@@ -255,8 +312,22 @@ public class StaticMeshComponentProxy : MeshComponentProxy
             {
                 stm.SetMaterials(MaterialOverrides, true);
                 MaterialOverrides.Clear();
-                Mesh = new ModelPreview<VertexType>(context, stm, LOD, MeshStaticLighting.Create(context, Export, stm, LOD));
+                MeshStaticLighting staticLighting = MeshStaticLighting.Create(context, Export, stm, LOD);
+                Mesh = new ModelPreview<VertexType>(context, stm, LOD, staticLighting);
                 MeshIFP = meshExport.InstancedFullPath;
+                if (staticLighting is not null)
+                {
+                    StaticLighting = staticLighting;
+                    staticLighting.IsInScene = IsInScene;
+                    staticLighting.IsShown = IsShown;
+                    //only light environments trace against the level's geometry. (UpdateSelfLocalToWorld adds it to the geometry)
+                    if (MeshRenderContext.SupportsLightEnvironments(Export.Game))
+                    {
+                        staticLighting.GeometryMesh = context.GetLevelGeometryMesh($"{meshExport.FileRef.FilePath}|{meshExport.UIndex}",
+                            () => ReadLineCheckTriangles(stm));
+                    }
+                    JoinLightEnvironment(context, staticLighting.LightEnvironment, staticLighting.Channels, staticLighting.CastsDynamicShadow, staticLighting);
+                }
                 if (MeshIFP.Contains("Volumetric", StringComparison.OrdinalIgnoreCase)
                     || Mesh.Materials.Keys.Any(matIFP => matIFP.Contains("VolumeLight", StringComparison.OrdinalIgnoreCase)))
                 {
@@ -266,6 +337,35 @@ public class StaticMeshComponentProxy : MeshComponentProxy
             CollisionMesh = context.GetMeshFromAggGeom(stm.GetCollisionMeshProperty(Export.FileRef));
             UpdateSelfLocalToWorld();
         }
+    }
+
+    /// <summary>
+    /// The triangles the mesh blocks light environments' visibility traces with, in its local space: its collision (kDOP) triangles, all of them.
+    /// The traces are TRACE_ShadowCast, for which UStaticMeshComponent::LineCheck never uses simple collision.
+    /// Indices may be out of range; <see cref="LevelGeometry.TriangleMesh.Create"/> skips those triangles
+    /// </summary>
+    private static (Vector3[] Positions, int[] Indices) ReadLineCheckTriangles(StaticMesh stm)
+    {
+        //the collision triangles index LOD 0's positions
+        var kDOPTriangles = stm.kDOPTreeME3UDKLE?.Triangles ?? [];
+        if (stm.LODModels.Length == 0 || kDOPTriangles.Length == 0)
+        {
+            return ([], []);
+        }
+        var vertexData = stm.LODModels[0].PositionVertexBuffer.VertexData;
+        var lodPositions = new Vector3[vertexData.Length];
+        for (int i = 0; i < vertexData.Length; i++)
+        {
+            lodPositions[i] = new Vector3(vertexData[i].X, vertexData[i].Y, vertexData[i].Z);
+        }
+        var triangleIndices = new int[kDOPTriangles.Length * 3];
+        for (int i = 0; i < kDOPTriangles.Length; i++)
+        {
+            triangleIndices[i * 3] = kDOPTriangles[i].Vertex1;
+            triangleIndices[i * 3 + 1] = kDOPTriangles[i].Vertex2;
+            triangleIndices[i * 3 + 2] = kDOPTriangles[i].Vertex3;
+        }
+        return (lodPositions, triangleIndices);
     }
 
     public override void Render(MeshRenderContext context, RenderPass pass)
@@ -297,6 +397,11 @@ public class StaticMeshComponentProxy : MeshComponentProxy
         if (Mesh is not null)
         {
             Mesh.UpdateLocalToWorld(LocalToWorld);
+            if (StaticLighting is { GeometryMesh: not null, CanBlockVisibilityTraces: true })
+            {
+                //it blocks light environments' visibility traces in its new place
+                RenderContext.InvalidateLevelGeometry();
+            }
         }
     }
 
@@ -335,6 +440,18 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
                 animPlayer = new AnimSequencePlayer(skm);
             }
             UpdateSelfLocalToWorld();
+            if (Mesh is not null && MeshRenderContext.SupportsLightEnvironments(Export.Game))
+            {
+                var condensedProps = Export.GetCondensedProperties(context.PackageCache, resolveImports: true, mergeStructs: true);
+                if (context.ResolveLightEnvironment(Export, condensedProps, parent?.Export, out DynamicLightEnvironment lightEnvironment))
+                {
+                    //MeshComponent's defaults: CastShadow, bCastDynamicShadow
+                    bool castsShadow = condensedProps.GetProp<BoolProperty>("CastShadow") is not { Value: false }
+                                       && condensedProps.GetProp<BoolProperty>("bCastDynamicShadow") is not { Value: false };
+                    JoinLightEnvironment(context, lightEnvironment, LightingChannels.FromProperty(condensedProps.GetProp<StructProperty>("LightingChannels"), default,
+                        isInitialized: false, LightingChannels.DynamicPrimitiveDefault), castsShadow);
+                }
+            }
         }
     }
 

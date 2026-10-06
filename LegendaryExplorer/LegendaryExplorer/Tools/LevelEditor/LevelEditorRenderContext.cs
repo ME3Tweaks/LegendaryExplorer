@@ -41,7 +41,7 @@ public class LevelEditorRenderContext : MeshRenderContext
         return state;
     }
 
-    public bool IsActorVisible(ActorProxy actor)
+    public override bool IsActorVisible(ActorProxy actor)
         => GetCategoryState(actor.Category).IsVisible && (!actor.IsHidden || ShowHidden);
 
     private bool IsHitProxyVisible(IHitProxy hitProxy) => hitProxy switch

@@ -6,6 +6,7 @@ using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using Buffer = SharpDX.Direct3D11.Buffer;
@@ -41,6 +42,14 @@ public enum StaticShadowingType
 /// <param name="ShadowMap">For <see cref="StaticShadowingType.ShadowTexture"/> and <see cref="StaticShadowingType.DistanceFieldShadowTexture"/></param>
 /// <param name="ShadowVertexBuffer">For <see cref="StaticShadowingType.ShadowVertexBuffer"/>. Bound at <see cref="MeshStaticLighting.ShadowVertexStreamSlot"/></param>
 public readonly record struct LightInteraction(SceneLight Light, StaticShadowingType Shadowing, MeshStaticLighting.ShadowMapTexture ShadowMap, Buffer ShadowVertexBuffer);
+
+/// <summary>
+/// Hemispherical ambient light from the level's sky lights, in linear color: <paramref name="Upper"/> from above (world +Z), <paramref name="Lower"/> from below
+/// </summary>
+public readonly record struct SkyLighting(Vector3 Upper, Vector3 Lower)
+{
+    public bool IsBlack => Upper == Vector3.Zero && Lower == Vector3.Zero;
+}
 
 /// <summary>
 /// The precomputed lighting of one LOD of a static mesh component, in the form the game's shaders read it:
@@ -128,11 +137,66 @@ public sealed class MeshStaticLighting : IDisposable
     //lights that the lighting build found don't reach this primitive
     private readonly HashSet<Guid> IrrelevantLights = [];
     private LightingChannels LightingChannels;
+    //bAcceptsLights: if false, no light affects the primitive
+    private bool AcceptsLights = true;
+    //bAcceptsDynamicLights: if false, only lights with static shadowing affect the primitive
+    private bool AcceptsDynamicLights = true;
+    //the level (package) the primitive is in, and whether its lighting was built without other levels' lights (PKG_SelfContainedLighting)
+    private string LevelName;
+    private bool HasSelfContainedLighting;
 
     /// <summary>
     /// The component is lit by a light environment (as dynamic actors are), which the level's lights don't affect directly
     /// </summary>
     public bool UsesLightEnvironment { get; private set; }
+
+    /// <summary>
+    /// The light environment that lights the component, if <see cref="UsesLightEnvironment"/>. Null if light environments aren't supported for the game
+    /// </summary>
+    public DynamicLightEnvironment LightEnvironment { get; internal set; }
+
+    /// <summary>
+    /// Whether the component casts shadows (CastShadow)
+    /// </summary>
+    private bool CastsShadow;
+
+    /// <summary>
+    /// The actor that owns the component. Null if its outer isn't an export
+    /// </summary>
+    internal ExportEntry OwnerActor { get; private set; }
+
+    /// <summary>
+    /// The triangles the mesh blocks line checks with, shared with the other instances of the mesh. Set by the mesh's component, if light environments are supported for the game
+    /// </summary>
+    internal LevelGeometry.TriangleMesh GeometryMesh;
+
+    /// <summary>
+    /// Whether the mesh is in the game's scene: its actor and component aren't hidden in game. Set by the mesh's component
+    /// </summary>
+    internal Func<bool> IsInScene = () => true;
+
+    /// <summary>
+    /// Whether the mesh is shown in the editor, so that it casts dynamic shadows (its actor's category isn't hidden). Set by the mesh's component
+    /// </summary>
+    internal Func<bool> IsShown = () => true;
+
+    /// <summary>
+    /// Whether the mesh can block light environments' visibility traces, whichever light they're to. Those traces are TRACE_ShadowCast line checks,
+    /// which only consider primitives that CastShadow and have static shadowing, and that the light affects (see <see cref="BlocksVisibilityTraceTo"/>).
+    /// Hidden primitives still block them
+    /// </summary>
+    internal bool CanBlockVisibilityTraces => CastsShadow && HasStaticShadowing && AcceptsLights && !UsesLightEnvironment && GetBounds is not null;
+
+    /// <summary>
+    /// Whether the mesh blocks a light environment's visibility trace to <paramref name="light"/>: the light affects it (ULightComponent::AffectsPrimitive, ignoring
+    /// lighting channels). It has no light environment, so the light mustn't either, and it must accept lights
+    /// </summary>
+    internal bool BlocksVisibilityTraceTo(SceneLight light) => CanBlockVisibilityTraces && AffectsPrimitive(light, GetBounds(), compareLightingChannels: false);
+
+    /// <summary>
+    /// CastShadow and bCastDynamicShadow, including inherited values: whether the mesh casts dynamic shadows, if something renders them (a light, or its light environment)
+    /// </summary>
+    internal bool CastsDynamicShadow { get; private set; }
 
     private readonly MeshRenderContext Context;
 
@@ -142,8 +206,32 @@ public sealed class MeshStaticLighting : IDisposable
     internal IEnumerable<MaterialRenderProxy> Materials = [];
     internal Func<BoxSphereBounds> GetBounds;
 
+    /// <summary>
+    /// Whether the mesh can cast dynamic (projected) shadows from the lights that reach it: it casts dynamic shadows, and isn't lit by a light environment
+    /// (which casts its own). Which lights it casts them from is <see cref="CastsDynamicShadowFrom"/>; see <see cref="LightAttenuationRenderer"/>
+    /// </summary>
+    public bool IsDynamicShadowCaster { get; private set; }
+
+    /// <summary>
+    /// FPrimitiveSceneInfo's bStaticShadowing (bUsePrecomputedShadows, which level static meshes have): the shadows of static-shadowing lights are precomputed for it
+    /// </summary>
+    private bool HasStaticShadowing;
+
+    /// <summary>
+    /// FLightPrimitiveInteraction's bCastShadow, for a light that reaches the mesh: a mesh with precomputed shadows only casts dynamic shadows from lights
+    /// without static shadowing (whose shadows weren't precomputed). Otherwise it casts them from any light that casts dynamic shadows
+    /// </summary>
+    public bool CastsDynamicShadowFrom(SceneLight light) => IsDynamicShadowCaster && light.CastsDynamicShadows && (!HasStaticShadowing || !light.HasStaticShadowing);
+
+    /// <summary>
+    /// Draws the mesh's shadow-casting sections with the shaders the caller has set, binding its vertex buffer at slot 0. Set by the mesh's <see cref="ModelPreview{TVertex}"/>
+    /// </summary>
+    internal Action<SharpDX.Direct3D11.DeviceContext> DrawShadowCaster;
+    internal Func<Matrix4x4> GetLocalToWorld;
+
     private readonly object InteractionsLock = new();
     private LightInteraction[] Interactions = [];
+    private SkyLighting SkyLight;
     private int InteractionsLightsVersion = -1;
     private BoxSphereBounds InteractionsBounds;
 
@@ -170,7 +258,10 @@ public sealed class MeshStaticLighting : IDisposable
         {
             return null;
         }
-        var staticLighting = new MeshStaticLighting(context);
+        var staticLighting = new MeshStaticLighting(context)
+        {
+            OwnerActor = componentExport.Parent as ExportEntry
+        };
         PropertyCollection props = componentExport.GetProperties();
         if (props.GetProp<ArrayProperty<StructProperty>>("IrrelevantLights") is { } irrelevantLights)
         {
@@ -179,11 +270,33 @@ public sealed class MeshStaticLighting : IDisposable
                 staticLighting.IrrelevantLights.Add(CommonStructs.GetGuid(guidProp));
             }
         }
-        staticLighting.UsesLightEnvironment = props.GetProp<ObjectProperty>("LightEnvironment") is { Value: not 0 };
-        //Static meshes in levels have static shadowing, so UE3 initializes unset channels to Static
         var condensedProps = componentExport.GetCondensedProperties(context.PackageCache, resolveImports: true, mergeStructs: true);
+        //A disabled light environment (as InterpActors' are by default) isn't used, so the primitive is lit like any other
+        staticLighting.UsesLightEnvironment = context.ResolveLightEnvironment(componentExport, condensedProps, staticLighting.OwnerActor,
+            out DynamicLightEnvironment lightEnvironment);
+        staticLighting.LightEnvironment = lightEnvironment;
+        staticLighting.CastsShadow = condensedProps.GetProp<BoolProperty>("CastShadow") is not { Value: false };
+        //Static meshes in levels have static shadowing, so UE3 initializes unset channels to Static. Light environments' primitives don't, so they get Dynamic
         staticLighting.LightingChannels = LightingChannels.FromProperty(condensedProps.GetProp<StructProperty>("LightingChannels"), default, isInitialized: false,
-            LightingChannels.StaticPrimitiveDefault);
+            staticLighting.UsesLightEnvironment ? LightingChannels.DynamicPrimitiveDefault : LightingChannels.StaticPrimitiveDefault);
+        //StaticMeshComponent's archetypes set bAcceptsLights. Only an explicit false is trusted, in case the archetype chain couldn't be resolved
+        staticLighting.AcceptsLights = condensedProps.GetProp<BoolProperty>("bAcceptsLights") is not { Value: false };
+        staticLighting.AcceptsDynamicLights = condensedProps.GetProp<BoolProperty>("bAcceptsDynamicLights") is not { Value: false };
+        staticLighting.LevelName = componentExport.FileRef.FileNameNoExtension;
+        staticLighting.HasSelfContainedLighting = componentExport.FileRef.Flags.Has(UnrealFlags.EPackageFlags.SelfContainedLighting);
+        //FPrimitiveSceneInfo's bStaticShadowing (bUsePrecomputedShadows) and bCastDynamicShadow (CastShadow && bCastDynamicShadow, which MeshComponent defaults to true).
+        //StaticMeshActor's component template sets bUsePrecomputedShadows. If it isn't found (in case the archetype chain couldn't be resolved),
+        //a mesh with any precomputed lighting, or in a StaticMeshCollectionActor, is taken to have it
+        bool usesPrecomputedShadows = condensedProps.GetProp<BoolProperty>("bUsePrecomputedShadows")?.Value
+                                      ?? (componentExport.Parent?.ClassName == "StaticMeshCollectionActor"
+                                          || component.LODData.Any(lodData => lodData.LightMap is { LightMapType: not ELightMapType.LMT_None }
+                                                                              || lodData.ShadowMaps.Length > 0 || lodData.ShadowVertexBuffers.Length > 0));
+        staticLighting.HasStaticShadowing = usesPrecomputedShadows;
+        staticLighting.CastsDynamicShadow = staticLighting.CastsShadow && condensedProps.GetProp<BoolProperty>("bCastDynamicShadow") is not { Value: false };
+        staticLighting.IsDynamicShadowCaster = staticLighting.CastsDynamicShadow
+                                               //shadow groups (a shadow parent's children cast with it) aren't supported
+                                               && condensedProps.GetProp<ObjectProperty>("ShadowParent") is not { Value: not 0 }
+                                               && !staticLighting.UsesLightEnvironment;
         if (lod < component.LODData.Length)
         {
             staticLighting.Load(component.LODData[lod], componentExport.FileRef, mesh, lod);
@@ -345,27 +458,93 @@ public sealed class MeshStaticLighting : IDisposable
     {
         lock (InteractionsLock)
         {
-            SceneLight[] lights = Context.GetLights(out int lightsVersion);
-            if (lightsVersion != InteractionsLightsVersion || bounds.Origin != InteractionsBounds.Origin || bounds.SphereRadius != InteractionsBounds.SphereRadius)
-            {
-                var interactions = new List<LightInteraction>();
-                foreach (SceneLight light in lights)
-                {
-                    if (light.LightingChannels.OverlapsWith(LightingChannels) && light.AffectsBounds(bounds) && GetInteraction(light) is { } interaction)
-                    {
-                        interactions.Add(interaction);
-                    }
-                }
-                Interactions = interactions.ToArray();
-                InteractionsLightsVersion = lightsVersion;
-                InteractionsBounds = bounds;
-            }
+            UpdateInteractions(bounds);
             return Interactions;
         }
     }
 
     /// <summary>
-    /// FStaticMeshSceneProxy::FLODInfo::GetInteraction. Null if the light doesn't need its own pass
+    /// The sky lighting the base pass adds: the sum of the sky lights that reach the mesh and aren't baked into its light-map,
+    /// as FSkyLightSceneInfo::AttachPrimitive accumulates it. Cached like <see cref="GetLightInteractions"/>.
+    /// </summary>
+    public SkyLighting GetSkyLighting(BoxSphereBounds bounds)
+    {
+        lock (InteractionsLock)
+        {
+            UpdateInteractions(bounds);
+            return SkyLight;
+        }
+    }
+
+    private void UpdateInteractions(BoxSphereBounds bounds)
+    {
+        SceneLight[] lights = Context.GetLights(out int lightsVersion);
+        if (lightsVersion == InteractionsLightsVersion && bounds.Origin == InteractionsBounds.Origin && bounds.SphereRadius == InteractionsBounds.SphereRadius)
+        {
+            return;
+        }
+        var interactions = new List<LightInteraction>();
+        var skyLight = new SkyLighting();
+        if (AcceptsLights)
+        {
+            foreach (SceneLight light in lights)
+            {
+                if (AffectsPrimitive(light, bounds) && GetInteraction(light) is { } interaction)
+                {
+                    if (light.Type is SceneLightType.Sky)
+                    {
+                        //its precomputed shadows (if any) are ignored
+                        skyLight = new SkyLighting(skyLight.Upper + light.Color, skyLight.Lower + light.LowerColor);
+                    }
+                    else
+                    {
+                        interactions.Add(interaction);
+                    }
+                }
+            }
+        }
+        Interactions = interactions.ToArray();
+        SkyLight = skyLight;
+        InteractionsLightsVersion = lightsVersion;
+        InteractionsBounds = bounds;
+    }
+
+    /// <summary>
+    /// FLightSceneInfoCompact::AffectsPrimitive (ULightComponent::AffectsPrimitive), minus the light environment and bAcceptsLights tests, which the callers make
+    /// </summary>
+    /// <param name="compareLightingChannels">False for line checks, which ignore lighting channels</param>
+    private bool AffectsPrimitive(SceneLight light, BoxSphereBounds bounds, bool compareLightingChannels = true)
+    {
+        //a light that belongs to a light environment only affects its primitives, which aren't lit by static lighting (and don't block visibility traces)
+        if (light.HasLightEnvironment)
+        {
+            return false;
+        }
+        if (compareLightingChannels && !light.LightingChannels.OverlapsWith(LightingChannels) || !light.AffectsBounds(bounds) || !light.AffectsVolumes(bounds))
+        {
+            return false;
+        }
+        if (!AcceptsDynamicLights && !light.HasStaticShadowing)
+        {
+            return false;
+        }
+        //a level whose lighting was built on its own only has precomputed lighting for its own lights
+        if (HasSelfContainedLighting && light.HasStaticShadowing && !light.LevelName.Equals(LevelName, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+        if (light.OnlyAffectSameAndSpecifiedLevels && !light.LevelName.Equals(LevelName, StringComparison.OrdinalIgnoreCase)
+            && !light.OtherLevelsToAffect.Contains(LevelName))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    /// <summary>
+    /// FStaticMeshSceneProxy::FLODInfo::GetInteraction, which LE3 doesn't change. Null if the light doesn't need its own pass.
+    /// (FLightPrimitiveInteraction::Create also skips uncached interactions between static shadowing lights and primitives with bUsePrecomputedShadows
+    /// whose owner is movable. That isn't checked: movable actors' meshes normally use a light environment instead)
     /// </summary>
     private LightInteraction? GetInteraction(SceneLight light)
     {
@@ -414,6 +593,11 @@ public sealed class MeshStaticLighting : IDisposable
             }
         }
     }
+
+    /// <summary>
+    /// The primitive's lighting channels, for a light environment it's lit by
+    /// </summary>
+    internal LightingChannels Channels => LightingChannels;
 
     private static Vector4 ToVector4(Vector3 v) => new(v, 1);
 

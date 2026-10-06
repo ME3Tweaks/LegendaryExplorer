@@ -29,7 +29,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     private static readonly BasePassShaderTypes[] LitShaderTypes =
     [
         new("TBasePassVertexShaderFDirectionalLightLightMapPolicyFNoDensityPolicy", "TBasePassPixelShaderFDirectionalLightLightMapPolicySkyLight"),
-        //SH light is the directional light plus an SH ambient term. The SH is left at 0, since the sky provides ambient
+        //SH light is the directional light plus an SH ambient term. For preview lighting the SH is left at 0, since the sky provides ambient; light environments set it
         new("TBasePassVertexShaderFSHLightLightMapPolicyFNoDensityPolicy", "TBasePassPixelShaderFSHLightLightMapPolicySkyLight"),
     ];
 
@@ -178,21 +178,48 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     /// <inheritdoc cref="NoLightMapVertexShader"/>
     public Shader NoLightMapPixelShader;
 
+    /// <summary>
+    /// The variant of <see cref="UnrealPixelShader"/> that also adds sky lighting, for meshes the level's sky lights aren't baked into the light-map of.
+    /// Null if <see cref="UsesLightMap"/> is false, or the material doesn't have it.
+    /// </summary>
+    public Shader LightMapSkyLightPixelShader;
+
     //Always excludes baked lighting, even for materials whose default pair uses a light-map.
     public Shader PreviewVertexShader;
     public Shader PreviewPixelShader;
 
     /// <summary>
+    /// The base pass shaders with a directional light and an SH light (FSHLightLightMapPolicy), which light environments with an SH light render with.
+    /// Null if the material doesn't have them
+    /// </summary>
+    public Shader SHLightVertexShader;
+    /// <inheritdoc cref="SHLightVertexShader"/>
+    public Shader SHLightPixelShader;
+
+    /// <summary>
+    /// The base pass shaders for a mesh lit by a light environment: its directional light, plus its SH light or sky light
+    /// </summary>
+    public (Shader vertexShader, Shader pixelShader) GetLightEnvironmentShaders(MeshRenderContext context, LightEnvironmentLighting lighting)
+    {
+        if (context.IsUnlit || IsUnlit)
+            return (NoLightMapVertexShader, NoLightMapPixelShader);
+        if (lighting.UsesSHLight && SHLightVertexShader is not null && SHLightPixelShader is not null)
+            return (SHLightVertexShader, SHLightPixelShader);
+        return (PreviewVertexShader, PreviewPixelShader);
+    }
+
+    /// <summary>
     /// Selects a cached base-pass pair without changing the material or reloading the level.
     /// Missing variants return null so the caller can use the preview shader for this draw only.
     /// </summary>
-    public (Shader vertexShader, Shader pixelShader) GetBasePassShaders(MeshRenderContext context, bool usesLevelLights, out bool usePreviewLighting)
+    /// <param name="hasSkyLighting">Whether the level's sky lights add to the mesh's lighting (see <see cref="MeshStaticLighting.GetSkyLighting"/>)</param>
+    public (Shader vertexShader, Shader pixelShader) GetBasePassShaders(MeshRenderContext context, bool usesLevelLights, out bool usePreviewLighting, bool hasSkyLighting = false)
     {
         usePreviewLighting = false;
         if (context.IsUnlit || IsUnlit)
             return (NoLightMapVertexShader, NoLightMapPixelShader);
         if (context.AreLightMapsActive && UsesLightMap)
-            return (UnrealVertexShader, UnrealPixelShader);
+            return (UnrealVertexShader, hasSkyLighting && LightMapSkyLightPixelShader is not null ? LightMapSkyLightPixelShader : UnrealPixelShader);
         if (!context.IsDynamicLightingActive || usesLevelLights)
             return (NoLightMapVertexShader, NoLightMapPixelShader);
         usePreviewLighting = true;
@@ -366,8 +393,16 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
 
             (UnrealVertexShader, UnrealPixelShader) = SelectShaders(shaders, IsUnlit, LightMapType, out bool usesLightMap);
             UsesLightMap = usesLightMap;
+            if (usesLightMap)
+            {
+                string skyLightPixelShaderType = $"TBasePassPixelShader{GetLightMapPolicyName(LightMapType)}SkyLight";
+                LightMapSkyLightPixelShader = shaders.FirstOrDefault(shader => shader?.ShaderType.Name == skyLightPixelShaderType);
+            }
             (NoLightMapVertexShader, NoLightMapPixelShader) = SelectShaders(shaders, isUnlit: true);
             (PreviewVertexShader, PreviewPixelShader) = SelectShaders(shaders, IsUnlit);
+            BasePassShaderTypes shLightTypes = LitShaderTypes[1];
+            SHLightVertexShader = shaders.FirstOrDefault(shader => shader?.ShaderType.Name == shLightTypes.VertexShaderType);
+            SHLightPixelShader = shaders.FirstOrDefault(shader => shader?.ShaderType.Name == shLightTypes.PixelShaderType);
         }
         catch (Exception e)
         {
@@ -401,7 +436,10 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
             string lightPolicy = lightType switch
             {
                 SceneLightType.Spot => "FSpotLightPolicy",
-                _ => "FPointLightPolicy",
+                SceneLightType.Directional => "FDirectionalLightPolicy",
+                SceneLightType.Point => "FPointLightPolicy",
+                //sky lights are part of the base pass
+                _ => throw new ArgumentOutOfRangeException(nameof(lightType), lightType, null)
             };
             string shadowingPolicy = shadowing switch
             {
@@ -410,34 +448,100 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
                 StaticShadowingType.ShadowVertexBuffer => "FShadowVertexBufferPolicy",
                 _ => "FNoStaticShadowingPolicy",
             };
-            string vertexShaderType = $"TLightVertexShader{lightPolicy}{shadowingPolicy}";
-            string pixelShaderType = $"TLightPixelShader{lightPolicy}{shadowingPolicy}";
-            lightShaders = (null, null);
-            if (LightShaderMapOwner is not null)
-            {
-                try
-                {
-                    (_, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndShaders(LightShaderMapOwner, Context.GetSeekFreeShaderCache,
-                        [vertexShaderType, pixelShaderType]);
-                    Shader vertexShader = shaders.FirstOrDefault(shader => shader?.ShaderType.Name == vertexShaderType);
-                    Shader pixelShader = shaders.FirstOrDefault(shader => shader?.ShaderType.Name == pixelShaderType);
-                    if (vertexShader is not null && pixelShader is not null)
-                    {
-                        lightShaders = (vertexShader, pixelShader);
-                        if (Context.Device is not null)
-                        {
-                            Context.GetCachedVertexShader(vertexShader.Guid, vertexShader.ShaderByteCode);
-                            Context.GetCachedPixelShader(pixelShader.Guid, pixelShader.ShaderByteCode);
-                        }
-                    }
-                }
-                catch
-                {
-                    //the light just isn't rendered on this material
-                }
-            }
+            lightShaders = LoadLightPassShaders($"TLightVertexShader{lightPolicy}{shadowingPolicy}", $"TLightPixelShader{lightPolicy}{shadowingPolicy}");
             LightShaders[(lightType, shadowing)] = lightShaders;
             return lightShaders;
+        }
+    }
+
+    private bool LoadedSHLightPassShaders;
+    private (Shader, Shader) SHLightPassShaders;
+
+    /// <summary>
+    /// The shaders that render an SH light on this material in its own pass (FSphericalHarmonicLightPolicy), loading them if they haven't been. Thread-safe.
+    /// Light environments that cast a shadow render their SH light with these, after the modulated shadows
+    /// </summary>
+    /// <returns>Nulls if the material doesn't have them</returns>
+    public (Shader vertexShader, Shader pixelShader) GetSHLightPassShaders()
+    {
+        if (!CanRenderWithGameShaders || IsUnlit)
+        {
+            return (null, null);
+        }
+        lock (LightShaders)
+        {
+            if (!LoadedSHLightPassShaders)
+            {
+                SHLightPassShaders = LoadLightPassShaders("TLightVertexShaderFSphericalHarmonicLightPolicyFNoStaticShadowingPolicy",
+                    "TLightPixelShaderFSphericalHarmonicLightPolicyFNoStaticShadowingPolicy");
+                LoadedSHLightPassShaders = true;
+            }
+            return SHLightPassShaders;
+        }
+    }
+
+    //Call under the LightShaders lock
+    private (Shader, Shader) LoadLightPassShaders(string vertexShaderType, string pixelShaderType)
+    {
+        if (LightShaderMapOwner is null)
+        {
+            return (null, null);
+        }
+        try
+        {
+            (_, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndShaders(LightShaderMapOwner, Context.GetSeekFreeShaderCache,
+                [vertexShaderType, pixelShaderType]);
+            Shader vertexShader = shaders.FirstOrDefault(shader => shader?.ShaderType.Name == vertexShaderType);
+            Shader pixelShader = shaders.FirstOrDefault(shader => shader?.ShaderType.Name == pixelShaderType);
+            if (vertexShader is null || pixelShader is null)
+            {
+                return (null, null);
+            }
+            if (Context.Device is not null)
+            {
+                Context.GetCachedVertexShader(vertexShader.Guid, vertexShader.ShaderByteCode);
+                Context.GetCachedPixelShader(pixelShader.Guid, pixelShader.ShaderByteCode);
+            }
+            return (vertexShader, pixelShader);
+        }
+        catch (Exception e)
+        {
+            //the light just isn't rendered on this material
+            System.Diagnostics.Debug.WriteLine($"Could not load {pixelShaderType} for {InstancedFullPath}: {e.Message}");
+            return (null, null);
+        }
+    }
+
+    private bool LoadedLightFunctionShader;
+    private Shader LightFunctionPixelShader;
+
+    /// <summary>
+    /// For a material used as a light function: its FLightFunctionPixelShader, loading it if it hasn't been. Null if it doesn't have one.
+    /// (These materials have no base pass shaders, so <see cref="CanRenderWithGameShaders"/> is false for them.)
+    /// </summary>
+    public Shader GetLightFunctionPixelShader()
+    {
+        LoadGameShaders();
+        lock (LightShaders)
+        {
+            if (!LoadedLightFunctionShader)
+            {
+                LoadedLightFunctionShader = true;
+                if (LightShaderMapOwner is not null && ShaderMap is not null)
+                {
+                    try
+                    {
+                        (_, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndMaterialShaders(LightShaderMapOwner, Context.GetSeekFreeShaderCache, "FLightFunctionPixelShader");
+                        LightFunctionPixelShader = shaders[0];
+                    }
+                    catch (Exception e)
+                    {
+                        //the light function just isn't rendered
+                        System.Diagnostics.Debug.WriteLine($"Could not load the light function shader of {InstancedFullPath}: {e.Message}");
+                    }
+                }
+            }
+            return LightFunctionPixelShader;
         }
     }
 
@@ -510,27 +614,43 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     /// <param name="pixelShader">The matching pixel shader</param>
     /// <param name="staticLighting">The mesh's precomputed lighting. Its light-map is required if <see cref="UsesLightMap"/></param>
     /// <param name="usePreviewLighting">Light the mesh with <see cref="MeshRenderContext.Lighting"/>, rather than the level's lighting</param>
+    /// <param name="skyLighting">The level's sky lighting on the mesh. Unused if <paramref name="usePreviewLighting"/></param>
+    /// <param name="lightEnvironment">The lights of the light environment that lights the mesh, which replace the preview lighting. Null if it isn't lit by one</param>
     public void UpdateShaderParams(Span<byte> vertexConstantBuffer, Span<byte> pixelConstantBuffer, MeshRenderContext context, Mesh<LEVertex> mesh,
-        Shader vertexShader, Shader pixelShader, MeshStaticLighting staticLighting, bool usePreviewLighting)
+        Shader vertexShader, Shader pixelShader, MeshStaticLighting staticLighting, bool usePreviewLighting, SkyLighting skyLighting = default,
+        LightEnvironmentLighting lightEnvironment = null)
     {
 
         vertexConstantBuffer.Clear();
         pixelConstantBuffer.Clear();
-        ShaderParameterSetters.WriteBasePassVertexShaderValues(vertexShader, vertexConstantBuffer, context, mesh, this, staticLighting);
-        ShaderParameterSetters.WriteBasePassPixelShaderValues(pixelShader, pixelConstantBuffer, context, mesh, this, staticLighting, usePreviewLighting);
+        ShaderParameterSetters.WriteBasePassVertexShaderValues(vertexShader, vertexConstantBuffer, context, mesh, this, staticLighting, lightEnvironment);
+        ShaderParameterSetters.WriteBasePassPixelShaderValues(pixelShader, pixelConstantBuffer, context, mesh, this, staticLighting, usePreviewLighting, skyLighting,
+            lightEnvironment);
 
     }
 
     /// <summary>
     /// Writes the parameters of the shaders that render a light on this material (see <see cref="GetLightShaders"/>)
     /// </summary>
+    /// <param name="lightAttenuation">The light's dynamic shadows and light function, rendered in screen space (see <see cref="LightAttenuationRenderer"/>). Null if it has neither</param>
     public void UpdateLightPassShaderParams(Span<byte> vertexConstantBuffer, Span<byte> pixelConstantBuffer, MeshRenderContext context, Mesh<LEVertex> mesh,
-        Shader vertexShader, Shader pixelShader, LightInteraction interaction)
+        Shader vertexShader, Shader pixelShader, LightInteraction interaction, ShaderResourceView lightAttenuation = null)
     {
         vertexConstantBuffer.Clear();
         pixelConstantBuffer.Clear();
         ShaderParameterSetters.WriteLightVertexShaderValues(vertexShader, vertexConstantBuffer, context, mesh, this, interaction);
-        ShaderParameterSetters.WriteLightPixelShaderValues(pixelShader, pixelConstantBuffer, context, mesh, this, interaction);
+        ShaderParameterSetters.WriteLightPixelShaderValues(pixelShader, pixelConstantBuffer, context, mesh, this, interaction, lightAttenuation);
+    }
+
+    /// <summary>
+    /// Writes the parameters of the shaders that render an SH light on this material (see <see cref="GetSHLightPassShaders"/>)
+    /// </summary>
+    public void UpdateSHLightPassShaderParams(Span<byte> vertexConstantBuffer, Span<byte> pixelConstantBuffer, MeshRenderContext context, Mesh<LEVertex> mesh,
+        Shader vertexShader, Shader pixelShader, in SHVectorRGB incidentLighting)
+    {
+        vertexConstantBuffer.Clear();
+        pixelConstantBuffer.Clear();
+        ShaderParameterSetters.WriteSHLightPassValues(vertexShader, pixelShader, vertexConstantBuffer, pixelConstantBuffer, context, mesh, this, incidentLighting);
     }
 
     public (List<Vector4> scalar, List<Vector4> vector) GetCachedVertexParameters(MeshRenderContext context)

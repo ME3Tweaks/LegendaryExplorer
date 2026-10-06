@@ -137,7 +137,13 @@ public partial class ActorPreviewControl : ExportLoaderControl, IActorEditorCont
             ? [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Translucent, RenderPass.Collision]
             : [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Translucent];
         foreach (RenderPass pass in passes)
+        {
             _actor?.Render(RenderContext, pass);
+            if (pass is RenderPass.Lighting)
+            {
+                RenderContext.EndLightingPass();
+            }
+        }
         RenderContext.DrawUI();
     }
 
