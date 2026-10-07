@@ -39,6 +39,12 @@ public class LE3ShippingParityHarness
     private static readonly string InspectionDirectory = Environment.GetEnvironmentVariable("LE3_PARITY_INSPECT_DIR");
     // Base materials: the decooker does not keep the cooked SM3 resource, so compare against the cooked copy's.
     private static readonly ConcurrentDictionary<ExportEntry, MaterialResource> CookedBaseResources = new();
+    // Cooked resources index their own package; keep their textures as paths so they can be compared by identity.
+    private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<MaterialResource, string[]> ShippingTexturePaths = new();
+
+    private static void RecordShippingTexturePaths(MaterialResource resource, IMEPackage cookedPackage) =>
+        ShippingTexturePaths.AddOrUpdate(resource, (resource.UniformExpressionTextures ?? [])
+            .Select(u => cookedPackage.GetEntry(u)?.InstancedFullPath ?? $"<missing {u}>").ToArray());
     // Stop after the resource-field comparison: no uniform compare, plan or compile.
     private static readonly bool ResourceOnly = Environment.GetEnvironmentVariable("LE3_PARITY_RESOURCE_ONLY") == "1";
 
@@ -336,17 +342,19 @@ public class LE3ShippingParityHarness
     private sealed class DumpCounter { public int N; }
 
     /// <summary>Instance mode: the decooked base graph compiled with the cooked instance's exact static key.</summary>
-    private sealed record InstanceTarget(ExportEntry BaseMaterial, StaticParameterSet Key, MaterialResource Resource);
+    private sealed record InstanceTarget(ExportEntry BaseMaterial, StaticParameterSet Key, MaterialResource Resource, IReadOnlyList<ExportEntry> Chain);
 
     /// <summary>Walks the decooked parent chain to its base Material. Imported parents are opened from the decooked
     /// folder by package name (read-only, cached per worker); returns null with a reason when the chain is broken.</summary>
-    private static ExportEntry FindDecookedBase(ExportEntry instance, string decookedFolder, Dictionary<string, IMEPackage> opened, out string reason)
+    private static ExportEntry FindDecookedBase(ExportEntry instance, string decookedFolder, Dictionary<string, IMEPackage> opened, out string reason,
+        List<ExportEntry> chain = null)
     {
         reason = null;
         var current = instance;
         for (int depth = 0; depth < 32; depth++)
         {
             if (current.IsA("Material")) return current;
+            chain?.Add(current);
             if (!current.IsA("MaterialInstance")) { reason = $"chain reaches {current.ClassName}"; return null; }
             int parentIndex = current.GetProperties().GetProp<ObjectProperty>("Parent")?.Value ?? 0;
             if (parentIndex == 0 || !current.FileRef.TryGetEntry(parentIndex, out var parent) || parent == null) { reason = "no Parent"; return null; }
@@ -377,7 +385,8 @@ public class LE3ShippingParityHarness
         look.Materials++;
         try
         {
-            var baseMaterial = FindDecookedBase(instance, decookedFolder, opened, out string reason);
+            var chain = new List<ExportEntry>();
+            var baseMaterial = FindDecookedBase(instance, decookedFolder, opened, out string reason, chain);
             if (baseMaterial == null) { look.NameNotInShipping++; look.Sample("instance: decooked base unresolved (" + reason + ")", where); return; }
             var sw = Stopwatch.StartNew();
             var (outcome, map, key, resource, note) = cooked.ResolveInstance(instance, baseMaterial, index);
@@ -392,7 +401,7 @@ public class LE3ShippingParityHarness
                 default: look.CookedExportMissing++; return;
             }
             target.Materials++;
-            ProcessMaterial(instance, snapshot, map, resolver, target, first, threads, dumpDir, dump, new InstanceTarget(baseMaterial, key, resource));
+            ProcessMaterial(instance, snapshot, map, resolver, target, first, threads, dumpDir, dump, new InstanceTarget(baseMaterial, key, resource, chain));
         }
         catch (Exception e)
         {
@@ -502,7 +511,7 @@ public class LE3ShippingParityHarness
         LE3ParityInspection.Write(InspectionDirectory, "decooked", export, resource, translation, map);
         var shippingResource = instance?.Resource ?? (CookedBaseResources.TryRemove(export, out var cookedResource) ? cookedResource : null);
         if (shippingResource != null)
-            CompareResourceFields(stats, where, shippingResource, translation, instance?.BaseMaterial ?? export, map, instance != null);
+            CompareResourceFields(stats, where, shippingResource, translation, instance?.Chain, map, instance != null);
         else Bump(stats.ResourceFields, "no cooked resource to compare");
         if (ResourceOnly) { stats.FullyCompiled++; return; }
 
@@ -875,7 +884,9 @@ public class LE3ShippingParityHarness
                     if (id == Guid.Empty) { best = (CookedOutcome)Math.Max((int)best, (int)CookedOutcome.IdEmpty); continue; }
                     if (index.ById.TryGetValue(id, out var map))
                     {
-                        CookedBaseResources[export] = ObjectBinary.From<Material>(cookedExport).SM3MaterialResource;
+                        var cookedResource = ObjectBinary.From<Material>(cookedExport).SM3MaterialResource;
+                        CookedBaseResources[export] = cookedResource;
+                        RecordShippingTexturePaths(cookedResource, cookedExport.FileRef);
                         LE3ParityInspection.Write(InspectionDirectory, "cooked", cookedExport,
                             ObjectBinary.From<Material>(cookedExport).SM3MaterialResource);
                         if (OverlayCookedFlags) OverlayUsageFlags(cookedExport, export);
@@ -936,6 +947,7 @@ public class LE3ShippingParityHarness
                                 .FirstOrDefault(e => e != null);
                             if (cookedBase != null) OverlayUsageFlags(cookedBase, decookedBase);
                         }
+                        RecordShippingTexturePaths(binary.SM3StaticPermutationResource, cookedExport.FileRef);
                         return (CookedOutcome.Hit, map, key, binary.SM3StaticPermutationResource, $" [cooked {Path.GetFileName(rel)}]");
                     }
                     best = (CookedOutcome)Math.Max((int)best, (int)CookedOutcome.NoMap);
@@ -1380,33 +1392,87 @@ public class LE3ShippingParityHarness
     /// Disk slots 2..5 of the serialized bitfield are Time, DynamicParameter, LightmapUVs and WPO-connected
     /// (FMaterialResource::Serialize 0x7ff74ab556a0), whatever MaterialResource names them.</summary>
     private static void CompareResourceFields(Stats stats, string where, MaterialResource shipping, TranslationResult t,
-        ExportEntry baseMaterial, MaterialShaderMap map, bool isInstance)
+        IReadOnlyList<ExportEntry> instanceChain, MaterialShaderMap map, bool isInstance)
     {
-        var wpo = baseMaterial.GetProperty<StructProperty>("WorldPositionOffset");
-        bool wpoConnected = wpo?.GetProp<ObjectProperty>("Expression")?.Value is > 0;
         void Check(string field, object ours, object ship)
         {
             bool same = Equals(ours, ship);
             Bump(stats.ResourceFields, field + (same ? ": match" : ": mismatch"));
             if (!same) AddGroup(stats.ResourceFieldExamples, $"{field}: ours {ours} shipping {ship}", where);
         }
-        Check("bit0 SceneColor", t.UsesSceneColor, shipping.bUsesSceneColor);
-        Check("bit1 SceneDepth", t.UsesSceneDepth, shipping.bUsesSceneDepth);
-        Check("bit2 Time", t.UsesTime, shipping.bUsesDynamicParameter);
-        Check("bit2 vs ForcesFloatTexCoords", t.ForcesFloatTexCoords, shipping.bUsesDynamicParameter);
-        Check("bit3 DynamicParameter", t.UsesDynamicParameter, shipping.bUsesLightmapUVs);
-        Check("bit4 LightmapUVs", t.UsesLightmapUVs, shipping.bUsesMaterialVertexPositionOffset);
-        Check("bit5 WPO connected", wpoConnected, shipping.bUsesVertexColor);
-        Check("NumUserTexCoords", t.NumUserTexCoords, shipping.NumUserTexCoords);
-        Check("UsingTransforms", t.UsingTransforms, shipping.UsingTransforms);
-        // Cooked resources index the cooked package, so compare texture counts only.
-        Check("UniformExpressionTextures count", t.UniformExpressionTextures.Count, shipping.UniformExpressionTextures?.Length ?? 0);
+        // What an installer writes (LE3MaterialResourceBuilder), field by field against the cooked resource.
+        var built = LE3MaterialResourceBuilder.Build(t, shipping.ID);
+        Check("bit0 SceneColor", built.bUsesSceneColor, shipping.bUsesSceneColor);
+        Check("bit1 SceneDepth", built.bUsesSceneDepth, shipping.bUsesSceneDepth);
+        Check("bit2 Time", built.bUsesDynamicParameter, shipping.bUsesDynamicParameter);
+        Check("bit3 DynamicParameter", built.bUsesLightmapUVs, shipping.bUsesLightmapUVs);
+        Check("bit4 LightmapUVs", built.bUsesMaterialVertexPositionOffset, shipping.bUsesMaterialVertexPositionOffset);
+        Check("bit5 WPO connected", built.bUsesVertexColor, shipping.bUsesVertexColor);
+        Check("NumUserTexCoords", built.NumUserTexCoords, shipping.NumUserTexCoords);
+        Check("UsingTransforms", built.UsingTransforms, shipping.UsingTransforms);
         Check(isInstance ? "instance ID is map BaseMaterialId" : "ID is map BaseMaterialId", true, map.StaticParameters?.BaseMaterialId == shipping.ID);
-        Bump(stats.ResourceFields, $"shipping CompileErrors {shipping.CompileErrors?.Length ?? 0}");
-        Bump(stats.ResourceFields, $"shipping TextureDependencyLengthMap {shipping.TextureDependencyLengthMap?.Count ?? 0}");
-        Bump(stats.ResourceFields, $"shipping MaxTextureDependencyLength {shipping.MaxTextureDependencyLength}");
-        Bump(stats.ResourceFields, $"shipping TextureLookups {(shipping.TextureLookups?.Length > 0 ? "non-empty" : "empty")}");
-        Bump(stats.ResourceFields, $"shipping DroppedFallbackComponents {shipping.DummyDroppedFallbackComponents}");
+        Check("MaxTextureDependencyLength", built.MaxTextureDependencyLength, shipping.MaxTextureDependencyLength);
+        if (built.MaxTextureDependencyLength != shipping.MaxTextureDependencyLength)
+            AddGroup(stats.ResourceFieldExamples, "MaxTextureDependencyLength node classes: " + string.Join(",", t.Graph.ReachableExpressions
+                .Select(e => e.ClassName.Replace("MaterialExpression", "")).Distinct().Order()), where);
+        static string Lookups(MaterialResource r) => string.Join(" ", (r.TextureLookups ?? [])
+            .Select(l => $"({l.TexCoordIndex},{l.TextureIndex},{l.UScale:R},{l.VScale:R},{l.Unk})"));
+        Check("TextureLookups", Lookups(built), Lookups(shipping));
+        Check("CompileErrors empty", true, (shipping.CompileErrors?.Length ?? 0) == 0);
+        Check("TextureDependencyLengthMap empty", true, (shipping.TextureDependencyLengthMap?.Count ?? 0) == 0);
+        Check("DroppedFallbackComponents", built.DummyDroppedFallbackComponents, shipping.DummyDroppedFallbackComponents);
+
+        // Textures by identity: the decooked and cooked packages share instanced paths.
+        var ours = LE3MaterialResourceBuilder.GetUniformExpressionTexturePaths(t).Select(p => p.ToLowerInvariant()).ToArray();
+        if (!ShippingTexturePaths.TryGetValue(shipping, out var shippingPaths)) { Bump(stats.ResourceFields, "UniformExpressionTextures: shipping paths unknown"); return; }
+        // A cooked forced export drops its package root, so a shipping path may be a suffix of ours.
+        var ship = shippingPaths.Select((p, i) => p.ToLowerInvariant()).ToArray();
+        for (int i = 0; i < ship.Length; i++)
+        {
+            string match = ours.FirstOrDefault(o => o.EndsWith("." + ship[i], StringComparison.Ordinal));
+            if (match != null) ship[i] = match;
+        }
+        string relation = ours.SequenceEqual(ship) ? "identical"
+            : ours.Length < ship.Length && ship.Take(ours.Length).SequenceEqual(ours) ? "ours is a prefix of shipping"
+            : ship.Length < ours.Length && ours.Take(ship.Length).SequenceEqual(ship) ? "shipping is a prefix of ours"
+            : ours.ToHashSet().SetEquals(ship) ? "same set, other order"
+            : ours.All(ship.Contains) ? "ours is a subset of shipping"
+            : ship.All(ours.Contains) ? "shipping is a subset of ours"
+            : "different";
+        Bump(stats.ResourceFields, "UniformExpressionTextures: " + relation);
+        if (instanceChain != null)
+        {
+            // Instance resources append each compiled texture parameter's effective value (LE3MaterialResourceBuilder).
+            string Effective(string name)
+            {
+                foreach (var e in instanceChain)
+                    foreach (var v in (IEnumerable<StructProperty>)e.GetProperty<ArrayProperty<StructProperty>>("TextureParameterValues") ?? [])
+                        if (string.Equals(v.GetProp<NameProperty>("ParameterName")?.Value.Instanced, name, StringComparison.OrdinalIgnoreCase) &&
+                            v.GetProp<ObjectProperty>("ParameterValue")?.ResolveToEntry(e.FileRef) is { } tex)
+                            return tex.InstancedFullPath.ToLowerInvariant();
+                return null;
+            }
+            static bool SamePath(string a, string b) => a == b || a.EndsWith("." + b, StringComparison.Ordinal) || b.EndsWith("." + a, StringComparison.Ordinal);
+            var predicted = ours.ToList();
+            foreach (string value in LE3MaterialResourceBuilder.GetInstanceTextureParameterOrder(t).Select(Effective))
+                if (value != null && !predicted.Any(o => SamePath(o, value))) predicted.Add(value);
+            bool same = predicted.Count == shippingPaths.Length && predicted.Zip(shippingPaths.Select(p => p.ToLowerInvariant())).All(x => SamePath(x.First, x.Second));
+            Bump(stats.ResourceFields, "UniformExpressionTextures with instance parameters: " + (same ? "match" : "mismatch"));
+            if (!same)
+            {
+                AddGroup(stats.ResourceFieldExamples, "UniformExpressionTextures with instance parameters: mismatch", where);
+                string log = Environment.GetEnvironmentVariable("LE3_PARITY_TEXLOG");
+                if (!string.IsNullOrEmpty(log)) lock (MembershipLogLock) File.AppendAllText(log,
+                    $"{where}\n  predicted [{string.Join(", ", predicted)}]\n  shipping  [{string.Join(", ", shippingPaths)}]\n");
+            }
+            return;
+        }
+        if (relation != "identical")
+        {
+            int first = Enumerable.Range(0, Math.Min(ours.Length, ship.Length)).FirstOrDefault(i => ours[i] != ship[i], -1);
+            AddGroup(stats.ResourceFieldExamples, "UniformExpressionTextures: " + relation,
+                $"{where}: counts {ours.Length}/{ship.Length}" + (first < 0 ? "" : $", first difference at {first}: ours {ours[first]} shipping {ship[first]}"));
+        }
     }
 
     private static void Bump(Dictionary<string, int> d, string k) => d[k] = d.GetValueOrDefault(k) + 1;

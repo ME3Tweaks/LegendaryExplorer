@@ -325,7 +325,7 @@ namespace LegendaryExplorerCore.Shaders
 
         public static void RemoveStaticParameterSetsThatAreInTheGlobalCache(HashSet<StaticParameterSet> paramSets, MEGame game, string gamePathOverride = null)
         {
-            string filePath = ShaderFilePath(game);
+            string filePath = ShaderFilePath(game, gamePathOverride);
             if (File.Exists(filePath))
             {
                 using FileStream fs = File.OpenRead(filePath);

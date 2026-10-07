@@ -38,7 +38,7 @@ public sealed class LE3TextureMetadataReader : IDisposable
         try
         {
             package = MEPackageHandler.UnsafeLazyLoadFromStream(source, packagePath);
-            if (package.Game != MEGame.LE3 || package.Platform != MEPackage.GamePlatform.PC)
+            if (!package.Game.IsLEGame3() || package.Platform != MEPackage.GamePlatform.PC)
                 throw new NotSupportedException("Texture metadata reading is currently limited to LE3 PC packages.");
         }
         catch

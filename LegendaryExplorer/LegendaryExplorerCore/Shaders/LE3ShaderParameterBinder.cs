@@ -84,6 +84,20 @@ public sealed class LE3ShaderParameterBinder
             allocation.BaseIndex == offset && allocation.Size == size;
     }
 
+    /// <summary>
+    /// Decal factories' HLSL can allocate DecalLocalBinormal/DecalLocalTangent in the pixel stage, but the game's pixel
+    /// shaders bind no vertex-factory parameters (the custom-lightmap base-pass pixel shader neither binds nor
+    /// serializes them; only the decal vertex-factory binders name them). The game still caches these shaders for the
+    /// local decal vertex factory and leaves the two constants unbound.
+    /// </summary>
+    public static bool IsNativelyUnboundDecalPixelParameter(ShaderParameterBinding allocation, ShaderStage stage, string vertexFactoryTypeName)
+    {
+        ArgumentNullException.ThrowIfNull(allocation);
+        return stage == ShaderStage.Pixel && allocation.Kind == ShaderParameterBindingKind.Constant &&
+               vertexFactoryTypeName?.Contains("Decal", StringComparison.Ordinal) == true &&
+               (allocation.Name == "DecalLocalBinormal" || allocation.Name == "DecalLocalTangent");
+    }
+
     public FShaderParameter BindConstant(string name, bool optional = true)
     {
         var allocation = Find(name, ShaderParameterBindingKind.Constant, optional);

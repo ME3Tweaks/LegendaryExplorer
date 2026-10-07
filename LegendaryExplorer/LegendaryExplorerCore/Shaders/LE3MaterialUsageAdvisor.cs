@@ -75,10 +75,14 @@ public static class LE3MaterialUsageAdvisor
         [LE3MaterialUsage.StaticLighting, simpleLightMaps ? LE3MaterialUsage.SimpleLightMaps : LE3MaterialUsage.VectorLightMaps];
 
     /// <summary>Checks a base Material's stored properties against its intended uses.</summary>
-    public static LE3MaterialUsageReport Check(PropertyCollection materialProperties, IEnumerable<LE3MaterialUsage> intendedUses)
+    /// <param name="materialClass">The material's class. A DecalMaterial is used with decals by its class
+    /// default, which cooked packages do not store.</param>
+    public static LE3MaterialUsageReport Check(PropertyCollection materialProperties, IEnumerable<LE3MaterialUsage> intendedUses,
+        string materialClass = "Material")
     {
         ArgumentNullException.ThrowIfNull(materialProperties);
-        bool Flag(string name) => materialProperties.GetProp<BoolProperty>(name)?.Value == true;
+        bool Flag(string name) => materialProperties.GetProp<BoolProperty>(name)?.Value ??
+            (name == "bUsedWithDecals" && materialClass == "DecalMaterial");
         bool special = Flag("bUsedAsSpecialEngineMaterial");
         uint veto = (Flag("bUsedWithDecals") ? DecalVetoMask : 0) | (Flag("bUsedWithFogVolumes") ? FogVolumeVetoMask : 0);
 

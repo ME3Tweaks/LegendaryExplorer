@@ -56,6 +56,17 @@ public class LE3MaterialUsageAdvisorTests
     }
 
     [TestMethod]
+    public void DecalMaterialIsUsedWithDecalsByClassDefault()
+    {
+        var report = LE3MaterialUsageAdvisor.Check([], [LE3MaterialUsage.Decals, LE3MaterialUsage.SkeletalMesh], "DecalMaterial");
+        Assert.AreEqual(0, report.MissingFlags.Count);
+        CollectionAssert.AreEqual(new[] { LE3MaterialUsage.SkeletalMesh }, report.Vetoed.ToArray());
+        // An explicit false still wins over the class default.
+        var cleared = LE3MaterialUsageAdvisor.Check([new BoolProperty(false, "bUsedWithDecals")], [LE3MaterialUsage.Decals], "DecalMaterial");
+        CollectionAssert.AreEqual(new[] { "bUsedWithDecals" }, cleared.MissingFlags.ToArray());
+    }
+
+    [TestMethod]
     public void SpecialEngineMaterialAcceptsClearFlags()
     {
         var props = new PropertyCollection { new BoolProperty(true, "bUsedAsSpecialEngineMaterial") };

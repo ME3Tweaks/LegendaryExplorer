@@ -99,7 +99,7 @@ namespace LegendaryExplorerCore.Shaders
             public static TextureCompilationMetadata FromExport(ExportEntry texture)
             {
                 ArgumentNullException.ThrowIfNull(texture);
-                if (texture.Game != MEGame.LE3 || (!texture.IsA("Texture2D") && !texture.IsA("TextureCube")))
+                if (!texture.Game.IsLEGame3() || (!texture.IsA("Texture2D") && !texture.IsA("TextureCube")))
                     throw new ArgumentException("An LE3 Texture2D or TextureCube export is required.", nameof(texture));
                 if (!texture.IsDataLoaded())
                     throw new InvalidOperationException("Texture export data is not loaded; supply texture compilation metadata instead.");
@@ -131,9 +131,9 @@ namespace LegendaryExplorerCore.Shaders
                 ExportEntry requestedMaterialInstance = null, IEntry engineDefaultTexture = null, IEntry worldDefaultTexture = null)
             {
                 ArgumentNullException.ThrowIfNull(baseMaterial);
-                if (baseMaterial.Game != MEGame.LE3 || !baseMaterial.IsA("Material"))
+                if (!baseMaterial.Game.IsLEGame3() || !baseMaterial.IsA("Material"))
                     throw new ArgumentException("An LE3 base Material export is required.", nameof(baseMaterial));
-                if (requestedMaterialInstance != null && (requestedMaterialInstance.Game != MEGame.LE3 ||
+                if (requestedMaterialInstance != null && (!requestedMaterialInstance.Game.IsLEGame3() ||
                     !requestedMaterialInstance.IsA("MaterialInstance")))
                     throw new ArgumentException("The optional requested export must be an LE3 MaterialInstance.", nameof(requestedMaterialInstance));
                 ValidateDefaultTextureReference(baseMaterial, engineDefaultTexture, nameof(engineDefaultTexture));
@@ -5267,7 +5267,7 @@ namespace LegendaryExplorerCore.Shaders
                     if (texture is ImportEntry import)
                     {
                         export = resolveTextureImport?.Invoke(import);
-                        if (export == null || export.Game != MEGame.LE3 ||
+                        if (export == null || !export.Game.IsLEGame3() ||
                             !export.IsA(expected == TextureDimension.TextureCube ? "TextureCube" : "Texture2D"))
                         {
                             errors.Add($"{source} references imported texture {texture.InstancedFullPath}; supply a resolved LE3 texture export or compilation metadata to read its unpack properties.");
@@ -6516,7 +6516,8 @@ namespace LegendaryExplorerCore.Shaders
             var rendererOwned = Array.AsReadOnly(binder.UnboundParameters.Where(p =>
                 LE3ShaderParameterBinder.IsRendererOwnedViewParameter(p, target.Stage)).ToArray());
             var unbound = Array.AsReadOnly(binder.UnboundParameters.Where(p =>
-                !LE3ShaderParameterBinder.IsRendererOwnedViewParameter(p, target.Stage)).ToArray());
+                !LE3ShaderParameterBinder.IsRendererOwnedViewParameter(p, target.Stage) &&
+                !LE3ShaderParameterBinder.IsNativelyUnboundDecalPixelParameter(p, target.Stage, factory.Name)).ToArray());
             if (unbound.Count != 0) return new ShaderConstructionResult
             {
                 RendererOwnedParameters = rendererOwned,
@@ -7302,6 +7303,43 @@ namespace LegendaryExplorerCore.Shaders
                 foreach (var selectedInput in EnumerateSelectedInputs(expression, expression.GetProperties())) usage |= PixelUsage(selectedInput);
                 return usage;
             }
+        }
+
+        /// <summary>
+        /// Longest chain of dependent texture fetches over the selected graph (each compiled expression keeps the
+        /// max of its inputs' lengths; a texture sample is its coordinate's + 1).
+        /// Serialized as MaxTextureDependencyLength; editor data, no runtime reader.
+        /// </summary>
+        internal int ComputeMaxTextureDependencyLength(GraphAnalysis graph)
+        {
+            var lengths = new Dictionary<int, int>();
+            int max = 0;
+            foreach (var root in graph.ConnectedInputs.Values) max = Math.Max(max, Length(root, 0));
+            return max;
+
+            int Length(ExportEntry expression, int depth)
+            {
+                if (lengths.TryGetValue(expression.UIndex, out int known)) return known;
+                if (depth > 512) return 0; // AnalyzeGraph reports cycles; never recurse forever here.
+                int inputs = 0;
+                foreach (var input in EnumerateSelectedInputs(expression, expression.GetProperties()))
+                {
+                    int index = input.GetProp<ObjectProperty>("Expression")?.Value ?? 0;
+                    if (index != 0 && material.FileRef.TryGetEntry(index, out var entry) && entry is ExportEntry child)
+                        inputs = Math.Max(inputs, Length(child, depth + 1));
+                }
+                // Depth-biased nodes read scene depth at the screen position: an independent fetch.
+                int length = expression.ClassName is "MaterialExpressionDepthBiasedAlpha" or "MaterialExpressionDepthBiasedBlend"
+                    ? Math.Max(inputs, 1) : FetchesTexture(expression) ? inputs + 1 : inputs;
+                lengths[expression.UIndex] = length;
+                return length;
+            }
+
+            // Nodes whose compile ends in a texture or scene-depth fetch.
+            static bool FetchesTexture(ExportEntry expression) => expression.IsA("MaterialExpressionTextureSample") ||
+                expression.ClassName is "BioMaterialExpressionKeyedFlipbook" or "BioMaterialExpressionDirt" or
+                    "MaterialExpressionFontSample" or "MaterialExpressionFontSampleParameter" or "MaterialExpressionFluidNormal" or
+                    "MaterialExpressionSceneTexture" or "MaterialExpressionDestDepth";
         }
 
         private IEnumerable<StructProperty> EnumerateSelectedInputs(ExportEntry expression, PropertyCollection properties)
