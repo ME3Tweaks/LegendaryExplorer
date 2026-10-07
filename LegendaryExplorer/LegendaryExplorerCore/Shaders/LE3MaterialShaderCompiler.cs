@@ -2326,7 +2326,11 @@ namespace LegendaryExplorerCore.Shaders
                             code = CompileArithmetic(ForceCastAccessed(code, MaterialValueType.Vector3), selection, "Add", propertyName, statements);
                     }
                 }
-                else code = CompileInput(input, propertyName, statements, cache);
+                else
+                {
+                    try { code = CompileInput(input, propertyName, statements, cache); }
+                    catch (IndexNoneSignal) { code = null; }
+                }
                 if (code == null) continue;
 
                 MaterialValueType expected = ExpectedType(propertyName);
@@ -2443,7 +2447,10 @@ namespace LegendaryExplorerCore.Shaders
                 bool constant = ResourceInputUsesConstant(input, name, errors);
                 if (!constant && input?.GetProp<ObjectProperty>("Expression")?.Value is > 0)
                 {
-                    var compiled = CompileInput(input, name, statements, cache);
+                    CodeValue compiled;
+                    // FColorMaterialInput::Compile ab49c60 substitutes its default for a silent -1.
+                    try { compiled = CompileInput(input, name, statements, cache); }
+                    catch (IndexNoneSignal) { compiled = null; }
                     if (compiled != null) return compiled;
                 }
                 if (name is "DiffusePower" or "SpecularPower" or "Opacity" or "OpacityMask" or "TwoSidedLightingMask")
@@ -2818,6 +2825,8 @@ namespace LegendaryExplorerCore.Shaders
                     return null;
                 }
                 var value = CompileExpression(expression, outputIndex, source, statements, cache);
+                // ExpressionInput_Compile ab49d00 returns -1 before masking; consumers then return it silently.
+                if (ReferenceEquals(value, IndexNoneValue)) throw IndexNoneSignal.Instance;
                 if (value?.IsTexture == true)
                 {
                     // Fail closed: a texture value must never be masked, cast or used as a number.
@@ -2842,6 +2851,29 @@ namespace LegendaryExplorerCore.Shaders
                 Dictionary<(int UIndex, int OutputIndex), CodeValue> cache)
             {
                 if (cache.TryGetValue((expression.UIndex, outputIndex), out var existing)) return existing;
+                try
+                {
+                    return CompileExpressionCore(expression, outputIndex, source, statements, cache);
+                }
+                catch (IndexNoneSignal)
+                {
+                    // Native expression Compile checks connections, compiles every connected input
+                    // (side effects included), and the translator op then returns -1 silently
+                    // (Mul ab53220, Add ab465c0, Lerp ab52b10). CallExpression ab48ce0 caches the -1.
+                    foreach (var input in expression.GetProperties().OfType<StructProperty>()
+                                 .Where(p => p.StructType == "ExpressionInput" && p.GetProp<ObjectProperty>("Expression")?.Value is > 0))
+                    {
+                        try { CompileInput(input, expression.InstancedFullPath, statements, cache, allowTexture: true); }
+                        catch (IndexNoneSignal) { }
+                    }
+                    cache[(expression.UIndex, outputIndex)] = IndexNoneValue;
+                    return IndexNoneValue;
+                }
+            }
+
+            CodeValue CompileExpressionCore(ExportEntry expression, int outputIndex, string source, List<string> statements,
+                Dictionary<(int UIndex, int OutputIndex), CodeValue> cache)
+            {
                 var properties = expression.GetProperties();
                 CodeValue value;
 
@@ -3885,17 +3917,11 @@ namespace LegendaryExplorerCore.Shaders
                                 .FirstOrDefault(candidate => candidate.ParameterName == parameterName);
                             if (normalOverride != null)
                             {
-                                compression = normalOverride.CompressionSettings switch
-                                {
-                                    0 => "TC_Default",
-                                    1 => "TC_Normalmap",
-                                    3 => "TC_NormalmapAlpha",
-                                    7 => "TC_NormalmapUncompressed",
-                                    8 => "TC_NormalmapBC5",
-                                    10 => "TC_NormalmapHQ",
-                                    12 => "TC_NormalmapBC7",
-                                    _ => $"TC_#{normalOverride.CompressionSettings}"
-                                };
+                                // Full installed Engine.pcc Texture.TextureCompressionSettings order; any value
+                                // can be stored, e.g. a Grayscale specular bound to a normal parameter.
+                                compression = normalOverride.CompressionSettings < TextureCompressionSettingsNames.Length
+                                    ? TextureCompressionSettingsNames[normalOverride.CompressionSettings]
+                                    : $"TC_#{normalOverride.CompressionSettings}";
                             }
                         }
 
@@ -4707,10 +4733,12 @@ namespace LegendaryExplorerCore.Shaders
                     {
                         bool selected = ResolveStaticSwitch(properties);
                         var selectedInput = properties.GetProp<StructProperty>(selected ? "A" : "B");
-                        if (selectedInput == null)
+                        // Compile ab185b0 tail-jumps into ExpressionInput_Compile ab49d00, which returns
+                        // -1 for a null Expression without Errorf. Shipping instances rely on this.
+                        if (selectedInput?.GetProp<ObjectProperty>("Expression")?.Value is not > 0)
                         {
-                            errors.Add($"{expression.InstancedFullPath} has no {(selected ? "A" : "B")} input.");
-                            return null;
+                            value = IndexNoneValue;
+                            break;
                         }
                         // Selected static inputs pass chunks through unchanged, including textures.
                         value = CompileInput(selectedInput, expression.InstancedFullPath, statements, cache, allowTexture: true);
@@ -6743,6 +6771,14 @@ namespace LegendaryExplorerCore.Shaders
             public bool IsTexture => ExplicitNativeNumericType is TextureValue2D or TextureValueCube;
         }
 
+        /// <summary>Native INDEX_NONE (-1) code chunk: a silent "no value" that consumers propagate.</summary>
+        private static readonly CodeValue IndexNoneValue = new(MaterialValueType.Scalar, "INDEX_NONE", false);
+
+        private sealed class IndexNoneSignal : Exception
+        {
+            public static readonly IndexNoneSignal Instance = new();
+        }
+
         private const int TextureValue2D = 0x10;
         private const int TextureValueCube = 0x20;
 
@@ -7324,6 +7360,13 @@ namespace LegendaryExplorerCore.Shaders
 
         // Non-normal Grayscale/OneBitAlpha/BC7 use the ordinary affine unpack path: byte-identical to shipping
         // RefShaderCache bytecode in the parity harness. Other special compressions remain unsupported.
+        private static readonly string[] TextureCompressionSettingsNames =
+        [
+            "TC_Default", "TC_Normalmap", "TC_Displacementmap", "TC_NormalmapAlpha", "TC_Grayscale", "TC_HighDynamicRange",
+            "TC_OneBitAlpha", "TC_NormalmapUncompressed", "TC_NormalmapBC5", "TC_OneBitMonochrome", "TC_NormalmapHQ",
+            "TC_BC7", "TC_NormalmapBC7"
+        ];
+
         private static bool IsSupportedUnpackCompression(string compression, string normalHelper) =>
             normalHelper != null || compression is "TC_Default" or "TC_NormalmapHQ" or "TC_Grayscale" or "TC_OneBitAlpha" or "TC_BC7";
 
