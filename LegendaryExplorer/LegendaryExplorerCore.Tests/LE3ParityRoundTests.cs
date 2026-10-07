@@ -270,6 +270,104 @@ public class LE3ParityRoundTests
         StringAssert.Contains(string.Join("; ", result.Errors), "CompressionSettings=" + compression);
     }
 
+    // ---- Static NormalParameter compression byte -------------------------------------------------------------
+
+    [TestMethod]
+    [DataRow((byte)0, "TC_Default", true)]
+    [DataRow((byte)1, "TC_Normalmap", true)]
+    [DataRow((byte)2, "TC_Displacementmap", false)]
+    [DataRow((byte)3, "TC_NormalmapAlpha", true)]
+    [DataRow((byte)4, "TC_Grayscale", true)]
+    [DataRow((byte)5, "TC_HighDynamicRange", false)]
+    [DataRow((byte)6, "TC_OneBitAlpha", true)]
+    [DataRow((byte)7, "TC_NormalmapUncompressed", true)]
+    [DataRow((byte)8, "TC_NormalmapBC5", true)]
+    [DataRow((byte)9, "TC_OneBitMonochrome", false)]
+    [DataRow((byte)10, "TC_NormalmapHQ", true)]
+    [DataRow((byte)11, "TC_BC7", true)]
+    [DataRow((byte)12, "TC_NormalmapBC7", true)]
+    [DataRow((byte)13, "TC_#13", false)]
+    public void StaticNormalParameterCompressionUsesTheInstalledEnumOrder(byte value, string name, bool supported)
+    {
+        GlobalTest.Init();
+        using var package = MEPackageHandler.CreateMemoryEmptyPackage("LE3NormalParamEnum.pcc", MEGame.LE3);
+        var material = package.CreateExport("Material", "Material", indexed: false);
+        var texture = package.CreateExport("Texture", "Texture2D", indexed: false);
+        var sample = package.CreateExport("Sample", "MaterialExpressionTextureSampleParameterNormal", material, indexed: false);
+        sample.WriteProperty(new NameProperty("Detail_Spec", "ParameterName"));
+        sample.WriteProperty(new ObjectProperty(texture.UIndex, "Texture"));
+        material.WriteProperty(Input("EmissiveColor", sample.UIndex));
+        var parameters = (StaticParameterSet)Guid.Empty;
+        // Shipping example: Tbomb_Inst01 stores Detail_Spec=4 (TC_Grayscale) on a normal parameter.
+        parameters.NormalParameters = [new() { ParameterName = "Detail_Spec", CompressionSettings = value, bOverride = false }];
+        var result = new LE3MaterialShaderCompiler(material, parameters).TranslateMaterialResourceHlsl(Template());
+        Assert.AreEqual(supported, result.Success, string.Join("; ", result.Errors));
+        if (!supported) StringAssert.Contains(string.Join("; ", result.Errors), "CompressionSettings=" + name);
+    }
+
+    // ---- Silent INDEX_NONE from an unconnected selected static switch input ---------------------------------
+
+    [TestMethod]
+    [DataRow(true, false)]  // selects A, which is unconnected
+    [DataRow(false, true)]  // selects B, which is unconnected
+    public void UnconnectedSelectedStaticSwitchInputPropagatesSilentlyToTheRootDefault(bool switchValue, bool connectA)
+    {
+        GlobalTest.Init();
+        using var package = MEPackageHandler.CreateMemoryEmptyPackage("LE3IndexNone.pcc", MEGame.LE3);
+        var material = package.CreateExport("Material", "Material", indexed: false);
+        var connected = package.CreateExport("Connected", "MaterialExpressionConstant", material, indexed: false);
+        connected.WriteProperty(new FloatProperty(0.25f, "R"));
+        var toggle = package.CreateExport("Toggle", "MaterialExpressionStaticSwitchParameter", material, indexed: false);
+        toggle.WriteProperty(new NameProperty("Dry_or_Wet", "ParameterName"));
+        toggle.WriteProperty(Input(connectA ? "A" : "B", connected.UIndex));
+        var sibling = package.CreateExport("Sibling", "MaterialExpressionScalarParameter", material, indexed: false);
+        sibling.WriteProperty(new NameProperty("Brightness", "ParameterName"));
+        var multiply = package.CreateExport("Multiply", "MaterialExpressionMultiply", material, indexed: false);
+        multiply.WriteProperty(Input("A", toggle.UIndex));
+        multiply.WriteProperty(Input("B", sibling.UIndex));
+        material.WriteProperty(new ArrayProperty<ObjectProperty>([new(connected.UIndex), new(toggle.UIndex), new(sibling.UIndex), new(multiply.UIndex)], "Expressions"));
+        var baseline = new LE3MaterialShaderCompiler(material).TranslateMaterialResourceHlsl(Template());
+        Assert.IsTrue(baseline.Success, string.Join("; ", baseline.Errors));
+
+        var parameters = (StaticParameterSet)Guid.Empty;
+        parameters.StaticSwitchParameters = [new() { ParameterName = "Dry_or_Wet", Value = switchValue, bOverride = true }];
+        // Through an arithmetic consumer: Multiply still compiles its scalar sibling, then yields -1 silently.
+        material.WriteProperty(Input("EmissiveColor", multiply.UIndex));
+        var viaMultiply = new LE3MaterialShaderCompiler(material, parameters).TranslateMaterialResourceHlsl(Template());
+        Assert.IsTrue(viaMultiply.Success, string.Join("; ", viaMultiply.Errors));
+        Assert.AreEqual(baseline.PropertyCode["EmissiveColor"], viaMultiply.PropertyCode["EmissiveColor"]);
+        // The sibling is compiled but never accessed (Mul returns -1 before GetParameterCode), so its
+        // lazily registered uniform stays unregistered, as in the native translator.
+        Assert.IsFalse(viaMultiply.UniformPixelScalarExpressions.OfType<MaterialUniformExpressionScalarParameter>()
+            .Any(p => p.ParameterName.Name == "Brightness"));
+
+        // Directly at a root: the default replaces -1, exactly as for a disconnected root.
+        material.WriteProperty(Input("EmissiveColor", toggle.UIndex));
+        var direct = new LE3MaterialShaderCompiler(material, parameters).TranslateMaterialResourceHlsl(Template());
+        Assert.IsTrue(direct.Success, string.Join("; ", direct.Errors));
+        Assert.AreEqual(baseline.PropertyCode["EmissiveColor"], direct.PropertyCode["EmissiveColor"]);
+
+        // The connected side still compiles normally.
+        parameters.StaticSwitchParameters[0].Value = connectA;
+        var selected = new LE3MaterialShaderCompiler(material, parameters).TranslateMaterialResourceHlsl(Template());
+        Assert.IsTrue(selected.Success, string.Join("; ", selected.Errors));
+        Assert.AreNotEqual(baseline.PropertyCode["EmissiveColor"], selected.PropertyCode["EmissiveColor"]);
+    }
+
+    [TestMethod]
+    public void UnconnectedOperandConnectionStillReportsAnError()
+    {
+        GlobalTest.Init();
+        using var package = MEPackageHandler.CreateMemoryEmptyPackage("LE3IndexNoneError.pcc", MEGame.LE3);
+        var material = package.CreateExport("Material", "Material", indexed: false);
+        var constant = package.CreateExport("Constant", "MaterialExpressionConstant", material, indexed: false);
+        var multiply = package.CreateExport("Multiply", "MaterialExpressionMultiply", material, indexed: false);
+        multiply.WriteProperty(Input("A", constant.UIndex));
+        material.WriteProperty(Input("EmissiveColor", multiply.UIndex));
+        // Expression Compile checks the connection itself (Errorf "Missing Multiply input B").
+        Assert.IsFalse(new LE3MaterialShaderCompiler(material).TranslateMaterialResourceHlsl(Template()).Success);
+    }
+
     // ---- Helpers ----------------------------------------------------------------------------------------------
 
     private static ExportEntry TextureMaterial(IMEPackage package)

@@ -37,6 +37,10 @@ public class LE3ShippingParityHarness
 {
     private const string DefaultGameRoot = @"S:\SteamLibrary\steamapps\common\Mass Effect Legendary Edition\Game\ME3";
     private static readonly string InspectionDirectory = Environment.GetEnvironmentVariable("LE3_PARITY_INSPECT_DIR");
+    // Base materials: the decooker does not keep the cooked SM3 resource, so compare against the cooked copy's.
+    private static readonly ConcurrentDictionary<ExportEntry, MaterialResource> CookedBaseResources = new();
+    // Stop after the resource-field comparison: no uniform compare, plan or compile.
+    private static readonly bool ResourceOnly = Environment.GetEnvironmentVariable("LE3_PARITY_RESOURCE_ONLY") == "1";
 
     private enum JobKind
     {
@@ -102,6 +106,8 @@ public class LE3ShippingParityHarness
         public readonly List<string> FullMatchExamples = new();
         public readonly List<string> DifferentMaterialInventory = new();
         public readonly List<string> UniformDifferenceInventory = new();
+        public readonly Dictionary<string, int> ResourceFields = new();
+        public readonly Dictionary<string, Group> ResourceFieldExamples = new();
 
         public void Merge(Stats o)
         {
@@ -121,6 +127,7 @@ public class LE3ShippingParityHarness
             foreach (var kv in o.Samples) foreach (var t in kv.Value) Sample(kv.Key, t);
             foreach (var p in o.JobKinds) JobKinds[p.Key] = JobKinds.GetValueOrDefault(p.Key) + p.Value;
             MergeGroups(Failures, o.Failures); MergeGroups(DiffPatterns, o.DiffPatterns); MergeGroups(UniformDiffPatterns, o.UniformDiffPatterns);
+            MergeInts(ResourceFields, o.ResourceFields); MergeGroups(ResourceFieldExamples, o.ResourceFieldExamples);
             MergeInts(MissingByType, o.MissingByType); MergeInts(UnexpectedByType, o.UnexpectedByType); MergeInts(FailedCompileByType, o.FailedCompileByType);
             foreach (var p in o.PhaseMs) PhaseMs[p.Key] = PhaseMs.GetValueOrDefault(p.Key) + p.Value;
             AddUpTo(MembershipExamples, o.MembershipExamples, 3); AddUpTo(UniformExamples, o.UniformExamples, 3);
@@ -493,6 +500,11 @@ public class LE3ShippingParityHarness
         }
 
         LE3ParityInspection.Write(InspectionDirectory, "decooked", export, resource, translation, map);
+        var shippingResource = instance?.Resource ?? (CookedBaseResources.TryRemove(export, out var cookedResource) ? cookedResource : null);
+        if (shippingResource != null)
+            CompareResourceFields(stats, where, shippingResource, translation, instance?.BaseMaterial ?? export, map, instance != null);
+        else Bump(stats.ResourceFields, "no cooked resource to compare");
+        if (ResourceOnly) { stats.FullyCompiled++; return; }
 
         // ---- uniform arrays (independent of the plan) ------------------------------------------
         sw.Restart();
@@ -863,6 +875,7 @@ public class LE3ShippingParityHarness
                     if (id == Guid.Empty) { best = (CookedOutcome)Math.Max((int)best, (int)CookedOutcome.IdEmpty); continue; }
                     if (index.ById.TryGetValue(id, out var map))
                     {
+                        CookedBaseResources[export] = ObjectBinary.From<Material>(cookedExport).SM3MaterialResource;
                         LE3ParityInspection.Write(InspectionDirectory, "cooked", cookedExport,
                             ObjectBinary.From<Material>(cookedExport).SM3MaterialResource);
                         if (OverlayCookedFlags) OverlayUsageFlags(cookedExport, export);
@@ -1323,6 +1336,9 @@ public class LE3ShippingParityHarness
         sb.AppendLine($"  materials with every job byte-identical {s.MaterialsAllJobsMatchBytes}; every job identical incl. disassembly {s.MaterialsAllJobsMatchDisasm}; with >=1 different job {s.MaterialsWithAnyDifferent}");
         sb.AppendLine($"  per-job bytecode ({s.JobsTotal} jobs): " + string.Join(", ", Enum.GetValues<JobKind>().Select(k => $"{k} {s.JobKinds.GetValueOrDefault(k)}")));
         sb.AppendLine($"  instruction counts over compared pairs: equal {s.InstrEqual}, ours fewer {s.InstrOursLess}, ours more {s.InstrOursMore}; different pairs with same opcode sequence {s.DiffSameOpcodes}");
+        sb.AppendLine("  Resource fields (installer view):");
+        foreach (var kv in s.ResourceFields.OrderBy(k => k.Key, StringComparer.Ordinal)) sb.AppendLine($"    {kv.Key}: {kv.Value}");
+        WriteGroups(sb, s.ResourceFieldExamples, 12);
         sb.AppendLine("  Top failure groups (materials; compile = jobs):");
         WriteGroups(sb, s.Failures, topFailures);
         sb.AppendLine("  Membership mismatch examples:");
@@ -1360,6 +1376,39 @@ public class LE3ShippingParityHarness
     private static string Describe(ShaderPermutationIdentity p) => p.ShaderTypeName + (p.VertexFactoryTypeName == null ? "" : "/" + p.VertexFactoryTypeName);
 
     private static void AddMs(Stats s, string phase, Stopwatch sw) => s.PhaseMs[phase] = s.PhaseMs.GetValueOrDefault(phase) + sw.ElapsedMilliseconds;
+    /// <summary>Compares the shipping SM3 resource with what an installer would write from this translation.
+    /// Disk slots 2..5 of the serialized bitfield are Time, DynamicParameter, LightmapUVs and WPO-connected
+    /// (FMaterialResource::Serialize 0x7ff74ab556a0), whatever MaterialResource names them.</summary>
+    private static void CompareResourceFields(Stats stats, string where, MaterialResource shipping, TranslationResult t,
+        ExportEntry baseMaterial, MaterialShaderMap map, bool isInstance)
+    {
+        var wpo = baseMaterial.GetProperty<StructProperty>("WorldPositionOffset");
+        bool wpoConnected = wpo?.GetProp<ObjectProperty>("Expression")?.Value is > 0;
+        void Check(string field, object ours, object ship)
+        {
+            bool same = Equals(ours, ship);
+            Bump(stats.ResourceFields, field + (same ? ": match" : ": mismatch"));
+            if (!same) AddGroup(stats.ResourceFieldExamples, $"{field}: ours {ours} shipping {ship}", where);
+        }
+        Check("bit0 SceneColor", t.UsesSceneColor, shipping.bUsesSceneColor);
+        Check("bit1 SceneDepth", t.UsesSceneDepth, shipping.bUsesSceneDepth);
+        Check("bit2 Time", t.UsesTime, shipping.bUsesDynamicParameter);
+        Check("bit2 vs ForcesFloatTexCoords", t.ForcesFloatTexCoords, shipping.bUsesDynamicParameter);
+        Check("bit3 DynamicParameter", t.UsesDynamicParameter, shipping.bUsesLightmapUVs);
+        Check("bit4 LightmapUVs", t.UsesLightmapUVs, shipping.bUsesMaterialVertexPositionOffset);
+        Check("bit5 WPO connected", wpoConnected, shipping.bUsesVertexColor);
+        Check("NumUserTexCoords", t.NumUserTexCoords, shipping.NumUserTexCoords);
+        Check("UsingTransforms", t.UsingTransforms, shipping.UsingTransforms);
+        // Cooked resources index the cooked package, so compare texture counts only.
+        Check("UniformExpressionTextures count", t.UniformExpressionTextures.Count, shipping.UniformExpressionTextures?.Length ?? 0);
+        Check(isInstance ? "instance ID is map BaseMaterialId" : "ID is map BaseMaterialId", true, map.StaticParameters?.BaseMaterialId == shipping.ID);
+        Bump(stats.ResourceFields, $"shipping CompileErrors {shipping.CompileErrors?.Length ?? 0}");
+        Bump(stats.ResourceFields, $"shipping TextureDependencyLengthMap {shipping.TextureDependencyLengthMap?.Count ?? 0}");
+        Bump(stats.ResourceFields, $"shipping MaxTextureDependencyLength {shipping.MaxTextureDependencyLength}");
+        Bump(stats.ResourceFields, $"shipping TextureLookups {(shipping.TextureLookups?.Length > 0 ? "non-empty" : "empty")}");
+        Bump(stats.ResourceFields, $"shipping DroppedFallbackComponents {shipping.DummyDroppedFallbackComponents}");
+    }
+
     private static void Bump(Dictionary<string, int> d, string k) => d[k] = d.GetValueOrDefault(k) + 1;
 
     private static void AddGroup(Dictionary<string, Group> d, string key, string example)
