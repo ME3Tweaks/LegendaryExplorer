@@ -244,6 +244,14 @@ public sealed class LE3ShaderParameterBinder
             "FLocalDecalVertexFactory" => BindLocalDecalVertexFactoryParameters(),
             "FSplineMeshVertexFactory" => BindSplineMeshVertexFactoryParameters(),
             "FParticleInstancedMeshVertexFactory" => BindParticleInstancedMeshVertexFactoryParameters(),
+            "FLensFlareVertexFactory" => BindLensFlareVertexFactoryParameters(),
+            "FFoliageVertexFactory" => BindFoliageVertexFactoryParameters(),
+            "FFluidVertexFactory" or "FFluidTessellationVertexFactory" => BindFluidVertexFactoryParameters(),
+            "FTerrainVertexFactory" or "FTerrainMorphVertexFactory" or "FTerrainFullMorphVertexFactory" => BindTerrainVertexFactoryParameters(false),
+            "FTerrainDecalVertexFactory" or "FTerrainMorphDecalVertexFactory" or "FTerrainFullMorphDecalVertexFactory" => BindTerrainVertexFactoryParameters(true),
+            "FParticleBeamTrailVertexFactory" or "FParticleBeamTrailDynamicParameterVertexFactory" => BindParticleBeamTrailVertexFactoryParameters(),
+            "FParticleVertexFactory" or "FParticleDynamicParameterVertexFactory" or "FParticleSubUVVertexFactory" or
+                "FParticleSubUVDynamicParameterVertexFactory" => BindParticleVertexFactoryParameters(),
             _ => throw new InvalidOperationException($"Unverified LE3 vertex-factory parameter layout: {vertexFactoryTypeName}")
         };
     }
@@ -282,6 +290,72 @@ public sealed class LE3ShaderParameterBinder
         InvNumVerticesPerInstance = BindConstant("InvNumVerticesPerInstance"),
         NumVerticesPerInstance = BindConstant("NumVerticesPerInstance"),
         InstancedPreViewTranslation = BindConstant("InstancedPreViewTranslation")
+    };
+
+    /// <summary>LE3 ab7d120: four required sprite transform/axis fields, shared by SubUV/dynamic variants.</summary>
+    public FParticleVertexFactoryShaderParameters BindParticleVertexFactoryParameters() => new()
+    {
+        CameraWorldPosition = BindConstant("CameraWorldPosition"), CameraRight = BindConstant("CameraRight"),
+        CameraUp = BindConstant("CameraUp"), ScreenAlignment = BindConstant("ScreenAlignment"),
+        LocalToWorld = BindConstant("LocalToWorld", optional: false),
+        AxisRotationVectorSourceIndex = BindConstant("AxisRotationVectorSourceIndex", optional: false),
+        AxisRotationVectors = BindConstant("AxisRotationVectors", optional: false),
+        ParticleUpRightResultScalars = BindConstant("ParticleUpRightResultScalars", optional: false),
+        NormalsType = BindConstant("NormalsType"), NormalsSphereCenter = BindConstant("NormalsSphereCenter"),
+        NormalsCylinderUnitDirection = BindConstant("NormalsCylinderUnitDirection")
+    };
+
+    /// <summary>LE3 ac39de0/ac39c60: required LocalToWorld, optional terrain/decal fields.
+    /// The archive-only Unused slot has native NumBytes=0; use a canonical zero record, not a binding.</summary>
+    public FTerrainVertexFactoryShaderParameters BindTerrainVertexFactoryParameters(bool decals)
+    {
+        FTerrainVertexFactoryShaderParameters result = decals ? new FTerrainDecalVertexFactoryShaderParameters() : new FTerrainVertexFactoryShaderParameters();
+        result.LocalToWorld = BindConstant("LocalToWorld", optional: false);
+        result.WorldToLocal = BindConstant("WorldToLocal"); result.LocalToView = BindConstant("LocalToView");
+        result.TerrainLightmapCoordinateScaleBias = BindConstant("TerrainLightmapCoordinateScaleBias");
+        result.TessellationInterpolation = BindConstant("TessellationInterpolation");
+        result.InvMaxTesselationLevel_ZScale = BindConstant("InvMaxTesselationLevel_ZScale");
+        result.InvTerrainSize_SectionBase = BindConstant("InvTerrainSize_SectionBase");
+        result.TessellationDistanceScale = BindConstant("TessellationDistanceScale"); result.TessInterpDistanceValues = BindConstant("TessInterpDistanceValues");
+        if (result is FTerrainDecalVertexFactoryShaderParameters decal)
+        {
+            decal.DecalMatrix = BindConstant("DecalMatrix"); decal.DecalLocation = BindConstant("DecalLocation");
+            decal.DecalOffset = BindConstant("DecalOffset"); decal.DecalLocalBinormal = BindConstant("DecalLocalBinormal");
+            decal.DecalLocalTangent = BindConstant("DecalLocalTangent");
+        }
+        return result;
+    }
+
+    /// <summary>LE3 aacc310: optional Local prefix, required GridSize, optional fluid fields.</summary>
+    public FFluidTessellationVertexFactoryShaderParameters BindFluidVertexFactoryParameters() => new()
+    {
+        LocalToWorld = BindConstant("LocalToWorld"), LocalToWorldRotDeterminantFlip = BindConstant("LocalToWorldRotDeterminantFlip"),
+        WorldToLocal = BindConstant("WorldToLocal"), GridSize = BindConstant("GridSize", optional: false),
+        TessellationParameters = BindConstant("TessellationParameters"), TessellationFactors1 = BindConstant("TessellationFactors1"),
+        TessellationFactors2 = BindConstant("TessellationFactors2"), Heightmap = BindResource("Heightmap"),
+        TexcoordScaleBias = BindConstant("TexcoordScaleBias"), SplineParameters = BindConstant("SplineParameters")
+    };
+
+    /// <summary>LE3 aacc490: two optional instance constants, no Local prefix.</summary>
+    public FFoliageVertexFactoryShaderParameters BindFoliageVertexFactoryParameters() => new()
+    {
+        InvNumVerticesPerInstance = BindConstant("InvNumVerticesPerInstance"),
+        NumVerticesPerInstance = BindConstant("NumVerticesPerInstance")
+    };
+
+    /// <summary>LE3 aaf1a80: optional CameraRight/CameraUp, required LocalToWorld.</summary>
+    public FLensFlareVertexFactoryShaderParameters BindLensFlareVertexFactoryParameters() => new()
+    {
+        CameraRight = BindConstant("CameraRight"), CameraUp = BindConstant("CameraUp"),
+        LocalToWorld = BindConstant("LocalToWorld", optional: false)
+    };
+
+    /// <summary>LE3 ab691f0: four optional camera fields followed by required LocalToWorld.</summary>
+    public FParticleBeamTrailVertexFactoryShaderParameters BindParticleBeamTrailVertexFactoryParameters() => new()
+    {
+        CameraWorldPosition = BindConstant("CameraWorldPosition"), CameraRight = BindConstant("CameraRight"),
+        CameraUp = BindConstant("CameraUp"), ScreenAlignment = BindConstant("ScreenAlignment"),
+        LocalToWorld = BindConstant("LocalToWorld", optional: false)
     };
 
     /// <summary>LE3 ac255f0: optional Local prefix followed by fourteen required spline fields.</summary>
