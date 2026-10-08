@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh =
 [
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#a5636d2e139c474bca87633931d346edd", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#a838f24e72776ddce6455d0d84d8a9ccc", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#a80d5284ebda5e15e8b4dd8e6c27b29c9", null ],
     [ "GetNames", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_skeletal_mesh.html#a02a5762e441a1267a36f3dc21a547aa4", null ],

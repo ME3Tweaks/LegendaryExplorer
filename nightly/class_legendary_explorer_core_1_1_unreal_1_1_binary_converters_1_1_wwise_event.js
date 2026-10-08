@@ -1,6 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_event =
 [
-    [ "WwiseEventLink", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_event_1_1_wwise_event_link.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_event_1_1_wwise_event_link" ],
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_event.html#adbe8582dd4e00de71035293422415f7c", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_event.html#ab5f779386f3e8c511e93bf849b64072b", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_event.html#a8da85b18dbe63d99d1d5f166624d047b", null ],
     [ "ForEachUIndex< TAction >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_event.html#a1ae44090916f1ab9b34e38863965bdbf", null ],

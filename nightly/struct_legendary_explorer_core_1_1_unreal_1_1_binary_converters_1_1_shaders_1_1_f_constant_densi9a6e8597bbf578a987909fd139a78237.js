@@ -1,0 +1,10 @@
+var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_constant_densi9a6e8597bbf578a987909fd139a78237 =
+[
+    [ "Serialize", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_constant_densi9a6e8597bbf578a987909fd139a78237.html#a25938c666f2be9aa970a50299fb60da4", null ],
+    [ "FirstDensityFunction", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_constant_densi9a6e8597bbf578a987909fd139a78237.html#a3e35188edc9d4bdaa04376d3e3e1daf2", null ],
+    [ "SecondDensityFunction", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_constant_densi9a6e8597bbf578a987909fd139a78237.html#a0bab569b52b79d92cf7e4c43e3b53edb", null ],
+    [ "StartDistance", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_constant_densi9a6e8597bbf578a987909fd139a78237.html#a46de5c43775ea86fa89d43f5f8746b25", null ],
+    [ "FogVolumeBoxMin", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_constant_densi9a6e8597bbf578a987909fd139a78237.html#a2cfbd9540fc8dd50c55e0288c86d8ecc", null ],
+    [ "FogVolumeBoxMax", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_constant_densi9a6e8597bbf578a987909fd139a78237.html#a9d2bc35e93149878f13a6a1875d2f9f7", null ],
+    [ "ApproxFogColor", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_constant_densi9a6e8597bbf578a987909fd139a78237.html#abfc94e4755a2bbec13e590bec6c7bfc1", null ]
+];

@@ -1,0 +1,9 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_downsample_scenaa41d05c7ea0f6deeddddf1a66bbdd80 =
+[
+    [ "ProjectionScaleBias", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_downsample_scenaa41d05c7ea0f6deeddddf1a66bbdd80.html#ad81a99d5d7f4db23a46d1dbc7e877434", null ],
+    [ "SourceTexelOffsets01", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_downsample_scenaa41d05c7ea0f6deeddddf1a66bbdd80.html#a4249f29a2eb3666e229bf739ea4147c1", null ],
+    [ "SourceTexelOffsets23", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_downsample_scenaa41d05c7ea0f6deeddddf1a66bbdd80.html#a091e33148f2bdaa25a0f5bcca4c95e6e", null ],
+    [ "SceneTextureParameters", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_downsample_scenaa41d05c7ea0f6deeddddf1a66bbdd80.html#a66a5f357e6cde1c97ad6539cf5c9a73b", null ],
+    [ "FullSizedNormalsTexture", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_downsample_scenaa41d05c7ea0f6deeddddf1a66bbdd80.html#a92c41e75d639bff0f6e2416c273bb507", null ],
+    [ "OffsetIndex", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_downsample_scenaa41d05c7ea0f6deeddddf1a66bbdd80.html#a7c341e5fb45509d23b3fc246bcb3e23d", null ]
+];

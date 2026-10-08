@@ -2,7 +2,7 @@ var class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbos
 [
     [ "VerboseFormatInfoBase", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a0ac9c517d6ab8a6ff77030993c87ad60", null ],
     [ "VerboseFormatInfoBase", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#aafe974a8c42e19672a22e48ae453bf8a", null ],
-    [ "Clone", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a4138b646249aac1b9ff843e64dc4736d", null ],
+    [ "Clone", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a8422ab3fd260a87b8f6167cca629a735", null ],
     [ "Format", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#ab7b2ea3f8930757e20ab0efdf8239b9b", null ],
     [ "GetFormat", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#af9fdb9ff6f0f3217380bd0af64906d48", null ],
     [ "Format", "class_legendary_explorer_core_1_1_gammtek_1_1_text_1_1_formatting_1_1_verbose_format_info_base.html#a7d5e7bf46434ae4eaa14a38d6ad63817", null ],

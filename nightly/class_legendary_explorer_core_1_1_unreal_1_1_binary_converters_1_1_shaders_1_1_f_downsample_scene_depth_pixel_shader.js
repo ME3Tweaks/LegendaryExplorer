@@ -1,0 +1,7 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_downsample_scene_depth_pixel_shader =
+[
+    [ "ProjectionScaleBias", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_downsample_scene_depth_pixel_shader.html#a6b6581d6544bb45e178a03e1a168d118", null ],
+    [ "SourceTexelOffsets01", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_downsample_scene_depth_pixel_shader.html#aa9b3cbb1ecba1f35a53132f133b46c66", null ],
+    [ "SourceTexelOffsets23", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_downsample_scene_depth_pixel_shader.html#a7c995800d708ac2f9cf85bd7ee5c4ff2", null ],
+    [ "SceneTextureParameters", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_downsample_scene_depth_pixel_shader.html#afc87b3f17d1dae5e5581ba4dd26f0752", null ]
+];

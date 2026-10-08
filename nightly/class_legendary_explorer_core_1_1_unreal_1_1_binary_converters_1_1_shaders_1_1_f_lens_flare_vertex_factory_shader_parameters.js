@@ -1,0 +1,7 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_lens_flare_vertex_factory_shader_parameters =
+[
+    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_lens_flare_vertex_factory_shader_parameters.html#a5c57423debd9eed727c4acc4a205a223", null ],
+    [ "CameraRight", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_lens_flare_vertex_factory_shader_parameters.html#a492189d732dccb66a3cb5bcaa8a0a6ac", null ],
+    [ "CameraUp", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_lens_flare_vertex_factory_shader_parameters.html#ab418d9050dc2e5b69553c5e158a01f23", null ],
+    [ "LocalToWorld", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_lens_flare_vertex_factory_shader_parameters.html#a02c7508f730ddec62c3ed12f13c49ce4", null ]
+];

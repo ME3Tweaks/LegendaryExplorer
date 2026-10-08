@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_surf =
 [
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_surf.html#a75c4df72c0fddbe70756c75d87f70367", null ],
     [ "Material", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_surf.html#a305bc0989d970b28e6e46b02e5c9a923", null ],
     [ "PolyFlags", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_surf.html#a1447b41c37b31bfba2c872db920721c2", null ],
     [ "pBase", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_bsp_surf.html#a7f87c50427c6613d93a510f25ebdf88c", null ],

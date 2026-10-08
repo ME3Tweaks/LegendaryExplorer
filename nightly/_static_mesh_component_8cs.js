@@ -11,6 +11,13 @@ var _static_mesh_component_8cs =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.QuantizedDirectionalLightSample", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_quantized_directional_light_sample.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_quantized_directional_light_sample" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.QuantizedSimpleLightSample", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_quantized_simple_light_sample.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_quantized_simple_light_sample" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SerializingContainer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container" ],
-    [ "UIndex", "_static_mesh_component_8cs.html#a31ccc8e63558d15b93826f6ed881ead5", null ],
-    [ "ELightMapType", "_static_mesh_component_8cs.html#ae27c2393e97195af7eaa79df4634da7b", null ]
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.ELightMapType", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7b", [
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.ELightMapType.LMT_None", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7bab1e0640db873ee70290c92bed236fed4", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.ELightMapType.LMT_1D", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7bad62252efb30601c2f429f6dd526f29eb", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.ELightMapType.LMT_2D", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7baa7823b63357235d8c0a0c3e99b44fb5c", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.ELightMapType.LMT_3", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7baad44896b7b1074845a532be863caa7d8", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.ELightMapType.LMT_4", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7baa21c4ae4ac9e22d1a3112c20d429db04", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.ELightMapType.LMT_5", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7baceca9469004decfe30211ca89418ed9e", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.ELightMapType.LMT_6", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ae27c2393e97195af7eaa79df4634da7babd35b80cba1682f9a248289e8266cc2c", null ]
+    ] ]
 ];

@@ -1,0 +1,17 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_simple_element_316c3aa217876293e7ab5b01b74e0975 =
+[
+    [ "Texture", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_simple_element_316c3aa217876293e7ab5b01b74e0975.html#a4941ff11f7515bc32b6599af280bb0f7", null ],
+    [ "TextureComponentReplicate", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_simple_element_316c3aa217876293e7ab5b01b74e0975.html#a8f16f07a693c20fd3e6d2697ba5a99a2", null ],
+    [ "TextureComponentReplicateAlpha", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_simple_element_316c3aa217876293e7ab5b01b74e0975.html#ad71551e3f6ac75dd93c21ddc9a0b5bde", null ],
+    [ "Gamma", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_simple_element_316c3aa217876293e7ab5b01b74e0975.html#a1da1a5f2294033d91dbc89de8af336a7", null ],
+    [ "ClipRef", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_simple_element_316c3aa217876293e7ab5b01b74e0975.html#a87c32c2110009e619b79bc13332c2435", null ],
+    [ "SmoothWidth", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_simple_element_316c3aa217876293e7ab5b01b74e0975.html#a58a469dcd664d3b27da697e3f0a6b22d", null ],
+    [ "EnableShadow", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_simple_element_316c3aa217876293e7ab5b01b74e0975.html#af5ee50ba6216651798b0700d2eed251b", null ],
+    [ "ShadowDirection", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_simple_element_316c3aa217876293e7ab5b01b74e0975.html#af2b4b7bd5d14f250ff0fbaa8219d66ae", null ],
+    [ "ShadowColor", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_simple_element_316c3aa217876293e7ab5b01b74e0975.html#acedc0494ca0847fde6a75252c13a5937", null ],
+    [ "ShadowSmoothWidth", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_simple_element_316c3aa217876293e7ab5b01b74e0975.html#a1926fc6aed70a282c91b393330c1acd6", null ],
+    [ "EnableGlow", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_simple_element_316c3aa217876293e7ab5b01b74e0975.html#a84216be0ecdd25d2a231e7859bc202e8", null ],
+    [ "GlowColor", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_simple_element_316c3aa217876293e7ab5b01b74e0975.html#ace9fae0aad88ba49bc5ab2482cf85a37", null ],
+    [ "GlowOuterRadius", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_simple_element_316c3aa217876293e7ab5b01b74e0975.html#a7e8434d12d54db78df646da593595a1d", null ],
+    [ "GlowInnerRadius", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_simple_element_316c3aa217876293e7ab5b01b74e0975.html#a25724970c1fedfbfc11e13fd4e894ad9", null ]
+];

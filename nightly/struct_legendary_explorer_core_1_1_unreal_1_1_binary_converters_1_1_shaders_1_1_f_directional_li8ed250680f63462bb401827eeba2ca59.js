@@ -1,0 +1,8 @@
+var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_directional_li8ed250680f63462bb401827eeba2ca59 =
+[
+    [ "Serialize", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_directional_li8ed250680f63462bb401827eeba2ca59.html#ad0fc0426fc8eafac5c3b027a54695a95", null ],
+    [ "LightColor", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_directional_li8ed250680f63462bb401827eeba2ca59.html#a6b0d4943b0134c09053cc08c164e3fd4", null ],
+    [ "bReceiveDynamicShadows", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_directional_li8ed250680f63462bb401827eeba2ca59.html#a3067048599febdb5a19fbd4e76a958c3", null ],
+    [ "bEnableDistanceShadowFading", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_directional_li8ed250680f63462bb401827eeba2ca59.html#a9dd432d48fafce47dd51eb5ddb319bd6", null ],
+    [ "DistanceFadeParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_directional_li8ed250680f63462bb401827eeba2ca59.html#aae41f222267e4eb222c18151946bfa93", null ]
+];

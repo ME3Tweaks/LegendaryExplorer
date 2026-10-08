@@ -1,8 +1,8 @@
 var class_legendary_explorer_core_1_1_packages_1_1_compression_helper =
 [
-    [ "Block", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper_1_1_block.html", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper_1_1_block" ],
     [ "Chunk", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper_1_1_chunk.html", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper_1_1_chunk" ],
     [ "ChunkHeader", "struct_legendary_explorer_core_1_1_packages_1_1_compression_helper_1_1_chunk_header.html", "struct_legendary_explorer_core_1_1_packages_1_1_compression_helper_1_1_chunk_header" ],
+    [ "Block", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper_1_1_block.html", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper_1_1_block" ],
     [ "DecompressFullyCompressedPackage", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper.html#ae44f599a6c89e5999a56e31a4e3ef772", null ],
     [ "DecompressPackage", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper.html#aaa682c131e72dca4fbf938c7057f32c5", null ],
     [ "OODLE_DLL_NAME", "class_legendary_explorer_core_1_1_packages_1_1_compression_helper.html#a1aa1ccee2ae6a94251375ad8ab52a26a", null ],

@@ -1,0 +1,5 @@
+var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_point_light_policy_1_1_vertex_parameters_type =
+[
+    [ "Serialize", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_point_light_policy_1_1_vertex_parameters_type.html#add3819fe7de37bac00e92df8701b903d", null ],
+    [ "LightPositionAndInvRadius", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_point_light_policy_1_1_vertex_parameters_type.html#a3f2932843186ae471aeef109646fed65", null ]
+];

@@ -1,6 +1,9 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f =
 [
-    [ "MaterialExportLevel", "class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f.html#ad55c8495511b0b999007af622fb3992e", null ],
+    [ "MaterialExportLevel", "class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f.html#ad55c8495511b0b999007af622fb3992e", [
+      [ "NameOnly", "class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f.html#ad55c8495511b0b999007af622fb3992ea3c58dca58f2a53cb4a38892bc9c78659", null ],
+      [ "Basic", "class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f.html#ad55c8495511b0b999007af622fb3992ea972e73b7a882d0802a4e3a16946a2f94", null ]
+    ] ],
     [ "ExportMeshToGltf", "class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f.html#a2f93eb4e77de87708f0b2a655e454f15", null ],
     [ "ExportMeshesToGltf", "class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f.html#a896eb81450730c61c7d33286747396c5", null ],
     [ "ExportAnimSequenceToGltf", "class_legendary_explorer_core_1_1_unreal_1_1_g_l_t_f.html#a48cb8121b87d91f014c32a410a3fc08a", null ],

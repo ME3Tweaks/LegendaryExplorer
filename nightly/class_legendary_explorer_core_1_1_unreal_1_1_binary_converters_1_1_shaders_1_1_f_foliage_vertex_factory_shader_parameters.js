@@ -1,0 +1,6 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_foliage_vertex_factory_shader_parameters =
+[
+    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_foliage_vertex_factory_shader_parameters.html#a931ba285c9c0d8baa614e2a42a574251", null ],
+    [ "InvNumVerticesPerInstance", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_foliage_vertex_factory_shader_parameters.html#a322b76c8833a69634c86608d3150ed91", null ],
+    [ "NumVerticesPerInstance", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_foliage_vertex_factory_shader_parameters.html#a6e43f0ec1a3c26a4a551f423c1c42bfd", null ]
+];

@@ -1,0 +1,5 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_apply_light_shafts_vertex_shader =
+[
+    [ "SourceTextureScaleBias", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_apply_light_shafts_vertex_shader.html#a67f713497dcf990a16b41f648f77c909", null ],
+    [ "SceneColorScaleBias", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_apply_light_shafts_vertex_shader.html#aea51fac90294c23a3c3257f7aa15ab01", null ]
+];

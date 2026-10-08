@@ -1,0 +1,5 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_blur_light_shafts_pixel_shader =
+[
+    [ "LightShaftParameters", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_blur_light_shafts_pixel_shader.html#abfc0efb8dc881f440cb929893e72647f", null ],
+    [ "BlurPassIndex", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_blur_light_shafts_pixel_shader.html#a094d4e324a6a057ee13949657f006d51", null ]
+];

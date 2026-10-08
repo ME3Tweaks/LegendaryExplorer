@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_flipbook_parameter =
 [
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_flipbook_parameter.html#a1dc7e8d6034b5344cc066557bd17b800", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_flipbook_parameter.html#abc1c00989eac14d37245597785a44669", null ],
     [ "GetNumberValue", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_flipbook_parameter.html#a889dafc588101c3b65f660a1045913c6", null ],
     [ "Index", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_flipbook_parameter.html#adaadfbc3ed9df21b77682d3a37e4019c", null ],

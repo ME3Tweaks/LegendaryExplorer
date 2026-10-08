@@ -1,0 +1,5 @@
+var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_directional_licd14c431fb5dd8172ce3e224beedd136 =
+[
+    [ "Serialize", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_directional_licd14c431fb5dd8172ce3e224beedd136.html#a47ef4892cb9448677465ae6b8b45ddb1", null ],
+    [ "LightDirection", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_directional_licd14c431fb5dd8172ce3e224beedd136.html#a7a9c0855d82a15f8d1384f7483ca6612", null ]
+];

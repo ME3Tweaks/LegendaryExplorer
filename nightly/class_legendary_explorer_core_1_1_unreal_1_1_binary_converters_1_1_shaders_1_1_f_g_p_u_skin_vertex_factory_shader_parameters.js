@@ -1,0 +1,12 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_g_p_u_skin_vertex_factory_shader_parameters =
+[
+    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_g_p_u_skin_vertex_factory_shader_parameters.html#aaeffd0a73d75c2c9494f0fd1409f0911", null ],
+    [ "LocalToWorld", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_g_p_u_skin_vertex_factory_shader_parameters.html#a6c10dac7749a1cdb6a5769b31bc546e5", null ],
+    [ "WorldToLocal", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_g_p_u_skin_vertex_factory_shader_parameters.html#a0b932ba977c1b44bb76729f6ebf78e4d", null ],
+    [ "BoneMatrices", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_g_p_u_skin_vertex_factory_shader_parameters.html#afc15fdd36db047fc49711a20831b89ff", null ],
+    [ "MaxBoneInfluences", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_g_p_u_skin_vertex_factory_shader_parameters.html#afb64cb4df542051fbfd4d7bb9b26cff6", null ],
+    [ "MeshOrigin", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_g_p_u_skin_vertex_factory_shader_parameters.html#ac036d0f560825761f870659d9ce59556", null ],
+    [ "MeshExtension", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_g_p_u_skin_vertex_factory_shader_parameters.html#ad605139f0c1f878fa8023c575b5ec83d", null ],
+    [ "WoundEllipse0", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_g_p_u_skin_vertex_factory_shader_parameters.html#aa05732ffece7369fc9d845a44869bcc7", null ],
+    [ "WoundEllipse1", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_g_p_u_skin_vertex_factory_shader_parameters.html#a90c41298311f6dc66e3a38507ae405f9", null ]
+];

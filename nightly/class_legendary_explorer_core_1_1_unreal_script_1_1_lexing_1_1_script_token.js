@@ -8,5 +8,6 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_script_token 
     [ "Type", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_script_token.html#a6cb18e3bd84a11dc6ccf880f36f7e4f9", null ],
     [ "SyntaxType", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_script_token.html#ad0503f38eb04e7f9eff5e6b6d7c3dd0a", null ],
     [ "IsLiteralIdentifier", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_script_token.html#a491dec027db043e1693ce2fb9409b6a7", null ],
+    [ "RawText", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_script_token.html#a3865cb25a56c628447e7806c7aeff31c", null ],
     [ "Length", "class_legendary_explorer_core_1_1_unreal_script_1_1_lexing_1_1_script_token.html#a6499f55c0df2672b47509e099ed33dde", null ]
 ];

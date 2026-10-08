@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_texture =
 [
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_texture.html#a9c1479c54039a60b3bd270772b533643", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_texture.html#a0ccee13fcc7567b3dc453a37fe29ad47", null ],
     [ "GetNumberValue", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_texture.html#a88d531d6d61e94401f6e0e5b458c0b0b", null ],
     [ "TextureIndex", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_texture.html#a472f071696eb58cb4f6bbd366ecd0522", null ],

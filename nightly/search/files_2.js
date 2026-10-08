@@ -17,7 +17,7 @@ var searchData=
   ['biogestureanimsetmgr_2ecs_14',['BioGestureAnimSetMgr.cs',['../_bio_gesture_anim_set_mgr_8cs.html',1,'']]],
   ['biogestureruntimedata_2ecs_15',['BioGestureRuntimeData.cs',['../_bio_gesture_runtime_data_8cs.html',1,'']]],
   ['bioinert_2ecs_16',['BioInert.cs',['../_bio_inert_8cs.html',1,'']]],
-  ['biomorphface_2ecs_17',['BioMorphFace.cs',['../_classes_2_bio_morph_face_8cs.html',1,'(Global Namespace)'],['../_binary_converters_2_bio_morph_face_8cs.html',1,'(Global Namespace)']]],
+  ['biomorphface_2ecs_17',['BioMorphFace.cs',['../_binary_converters_2_bio_morph_face_8cs.html',1,'(Global Namespace)'],['../_classes_2_bio_morph_face_8cs.html',1,'(Global Namespace)']]],
   ['biopawn_2ecs_18',['BioPawn.cs',['../_bio_pawn_8cs.html',1,'']]],
   ['bioquestmap_2ecs_19',['BioQuestMap.cs',['../_bio_quest_map_8cs.html',1,'']]],
   ['bioquestprogressionmap_2ecs_20',['BioQuestProgressionMap.cs',['../_bio_quest_progression_map_8cs.html',1,'']]],

@@ -14,6 +14,7 @@ var class_legendary_explorer_core_1_1_unreal_1_1_common_structs =
     [ "RotatorProp", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a7af8c334c26bcb32b127b8cffb33ba6e", null ],
     [ "GetRotator", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a27363604a3974cf93183ccaa271ec045", null ],
     [ "MatrixProp", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a77d576e940cb9138a4e4d835401cc803", null ],
+    [ "GetMatrix", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a172e46d194abaef6b5aa765b1af8a6a2", null ],
     [ "GuidProp", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a7784366180126376175ecaa50a8e2d19", null ],
     [ "GetGuid", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#aa422cfc656f8318daad564c24d08721d", null ],
     [ "Cylinder", "class_legendary_explorer_core_1_1_unreal_1_1_common_structs.html#a198812e7c824c7599b500fda7b819804", null ],

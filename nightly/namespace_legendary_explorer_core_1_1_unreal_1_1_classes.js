@@ -10,5 +10,10 @@ var namespace_legendary_explorer_core_1_1_unreal_1_1_classes =
     [ "MorphFeature", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_morph_feature.html", "struct_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_morph_feature" ],
     [ "Texture2D", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d" ],
     [ "Texture2DMipInfo", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_classes_1_1_texture2_d_mip_info" ],
-    [ "Bio2DAMergeResult", "namespace_legendary_explorer_core_1_1_unreal_1_1_classes.html#ad1b37b41ba6701d64aa513bbae770b6e", null ]
+    [ "Bio2DAMergeResult", "namespace_legendary_explorer_core_1_1_unreal_1_1_classes.html#ad1b37b41ba6701d64aa513bbae770b6e", [
+      [ "Unknown", "namespace_legendary_explorer_core_1_1_unreal_1_1_classes.html#ad1b37b41ba6701d64aa513bbae770b6ea88183b946cc5f0e8c96b2e66e1c74a7e", null ],
+      [ "ERROR_MergeIntoSelf", "namespace_legendary_explorer_core_1_1_unreal_1_1_classes.html#ad1b37b41ba6701d64aa513bbae770b6eacba3ceaa41d7e107b9930ca2d084bdbe", null ],
+      [ "ERROR_DifferingColumnCount", "namespace_legendary_explorer_core_1_1_unreal_1_1_classes.html#ad1b37b41ba6701d64aa513bbae770b6ea4616fbca5bbdce4ee7fd112261042c29", null ],
+      [ "OK", "namespace_legendary_explorer_core_1_1_unreal_1_1_classes.html#ad1b37b41ba6701d64aa513bbae770b6eae0aa021e21dddbd6d8cecec71e9cf564", null ]
+    ] ]
 ];

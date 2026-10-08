@@ -55,7 +55,7 @@ var searchData=
   ['sfxunittestasyncloading_5frequestaction_52',['SFXUnitTestAsyncLoading_RequestAction',['../namespace_legendary_explorer_core_1_1_unreal.html#ad794c2b52242b93fcf6f123b192b0183',1,'LegendaryExplorerCore::Unreal']]],
   ['sfxweaponpickupuioption_53',['SFXWeaponPickupUIOption',['../namespace_legendary_explorer_core_1_1_unreal.html#ab59662bc318e20494b686d56d8caec29',1,'LegendaryExplorerCore::Unreal']]],
   ['sfxxboxhinticon_54',['SFXXBoxHintIcon',['../namespace_legendary_explorer_core_1_1_unreal.html#a5651c35fee60d04739d35cc40a79d41f',1,'LegendaryExplorerCore::Unreal']]],
-  ['shaderfrequency_55',['ShaderFrequency',['../class_shader.html#a75ced3b6df278da86641408f7fc7afb2',1,'Shader']]],
+  ['shaderfrequency_55',['ShaderFrequency',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_shader.html#a7e5e3d763b2c6e29bebaaccd9ca65fc0',1,'LegendaryExplorerCore::Unreal::BinaryConverters::Shaders::Shader']]],
   ['softbodybonetype_56',['SoftBodyBoneType',['../namespace_legendary_explorer_core_1_1_unreal.html#a61dfa9d8741ad2cc4de660e0cf86dd9f',1,'LegendaryExplorerCore::Unreal']]],
   ['sounddistancemodel_57',['SoundDistanceModel',['../namespace_legendary_explorer_core_1_1_unreal.html#a50baa7c100138337424e3ab9495dfcb9',1,'LegendaryExplorerCore::Unreal']]],
   ['soundstate_58',['SoundState',['../class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_bank_parsed.html#a78ac9f2fec8ea7ad065263f221633cac',1,'LegendaryExplorerCore::Unreal::BinaryConverters::WwiseBankParsed']]],

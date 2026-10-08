@@ -1,0 +1,4 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_b_i_o_sine_subtend =
+[
+    [ "GetNumberValue", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_b_i_o_sine_subtend.html#acecd9f3fdb3e2a2b6568ce26501f165e", null ]
+];

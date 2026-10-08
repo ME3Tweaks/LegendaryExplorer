@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_element =
 [
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_element.html#aa687c1c42a15afa15c81d4b5daf62c2e", null ],
     [ "Material", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_element.html#a1ef5bbccfea54e8ea72962bd763026a6", null ],
     [ "EnableCollision", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_element.html#a1571d895d3c4ff9182148215b2ce2184", null ],
     [ "OldEnableCollision", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_element.html#a06c1afb676b9fc264dbd0c266d8bc1ce", null ],

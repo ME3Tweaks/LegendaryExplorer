@@ -1,8 +1,32 @@
 var class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record =
 [
-    [ "EBioPartyMemberClassBase", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a1d8d24c058ad170aebec2f91c39ba1ed", null ],
-    [ "EBioPlayerCharacterBackgroundOrigin", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#afbf232889d836fe3bfc130267b6f5098", null ],
-    [ "EBioPlayerCharacterBackgroundNotoriety", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#adb02b777761b2d8ab3b19cfb93347011", null ],
+    [ "EBioPartyMemberClassBase", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a1d8d24c058ad170aebec2f91c39ba1ed", [
+      [ "BIO_PARTY_MEMBER_CLASS_BASE_SOLDIER", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a1d8d24c058ad170aebec2f91c39ba1edad441e7377cc7701ea67c5ba190f8aa57", null ],
+      [ "BIO_PARTY_MEMBER_CLASS_BASE_ENGINEER", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a1d8d24c058ad170aebec2f91c39ba1edafec38013805c0765122c91a7fb48a758", null ],
+      [ "BIO_PARTY_MEMBER_CLASS_BASE_ADEPT", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a1d8d24c058ad170aebec2f91c39ba1eda3fcf5b82bfb5adf760984ea73a534d67", null ],
+      [ "BIO_PARTY_MEMBER_CLASS_BASE_INFILTRATOR", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a1d8d24c058ad170aebec2f91c39ba1eda25724133498e65b9ccc140fe115f74c4", null ],
+      [ "BIO_PARTY_MEMBER_CLASS_BASE_SAVANT", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a1d8d24c058ad170aebec2f91c39ba1eda84e9a5a495cb8b470a08ccd98e679271", null ],
+      [ "BIO_PARTY_MEMBER_CLASS_BASE_REAVER", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a1d8d24c058ad170aebec2f91c39ba1eda091ff5ea411d3edb4690fd421b8dd45b", null ],
+      [ "BIO_PARTY_MEMBER_CLASS_BASE_ASARI_SCIENTIST", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a1d8d24c058ad170aebec2f91c39ba1edab6f888f4ce603c10eae442599a0df133", null ],
+      [ "BIO_PARTY_MEMBER_CLASS_BASE_KROGAN_OLD_ONE", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a1d8d24c058ad170aebec2f91c39ba1eda7800d8664f77c9e0a0b44f9e417cb694", null ],
+      [ "BIO_PARTY_MEMBER_CLASS_BASE_TURIAN_SPECTRE", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a1d8d24c058ad170aebec2f91c39ba1eda17b9a7bee4092fada276cb8e238b802e", null ],
+      [ "BIO_PARTY_MEMBER_CLASS_BASE_QUARIAN_TINKER", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a1d8d24c058ad170aebec2f91c39ba1eda931962dec730890a2e841ea2083c7220", null ],
+      [ "BIO_PARTY_MEMBER_CLASS_BASE_SUPERSOLDIER", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a1d8d24c058ad170aebec2f91c39ba1eda79db7c9af5e7c1f5a9362b2e6db22f81", null ],
+      [ "BIO_PARTY_MEMBER_CLASS_BASE_WOMAN_VETERAN", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a1d8d24c058ad170aebec2f91c39ba1edaca84d5226d4b2f6fec28988ba660ef23", null ],
+      [ "BIO_PARTY_MEMBER_CLASS_BASE_MAN_THINKER", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a1d8d24c058ad170aebec2f91c39ba1edaec3192dadb137178b04155ab06dcdf07", null ]
+    ] ],
+    [ "EBioPlayerCharacterBackgroundOrigin", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#afbf232889d836fe3bfc130267b6f5098", [
+      [ "BIO_PLAYER_CHARACTER_BACKGROUND_ORIGIN_NONE", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#afbf232889d836fe3bfc130267b6f5098a377559be77b77025fdebe5cf1beedad9", null ],
+      [ "BIO_PLAYER_CHARACTER_BACKGROUND_ORIGIN_SPACER", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#afbf232889d836fe3bfc130267b6f5098abb8075fc183a358360a5fa5a256e8b38", null ],
+      [ "BIO_PLAYER_CHARACTER_BACKGROUND_ORIGIN_COLONY", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#afbf232889d836fe3bfc130267b6f5098a4d3b2b049df3f6f1acfa3b069771a630", null ],
+      [ "BIO_PLAYER_CHARACTER_BACKGROUND_ORIGIN_EARTHBORN", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#afbf232889d836fe3bfc130267b6f5098aea581bf00c4a93c606851eed3df3c9f3", null ]
+    ] ],
+    [ "EBioPlayerCharacterBackgroundNotoriety", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#adb02b777761b2d8ab3b19cfb93347011", [
+      [ "BIO_PLAYER_CHARACTER_BACKGROUND_NOTORIETY_NONE", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#adb02b777761b2d8ab3b19cfb93347011a2499183808724b9544ab5b2ba6c554d4", null ],
+      [ "BIO_PLAYER_CHARACTER_BACKGROUND_NOTORIETY_SURVIVOR", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#adb02b777761b2d8ab3b19cfb93347011aba585eb79127c6f9132c8d4a9465ab03", null ],
+      [ "BIO_PLAYER_CHARACTER_BACKGROUND_NOTORIETY_WARHERO", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#adb02b777761b2d8ab3b19cfb93347011a9af598a3b89f121c0de805d2f5e0966b", null ],
+      [ "BIO_PLAYER_CHARACTER_BACKGROUND_NOTORIETY_RUTHLESS", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#adb02b777761b2d8ab3b19cfb93347011ae1b8645854ff089d1d319b8d50136c1a", null ]
+    ] ],
     [ "Deserialize", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#aa3ba59db622007f024a0bf0da9456a0a", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a99802f0fe30188520051a9fefa4f39de", null ],
     [ "CharacterID", "class_legendary_explorer_core_1_1_save_1_1_character_profile_save_record.html#a59c0cc92befe2afb3c3aed2090b53382", null ],

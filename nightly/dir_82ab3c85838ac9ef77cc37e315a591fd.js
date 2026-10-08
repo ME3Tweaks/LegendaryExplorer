@@ -13,7 +13,7 @@ var dir_82ab3c85838ac9ef77cc37e315a591fd =
     [ "MEGame.cs", "_m_e_game_8cs.html", "_m_e_game_8cs" ],
     [ "MELocalization.cs", "_m_e_localization_8cs.html", "_m_e_localization_8cs" ],
     [ "MEPackage.cs", "_m_e_package_8cs.html", "_m_e_package_8cs" ],
-    [ "MEPackageHandler.cs", "_m_e_package_handler_8cs.html", "_m_e_package_handler_8cs" ],
+    [ "MEPackageHandler.cs", "_m_e_package_handler_8cs.html", null ],
     [ "PackageCache.cs", "_package_cache_8cs.html", "_package_cache_8cs" ],
     [ "PackageComparer.cs", "_package_comparer_8cs.html", "_package_comparer_8cs" ],
     [ "PackageDiff.cs", "_package_diff_8cs.html", "_package_diff_8cs" ],

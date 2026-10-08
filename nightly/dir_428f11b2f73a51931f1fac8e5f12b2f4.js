@@ -67,6 +67,7 @@ var dir_428f11b2f73a51931f1fac8e5f12b2f4 =
     [ "UEnum.cs", "_u_enum_8cs.html", "_u_enum_8cs" ],
     [ "UField.cs", "_u_field_8cs.html", "_u_field_8cs" ],
     [ "UFunction.cs", "_u_function_8cs.html", "_u_function_8cs" ],
+    [ "UIndexRefVerification.cs", "_u_index_ref_verification_8cs.html", "_u_index_ref_verification_8cs" ],
     [ "UnrealStructs.cs", "_unreal_structs_8cs.html", "_unreal_structs_8cs" ],
     [ "UReferenceProperty.cs", "_u_reference_property_8cs.html", "_u_reference_property_8cs" ],
     [ "UScriptStruct.cs", "_u_script_struct_8cs.html", "_u_script_struct_8cs" ],

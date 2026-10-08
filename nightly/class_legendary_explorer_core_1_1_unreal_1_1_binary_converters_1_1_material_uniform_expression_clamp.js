@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_clamp =
 [
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_clamp.html#a6d21c3214c0a0954634d4d12627f577c", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_clamp.html#af1eec1cc1a4f7f8a281ea449e4c7ba5c", null ],
     [ "GetNumberValue", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_clamp.html#a6abdd808034ca46f2f3041cef0870fcd", null ],
     [ "Input", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_clamp.html#a02b58ec2f2dd77c54e371976f3d1bf37", null ],

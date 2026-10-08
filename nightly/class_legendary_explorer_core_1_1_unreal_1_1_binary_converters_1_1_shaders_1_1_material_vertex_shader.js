@@ -1,0 +1,5 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_material_vertex_shader =
+[
+    [ "VertexFactoryParameters", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_material_vertex_shader.html#a4615c1b229e51f4d843cd9933191c1a7", null ],
+    [ "MaterialParameters", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_material_vertex_shader.html#a5de2dd6078296052c803757198071d6f", null ]
+];

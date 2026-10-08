@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_binary_op =
 [
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_binary_op.html#aea884b3d629c7d262f92210cc3088f47", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_binary_op.html#a23b8f24d81c7a8d1aad9ba89bd0636bc", null ],
     [ "GetNames", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_binary_op.html#a99764bc22a8a0eab9fb74870dd06c4d9", null ],
     [ "A", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_uniform_expression_binary_op.html#a627a0786533d08e839cb2bb59cbc081c", null ],

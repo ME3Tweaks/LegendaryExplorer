@@ -1,0 +1,4 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_vertex_light_map_policy =
+[
+    [ "VertexParametersType", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_vertex_light_m7f7e8bcc48af5bf8d59a1f6766ea7a70.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_vertex_light_m7f7e8bcc48af5bf8d59a1f6766ea7a70" ]
+];

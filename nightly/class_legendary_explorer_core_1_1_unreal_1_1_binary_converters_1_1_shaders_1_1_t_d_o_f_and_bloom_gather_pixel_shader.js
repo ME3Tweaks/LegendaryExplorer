@@ -1,0 +1,8 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_d_o_f_and_bloom_gather_pixel_shader =
+[
+    [ "DOFParameters", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_d_o_f_and_bloom_gather_pixel_shader.html#aea6c41ec5f44683b92422deb5229b49f", null ],
+    [ "SceneTextureParameters", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_d_o_f_and_bloom_gather_pixel_shader.html#acc87606d46b52ce5739a01e0f0bb3b01", null ],
+    [ "BloomScaleAndThreshold", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_d_o_f_and_bloom_gather_pixel_shader.html#a0ea825e05faa72cc8cdac86af377eec2", null ],
+    [ "SceneMultiplier", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_d_o_f_and_bloom_gather_pixel_shader.html#ad787c9ee36cfd459ff7e29ba65ce8fc1", null ],
+    [ "SmallSceneColorTexture", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_d_o_f_and_bloom_gather_pixel_shader.html#aac4d96015738944112bf7163739e83cf", null ]
+];

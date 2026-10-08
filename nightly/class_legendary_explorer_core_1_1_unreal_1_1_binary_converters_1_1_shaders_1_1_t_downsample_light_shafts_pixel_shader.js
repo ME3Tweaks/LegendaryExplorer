@@ -1,0 +1,7 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_downsample_light_shafts_pixel_shader =
+[
+    [ "LightShaftParameters", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_downsample_light_shafts_pixel_shader.html#a79e6c91dd1fa01fcb3ea92350c3308a9", null ],
+    [ "SampleOffsets", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_downsample_light_shafts_pixel_shader.html#aab070faedfad5427471f34cdc353a545", null ],
+    [ "SceneTextureParameters", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_downsample_light_shafts_pixel_shader.html#aa884e6e86cee4fe80f753a00e3738906", null ],
+    [ "SmallSceneColorTexture", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_downsample_light_shafts_pixel_shader.html#a1379cbb41154a119eebab5e37f1e8e3b", null ]
+];

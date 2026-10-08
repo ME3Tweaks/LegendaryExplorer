@@ -1,0 +1,4 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_fog_integral_vertex_shader =
+[
+    [ "HeightFogParameters", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_fog_integral_vertex_shader.html#ae2678b263e46403177e8ef27b52e8cc2", null ]
+];

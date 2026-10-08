@@ -40,8 +40,9 @@ var searchData=
   ['priorityqueueorder_2ecs_37',['PriorityQueueOrder.cs',['../_priority_queue_order_8cs.html',1,'']]],
   ['problemregistry_2ecs_38',['ProblemRegistry.cs',['../_problem_registry_8cs.html',1,'']]],
   ['propertiesblockparser_2ecs_39',['PropertiesBlockParser.cs',['../_properties_block_parser_8cs.html',1,'']]],
-  ['propertycollection_2ecs_40',['PropertyCollection.cs',['../_property_collection_8cs.html',1,'']]],
-  ['propertyreader_2ecs_41',['PropertyReader.cs',['../_property_reader_8cs.html',1,'']]],
-  ['psa_2ecs_42',['PSA.cs',['../_p_s_a_8cs.html',1,'']]],
-  ['psk_2ecs_43',['PSK.cs',['../_p_s_k_8cs.html',1,'']]]
+  ['propertychanged_2eg_2ecs_40',['PropertyChanged.g.cs',['../_property_changed_8g_8cs.html',1,'']]],
+  ['propertycollection_2ecs_41',['PropertyCollection.cs',['../_property_collection_8cs.html',1,'']]],
+  ['propertyreader_2ecs_42',['PropertyReader.cs',['../_property_reader_8cs.html',1,'']]],
+  ['psa_2ecs_43',['PSA.cs',['../_p_s_a_8cs.html',1,'']]],
+  ['psk_2ecs_44',['PSK.cs',['../_p_s_k_8cs.html',1,'']]]
 ];

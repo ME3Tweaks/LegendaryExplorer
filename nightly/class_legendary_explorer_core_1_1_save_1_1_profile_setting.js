@@ -1,6 +1,15 @@
 var class_legendary_explorer_core_1_1_save_1_1_profile_setting =
 [
-    [ "EProfileSettingType", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a131075d0cbbad3f682768b3dc8c48c52", null ],
+    [ "EProfileSettingType", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a131075d0cbbad3f682768b3dc8c48c52", [
+      [ "NONE", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a131075d0cbbad3f682768b3dc8c48c52ab50339a10e1de285ac99d4c3990b8693", null ],
+      [ "INT", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a131075d0cbbad3f682768b3dc8c48c52a53f93baa3057821107c750323892fa92", null ],
+      [ "INT64", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a131075d0cbbad3f682768b3dc8c48c52a4e866b275c85fbb439f6484251cfb31c", null ],
+      [ "DOUBLE", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a131075d0cbbad3f682768b3dc8c48c52afd3e4ece78a7d422280d5ed379482229", null ],
+      [ "STRING", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a131075d0cbbad3f682768b3dc8c48c52a63b588d5559f64f89a416e656880b949", null ],
+      [ "FLOAT", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a131075d0cbbad3f682768b3dc8c48c52ae738c26bf4ce1037fa81b039a915cbf6", null ],
+      [ "BLOB", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a131075d0cbbad3f682768b3dc8c48c52a1649cff06611a6025da3dd511a97fb43", null ],
+      [ "DATETIME", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a131075d0cbbad3f682768b3dc8c48c52aa3eb957bd02f4780a599d5ec4464ca46", null ]
+    ] ],
     [ "Serialize", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#af2dcb80814022d08af3eb89addeff62a", null ],
     [ "Deserialize", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#a7cc37de3e87b43c431e5e286faee4674", null ],
     [ "IdType", "class_legendary_explorer_core_1_1_save_1_1_profile_setting.html#ad15cb825d68fbd0eb5eb47f9ea9da0c8", null ],

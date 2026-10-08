@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_terrain_material_resource =
 [
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_terrain_material_resource.html#afa496d026e496bc95f6d44f713f77c95", null ],
     [ "ForEachUIndex< TAction >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_terrain_material_resource.html#a593399640b08f75a229576d84540f6f0", null ],
     [ "Terrain", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_terrain_material_resource.html#afc6bd97b04b67d0c140101c4717f55a4", null ],
     [ "Mask", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_terrain_material_resource.html#a99e1f6fa548af110266f8c07cb464120", null ],

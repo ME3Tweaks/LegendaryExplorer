@@ -1,0 +1,7 @@
+var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_spot_light_policy_1_1_pixel_parameters_type =
+[
+    [ "Serialize", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_spot_light_policy_1_1_pixel_parameters_type.html#a0873299edd052e68936b2bb218e46feb", null ],
+    [ "SpotAngles", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_spot_light_policy_1_1_pixel_parameters_type.html#a11fb1d43c3330b1ddc4cc4f05a873c29", null ],
+    [ "SpotDirection", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_spot_light_policy_1_1_pixel_parameters_type.html#a070d3cfc9d30fea6ae0a6d931edaa15b", null ],
+    [ "LightColorAndFalloffExponent", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_spot_light_policy_1_1_pixel_parameters_type.html#ab29396dcdc04fb96cc662682e2d0f459", null ]
+];

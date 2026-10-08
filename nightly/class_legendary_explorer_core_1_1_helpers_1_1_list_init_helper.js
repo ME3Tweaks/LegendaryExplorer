@@ -1,6 +1,6 @@
 var class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper =
 [
-    [ "InitCollection", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper_1_1_init_collection.html", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper_1_1_init_collection" ],
+    [ "InitCollection&lt; T &gt;", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper_1_1_init_collection-1-g.html", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper_1_1_init_collection-1-g" ],
     [ "ConditionalAddOne< T >", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper.html#a50353a9c2009b059fd6e5dd30d536894", null ],
     [ "ConditionalAddOne< T >", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper.html#af85dc1a6028ae7d5fd99b83a2cb1cc07", null ],
     [ "ConditionalAdd< T >", "class_legendary_explorer_core_1_1_helpers_1_1_list_init_helper.html#a260f2e79b70097ec6accedf808a0c097", null ],

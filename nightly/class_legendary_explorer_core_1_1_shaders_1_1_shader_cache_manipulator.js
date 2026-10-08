@@ -11,5 +11,7 @@ var class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator =
     [ "CreateShaderCache", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#ae7bf39375cebc6d96a5bfac0b8a826ee", null ],
     [ "CopyRefShadersToLocal", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#adc78f414092cf49b940f3336a43abce6", null ],
     [ "GetMaterialShaderMapAndShaders", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#a0ffc0d06b4939546a17851b1e4b3f3f2", null ],
-    [ "MaterialShaderMap", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#adf7b19f0c8606b29ef6328dc81ea2450", null ]
+    [ "GetMaterialShaderMapAndShaders", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#a704bd788306fdde078e85bf01599f04b", null ],
+    [ "GetMaterialShaderMapAndMaterialShaders", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#a27007464d759921f27112469c1adf6c1", null ],
+    [ "MaterialShaderMap", "class_legendary_explorer_core_1_1_shaders_1_1_shader_cache_manipulator.html#a0a82c7c55d3fd92e20d8dbdec4ee3e1b", null ]
 ];

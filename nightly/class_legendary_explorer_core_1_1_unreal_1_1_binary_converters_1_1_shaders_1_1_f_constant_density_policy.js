@@ -1,0 +1,4 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_constant_density_policy =
+[
+    [ "VertexShaderParametersType", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_constant_densi9a6e8597bbf578a987909fd139a78237.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_constant_densi9a6e8597bbf578a987909fd139a78237" ]
+];

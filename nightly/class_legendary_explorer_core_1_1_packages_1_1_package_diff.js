@@ -1,6 +1,10 @@
 var class_legendary_explorer_core_1_1_packages_1_1_package_diff =
 [
-    [ "EntryDiff", "class_legendary_explorer_core_1_1_packages_1_1_package_diff.html#a5f93ba9f0d9d6beeb02f53000614df99", null ],
+    [ "EntryDiff", "class_legendary_explorer_core_1_1_packages_1_1_package_diff_1_1_entry_diff.html", "class_legendary_explorer_core_1_1_packages_1_1_package_diff_1_1_entry_diff" ],
+    [ "ImportDiff", "class_legendary_explorer_core_1_1_packages_1_1_package_diff_1_1_import_diff.html", "class_legendary_explorer_core_1_1_packages_1_1_package_diff_1_1_import_diff" ],
+    [ "ExportDiff", "class_legendary_explorer_core_1_1_packages_1_1_package_diff_1_1_export_diff.html", "class_legendary_explorer_core_1_1_packages_1_1_package_diff_1_1_export_diff" ],
+    [ "Diff&lt; T &gt;", "struct_legendary_explorer_core_1_1_packages_1_1_package_diff_1_1_diff-1-g.html", "struct_legendary_explorer_core_1_1_packages_1_1_package_diff_1_1_diff-1-g" ],
+    [ "IDiff&lt; out T &gt;", "interface_legendary_explorer_core_1_1_packages_1_1_package_diff_1_1_i_diff-1-g.html", "interface_legendary_explorer_core_1_1_packages_1_1_package_diff_1_1_i_diff-1-g" ],
     [ "Create", "class_legendary_explorer_core_1_1_packages_1_1_package_diff.html#a7e62947131103935951fff833001b937", null ],
     [ "PackageA", "class_legendary_explorer_core_1_1_packages_1_1_package_diff.html#a404927ebe1e1288fc51f3b1596e107ae", null ],
     [ "PackageB", "class_legendary_explorer_core_1_1_packages_1_1_package_diff.html#ac5ec862386886fbca8ebd82946b36b7b", null ],

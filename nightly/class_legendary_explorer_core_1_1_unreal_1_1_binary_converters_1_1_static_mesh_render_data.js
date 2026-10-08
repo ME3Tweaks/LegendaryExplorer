@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_render_data =
 [
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_render_data.html#ace0a194ef1b8b68c2d65bd2a8d6ac160", null ],
     [ "RawTriangles", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_render_data.html#ac266861a8a8c65d179083df88fc4d205", null ],
     [ "Elements", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_render_data.html#a8faa252456c4dd41a70e56b5c6d2aa9d", null ],
     [ "PositionVertexBuffer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_static_mesh_render_data.html#aab69b735b0a8e7374ec416fa65348daf", null ],

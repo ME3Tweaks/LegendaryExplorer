@@ -1,0 +1,9 @@
+var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_s_f_x_point_lid683d89566dc63a6f9d72b3c318d3f51 =
+[
+    [ "Serialize", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_s_f_x_point_lid683d89566dc63a6f9d72b3c318d3f51.html#aa6567c52ccf6a25887ae12d406cf852e", null ],
+    [ "LightSpaceShadowMap", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_s_f_x_point_lid683d89566dc63a6f9d72b3c318d3f51.html#ab705aab71c5cab2e74872560e1a3693d", null ],
+    [ "LightColorAndFalloffExponent", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_s_f_x_point_lid683d89566dc63a6f9d72b3c318d3f51.html#af062e3c96fc3d1ca1c6d96aaed82fef2", null ],
+    [ "ShadowFilter", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_s_f_x_point_lid683d89566dc63a6f9d72b3c318d3f51.html#adbcb4b2ace7cacf0821e26b158554f10", null ],
+    [ "ShadowTextureRegion", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_s_f_x_point_lid683d89566dc63a6f9d72b3c318d3f51.html#a368a3529389210450705b8839dbc27e3", null ],
+    [ "MaxVarianceShadowAttenuation", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_s_f_x_point_lid683d89566dc63a6f9d72b3c318d3f51.html#ae6f8f982b74f093187aeea15a56ce015", null ]
+];

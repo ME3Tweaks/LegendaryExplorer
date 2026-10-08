@@ -1,0 +1,4 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_custom_light_map_texture_policy =
+[
+    [ "PixelParametersType", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_custom_light_mf8f7c53fac6da585a14c4b21502c686f.html", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_custom_light_mf8f7c53fac6da585a14c4b21502c686f" ]
+];

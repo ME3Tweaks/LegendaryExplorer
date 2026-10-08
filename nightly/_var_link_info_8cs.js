@@ -1,4 +1,4 @@
 var _var_link_info_8cs =
 [
-    [ "VarLinkInfo", "class_var_link_info.html", "class_var_link_info" ]
+    [ "LegendaryExplorerCore.Kismet.VarLinkInfo", "class_legendary_explorer_core_1_1_kismet_1_1_var_link_info.html", "class_legendary_explorer_core_1_1_kismet_1_1_var_link_info" ]
 ];

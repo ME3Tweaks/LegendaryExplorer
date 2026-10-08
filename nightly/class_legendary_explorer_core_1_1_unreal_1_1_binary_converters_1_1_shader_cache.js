@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache =
 [
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html#abb8dad0ba275c28e33983da7f4d7f0ac", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html#aa9a357e0c02fd333f75c0b492f9a81cf", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html#a9c9e2e03b9a5e9716fd33112fb8fedec", null ],
     [ "GetNames", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shader_cache.html#ad967fe954add4c098146fb7efe1885e5", null ],

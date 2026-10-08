@@ -1,0 +1,8 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_branching_p_c_fe29ee5e3e5142b6b4b90e77c74573b7d =
+[
+    [ "ShadowModulateColorParam", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_branching_p_c_fe29ee5e3e5142b6b4b90e77c74573b7d.html#aa996dfc0e86884bb8602ec29822e12e3", null ],
+    [ "ScreenToWorldParam", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_branching_p_c_fe29ee5e3e5142b6b4b90e77c74573b7d.html#aa17a2a02e665c4c07a5a6b4d9f9185d0", null ],
+    [ "EmissiveAlphaMaskScale", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_branching_p_c_fe29ee5e3e5142b6b4b90e77c74573b7d.html#a3ea06eaff5f1a9724a59881ed6a6ccf1", null ],
+    [ "UseEmissiveMask", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_branching_p_c_fe29ee5e3e5142b6b4b90e77c74573b7d.html#ab104bb84bac0ae8ea7a9b4e082bb9392", null ],
+    [ "ModShadowPixelParams", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_t_branching_p_c_fe29ee5e3e5142b6b4b90e77c74573b7d.html#a1be676ba91d96ea226951e79ba8fb8d6", null ]
+];

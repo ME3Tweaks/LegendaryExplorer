@@ -1,0 +1,9 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_particle_beam_t72315f81b863f075c62e86b3f2bceea2 =
+[
+    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_particle_beam_t72315f81b863f075c62e86b3f2bceea2.html#a1abd15ce6e6f40e0e91bd86ff3db0525", null ],
+    [ "CameraWorldPosition", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_particle_beam_t72315f81b863f075c62e86b3f2bceea2.html#a72c057c6901db5af67bc645cb5847084", null ],
+    [ "CameraRight", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_particle_beam_t72315f81b863f075c62e86b3f2bceea2.html#a09489d18f5051331385532e13abb1bbb", null ],
+    [ "CameraUp", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_particle_beam_t72315f81b863f075c62e86b3f2bceea2.html#ab099966bd247b19cb7fef650b349940d", null ],
+    [ "ScreenAlignment", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_particle_beam_t72315f81b863f075c62e86b3f2bceea2.html#a5d57587063e3618e15f3bf9bb570811b", null ],
+    [ "LocalToWorld", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_particle_beam_t72315f81b863f075c62e86b3f2bceea2.html#a97550c665a0897574904c9913f1c111b", null ]
+];

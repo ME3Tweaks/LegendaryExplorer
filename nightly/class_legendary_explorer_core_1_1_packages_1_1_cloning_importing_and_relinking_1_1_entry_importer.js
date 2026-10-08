@@ -1,6 +1,14 @@
 var class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer =
 [
-    [ "PortingOption", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a75560b5048fab4f5b4bf138413e3dec3", null ],
+    [ "PortingOption", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a75560b5048fab4f5b4bf138413e3dec3", [
+      [ "CloneTreeAsChild", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a75560b5048fab4f5b4bf138413e3dec3acefff598bbf32700aab55862a8bdd1a1", null ],
+      [ "AddSingularAsChild", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a75560b5048fab4f5b4bf138413e3dec3a3d5615162433e26dfca4d846bec4b730", null ],
+      [ "ReplaceSingular", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a75560b5048fab4f5b4bf138413e3dec3af4892d0373347cef04b7a0951e6ce71b", null ],
+      [ "MergeTreeChildren", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a75560b5048fab4f5b4bf138413e3dec3a1fc80f1d922b9a2366e7b776c5f56cc6", null ],
+      [ "Cancel", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a75560b5048fab4f5b4bf138413e3dec3aea4788705e6873b424c65e91c2846b19", null ],
+      [ "CloneAllDependencies", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a75560b5048fab4f5b4bf138413e3dec3ad9a537ddfbbc7a04d2b42692b65edd81", null ],
+      [ "ReplaceSingularWithRelink", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a75560b5048fab4f5b4bf138413e3dec3acc8a5290ba733596850e78b4bee77f05", null ]
+    ] ],
     [ "ImportAndRelinkEntries", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#a6e18d69e7f9905f379343450b90edfce", null ],
     [ "ReindexExportEntriesWithSamePath", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aedd203bef4a713e71ff87d8d916a4cc7", null ],
     [ "ImportExport", "class_legendary_explorer_core_1_1_packages_1_1_cloning_importing_and_relinking_1_1_entry_importer.html#aca45231f51204a3b2fd1bce6f3a9a3a9", null ],

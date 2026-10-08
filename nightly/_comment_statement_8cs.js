@@ -1,4 +1,4 @@
 var _comment_statement_8cs =
 [
-    [ "CommentStatement", "_comment_statement_8cs.html#ab78d0119ed18e48f0588929086dea679", null ]
+    [ "LegendaryExplorerCore.UnrealScript.Language.Tree.CommentStatement", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_comment_statement.html", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_comment_statement" ]
 ];

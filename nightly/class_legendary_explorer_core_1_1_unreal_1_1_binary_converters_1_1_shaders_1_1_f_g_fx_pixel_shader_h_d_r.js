@@ -1,0 +1,4 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_g_fx_pixel_shader_h_d_r =
+[
+    [ "HDRBrightnessScale", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_g_fx_pixel_shader_h_d_r.html#a7239ad78a97cee32e29f36a074b6ddde", null ]
+];

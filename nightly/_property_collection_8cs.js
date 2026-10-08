@@ -14,7 +14,7 @@ var _property_collection_8cs =
     [ "LegendaryExplorerCore.Unreal.EnumProperty", "class_legendary_explorer_core_1_1_unreal_1_1_enum_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_enum_property" ],
     [ "LegendaryExplorerCore.Unreal.ArrayPropertyBase", "class_legendary_explorer_core_1_1_unreal_1_1_array_property_base.html", "class_legendary_explorer_core_1_1_unreal_1_1_array_property_base" ],
     [ "LegendaryExplorerCore.Unreal.ImmutableByteArrayProperty", "class_legendary_explorer_core_1_1_unreal_1_1_immutable_byte_array_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_immutable_byte_array_property" ],
-    [ "LegendaryExplorerCore.Unreal.ArrayProperty< T >", "class_legendary_explorer_core_1_1_unreal_1_1_array_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_array_property" ],
+    [ "LegendaryExplorerCore.Unreal.ArrayProperty&lt; T &gt;", "class_legendary_explorer_core_1_1_unreal_1_1_array_property-1-g.html", "class_legendary_explorer_core_1_1_unreal_1_1_array_property-1-g" ],
     [ "LegendaryExplorerCore.Unreal.StrProperty", "class_legendary_explorer_core_1_1_unreal_1_1_str_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_str_property" ],
     [ "LegendaryExplorerCore.Unreal.StringRefProperty", "class_legendary_explorer_core_1_1_unreal_1_1_string_ref_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_string_ref_property" ],
     [ "LegendaryExplorerCore.Unreal.DelegateProperty", "class_legendary_explorer_core_1_1_unreal_1_1_delegate_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_delegate_property" ],

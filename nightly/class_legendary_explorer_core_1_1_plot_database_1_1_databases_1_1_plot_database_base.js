@@ -14,5 +14,5 @@ var class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_plot_datab
     [ "Transitions", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_plot_database_base.html#aa3ecaf81211dd874a44577c13a379e38", null ],
     [ "Organizational", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_plot_database_base.html#afaee93c22c63321f7de136dc649349a5", null ],
     [ "Game", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_plot_database_base.html#a1878a6a21eb378c785638e735ba2116d", null ],
-    [ "IsBioware", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_plot_database_base.html#a423df0da5b0ce5160a95edc805e5edeb", null ]
+    [ "IsBioware", "class_legendary_explorer_core_1_1_plot_database_1_1_databases_1_1_plot_database_base.html#a432b466a289e6d3092681080baeb6a2c", null ]
 ];

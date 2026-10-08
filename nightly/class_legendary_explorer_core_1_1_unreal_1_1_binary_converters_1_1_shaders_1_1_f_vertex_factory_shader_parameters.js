@@ -1,0 +1,4 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_vertex_factory_shader_parameters =
+[
+    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_vertex_factory_shader_parameters.html#a19d94bc9dc2878d01dbe2ea1551917dd", null ]
+];

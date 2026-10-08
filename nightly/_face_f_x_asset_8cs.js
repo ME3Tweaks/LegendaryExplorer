@@ -11,8 +11,44 @@ var _face_f_x_asset_8cs =
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxCompiledFaceGraphLink", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_compiled_face_graph_link.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_compiled_face_graph_link" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxGraphNodeUserProperty", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_graph_node_user_property.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_fx_graph_node_user_property" ],
     [ "LegendaryExplorerCore.Unreal.BinaryConverters.SerializingContainer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container" ],
-    [ "FxNodeType", "_face_f_x_asset_8cs.html#ab2a04ada20d8590017678003c3ec596a", null ],
-    [ "FxInputOperation", "_face_f_x_asset_8cs.html#aa54ec64d7c3bc07e9e1f8a5970fd765a", null ],
-    [ "FxLinkFunction", "_face_f_x_asset_8cs.html#a6152604e89aac714df2701be3c920357", null ],
-    [ "FxGraphNodeUserPropertyType", "_face_f_x_asset_8cs.html#a190bdab832482563b383c9790e44fcc0", null ]
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxNodeType", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596a", [
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxNodeType.Invalid", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596aa4bbb8f967da6d1a610596d7257179c2b", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxNodeType.Combiner", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596aaa476c67879b41d579fda58731f8dfc8e", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxNodeType.Delta", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596aadb1f4ab5845def61a83d5df13e0c2397", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxNodeType.CurrentTime", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596aa28d966bf69234556641d197315891ba0", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxNodeType.GenericTarget", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596aa538a7ca3fd3be6699bfc6e92d0b5a5ed", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxNodeType.BonePose", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596aa6573c82858ede3c0d8df722cec14859b", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxNodeType.MorphTarget", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596aa8e7097d60f4be7f35f7425391f35d766", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxNodeType.MaterialParameterUE3", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596aae7fa28705ddd2a16c50ced2092e846b1", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxNodeType.MorphTargetUE3", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596aa41f219cda930629a38154cc07e2e17f1", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxNodeType.EmotionsWeight", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#ab2a04ada20d8590017678003c3ec596aabc36b8529e72384ad47c30a9e6030055", null ]
+    ] ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxInputOperation", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#aa54ec64d7c3bc07e9e1f8a5970fd765a", [
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxInputOperation.Invalid", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#aa54ec64d7c3bc07e9e1f8a5970fd765aa4bbb8f967da6d1a610596d7257179c2b", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxInputOperation.Sum", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#aa54ec64d7c3bc07e9e1f8a5970fd765aaa0ec87054b5e5b7847d0d8780a01a3d5", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxInputOperation.Multiply", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#aa54ec64d7c3bc07e9e1f8a5970fd765aae257376d913f3b53cbb4a9b19d770648", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxInputOperation.Max", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#aa54ec64d7c3bc07e9e1f8a5970fd765aa6a061313d22e51e0f25b7cd4dc065233", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxInputOperation.Min", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#aa54ec64d7c3bc07e9e1f8a5970fd765aa78d811e98514cd165dda532286610fd2", null ]
+    ] ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxLinkFunction", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357", [
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxLinkFunction.Invalid", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357a4bbb8f967da6d1a610596d7257179c2b", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxLinkFunction.Null", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357abbb93ef26e3c101ff11cdd21cab08a94", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxLinkFunction.Linear", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357a32a843da6ea40ab3b17a3421ccdf671b", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxLinkFunction.Quadratic", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357a8b2972385ed28d0e199ae2985d6fea4c", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxLinkFunction.Cubic", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357aec6b5414eb175379ff9efc9b3eef5814", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxLinkFunction.SquareRoot", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357ae6c1b4ee758a2636a6eaf99105103c56", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxLinkFunction.Negate", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357a67d9ebb87ad2c62fe6b9de06c8da7fa5", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxLinkFunction.Inverse", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357a9f87f02f2da8f99c571b2a1c2a96132b", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxLinkFunction.OneClamp", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357ae78829366c51d60f5b6faec7bd9cdfba", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxLinkFunction.Constant", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357acb17869fe51048b5a5c4c6106551a255", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxLinkFunction.Corrective", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357a82a183f5bbcaf7607f1e0fb56399a565", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxLinkFunction.ClampedLinear", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a6152604e89aac714df2701be3c920357ad38c09385c94c4ffa1efeb6a15616ba7", null ]
+    ] ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxGraphNodeUserPropertyType", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a190bdab832482563b383c9790e44fcc0", [
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxGraphNodeUserPropertyType.Integer", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a190bdab832482563b383c9790e44fcc0aa0faef0851b4294c06f2b94bb1cb2044", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxGraphNodeUserPropertyType.Bool", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a190bdab832482563b383c9790e44fcc0ac26f15e86e3de4c398a8273272aba034", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxGraphNodeUserPropertyType.Float", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a190bdab832482563b383c9790e44fcc0a22ae0e2b89e5e3d477f988cc36d3272b", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxGraphNodeUserPropertyType.String", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a190bdab832482563b383c9790e44fcc0a27118326006d3829667a400ad23d5d98", null ],
+      [ "LegendaryExplorerCore.Unreal.BinaryConverters.FxGraphNodeUserPropertyType.Choice", "namespace_legendary_explorer_core_1_1_unreal_1_1_binary_converters.html#a190bdab832482563b383c9790e44fcc0a458b9dcc0921f46b1192427426d59c10", null ]
+    ] ]
 ];

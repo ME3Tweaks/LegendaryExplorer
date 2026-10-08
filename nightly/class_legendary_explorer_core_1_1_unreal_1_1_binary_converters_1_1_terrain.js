@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_terrain =
 [
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_terrain.html#ae337e72a9a01d9209ed36380ffdce42e", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_terrain.html#a2f05a9719b11658f90e1899a625d96d0", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_terrain.html#ab1e37aff98d232eb48b7b726b7d2dbed", null ],
     [ "ForEachUIndex< TAction >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_terrain.html#a7f788c54a0f73117f23b70082525963f", null ],

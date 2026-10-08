@@ -1,6 +1,7 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource =
 [
     [ "TextureLookup", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource_1_1_texture_lookup.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource_1_1_texture_lookup" ],
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#ad0fbeaaa0e335ec7d468cbaaee8cf871", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#a025b80763f3748dd80758de571691dda", null ],
     [ "GetNames", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#af37255ef830bc14b36886e5f16ff8100", null ],
     [ "ForEachUIndex< TAction >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_material_resource.html#a9297e168f25e48440273c92be3cfc4c7", null ],

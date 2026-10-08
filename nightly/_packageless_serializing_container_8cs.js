@@ -1,5 +1,5 @@
 var _packageless_serializing_container_8cs =
 [
-    [ "PackagelessSerializingContainer", "_packageless_serializing_container_8cs.html#a04273833624e3e918fe3a3b569be1151", null ],
-    [ "PackagelessWithObjectsSerializingContainer", "_packageless_serializing_container_8cs.html#ae27f1cd4db4ff2d61b47f79f7b91ee1e", null ]
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.PackagelessSerializingContainer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_packageless_serializing_container.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_packageless_serializing_container" ],
+    [ "LegendaryExplorerCore.Unreal.BinaryConverters.PackagelessWithObjectsSerializingContainer", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_packageless_with_objects_serializing_container.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_packageless_with_objects_serializing_container" ]
 ];

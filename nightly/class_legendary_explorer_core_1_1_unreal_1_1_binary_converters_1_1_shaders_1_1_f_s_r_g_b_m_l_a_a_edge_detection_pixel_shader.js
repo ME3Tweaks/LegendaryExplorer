@@ -1,0 +1,7 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_s_r_g_b_m_l_a_a_edge_detection_pixel_shader =
+[
+    [ "SceneTextureParameters", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_s_r_g_b_m_l_a_a_edge_detection_pixel_shader.html#a52b6c3043a3e8bf1f416316d7a68bc43", null ],
+    [ "gRTSize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_s_r_g_b_m_l_a_a_edge_detection_pixel_shader.html#a389b508145aa5a576148f25fa3a1884d", null ],
+    [ "gLuminanceEquation", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_s_r_g_b_m_l_a_a_edge_detection_pixel_shader.html#a37050adc664271c1099d713d32ef1866", null ],
+    [ "gInverseDisplayGamma", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_s_r_g_b_m_l_a_a_edge_detection_pixel_shader.html#ad9aa3865e4a4259aa5885cf95f49d8a4", null ]
+];

@@ -1,0 +1,5 @@
+var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_point_light_policy_1_1_pixel_parameters_type =
+[
+    [ "Serialize", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_point_light_policy_1_1_pixel_parameters_type.html#a3b9d87554435813cf0a7eedba69f69ec", null ],
+    [ "LightColorAndFalloffExponent", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_point_light_policy_1_1_pixel_parameters_type.html#a650e73e1534c9737c92b892070b2833d", null ]
+];

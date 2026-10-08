@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_decal_component =
 [
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_decal_component.html#a93a052734c0bc0df2c25158dfb92319c", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_decal_component.html#a23e9beaee1571a480049d6dd8894c478", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_decal_component.html#aea0620c37dbf66d3eefa4645a87c72f3", null ],
     [ "ForEachUIndex< TAction >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_decal_component.html#ae193d7129d69bcb876abf2db292608a9", null ],

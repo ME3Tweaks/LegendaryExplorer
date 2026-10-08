@@ -187,5 +187,13 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializi
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a9045d0da7aae55583d9f29e351a31efb", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a44673347ee658c2b0dec25aaec4536a3", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a10de31c87dddb18b679fd6709c925cb6", null ],
-    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a8c8eba794274d5f21baa8b82f113983b", null ]
+    [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a8c8eba794274d5f21baa8b82f113983b", null ],
+    [ "ms", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a4252641bdcbf76ccb2ae05e9579c63a2", null ],
+    [ "IsLoading", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a25d73de5a3afa0c99d6c75c6cdd4427f", null ],
+    [ "PackageCache", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#ae7a26b08c315e6da69c32cb4228582ec", null ],
+    [ "Pcc", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#aa8e264a631701d48e7338f84ae00353c", null ],
+    [ "startOffset", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#aa7afba591a459bd1bfb450b44c4ed3e4", null ],
+    [ "Game", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a47c3fdc6ee48f97293893d8ad9ef719a", null ],
+    [ "IsSaving", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a6ffeebb3ad6b7b4548e1500fb63007a0", null ],
+    [ "FileOffset", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_serializing_container.html#a13af8913b981be8d30e612c7c19b1be4", null ]
 ];

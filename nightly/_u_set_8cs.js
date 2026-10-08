@@ -1,7 +1,8 @@
 var _u_set_8cs =
 [
-    [ "USet< T, TKey, TKeyFuncs >", "class_u_set.html", "class_u_set" ],
-    [ "USet< T, TKey, TKeyFuncs >.SetElementId", "struct_u_set_1_1_set_element_id.html", "struct_u_set_1_1_set_element_id" ],
-    [ "IKeyFuncs< in T, TKey >", "interface_i_key_funcs.html", "interface_i_key_funcs" ],
-    [ "DefaultKeyFuncs< T >", "struct_default_key_funcs.html", "struct_default_key_funcs" ]
+    [ "LegendaryExplorerCore.Unreal.Collections.USet&lt; T &gt;", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_set-1-g.html", null ],
+    [ "LegendaryExplorerCore.Unreal.Collections.USet&lt; T, TKey, TKeyFuncs &gt;", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_set-3-g.html", "class_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_set-3-g" ],
+    [ "LegendaryExplorerCore.Unreal.Collections.USet&lt; T, TKey, TKeyFuncs &gt;.SetElementId", "struct_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_u_set-3-g_1_1_set_element_id.html", null ],
+    [ "LegendaryExplorerCore.Unreal.Collections.IKeyFuncs&lt; in T, TKey &gt;", "interface_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_i_key_funcs-2-g.html", "interface_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_i_key_funcs-2-g" ],
+    [ "LegendaryExplorerCore.Unreal.Collections.DefaultKeyFuncs&lt; T &gt;", "struct_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_default_key_funcs-1-g.html", "struct_legendary_explorer_core_1_1_unreal_1_1_collections_1_1_default_key_funcs-1-g" ]
 ];

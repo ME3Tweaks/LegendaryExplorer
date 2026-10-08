@@ -1,9 +1,9 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_p_s_a =
 [
     [ "ChunkHeader", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a_1_1_chunk_header.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a_1_1_chunk_header" ],
+    [ "PSABone", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a_1_1_p_s_a_bone.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a_1_1_p_s_a_bone" ],
     [ "PSAAnimInfo", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a_1_1_p_s_a_anim_info.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a_1_1_p_s_a_anim_info" ],
     [ "PSAAnimKeys", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a_1_1_p_s_a_anim_keys.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a_1_1_p_s_a_anim_keys" ],
-    [ "PSABone", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a_1_1_p_s_a_bone.html", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a_1_1_p_s_a_bone" ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a.html#a95baa150699bdd0f4d867c19ed5c8b94", null ],
     [ "CreateFrom", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a.html#a652a29fae00d83d6e5872220a63e9d62", null ],
     [ "CreateFrom", "class_legendary_explorer_core_1_1_unreal_1_1_p_s_a.html#a873e0f80fa2b52b5d4f68635b85dff94", null ],

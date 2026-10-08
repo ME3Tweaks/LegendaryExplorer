@@ -2,8 +2,8 @@ var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_sta
 [
     [ "CustomTransitionTime", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_custom_transition_time.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_custom_transition_time" ],
     [ "StateGroup", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_state_group.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_state_group" ],
-    [ "SwitchGroup", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_switch_group.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_switch_group" ],
     [ "SwitchPoint", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_switch_point.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_switch_point" ],
+    [ "SwitchGroup", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_switch_group.html", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management_1_1_switch_group" ],
     [ "VolumeThreshold", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management.html#a02d8c159dc28d76de298f7dac7401d64", null ],
     [ "MaxVoiceInstances", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management.html#a8c01986a98998c067e0ed78042b1fb9b", null ],
     [ "StateGroups", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_wwise_state_management.html#ab1ca21a0ae1c4f8c1f2023868fff8cd5", null ],

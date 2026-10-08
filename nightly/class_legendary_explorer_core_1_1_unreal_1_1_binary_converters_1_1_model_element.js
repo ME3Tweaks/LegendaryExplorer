@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_model_element =
 [
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_model_element.html#ab65c22d72d4815eaf5a9433644422514", null ],
     [ "LightMap", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_model_element.html#a4cd4aa388be3e8172e500af8a002bb57", null ],
     [ "Component", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_model_element.html#a1d67da13fa536445f0940c06375a2723", null ],
     [ "Material", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_model_element.html#ae8caacf62f81c307392b7b5f06ca0220", null ],

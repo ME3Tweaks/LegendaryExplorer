@@ -1,0 +1,12 @@
+var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_branching_p_c_f_projection_pixel_shader =
+[
+    [ "SceneTextureParameters", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_branching_p_c_f_projection_pixel_shader.html#a1c5e17726e6e374311aae61ae275bcd4", null ],
+    [ "ScreenToShadowMatrix", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_branching_p_c_f_projection_pixel_shader.html#a9cfd18a2cefbf85aae8dddb9b96fd206", null ],
+    [ "InvRandomAngleTextureSize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_branching_p_c_f_projection_pixel_shader.html#a47efb2e345bdf7340595dc00ea1b2ba2", null ],
+    [ "ShadowDepthTexture", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_branching_p_c_f_projection_pixel_shader.html#af860221af35990fd8cc9244130e29cd3", null ],
+    [ "RandomAngleTexture", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_branching_p_c_f_projection_pixel_shader.html#afadf15974c6dc79bde724a3397e93eff", null ],
+    [ "RefiningSampleOffsets", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_branching_p_c_f_projection_pixel_shader.html#a31adfdefb38ed58c192d8e001513c42e", null ],
+    [ "EdgeSampleOffsets", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_branching_p_c_f_projection_pixel_shader.html#a29badef66f27f6763360f7dd9a82b413", null ],
+    [ "ShadowBufferSize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_branching_p_c_f_projection_pixel_shader.html#a98043a1e0bee92c23cde962879806af9", null ],
+    [ "ShadowFadeFraction", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_branching_p_c_f_projection_pixel_shader.html#a31e2b858dcce3c0b764acb056b7cf10f", null ]
+];

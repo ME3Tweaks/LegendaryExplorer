@@ -1,0 +1,6 @@
+var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_directional_li0bada320552e66677098873eab69e759 =
+[
+    [ "Serialize", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_directional_li0bada320552e66677098873eab69e759.html#a149d981f579929403abacdb42e4ef08e", null ],
+    [ "LightColorAndFalloffExponent", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_directional_li0bada320552e66677098873eab69e759.html#afe9adb12f9eccb858190e225f8ea9bd0", null ],
+    [ "bReceiveDynamicShadows", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_directional_li0bada320552e66677098873eab69e759.html#adfecb5bcb3215b4c62af98f819b498c6", null ]
+];

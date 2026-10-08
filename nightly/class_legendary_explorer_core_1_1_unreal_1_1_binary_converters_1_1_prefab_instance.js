@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_prefab_instance =
 [
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_prefab_instance.html#aac1db7ad4aeea0d0c794e35c91a657b6", null ],
     [ "Serialize", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_prefab_instance.html#a4669bfcf906edf79dafd30575d37aa89", null ],
     [ "Create", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_prefab_instance.html#ac705bd790b974050d0b3220b80fc9347", null ],
     [ "ForEachUIndex< TAction >", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_prefab_instance.html#abc44fb16f50d95968a6088547367818b", null ],

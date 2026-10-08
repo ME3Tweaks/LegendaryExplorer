@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['legendary_20explorer_20core_0',['Legendary Explorer Core',['../index.html',1,'']]]
+  ['by_20jetbrains_0',['Enhanced by JetBrains',['../md__legendary_explorer_2_legendary_explorer_core_2documentation__homepage.html#autotoc_md2',1,'']]]
 ];

@@ -1,0 +1,4 @@
+var interface_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_i_vertex_shader_parameters_type =
+[
+    [ "Serialize", "interface_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_i_vertex_shader_parameters_type.html#ad39f8533d2e82b6407879732a3b3bf84", null ]
+];

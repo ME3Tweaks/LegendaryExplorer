@@ -5,5 +5,6 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_pa
     [ "GamePathOverride", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#a4576fe1ff5db180e16211ad466554ddc", null ],
     [ "CustomFileResolver", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#a387f3847c393a959f32c86460f3a3f5b", null ],
     [ "MissingObjectResolver", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#a6f94b4c3d36b2937b5d8f2e65977c02c", null ],
-    [ "GetVTableFromDonor", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#aeda45bcf844ce86e8a40bf0ce239331b", null ]
+    [ "GetVTableFromDonor", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#aeda45bcf844ce86e8a40bf0ce239331b", null ],
+    [ "BaseFilesFileLib", "class_legendary_explorer_core_1_1_unreal_script_1_1_unreal_script_options_package.html#a2cbcb51031f838033ad405df13f23126", null ]
 ];

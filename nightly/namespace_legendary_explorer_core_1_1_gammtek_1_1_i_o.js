@@ -15,6 +15,7 @@ var namespace_legendary_explorer_core_1_1_gammtek_1_1_i_o =
     [ "Endian", "struct_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian.html", "struct_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian" ],
     [ "EndianReader", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_reader" ],
     [ "EndianWriter", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_writer.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_endian_writer" ],
+    [ "FileSystemExtensions", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_file_system_extensions.html", null ],
     [ "IBuffer", "interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_buffer.html", "interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_buffer" ],
     [ "IBufferManager", "interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_buffer_manager.html", "interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_buffer_manager" ],
     [ "IDataStream", "interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_data_stream.html", "interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_data_stream" ],
@@ -22,5 +23,8 @@ var namespace_legendary_explorer_core_1_1_gammtek_1_1_i_o =
     [ "MultiStream", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_multi_stream.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_multi_stream" ],
     [ "MutableByte", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_mutable_byte" ],
     [ "VarInt", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_var_int.html", "class_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_var_int" ],
-    [ "ByteOrder", "namespace_legendary_explorer_core_1_1_gammtek_1_1_i_o.html#a0a26a0142749afa3fa64f090b272df45", null ]
+    [ "ByteOrder", "namespace_legendary_explorer_core_1_1_gammtek_1_1_i_o.html#a0a26a0142749afa3fa64f090b272df45", [
+      [ "BigEndian", "namespace_legendary_explorer_core_1_1_gammtek_1_1_i_o.html#a0a26a0142749afa3fa64f090b272df45a2ce7a92ae43763828ac4acb4560c2a5b", null ],
+      [ "LittleEndian", "namespace_legendary_explorer_core_1_1_gammtek_1_1_i_o.html#a0a26a0142749afa3fa64f090b272df45a3c0ba6b22b526d7fd50c3026435a8c02", null ]
+    ] ]
 ];

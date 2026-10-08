@@ -1,0 +1,5 @@
+var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_spherical_harm235f0587026dabc019961538b9061a92 =
+[
+    [ "Serialize", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_spherical_harm235f0587026dabc019961538b9061a92.html#a89d5d4269589e62f83e49bdae760f8a7", null ],
+    [ "WorldIncidentLighting", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_spherical_harm235f0587026dabc019961538b9061a92.html#abd373c706164b51f5f68bc192a3a0a01", null ]
+];

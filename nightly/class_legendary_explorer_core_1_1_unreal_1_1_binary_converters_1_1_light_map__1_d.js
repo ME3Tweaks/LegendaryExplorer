@@ -1,5 +1,6 @@
 var class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_light_map__1_d =
 [
+    [ "VerifyUIndexRefs", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_light_map__1_d.html#aa62522efe6a1e6e42252868d3b522a59", null ],
     [ "LightGuids", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_light_map__1_d.html#a36d70f60e73182fa102a0ce963d15e90", null ],
     [ "Owner", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_light_map__1_d.html#a27776697f5818c48dc9c525fffe973d9", null ],
     [ "DirectionalSamples", "class_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_light_map__1_d.html#af75a492d561f7ca055de72f5d96bc7a9", null ],

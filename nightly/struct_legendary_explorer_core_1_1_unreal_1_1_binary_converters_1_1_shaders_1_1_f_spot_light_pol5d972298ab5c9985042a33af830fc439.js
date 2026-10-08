@@ -1,0 +1,8 @@
+var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_spot_light_pol5d972298ab5c9985042a33af830fc439 =
+[
+    [ "Serialize", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_spot_light_pol5d972298ab5c9985042a33af830fc439.html#adeabeb8e64538624e97389e3bf92b927", null ],
+    [ "LightPositionParam", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_spot_light_pol5d972298ab5c9985042a33af830fc439.html#a1b119ed8878fb03399eebe900ca239b4", null ],
+    [ "FalloffParameters", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_spot_light_pol5d972298ab5c9985042a33af830fc439.html#a88e50e752825eae7d5e2e0735838ee3b", null ],
+    [ "SpotDirectionParam", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_spot_light_pol5d972298ab5c9985042a33af830fc439.html#a9a9408ddbf1f2921167450479d42efdc", null ],
+    [ "SpotAnglesParam", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_spot_light_pol5d972298ab5c9985042a33af830fc439.html#ad05f325da83ad774590bcc74d8a09fa8", null ]
+];

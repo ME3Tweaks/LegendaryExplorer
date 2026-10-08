@@ -1,0 +1,5 @@
+var struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_vertex_light_m7f7e8bcc48af5bf8d59a1f6766ea7a70 =
+[
+    [ "Serialize", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_vertex_light_m7f7e8bcc48af5bf8d59a1f6766ea7a70.html#a23d43ffd6f17d1b5d4c5ba3df72d94f3", null ],
+    [ "LightMapScale", "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_vertex_light_m7f7e8bcc48af5bf8d59a1f6766ea7a70.html#aeb6f0d7525e9ab3934ef49b1434bf9e9", null ]
+];
