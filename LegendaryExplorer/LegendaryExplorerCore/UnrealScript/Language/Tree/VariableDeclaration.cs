@@ -61,7 +61,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return new VariableDeclaration(VarType, Flags, Name, ArrayLength, Category);
         }
 
-        private bool IsOrHasInstancedObjectProperty(HashSet<Struct> visited = null)
+        public bool IsOrHasInstancedObjectProperty(HashSet<Struct> visited = null)
         {
             var varType = VarType;
             while (true)
