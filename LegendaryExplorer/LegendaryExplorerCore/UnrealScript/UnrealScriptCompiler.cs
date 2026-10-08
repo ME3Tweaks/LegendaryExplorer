@@ -954,8 +954,16 @@ namespace LegendaryExplorerCore.UnrealScript
                 throw new Exception("Cannot compile the root Object class!");
             }
             vfTableChanged = false;
-            //get the old version of this class, if it exists
-            if (lib.ReadonlySymbolTable.TryGetType(cls.Name, out Class existingClass))
+            lib.ReadonlySymbolTable.TryGetType(cls.Name, out Class existingClass);
+            RetainNativeStructTraits(cls, existingClass);
+            log.Filter = cls;
+            SymbolTable symbols = lib.CreateSymbolTableWithClass(cls, log, usop);
+            log.Filter = null;
+            if (symbols is null || log.HasErrors)
+            {
+                return null;
+            }
+            if (existingClass is not null)
             {
                 foreach (Struct existingNativeStruct in existingClass.TypeDeclarations.OfType<Struct>().Where(s => s.IsNative))
                 {
@@ -966,16 +974,23 @@ namespace LegendaryExplorerCore.UnrealScript
                     }
                 }
             }
-            log.Filter = cls;
-            SymbolTable symbols = lib.CreateSymbolTableWithClass(cls, log, usop);
-            log.Filter = null;
-            if (symbols is null || log.HasErrors)
-            {
-                return null;
-            }
+            if (log.HasErrors) return null;
             CompileNewClassASTInternal(pcc, cls, log, symbols, existingClass, ref vfTableChanged, usop);
 
             return cls;
+        }
+
+        internal static void RetainNativeStructTraits(ObjectType updated, ObjectType existing)
+        {
+            if (existing is null) return;
+            foreach (Struct next in updated.TypeDeclarations.OfType<Struct>())
+            {
+                if (existing.TypeDeclarations.OfType<Struct>().FirstOrDefault(s => s.Name.CaseInsensitiveEquals(next.Name)) is not { } previous) continue;
+                // Native members may be absent from cooked reflection; native layouts are checked separately.
+                if (next.IsNative && previous.IsNative)
+                    next.Flags |= previous.Flags & UnrealFlags.ScriptStructFlags.HasComponents;
+                RetainNativeStructTraits(next, previous);
+            }
         }
 
         private static void CompileNewClassASTInternal(IMEPackage pcc, Class cls, MessageLog log, SymbolTable symbols, Class existingClass, ref bool vfTableChanged, UnrealScriptOptionsPackage usop)

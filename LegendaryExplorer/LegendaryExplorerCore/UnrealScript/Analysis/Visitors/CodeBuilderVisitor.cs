@@ -181,10 +181,14 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 AppendToNewLine("transient", ST.Specifier);
             }
-            if (flags.Has(EClassFlags.Config))
+            if (!string.IsNullOrEmpty(node.ConfigName) && !node.ConfigName.CaseInsensitiveEquals("None"))
             {
                 AppendToNewLine("config", ST.Specifier);
                 Append($"({node.ConfigName})");
+            }
+            if (flags.Has(EClassFlags.BioSaveGame))
+            {
+                AppendToNewLine("biosavegame", ST.Specifier);
             }
             if (flags.Has(EClassFlags.SafeReplace))
             {
@@ -261,7 +265,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(VariableDeclaration node)
         {
             if (node.Outer?.Type is ASTNodeType.Class && node.VarType is DelegateType
-                && node.Name.EndsWith("__Delegate", StringComparison.OrdinalIgnoreCase) && node.Name.StartsWith("__"))
+                && node.Name.EndsWith("__Delegate", StringComparison.OrdinalIgnoreCase) && node.Name.StartsWith("__")
+                && (node.Flags & ~EPropertyFlags.NeedCtorLink) == 0)
             {
                 //implementation detail
                 return true;
@@ -282,7 +287,12 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
 
             Space();
-            WritePropertyFlags(node.Flags);
+            WritePropertyFlags(node.Outer switch
+            {
+                Function => node.Flags & ~EPropertyFlags.EditInline,
+                Struct s when (s.Flags & (ScriptStructFlags.Transient | ScriptStructFlags.RequiresInit)) != 0 => node.Flags & ~EPropertyFlags.AlwaysInit,
+                _ => node.Flags
+            });
             AppendTypeNameAndName(node);
             Append(";");
 
@@ -344,7 +354,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
                     break;
                 case Class:
                 default:
-                    Append(EncodeIdentifier(node.Name), ST.Class);
+                    Append(string.Join(".", node.Name.Split('.').Select(EncodeIdentifier)), ST.Class);
                     break;
             }
         }
@@ -423,9 +433,9 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 specs.Add("strictconfig");
             }
-            if (flags.Has(ScriptStructFlags.UnkStructFlag))
+            if (flags.Has(ScriptStructFlags.RequiresInit))
             {
-                specs.Add(nameof(ScriptStructFlags.UnkStructFlag).ToLowerInvariant());
+                specs.Add(nameof(ScriptStructFlags.RequiresInit).ToLowerInvariant());
             }
 
             foreach (string spec in specs)
@@ -610,7 +620,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             {
                 specs.Add("client");
             }
-            else if (flags.Has(EFunctionFlags.Simulated))
+            if (flags.Has(EFunctionFlags.Simulated) && (!flags.Has(EFunctionFlags.NetClient) || !node.IsDefined && !node.IsNative))
             {
                 specs.Add("simulated");
             }
@@ -715,7 +725,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
         public bool VisitNode(FunctionParameter node)
         {
             // [specifiers] parametertype parametername[[staticarraysize]]
-            WritePropertyFlags(node.Flags);
+            WritePropertyFlags(node.Flags & ~EPropertyFlags.EditInline);
             AppendTypeNameAndName(node);
             if (node.DefaultParameter != null)
             {
@@ -1971,7 +1981,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Visitors
             }
             else
             {
-                if (flags.Has(EPropertyFlags.EditInline))
+                if (flags.Has(EPropertyFlags.EditInline) && !flags.Has(EPropertyFlags.Parm))
                 {
                     specs.Add("editinline");
                 }

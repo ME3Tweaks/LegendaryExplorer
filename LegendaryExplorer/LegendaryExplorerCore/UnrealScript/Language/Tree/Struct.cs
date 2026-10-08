@@ -384,6 +384,14 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return props;
         }
 
+        private static bool SameNativeType(VariableType a, VariableType b) => (a, b) switch
+        {
+            (StaticArrayType x, StaticArrayType y) => x.Length == y.Length && SameNativeType(x.ElementType, y.ElementType),
+            (DynamicArrayType x, DynamicArrayType y) => SameNativeType(x.ElementType, y.ElementType),
+            (ClassType x, ClassType y) => SameNativeType(x.ClassLimiter, y.ClassLimiter),
+            (DelegateType x, DelegateType y) => string.Equals(x.DefaultFunction.Name, y.DefaultFunction.Name, StringComparison.OrdinalIgnoreCase),
+            _ => a.PropertyType == b.PropertyType && string.Equals(a.Name, b.Name, StringComparison.OrdinalIgnoreCase)
+        };
         public bool IsNativeCompatibleWith(Struct other, MEGame game, UnrealScriptOptionsPackage usop)
         {
             if (VariableDeclarations.Count != other.VariableDeclarations.Count)
@@ -393,7 +401,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             foreach ((VariableDeclaration ours, VariableDeclaration theirs) in VariableDeclarations.Zip(other.VariableDeclarations))
             {
                 if (ours.Name != theirs.Name
-                    || !string.Equals(ours.VarType.Name, theirs.VarType.Name, StringComparison.OrdinalIgnoreCase)
+                    || !SameNativeType(ours.VarType, theirs.VarType)
                     || ours.ArrayLength != theirs.ArrayLength)
                 {
                     return false;

@@ -426,11 +426,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     if (byteProperty.IsEnum)
                     {
                         IEntry enumDef = obj.Export.FileRef.GetEntry(byteProperty.Enum);
-                        if (enumDef is ExportEntry enumExp)
-                        {
-                            return ConvertEnum(fileLib.GetCachedObjectBinary<UEnum>(enumExp, usop));
-                        }
-                        typeStr = enumDef.ObjectName.Instanced;
+                        typeStr = PropertyTypeName(enumDef);
                     }
                     else
                     {
@@ -443,23 +439,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                     {
                         IEntry entry = obj.Export.FileRef.GetEntry(delegateProperty.Function);
                         IEntry functionClass = entry.Parent;
-                        for (IEntry delPropClass = delegateProperty.Export; delPropClass != null; delPropClass = delPropClass.Parent)
-                        {
-                            if (delPropClass.ClassName == "Class")
-                            {
-                                while (delPropClass != null)
-                                {
-                                    if (delPropClass == functionClass)
-                                    {
-                                        return new DelegateType(new Function(entry.ObjectName.Instanced, default, null, null, null));
-                                    }
 
-                                    delPropClass = (delPropClass as ExportEntry)?.SuperClass;
-                                }
-                                break;
-                            }
-                        }
-                        //function is not in scope, fully qualify it
                         string qualifiedFunctionName = entry.ObjectName;
                         while (entry.Parent != null && entry.Parent.ClassName != "Package")
                         {
@@ -479,7 +459,7 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 case UStrProperty:
                     return SymbolTable.StringType;
                 case UStructProperty structProperty:
-                    typeStr = obj.Export.FileRef.GetEntry(structProperty.Struct)?.ObjectName.Instanced ?? typeStr;
+                    typeStr = PropertyTypeName(obj.Export.FileRef.GetEntry(structProperty.Struct));
                     break;
                 //if we're just getting the name of the objectref, then Interface and Component are the same as Object
                 //Leave these here in case we do something fancier
@@ -501,6 +481,22 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
             }
 
             return new VariableType(typeStr);
+
+            string PropertyTypeName(IEntry definition)
+            {
+                if (definition is null) return "UNKNOWN";
+                var owner = definition.Parent;
+                if (owner is null) return definition.ObjectName.Instanced;
+                // A component class qualifier itself causes CPF_Component in the original compiler.
+                // Keep unqualified types when that flag was absent in the original declaration.
+                if (!obj.PropertyFlags.Has(EPropertyFlags.Component | EPropertyFlags.ExportObject) &&
+                    fileLib.ReadonlySymbolTable?.TryGetType(owner.ObjectName.Instanced, out Class ownerClass) == true && ownerClass.IsComponent)
+                    return definition.ObjectName.Instanced;
+                var names = new Stack<string>();
+                for (IEntry entry = definition; entry is not null && entry.ClassName != "Package"; entry = entry.Parent)
+                    names.Push(entry.ObjectName.Instanced);
+                return string.Join(".", names);
+            }
         }
 
         public static Function ConvertFunction(UFunction obj, FileLib fileLib, UnrealScriptOptionsPackage usop, UClass containingClass = null, bool decompileBytecode = true)

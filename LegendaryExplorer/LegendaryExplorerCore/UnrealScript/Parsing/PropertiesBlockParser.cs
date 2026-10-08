@@ -881,7 +881,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
 
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException();
+                            throw new ArgumentOutOfRangeException(nameof(targetType), targetType.PropertyType, $"Unsupported default property type {targetType.Name} ({targetType.GetType().Name})");
                     }
 
                     break;
@@ -912,10 +912,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             {
                 symbol = decl;
             }
-            else if (scopeObject is Class scopeClass 
-                && scopeClass.LookupFunction(token.Value) is Function func
-                && func.Flags.HasFlag(Unreal.UnrealFlags.EFunctionFlags.Delegate)
-                && scopeObject.LookupVariable($"__{token.Value}__delegate") is { } delDecl)
+            else if (scopeObject is Class && scopeObject.LookupVariable($"__{token.Value}__delegate") is { VarType: DelegateType } delDecl)
             {
                 symbol = delDecl;
             }

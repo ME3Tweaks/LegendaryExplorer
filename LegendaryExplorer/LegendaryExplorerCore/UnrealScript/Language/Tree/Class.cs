@@ -32,9 +32,6 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public bool IsInterface => Flags.Has(UnrealFlags.EClassFlags.Interface);
 
-        //BioBaseComponents are not components for most compiling purposes, but they do have the Component flag
-        public bool NeedsComponentFlag => SameAsOrSubClassOf("Component") || SameAsOrSubClassOf("BioBaseComponent");
-
         public bool IsComponent => SameAsOrSubClassOf("Component");
 
         public bool IsNative => Flags.Has(UnrealFlags.EClassFlags.Native);

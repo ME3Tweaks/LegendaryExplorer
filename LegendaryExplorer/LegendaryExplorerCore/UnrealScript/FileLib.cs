@@ -350,6 +350,8 @@ namespace LegendaryExplorerCore.UnrealScript
         {
             lock (_initializationLock)
             {
+                // Do not expose a partially rebuilt symbol table to the decompiler.
+                _isInitialized = false;
                 objBinCache.Clear();
                 _symbols = _baseSymbols?.Clone();
                 if (ResolveAllClassesInPackage(Pcc, ref _symbols, InitializationLog, usop))

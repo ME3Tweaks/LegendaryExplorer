@@ -717,7 +717,7 @@ namespace LegendaryExplorerCore.Unreal
                 {
                     if (structDiff && thisProp is StructProperty { IsImmutable: false } thisStruct && otherProp is StructProperty otherStruct)
                     {
-                        diff.Add(new StructProperty(thisStruct.StructType, thisStruct.Properties.Diff(otherStruct.Properties, true, objectComparer), thisStruct.Name, thisStruct.IsImmutable));
+                        diff.Add(new StructProperty(thisStruct.StructType, thisStruct.Properties.Diff(otherStruct.Properties, true, objectComparer), thisStruct.Name, thisStruct.IsImmutable) { StaticArrayIndex = thisStruct.StaticArrayIndex });
                     }
                     else
                     {

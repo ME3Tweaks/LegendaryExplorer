@@ -184,7 +184,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 else if (Matches("config", ST.Specifier))
                 {
-                    flags |= EClassFlags.Config;
                     if (Consume(TokenType.LeftParenth) is null || Consume(TokenType.Word) is null)
                     {
                         throw ParseError("Config specifier is missing name of config file!", CurrentPosition);
@@ -199,6 +198,10 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         throw ParseError("Expected ')' after config file name!", CurrentPosition);
                     }
+                }
+                else if (Matches("biosavegame", ST.Specifier))
+                {
+                    flags |= EClassFlags.BioSaveGame;
                 }
                 else if (Matches("safereplace", ST.Specifier))
                 {
@@ -319,7 +322,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 else if (TryParseFunction() is Function func)
                 {
                     funcs.Add(func);
-                    if (func.Flags.Has(EFunctionFlags.Delegate))
+                    if (func.Flags.Has(EFunctionFlags.Delegate) && !variables.Exists(v => v.Name == $"__{func.Name}__Delegate"))
                     {
                         variables.Add(new VariableDeclaration(new DelegateType(func), EPropertyFlags.None, $"__{func.Name}__Delegate"));
                     }
@@ -369,9 +372,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     constValue += CurrentTokenType switch
                     {
                         TokenType.NameLiteral => $"'{CurrentToken.Value}'",
-                        TokenType.StringLiteral => '"' + CurrentToken.Value + '"',
+                        TokenType.StringLiteral => CurrentToken.RawText ?? '"' + CurrentToken.Value + '"',
                         TokenType.StringRefLiteral => '$' + CurrentToken.Value,
-                        _ => Tokens.CurrentItem.Value
+                        _ => Tokens.CurrentItem.RawText ?? Tokens.CurrentItem.Value
                     };
                     Tokens.Advance();
                 }
@@ -477,9 +480,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     flags |= ScriptStructFlags.StrictConfig;
                 }
-                else if (Matches(nameof(ScriptStructFlags.UnkStructFlag), ST.Specifier))
+                else if (Matches(nameof(ScriptStructFlags.RequiresInit), ST.Specifier))
                 {
-                    flags |= ScriptStructFlags.UnkStructFlag;
+                    flags |= ScriptStructFlags.RequiresInit;
                 }
                 else
                 {
@@ -786,6 +789,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 };
                 flags |= EFunctionFlags.Defined;
             }
+
+            if (flags.Has(EFunctionFlags.NetClient) && (flags & (EFunctionFlags.Defined | EFunctionFlags.Native)) != 0)
+                flags |= EFunctionFlags.Simulated;
 
             VariableDeclaration returnDeclaration = null;
             if (returnType is not null)
@@ -1120,7 +1126,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
         private void ParseVariableSpecifiers(out EPropertyFlags flags)
         {
             flags = EPropertyFlags.None;
-            while (CurrentTokenType == TokenType.Word)
+            while (CurrentTokenType == TokenType.Word && Tokens.LookAhead(1).Type != TokenType.Dot)
             {
                 if (Matches("const", ST.Specifier))
                 {
@@ -1413,7 +1419,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 }
                 else if (Matches("client", ST.Keyword))
                 {
-                    flags |= EFunctionFlags.NetClient | EFunctionFlags.Net | EFunctionFlags.Simulated;
+                    flags |= EFunctionFlags.NetClient | EFunctionFlags.Net;
                 }
                 else if (Matches("reliable", ST.Keyword))
                 {
