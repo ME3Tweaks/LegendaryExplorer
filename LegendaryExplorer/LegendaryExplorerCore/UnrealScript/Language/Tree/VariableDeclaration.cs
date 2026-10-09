@@ -13,6 +13,8 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
 
         public VariableType VarType;
 
+        // Members supplied solely for editor/T3D lookup are not serialized into cooked classes.
+        public bool IsSynthetic;
         public string Category;
         public string Name { get; }
 
@@ -59,7 +61,7 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
             return new VariableDeclaration(VarType, Flags, Name, ArrayLength, Category);
         }
 
-        public bool IsOrHasInstancedObjectProperty()
+        public bool IsOrHasInstancedObjectProperty(HashSet<Struct> visited = null)
         {
             var varType = VarType;
             while (true)
@@ -70,18 +72,22 @@ namespace LegendaryExplorerCore.UnrealScript.Language.Tree
                         varType = staticArrayType.ElementType;
                         continue;
                     case DynamicArrayType dynamicArrayType:
-                        return dynamicArrayType.ElementPropertyFlags.Has(UnrealFlags.EPropertyFlags.NeedCtorLink);
+                        varType = dynamicArrayType.ElementType;
+                        continue;
                     case Struct strct:
+                        visited ??= [];
+                        if (!visited.Add(strct)) return false;
                         foreach (VariableDeclaration structVarDecl in strct.VariableDeclarations)
                         {
-                            if (structVarDecl.IsOrHasInstancedObjectProperty())
+                            if (structVarDecl.IsOrHasInstancedObjectProperty(visited))
                             {
                                 return true;
                             }
                         }
+                        if (strct.Parent is Struct parent) { varType = parent; continue; }
                         return false;
-                    case ObjectType:
-                        return Flags.Has(UnrealFlags.EPropertyFlags.NeedCtorLink);
+                    case Class cls:
+                        return !cls.IsComponent && Flags.Has(UnrealFlags.EPropertyFlags.EditInline | UnrealFlags.EPropertyFlags.ExportObject);
                     default:
                         return false;
                 }

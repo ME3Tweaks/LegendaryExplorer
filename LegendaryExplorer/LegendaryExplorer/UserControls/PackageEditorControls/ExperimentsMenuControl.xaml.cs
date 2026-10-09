@@ -1115,6 +1115,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsS.DumpGlobalShaders(GetPEWindow());
         }
 
+        private void ScanGameShaderRendererCompatibility_Click(object sender, RoutedEventArgs e)
+        {
+            GameShaderRendererScan.ScanRefShaderCache(GetPEWindow(), MEGame.LE3);
+        }
+
         private void DumpMaterialShaders_Click(object sender, RoutedEventArgs e)
         {
             var pew = GetPEWindow();

@@ -23,6 +23,11 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
 
     public ObservableCollectionExtended<ActorProxy> Actors { get; } = [];
 
+    /// <summary>
+    /// The level's lights, which are in the render context's lights while the file is open
+    /// </summary>
+    public List<Scene3D.SceneLight> Lights { get; set; } = [];
+
     private readonly LevelEditor Owner;
 
     private bool isDirty;

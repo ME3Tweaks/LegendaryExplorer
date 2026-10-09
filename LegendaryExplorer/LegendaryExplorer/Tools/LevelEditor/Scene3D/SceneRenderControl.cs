@@ -35,9 +35,11 @@ public enum MouseButtons
 
 public static class RenderContextExtensions
 {
-    public static unsafe Texture2D LoadTexture(this RenderContext renderContext, uint width, uint height, Format format, byte[] pixelData)
+    /// <param name="resourceFormat">Format to create the texture with, if different from <paramref name="format"/>. (eg. a typeless format, so that it can have both UNORM and sRGB views)</param>
+    public static unsafe Texture2D LoadTexture(this RenderContext renderContext, uint width, uint height, Format format, byte[] pixelData, Format? resourceFormat = null)
     {
         Texture2DDescription texture2DDescription = GetTextureDescription(width, height, format, false, out int pitch);
+        texture2DDescription.Format = resourceFormat ?? format;
         fixed (byte* pixelDataPointer = pixelData)
         {
             return new Texture2D(renderContext.Device, texture2DDescription, new SharpDX.DataRectangle((IntPtr)pixelDataPointer, pitch));
@@ -75,9 +77,10 @@ public static class RenderContextExtensions
         return texture2DDescription;
     }
 
-    public static Texture2D LoadTextureCube(this RenderContext renderContext, uint size, Format format, Fixed6<byte[]> faceData)
+    public static Texture2D LoadTextureCube(this RenderContext renderContext, uint size, Format format, Fixed6<byte[]> faceData, Format? resourceFormat = null)
     {
         Texture2DDescription texture2DDescription = GetTextureDescription(size, size, format, true, out int pitch);
+        texture2DDescription.Format = resourceFormat ?? format;
         var tex = new Texture2D(renderContext.Device, texture2DDescription);
 
         for (int i = 0; i < faceData.Length; i++)
@@ -96,7 +99,7 @@ public static class RenderContextExtensions
         return renderContext.LoadTexture(width, height, format, pixelData);
     }
 
-    public static Texture2D LoadUnrealMip(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat)
+    public static Texture2D LoadUnrealMip(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat, bool typelessResource = false)
     {
         // Todo: Needs way to set black alpha
         var imagebytes = LECTexture2D.GetTextureData(mip, mip.Export.Game);
@@ -108,8 +111,118 @@ public static class RenderContextExtensions
             mipWidth = (mipWidth < 4) ? 4 : mipWidth;
             mipHeight = (mipHeight < 4) ? 4 : mipHeight;
         }
-        return renderContext.LoadTexture(mipWidth, mipHeight, mipFormat, imagebytes);
+        Format? resourceFormat = typelessResource ? GetSRGBFormats(mipFormat)?.Typeless : null;
+        return renderContext.LoadTexture(mipWidth, mipHeight, mipFormat, imagebytes, resourceFormat);
     }
+
+    /// <summary>
+    /// Loads <paramref name="topMip"/> and as many of the mips below it as are available, so the texture can be minified without aliasing.
+    /// </summary>
+    /// <param name="mips">All of the texture's mips, largest first</param>
+    public static unsafe Texture2D LoadUnrealMipChain(this RenderContext renderContext, IReadOnlyList<LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo> mips,
+        LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo topMip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat, bool typelessResource = false)
+    {
+        var format = (Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
+        bool isCompressed = format.IsCompressed();
+        int topWidth = topMip.width;
+        int topHeight = topMip.height;
+        //block-compressed textures must have dimensions that are multiples of 4. Tiny ones are padded, and can't have mips below them
+        if (isCompressed && (topWidth % 4 != 0 || topHeight % 4 != 0))
+        {
+            return renderContext.LoadUnrealMip(topMip, pixelFormat, typelessResource);
+        }
+
+        var levels = new List<byte[]>();
+        int topIndex = -1;
+        for (int i = 0; i < mips.Count; i++)
+        {
+            if (mips[i] == topMip) topIndex = i;
+        }
+        for (int i = topIndex; i >= 0 && i < mips.Count; i++)
+        {
+            var mip = mips[i];
+            int level = levels.Count;
+            int expectedWidth = Math.Max(1, topWidth >> level);
+            int expectedHeight = Math.Max(1, topHeight >> level);
+            if (mip.storageType is StorageTypes.empty || mip.width != expectedWidth || mip.height != expectedHeight)
+            {
+                break;
+            }
+            byte[] data;
+            try
+            {
+                data = LECTexture2D.GetTextureData(mip, mip.Export.Game);
+            }
+            catch when (level > 0)
+            {
+                //a missing lower mip shouldn't prevent the texture from loading
+                break;
+            }
+            if (data is null || data.Length < GetMipByteSize(format, expectedWidth, expectedHeight, out _))
+            {
+                if (level == 0) return renderContext.LoadUnrealMip(topMip, pixelFormat, typelessResource);
+                break;
+            }
+            levels.Add(data);
+        }
+
+        Texture2DDescription desc = GetTextureDescription((uint)topWidth, (uint)topHeight, format, false, out _);
+        desc.MipLevels = levels.Count;
+        if (typelessResource && GetSRGBFormats(format) is { } srgbFormats)
+        {
+            desc.Format = srgbFormats.Typeless;
+        }
+
+        var handles = new System.Runtime.InteropServices.GCHandle[levels.Count];
+        var rects = new SharpDX.DataRectangle[levels.Count];
+        try
+        {
+            for (int level = 0; level < levels.Count; level++)
+            {
+                handles[level] = System.Runtime.InteropServices.GCHandle.Alloc(levels[level], System.Runtime.InteropServices.GCHandleType.Pinned);
+                GetMipByteSize(format, Math.Max(1, topWidth >> level), Math.Max(1, topHeight >> level), out int pitch);
+                rects[level] = new SharpDX.DataRectangle(handles[level].AddrOfPinnedObject(), pitch);
+            }
+            return new Texture2D(renderContext.Device, desc, rects);
+        }
+        finally
+        {
+            foreach (var handle in handles)
+            {
+                if (handle.IsAllocated) handle.Free();
+            }
+        }
+    }
+
+    private static int GetMipByteSize(Format format, int width, int height, out int pitch)
+    {
+        if (format.IsCompressed())
+        {
+            int blockSize = format is Format.BC1_UNorm or Format.BC1_UNorm_SRgb or Format.BC4_SNorm or Format.BC4_UNorm ? 8 : 16;
+            int blocksWide = Math.Max(1, (width + 3) / 4);
+            int blocksHigh = Math.Max(1, (height + 3) / 4);
+            pitch = blocksWide * blockSize;
+            return pitch * blocksHigh;
+        }
+        pitch = format.SizeOfInBits() * width / 8;
+        return pitch * height;
+    }
+
+    /// <summary>
+    /// For formats that have an sRGB variant, returns the typeless format a texture must be created with to have both UNORM and sRGB views.
+    /// Returns null for formats without an sRGB variant (eg. BC4/BC5, which are only used for non-color data).
+    /// </summary>
+    public static (Format Typeless, Format UNorm, Format SRGB)? GetSRGBFormats(Format format) => format switch
+    {
+        Format.BC1_UNorm or Format.BC1_UNorm_SRgb => (Format.BC1_Typeless, Format.BC1_UNorm, Format.BC1_UNorm_SRgb),
+        Format.BC2_UNorm or Format.BC2_UNorm_SRgb => (Format.BC2_Typeless, Format.BC2_UNorm, Format.BC2_UNorm_SRgb),
+        Format.BC3_UNorm or Format.BC3_UNorm_SRgb => (Format.BC3_Typeless, Format.BC3_UNorm, Format.BC3_UNorm_SRgb),
+        Format.BC7_UNorm or Format.BC7_UNorm_SRgb => (Format.BC7_Typeless, Format.BC7_UNorm, Format.BC7_UNorm_SRgb),
+        Format.R8G8B8A8_UNorm or Format.R8G8B8A8_UNorm_SRgb => (Format.R8G8B8A8_Typeless, Format.R8G8B8A8_UNorm, Format.R8G8B8A8_UNorm_SRgb),
+        Format.B8G8R8A8_UNorm or Format.B8G8R8A8_UNorm_SRgb => (Format.B8G8R8A8_Typeless, Format.B8G8R8A8_UNorm, Format.B8G8R8A8_UNorm_SRgb),
+        Format.B8G8R8X8_UNorm or Format.B8G8R8X8_UNorm_SRgb => (Format.B8G8R8X8_Typeless, Format.B8G8R8X8_UNorm, Format.B8G8R8X8_UNorm_SRgb),
+        _ => null
+    };
 
     public static Mesh<WorldVertex> GetMeshFromAggGeom(this RenderContext renderContext, StructProperty aggGeom)
     {
@@ -164,6 +277,7 @@ public abstract class RenderContext
         EnableAlphaChannel = 1 << 5,
 
         //level editor flags
+        Unlit = 1 << 28,
         Wireframe = 1 << 29,
         Selected = 1 << 30,
         PrimitiveRendering = 1 << 31,
@@ -180,7 +294,7 @@ public abstract class RenderContext
     public virtual void CreateResources()
     {
         DeviceCreationFlags deviceFlags = DeviceCreationFlags.BgraSupport | DeviceCreationFlags.SingleThreaded;
-#if DEBUG
+#if D3D11_DEBUG
         deviceFlags |= DeviceCreationFlags.Debug;
 #endif
         Device = new Device(DriverType.Hardware, deviceFlags);
@@ -221,7 +335,7 @@ public abstract class RenderContext
         ImmediateContext.Dispose();
         ImmediateContext = null;
 
-#if DEBUG
+#if D3D11_DEBUG
         var debug = Device.QueryInterface<DeviceDebug>();
         debug.ReportLiveDeviceObjects(ReportingLevel.Detail);
         debug.Dispose();

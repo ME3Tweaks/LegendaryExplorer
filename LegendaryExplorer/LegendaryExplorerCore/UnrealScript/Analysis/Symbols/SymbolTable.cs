@@ -319,6 +319,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                 table.PushScope(cls.Name);
                 foreach (var varDecl in cls.VariableDeclarations)
                 {
+                    varDecl.Outer = cls;
                     table.AddSymbol(varDecl.Name, varDecl);
                 }
                 table.PopScope();
@@ -380,7 +381,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
             {
                 case StaticArrayType staticArrayType:
                 {
-                    if (staticArrayType.ElementType is PrimitiveType)
+                    if (staticArrayType.ElementType is PrimitiveType or Class or Struct or Enumeration)
                     {
                         return true;
                     }
@@ -393,7 +394,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                 }
                 case DynamicArrayType dynArr:
                 {
-                    if (dynArr.ElementType is PrimitiveType)
+                    if (dynArr.ElementType is PrimitiveType or Class or Struct or Enumeration)
                     {
                         return true;
                     }
@@ -404,7 +405,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                 {
                     string functionName = delegateType.DefaultFunction.Name;
                     string scope;
-                    if (functionName.Contains('.'))
+                    bool isQualified = functionName.Contains('.');
+                    if (isQualified)
                     {
                         var parts = functionName.Split('.');
                         functionName = parts[^1];
@@ -422,7 +424,8 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                         scope = NodeUtils.GetOuterClassScope(stub.Outer);
                     }
 
-                    if (TryGetSymbol(functionName, out Function func, scope))
+                    Function func;
+                    if (isQualified ? TryGetSymbolInScopeStack(functionName, out func, scope) : TryGetSymbol(functionName, out func, scope))
                     {
                         delegateType.DefaultFunction = func;
                         return true;
@@ -443,6 +446,18 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
 
         private VariableType InternalResolveType(VariableType stub, ObjectType containingClass)
         {
+            if (stub.Name.Contains('.'))
+            {
+                string[] parts = stub.Name.Split('.');
+                if (!TypeDict.TryGetValue(parts[0], out VariableType qualifiedType)) return null;
+                foreach (string part in parts.Skip(1))
+                {
+                    if (qualifiedType is not ObjectType owner) return null;
+                    qualifiedType = owner.TypeDeclarations.FirstOrDefault(t => t.Name.CaseInsensitiveEquals(part));
+                    if (qualifiedType is null) return null;
+                }
+                return qualifiedType;
+            }
             //first check the containing class (needed for structs that don't have globally unique names)
             if (containingClass is not null)
             {
@@ -707,7 +722,7 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                 case "RB_BodySetup":
                     {
                         PushScope("StaticMesh");
-                        var bodySetup = new VariableDeclaration(node, default, "BodySetup");
+                        var bodySetup = new VariableDeclaration(node, default, "BodySetup") { Outer = TypeDict["StaticMesh"] };
                         ((Class)TypeDict["StaticMesh"]).VariableDeclarations.Add(bodySetup);
                         AddSymbol(bodySetup.Name, bodySetup);
                         PopScope();
@@ -726,13 +741,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                     var matClass = (Class)node;
                     if (matClass.VariableDeclarations.All(varDecl => varDecl.Name != "ReferencedTextureGuids"))
                     {
-                        //MUST USE STUB FOR GUID TYPE! The linker (ClassValidationVisitor) expects a DynamicArrayType to have either a primitive type or a stub.
-                        //Using the real guid type will cause it to become corrupted 
-                        matClass.VariableDeclarations.Add(new VariableDeclaration(new DynamicArrayType(new VariableType("Guid")), EPropertyFlags.Transient | EPropertyFlags.BioNonShip | EPropertyFlags.EditorOnly, "ReferencedTextureGuids"));
+                        matClass.VariableDeclarations.Add(new VariableDeclaration(new DynamicArrayType(new VariableType("Guid")), EPropertyFlags.Transient | EPropertyFlags.BioNonShip | EPropertyFlags.EditorOnly, "ReferencedTextureGuids") { IsSynthetic = true });
                     }
                     if (matClass.VariableDeclarations.All(varDecl => varDecl.Name != "EditorComments"))
                     {
-                        matClass.VariableDeclarations.Add(new VariableDeclaration(new DynamicArrayType(StringType), EPropertyFlags.BioNonShip | EPropertyFlags.EditorOnly, "EditorComments"));
+                        matClass.VariableDeclarations.Add(new VariableDeclaration(new DynamicArrayType(StringType), EPropertyFlags.BioNonShip | EPropertyFlags.EditorOnly, "EditorComments") { IsSynthetic = true });
                     }
                     break;
                 }
@@ -742,11 +755,11 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                     var exprClass = (Class)node;
                     if (exprClass.VariableDeclarations.All(varDecl => varDecl.Name != "MaterialExpressionEditorX"))
                     {
-                        exprClass.VariableDeclarations.Add(new VariableDeclaration(IntType, EPropertyFlags.BioNonShip | EPropertyFlags.EditorOnly, "MaterialExpressionEditorX"));
+                        exprClass.VariableDeclarations.Add(new VariableDeclaration(IntType, EPropertyFlags.BioNonShip | EPropertyFlags.EditorOnly, "MaterialExpressionEditorX") { IsSynthetic = true });
                     }
                     if (exprClass.VariableDeclarations.All(varDecl => varDecl.Name != "MaterialExpressionEditorY"))
                     {
-                        exprClass.VariableDeclarations.Add(new VariableDeclaration(IntType, EPropertyFlags.BioNonShip | EPropertyFlags.EditorOnly, "MaterialExpressionEditorY"));
+                        exprClass.VariableDeclarations.Add(new VariableDeclaration(IntType, EPropertyFlags.BioNonShip | EPropertyFlags.EditorOnly, "MaterialExpressionEditorY") { IsSynthetic = true });
                     }
                     break;
                 }
@@ -1008,13 +1021,15 @@ namespace LegendaryExplorerCore.UnrealScript.Analysis.Symbols
                 newScopeNames.Push(scopeName);
                 newScopes.Push(Cache[scopeName]);
             }
-            return new(
+            var clone = new SymbolTable(
                        newScopeNames, 
                        newScopes, 
                        newCache,
                        new CaseInsensitiveDictionary<VariableType>(TypeDict),
                        Operators,
                        Game);
+            clone.intrinsicClasses.AddRange(intrinsicClasses);
+            return clone;
         }
 
         internal bool IsInfixOperator(ScriptToken currentToken, out TokenType opType)
