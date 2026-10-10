@@ -79,7 +79,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     var paramTokenStream = unparsedBody.Tokens;
 
                     var paramParser = new CodeBodyParser(paramTokenStream, game, unparsedBody, symbols, func, log, usop);
+                    paramParser.ExpressionExpectedTypes.Push((param.VarType, true));
                     var parsed = paramParser.ParseExpression();
+                    paramParser.ExpressionExpectedTypes.Pop();
                     if (parsed is null)
                     {
                         throw paramParser.ParseError("Could not parse default parameter value!", unparsedBody);
@@ -209,15 +211,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 func.Flags &= ~EFunctionFlags.HasDefaults;
             }
             CodeBody body = func.Body;
-            if (func.ReturnType is null)
-            {
-                //remove redundant return;
-                if (body.Statements.Count > 0 && body.Statements[^1] is ReturnStatement { Value: null })
-                {
-                    body.Statements.RemoveAt(body.Statements.Count - 1);
-                }
-            }
-            else
+            if (func.ReturnType is not null)
             {
                 if (body.EndPos != body.StartPos && !DoesReturn(body))
                 {
@@ -1566,8 +1560,8 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     }
                     else
                     {
-                        AddConversion(bestMatch.LeftOperand.VarType, ref lhs);
-                        AddConversion(bestMatch.RightOperand.VarType, ref rhs);
+                        AddConversion(bestMatch.LeftOperand.VarType, ref lhs, false);
+                        AddConversion(bestMatch.RightOperand.VarType, ref rhs, false);
                     }
                     if (bestMatch.Implementer is not null)
                     {
@@ -1738,8 +1732,9 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             }
         }
 
-        private static void AddConversion(VariableType destType, ref Expression expr)
+        private static void AddConversion(VariableType destType, ref Expression expr, bool promoteDelegateFunction = true)
         {
+            if (promoteDelegateFunction) PromoteDelegateFunctionValue(destType, ref expr);
             if (expr is NoneLiteral noneLit)
             {
                 if (destType.PropertyType == EPropertyType.Delegate)
@@ -1787,13 +1782,49 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                         }
                         break;
                     case ConditionalExpression condExpr:
-                        AddConversion(destType, ref condExpr.TrueExpression);
-                        AddConversion(destType, ref condExpr.FalseExpression);
+                        AddConversion(destType, ref condExpr.TrueExpression, false);
+                        AddConversion(destType, ref condExpr.FalseExpression, false);
                         return;
                 }
                 if ((byte)cast != 0 && cast != ECast.Max)
                 {
                     expr = new PrimitiveCast(cast, destType, expr, expr.StartPos, expr.EndPos);
+                }
+            }
+        }
+
+        // Delegate value boundaries allow a named function fallback. Simple references in
+        // comparisons, ternary branches, and out arguments must keep stored delegate bindings.
+        private static void PromoteDelegateFunctionValue(VariableType destType, ref Expression expr)
+        {
+            if (destType is not DelegateType) return;
+            if (expr is CompositeSymbolRef composite)
+            {
+                Expression inner = composite.InnerSymbol;
+                PromoteDelegateFunctionValue(destType, ref inner);
+                if (!ReferenceEquals(inner, composite.InnerSymbol))
+                {
+                    expr = new CompositeSymbolRef(composite.OuterSymbol, inner, composite.IsClassContext, composite.StartPos, composite.EndPos)
+                    {
+                        IsStructMemberExpression = composite.IsStructMemberExpression,
+                        IsGlobal = composite.IsGlobal,
+                        IsSuper = composite.IsSuper,
+                        SuperSpecifier = composite.SuperSpecifier
+                    };
+                }
+                return;
+            }
+            if (expr is SymbolReference sr && sr.GetType() == typeof(SymbolReference))
+            {
+                if (sr.Node is VariableDeclaration { VarType: DelegateType delegateType } backing
+                    && backing.Name.Equals($"__{delegateType.DefaultFunction.Name}__Delegate", StringComparison.OrdinalIgnoreCase)
+                    && sr.Name.Equals(delegateType.DefaultFunction.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    expr = new SymbolReference(delegateType.DefaultFunction, sr.Name, sr.StartPos, sr.EndPos);
+                }
+                else if (sr.Node is Function)
+                {
+                    sr.IsInstanceDelegate = false;
                 }
             }
         }
@@ -1927,7 +1958,6 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     {
                         throw ParseError("Expected a valid member name to follow the dot!", CurrentPosition);
                     }
-                    //TODO: check if rhs is a type that makes sense eg. no int literals
 
                     if (isConst)
                     {
@@ -2130,6 +2160,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     TypeError($"Expected 'comparefunction' argument to '{SORT}' to be a delegate that takes two parameters of type '{elementType.DisplayName()}' and returns an int!", comparefunctionArg);
                 }
 
+                PromoteDelegateFunctionValue(sortDelegateType, ref comparefunctionArg);
                 ExpectRightParen();
                 return new DynArraySort(dynArrayRef, comparefunctionArg, dynArrayRef.StartPos, PrevToken.EndPos);
             }
@@ -2340,7 +2371,7 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                             TypeError($"Expected an argument of type '{p.VarType.DisplayName()}'!", currentArg);
                         }
 
-                        AddConversion(p.VarType, ref currentArg);
+                        AddConversion(p.VarType, ref currentArg, !p.IsOut);
 
                         if (p.IsOut && !p.IsConst)
                         {
@@ -3208,7 +3239,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                     TypeError("COMPILER ERROR! Cannot find backing property of delegate.", token);
                 }
             }
-            return NewSymbolReference(symbol, token, isDefaultRef);
+            var symbolReference = NewSymbolReference(symbol, token, isDefaultRef);
+            if (symbol is Function && symbolReference is SymbolReference functionReference)
+            {
+                functionReference.IsInstanceDelegate = true;
+            }
+            return symbolReference;
         }
 
         private void CheckAccesibility(Function func, ScriptToken token)

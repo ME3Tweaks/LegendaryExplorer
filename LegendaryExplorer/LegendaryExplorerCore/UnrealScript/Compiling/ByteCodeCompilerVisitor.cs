@@ -357,9 +357,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             Emit(node.Body);
             Nest nest = Nests.Pop();
             nest.SetPositionFor(JumpType.Continue);
-            WriteOpCode(OpCodes.JumpIfNot);
-            WriteUShort(loopStartPos);
-            Emit(node.Condition);
+            EmitConditionalJump(node.Condition).End(loopStartPos);
             nest.SetPositionFor(JumpType.Break);
             return true;
         }
@@ -394,10 +392,15 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteOpCode(OpCodes.Iterator);
             }
 
+            // The iterator call can leave a context-skip fixup for this loop.
+            // Clear the prior loop's fixup so a context-free iterator does not
+            // reuse and overwrite it when its own loop is finalized.
+            iteratorCallSkip = null;
             inIteratorCall = true;
             Emit(node.IteratorCall);
             inIteratorCall = false;
             var loopSkip = iteratorCallSkip;
+            iteratorCallSkip = null;
             var endJump = WriteJumpPlaceholder(JumpType.Break);
             Nests.Push(new Nest(NestType.ForEach));
             Emit(node.Body);
@@ -1034,8 +1037,15 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
         {
             WriteOpCode(node.IsDynamic ? OpCodes.DynArrayElement : OpCodes.ArrayElement);
             InContext.Push(null);
+            // Array indices are independent r-values, not assignment targets or iterator receivers.
+            bool wasInAssignTarget = inAssignTarget;
+            bool wasInIteratorCall = inIteratorCall;
+            inAssignTarget = false;
+            inIteratorCall = false;
             Emit(node.Index);
             InContext.Pop();
+            inAssignTarget = wasInAssignTarget;
+            inIteratorCall = wasInIteratorCall;
             Emit(node.Array);
             return true;
         }
@@ -1055,27 +1065,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 WriteObjectRef(ResolveSymbol(node.Node));
                 WriteObjectRef(ResolveStruct((Struct)node.OuterSymbol.ResolveType()));
 
-                switch (node.OuterSymbol)
-                {
-                    //struct is being accessed through an rvalue
-                    case FunctionCall:
-                    case DelegateCall:
-                    case CompositeSymbolRef csr when ContainsFunctionCall(csr):
-                    case VectorLiteral:
-                    case RotatorLiteral:
-                    case InOpReference:
-                    case PreOpReference:
-                    case PostOpReference:
-                    case PrimitiveCast:
-                        WriteByte(1);
-                        break;
-                    default:
-                        WriteByte(0);
-                        break;
-                }
+                // execStructMember copies only when the required struct token is an r-value.
+                WriteByte(RequiresStructCopy(node.OuterSymbol) ? (byte)1 : (byte)0);
 
                 //this is being modified, and this is the base struct.
-                if (inAssignTarget && node.OuterSymbol is not CompositeSymbolRef { IsStructMemberExpression: true })
+                if (inAssignTarget && !ContainsStructMemberInBase(node.OuterSymbol))
                 {
                     WriteByte(1);
                 }
@@ -1083,7 +1077,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 {
                     WriteByte(0);
                 }
+                if (forEachJump)
+                {
+                    // The iterator's array can be reached through a struct member. Pass the
+                    // foreach skip fixup through that member to the context that owns it.
+                    inIteratorCall = true;
+                }
                 Emit(node.OuterSymbol);
+                inIteratorCall = false;
                 return true;
             }
 
@@ -1125,18 +1126,37 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             }
             return true;
 
-            static bool ContainsFunctionCall(CompositeSymbolRef csr)
+            static bool ContainsStructMemberInBase(Expression expression)
             {
-                while (csr != null)
+                while (true)
                 {
-                    if (csr.InnerSymbol is FunctionCall or DelegateCall)
+                    switch (expression)
                     {
-                        return true;
+                        case CompositeSymbolRef csr:
+                            if (csr.IsStructMemberExpression)
+                            {
+                                return true;
+                            }
+                            expression = csr.OuterSymbol;
+                            break;
+                        case ArraySymbolRef arrayRef:
+                            expression = arrayRef.Array;
+                            break;
+                        default:
+                            return false;
                     }
-                    csr = csr.OuterSymbol as CompositeSymbolRef;
                 }
-
-                return false;
+            }
+            static bool RequiresStructCopy(Expression expression)
+            {
+                return expression switch
+                {
+                    FunctionCall or DelegateCall => true,
+                    CompositeSymbolRef csr => RequiresStructCopy(csr.IsStructMemberExpression ? csr.OuterSymbol : csr.InnerSymbol),
+                    ArraySymbolRef arrayRef => RequiresStructCopy(arrayRef.Array),
+                    VectorLiteral or RotatorLiteral or StructLiteral or DynamicArrayLiteral or InOpReference or PreOpReference or PostOpReference or PrimitiveCast => true,
+                    _ => false
+                };
             }
         }
 
@@ -1148,7 +1168,7 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     WriteOpCode(OpCodes.ByteConst);
                     WriteByte(enumVal.IntVal);
                     return true;
-                case Function func when useInstanceDelegate:
+                case Function func when useInstanceDelegate || node.IsInstanceDelegate:
                     WriteOpCode(OpCodes.InstanceDelegate);
                     WriteName(func.Name);
                     return true;
@@ -1293,6 +1313,12 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
             {
                 WriteOpCode(OpCodes.DynamicCast);
                 WriteObjectRef(CompilerUtils.ResolveClass((Class)node.CastType, Pcc, USOP));
+                // DynamicCast consumes an object pointer, not the two-pointer interface value.
+                if (node.CastTarget.ResolveType() is Class { IsInterface: true })
+                {
+                    WriteOpCode(OpCodes.PrimitiveCast);
+                    WriteCast(ECast.InterfaceToObject);
+                }
             }
             Emit(node.CastTarget);
             return true;
@@ -1769,6 +1795,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     WriteObjectRef(null);
                 }
                 WriteByte((byte)EPropertyType.Delegate);
+            }
+            else if (expr is IntegerLiteral or FloatLiteral or BooleanLiteral or StringLiteral or NameLiteral or StringRefLiteral)
+            {
+                if (Game >= MEGame.ME3)
+                {
+                    WriteObjectRef(null);
+                }
+                WriteByte((byte)expr.ResolveType().PropertyType);
             }
             else
             {

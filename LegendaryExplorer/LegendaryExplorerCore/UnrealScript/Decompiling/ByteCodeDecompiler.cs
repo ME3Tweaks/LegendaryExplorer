@@ -221,13 +221,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                 InsertLabel(label);
             }
 
-            //a void return at the end of a function is a bytecode implementation detail, get rid of it.
-            //This will also get rid of returnnothings, so loop to make sure we get both
+            //A single void return at the end of a function is a bytecode implementation detail.
+            //Do not remove earlier explicit returns; ReturnNothing is also a void return.
             for (int i = statements.Count - 1; i >= 0; i--)
             {
                 if (statements[i] is ReturnStatement { Value: null})
                 {
                     statements.RemoveAt(i);
+                    break;
                 }
                 else if (statements[i] is not CommentStatement)
                 {
@@ -365,9 +366,14 @@ namespace LegendaryExplorerCore.UnrealScript.Decompiling
                             }
                         }
                     }
+                    // A preceding assignment is a for-loop initializer only when every
+                    // path into the loop goes through it. Keep it outside when another
+                    // branch jumps directly to the shared condition.
+                    bool canUseForInit = !statements.Take(Math.Max(0, conditionIdx - 1))
+                        .OfType<Jump>().Any(jump => jump.JumpLoc == loopEnd.JumpLoc);
                     AssignStatement forInit = null;
                     ushort loopLoc = loopEnd.JumpLoc;
-                    if (isForLoop && conditionIdx > 0 && statements[conditionIdx - 1] is AssignStatement assignStatement)
+                    if (isForLoop && canUseForInit && conditionIdx > 0 && statements[conditionIdx - 1] is AssignStatement assignStatement)
                     {
                         forInit = assignStatement;
                         skipStart = conditionIdx - 1;
