@@ -93,20 +93,23 @@ namespace LegendaryExplorerCore.UDK
         }
 
         /// <summary>
-        /// Trashes all lightmaps/shadowmaps in a file in preparing for bringing in new lightmap data
+        /// Clears replaceable lighting while preserving excluded and unmatched mesh components.
         /// </summary>
         /// <param name="mePackage"></param>
-        private static void ClearLightmaps(IMEPackage mePackage, LightingImportSetup setup)
+        private static void ClearLightmaps(IMEPackage mePackage, LightingImportSetup setup,
+            ISet<ExportEntry> unmatchedMeshComponents)
         {
             // StaticMeshes
             foreach (var smc in mePackage.Exports.Where(x => x.IsA("StaticMeshComponent")).ToList())
             {
                 var meBin = ObjectBinary.From<StaticMeshComponent>(smc);
-                if (setup.ShouldKeepLightMap != null && setup.ShouldKeepLightMap(smc))
+                if (unmatchedMeshComponents.Contains(smc) || (setup.ShouldKeepLightMap?.Invoke(smc) ?? false))
                 {
                     foreach (var lod in meBin.LODData)
                     {
                         KeepLightMapTextures(lod.LightMap, mePackage, setup);
+                        KeepShadowMaps(mePackage, lod.ShadowMaps, setup);
+                        KeepShadowMaps(mePackage, lod.ShadowVertexBuffers, setup);
                     }
                 }
                 else
@@ -365,8 +368,20 @@ namespace LegendaryExplorerCore.UDK
 
 
 
-            // Remove so we don't have any collisions
-            ClearLightmaps(mePackage, setup);
+            // Older bakes a pipeline uses may have deliberately excluded/unresolved actors may have no UDK counterpart.
+            // Preserve their lighting before clearing shared textures; only matched components are relit.
+            var unmatchedMeshComponents = new HashSet<ExportEntry>();
+            foreach (var smc in mePackage.Exports.Where(x => x.IsA("StaticMeshComponent")))
+            {
+                if (!meToUdkRemapping.ContainsKey(smc))
+                {
+                    if (udkPackage.FindExport(smc.InstancedFullPath, smc.ClassName) is { } udkSmc)
+                        meToUdkRemapping[smc] = udkSmc;
+                    else
+                        unmatchedMeshComponents.Add(smc);
+                }
+            }
+            ClearLightmaps(mePackage, setup, unmatchedMeshComponents);
 
             // Import the lightmaps
 
@@ -376,7 +391,7 @@ namespace LegendaryExplorerCore.UDK
             // StaticMeshComponent
             foreach (var smc in mePackage.Exports.Where(x => x.IsA("StaticMeshComponent")).ToList())
             {
-                if (setup.ShouldKeepLightMap?.Invoke(smc) ?? false)
+                if (unmatchedMeshComponents.Contains(smc) || (setup.ShouldKeepLightMap?.Invoke(smc) ?? false))
                 {
                     continue; // Do not install this lightmap.
                 }
@@ -390,7 +405,8 @@ namespace LegendaryExplorerCore.UDK
                 {
                     var meBin = ObjectBinary.From<StaticMeshComponent>(smc);
                     var uBin = ObjectBinary.From<StaticMeshComponent>(udkSmc);
-                    meBin.LODData = uBin.LODData;
+                    // Older UDK maps may lack paint; the target component remains authoritative.
+                    meBin.LODData = StaticMeshComponentLightingData.MergeLighting(meBin.LODData, uBin.LODData);
                     foreach (var lod in meBin.LODData)
                     {
                         PortLightMaps(lod.LightMap, smc, udkPackage);
@@ -716,8 +732,28 @@ namespace LegendaryExplorerCore.UDK
         }
 
         /// <summary>
-        /// Ensures a lightmap reference will not be deleted by static lighting import
+        /// Protects shadow resources shared with components whose lighting is being replaced.
         /// </summary>
+        private static void KeepShadowMaps(IMEPackage package, int[] shadowMaps, LightingImportSetup setup)
+        {
+            for (int i = 0; i < shadowMaps.Length; i++)
+            {
+                // Shadow maps and their textures may be shared with a component being replaced.
+                // Clone both into the kept namespace so cleanup cannot invalidate the preserved LOD.
+                KeepLightMap(package, ref shadowMaps[i], setup);
+                if (package.TryGetUExport(shadowMaps[i], out var shadowMap)
+                    && shadowMap.ClassName == "ShadowMap2D"
+                    && shadowMap.GetProperty<ObjectProperty>("Texture") is { } texture)
+                {
+                    var textureIndex = texture.Value;
+                    KeepLightMap(package, ref textureIndex, setup);
+                    texture.Value = textureIndex;
+                    shadowMap.WriteProperty(texture);
+                }
+            }
+        }
+
+        /// <summary>Ensures lightmap textures will not be deleted by static lighting import.</summary>
         private static void KeepLightMapTextures(LightMap bin, IMEPackage sourcePackage, LightingImportSetup setup)
         {
             if (bin is LightMap_1D lm1d)
