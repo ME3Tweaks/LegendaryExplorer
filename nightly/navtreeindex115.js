@@ -1,5 +1,7 @@
 var NAVTREEINDEX115 =
 {
+"struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_map_textc6e5156deee1e4d3ab1d5330fe8dc911.html#aba60d94ea5ea6ef1875a5f85030d07df":[1,0,1,25,1,0,60,0,1],
+"struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_map_textc6e5156deee1e4d3ab1d5330fe8dc911.html#aba60d94ea5ea6ef1875a5f85030d07df":[2,0,0,25,1,0,60,0,1],
 "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_map_textc6e5156deee1e4d3ab1d5330fe8dc911.html#ac12bec702188d4a63e2b94241308a6ee":[1,0,1,25,1,0,60,0,0],
 "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_map_textc6e5156deee1e4d3ab1d5330fe8dc911.html#ac12bec702188d4a63e2b94241308a6ee":[2,0,0,25,1,0,60,0,0],
 "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_map_textc6e5156deee1e4d3ab1d5330fe8dc911.html#ae998dc7415ba96e08b2e2a6cfd94cd53":[1,0,1,25,1,0,60,0,2],
@@ -247,7 +249,5 @@ var NAVTREEINDEX115 =
 "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_signed_distanc5bfb12223b35e102afcb9dcee15c5163.html":[1,0,1,25,1,0,98,0],
 "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_signed_distanc5bfb12223b35e102afcb9dcee15c5163.html":[2,0,0,25,1,0,98,0],
 "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_signed_distanc5bfb12223b35e102afcb9dcee15c5163.html#a050ea1b852ee128e059bcca43e5dec5f":[1,0,1,25,1,0,98,0,2],
-"struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_signed_distanc5bfb12223b35e102afcb9dcee15c5163.html#a050ea1b852ee128e059bcca43e5dec5f":[2,0,0,25,1,0,98,0,2],
-"struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_signed_distanc5bfb12223b35e102afcb9dcee15c5163.html#a800d0f694655843ce3d81785ca790b8d":[1,0,1,25,1,0,98,0,1],
-"struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_signed_distanc5bfb12223b35e102afcb9dcee15c5163.html#a800d0f694655843ce3d81785ca790b8d":[2,0,0,25,1,0,98,0,1]
+"struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_signed_distanc5bfb12223b35e102afcb9dcee15c5163.html#a050ea1b852ee128e059bcca43e5dec5f":[2,0,0,25,1,0,98,0,2]
 };

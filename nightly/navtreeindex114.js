@@ -1,5 +1,7 @@
 var NAVTREEINDEX114 =
 {
+"struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_g_p_u_skin_vertex.html#af6ae67e44e83c5a1532410d1a38336da":[1,0,1,25,1,59,2],
+"struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_g_p_u_skin_vertex.html#af6ae67e44e83c5a1532410d1a38336da":[2,0,0,25,1,59,2],
 "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_guid_index_pair.html":[1,0,1,25,1,61],
 "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_guid_index_pair.html":[2,0,0,25,1,61],
 "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_guid_index_pair.html#a3aa94a6d9aa6a5c6d3d0ecf3415689e6":[1,0,1,25,1,61,1],
@@ -247,7 +249,5 @@ var NAVTREEINDEX114 =
 "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_map_text660ea3bc67aa1d1f0d5b356b962e1664.html#ae84911f2a2aec3fefba842efceeb76da":[1,0,1,25,1,0,60,1,1],
 "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_map_text660ea3bc67aa1d1f0d5b356b962e1664.html#ae84911f2a2aec3fefba842efceeb76da":[2,0,0,25,1,0,60,1,1],
 "struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_map_textc6e5156deee1e4d3ab1d5330fe8dc911.html":[1,0,1,25,1,0,60,0],
-"struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_map_textc6e5156deee1e4d3ab1d5330fe8dc911.html":[2,0,0,25,1,0,60,0],
-"struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_map_textc6e5156deee1e4d3ab1d5330fe8dc911.html#aba60d94ea5ea6ef1875a5f85030d07df":[1,0,1,25,1,0,60,0,1],
-"struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_map_textc6e5156deee1e4d3ab1d5330fe8dc911.html#aba60d94ea5ea6ef1875a5f85030d07df":[2,0,0,25,1,0,60,0,1]
+"struct_legendary_explorer_core_1_1_unreal_1_1_binary_converters_1_1_shaders_1_1_f_light_map_textc6e5156deee1e4d3ab1d5330fe8dc911.html":[2,0,0,25,1,0,60,0]
 };

@@ -6,6 +6,7 @@ var class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_sy
     [ "Name", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_symbol_reference.html#a6f5a43cddf870ea2aaea165811588ccb", null ],
     [ "IsGlobal", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_symbol_reference.html#ab76c79d47c8c81a4a5447573c145750e", null ],
     [ "IsSuper", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_symbol_reference.html#a747ec4a1a310cf866f537ff142058e2f", null ],
+    [ "IsInstanceDelegate", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_symbol_reference.html#a2e117e5fddfb575d4b4b827ed7d37db3", null ],
     [ "SuperSpecifier", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_symbol_reference.html#a44522b09b6d5f8d423322281f9bb8661", null ],
     [ "Node", "class_legendary_explorer_core_1_1_unreal_script_1_1_language_1_1_tree_1_1_symbol_reference.html#adbbb1ad8e51b40bf6f025cb1ca98b531", null ]
 ];

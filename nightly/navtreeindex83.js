@@ -1,5 +1,7 @@
 var NAVTREEINDEX83 =
 {
+"interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_data_stream.html#a0a03a9d8866a586a9ef05f38d5b5594b":[1,0,1,7,6,18,22],
+"interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_data_stream.html#a0a03a9d8866a586a9ef05f38d5b5594b":[2,0,0,7,6,18,22],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_data_stream.html#a0a44643043293f2755f875c34da95286":[1,0,1,7,6,18,7],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_data_stream.html#a0a44643043293f2755f875c34da95286":[2,0,0,7,6,18,7],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_i_o_1_1_i_data_stream.html#a1acb2d7c0fa7e07e4a3eefe03887acc3":[1,0,1,7,6,18,12],
@@ -247,7 +249,5 @@ var NAVTREEINDEX83 =
 "interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_variable_directory_path.html#a6cd339dba6228675ba66be01e42951f2":[1,0,1,7,7,13,2],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_variable_directory_path.html#a6cd339dba6228675ba66be01e42951f2":[2,0,0,7,7,13,2],
 "interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_variable_directory_path.html#ab987f9ee3df0918bd8990ae7ac865775":[1,0,1,7,7,13,0],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_variable_directory_path.html#ab987f9ee3df0918bd8990ae7ac865775":[2,0,0,7,7,13,0],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_variable_directory_path.html#af3a712ef74d0a13ce9142eff4decde3c":[1,0,1,7,7,13,5],
-"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_variable_directory_path.html#af3a712ef74d0a13ce9142eff4decde3c":[2,0,0,7,7,13,5]
+"interface_legendary_explorer_core_1_1_gammtek_1_1_paths_1_1_i_variable_directory_path.html#ab987f9ee3df0918bd8990ae7ac865775":[2,0,0,7,7,13,0]
 };
