@@ -231,10 +231,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             {
                 OnPropertyChanged(nameof(IsLevelLighting));
                 OnPropertyChanged(nameof(IsPreviewLighting));
+                OnPropertyChanged(nameof(IsNeutralLighting));
                 OnPropertyChanged(nameof(IsUnlit));
                 OnPropertyChanged(nameof(LightingMenuHeader));
                 OnPropertyChanged(nameof(CanConfigureLevelLighting));
-                if (value == ViewportLightingMode.Level && RenderContext.UseGameShaders)
+                if (value is (ViewportLightingMode.Level or ViewportLightingMode.Preview) && RenderContext.UseGameShaders)
                 {
                     EnableGameShaders();
                 }
@@ -247,12 +248,14 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     }
 
     public bool IsLevelLighting => LightingMode == ViewportLightingMode.Level;
+    public bool IsNeutralLighting => LightingMode == ViewportLightingMode.Neutral;
     public bool IsPreviewLighting => LightingMode == ViewportLightingMode.Preview;
     public bool IsUnlit => LightingMode == ViewportLightingMode.Unlit;
     public bool CanConfigureLevelLighting => IsLevelLighting && UseGameShaders;
     public string LightingMenuHeader => LightingMode switch
     {
         ViewportLightingMode.Unlit => "Unlit ▾",
+        ViewportLightingMode.Neutral => "Neutral lighting ▾",
         ViewportLightingMode.Preview => "Preview lighting ▾",
         _ => "Level lighting ▾"
     };
@@ -282,14 +285,16 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     //The renderer only switches to game shaders (and level lighting) once they're loaded, so that it doesn't load them one material at a time on the UI thread
     private async void EnableGameShaders()
     {
-        bool prepareLevelLighting = IsLevelLighting && RenderContext.LightingMode != ViewportLightingMode.Level;
+        ViewportLightingMode modeToPrepare = LightingMode;
+        bool prepareLevelLighting = modeToPrepare is (ViewportLightingMode.Level or ViewportLightingMode.Preview)
+                                    && RenderContext.LightingMode != modeToPrepare;
         if (RenderContext.HasPendingGameShaderLoads || prepareLevelLighting)
         {
             IsBusy = true;
             BusyText = "Loading game shaders...";
             try
             {
-                await Task.Run(() => RenderContext.LoadPendingGameShaders(ReportGameShaderLoadProgress, prepareLevelLighting)).ConfigureAwait(true);
+                await Task.Run(() => RenderContext.LoadPendingGameShaders(ReportGameShaderLoadProgress, modeToPrepare)).ConfigureAwait(true);
             }
             catch (Exception e)
             {

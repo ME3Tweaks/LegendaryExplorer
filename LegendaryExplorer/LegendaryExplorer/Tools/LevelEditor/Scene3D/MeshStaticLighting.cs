@@ -224,6 +224,17 @@ public sealed class MeshStaticLighting : IDisposable
     public bool CastsDynamicShadowFrom(SceneLight light) => IsDynamicShadowCaster && light.CastsDynamicShadows && (!HasStaticShadowing || !light.HasStaticShadowing);
 
     /// <summary>
+    /// UE3 previews uncached static-light interactions with projected shadows even when bCastDynamicShadow is false.
+    /// Light environments render their own shadows.
+    /// </summary>
+    internal bool IsPreviewShadowCaster => !UsesLightEnvironment && (HasStaticShadowing && CastsShadow || IsDynamicShadowCaster);
+
+    internal bool CastsPreviewShadowFrom(SceneLight light) => IsPreviewShadowCaster
+        && (HasStaticShadowing && light.HasStaticShadowing
+            ? CastsShadow && light.CastsStaticShadows
+            : IsDynamicShadowCaster && (light.HasStaticShadowing ? light.CastsDynamicShadowsWhenUnbuilt : light.CastsDynamicShadows));
+
+    /// <summary>
     /// Draws the mesh's shadow-casting sections with the shaders the caller has set, binding its vertex buffer at slot 0. Set by the mesh's <see cref="ModelPreview{TVertex}"/>
     /// </summary>
     internal Action<SharpDX.Direct3D11.DeviceContext> DrawShadowCaster;
@@ -234,6 +245,7 @@ public sealed class MeshStaticLighting : IDisposable
     private SkyLighting SkyLight;
     private int InteractionsLightsVersion = -1;
     private BoxSphereBounds InteractionsBounds;
+    private bool InteractionsIgnorePrecomputed;
 
     private MeshStaticLighting(MeshRenderContext context)
     {
@@ -493,13 +505,13 @@ public sealed class MeshStaticLighting : IDisposable
     }
 
     /// <summary>
-    /// The lights rendered on this mesh in their own passes: those that reach it, and aren't baked into its light-map. Cached until the scene's lights or the bounds change.
+    /// The lights rendered on this mesh in their own passes: those that reach it, and aren't baked into its light-map. Cached until the scene's lights, bounds, or preview mode change.
     /// </summary>
-    public LightInteraction[] GetLightInteractions(BoxSphereBounds bounds)
+    public LightInteraction[] GetLightInteractions(BoxSphereBounds bounds, bool? ignorePrecomputed = null)
     {
         lock (InteractionsLock)
         {
-            UpdateInteractions(bounds);
+            UpdateInteractions(bounds, ignorePrecomputed ?? Context.IsPreviewLighting);
             return Interactions;
         }
     }
@@ -512,15 +524,15 @@ public sealed class MeshStaticLighting : IDisposable
     {
         lock (InteractionsLock)
         {
-            UpdateInteractions(bounds);
+            UpdateInteractions(bounds, Context.IsPreviewLighting);
             return SkyLight;
         }
     }
 
-    private void UpdateInteractions(BoxSphereBounds bounds)
+    private void UpdateInteractions(BoxSphereBounds bounds, bool ignorePrecomputed)
     {
         SceneLight[] lights = Context.GetLights(out int lightsVersion);
-        if (lightsVersion == InteractionsLightsVersion && bounds.Origin == InteractionsBounds.Origin && bounds.SphereRadius == InteractionsBounds.SphereRadius)
+        if (lightsVersion == InteractionsLightsVersion && ignorePrecomputed == InteractionsIgnorePrecomputed && bounds.Origin == InteractionsBounds.Origin && bounds.SphereRadius == InteractionsBounds.SphereRadius)
         {
             return;
         }
@@ -530,7 +542,7 @@ public sealed class MeshStaticLighting : IDisposable
         {
             foreach (SceneLight light in lights)
             {
-                if (AffectsPrimitive(light, bounds) && GetInteraction(light) is { } interaction)
+                if (AffectsPrimitive(light, bounds, ignorePrecomputed: ignorePrecomputed) && GetInteraction(light, ignorePrecomputed) is { } interaction)
                 {
                     if (light.Type is SceneLightType.Sky)
                     {
@@ -548,13 +560,14 @@ public sealed class MeshStaticLighting : IDisposable
         SkyLight = skyLight;
         InteractionsLightsVersion = lightsVersion;
         InteractionsBounds = bounds;
+        InteractionsIgnorePrecomputed = ignorePrecomputed;
     }
 
     /// <summary>
     /// FLightSceneInfoCompact::AffectsPrimitive (ULightComponent::AffectsPrimitive), minus the light environment and bAcceptsLights tests, which the callers make
     /// </summary>
     /// <param name="compareLightingChannels">False for line checks, which ignore lighting channels</param>
-    private bool AffectsPrimitive(SceneLight light, BoxSphereBounds bounds, bool compareLightingChannels = true)
+    private bool AffectsPrimitive(SceneLight light, BoxSphereBounds bounds, bool compareLightingChannels = true, bool ignorePrecomputed = false)
     {
         //a light that belongs to a light environment only affects its primitives, which aren't lit by static lighting (and don't block visibility traces)
         if (light.HasLightEnvironment)
@@ -570,7 +583,7 @@ public sealed class MeshStaticLighting : IDisposable
             return false;
         }
         //a level whose lighting was built on its own only has precomputed lighting for its own lights
-        if (HasSelfContainedLighting && light.HasStaticShadowing && !light.LevelName.Equals(LevelName, StringComparison.OrdinalIgnoreCase))
+        if (!ignorePrecomputed && HasSelfContainedLighting && light.HasStaticShadowing && !light.LevelName.Equals(LevelName, StringComparison.OrdinalIgnoreCase))
         {
             return false;
         }
@@ -587,9 +600,10 @@ public sealed class MeshStaticLighting : IDisposable
     /// (FLightPrimitiveInteraction::Create also skips uncached interactions between static shadowing lights and primitives with bUsePrecomputedShadows
     /// whose owner is movable. That isn't checked: movable actors' meshes normally use a light environment instead)
     /// </summary>
-    private LightInteraction? GetInteraction(SceneLight light)
+    private LightInteraction? GetInteraction(SceneLight light, bool ignorePrecomputed)
     {
-        if (light.HasStaticShadowing)
+        //An unbuilt preview must also discard baked irrelevance: a moved light may now reach the mesh.
+        if (!ignorePrecomputed && light.HasStaticShadowing)
         {
             if (LightMapLightGuids.Contains(light.LightmapGuid))
             {
@@ -620,13 +634,13 @@ public sealed class MeshStaticLighting : IDisposable
     /// <summary>
     /// Computes the light interactions and loads the light shaders they need, so that it doesn't happen during rendering. Thread-safe
     /// </summary>
-    internal void PrepareLightShaders()
+    internal void PrepareLightShaders(bool previewLighting)
     {
         if (UsesLightEnvironment || GetBounds is null)
         {
             return;
         }
-        foreach (LightInteraction interaction in GetLightInteractions(GetBounds()))
+        foreach (LightInteraction interaction in GetLightInteractions(GetBounds(), previewLighting))
         {
             foreach (MaterialRenderProxy material in Materials)
             {
