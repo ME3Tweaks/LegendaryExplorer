@@ -1,0 +1,122 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+using Texture2D = LegendaryExplorerCore.Unreal.Classes.Texture2D;
+
+namespace LegendaryExplorer.Lightmaps.Game;
+
+/// <summary>
+/// One lightmap as stored on a component: a StaticMeshComponent LOD or a BSP (ModelComponent) element. Binary is the
+/// component's parsed binary that LightMap belongs to; write it back with Owner.WriteBinary after changing the lightmap.
+/// </summary>
+public sealed record LightmapRef(ExportEntry Owner, string Slot, LightMap LightMap, ObjectBinary Binary = null)
+{
+    public string Describe() => $"{Owner.InstancedFullPath} {Slot}";
+}
+
+/// <summary>A texel rectangle of an atlas texture, including UE3's one-texel padding border.</summary>
+public readonly record struct AtlasRect(int X0, int Y0, int X1, int Y1)
+{
+    public int Width => X1 - X0;
+    public int Height => Y1 - Y0;
+
+    /// <summary>
+    /// UE3 FLightMap2D: CoordinateBias points at the first mapped texel and CoordinateScale spans the
+    /// mapped size, with a one-texel border of dilated padding on each side (LMPT_NormalPadding).
+    /// </summary>
+    public static AtlasRect FromCoordinates(Vector2 scale, Vector2 bias, int width, int height, int padding = 1)
+    {
+        int x0 = (int)MathF.Round(bias.X * width) - padding, y0 = (int)MathF.Round(bias.Y * height) - padding;
+        int x1 = (int)MathF.Round((bias.X + scale.X) * width) + padding, y1 = (int)MathF.Round((bias.Y + scale.Y) * height) + padding;
+        return new AtlasRect(Math.Max(0, x0), Math.Max(0, y0), Math.Min(width, x1), Math.Min(height, y1));
+    }
+
+    public AtlasRect Inset(int n) => new(X0 + n, Y0 + n, Math.Max(X0 + n, X1 - n), Math.Max(Y0 + n, Y1 - n));
+
+    /// <summary>
+    /// Which allocation convention coordinates follow (LE3_Lightmaps.md §11.1): 1 = padded (bias = 4-aligned origin + 1,
+    /// scale = size − 2; static meshes), 0 = unpadded (4-aligned bias = origin, scale = size: BSP surface groups and a
+    /// few static meshes with sizes that are multiples of 4, terrain with odd sizes, (TrueSectionSize + 2·Expand)·Res + 1),
+    /// −1 = neither.
+    /// </summary>
+    public static int Padding(Vector2 scale, Vector2 bias, int width, int height)
+    {
+        int bx = (int)MathF.Round(bias.X * width), by = (int)MathF.Round(bias.Y * height);
+        int sx = (int)MathF.Round(scale.X * width), sy = (int)MathF.Round(scale.Y * height);
+        if (bx % 4 == 1 && by % 4 == 1 && (sx + 2) % 4 == 0 && (sy + 2) % 4 == 0) return 1;
+        if (bx % 4 == 0 && by % 4 == 0) return 0;
+        return -1;
+    }
+
+    /// <summary>The allocation rectangle under its own convention (unknown conventions are treated as padded).</summary>
+    public static AtlasRect ForAllocation(Vector2 scale, Vector2 bias, int width, int height) =>
+        FromCoordinates(scale, bias, width, height, padding: Padding(scale, bias, width, height) == 0 ? 0 : 1);
+}
+
+/// <summary>A decoded top mip, 3 bytes (R,G,B) per texel, plus the stored bytes it came from.</summary>
+public sealed record DecodedTexture(ExportEntry Export, string Format, int Width, int Height, byte[] Rgb, byte[] Stored);
+
+public static class PackageLightmaps
+{
+    /// <summary>
+    /// Every lightmap in the package: StaticMeshComponent and SplineMeshComponent LODs (LEC parses both with the
+    /// StaticMeshComponent binary), BSP ModelComponent elements, and TerrainComponents. A game-wide census found no other
+    /// component class that can carry one.
+    /// </summary>
+    public static IEnumerable<LightmapRef> Enumerate(IMEPackage package)
+    {
+        foreach (var export in package.Exports)
+        {
+            if (export.ClassName is "StaticMeshComponent" or "SplineMeshComponent")
+            {
+                var smc = ObjectBinary.From<StaticMeshComponent>(export);
+                for (int i = 0; i < smc.LODData.Length; i++)
+                    yield return new LightmapRef(export, $"LOD{i}", smc.LODData[i].LightMap, smc);
+            }
+            else if (export.ClassName == "ModelComponent")
+            {
+                var mc = ObjectBinary.From<ModelComponent>(export);
+                for (int i = 0; i < mc.Elements.Length; i++)
+                    yield return new LightmapRef(export, $"Element{i}", mc.Elements[i].LightMap, mc);
+            }
+            else if (export.ClassName == "TerrainComponent")
+            {
+                var tc = ObjectBinary.From<TerrainComponent>(export);
+                yield return new LightmapRef(export, "Terrain", tc.LightMap, tc);
+            }
+        }
+    }
+
+    public static DecodedTexture ReadTopMip(IMEPackage package, int uIndex)
+    {
+        var export = package.GetUExport(uIndex);
+        var texture = new Texture2D(export);
+        var top = texture.GetTopMip();
+        var data = texture.GetImageBytesForMip(top, package.Game, useLowerMipsIfTFCMissing: false, out _);
+        string format = export.GetProperty<EnumProperty>("Format")?.Value.Name ?? "?";
+        byte[] rgb = format switch
+        {
+            "PF_DXT1" => Codec.Dxt1.Decode(data, top.width, top.height),
+            "PF_A8R8G8B8" => BgraToRgb(data, top.width * top.height),
+            _ => throw new NotSupportedException($"{export.InstancedFullPath}: unsupported lightmap format {format}"),
+        };
+        return new DecodedTexture(export, format, top.width, top.height, rgb, data);
+    }
+
+    /// <summary>PF_A8R8G8B8 is D3DFMT_A8R8G8B8: bytes B, G, R, A in memory.</summary>
+    static byte[] BgraToRgb(byte[] bgra, int texels)
+    {
+        var rgb = new byte[texels * 3];
+        for (int i = 0; i < texels; i++)
+        {
+            rgb[i * 3] = bgra[i * 4 + 2];
+            rgb[i * 3 + 1] = bgra[i * 4 + 1];
+            rgb[i * 3 + 2] = bgra[i * 4];
+        }
+        return rgb;
+    }
+}

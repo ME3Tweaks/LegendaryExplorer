@@ -1,0 +1,1233 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Numerics;
+using LegendaryExplorer.Lightmaps.Game;
+using LegendaryExplorer.Tools.LevelEditor.Scene3D;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
+
+namespace LegendaryExplorer.Lightmaps.Lightmass;
+
+/// <summary>
+/// A light as Lightmass gets it (FLightData plus its type's struct). A level light can be exported twice: once to light lightmaps, and
+/// once as a <see cref="ShadowOnly"/> twin for the primitives that get a shadow map of it instead (LightmassSceneBuilder.AddLights).
+/// </summary>
+public sealed class LightmassLight
+{
+    public SceneLight Light;
+    /// <summary>
+    /// What Lightmass names it by. For the lighting light, its LightmapGuid (what LE3 lightmaps list, LightGuids); for a shadow-only twin, a
+    /// GUID derived from its LightGuid (shadow maps are written with the LightGuid itself).
+    /// </summary>
+    public Guid Guid;
+    /// <summary>
+    /// Only casts precomputed shadows: no static lighting, so Lightmass makes shadow maps of it rather than lighting lightmaps, and no
+    /// indirect light (IndirectLightingScale 0), which the lighting light already bounces.
+    /// </summary>
+    public bool ShadowOnly;
+    /// <summary>Its shadow maps are signed distance fields rather than visibility.</summary>
+    public bool SignedDistanceField;
+    public uint Flags;
+    public (byte R, byte G, byte B) Color;
+    public float Brightness, LightSourceRadius, IndirectLightingScale, IndirectLightingSaturation, ShadowExponent, LightSourceAngle;
+    public float InnerConeAngle, OuterConeAngle, LowerBrightness;
+    public (byte R, byte G, byte B) LowerColor;
+    public int LevelId;
+}
+
+/// <summary>A StaticMesh exported to a persistent channel (all its LODs), named by a hash of its content.</summary>
+public sealed class LightmassMesh
+{
+    public Guid Guid;
+    public ExportEntry Export;
+    public StaticMesh Mesh;
+    public int LightMapCoordinateIndex;
+}
+
+/// <summary>A square of FFloat16Color samples of one material property over the material's UV space (row-major, RGBA).</summary>
+public sealed class MaterialSamples
+{
+    public int Size;
+    public Half[] Rgba;
+
+    public static MaterialSamples Constant(Vector3 rgb, float a) => new() { Size = 1, Rgba = [(Half)rgb.X, (Half)rgb.Y, (Half)rgb.Z, (Half)a] };
+
+    /// <summary>The samples, or a single one if they're all the same (as UE3 exports a property that doesn't vary).</summary>
+    public static MaterialSamples FromTexels(int size, Func<int, Vector4> texel)
+    {
+        var rgba = new Half[size * size * 4];
+        bool uniform = true;
+        for (int i = 0; i < size * size; i++)
+        {
+            var v = texel(i);
+            rgba[i * 4] = (Half)v.X; rgba[i * 4 + 1] = (Half)v.Y; rgba[i * 4 + 2] = (Half)v.Z; rgba[i * 4 + 3] = (Half)v.W;
+            uniform &= i == 0 || rgba.AsSpan(i * 4, 4).SequenceEqual(rgba.AsSpan(0, 4));
+        }
+        return uniform ? new MaterialSamples { Size = 1, Rgba = rgba[..4] } : new MaterialSamples { Size = size, Rgba = rgba };
+    }
+}
+
+/// <summary>
+/// A material as Lightmass gets it (FMaterialData and its property samples). The diffuse samples already include the level, primitive and
+/// material DiffuseBoost, clamped to 1 per channel (stock Lightmass clamps only luminance, which tints bounce light), so the element and
+/// material diffuse boosts are written as 1. Null samples aren't exported (size 0).
+/// </summary>
+public sealed class LightmassMaterial
+{
+    public Guid Guid;
+    /// <summary>UDK numbering (see LightmassSceneBuilder.IsTranslucent).</summary>
+    public int BlendMode;
+    public bool TwoSided, CastShadowAsMasked;
+    public float OpacityMaskClipValue;
+    public float EmissiveBoost = 1;
+    public MaterialSamples Emissive, Diffuse, Specular, Transmission;
+}
+
+/// <summary>
+/// A primitive's LightmassSettings as each of its elements' FMaterialElementData carries them (the emissive boost times the level's; the
+/// diffuse boost goes into the material's samples instead).
+/// </summary>
+public sealed class LightmassElementSettings
+{
+    public bool TwoSidedLighting, ShadowIndirectOnly, UseEmissiveForStaticLighting;
+    public float EmissiveLightFalloffExponent = 2, EmissiveLightExplicitInfluenceRadius, EmissiveBoost = 1, FullyOccludedSamplesFraction = 1, DiffuseBoost = 1;
+
+    /// <summary>From a component's LightmassSettings property (FLightmassPrimitiveSettings; null: the defaults).</summary>
+    public static LightmassElementSettings From(StructProperty settings, float worldEmissiveBoost) => new()
+    {
+        TwoSidedLighting = settings?.GetProp<BoolProperty>("bUseTwoSidedLighting") is { Value: true },
+        ShadowIndirectOnly = settings?.GetProp<BoolProperty>("bShadowIndirectOnly") is { Value: true },
+        UseEmissiveForStaticLighting = settings?.GetProp<BoolProperty>("bUseEmissiveForStaticLighting") is { Value: true },
+        EmissiveLightFalloffExponent = settings?.GetProp<FloatProperty>("EmissiveLightFalloffExponent")?.Value ?? 2,
+        EmissiveLightExplicitInfluenceRadius = settings?.GetProp<FloatProperty>("EmissiveLightExplicitInfluenceRadius")?.Value ?? 0,
+        EmissiveBoost = (settings?.GetProp<FloatProperty>("EmissiveBoost")?.Value ?? 1) * worldEmissiveBoost,
+        FullyOccludedSamplesFraction = settings?.GetProp<FloatProperty>("FullyOccludedSamplesFraction")?.Value ?? 1,
+        DiffuseBoost = settings?.GetProp<FloatProperty>("DiffuseBoost")?.Value ?? 1,
+    };
+
+    /// <summary>From one of a Model's LightmassSettings (BSP surfaces index them with iLightmassIndex).</summary>
+    public static LightmassElementSettings From(LightmassPrimitiveSettings settings, float worldEmissiveBoost) => settings == null ? new() { EmissiveBoost = worldEmissiveBoost } : new()
+    {
+        TwoSidedLighting = settings.bUseTwoSidedLighting,
+        ShadowIndirectOnly = settings.bShadowIndirectOnly,
+        UseEmissiveForStaticLighting = settings.bUseEmissiveForStaticLighting,
+        EmissiveLightFalloffExponent = settings.EmissiveLightFalloffExponent,
+        EmissiveLightExplicitInfluenceRadius = settings.EmissiveLightExplicitInfluenceRadius,
+        EmissiveBoost = settings.EmissiveBoost * worldEmissiveBoost,
+        FullyOccludedSamplesFraction = settings.FullyOccludedSamplesFraction,
+        DiffuseBoost = settings.DiffuseBoost,
+    };
+}
+
+/// <summary>A mesh element as Lightmass gets it (FMaterialElementData): its material and its primitive's settings.</summary>
+public sealed record LightmassElement(LightmassMaterial Material, LightmassElementSettings Settings);
+
+/// <summary>Something Lightmass bakes as one task: a static mesh LOD's texture or vertex mapping, or a BSP surface group.</summary>
+public abstract class LightmassMapping
+{
+    /// <summary>The mapping's GUID, which is also its mesh's and its task's (UE3 names all three alike).</summary>
+    public Guid Guid;
+    /// <summary>Texture mappings: the padded size Lightmass bakes (bPadMappings: the interior is two texels smaller). 0 for vertex mappings.</summary>
+    public int SizeX, SizeY;
+    public bool IsTextureMapping => SizeX > 0;
+    /// <summary>The LE3 lightmaps the result goes into (several when BSP elements share an allocation); empty for an occluder only.</summary>
+    public abstract IReadOnlyList<LightmapRef> Targets { get; }
+    /// <summary>The Swarm task type (FLightmassProcessor::Run).</summary>
+    public abstract string TaskType { get; }
+    /// <summary>How much work the task is, for ordering (texels or vertices).</summary>
+    public abstract int Cost { get; }
+    /// <summary>Whether Lightmass pads the texture mapping (bPadMappings: the lightmap UVs' 0..1 covers the interior). Terrain isn't padded.</summary>
+    public virtual bool Padded => true;
+}
+
+/// <summary>One LOD of a static mesh component: a Lightmass mesh instance, plus a mapping when it has an LE3 lightmap to rebake.</summary>
+public sealed class LightmassInstance : LightmassMapping
+{
+    public ExportEntry Component;
+    public int LodIndex;
+    public LightmassMesh Mesh;
+    public Matrix4x4 LocalToWorld;
+    public Vector3 BoundsMin, BoundsMax;
+    public int MeshIndex, LevelId;
+    public bool CastShadow, CastShadowAsTwoSided;
+    public LightmassElementSettings Settings = new();
+    public List<LightmassLight> RelevantLights = [];
+    public List<LightmassMaterial> ElementMaterials = [];
+    /// <summary>The lightmap to rebake, or null for an occluder only.</summary>
+    public LightmapRef Target;
+
+    public override IReadOnlyList<LightmapRef> Targets => Target == null ? [] : [Target];
+    public override string TaskType => IsTextureMapping ? "SMTextureMapping" : "SMVertexMapping";
+    public override int Cost => IsTextureMapping ? SizeX * SizeY : (int)Mesh.Mesh.LODModels[LodIndex].NumVertices;
+}
+
+/// <summary>A vertex of a BSP mapping (FStaticLightingVertexData): world position, tangent basis, material UV and lightmap UV.</summary>
+public readonly record struct LightmassBspVertex(Vector3 Position, Vector3 TangentX, Vector3 TangentY, Vector3 TangentZ, Vector2 TextureUV, Vector2 LightmapUV);
+
+/// <summary>
+/// BSP surfaces as one Lightmass BSP mapping, which is both a mesh and a texture mapping (FBSPSurfaceStaticLighting). A baked one is an LE3
+/// surface group: the BSP nodes of every ModelComponent element sharing one lightmap allocation, with each vertex's lightmap UV its
+/// ShadowTexCoord, which already places it in the group's lightmap. Baking the group's whole allocation keeps BioWare's layout. Without
+/// targets it only casts shadows: Lightmass gets no task for it.
+/// </summary>
+public sealed class LightmassBspMapping : LightmassMapping
+{
+    public List<LightmapRef> Lightmaps = [];
+    public int LevelId;
+    public bool CastShadowAsTwoSided;
+    public Vector3 BoundsMin, BoundsMax;
+    public List<LightmassLight> RelevantLights = [];
+    public List<LightmassElement> Elements = [];
+    public List<LightmassBspVertex> Vertices = [];
+    public List<int> Indices = [];
+    /// <summary>Each triangle's index into <see cref="Elements"/>.</summary>
+    public List<int> TriangleElements = [];
+
+    public override IReadOnlyList<LightmapRef> Targets => Lightmaps;
+    public override string TaskType => "BSPMapping";
+    public override int Cost => SizeX * SizeY;
+}
+
+/// <summary>A Terrain actor as Lightmass gets it in its own persistent channel (FBaseTerrainData, FTerrainData and its height field).</summary>
+public sealed class LightmassTerrain
+{
+    /// <summary>Named by content, so Swarm's cache reuses the channel until the terrain changes.</summary>
+    public Guid Guid;
+    public ExportEntry Export;
+    public PropertyCollection Properties;
+    public Terrain Binary;
+    public Matrix4x4 LocalToWorld;
+    public int NumVerticesX, NumVerticesY, NumPatchesX, NumPatchesY, StaticLightingResolution;
+
+    /// <summary>The height at a vertex of the terrain's grid, clamped to the grid as Lightmass clamps it (FTerrain::Height).</summary>
+    public ushort Height(int x, int y) => Binary.Heights[Math.Clamp(y, 0, NumVerticesY - 1) * NumVerticesX + Math.Clamp(x, 0, NumVerticesX - 1)];
+
+    /// <summary>TID_Visibility_Off: a hole in the terrain.</summary>
+    public bool IsQuadVisible(int x, int y) =>
+        ((byte)Binary.InfoData[Math.Clamp(y, 0, NumVerticesY - 1) * NumVerticesX + Math.Clamp(x, 0, NumVerticesX - 1)] & 1) == 0;
+}
+
+/// <summary>
+/// A TerrainComponent's section as one Lightmass terrain mapping, which is both a mesh and a texture mapping (FTerrainComponentStaticLighting):
+/// its visible quads, extended by ExpandQuads on each side, over an unpadded lightmap of (TrueSectionSize + 2·Expand)·Resolution + 1
+/// texels, the size of its LE3 allocation. Without a target it only casts shadows: Lightmass gets no task for it.
+/// </summary>
+public sealed class LightmassTerrainMapping : LightmassMapping
+{
+    public LightmassTerrain Terrain;
+    public ExportEntry Component;
+    public LightmapRef Target;
+    public int LevelId;
+    public bool CastShadow, BilinearFilter;
+    public int SectionBaseX, SectionBaseY, SectionSizeX, SectionSizeY, TrueSectionSizeX, TrueSectionSizeY, ExpandQuadsX, ExpandQuadsY;
+    public Matrix4x4 LocalToWorld;
+    public Vector3 BoundsMin, BoundsMax;
+    public TerrainPatchBounds[] PatchBounds;
+    /// <summary>The section's visible quads, relative to its base, including the expanded border.</summary>
+    public List<(int X, int Y)> Quads = [];
+    public List<LightmassLight> RelevantLights = [];
+    public LightmassElement Element;
+
+    public override IReadOnlyList<LightmapRef> Targets => Target == null ? [] : [Target];
+    public override string TaskType => "TerrainMapping";
+    public override int Cost => SizeX * SizeY;
+    public override bool Padded => false;
+}
+
+/// <summary>Everything one Lightmass job needs, built from a set of LE3 levels that are lit together (a persistent level and its streaming levels).</summary>
+public sealed class LightmassScene
+{
+    public List<IMEPackage> Levels = [];
+    public List<LightmassLight> Lights = [];
+    public List<LightmassMesh> Meshes = [];
+    public List<LightmassMaterial> Materials = [];
+    public List<LightmassInstance> Instances = [];
+    public List<LightmassBspMapping> BspMappings = [];
+    public List<LightmassTerrain> Terrains = [];
+    public List<LightmassTerrainMapping> TerrainMappings = [];
+    public List<(Vector3 Min, Vector3 Max)> ImportanceVolumes = [];
+    public LightmassWorldSettings World = new();
+    /// <summary>What was left out of the bake and why, with counts.</summary>
+    public SortedDictionary<string, int> Report = new();
+
+    /// <summary>The mappings to bake: those with a lightmap to write.</summary>
+    public IEnumerable<LightmassMapping> Mappings => BspMappings.Where(b => b.Lightmaps.Count > 0).Cast<LightmassMapping>()
+        .Concat(Instances.Where(i => i.Target != null)).Concat(TerrainMappings.Where(t => t.Target != null));
+
+    public void Count(string why) => Report[why] = Report.GetValueOrDefault(why) + 1;
+}
+
+public sealed class LightmassSceneOptions
+{
+    /// <summary>
+    /// Renders materials with the game's shaders for their diffuse, emissive and opacity (see <see cref="LightmassMaterialCapture"/>).
+    /// Null: every material is a constant <see cref="DefaultAlbedo"/>.
+    /// </summary>
+    public LightmassMaterialCapture MaterialCapture;
+
+    /// <summary>The material sample resolutions ([DevOptions.StaticLightingMaterial] in Lightmass's ini), before each material's ExportResolutionScale.</summary>
+    public int EmissiveSampleSize = 128, DiffuseSampleSize = 128, TransmissionSampleSize = 256;
+
+    /// <summary>Linear albedo of materials that can't be rendered (or of all of them, without <see cref="MaterialCapture"/>).</summary>
+    public float DefaultAlbedo = 0.18f;
+
+    /// <summary>Levels that are part of the scene (they cast shadows and bounce light) but whose lightmaps aren't baked.</summary>
+    public HashSet<IMEPackage> ContextOnly = [];
+}
+
+/// <summary>
+/// Builds a <see cref="LightmassScene"/> the way UE3's lighting build gathers one (UnStaticLightingSystem.cpp, UnStaticMeshLight.cpp):
+/// static lights, static mesh components with static shadowing, per-LOD meshes that don't shadow each other's LODs, and the lights
+/// each primitive accepts (ULightComponent::AffectsPrimitive). Only components that already have an LE3 lightmap get a mapping,
+/// since a material only has shaders for the lightmap types it was cooked with.
+/// </summary>
+public sealed class LightmassSceneBuilder : IDisposable
+{
+    /// <summary>UE3 WORLD_MAX: how far away a directional light's Lightmass position is.</summary>
+    const float WorldMax = 524288f;
+
+    /// <summary>
+    /// The texture mapping size of a mesh that only casts shadows. Lightmass needs a mapping for every mesh (FStaticLightingSystem checks
+    /// Meshes.Num() == AllMappings.Num()) and caches irradiance photons on all of them, but an occluder's gets no task, so a token size.
+    /// </summary>
+    public const int OccluderMappingSize = 4;
+
+    readonly LightmassSceneOptions options;
+    readonly PackageCache packageCache = new();
+    readonly Dictionary<IMEPackage, MeshResolver> meshResolvers = new();
+    readonly Dictionary<string, LightmassMesh> meshes = new(StringComparer.OrdinalIgnoreCase);
+    readonly Dictionary<Guid, LightmassMaterial> materials = new();
+    readonly Dictionary<string, MaterialInfo> materialInfos = new(StringComparer.OrdinalIgnoreCase);
+    /// <summary>Every light GUID some lightmap in the levels lists (see <see cref="RelevantLights"/>).</summary>
+    readonly HashSet<Guid> vanillaListed = [];
+    /// <summary>The lights (LightGuid) some shadow map in the levels is for, and whether their 2D ones are signed distance fields.</summary>
+    readonly Dictionary<Guid, bool> vanillaShadowed = [];
+    LightmassScene scene;
+
+    /// <summary>Why lights do or don't reach primitives, tallied per light type and added to the report once the scene is built.</summary>
+    enum Relevance { ChannelsDontOverlap, OutOfRange, OutsideInclusionVolumes, OtherLevels, NotListedByVanillaLightmap, NoVanillaShadowMap, Affects, AffectsShadowMap }
+    readonly Dictionary<(SceneLightType Type, Relevance Why), int> relevance = new();
+
+    public LightmassSceneBuilder(LightmassSceneOptions options = null) => this.options = options ?? new LightmassSceneOptions();
+
+    /// <param name="levels">The persistent level first, then its streaming levels.</param>
+    public LightmassScene Build(IReadOnlyList<IMEPackage> levels, Action<string> log = null)
+    {
+        scene = new LightmassScene { Levels = levels.ToList() };
+        if (levels.Count > 0 && levels[0].Exports.FirstOrDefault(e => e.ClassName.EndsWith("WorldInfo") && e.ObjectName.Name.EndsWith("WorldInfo")) is { } worldInfo)
+            scene.World = LightmassWorldSettings.FromWorldInfo(worldInfo);
+
+        var levelBinaries = new List<(IMEPackage Package, Level Level)>();
+        foreach (var package in levels)
+        {
+            var levelExport = package.Exports.FirstOrDefault(e => e.ClassName == "Level" && e.ObjectName.Name == "PersistentLevel");
+            if (levelExport == null) { scene.Count($"{package.FileNameNoExtension}: no PersistentLevel"); continue; }
+            levelBinaries.Add((package, ObjectBinary.From<Level>(levelExport)));
+        }
+
+        foreach (var package in levels)
+        {
+            foreach (var r in PackageLightmaps.Enumerate(package))
+                vanillaListed.UnionWith(LightGuids(r.LightMap));
+            foreach (var (guid, sdf) in PackageShadowMaps.Lights(package))
+                vanillaShadowed[guid] = vanillaShadowed.GetValueOrDefault(guid) || sdf;
+        }
+        for (int levelId = 0; levelId < levelBinaries.Count; levelId++)
+            AddLights(levelBinaries[levelId].Level, levelId);
+        log?.Invoke($"{scene.Lights.Count(l => !l.ShadowOnly)} static lights, {scene.Lights.Count(l => l.ShadowOnly || l.Light.IsDominant)} with shadow maps");
+
+        int meshIndex = 0;
+        for (int levelId = 0; levelId < levelBinaries.Count; levelId++)
+        {
+            var (package, level) = levelBinaries[levelId];
+            AddImportanceVolumes(package, level);
+            foreach (var (component, ownerClass) in StaticMeshComponents(package, level))
+            {
+                try { AddComponent(component, ownerClass, levelId, ref meshIndex); }
+                catch (Exception e) { scene.Count($"component failed to load: {e.GetType().Name}"); log?.Invoke($"{component.InstancedFullPath}: {e.Message}"); }
+            }
+            try { AddModel(package, level, levelId); }
+            catch (Exception e) { scene.Count($"BSP failed to load: {e.GetType().Name}"); log?.Invoke($"{package.FileNameNoExtension} BSP: {e.Message}"); }
+            try { AddTerrains(package, level, levelId); }
+            catch (Exception e) { scene.Count($"terrain failed to load: {e.GetType().Name}"); log?.Invoke($"{package.FileNameNoExtension} terrain: {e.Message}"); }
+        }
+        scene.Meshes = meshes.Values.ToList();
+        scene.Materials = materials.Values.ToList();
+        foreach (var ((type, why), n) in relevance) scene.Report[$"relevance: {type} {RelevanceText(why)}"] = n;
+        foreach (var (min, max) in scene.ImportanceVolumes) log?.Invoke($"importance volume {min} .. {max}");
+        log?.Invoke($"{scene.Instances.Count} mesh instances ({scene.Instances.Count(i => i.Target != null)} to bake) of {scene.Meshes.Count} meshes, " +
+                    $"{scene.BspMappings.Count} BSP mappings ({scene.BspMappings.Count(b => b.Lightmaps.Count > 0)} to bake), " +
+                    $"{scene.TerrainMappings.Count} terrain sections ({scene.TerrainMappings.Count(t => t.Target != null)} to bake), {scene.Materials.Count} materials, " +
+                    $"{scene.ImportanceVolumes.Count} importance volumes");
+        return scene;
+    }
+
+    /// <summary>
+    /// An object's properties with everything it inherits: its archetypes', then its class default object's. A cooked template's
+    /// archetype chain can end before the class default, where UE3 falls back to it; e.g. sky lights' CastShadows=False is only on
+    /// Default__SkyLightComponent, so without it every sky light would cast shadows.
+    /// </summary>
+    PropertyCollection Properties(ExportEntry export)
+    {
+        var props = export.GetCondensedProperties(packageCache, resolveImports: true, mergeStructs: true);
+        if (ClassDefault(export) is { } cdo && cdo != export)
+            foreach (var p in cdo.GetCondensedProperties(packageCache, resolveImports: true, mergeStructs: true))
+                if (props.GetProp<Property>(p.Name, p.StaticArrayIndex) == null && p is not ObjectProperty) props.Add(p);
+        return props;
+    }
+
+    readonly Dictionary<string, ExportEntry> classDefaults = new(StringComparer.OrdinalIgnoreCase);
+
+    ExportEntry ClassDefault(ExportEntry export)
+    {
+        string key = export.ClassName;
+        if (classDefaults.TryGetValue(key, out var cdo)) return cdo;
+        var classExport = Resolve(export.Class);
+        cdo = classExport?.FileRef.FindExport("Default__" + classExport.ObjectName.Instanced);
+        return classDefaults[key] = cdo;
+    }
+
+    // ================= lights =================
+
+    void AddLights(Level level, int levelId)
+    {
+        var used = scene.Lights.Select(l => l.Guid).ToHashSet();
+        foreach (var light in SceneLight.LoadLevelLights(level, packageCache))
+        {
+            string kind = light.Export.ClassName;
+            if (light.HasLightEnvironment) { scene.Count($"light: {kind} in a light environment"); continue; }
+            var props = Properties(light.Export);
+            bool castShadows = props.GetProp<BoolProperty>("CastShadows") is not { Value: false };
+            bool castStaticShadows = props.GetProp<BoolProperty>("CastStaticShadows") is not { Value: false };
+            bool vanillaShadowMapped = vanillaShadowed.TryGetValue(light.LightGuid, out bool vanillaSdf);
+            // Lights with static lighting bake their direct and bounce light. Dominant lights render direct light dynamically over
+            // precomputed shadows, and bake only their bounce light (UE3 Lightmass's GI_LIGHT_DOMINANT handling).
+            bool lit = light.HasStaticLighting || light.IsDominant && light.HasStaticShadowing;
+            // Shadow maps: the light is rendered dynamically over precomputed shadows. UE3 gives them to lights with static shadowing but no
+            // static lighting (toggleable lights); BioWare's bakes also gave them to static lights on some primitives.
+            bool shadowTwin = !light.IsDominant && light.Type != SceneLightType.Sky && light.HasStaticShadowing && castShadows && castStaticShadows
+                && (!light.HasStaticLighting || vanillaShadowMapped);
+            if (!lit && !shadowTwin) { scene.Count($"light: {kind} without static lighting or shadowing"); continue; }
+            if (shadowTwin)
+            {
+                var twin = Light(light, props, levelId);
+                twin.Guid = LightmassFormat.HashGuid($"shadow|{light.LightGuid}|{light.LightmapGuid}|{light.Export.InstancedFullPath}");
+                if (!used.Add(twin.Guid)) twin.Guid = Guid.NewGuid();
+                twin.ShadowOnly = true;
+                twin.IndirectLightingScale = 0;
+                twin.SignedDistanceField = vanillaShadowMapped && vanillaSdf;
+                twin.Flags = LightFlags.CastShadows | LightFlags.CastStaticShadows | LightFlags.HasStaticShadowing
+                    | (twin.SignedDistanceField ? LightFlags.UseSignedDistanceFieldShadows : 0);
+                scene.Lights.Add(twin);
+                scene.Count($"light: {light.Type} shadow maps{(twin.SignedDistanceField ? " (distance field)" : "")}");
+            }
+            if (!lit) continue;
+            var result = Light(light, props, levelId);
+            // A light copied without a new GUID would merge with the original in Lightmass.
+            if (result.Guid == Guid.Empty || !used.Add(result.Guid))
+            {
+                scene.Count("light: missing or duplicate LightmapGuid (given a new one for the bake)");
+                result.Guid = Guid.NewGuid();
+                used.Add(result.Guid);
+            }
+
+            if (castShadows) result.Flags |= LightFlags.CastShadows;
+            if (castStaticShadows) result.Flags |= LightFlags.CastStaticShadows;
+            if (light.HasStaticShadowing) result.Flags |= LightFlags.HasStaticShadowing;
+            if (light.IsDominant)
+            {
+                // UE3 always gives dominant lights distance field shadows; BioWare's bakes gave some visibility ones.
+                result.SignedDistanceField = !vanillaShadowMapped || vanillaSdf;
+                result.Flags |= LightFlags.HasStaticLighting | LightFlags.Dominant | (result.SignedDistanceField ? LightFlags.UseSignedDistanceFieldShadows : 0);
+            }
+            else
+            {
+                // LE3's lightmaps hold their lights' direct lighting (they list them in LightGuids), so it goes in the direct lightmap
+                // rather than a shadow map, whatever UseDirectLightMap says. Primitives that get a shadow map instead get the twin.
+                result.Flags |= LightFlags.HasStaticLighting | LightFlags.UseDirectLightMap;
+            }
+            scene.Lights.Add(result);
+            scene.Count($"light: {light.Type}{(light.IsDominant ? " (dominant)" : "")} baked");
+        }
+    }
+
+    /// <summary>A level light's Lightmass fields (FLightData and its type's struct) without flags, named by its LightmapGuid.</summary>
+    static LightmassLight Light(SceneLight light, PropertyCollection props, int levelId)
+    {
+        var lm = props.GetProp<StructProperty>("LightmassSettings");
+        float L(string name, float fallback) => lm?.GetProp<FloatProperty>(name)?.Value ?? fallback;
+        static (byte, byte, byte) Bytes(StructProperty c) => c == null ? ((byte)255, (byte)255, (byte)255)
+            : (c.GetProp<ByteProperty>("R")?.Value ?? 255, c.GetProp<ByteProperty>("G")?.Value ?? 255, c.GetProp<ByteProperty>("B")?.Value ?? 255);
+        return new LightmassLight
+        {
+            Light = light,
+            Guid = light.LightmapGuid,
+            LevelId = levelId,
+            Color = Bytes(props.GetProp<StructProperty>("LightColor")),
+            Brightness = props.GetProp<FloatProperty>("Brightness")?.Value ?? 1,
+            LightSourceRadius = L("LightSourceRadius", 100),
+            IndirectLightingScale = L("IndirectLightingScale", 1),
+            IndirectLightingSaturation = L("IndirectLightingSaturation", 1),
+            ShadowExponent = L("ShadowExponent", 2),
+            LightSourceAngle = L("LightSourceAngle", 3) * MathF.PI / 180f,
+            InnerConeAngle = props.GetProp<FloatProperty>("InnerConeAngle")?.Value ?? 0,
+            OuterConeAngle = props.GetProp<FloatProperty>("OuterConeAngle")?.Value ?? 44,
+            LowerBrightness = props.GetProp<FloatProperty>("LowerBrightness")?.Value ?? 0,
+            LowerColor = Bytes(props.GetProp<StructProperty>("LowerColor")),
+        };
+    }
+
+    // ================= meshes =================
+
+    /// <summary>Static mesh components of the level's actors, with their owner's class (collection actors list theirs in their binary).</summary>
+    static IEnumerable<(ExportEntry Component, string OwnerClass)> StaticMeshComponents(IMEPackage package, Level level)
+    {
+        var actors = level.Actors.Where(u => u != 0 && package.IsUExport(u)).Select(u => package.GetUExport(u)).ToHashSet();
+        var seen = new HashSet<ExportEntry>();
+        foreach (var actor in actors)
+        {
+            if (actor.ClassName != "StaticMeshCollectionActor") continue;
+            foreach (int u in ObjectBinary.From<StaticMeshCollectionActor>(actor).Components)
+                if (package.TryGetUExport(u, out var c) && c.ClassName == "StaticMeshComponent" && seen.Add(c))
+                    yield return (c, actor.ClassName);
+        }
+        foreach (var export in package.Exports)
+        {
+            if (export.ClassName != "StaticMeshComponent" || export.Parent is not ExportEntry owner || !actors.Contains(owner) || !seen.Add(export)) continue;
+            yield return (export, owner.ClassName);
+        }
+    }
+
+    MeshResolver Resolver(IMEPackage package) => meshResolvers.TryGetValue(package, out var r) ? r : meshResolvers[package] = new MeshResolver(package);
+
+    void AddComponent(ExportEntry component, string ownerClass, int levelId, ref int meshIndex)
+    {
+        var props = Properties(component);
+        var smc = ObjectBinary.From<StaticMeshComponent>(component);
+        bool hasLightmap = smc.LODData.Any(l => IsRebakeable(l.LightMap));
+        // UE3 builds static lighting for primitives with static shadowing that accept lights (UStaticMeshComponent::GetStaticLightingInfo).
+        // Static mesh actors and collections are static; other owners (InterpActor, ...) are movable, but BioWare baked many that never
+        // move, and those carry a lightmap.
+        bool staticOwner = ownerClass is "StaticMeshActor" or "StaticMeshCollectionActor";
+        bool acceptsLights = props.GetProp<BoolProperty>("bAcceptsLights") is not { Value: false };
+        if (!hasLightmap && !(staticOwner && acceptsLights)) { scene.Count($"mesh: {ownerClass} without static lighting"); return; }
+        if (props.GetProp<ObjectProperty>("StaticMesh") is not { Value: not 0 } meshProp) { scene.Count("mesh: no StaticMesh"); return; }
+
+        var resolver = Resolver(component.FileRef);
+        var meshEntry = component.FileRef.GetEntry(meshProp.Value);
+        var (meshExport, staticMesh) = resolver.Get(meshEntry);
+        if (staticMesh == null || staticMesh.LODModels.Length == 0)
+        {
+            scene.Count(resolver.Failure(meshEntry) is { } why ? $"mesh: StaticMesh import failed ({why})" : "mesh: StaticMesh not resolved");
+            return;
+        }
+        var mesh = GetMesh(meshExport, staticMesh);
+
+        bool castShadow = props.GetProp<BoolProperty>("CastShadow") is not { Value: false };
+        var channels = LightingChannels.FromProperty(props.GetProp<StructProperty>("LightingChannels"), default, isInitialized: false, LightingChannels.StaticPrimitiveDefault);
+        var settings = LightmassElementSettings.From(props.GetProp<StructProperty>("LightmassSettings"), scene.World.EmissiveBoost);
+        var materialOverrides = props.GetProp<ArrayProperty<ObjectProperty>>("Materials");
+        var l2w = WorldTransforms.Component(component);
+        int thisMeshIndex = meshIndex++;
+        string levelName = component.FileRef.FileNameNoExtension;
+        bool contextOnly = options.ContextOnly.Contains(component.FileRef);
+
+        for (int lod = 0; lod < staticMesh.LODModels.Length; lod++)
+        {
+            var lodModel = staticMesh.LODModels[lod];
+            var lightmap = lod < smc.LODData.Length ? smc.LODData[lod].LightMap : null;
+            bool bake = lightmap != null && IsRebakeable(lightmap) && !contextOnly;
+            // UE3 makes a mesh per LOD; LODs other than 0 neither shadow other meshes nor need exporting without a lightmap.
+            if (lod > 0 && !bake) continue;
+            if (!bake && !castShadow) continue;
+
+            var (min, max) = Bounds(lodModel.PositionVertexBuffer.VertexData, l2w);
+            var instance = new LightmassInstance
+            {
+                Guid = Guid.NewGuid(),
+                Component = component,
+                LodIndex = lod,
+                Mesh = mesh,
+                LocalToWorld = l2w,
+                BoundsMin = min, BoundsMax = max,
+                MeshIndex = thisMeshIndex,
+                LevelId = levelId,
+                CastShadow = castShadow,
+                CastShadowAsTwoSided = props.GetProp<BoolProperty>("bCastShadowAsTwoSided") is { Value: true },
+                Settings = settings,
+            };
+
+            for (int e = 0; e < lodModel.Elements.Length; e++)
+            {
+                var element = lodModel.Elements[e];
+                int materialIndex = element.MaterialIndex;
+                IEntry materialEntry = null;
+                if (materialOverrides != null && materialIndex >= 0 && materialIndex < materialOverrides.Count && materialOverrides[materialIndex].Value != 0)
+                    materialEntry = component.FileRef.GetEntry(materialOverrides[materialIndex].Value);
+                else if (element.Material != 0)
+                    materialEntry = meshExport.FileRef.GetEntry(element.Material);
+                instance.ElementMaterials.Add(GetMaterial(materialEntry, settings.DiffuseBoost));
+            }
+
+            if (bake)
+            {
+                instance.Target = new LightmapRef(component, $"LOD{lod}", lightmap, smc);
+                if (TextureAllocation(component.FileRef, lightmap) is { } size)
+                {
+                    (instance.SizeX, instance.SizeY) = size;
+                    if (mesh.LightMapCoordinateIndex >= lodModel.VertexBuffer.NumTexCoords)
+                    {
+                        scene.Count("mapping: texture lightmap on a mesh without its lightmap UV channel (kept)");
+                        instance.Target = null;
+                        instance.SizeX = instance.SizeY = 0;
+                    }
+                }
+                if (instance.Target != null)
+                {
+                    // Vertex lightmaps hold one sample per vertex of the LOD.
+                    if (!instance.IsTextureMapping && VertexSampleCount(lightmap) != lodModel.PositionVertexBuffer.VertexData.Length)
+                    {
+                        scene.Count("mapping: vertex lightmap sample count differs from the vertex count (kept)");
+                        instance.Target = null;
+                    }
+                    else scene.Count($"mapping: {lightmap.LightMapType}");
+                }
+            }
+            if (instance.Target == null && (lod > 0 || !castShadow)) continue;
+            if (instance.Target == null) instance.SizeX = instance.SizeY = OccluderMappingSize;
+
+            if (acceptsLights || instance.Target != null)
+                instance.RelevantLights = RelevantLights(min, max, channels, levelName, lightmap,
+                    PackageShadowMaps.LightGuids(new LightmapRef(component, $"LOD{lod}", lightmap, smc)));
+            scene.Instances.Add(instance);
+        }
+    }
+
+    /// <summary>
+    /// The lights that reach a primitive (ULightComponent::AffectsPrimitive), as BioWare's bake split them: a light some vanilla lightmap or
+    /// shadow map mentions lights it only if its vanilla lightmap lists it, and shadows it (the shadow-only twin, or a dominant light) only if
+    /// its vanilla shadow maps are for it. Lights nothing mentions are new, and reach it by UE3's rules.
+    /// BioWare's bakes are the ground truth for which lights reach what: e.g. BioP_SPDish's sun can reach every chunk by its lighting
+    /// channels, but only the background chunk's lightmaps list it. Lightmass lists a light only when some texel isn't fully occluded, so
+    /// lights the vanilla lists leave out were blocked or excluded when BioWare baked. BioWare also shadow-mapped static lights on some
+    /// primitives while lightmapping them on others, which Lightmass can't decide per primitive, hence the shadow-only twins.
+    /// </summary>
+    /// <param name="vanillaLightmap">The primitive's LE3 lightmap; null when it has none to go by (an occluder).</param>
+    /// <param name="vanillaShadows">The lights (LightGuid) its LE3 shadow maps are for.</param>
+    List<LightmassLight> RelevantLights(Vector3 min, Vector3 max, LightingChannels channels, string levelName, LightMap vanillaLightmap, IReadOnlySet<Guid> vanillaShadows)
+    {
+        var bounds = new BoxSphereBounds { Origin = (min + max) / 2, BoxExtent = (max - min) / 2, SphereRadius = Vector3.Distance(min, max) / 2 };
+        var vanillaLights = vanillaLightmap != null ? LightGuids(vanillaLightmap).ToHashSet() : null;
+        var result = new List<LightmassLight>();
+        foreach (var light in scene.Lights)
+        {
+            var l = light.Light;
+            var why = Relevance.Affects;
+            if (!l.LightingChannels.OverlapsWith(channels)) why = Relevance.ChannelsDontOverlap;
+            else if (!l.AffectsBounds(bounds)) why = Relevance.OutOfRange;
+            else if (!l.AffectsVolumes(bounds)) why = Relevance.OutsideInclusionVolumes;
+            else if (l.OnlyAffectSameAndSpecifiedLevels && !l.LevelName.Equals(levelName, StringComparison.OrdinalIgnoreCase) && !l.OtherLevelsToAffect.Contains(levelName))
+                why = Relevance.OtherLevels;
+            else if (vanillaLights != null && (vanillaListed.Contains(l.LightmapGuid) || vanillaShadowed.ContainsKey(l.LightGuid)))
+            {
+                bool lightsIt = !light.ShadowOnly && !l.IsDominant;
+                if (lightsIt && !vanillaLights.Contains(l.LightmapGuid)) why = Relevance.NotListedByVanillaLightmap;
+                else if (!lightsIt && !vanillaShadows.Contains(l.LightGuid)) why = Relevance.NoVanillaShadowMap;
+            }
+            if (why == Relevance.Affects)
+            {
+                if (light.ShadowOnly) why = Relevance.AffectsShadowMap;
+                result.Add(light);
+            }
+            relevance[(l.Type, why)] = relevance.GetValueOrDefault((l.Type, why)) + 1;
+        }
+        return result;
+    }
+
+    static string RelevanceText(Relevance why) => why switch
+    {
+        Relevance.ChannelsDontOverlap => "lighting channels don't overlap",
+        Relevance.OutOfRange => "out of range",
+        Relevance.OutsideInclusionVolumes => "outside its inclusion volumes",
+        Relevance.OtherLevels => "limited to other levels",
+        Relevance.NotListedByVanillaLightmap => "not listed by the vanilla lightmap",
+        Relevance.NoVanillaShadowMap => "without a vanilla shadow map here",
+        Relevance.AffectsShadowMap => "shadow map affects",
+        _ => "affects",
+    };
+
+    /// <summary>Lightmap types this bake writes: the directional, Vector and Simple ones LE3 renders (LMT_5 is never rendered).</summary>
+    static bool IsRebakeable(LightMap lm) => lm?.LightMapType is ELightMapType.LMT_1D or ELightMapType.LMT_2D or ELightMapType.LMT_3
+        or ELightMapType.LMT_4 or ELightMapType.LMT_6;
+
+    static Guid[] LightGuids(LightMap lm) => lm switch
+    {
+        LightMap_1D l => l.LightGuids ?? [],
+        LightMap_2D l => l.LightGuids ?? [],
+        LightMap_3 l => l.LightGuids ?? [],
+        LightMap_4or6 l => l.LightGuids ?? [],
+        LightMap_5 l => l.LightGuids ?? [],
+        _ => [],
+    };
+
+    static int VertexSampleCount(LightMap lm) => lm switch
+    {
+        LightMap_1D d => d.DirectionalSamples?.Length ?? 0,
+        LightMap_3 v => v.DirectionalSamples?.Length ?? 0,
+        _ => -1,
+    };
+
+    /// <summary>
+    /// A texture lightmap's mapping size: its padded atlas allocation (interior plus LE3's one-texel ring), which with bPadMappings
+    /// gives Lightmass the same interior texel grid on the same UVs. Null for vertex lightmaps.
+    /// </summary>
+    static (int, int)? TextureAllocation(IMEPackage package, LightMap lm)
+    {
+        var (texture, scale, bias) = lm switch
+        {
+            LightMap_2D d => (d.Texture1, d.CoordinateScale, d.CoordinateBias),
+            LightMap_4or6 v => (v.Texture1, v.CoordinateScale, v.CoordinateBias),
+            _ => (0, default, default),
+        };
+        if (texture == 0 || !package.TryGetUExport(texture, out var tex)) return null;
+        var p = tex.GetProperties();
+        int w = p.GetProp<IntProperty>("SizeX")?.Value ?? 0, h = p.GetProp<IntProperty>("SizeY")?.Value ?? 0;
+        var rect = AtlasRect.FromCoordinates(scale, bias, w, h, padding: 1);
+        return (rect.Width, rect.Height);
+    }
+
+    static (Vector3, Vector3) Bounds(Vector3[] positions, Matrix4x4 l2w)
+    {
+        var min = new Vector3(float.MaxValue); var max = new Vector3(float.MinValue);
+        foreach (var p in positions)
+        {
+            var w = Vector3.Transform(p, l2w);
+            min = Vector3.Min(min, w); max = Vector3.Max(max, w);
+        }
+        return (min, max);
+    }
+
+    LightmassMesh GetMesh(ExportEntry export, StaticMesh staticMesh)
+    {
+        string key = export.FileRef.FilePath + "|" + export.InstancedFullPath;
+        if (meshes.TryGetValue(key, out var mesh)) return mesh;
+        // Named by content, so Swarm's cache reuses the channel across bakes until the mesh changes.
+        var data = export.Data;
+        mesh = new LightmassMesh
+        {
+            Guid = LightmassFormat.HashGuid("mesh|" + export.InstancedFullPath + "|" + Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(data))),
+            Export = export,
+            Mesh = staticMesh,
+            LightMapCoordinateIndex = ComponentGeometry.CoordinateIndex(export),
+        };
+        return meshes[key] = mesh;
+    }
+
+    // ================= BSP =================
+
+    const int PF_Portal = 0x04000000;
+
+    /// <summary>
+    /// The level's BSP: every node of its ModelComponents' elements, as UE3 lights them (UModel::GroupAllNodes, FBSPSurfaceStaticLighting).
+    /// Elements with an LE3 lightmap to rebake are grouped by the allocation they share, one mapping each; all other nodes (unlit, in a
+    /// context-only level) still cast shadows, through one occluder mapping per level.
+    /// </summary>
+    void AddModel(IMEPackage package, Level level, int levelId)
+    {
+        if (level.Model == 0 || !package.TryGetUExport(level.Model, out var modelExport)) return;
+        var model = ObjectBinary.From<Model>(modelExport);
+        if (model.Nodes.Length == 0) return;
+        bool contextOnly = options.ContextOnly.Contains(package);
+
+        var groups = new Dictionary<(int Texture, Vector2 Scale, Vector2 Bias), (List<LightmapRef> Lightmaps, List<int> Nodes)>();
+        var occluderNodes = new List<int>();
+        var seen = new HashSet<int>();
+        foreach (int u in level.ModelComponents)
+        {
+            if (!package.TryGetUExport(u, out var componentExport) || componentExport.ClassName != "ModelComponent") continue;
+            var component = ObjectBinary.From<ModelComponent>(componentExport);
+            for (int e = 0; e < component.Elements.Length; e++)
+            {
+                var element = component.Elements[e];
+                var nodes = element.Nodes.Select(n => (int)n).Where(n => n < model.Nodes.Length && seen.Add(n)).ToList();
+                // BSP lightmaps are only ever LMT_2D in LE3.
+                if (contextOnly || element.LightMap is not LightMap_2D { LightMapType: ELightMapType.LMT_2D, Texture1: not 0 } lightmap)
+                {
+                    if (!contextOnly && element.LightMap is { LightMapType: not ELightMapType.LMT_None }) scene.Count($"mapping: BSP {element.LightMap.LightMapType} (kept)");
+                    occluderNodes.AddRange(nodes);
+                    continue;
+                }
+                var key = (lightmap.Texture1, lightmap.CoordinateScale, lightmap.CoordinateBias);
+                if (!groups.TryGetValue(key, out var group)) groups[key] = group = ([], []);
+                // Named as PackageLightmaps names it, which is how the rewriter asks for its lighting.
+                group.Lightmaps.Add(new LightmapRef(componentExport, $"Element{e}", element.LightMap, component));
+                group.Nodes.AddRange(nodes);
+            }
+        }
+
+        foreach (var ((texture, scale, bias), (lightmaps, nodes)) in groups)
+        {
+            var mapping = BspMapping(package, model, nodes, levelId);
+            if (mapping.Indices.Count == 0 || !package.TryGetUExport(texture, out var textureExport))
+            {
+                scene.Count("mapping: BSP surface group without triangles or texture (kept)");
+                continue;
+            }
+            // Each vertex's ShadowTexCoord spans the allocation, which becomes the mapping's interior; Lightmass adds the padding ring.
+            var p = textureExport.GetProperties();
+            mapping.SizeX = (int)MathF.Round(scale.X * (p.GetProp<IntProperty>("SizeX")?.Value ?? 0)) + 2;
+            mapping.SizeY = (int)MathF.Round(scale.Y * (p.GetProp<IntProperty>("SizeY")?.Value ?? 0)) + 2;
+            mapping.Lightmaps = lightmaps;
+            mapping.RelevantLights = RelevantLights(mapping.BoundsMin, mapping.BoundsMax, BspChannels(model, nodes), package.FileNameNoExtension, lightmaps[0].LightMap,
+                lightmaps.SelectMany(PackageShadowMaps.LightGuids).ToHashSet());
+            scene.BspMappings.Add(mapping);
+            scene.Count("mapping: BSP LMT_2D surface group");
+        }
+
+        if (occluderNodes.Count > 0 && BspMapping(package, model, occluderNodes, levelId) is { Indices.Count: > 0 } occluder)
+        {
+            occluder.SizeX = occluder.SizeY = OccluderMappingSize;
+            scene.BspMappings.Add(occluder);
+            scene.Count("BSP: shadow-casting surfaces without a lightmap to rebake");
+        }
+    }
+
+    /// <summary>
+    /// A BSP mapping of the given nodes, built as UE3 builds a node group's (ULevel::BuildStaticLighting setup in UnLevel.cpp): world-space
+    /// vertices with the surface's texture axes and normal as their tangent basis, the surface's texture coordinates, the vertex's
+    /// ShadowTexCoord as lightmap UV, a triangle fan per node, and an element per surface material and Lightmass settings pair.
+    /// </summary>
+    LightmassBspMapping BspMapping(IMEPackage package, Model model, List<int> nodes, int levelId)
+    {
+        var mapping = new LightmassBspMapping { Guid = Guid.NewGuid(), LevelId = levelId };
+        var elements = new Dictionary<(int LightmassIndex, int Material), int>();
+        var min = new Vector3(float.MaxValue); var max = new Vector3(float.MinValue);
+        foreach (int n in nodes)
+        {
+            var node = model.Nodes[n];
+            if (node.NumVertices < 3 || node.iSurf < 0 || node.iSurf >= model.Surfs.Length) continue;
+            var surf = model.Surfs[node.iSurf];
+            if ((surf.PolyFlags & PF_Portal) != 0) continue;
+            if (!elements.TryGetValue((surf.iLightmassIndex, surf.Material), out int element))
+            {
+                var settings = LightmassElementSettings.From(model.LightmassSettings?.ElementAtOrDefault(surf.iLightmassIndex), scene.World.EmissiveBoost);
+                var material = GetMaterial(surf.Material != 0 ? package.GetEntry(surf.Material) : null, settings.DiffuseBoost);
+                elements[(surf.iLightmassIndex, surf.Material)] = element = mapping.Elements.Count;
+                mapping.Elements.Add(new LightmassElement(material, settings));
+            }
+            var textureBase = model.Points[surf.pBase];
+            var textureU = model.Vectors[surf.vTextureU];
+            var textureV = model.Vectors[surf.vTextureV];
+            var tangentX = SafeNormalize(textureU);
+            var tangentY = SafeNormalize(textureV);
+            var tangentZ = SafeNormalize(model.Vectors[surf.vNormal]);
+            int baseVertex = mapping.Vertices.Count;
+            for (int v = 0; v < node.NumVertices; v++)
+            {
+                var vert = model.Verts[node.iVertPool + v];
+                var position = model.Points[vert.pVertex];
+                var uv = new Vector2(Vector3.Dot(position - textureBase, textureU) / 128f, Vector3.Dot(position - textureBase, textureV) / 128f);
+                mapping.Vertices.Add(new LightmassBspVertex(position, tangentX, tangentY, tangentZ, uv, vert.ShadowTexCoord));
+                min = Vector3.Min(min, position); max = Vector3.Max(max, position);
+            }
+            for (int v = 2; v < node.NumVertices; v++)
+            {
+                mapping.Indices.Add(baseVertex);
+                mapping.Indices.Add(baseVertex + v);
+                mapping.Indices.Add(baseVertex + v - 1);
+                mapping.TriangleElements.Add(element);
+            }
+        }
+        (mapping.BoundsMin, mapping.BoundsMax) = (min, max);
+        return mapping;
+    }
+
+    /// <summary>
+    /// The lighting channels of the nodes' surfaces (UE3 gives each ModelComponent its surfaces' channels). FBspSurf stores the
+    /// FLightingChannelContainer bitfield, bInitialized first; an uninitialized one is BSP only.
+    /// </summary>
+    static LightingChannels BspChannels(Model model, List<int> nodes)
+    {
+        uint channels = 0;
+        foreach (int n in nodes)
+        {
+            int raw = model.Surfs[model.Nodes[n].iSurf].LightingChannels;
+            channels |= (raw & 1) != 0 ? (uint)raw >> 1 : 1u;
+        }
+        return new LightingChannels(channels);
+    }
+
+    static Vector3 SafeNormalize(Vector3 v) => v.LengthSquared() > 1e-12f ? Vector3.Normalize(v) : Vector3.Zero;
+
+    // ================= terrain =================
+
+    /// <summary>TERRAIN_ZSCALE: local Z per height unit (heights are centred on 32768).</summary>
+    public const float TerrainZScale = 1f / 128;
+
+    /// <summary>
+    /// The level's terrains, as UE3 lights them (UTerrainComponent::GetStaticLightingInfo, FLightmassExporter::WriteTerrainMapping): a
+    /// mapping per component, baked when it has an LE3 lightmap of the size UE3 gives the section, else casting shadows only. Terrain
+    /// materials blend layers per vertex, so they get the constant albedo rather than a rendered material.
+    /// </summary>
+    void AddTerrains(IMEPackage package, Level level, int levelId)
+    {
+        bool contextOnly = options.ContextOnly.Contains(package);
+        foreach (int u in level.Actors)
+        {
+            if (u == 0 || !package.TryGetUExport(u, out var actor) || actor.ClassName != "Terrain") continue;
+            var props = Properties(actor);
+            int Int(string name, int fallback = 0) => props.GetProp<IntProperty>(name)?.Value ?? fallback;
+            var terrain = new LightmassTerrain
+            {
+                Export = actor,
+                Properties = props,
+                Binary = ObjectBinary.From<Terrain>(actor),
+                LocalToWorld = ActorUtils.GetLocalToWorld(actor),
+                NumVerticesX = Int("NumVerticesX"), NumVerticesY = Int("NumVerticesY"),
+                NumPatchesX = Int("NumPatchesX"), NumPatchesY = Int("NumPatchesY"),
+                StaticLightingResolution = Math.Max(1, Int("StaticLightingResolution", 4)),
+            };
+            int heights = terrain.NumVerticesX * terrain.NumVerticesY;
+            if (heights == 0 || terrain.Binary.Heights.Length != heights || terrain.Binary.InfoData.Length != heights)
+            {
+                scene.Count("terrain: height field doesn't match its size (left out)");
+                continue;
+            }
+            using (var hash = System.Security.Cryptography.IncrementalHash.CreateHash(System.Security.Cryptography.HashAlgorithmName.SHA256))
+            {
+                hash.AppendData(System.Text.Encoding.UTF8.GetBytes($"terrain|{actor.InstancedFullPath}|{terrain.NumPatchesX}|{terrain.NumPatchesY}|{terrain.StaticLightingResolution}"));
+                var localToWorld = terrain.LocalToWorld;
+                hash.AppendData(System.Runtime.InteropServices.MemoryMarshal.AsBytes(new ReadOnlySpan<Matrix4x4>(ref localToWorld)));
+                hash.AppendData(System.Runtime.InteropServices.MemoryMarshal.AsBytes(terrain.Binary.Heights.AsSpan()));
+                hash.AppendData(terrain.Binary.InfoData.Select(f => (byte)f).ToArray());
+                terrain.Guid = LightmassFormat.HashGuid(Convert.ToHexString(hash.GetHashAndReset()));
+            }
+
+            var settings = LightmassElementSettings.From(props.GetProp<StructProperty>("LightmassSettings"), scene.World.EmissiveBoost);
+            var element = new LightmassElement(GetMaterial(null, settings.DiffuseBoost), settings);
+            int res = terrain.StaticLightingResolution;
+            // TERRAIN_PATCH_EXPAND_SCALAR (1) times DXT1's 4-texel block, in quads at the lighting resolution
+            int expand = Math.Max(1, 4 / res);
+            bool bilinear = props.GetProp<BoolProperty>("bBilinearFilterLightmapGeneration") is not { Value: false };
+            bool added = false;
+            foreach (var componentProp in props.GetProp<ArrayProperty<ObjectProperty>>("TerrainComponents") ?? Enumerable.Empty<ObjectProperty>())
+            {
+                if (!package.TryGetUExport(componentProp.Value, out var componentExport)) continue;
+                var cprops = Properties(componentExport);
+                int C(string name) => cprops.GetProp<IntProperty>(name)?.Value ?? 0;
+                var component = ObjectBinary.From<TerrainComponent>(componentExport);
+                var mapping = new LightmassTerrainMapping
+                {
+                    Guid = Guid.NewGuid(),
+                    Terrain = terrain,
+                    Component = componentExport,
+                    LevelId = levelId,
+                    CastShadow = cprops.GetProp<BoolProperty>("CastShadow") is { Value: true } || cprops.GetProp<BoolProperty>("bCastHiddenShadow") is { Value: true },
+                    BilinearFilter = bilinear,
+                    SectionBaseX = C("SectionBaseX"), SectionBaseY = C("SectionBaseY"),
+                    SectionSizeX = C("SectionSizeX"), SectionSizeY = C("SectionSizeY"),
+                    TrueSectionSizeX = C("TrueSectionSizeX"), TrueSectionSizeY = C("TrueSectionSizeY"),
+                    ExpandQuadsX = expand, ExpandQuadsY = expand,
+                    Element = element,
+                };
+                mapping.SizeX = (2 * expand + mapping.TrueSectionSizeX) * res + 1;
+                mapping.SizeY = (2 * expand + mapping.TrueSectionSizeY) * res + 1;
+                // The component's frame: the terrain's, moved to the section's base (UTerrainComponent::SetParentToWorld)
+                mapping.LocalToWorld = Matrix4x4.CreateTranslation(mapping.SectionBaseX, mapping.SectionBaseY, 0) * terrain.LocalToWorld;
+                // Lightmass reads SectionSizeX · SectionSizeY patch bounds.
+                mapping.PatchBounds = new TerrainPatchBounds[mapping.SectionSizeX * mapping.SectionSizeY];
+                for (int i = 0; i < mapping.PatchBounds.Length; i++)
+                    mapping.PatchBounds[i] = i < component.PatchBounds.Length ? component.PatchBounds[i] : new TerrainPatchBounds();
+
+                if (!contextOnly && component.LightMap is LightMap_2D { LightMapType: ELightMapType.LMT_2D, Texture1: not 0 } lightmap)
+                {
+                    if (TextureSize(package, lightmap.Texture1) is var (w, h)
+                        && (int)MathF.Round(lightmap.CoordinateScale.X * w) == mapping.SizeX && (int)MathF.Round(lightmap.CoordinateScale.Y * h) == mapping.SizeY)
+                        mapping.Target = new LightmapRef(componentExport, "Terrain", lightmap, component);
+                    else scene.Count("mapping: terrain lightmap of another size than its section's (kept)");
+                }
+                else if (!contextOnly && component.LightMap is { LightMapType: not ELightMapType.LMT_None }) scene.Count($"mapping: terrain {component.LightMap.LightMapType} (kept)");
+                if (mapping.Target == null && !mapping.CastShadow) continue;
+
+                var min = new Vector3(float.MaxValue); var max = new Vector3(float.MinValue);
+                for (int y = -expand; y < mapping.TrueSectionSizeY + expand; y++)
+                for (int x = -expand; x < mapping.TrueSectionSizeX + expand; x++)
+                {
+                    if (!terrain.IsQuadVisible(mapping.SectionBaseX + x, mapping.SectionBaseY + y)) continue;
+                    mapping.Quads.Add((x, y));
+                    for (int corner = 0; corner < 4; corner++)
+                    {
+                        var p = TerrainVertex(mapping, x + (corner & 1), y + (corner >> 1));
+                        min = Vector3.Min(min, p); max = Vector3.Max(max, p);
+                    }
+                }
+                if (mapping.Quads.Count == 0) continue;
+                (mapping.BoundsMin, mapping.BoundsMax) = (min, max);
+                if (mapping.Target != null)
+                {
+                    var channels = LightingChannels.FromProperty(cprops.GetProp<StructProperty>("LightingChannels"), default, isInitialized: false, LightingChannels.StaticPrimitiveDefault);
+                    mapping.RelevantLights = RelevantLights(min, max, channels, package.FileNameNoExtension, mapping.Target.LightMap, PackageShadowMaps.LightGuids(mapping.Target));
+                    scene.Count("mapping: terrain LMT_2D");
+                }
+                else scene.Count("terrain: shadow-casting sections without a lightmap to rebake");
+                scene.TerrainMappings.Add(mapping);
+                added = true;
+            }
+            if (added) scene.Terrains.Add(terrain);
+        }
+    }
+
+    /// <summary>A terrain vertex's world position, as Lightmass places it (FTerrainComponentStaticLighting::GetVertex, without displacement).</summary>
+    public static Vector3 TerrainVertex(LightmassTerrainMapping mapping, int x, int y)
+    {
+        var terrain = mapping.Terrain;
+        int patchX = mapping.SectionBaseX + x, patchY = mapping.SectionBaseY + y;
+        float localX = Math.Clamp(patchX, 0, terrain.NumVerticesX - 1) - mapping.SectionBaseX;
+        float localY = Math.Clamp(patchY, 0, terrain.NumVerticesY - 1) - mapping.SectionBaseY;
+        return Vector3.Transform(new Vector3(localX, localY, (terrain.Height(patchX, patchY) - 32768f) * TerrainZScale), mapping.LocalToWorld);
+    }
+
+    static (int, int)? TextureSize(IMEPackage package, int texture)
+    {
+        if (!package.TryGetUExport(texture, out var export)) return null;
+        var p = export.GetProperties();
+        return (p.GetProp<IntProperty>("SizeX")?.Value ?? 0, p.GetProp<IntProperty>("SizeY")?.Value ?? 0);
+    }
+
+    // ================= materials =================
+
+    /// <summary>A material's settings, from its instance chain (UMaterialInstance's Get* overrides) and base Material.</summary>
+    sealed record MaterialInfo(int BlendMode, bool TwoSided, bool Unlit, float OpacityMaskClipValue, float DiffuseBoost, float EmissiveBoost,
+        float ExportResolutionScale, bool CastShadowAsMasked)
+    {
+        public static readonly MaterialInfo Default = new(0, false, false, 1f / 3, 1, 1, 1, false);
+    }
+
+    /// <summary>
+    /// UDK-2015-02's EBlendMode numbering, which Lightmass's material channel uses (it gained ModulateAndAdd and DitheredTranslucent
+    /// and moved SoftMasked and AlphaComposite, hence the new LM_MATERIAL_VERSION). Matched by name from LE3's materials.
+    /// </summary>
+    static readonly Dictionary<string, int> UdkBlendModes = new()
+    {
+        ["BLEND_Opaque"] = 0, ["BLEND_Masked"] = 1, ["BLEND_Translucent"] = 2, ["BLEND_Additive"] = 3, ["BLEND_Modulate"] = 4,
+        ["BLEND_ModulateAndAdd"] = 5, ["BLEND_SoftMasked"] = 6, ["BLEND_AlphaComposite"] = 7, ["BLEND_DitheredTranslucent"] = 8,
+    };
+
+    /// <summary>UDK blend modes whose materials Lightmass treats as translucent (they need a transmission sample).</summary>
+    public static bool IsTranslucent(int udkBlendMode) => udkBlendMode is 2 or 3 or 4 or 5 or 7 or 8;
+
+    /// <summary>
+    /// The Lightmass material for an element: the material's properties, as UE3's FLightmassMaterialProxy compiles them per blend mode
+    /// (LightmassRender.cpp), with the diffuse boosted by the material, primitive and level DiffuseBoost.
+    /// </summary>
+    LightmassMaterial GetMaterial(IEntry entry, float primitiveDiffuseBoost)
+    {
+        var info = entry == null ? MaterialInfo.Default : ReadMaterial(entry);
+        float boost = info.DiffuseBoost * primitiveDiffuseBoost * scene.World.DiffuseBoost;
+        var material = new LightmassMaterial
+        {
+            BlendMode = info.BlendMode, TwoSided = info.TwoSided, CastShadowAsMasked = info.CastShadowAsMasked,
+            OpacityMaskClipValue = info.OpacityMaskClipValue, EmissiveBoost = info.EmissiveBoost,
+        };
+        int Size(int sampleSize) => Math.Clamp((int)(sampleSize * info.ExportResolutionScale), 1, 1024);
+        int emissiveSize = Size(options.EmissiveSampleSize), diffuseSize = Size(options.DiffuseSampleSize), transmissionSize = Size(options.TransmissionSampleSize);
+        bool opaque = info.BlendMode is 0 or 1 or 6; // Opaque, Masked, SoftMasked
+        var captured = entry == null ? null : Capture(entry, opaque ? [emissiveSize, diffuseSize, transmissionSize] : [emissiveSize, transmissionSize]);
+
+        if (captured == null)
+        {
+            // Without the material's opacity, a masked material shadows as opaque, and translucency lets all light through.
+            if (info.BlendMode is 1 or 6) material.BlendMode = 0;
+            material.Emissive = MaterialSamples.Constant(Vector3.Zero, 0);
+            if (material.BlendMode is 0) material.Diffuse = MaterialSamples.Constant(Vector3.Min(new Vector3(options.DefaultAlbedo * boost), Vector3.One), 0);
+            else material.Transmission = MaterialSamples.Constant(Vector3.One, 0);
+        }
+        else
+        {
+            var e = captured[emissiveSize];
+            material.Emissive = MaterialSamples.FromTexels(e.Size, i => new Vector4(Vector3.Max(e.Emissive(i), Vector3.Zero), 0));
+            if (opaque)
+            {
+                var d = captured[diffuseSize];
+                material.Diffuse = MaterialSamples.FromTexels(d.Size, i => new Vector4(Vector3.Clamp(d.Diffuse(i) * boost, Vector3.Zero, Vector3.One), 0));
+            }
+            var t = captured[transmissionSize];
+            Vector3 Colored(int i) => Vector3.Clamp(info.Unlit ? t.Emissive(i) : t.Diffuse(i), Vector3.Zero, Vector3.One);
+            float Opacity(int i) => t.Covered[i] ? Math.Clamp(t.Opacity(i), 0, 1) : 0;
+            switch (info.BlendMode)
+            {
+                case 1:
+                    // The opacity mask itself isn't in the shader's output, only whether it clipped: transmission 1 where it didn't
+                    material.Transmission = MaterialSamples.FromTexels(t.Size, i => t.Covered[i] ? Vector4.One : Vector4.Zero);
+                    material.OpacityMaskClipValue = 0.5f;
+                    break;
+                case 6:
+                    material.Transmission = MaterialSamples.FromTexels(t.Size, i => new Vector4(new Vector3(Opacity(i)), 0));
+                    break;
+                case 2 or 7 when info.CastShadowAsMasked:
+                    material.Transmission = MaterialSamples.FromTexels(t.Size, i => new Vector4(new Vector3(Opacity(i)), 0));
+                    break;
+                case 2 or 7:
+                    material.Transmission = MaterialSamples.FromTexels(t.Size, i => new Vector4(Vector3.Lerp(Vector3.One, Colored(i), Opacity(i)), 0));
+                    break;
+                case 4:
+                    material.Transmission = MaterialSamples.FromTexels(t.Size, i => new Vector4(Colored(i), 0));
+                    break;
+                case not 0:
+                    // Additive: the shader outputs color times opacity, so the opacity can't be separated. It lets all light through.
+                    material.Transmission = MaterialSamples.Constant(Vector3.One, 0);
+                    break;
+            }
+        }
+        if (opaque) material.Specular = MaterialSamples.Constant(Vector3.Zero, 1);
+
+        material.Guid = MaterialGuid(material);
+        if (materials.TryGetValue(material.Guid, out var existing)) return existing;
+        return materials[material.Guid] = material;
+    }
+
+    /// <summary>Named by content, so Swarm's cache reuses the channel until the material (or its boosts) change.</summary>
+    static Guid MaterialGuid(LightmassMaterial m)
+    {
+        using var hash = System.Security.Cryptography.IncrementalHash.CreateHash(System.Security.Cryptography.HashAlgorithmName.SHA256);
+        hash.AppendData(System.Text.Encoding.UTF8.GetBytes(string.Create(System.Globalization.CultureInfo.InvariantCulture,
+            $"mtrl|{m.BlendMode}|{m.TwoSided}|{m.CastShadowAsMasked}|{m.OpacityMaskClipValue:R}|{m.EmissiveBoost:R}")));
+        foreach (var samples in new[] { m.Emissive, m.Diffuse, m.Specular, m.Transmission })
+        {
+            hash.AppendData(BitConverter.GetBytes(samples?.Size ?? 0));
+            if (samples != null) hash.AppendData(System.Runtime.InteropServices.MemoryMarshal.AsBytes(samples.Rgba.AsSpan()));
+        }
+        return LightmassFormat.HashGuid(Convert.ToHexString(hash.GetHashAndReset()));
+    }
+
+    readonly Dictionary<string, Dictionary<int, CapturedMaterial>> captures = new(StringComparer.OrdinalIgnoreCase);
+
+    /// <summary>A material rendered at the given sizes (once per material), or null if it can't be rendered with the game's shaders.</summary>
+    Dictionary<int, CapturedMaterial> Capture(IEntry entry, int[] sizes)
+    {
+        if (options.MaterialCapture == null) return null;
+        string key = entry.FileRef.FilePath + "|" + entry.InstancedFullPath;
+        if (!captures.TryGetValue(key, out var captured))
+        {
+            captured = new Dictionary<int, CapturedMaterial>();
+            captures[key] = captured;
+        }
+        else if (captured.Count == 0) return null; // failed before
+        var missing = sizes.Where(s => !captured.ContainsKey(s)).Distinct().ToArray();
+        if (missing.Length == 0) return captured;
+        bool first = captured.Count == 0;
+        try
+        {
+            foreach (var (size, c) in options.MaterialCapture.Capture(entry, missing)) captured[size] = c;
+            if (missing.FirstOrDefault(s => !captured.ContainsKey(s)) is > 0 and var skipped)
+                throw new InvalidOperationException($"the capture has no {skipped}x{skipped} rendering");
+            if (first) scene.Count("material: rendered with the game's shaders");
+            return captured;
+        }
+        catch (Exception e)
+        {
+            captured.Clear();
+            scene.Count($"material: not rendered, constant albedo instead ({e.Message})");
+            return null;
+        }
+    }
+
+    MaterialInfo ReadMaterial(IEntry entry)
+    {
+        string key = entry.FileRef.FilePath + "|" + entry.InstancedFullPath;
+        if (materialInfos.TryGetValue(key, out var info)) return info;
+        info = MaterialInfo.Default;
+        float? diffuseBoost = null, emissiveBoost = null, exportResolutionScale = null;
+        bool? castShadowAsMasked = null;
+        var current = Resolve(entry);
+        for (int depth = 0; current != null && depth < 16; depth++)
+        {
+            var props = current.GetProperties();
+            // UMaterialInstance::Get*: an instance's own LightmassSettings value only with its bOverride flag, otherwise its parent's.
+            if (props.GetProp<StructProperty>("LightmassSettings") is { } lightmass)
+            {
+                bool isMaterial = current.ClassName == "Material";
+                bool Has(string name) => isMaterial || lightmass.GetProp<BoolProperty>("bOverride" + name) is { Value: true };
+                if (diffuseBoost == null && Has("DiffuseBoost")) diffuseBoost = lightmass.GetProp<FloatProperty>("DiffuseBoost")?.Value;
+                if (emissiveBoost == null && Has("EmissiveBoost")) emissiveBoost = lightmass.GetProp<FloatProperty>("EmissiveBoost")?.Value;
+                if (exportResolutionScale == null && Has("ExportResolutionScale")) exportResolutionScale = lightmass.GetProp<FloatProperty>("ExportResolutionScale")?.Value;
+                if (castShadowAsMasked == null && Has("CastShadowAsMasked")) castShadowAsMasked = lightmass.GetProp<BoolProperty>("bCastShadowAsMasked")?.Value;
+            }
+            if (current.ClassName == "Material")
+            {
+                int blend = props.GetProp<EnumProperty>("BlendMode") is { } b ? UdkBlendModes.GetValueOrDefault(b.Value.Instanced) : 0;
+                info = new MaterialInfo(blend, props.GetProp<BoolProperty>("TwoSided") is { Value: true },
+                    props.GetProp<EnumProperty>("LightingModel")?.Value.Instanced == "MLM_Unlit",
+                    props.GetProp<FloatProperty>("OpacityMaskClipValue")?.Value ?? 1f / 3, diffuseBoost ?? 1, emissiveBoost ?? 1,
+                    exportResolutionScale ?? 1, castShadowAsMasked ?? false);
+                break;
+            }
+            current = props.GetProp<ObjectProperty>("Parent") is { Value: not 0 } parent ? Resolve(current.FileRef.GetEntry(parent.Value)) : null;
+        }
+        return materialInfos[key] = info;
+    }
+
+    ExportEntry Resolve(IEntry entry)
+    {
+        try
+        {
+            return entry switch
+            {
+                ExportEntry e => e,
+                ImportEntry i => EntryImporter.ResolveImport(i, packageCache),
+                _ => null,
+            };
+        }
+        catch (Exception e)
+        {
+            scene.Count($"import not resolved: {e.GetType().Name}");
+            return null;
+        }
+    }
+
+    // ================= importance volumes =================
+
+    void AddImportanceVolumes(IMEPackage package, Level level)
+    {
+        foreach (int u in level.Actors)
+        {
+            if (u == 0 || !package.TryGetUExport(u, out var actor) || actor.ClassName != "LightmassImportanceVolume") continue;
+            // Cooked brushes keep no BSP points or polygons; their collision's convex elements keep a local bounding box each.
+            var points = new List<Vector3>();
+            if (actor.GetProperty<ObjectProperty>("BrushComponent") is { Value: not 0 } brushComponent && package.TryGetUExport(brushComponent.Value, out var componentExport)
+                && componentExport.GetProperty<StructProperty>("BrushAggGeom")?.GetProp<ArrayProperty<StructProperty>>("ConvexElems") is { } elems)
+            {
+                foreach (var elem in elems)
+                {
+                    if (elem.GetProp<StructProperty>("ElemBox") is not { } box) continue;
+                    var lo = CommonStructs.GetVector3(box.GetProp<StructProperty>("Min"));
+                    var hi = CommonStructs.GetVector3(box.GetProp<StructProperty>("Max"));
+                    for (int corner = 0; corner < 8; corner++)
+                        points.Add(new Vector3((corner & 1) != 0 ? hi.X : lo.X, (corner & 2) != 0 ? hi.Y : lo.Y, (corner & 4) != 0 ? hi.Z : lo.Z));
+                }
+            }
+            if (points.Count == 0 && actor.GetProperty<ObjectProperty>("Brush") is { Value: not 0 } brush && package.TryGetUExport(brush.Value, out var modelExport))
+                points.AddRange(ObjectBinary.From<Model>(modelExport).Points);
+            if (points.Count == 0) { scene.Count("importance volume without geometry"); continue; }
+            var (min, max) = Bounds(points.ToArray(), ActorUtils.GetLocalToWorld(actor));
+            scene.ImportanceVolumes.Add((min, max));
+        }
+    }
+
+    public void Dispose()
+    {
+        foreach (var r in meshResolvers.Values) r.Dispose();
+        packageCache.Dispose();
+    }
+}
+
+/// <summary>EDawnLightFlags (SceneExport.h).</summary>
+public static class LightFlags
+{
+    public const uint CastShadows = 0x1, HasStaticLighting = 0x2, UseDirectLightMap = 0x4, HasStaticShadowing = 0x8, CastStaticShadows = 0x10,
+        UseSignedDistanceFieldShadows = 0x20, Dominant = 0x40;
+}

@@ -1,0 +1,132 @@
+<bases:TrackingNotifyPropertyChangedWindowBase x:Class="LegendaryExplorer.Tools.LightmassBaker.LightmassBakerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:bases="clr-namespace:LegendaryExplorer.SharedUI.Bases"
+        mc:Ignorable="d"
+        Icon="pack://application:,,,/Tools/Icons/16x16/LightmassBaker_Icon_16.ico"
+        Title="Lightmass Baker" Width="900" Height="760" MinWidth="640" MinHeight="520"
+        AllowDrop="True" DragOver="Window_DragOver" Drop="Window_Drop" Closing="Window_Closing">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" IsEnabled="{Binding IsIdle}">
+            <MenuItem Header="_File">
+                <MenuItem Header="New Job" Click="NewJob_Click"/>
+                <MenuItem Header="Open Job..." Click="OpenJob_Click"/>
+                <MenuItem Header="Save Job As..." Click="SaveJob_Click"
+                          ToolTip="Save the file list and settings as a job, which can also be baked without opening LEX: LegendaryExplorer.exe --bake-lighting job.json"/>
+            </MenuItem>
+        </Menu>
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="2*" MinHeight="120"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*" MinHeight="100"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="0,0,0,6"
+                       Text="Bakes static lighting for LE3 levels with UDK's Lightmass, writing it into the levels' existing lightmaps (each keeps its type and layout). Add every level that makes up the scene: for a persistent level, Add Streaming Levels adds the ones it streams in. Untick Bake for files that should only cast shadows and bounce light."/>
+
+            <DockPanel Grid.Row="1" IsEnabled="{Binding IsIdle}">
+                <StackPanel DockPanel.Dock="Right" Margin="6,0,0,0" Width="150">
+                    <Button Content="Add Files..." Click="AddFiles_Click" Margin="0,0,0,4" Padding="4,2"/>
+                    <Button Content="Add Streaming Levels" Click="AddStreamingLevels_Click" Margin="0,0,0,4" Padding="4,2"
+                            ToolTip="Adds the levels the persistent (BioP) files in the list stream in. They're looked for next to the persistent level first, then among the game's files."/>
+                    <Button Content="Remove" Click="Remove_Click" Margin="0,0,0,4" Padding="4,2"/>
+                    <Button Content="Clear" Click="Clear_Click" Margin="0,0,0,4" Padding="4,2"/>
+                </StackPanel>
+                <DataGrid x:Name="FilesGrid" ItemsSource="{Binding Files}" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                          HeadersVisibility="Column" SelectionMode="Extended" GridLinesVisibility="None">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Bake" Width="Auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding Editable, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"
+                                              ToolTip="Ticked: the file's lightmaps are rebaked and it's saved. Unticked: it only casts shadows and bounces light."/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="File" Binding="{Binding FileName}" IsReadOnly="True" Width="Auto"/>
+                        <DataGridTextColumn Header="Folder" Binding="{Binding Folder}" IsReadOnly="True" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+
+            <Grid Grid.Row="2" Margin="0,10,0,0" IsEnabled="{Binding IsIdle}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Quality" VerticalAlignment="Center" Margin="0,0,10,6"/>
+                <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Qualities}" SelectedItem="{Binding Quality}" Margin="0,0,6,6" HorizontalAlignment="Left" MinWidth="160"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Save to" VerticalAlignment="Center" Margin="0,0,10,6"/>
+                <DockPanel Grid.Row="1" Grid.Column="1" Margin="0,0,6,6">
+                    <CheckBox DockPanel.Dock="Left" Content="The original files" IsChecked="{Binding SaveInPlace}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <TextBox Text="{Binding OutputDirectory, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SaveToFolder}"
+                             ToolTip="The folder the baked files are saved to, under their own names."/>
+                </DockPanel>
+                <Button Grid.Row="1" Grid.Column="2" Content="Browse..." Click="BrowseOutput_Click" IsEnabled="{Binding SaveToFolder}" Padding="8,2" Margin="0,0,0,6"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Texture cache" VerticalAlignment="Center" Margin="0,0,10,6"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding TfcName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,6,6"
+                         ToolTip="Name of the texture file cache (TFC) for the streamed lightmap textures. For a DLC mod, Textures_DLC_MOD_YourMod. The cache is saved beside the baked files. An existing cache of this name is added to, not replaced."/>
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="UDK Binaries" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding UdkBinaries, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,6,0"
+                         ToolTip="UDK's Binaries folder. Requires SwarmAgent.exe version 1.7.6517, included with the February 2015 UDK."/>
+                <Button Grid.Row="3" Grid.Column="2" Content="Browse..." Click="BrowseUdk_Click" Padding="8,2"/>
+            </Grid>
+
+            <TextBlock Grid.Row="3" Text="{Binding Problems}" Foreground="OrangeRed" TextWrapping="Wrap" Margin="0,8,0,0">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Style.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <TextBlock Grid.Row="4" Text="{Binding Warnings}" Foreground="DarkGoldenrod" TextWrapping="Wrap" Margin="0,4,0,0">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Style.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+
+            <DockPanel Grid.Row="5" Margin="0,10,0,6">
+                <Button DockPanel.Dock="Right" Content="Cancel" Click="Cancel_Click" IsEnabled="{Binding IsBaking}" Padding="20,4" Margin="5,0,0,0"/>
+                <Button DockPanel.Dock="Right" Content="Bake" Click="Bake_Click" IsEnabled="{Binding CanBake}" Padding="20,4"/>
+                <TextBlock Text="{Binding Status}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+            </DockPanel>
+
+            <DockPanel Grid.Row="6">
+                <StackPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+                    <TextBlock Text="{Binding BakeState}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,0,4"/>
+                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding BakeProgress, Mode=OneWay}" IsIndeterminate="{Binding IsBaking}"
+                                 Height="12" AutomationProperties.Name="Bake progress" AutomationProperties.ItemStatus="{Binding BakeState}"/>
+                </StackPanel>
+                <TextBox x:Name="LogBox" IsReadOnly="True" FontFamily="Consolas" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                         TextWrapping="NoWrap"/>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
+</bases:TrackingNotifyPropertyChangedWindowBase>

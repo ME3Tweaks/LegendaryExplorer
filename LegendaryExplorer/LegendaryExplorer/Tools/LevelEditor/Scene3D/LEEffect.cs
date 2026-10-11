@@ -118,10 +118,15 @@ public unsafe class LEEffect : IDisposable
     /// Updates view constants once per frame. These buffers belong to this effect and
     /// remain valid even when another effect temporarily changes the context's bindings.
     /// </summary>
-    public void BeginFrame(MeshRenderContext context)
+    public void BeginFrame(MeshRenderContext context) =>
+        BeginFrame(context.ImmediateContext, context.Camera.ViewMatrix, context.Camera.ProjectionMatrix, context.Camera.EyePosition);
+
+    /// <summary>
+    /// Updates the view constants for an arbitrary view, e.g. one that isn't of the scene camera
+    /// </summary>
+    public void BeginFrame(DeviceContext deviceContext, Matrix4x4 view, Matrix4x4 projection, Vector3 eyePosition)
     {
-        ViewMatrix = context.Camera.ViewMatrix;
-        Matrix4x4 projection = context.Camera.ProjectionMatrix;
+        ViewMatrix = view;
         ViewProjectionMatrix = ViewMatrix * projection;
         Matrix4x4.Invert(ViewMatrix, out Matrix4x4 inverseView);
         Matrix4x4.Invert(projection, out Matrix4x4 inverseProjection);
@@ -129,7 +134,7 @@ public unsafe class LEEffect : IDisposable
         var vertexConstants = new LEVSConstants
         {
             ViewProjectionMatrix = ViewProjectionMatrix,
-            CameraPosition = new Vector4(context.Camera.EyePosition, 1),
+            CameraPosition = new Vector4(eyePosition, 1),
             PreViewTranslation = Vector4.Zero
         };
         // The projection already uses reversed depth.
@@ -143,8 +148,8 @@ public unsafe class LEEffect : IDisposable
             DynamicScale = Vector4.One
         };
         SharedPixelConstants = pixelConstants;
-        context.ImmediateContext.UpdateSubresource(ref vertexConstants, VertexShaderConstants);
-        context.ImmediateContext.UpdateSubresource(ref pixelConstants, PixelShaderConstants);
+        deviceContext.UpdateSubresource(ref vertexConstants, VertexShaderConstants);
+        deviceContext.UpdateSubresource(ref pixelConstants, PixelShaderConstants);
     }
 
     public void RenderObject(DeviceContext context, Mesh<LEVertex> mesh, int indexstart, int indexcount)

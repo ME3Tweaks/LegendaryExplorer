@@ -595,9 +595,31 @@
 		<!-- 4th Step: Delete the ILLink output directory -->
 		<RemoveDir Condition="'$(Configuration)' == 'WinAzureRelease'" Directories="$(TargetDir)$(ILLinkFolderName)\" />
 	</Target>
-	<Target Name="PostPublish" AfterTargets="Publish">
+	<!-- BuildSwarmBridge defines SwarmBridgeFiles, and runs here too when the publish skipped the build (publish -no-build) -->
+	<Target Name="PostPublish" AfterTargets="Publish" DependsOnTargets="BuildSwarmBridge">
 		<Message Importance="high" Text="Copying exec to publish directory $(PublishDir)exec" />
 		<Exec Command="xcopy /f /e /y &quot;Resources\exec&quot; &quot;$(PublishDir)exec\&quot;" />
+		<Copy SourceFiles="@(SwarmBridgeFiles)" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" />
+	</Target>
+
+	<!-- The Lightmass bake talks to UnrealSwarm through LEX.SwarmBridge.exe, a .NET Framework process (Swarm's API is .NET Remoting).
+	     It's built separately (a different target framework) and copied next to LEX. The protocol code is shared. -->
+	<PropertyGroup>
+		<SwarmBridgeProject>$(MSBuildProjectDirectory)\..\LEX.SwarmBridge\LEX.SwarmBridge.csproj</SwarmBridgeProject>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Include="..\LEX.SwarmBridge\SwarmProtocol.cs" Link="Lightmaps\Lightmass\SwarmProtocol.cs" />
+	</ItemGroup>
+	<Target Name="BuildSwarmBridge" AfterTargets="Build">
+		<MSBuild Projects="$(SwarmBridgeProject)" Targets="Restore" Properties="Configuration=Release;Platform=x64;_SwarmBridgeRestore=true" />
+		<MSBuild Projects="$(SwarmBridgeProject)" Targets="Build" Properties="Configuration=Release;Platform=x64">
+			<Output TaskParameter="TargetOutputs" ItemName="SwarmBridgeExe" />
+		</MSBuild>
+		<ItemGroup>
+			<SwarmBridgeFiles Include="@(SwarmBridgeExe)" />
+			<SwarmBridgeFiles Include="@(SwarmBridgeExe->'%(FullPath).config')" />
+		</ItemGroup>
+		<Copy SourceFiles="@(SwarmBridgeFiles)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
 	</Target>
 </Project>
 

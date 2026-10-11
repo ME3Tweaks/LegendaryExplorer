@@ -52,6 +52,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LegendaryExplorerUnrealDoc"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LegendaryExplorerCore.SourceGenerators", "LegendaryExplorerCore.SourceGenerators\LegendaryExplorerCore.SourceGenerators.csproj", "{5C0F8A2E-3D6B-4A19-9E4C-7B1D2F8A6C31}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LEX.SwarmBridge", "LEX.SwarmBridge\LEX.SwarmBridge.csproj", "{75EBC01B-02C8-4DFF-83E4-54709146D33E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -181,6 +183,10 @@ Global
 		{5C0F8A2E-3D6B-4A19-9E4C-7B1D2F8A6C31}.WinAzureRelease|x64.Build.0 = WinAzureRelease|Any CPU
 		{5C0F8A2E-3D6B-4A19-9E4C-7B1D2F8A6C31}.WinAzureTest|x64.ActiveCfg = WinAzureTest|Any CPU
 		{5C0F8A2E-3D6B-4A19-9E4C-7B1D2F8A6C31}.WinAzureTest|x64.Build.0 = WinAzureTest|Any CPU
+		{75EBC01B-02C8-4DFF-83E4-54709146D33E}.Debug|x64.ActiveCfg = Release|x64
+		{75EBC01B-02C8-4DFF-83E4-54709146D33E}.Release|x64.ActiveCfg = Release|x64
+		{75EBC01B-02C8-4DFF-83E4-54709146D33E}.WinAzureRelease|x64.ActiveCfg = Release|x64
+		{75EBC01B-02C8-4DFF-83E4-54709146D33E}.WinAzureTest|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

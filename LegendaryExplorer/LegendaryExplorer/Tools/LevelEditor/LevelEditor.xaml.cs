@@ -970,6 +970,25 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     #endregion
 
+    #region Lightmass Baker
+
+    private void OpenInLightmassBaker_Click(object sender, RoutedEventArgs e)
+    {
+        if (OpenFiles.Count is 0) return;
+        if (IsDirty || OpenFiles.Any(f => !f.IsReadOnly && f.Package.IsModified))
+        {
+            if (MessageBox.Show(this, "The Lightmass Baker bakes the files as saved on disk, so uncommitted and unsaved changes here aren't part of the bake, " +
+                                      "and this editor won't show the new lighting until the files are reopened. Open the baker anyway?",
+                    "Bake Lighting", MessageBoxButton.OKCancel) != MessageBoxResult.OK)
+            {
+                return;
+            }
+        }
+        new LightmassBaker.LightmassBakerWindow(OpenFiles.Select(f => (f.FilePath, !f.IsReadOnly))).Show();
+    }
+
+    #endregion
+
     #region Commit & Save
 
     private void CommitChanges()

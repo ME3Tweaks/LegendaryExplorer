@@ -139,6 +139,10 @@
                     <Separator/>
                     <MenuItem Header="Open Selected Actor in Package Editor" Command="{Binding OpenInPackageEditorCommand}"/>
                 </MenuItem>
+                <MenuItem Header="_Build">
+                    <MenuItem Header="Bake Lighting in Lightmass Baker..." Click="OpenInLightmassBaker_Click"
+                              ToolTip="Opens the Lightmass Baker with the open files (read-only ones only cast shadows). It bakes the files as saved on disk."/>
+                </MenuItem>
             </Menu>
 
             <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding OpenFiles}" Margin="6,3,6,0">

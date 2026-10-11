@@ -212,6 +212,7 @@
     <BitmapImage x:Key="iconTLKEditor" UriSource="Tools/Icons/tlkeditor_256x256.ico"/>
     <BitmapImage x:Key="iconLiveLevelEditor" UriSource="Tools/Icons/liveleveleditor_256x256.ico"/>
     <BitmapImage x:Key="iconLevelEditor" UriSource="Tools/Icons/LevelEditor_256x256.ico"/>
+    <BitmapImage x:Key="iconLightmassBaker" UriSource="Tools/Icons/lightmassbaker_256x256.ico"/>
     <BitmapImage x:Key="iconAnimationImporter" UriSource="Tools/Icons/animationimporter_256x256.ico"/>
     <BitmapImage x:Key="iconAnimViewer" UriSource="Tools/Icons/animviewer_256x256.ico"/>
     <BitmapImage x:Key="iconAssetViewer" UriSource="Tools/Icons/assetviewer_256x256.ico"/>
@@ -254,6 +255,7 @@
     <BitmapImage x:Key="iconTLKEditorME2316" UriSource="Tools/Icons/16x16/ME23TLKEditor_Icon_16.ico"/>
     <BitmapImage x:Key="iconTLKEditor16" UriSource="Tools/Icons/16x16/TLKEditor_Icon_16.ico"/>
     <BitmapImage x:Key="iconLiveLevelEditor16" UriSource="Tools/Icons/16x16/LiveLevelEditor_Icon_16.ico"/>
+    <BitmapImage x:Key="iconLightmassBaker16" UriSource="Tools/Icons/16x16/LightmassBaker_Icon_16.ico"/>
     <BitmapImage x:Key="iconAnimationImporter16" UriSource="Tools/Icons/16x16/AnimationImporter_Icon_16.ico"/>
     <BitmapImage x:Key="iconAnimViewer16" UriSource="Tools/Icons/16x16/AnimationViewer_Icon_16.ico"/>
     <BitmapImage x:Key="iconAudioLocalizer16" UriSource="Tools/Icons/16x16/AudioLocalizer_Icon_16.ico"/>

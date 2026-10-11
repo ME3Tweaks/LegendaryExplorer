@@ -110,6 +110,18 @@ internal static class ShaderParameterSetters
         }
     }
 
+    /// <summary>
+    /// Overwrites the ambient lighting a base pass pixel shader without a light-map adds to lit materials (Color += DiffuseColor * AmbientColor),
+    /// and its sky light factor. For capturing a material's diffuse color, e.g. for Lightmass
+    /// </summary>
+    /// <exception cref="InvalidOperationException">The shader isn't a base pass pixel shader without a light-map</exception>
+    internal static void WriteAmbientColorAndSkyFactor(Shader pixelShader, Span<byte> buffer, LinearColor ambientColorAndSkyFactor)
+    {
+        if (pixelShader is not TBasePassPixelShader<FNullPolicy> noLightMapShader)
+            throw new InvalidOperationException($"{pixelShader.ShaderType} has no ambient color parameter: only base pass pixel shaders without a light-map do");
+        buffer.WriteVal(noLightMapShader.AmbientColorAndSkyFactor, ambientColorAndSkyFactor);
+    }
+
     private static MeshStaticLighting RequireLightMap(MeshStaticLighting staticLighting) =>
         staticLighting is { LightMapType: not ELightMapType.LMT_None } ? staticLighting
             : throw new InvalidOperationException("These shaders render a static light-map, but the mesh doesn't have one");

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Talks to UnrealSwarm's SwarmAgent for LEX's Lightmass bakes. The agent's API is .NET Remoting, which modern .NET can't use,
+       so this small .NET Framework process does it. AgentInterface.dll is loaded at run time from the user's UDK install;
+       nothing from UDK is referenced at build time or shipped. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <RootNamespace>LegendaryExplorer.SwarmBridge</RootNamespace>
+    <AssemblyName>LEX.SwarmBridge</AssemblyName>
+    <Configurations>Debug;Release;WinDebug;WinRelease;WinAzureRelease;WinAzureTest</Configurations>
+    <Platforms>x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Runtime.Remoting" />
+  </ItemGroup>
+
+</Project>

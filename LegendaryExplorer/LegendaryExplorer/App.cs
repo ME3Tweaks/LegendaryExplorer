@@ -18,6 +18,12 @@ namespace LegendaryExplorer
         [STAThread]
         public static void Main()
         {
+            // Headless lighting build: no UI, and independent of any running instance
+            if (Lightmaps.Lightmass.LightmassBakeCli.IsInvocation(Environment.GetCommandLineArgs()))
+            {
+                Environment.Exit(Lightmaps.Lightmass.LightmassBakeCli.Run(Environment.GetCommandLineArgs()));
+            }
+
             DPIAwareSplashScreen.Show();
 
             var app = new App();
