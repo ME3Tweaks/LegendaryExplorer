@@ -21,22 +21,26 @@ namespace LegendaryExplorer.Lightmaps.Game;
 public sealed class TfcWriter
 {
     readonly HashSet<ExportEntry> writtenTextures = [];
+    readonly string copiedCacheSource;
 
     public string Name { get; }
     public Guid Guid { get; }
     public string FilePath { get; }
 
-    public TfcWriter(string directory, string name, bool append = false, IEnumerable<IMEPackage> sourcePackages = null)
+    /// <param name="copiedCacheSource">Original path of the exact cache copy already placed in directory, if any.</param>
+    public TfcWriter(string directory, string name, bool append = false, IEnumerable<IMEPackage> sourcePackages = null,
+        string copiedCacheSource = null)
     {
         Name = name;
         FilePath = Path.Combine(directory, name + ".tfc");
-        if (append && !File.Exists(FilePath) && sourcePackages != null) SeedFallbackCache(sourcePackages);
+        string fallbackSource = append && !File.Exists(FilePath) && sourcePackages != null ? SeedFallbackCache(sourcePackages) : null;
         if (append && File.Exists(FilePath) && new FileInfo(FilePath).Length >= 16)
         {
             using var stream = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
             var header = new byte[16];
             stream.ReadExactly(header);
             Guid = new Guid(header);
+            this.copiedCacheSource = fallbackSource ?? (copiedCacheSource == null ? null : Path.GetFullPath(copiedCacheSource));
             return;
         }
         Guid = Guid.NewGuid();
@@ -46,7 +50,7 @@ public sealed class TfcWriter
 
     // A new adjacent cache would take precedence over the parent's/game's existing cache. Seed it before
     // any writes, preserving every offset, including references in packages outside this bake.
-    void SeedFallbackCache(IEnumerable<IMEPackage> packages)
+    string SeedFallbackCache(IEnumerable<IMEPackage> packages)
     {
         string archive = Name + ".tfc";
         foreach (var package in packages)
@@ -59,21 +63,31 @@ public sealed class TfcWriter
                 .Any(e => new Texture2D(e).Mips.Any(m => !m.IsPackageStored && m.storageType != StorageTypes.empty));
             if (!usesCache) continue;
 
-            // Match Texture2D.GetTextureData's LE3 fallback order: CookedPCConsole parent, then game files.
-            string source = null;
-            if (folder.Contains(@"\CookedPCConsole") && !Path.GetFileName(folder).Equals("CookedPCConsole", StringComparison.OrdinalIgnoreCase))
-            {
-                string parent = folder;
-                while (parent != null && !Path.GetFileName(parent).Equals("CookedPCConsole", StringComparison.OrdinalIgnoreCase))
-                    parent = Path.GetDirectoryName(parent);
-                if (parent != null && File.Exists(Path.Combine(parent, archive))) source = Path.Combine(parent, archive);
-            }
-            source ??= MELoadedFiles.GetAllGameFiles(null, package.Game, false, true)
-                .FirstOrDefault(f => Path.GetFileName(f).Equals(archive, StringComparison.OrdinalIgnoreCase));
+            string source = FindSourceCache(package);
             if (source == null) throw new FileNotFoundException($"The source cache {archive} for {package.FileNameNoExtension} could not be found.");
             File.Copy(source, FilePath);
-            return;
+            return source;
         }
+        return null;
+    }
+
+    // Match Texture2D.GetTextureData's LE3 lookup order: adjacent cache, CookedPCConsole parent, then game files.
+    string FindSourceCache(IMEPackage package)
+    {
+        string archive = Name + ".tfc";
+        string folder = Path.GetDirectoryName(package.FilePath);
+        string local = Path.Combine(folder, archive);
+        if (File.Exists(local)) return Path.GetFullPath(local);
+        if (folder.Contains(@"\CookedPCConsole") && !Path.GetFileName(folder).Equals("CookedPCConsole", StringComparison.OrdinalIgnoreCase))
+        {
+            string parent = folder;
+            while (parent != null && !Path.GetFileName(parent).Equals("CookedPCConsole", StringComparison.OrdinalIgnoreCase))
+                parent = Path.GetDirectoryName(parent);
+            if (parent != null && File.Exists(Path.Combine(parent, archive))) return Path.GetFullPath(Path.Combine(parent, archive));
+        }
+        string source = MELoadedFiles.GetAllGameFiles(null, package.Game, false, true)
+            .FirstOrDefault(f => Path.GetFileName(f).Equals(archive, StringComparison.OrdinalIgnoreCase));
+        return source == null ? null : Path.GetFullPath(source);
     }
 
     /// <summary>Appends a blob and returns its offset.</summary>
@@ -100,6 +114,8 @@ public sealed class TfcWriter
         {
             string localCache = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(package.FilePath), Name + ".tfc"));
             if (localCache.Equals(Path.GetFullPath(FilePath), StringComparison.OrdinalIgnoreCase)) continue;
+            // Staging already contains these bytes at their original offsets, just like an in-place append.
+            if (copiedCacheSource != null && string.Equals(FindSourceCache(package), copiedCacheSource, StringComparison.OrdinalIgnoreCase)) continue;
             foreach (var export in package.Exports)
             {
                 if (!export.IsTexture() || writtenTextures.Contains(export)

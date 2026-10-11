@@ -363,9 +363,16 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         Directory.CreateDirectory(Path.Combine(AppDirectories.AppDataFolder, "LevelEditor")).FullName,
         "RECENTSETS");
 
-    public LevelEditor()
+    public bool IsBakePreview { get; }
+    public bool CanEditScene => !IsBakePreview;
+    private bool loadingBakePreview;
+
+    public LevelEditor() : this(false) { }
+
+    public LevelEditor(bool readOnlyPreview)
     {
-        RenderContext = new LevelEditorRenderContext
+        IsBakePreview = readOnlyPreview;
+        RenderContext = new LevelEditorRenderContext(readOnlyPreview)
         {
             UseGameShaders = _useGameShaders
         };
@@ -385,7 +392,18 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
         LoadCommands();
         InitializeComponent();
-        LoadRecentSets();
+        if (IsBakePreview)
+        {
+            // Reclaim the space reserved for the editor's details and changes panes.
+            DetailsColumn.MinWidth = 0;
+            DetailsColumn.Width = new GridLength(0);
+            DetailsSplitterColumn.Width = new GridLength(0);
+            ChangesRow.MinHeight = 0;
+            ChangesRow.Height = new GridLength(0);
+            ChangesSplitterRow.Height = new GridLength(0);
+        }
+        AllowDrop = !IsBakePreview;
+        if (!IsBakePreview) LoadRecentSets();
 
         SceneViewer.Context = RenderContext;
         UndoHistory.PropertyChanged += UndoHistory_PropertyChanged;
@@ -543,6 +561,27 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
     }
 
+    /// <summary>Loads private bake packages without reopening their originals or recording them as recent files.</summary>
+    public async Task LoadBakePreviewAsync(IReadOnlyList<IMEPackage> levels,
+        Func<LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo, byte[]> readTexture)
+    {
+        if (!IsBakePreview) throw new InvalidOperationException("Use a read-only preview window.");
+        loadingBakePreview = true;
+        using var guard = new RenderGuard(this);
+        try
+        {
+            CloseAllFiles();
+            RenderContext.TextureDataOverride = readTexture;
+            foreach (var package in levels) await AddLevelPackage(package);
+            CenterView();
+            Title = "Lightmass Preview — close this window to Save or Discard in Lightmass Baker";
+        }
+        finally
+        {
+            loadingBakePreview = false;
+        }
+    }
+
     private async Task AddLevelFile(string path)
     {
         path = Path.GetFullPath(path);
@@ -554,6 +593,12 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
 
         using IMEPackage pcc = MEPackageHandler.OpenMEPackage(path);
+        await AddLevelPackage(pcc);
+    }
+
+    private async Task AddLevelPackage(IMEPackage pcc)
+    {
+        string path = pcc.FilePath;
         if (OpenFiles.Count > 0 && pcc.Game != Game)
         {
             MessageBox.Show(this, $"Cannot mix games. The open files are {Game}, but {Path.GetFileName(path)} is {pcc.Game}.");
@@ -573,7 +618,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         OpenFiles.Add(openFile);
         HasAnyFileOpen = true;
 
-        RecordCurrentFilesAsRecent();
+        if (!IsBakePreview) RecordCurrentFilesAsRecent();
 
         Level levelBin = levelExport.GetBinaryData<Level>();
         bool isFirstFile = OpenFiles.Count == 1;
@@ -822,19 +867,19 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void LoadCommands()
     {
         SetLightingModeCommand = new RelayCommand(mode => LightingMode = (ViewportLightingMode)mode);
-        OpenFileCommand = new GenericCommand(OpenFile);
-        AddFileCommand = new GenericCommand(AddFile);
-        SaveAllCommand = new GenericCommand(SaveAllFiles, PackageIsLoaded);
-        SaveAsCommand = new GenericCommand(SaveFileAs, PackageIsLoaded);
-        SaveSingleFileCommand = new RelayCommand(SaveSingleFileExecute, _ => PackageIsLoaded());
-        CloseFileCommand = new RelayCommand(CloseFileExecute);
+        OpenFileCommand = new GenericCommand(OpenFile, () => CanEditScene);
+        AddFileCommand = new GenericCommand(AddFile, () => CanEditScene);
+        SaveAllCommand = new GenericCommand(SaveAllFiles, () => CanEditScene && PackageIsLoaded());
+        SaveAsCommand = new GenericCommand(SaveFileAs, () => CanEditScene && PackageIsLoaded());
+        SaveSingleFileCommand = new RelayCommand(SaveSingleFileExecute, _ => CanEditScene && PackageIsLoaded());
+        CloseFileCommand = new RelayCommand(CloseFileExecute, _ => CanEditScene);
         ToggleTranslateCommand = new GenericCommand(() => { RenderContext.TransformWidget.Mode = EWidgetMode.Translate; CurrentModeName = "Translate"; }, PackageIsLoaded);
         ToggleRotateCommand = new GenericCommand(() => { RenderContext.TransformWidget.Mode = EWidgetMode.Rotate; CurrentModeName = "Rotate"; }, PackageIsLoaded);
         ToggleScaleCommand = new GenericCommand(() => { RenderContext.TransformWidget.Mode = EWidgetMode.Scale; CurrentModeName = "Scale"; }, PackageIsLoaded);
         ToggleUniformScaleCommand = new GenericCommand(() => { RenderContext.TransformWidget.Mode = EWidgetMode.UniformScale; CurrentModeName = "Uniform Scale"; }, PackageIsLoaded);
-        CommitChangesCommand = new GenericCommand(CommitChanges, PackageIsLoaded);
-        CommitSingleFileCommand = new RelayCommand(CommitSingleFileExecute, _ => PackageIsLoaded());
-        LoadRelatedLevelsCommand = new GenericCommand(LoadRelatedLevels, PackageIsLoaded);
+        CommitChangesCommand = new GenericCommand(CommitChanges, () => CanEditScene && PackageIsLoaded());
+        CommitSingleFileCommand = new RelayCommand(CommitSingleFileExecute, _ => CanEditScene && PackageIsLoaded());
+        LoadRelatedLevelsCommand = new GenericCommand(LoadRelatedLevels, () => CanEditScene && PackageIsLoaded());
         FocusSelectedCommand = new GenericCommand(() =>
         {
             if (SelectedActor is not null)
@@ -853,7 +898,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 p.LoadFile(SelectedActor.Export.FileRef.FilePath, SelectedActor.Export.UIndex);
                 p.Activate();
             }
-        }, () => PackageIsLoaded() && SelectedActor is not null);
+        }, () => CanEditScene && PackageIsLoaded() && SelectedActor is not null);
         OpenRecentSetCommand = new RelayCommand(obj => { if (obj is RecentFileSet set) OpenRecentFileSet(set); });
         UndoCommand = new GenericCommand(Undo, () => UndoHistory.CanUndo);
         RedoCommand = new GenericCommand(Redo, () => UndoHistory.CanRedo);
@@ -1118,7 +1163,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private async void SaveFileAs()
     {
-        if (OpenFiles.Count == 0) return;
+        if (IsBakePreview || OpenFiles.Count == 0) return;
 
         // Save As applies to the first file when only one is open,
         // otherwise prompt which file to save
@@ -1485,9 +1530,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void LevelEditor_Closing(object sender, CancelEventArgs e)
     {
         if (e.Cancel) return;
+        if (loadingBakePreview || (IsBakePreview && IsBusy)) { e.Cancel = true; return; }
 
         var dirtyFiles = OpenFiles.Where(f => f.IsDirty || f.Package.IsModified).ToList();
-        if (dirtyFiles.Count > 0)
+        if (!IsBakePreview && dirtyFiles.Count > 0)
         {
             string fileNames = string.Join(",\n", dirtyFiles.Select(f => f.FileName));
             var result = MessageBox.Show(this,

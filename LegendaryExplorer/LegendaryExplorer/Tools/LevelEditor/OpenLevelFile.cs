@@ -51,8 +51,8 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
     private bool isReadOnly;
     public bool IsReadOnly
     {
-        get => isReadOnly;
-        set => SetProperty(ref isReadOnly, value);
+        get => Owner.IsBakePreview || isReadOnly;
+        set { if (!Owner.IsBakePreview) SetProperty(ref isReadOnly, value); }
     }
 
     public OpenLevelFile(LevelEditor owner, IMEPackage package, ExportEntry levelExport)
@@ -95,8 +95,8 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
             actor.Dispose();
         }
         Actors.Clear();
+        // The registered close callback releases this tool's package reference exactly once.
         _closedHandler?.Invoke();
         _closedHandler = null;
-        Package.Release(this);
     }
 }

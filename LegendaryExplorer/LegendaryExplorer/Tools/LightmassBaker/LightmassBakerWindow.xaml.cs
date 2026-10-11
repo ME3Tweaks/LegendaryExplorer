@@ -38,7 +38,7 @@ public class BakeFileItem : NotifyPropertyChangedBase
 
 /// <summary>
 /// Builds a level's static lighting with Lightmass (<see cref="LightmassBakeJob"/>), separately from the Level Editor so a bake
-/// doesn't share the machine with a renderer. The files are opened from disk and the baked ones saved.
+/// doesn't share the machine with a renderer. Baked packages are previewed before the user saves or discards them.
 /// </summary>
 public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowBase
 {
@@ -98,13 +98,27 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
             {
                 OnPropertyChanged(nameof(IsIdle));
                 OnPropertyChanged(nameof(CanBake));
+                OnPropertyChanged(nameof(CanReview));
+                OnPropertyChanged(nameof(CanCancel));
             }
         }
     }
-    public bool IsIdle => !IsBaking;
+    public bool IsIdle => !IsBaking && pendingPreview == null;
+    public bool CanReview => !IsBaking && pendingPreview != null && previewWindow == null;
+    public bool CanCancel => IsBaking && cancellation != null;
+
+    private LightmassBakePreview pendingPreview;
+    private LevelEditor.LevelEditor previewWindow;
+
+    private void UpdatePreviewState()
+    {
+        OnPropertyChanged(nameof(IsIdle));
+        OnPropertyChanged(nameof(CanBake));
+        OnPropertyChanged(nameof(CanReview));
+    }
 
     private bool hasProblems = true;
-    public bool CanBake => !IsBaking && !hasProblems;
+    public bool CanBake => IsIdle && !hasProblems;
 
     private CancellationTokenSource cancellation;
 
@@ -233,7 +247,7 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
 
     private void Window_DragOver(object sender, DragEventArgs e)
     {
-        bool ok = !IsBaking && e.Data.GetDataPresent(DataFormats.FileDrop)
+        bool ok = IsIdle && e.Data.GetDataPresent(DataFormats.FileDrop)
                   && ((string[])e.Data.GetData(DataFormats.FileDrop)).Any(f => Path.GetExtension(f).Equals(".pcc", StringComparison.OrdinalIgnoreCase));
         e.Effects = ok ? DragDropEffects.Copy : DragDropEffects.None;
         e.Handled = true;
@@ -241,7 +255,7 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
 
     private void Window_Drop(object sender, DragEventArgs e)
     {
-        if (IsBaking || !e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+        if (!IsIdle || !e.Data.GetDataPresent(DataFormats.FileDrop)) return;
         var files = (string[])e.Data.GetData(DataFormats.FileDrop);
         AddFiles(files.Where(f => Path.GetExtension(f).Equals(".pcc", StringComparison.OrdinalIgnoreCase)).Select(f => (f, true)));
     }
@@ -299,24 +313,19 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
         Validate();
         if (!CanBake) return;
         var job = ToJob();
-        if (string.IsNullOrWhiteSpace(job.OutputDirectory) && Files.Any(f => f.Editable)
-            && MessageBox.Show(this, "The baked files will be saved over the originals. Continue?", "Lightmass Baker", MessageBoxButton.OKCancel) != MessageBoxResult.OK)
-        {
-            return;
-        }
-
         LogBox.Clear();
         BakeProgress = 0;
         BakeState = "Bake in progress...";
         Status = "Starting...";
         IsBaking = true;
         cancellation = new CancellationTokenSource();
+        OnPropertyChanged(nameof(CanCancel));
         var start = DateTime.Now;
         void AppendLog(string message)
         {
             LogBox.AppendText($"[{DateTime.Now - start:hh\\:mm\\:ss}] {message}\n");
             LogBox.ScrollToEnd();
-            if (IsBaking && !cancellation.IsCancellationRequested) Status = message;
+            if (IsBaking && cancellation?.IsCancellationRequested != true) Status = message;
         }
         void Log(string message)
         {
@@ -327,11 +336,22 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
         try
         {
             var token = cancellation.Token;
-            var result = await Task.Run(() => job.Run(Log, token));
-            foreach (string line in LightmassBakeReport.Summary(result).Split('\n')) Log(line);
-            Status = result.SavedFiles.Count == 0 ? "Done: nothing was saved."
-                : result.Complete ? $"Done: saved {result.SavedFiles.Count} files."
-                : $"Done: saved {result.SavedFiles.Count} files, but {result.FailedTasks + result.MissingMappings} lightmaps weren't baked and keep their original lighting.";
+            pendingPreview = await Task.Run(() => job.Prepare(Log, token));
+            var result = pendingPreview.Result;
+            foreach (string line in LightmassBakeReport.Summary(result, preview: true).Split('\n')) Log(line);
+            if (!pendingPreview.HasChanges)
+            {
+                pendingPreview.Dispose();
+                pendingPreview = null;
+                Status = "Done: no lighting changes to preview.";
+            }
+            else
+            {
+                Status = result.Complete ? "Ready to preview. Save or discard after inspecting the lighting."
+                    : $"Ready to preview; {result.FailedTasks + result.MissingMappings} lightmaps weren't baked and keep their original lighting.";
+                LogBox.AppendText("The baked files and texture cache have not been saved to their destination.\n");
+            }
+            UpdatePreviewState();
             BakeState = Status;
             BakeProgress = 100;
         }
@@ -353,6 +373,81 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
             IsBaking = false;
             Validate();
         }
+        if (pendingPreview != null) await ShowPreviewAsync();
+    }
+
+    private async void Preview_Click(object sender, RoutedEventArgs e) => await ShowPreviewAsync();
+
+    private async Task ShowPreviewAsync()
+    {
+        if (!CanReview) return;
+        try
+        {
+            previewWindow = new LevelEditor.LevelEditor(readOnlyPreview: true) { Owner = this };
+            previewWindow.Closed += (_, _) =>
+            {
+                previewWindow = null;
+                UpdatePreviewState();
+            };
+            UpdatePreviewState();
+            previewWindow.Show();
+            await previewWindow.LoadBakePreviewAsync(pendingPreview.Levels, pendingPreview.ReadPreviewTexture);
+        }
+        catch (Exception ex)
+        {
+            previewWindow?.Close();
+            Status = $"Preview couldn't be opened: {ex.Message}";
+            LogBox.AppendText(Status + "\n");
+            UpdatePreviewState();
+        }
+    }
+
+    private async void SaveBake_Click(object sender, RoutedEventArgs e)
+    {
+        if (!CanReview) return;
+        if (SaveInPlace && MessageBox.Show(this, "Save the previewed lighting over the original files?", "Lightmass Baker",
+                MessageBoxButton.OKCancel) != MessageBoxResult.OK) return;
+        IsBaking = true;
+        BakeState = "Saving lighting...";
+        try
+        {
+            await Task.Run(() => pendingPreview.Save(message => Dispatcher.InvokeAsync(() =>
+            {
+                Status = message;
+                LogBox.AppendText(message + "\n");
+                LogBox.ScrollToEnd();
+            })));
+            var result = pendingPreview.Result;
+            Status = BakeState = result.Complete ? $"Saved {result.SavedFiles.Count} files."
+                : $"Saved {result.SavedFiles.Count} files; {result.FailedTasks + result.MissingMappings} lightmaps keep their original lighting.";
+            LogBox.AppendText(Status + "\n");
+            pendingPreview.Dispose();
+            pendingPreview = null;
+        }
+        catch (Exception ex)
+        {
+            Status = BakeState = $"Save failed: {ex.Message}";
+            LogBox.AppendText($"{Status}\n{pendingPreview.Result.SavedFiles.Count} files have been saved. The prepared bake is retained for retry.\n");
+        }
+        finally
+        {
+            IsBaking = false;
+            UpdatePreviewState();
+            Validate();
+        }
+    }
+
+    private void Discard_Click(object sender, RoutedEventArgs e)
+    {
+        if (!CanReview) return;
+        bool partiallySaved = pendingPreview.Result.SavedFiles.Count > 0;
+        pendingPreview.Dispose();
+        pendingPreview = null;
+        Status = BakeState = partiallySaved ? "Preview discarded. Files already saved were kept." : "Preview discarded. No level files were saved.";
+        LogBox.AppendText(Status + "\n");
+        BakeProgress = 0;
+        UpdatePreviewState();
+        Validate();
     }
 
     private void Cancel_Click(object sender, RoutedEventArgs e)
@@ -372,6 +467,19 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
             MessageBox.Show(this, "A bake is running. Cancel it, or wait for it to finish, before closing.", "Lightmass Baker");
             e.Cancel = true;
             return;
+        }
+        if (pendingPreview != null)
+        {
+            if (MessageBox.Show(this, "Discard the pending lighting preview and close? Any files already saved will be kept.",
+                    "Lightmass Baker", MessageBoxButton.OKCancel) != MessageBoxResult.OK)
+            {
+                e.Cancel = true;
+                return;
+            }
+            previewWindow?.Close();
+            if (previewWindow != null) { e.Cancel = true; return; }
+            pendingPreview.Dispose();
+            pendingPreview = null;
         }
         validationTimer.Stop();
     }

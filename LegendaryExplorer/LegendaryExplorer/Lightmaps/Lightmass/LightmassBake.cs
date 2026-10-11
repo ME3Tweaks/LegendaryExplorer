@@ -19,6 +19,8 @@ public sealed class LightmassBakeSettings
     public LightmassSceneOptions Scene = new();
     /// <summary>Where the mod TFC for streamed lightmap textures is written, and its name (Textures_DLC_MOD_..., for the game to find it).</summary>
     public string TfcDirectory;
+    /// <summary>Original path of the cache copied into TfcDirectory for a preview.</summary>
+    internal string CopiedCacheSource;
     public string TfcName = "Textures_DLC_MOD_LEXLightmaps";
     /// <summary>
     /// Atlases get new allocations (AtlasPacker) instead of keeping the original layout. Not offered in the Lightmass Baker: it trashes and
@@ -259,7 +261,8 @@ public static class LightmassBake
         string tfcDirectory = settings.TfcDirectory ?? Path.GetDirectoryName(levels[0].FilePath);
         using var source = new LightmassBakeSource(scene, result.Results);
         var packages = scene.Mappings.Where(m => result.Results.ContainsKey(m.Guid)).SelectMany(m => m.Targets).Select(t => t.Owner.FileRef).Distinct().ToList();
-        var tfc = new TfcWriter(tfcDirectory, settings.TfcName, append: true, sourcePackages: packages);
+        var tfc = new TfcWriter(tfcDirectory, settings.TfcName, append: true, sourcePackages: packages,
+            copiedCacheSource: settings.CopiedCacheSource);
         result.TfcPath = tfc.FilePath;
         foreach (var package in packages)
         {
@@ -285,7 +288,7 @@ public static class LightmassBakeReport
         $"{s.Allocations} texture lightmaps in {s.TextureSets} atlases, {s.VertexLightmaps} vertex lightmaps" +
         (s.UnbakedSets > 0 ? $" ({s.UnbakedSets} atlases with nothing baked left as they were)" : "");
 
-    public static string Summary(LightmassBakeResult result)
+    public static string Summary(LightmassBakeResult result, bool preview = false)
     {
         int mappings = result.Scene?.Mappings.Count() ?? 0;
         if (mappings == 0) return "There was nothing to bake: none of the baked files have lightmaps that can be rebaked.";
@@ -307,7 +310,8 @@ public static class LightmassBakeReport
             foreach (var group in result.Alerts.GroupBy(a => a).OrderByDescending(g => g.Count()).Take(10))
                 lines.Add($"  {group.Count()} x {group.Key}");
         }
-        if (result.TfcPath != null) lines.Add($"Streamed lightmap textures: {result.TfcPath} (ship it with the mod).");
+        if (result.TfcPath != null) lines.Add(preview ? "Texture cache prepared for preview; it will be published when you save."
+            : $"Streamed lightmap textures: {result.TfcPath} (ship it with the mod).");
         foreach (string saved in result.SavedFiles) lines.Add($"Saved {saved}");
         return string.Join("\n", lines);
     }

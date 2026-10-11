@@ -167,14 +167,23 @@ public sealed class LightmassBakeJob
     /// <exception cref="IOException">A file couldn't be saved, or another bake is writing the same texture cache</exception>
     public LightmassBakeResult Run(Action<string> log, CancellationToken cancel = default)
     {
+        using var preview = Prepare(log, cancel);
+        cancel.ThrowIfCancellationRequested();
+        preview.Save(log);
+        return preview.Result;
+    }
+
+    /// <summary>Bakes into private packages and a temporary texture cache. Dispose to discard, or call Save to publish the result.</summary>
+    public LightmassBakePreview Prepare(Action<string> log, CancellationToken cancel = default)
+    {
         log ??= _ => { };
         if (Problems() is { Count: > 0 } problems) throw new InvalidOperationException(string.Join("\n", problems));
-        using var tfcLock = LockTfc();
+        var preview = new LightmassBakePreview(this, LockTfc());
 
         // The persistent level goes first: its WorldInfo holds the scene's Lightmass settings
         log($"Lightmass and Swarm from {ResolvedUdkBinaries}");
         var ordered = Files.OrderByDescending(f => Path.GetFileName(f.Path).StartsWith("BioP_", StringComparison.OrdinalIgnoreCase)).ToList();
-        var packages = new List<IMEPackage>();
+        var packages = preview.Packages;
         try
         {
             foreach (var file in ordered)
@@ -191,25 +200,18 @@ public sealed class LightmassBakeJob
                 UdkBinaries = ResolvedUdkBinaries,
                 Quality = Quality,
                 TfcName = TfcName,
-                TfcDirectory = ResolvedTfcDirectory,
+                TfcDirectory = preview.TemporaryDirectory,
+                CopiedCacheSource = preview.CopiedCacheSource,
                 Scene = new LightmassSceneOptions { ContextOnly = contextOnly },
             };
-            var result = LightmassBake.Run(packages, settings, log, cancel);
-
+            preview.Result = LightmassBake.Run(packages, settings, log, cancel);
             cancel.ThrowIfCancellationRequested();
-            foreach (var package in result.Rewrites.Keys)
-            {
-                if (contextOnly.Contains(package)) continue;
-                string path = string.IsNullOrWhiteSpace(OutputDirectory) ? package.FilePath : Path.Combine(OutputDirectory, Path.GetFileName(package.FilePath));
-                log($"Saving {path}...");
-                Save(package, path);
-                result.SavedFiles.Add(path);
-            }
-            return result;
+            return preview;
         }
-        finally
+        catch
         {
-            foreach (var package in packages) package.Dispose();
+            preview.Dispose();
+            throw;
         }
     }
 
@@ -234,7 +236,7 @@ public sealed class LightmassBakeJob
     /// Saves through a temporary file that then replaces the target, so a failure throws (IMEPackage.Save only reports it to a callback)
     /// and leaves the existing file whole.
     /// </summary>
-    static void Save(IMEPackage package, string path)
+    internal static void Save(IMEPackage package, string path)
     {
         if (package is not MEPackage mePackage) throw new NotSupportedException($"{package.FileNameNoExtension} isn't a Mass Effect package");
         string temporary = path + ".lexbake-tmp";

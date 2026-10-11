@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
@@ -99,10 +99,13 @@ public static class RenderContextExtensions
         return renderContext.LoadTexture(width, height, format, pixelData);
     }
 
+    public static byte[] ReadTextureData(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip)
+        => (renderContext as MeshRenderContext)?.TextureDataOverride?.Invoke(mip) ?? LECTexture2D.GetTextureData(mip, mip.Export.Game);
+
     public static Texture2D LoadUnrealMip(this RenderContext renderContext, LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo mip, LegendaryExplorerCore.Textures.PixelFormat pixelFormat, bool typelessResource = false)
     {
         // Todo: Needs way to set black alpha
-        var imagebytes = LECTexture2D.GetTextureData(mip, mip.Export.Game);
+        var imagebytes = renderContext.ReadTextureData(mip);
         uint mipWidth = (uint)mip.width;
         uint mipHeight = (uint)mip.height;
         var mipFormat = (Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(pixelFormat);
@@ -151,7 +154,7 @@ public static class RenderContextExtensions
             byte[] data;
             try
             {
-                data = LECTexture2D.GetTextureData(mip, mip.Export.Game);
+                data = renderContext.ReadTextureData(mip);
             }
             catch when (level > 0)
             {

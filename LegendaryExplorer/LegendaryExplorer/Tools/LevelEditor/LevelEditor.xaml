@@ -60,8 +60,8 @@
             <DataTemplate x:Key="OutlinerLevelHeader">
                 <Border Background="{StaticResource EditorChrome}" Padding="6,4" Margin="0,3,0,1">
                     <DockPanel>
-                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                            <ToggleButton Padding="4" IsChecked="{Binding Name.IsReadOnly, Mode=TwoWay}" ToolTip="Read-only: prevent actor edits" AutomationProperties.Name="Read-only package">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Visibility="{Binding Data.CanEditScene, Source={StaticResource bindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <ToggleButton Padding="4" IsEnabled="{Binding Data.CanEditScene, Source={StaticResource bindingProxy}}" IsChecked="{Binding Name.IsReadOnly, Mode=TwoWay}" ToolTip="Read-only: prevent actor edits" AutomationProperties.Name="Read-only package">
                                 <Grid Width="11" Height="12">
                                     <fa:ImageAwesome Icon="Solid_Lock" Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}, Converter={StaticResource BoolToVisibilityConverter}}" Foreground="{StaticResource EditorText}"/>
                                     <fa:ImageAwesome Icon="Solid_LockOpen" Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}" Foreground="{StaticResource EditorText}"/>
@@ -93,7 +93,7 @@
             </DataTemplate>
             <ContextMenu x:Key="ActorContextMenu">
                 <MenuItem Header="Focus Camera" Command="{Binding Data.FocusSelectedCommand, Source={StaticResource bindingProxy}}" InputGestureText="F"/>
-                <MenuItem Header="Open in Package Editor" Command="{Binding Data.OpenInPackageEditorCommand, Source={StaticResource bindingProxy}}"/>
+                <MenuItem Header="Open in Package Editor" Visibility="{Binding Data.CanEditScene, Source={StaticResource bindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}" Command="{Binding Data.OpenInPackageEditorCommand, Source={StaticResource bindingProxy}}"/>
             </ContextMenu>
             <Style x:Key="ActorRow" TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                 <Setter Property="ContextMenu" Value="{StaticResource ActorContextMenu}"/>
@@ -114,7 +114,7 @@
     </Window.InputBindings>
     <xctk:BusyIndicator IsBusy="{Binding IsBusy}" BusyContent="{Binding BusyText}">
         <DockPanel Background="{StaticResource EditorChrome}">
-            <Menu DockPanel.Dock="Top" Padding="4,0">
+            <Menu DockPanel.Dock="Top" Padding="4,0" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                 <MenuItem Header="_File">
                     <MenuItem Header="Open..." Command="{Binding OpenFileCommand}" InputGestureText="Ctrl+O"/>
                     <MenuItem Header="Add File..." Command="{Binding AddFileCommand}" InputGestureText="Ctrl+Shift+O"/>
@@ -139,13 +139,13 @@
                     <Separator/>
                     <MenuItem Header="Open Selected Actor in Package Editor" Command="{Binding OpenInPackageEditorCommand}"/>
                 </MenuItem>
-                <MenuItem Header="_Build">
+                <MenuItem Header="_Build" IsEnabled="{Binding CanEditScene}">
                     <MenuItem Header="Bake Lighting in Lightmass Baker..." Click="OpenInLightmassBaker_Click"
                               ToolTip="Opens the Lightmass Baker with the open files (read-only ones only cast shadows). It bakes the files as saved on disk."/>
                 </MenuItem>
             </Menu>
 
-            <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding OpenFiles}" Margin="6,3,6,0">
+            <ItemsControl DockPanel.Dock="Top" ItemsSource="{Binding OpenFiles}" Margin="6,3,6,0" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                 <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -160,7 +160,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <Border DockPanel.Dock="Top" Background="{StaticResource EditorPanel}" Padding="6" Margin="0,0,0,4">
+            <Border DockPanel.Dock="Top" Background="{StaticResource EditorPanel}" Padding="6" Margin="0,0,0,4" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                 <DockPanel>
                     <Button DockPanel.Dock="Right" Command="{Binding CommitChangesCommand}" Style="{StaticResource CommitButton}" ToolTip="Apply editor transforms to the loaded packages. Use Save All to write them to disk.">
                         <StackPanel Orientation="Horizontal"><fa:ImageAwesome Icon="Solid_Check" Width="13" Margin="0,0,7,0" Foreground="{StaticResource EditorText}"/><TextBlock Text="Commit Changes"/></StackPanel>
@@ -185,7 +185,13 @@
                 </DockPanel>
             </Border>
 
-            <Border DockPanel.Dock="Bottom" Padding="8,4" BorderBrush="{StaticResource EditorBorder}" BorderThickness="0,1,0,0">
+            <Border DockPanel.Dock="Top" Background="#351519" BorderBrush="#F05252" BorderThickness="0,0,0,2" Padding="20,16" Margin="0,0,0,4"
+                    Visibility="{Binding IsBakePreview, Converter={StaticResource BoolToVisibilityConverter}}">
+                <TextBlock Text="BAKED LIGHTING PREVIEW" Foreground="#FF6464" FontSize="30" FontWeight="Bold"
+                           HorizontalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"/>
+            </Border>
+
+            <Border DockPanel.Dock="Bottom" Padding="8,4" BorderBrush="{StaticResource EditorBorder}" BorderThickness="0,1,0,0" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                 <DockPanel>
                     <TextBlock DockPanel.Dock="Right" Text="{Binding CurrentModeName}" Foreground="{StaticResource EditorMuted}" Margin="12,0,0,0"/>
                     <TextBlock DockPanel.Dock="Right" Text="{Binding SelectedActor.Export.ObjectName.Instanced, TargetNullValue=''}" Foreground="#81B3DD" Margin="12,0"/>
@@ -195,11 +201,11 @@
             </Border>
 
             <Grid Margin="4,0,4,4">
-                <Grid.RowDefinitions><RowDefinition Height="*" MinHeight="300"/><RowDefinition Height="5"/><RowDefinition Height="136" MinHeight="75"/></Grid.RowDefinitions>
+                <Grid.RowDefinitions><RowDefinition Height="*" MinHeight="300"/><RowDefinition x:Name="ChangesSplitterRow" Height="5"/><RowDefinition x:Name="ChangesRow" Height="136" MinHeight="75"/></Grid.RowDefinitions>
                 <Grid>
-                    <Grid.ColumnDefinitions><ColumnDefinition Width="280" MinWidth="210"/><ColumnDefinition Width="5"/><ColumnDefinition Width="*" MinWidth="300"/><ColumnDefinition Width="5"/><ColumnDefinition Width="360" MinWidth="340"/></Grid.ColumnDefinitions>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="280" MinWidth="210"/><ColumnDefinition Width="5"/><ColumnDefinition Width="*" MinWidth="300"/><ColumnDefinition x:Name="DetailsSplitterColumn" Width="5"/><ColumnDefinition x:Name="DetailsColumn" Width="360" MinWidth="340"/></Grid.ColumnDefinitions>
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
-                    <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch"/>
+                    <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                     <DockPanel Grid.Column="0" Background="{StaticResource EditorPanel}">
                         <Border DockPanel.Dock="Top" Background="{StaticResource EditorChrome}"><Border Style="{StaticResource EditorDockTitle}"><TextBlock Text="World Outliner" FontWeight="SemiBold"/></Border></Border>
@@ -270,7 +276,7 @@
 
                     <DockPanel Grid.Column="2" Background="{StaticResource EditorPanel}">
                         <Border DockPanel.Dock="Top" Background="{StaticResource EditorChrome}"><Border Style="{StaticResource EditorDockTitle}"><TextBlock Text="Viewport" FontWeight="SemiBold"/></Border></Border>
-                        <Border DockPanel.Dock="Top" Padding="5" Background="{StaticResource EditorPanel}">
+                        <Border DockPanel.Dock="Top" Padding="5" Background="{StaticResource EditorPanel}" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                             <DockPanel>
                                 <Button DockPanel.Dock="Right" Command="{Binding FocusSelectedCommand}" ToolTip="Focus the camera on the selected actor (F)" Padding="7,4" VerticalAlignment="Top"><StackPanel Orientation="Horizontal"><fa:ImageAwesome Icon="Solid_Expand" Width="12" Margin="0,0,6,0" Foreground="{StaticResource EditorText}"/><TextBlock Text="Focus Selected"/></StackPanel></Button>
                                 <WrapPanel>
@@ -300,7 +306,7 @@
                             <scene3D:SceneRenderControl x:Name="SceneViewer"/>
                             <Border Background="{StaticResource EditorInput}" Visibility="{Binding HasAnyFileOpen, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}">
                                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                    <StackPanel Margin="24" VerticalAlignment="Center">
+                                    <StackPanel Margin="24" VerticalAlignment="Center" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                                         <TextBlock Text="Level Editor" FontSize="24" FontWeight="SemiBold" Margin="0,0,0,10"/>
                                         <TextBlock Text="Open a level package or drop one here to start editing." Foreground="{StaticResource EditorMuted}" TextWrapping="Wrap" Margin="0,0,0,16"/>
                                         <Button Content="Open Level…" Command="{Binding OpenFileCommand}" HorizontalAlignment="Left" Background="{StaticResource EditorAccent}" Padding="16,8"/>
@@ -318,7 +324,7 @@
                         </Grid>
                     </DockPanel>
 
-                    <DockPanel Grid.Column="4" Background="{StaticResource EditorPanel}">
+                    <DockPanel Grid.Column="4" Background="{StaticResource EditorPanel}" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                         <Border DockPanel.Dock="Top" Background="{StaticResource EditorChrome}"><Border Style="{StaticResource EditorDockTitle}"><TextBlock Text="Details" FontWeight="SemiBold"/></Border></Border>
                         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <StackPanel>
@@ -383,8 +389,8 @@
                         </ScrollViewer>
                     </DockPanel>
                 </Grid>
-                <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" ResizeDirection="Rows"/>
-                <DockPanel Grid.Row="2" Background="{StaticResource EditorPanel}">
+                <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" ResizeDirection="Rows" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <DockPanel Grid.Row="2" Background="{StaticResource EditorPanel}" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                     <DockPanel DockPanel.Dock="Top" Background="{StaticResource EditorChrome}">
                         <Button DockPanel.Dock="Right" Command="{Binding SaveAllCommand}" Content="Save All" Padding="10,5"/>
                         <Button DockPanel.Dock="Right" Command="{Binding CommitChangesCommand}" Content="Commit Changes" Padding="10,5" Style="{StaticResource CommitButton}"/>

@@ -29,7 +29,7 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="0,0,0,6"
-                       Text="Bakes static lighting for LE3 levels with UDK's Lightmass, writing it into the levels' existing lightmaps (each keeps its type and layout). Add every level that makes up the scene: for a persistent level, Add Streaming Levels adds the ones it streams in. Untick Bake for files that should only cast shadows and bounce light."/>
+                       Text="Bakes static lighting for LE3 levels with UDK's Lightmass, writing it into the levels' existing lightmaps (each keeps its type and layout). Inspect the baked lighting before choosing Save or Discard. Add every level that makes up the scene: for a persistent level, Add Streaming Levels adds the ones it streams in. Untick Bake for files that should only cast shadows and bounce light."/>
 
             <DockPanel Grid.Row="1" IsEnabled="{Binding IsIdle}">
                 <StackPanel DockPanel.Dock="Right" Margin="6,0,0,0" Width="150">
@@ -113,7 +113,11 @@
             </TextBlock>
 
             <DockPanel Grid.Row="5" Margin="0,10,0,6">
-                <Button DockPanel.Dock="Right" Content="Cancel" Click="Cancel_Click" IsEnabled="{Binding IsBaking}" Padding="20,4" Margin="5,0,0,0"/>
+                <Button DockPanel.Dock="Right" Content="Cancel" Click="Cancel_Click" IsEnabled="{Binding CanCancel}" Padding="12,4" Margin="5,0,0,0"/>
+                <Button DockPanel.Dock="Right" Content="Discard" Click="Discard_Click" IsEnabled="{Binding CanReview}" Padding="12,4" Margin="5,0,0,0"/>
+                <Button DockPanel.Dock="Right" Content="Save Lighting" Click="SaveBake_Click" IsEnabled="{Binding CanReview}" Padding="12,4" Margin="5,0,0,0"/>
+                <Button DockPanel.Dock="Right" Content="Preview" Click="Preview_Click" IsEnabled="{Binding CanReview}" Padding="12,4" Margin="5,0,0,0"
+                        ToolTip="Inspect the baked lighting. Close the preview window to save or discard."/>
                 <Button DockPanel.Dock="Right" Content="Bake" Click="Bake_Click" IsEnabled="{Binding CanBake}" Padding="20,4"/>
                 <TextBlock Text="{Binding Status}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
             </DockPanel>

@@ -1,4 +1,4 @@
-﻿using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.Resources;
 using LegendaryExplorerCore.Gammtek;
 using LegendaryExplorerCore.GameFilesystem;
@@ -1810,6 +1810,9 @@ public class MeshRenderContext : RenderContext
     /// <param name="SRGBViewFormat">If the texture holds sRGB-encoded color, a format for a view that converts to linear (what the game's shaders expect). Otherwise null.</param>
     public readonly record struct LoadedTexture(Texture2D Texture, Format ViewFormat, Format? SRGBViewFormat);
 
+    /// <summary>Optional per-preview mip reader. Null results use the package's usual texture lookup.</summary>
+    public Func<LegendaryExplorerCore.Unreal.Classes.Texture2DMipInfo, byte[]> TextureDataOverride { get; set; }
+
     public LoadedTexture LoadUnrealTexture(ExportEntry texture2DExport)
     {
         if (texture2DExport.ClassName is "TextureRenderTarget2D" or "TextureMovie")
@@ -1848,7 +1851,7 @@ public class MeshRenderContext : RenderContext
             LegendaryExplorerCore.Textures.Image.getPixelFormatType(faceTextures[0].Export.GetProperty<EnumProperty>("Format").Value.Name));
         for (int i = 0; i < 6; i++)
         {
-            pixelData[i] = LECTexture2D.GetTextureData(faceTextures[i].GetTopMip(), textureCubeExport.Game);
+            pixelData[i] = this.ReadTextureData(faceTextures[i].GetTopMip());
         }
         var srgbFormats = IsSRGB(faceTextures[0].Export) ? RenderContextExtensions.GetSRGBFormats(format) : null;
         Texture2D texture = this.LoadTextureCube(size, format, pixelData, srgbFormats?.Typeless);
