@@ -91,6 +91,29 @@ namespace LegendaryExplorerCore.UDK
     public static class ConvertToUDK
     {
         /// <summary>
+        /// Selects placed mesh components for the lighting bake, including movers explicitly authored for
+        /// precomputed lighting. The exporter and resolution/budget scans must use the same selection.
+        /// </summary>
+        public static bool IsStaticLightingMeshComponent(ExportEntry component, ICollection<int> actorsInLevel)
+        {
+            if (component.ClassName != "StaticMeshComponent"
+                || component.Parent is not ExportEntry parent || !actorsInLevel.Contains(parent.UIndex)
+                || (component.ObjectFlags & UnrealFlags.EObjectFlags.ArchetypeObject) != 0
+                || parent.IsA("BioLedgeMeshActor"))
+                return false;
+
+            if (parent.IsA("StaticMeshActorBase") || parent.IsA("BioInert") || parent.IsA("BioUseable"))
+                return true;
+
+            if (!parent.IsA("InterpActor"))
+                return false;
+
+            var properties = component.GetCondensedProperties();
+            return properties.GetProp<BoolProperty>("bUsePrecomputedShadows")?.Value == true
+                   || properties.GetProp<BoolProperty>("bBioForcePrecomputedShadows")?.Value == true;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="pcc"></param>
@@ -564,7 +587,6 @@ namespace LegendaryExplorerCore.UDK
 
         private static void PortStaticMeshActors(UDKAssetInfo assetInfo, PackageCache cache, RelinkerOptionsPackage delegatesROP)
         {
-            var emptySMCBin = new StaticMeshComponent();
             IEntry staticMeshActorClass = assetInfo.TempPackage.GetEntryOrAddImport("Engine.StaticMeshActor", "Class");
             assetInfo.TempPackage.GetEntryOrAddImport("Engine.Default__StaticMeshActor", "StaticMeshActor", "Engine");
             IEntry staticMeshComponentArchetype = assetInfo.TempPackage.GetEntryOrAddImport("Engine.Default__StaticMeshActor.StaticMeshComponent0",
@@ -573,18 +595,9 @@ namespace LegendaryExplorerCore.UDK
             int smcIndex = 2;
             foreach (ExportEntry smc in assetInfo.SourcePackage.Exports.Where(exp => exp.ClassName == "StaticMeshComponent"))
             {
-                if (smc.Parent is ExportEntry parent && assetInfo.ActorsInLevel.Contains(parent.UIndex) && (parent.IsA("StaticMeshActorBase")
-                    || parent.IsA("BioInert") /* LE1 */
-                    || parent.IsA("BioUseable") /* LE1 */))
+                if (IsStaticLightingMeshComponent(smc, assetInfo.ActorsInLevel) && smc.Parent is ExportEntry parent)
                 {
                     var originalIFP = smc.InstancedFullPath;
-
-                    if ((smc.ObjectFlags & UnrealFlags.EObjectFlags.ArchetypeObject) != 0)
-                        continue; // Don't do static lighting on archetype objects as they aren't actually in a level
-
-                    // List of things to not port
-                    if (parent.IsA("BioLedgeMeshActor")) /* LE1 (maybe others?) */
-                        continue; // Don't port these, they are not really useful in UDK for lighting
 
                     StructProperty locationProp;
                     StructProperty rotationProp;
@@ -615,12 +628,17 @@ namespace LegendaryExplorerCore.UDK
                         }
                     }
 
-                    smc.WriteBinary(emptySMCBin);
+                    // Keep component vertex paint while removing lighting from the previous bake.
+                    smc.WriteBinary(StaticMeshComponentLightingData.CreateUdkInput(ObjectBinary.From<StaticMeshComponent>(smc)));
 
                     var props = smc.GetProperties();
                     props.RemoveAll(x => x is ObjectProperty ob && ob.Name != "StaticMesh"); // We don't want any object references to be pulled over
 
                     props.RemoveNamedProperty("bBioIsReceivingDecals");
+                    // Bake an opted-in mover as a stationary proxy. UDK has no BioWare force flag;
+                    // retain its authored shadow/channel settings and enable UDK's precomputed path.
+                    if (parent.IsA("InterpActor"))
+                        props.AddOrReplaceProp(new BoolProperty(true, "bUsePrecomputedShadows"));
                     props.RemoveNamedProperty("bBioForcePrecomputedShadows");
                     //props.RemoveNamedProperty("bUsePreComputedShadows");
                     props.RemoveNamedProperty("bAcceptsLights");
@@ -704,6 +722,8 @@ namespace LegendaryExplorerCore.UDK
                     {
                         props.Add(scaleProp);
                     }
+                    if (parent.IsA("InterpActor") && parent.GetProperty<StructProperty>("PrePivot") is { } prePivot)
+                        props.Add(prePivot);
                     sma.WriteProperties(props);
                     assetInfo.StaticMeshActors.Add(sma);
                 }
