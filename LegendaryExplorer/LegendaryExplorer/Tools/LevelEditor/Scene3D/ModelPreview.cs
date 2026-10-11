@@ -409,7 +409,7 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
     /// If not (and it has no light-map), it's lit by <see cref="MeshRenderContext.Lighting"/>
     /// </summary>
     private static bool UsesLevelLighting(ModelPreviewLOD<LEVertex> lod, MaterialRenderProxy material, MeshRenderContext context) =>
-        context.LightingMode == ViewportLightingMode.Level && !material.IsUnlit && lod.StaticLighting is { UsesLightEnvironment: false };
+        context.UsesLevelLighting && !material.IsUnlit && lod.StaticLighting is { UsesLightEnvironment: false };
 
     private bool RenderSectionWithGameShaders(ModelPreviewLOD<LEVertex> lod, ModelPreviewSection s, MeshRenderContext context)
     {

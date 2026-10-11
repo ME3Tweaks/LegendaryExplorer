@@ -218,18 +218,26 @@ public sealed class LightAttenuationRenderer : IDisposable
     /// <summary>
     /// Whether the light can have an attenuation: it has a light function, or casts dynamic shadows
     /// </summary>
-    public static bool MayHaveAttenuation(SceneLight light) => light.LightFunctionMaterial is not null || CastsPerObjectShadows(light);
+    public static bool MayHaveAttenuation(SceneLight light, bool previewLighting = false) => light.LightFunctionMaterial is not null || CastsPerObjectShadows(light, previewLighting);
 
     /// <summary>
     /// InitDynamicShadows: lights without static shadowing that cast dynamic shadows get whole scene shadows instead if they're spot or directional lights,
     /// which aren't supported. Sky lights don't cast shadows
     /// </summary>
-    private static bool CastsPerObjectShadows(SceneLight light) => light.CastsDynamicShadows && light.Type switch
+    private static bool CastsPerObjectShadows(SceneLight light, bool previewLighting)
     {
-        SceneLightType.Point => true,
-        SceneLightType.Spot or SceneLightType.Directional => light.HasStaticShadowing,
-        _ => false
-    };
+        //Use the existing per-object projection path for unbuilt static shadows, as UE3's editor does.
+        if (previewLighting && light.HasStaticShadowing && light.Type is not SceneLightType.Sky)
+        {
+            return light.CastsStaticShadows || light.CastsDynamicShadowsWhenUnbuilt;
+        }
+        return light.CastsDynamicShadows && light.Type switch
+        {
+            SceneLightType.Point => true,
+            SceneLightType.Spot or SceneLightType.Directional => light.HasStaticShadowing,
+            _ => false
+        };
+    }
 
     /// <summary>
     /// Renders the light's attenuation, if it isn't the one already rendered this frame. Changes the render targets, viewport, render states, pixel shader resources and samplers.
@@ -453,9 +461,11 @@ public sealed class LightAttenuationRenderer : IDisposable
     /// </summary>
     private void FindShadowCasters()
     {
+        bool previewLighting = Context.IsPreviewLighting;
         foreach (MeshStaticLighting staticLighting in Context.GetStaticLightings())
         {
-            if (!staticLighting.IsDynamicShadowCaster || staticLighting.DrawShadowCaster is null || staticLighting.GetBounds is null || staticLighting.GetLocalToWorld is null
+            bool castsShadow = previewLighting ? staticLighting.IsPreviewShadowCaster : staticLighting.IsDynamicShadowCaster;
+            if (!castsShadow || staticLighting.DrawShadowCaster is null || staticLighting.GetBounds is null || staticLighting.GetLocalToWorld is null
                 || !staticLighting.IsInScene() || !staticLighting.IsShown())
             {
                 continue;
@@ -463,7 +473,8 @@ public sealed class LightAttenuationRenderer : IDisposable
             BoxSphereBounds bounds = staticLighting.GetBounds();
             foreach (LightInteraction interaction in staticLighting.GetLightInteractions(bounds))
             {
-                if (staticLighting.CastsDynamicShadowFrom(interaction.Light) && CastsPerObjectShadows(interaction.Light))
+                bool castsShadowFromLight = previewLighting ? staticLighting.CastsPreviewShadowFrom(interaction.Light) : staticLighting.CastsDynamicShadowFrom(interaction.Light);
+                if (castsShadowFromLight && CastsPerObjectShadows(interaction.Light, previewLighting))
                 {
                     if (!ShadowCasters.TryGetValue(interaction.Light, out var casters))
                     {

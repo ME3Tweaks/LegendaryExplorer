@@ -113,6 +113,11 @@ public sealed class SceneLight
     public bool CastsDynamicShadows { get; }
 
     /// <summary>
+    /// CastShadows and CastDynamicShadows before the shadow-mode filter. UE3 uses normal shadows for unbuilt static lights.
+    /// </summary>
+    public bool CastsDynamicShadowsWhenUnbuilt { get; }
+
+    /// <summary>
     /// Overrides of the system settings' shadow resolutions. 0 means not overridden
     /// </summary>
     public int MinShadowResolution { get; }
@@ -237,8 +242,9 @@ public sealed class SceneLight
         WorldToLight = Matrix4x4.Invert(lightToWorld, out Matrix4x4 worldToLight) ? worldToLight : Matrix4x4.Identity;
 
         //LightComponent's defaults: CastShadows, CastDynamicShadows, LightShadow_Normal
-        CastsDynamicShadows = props.GetProp<BoolProperty>("CastShadows") is not { Value: false }
-                              && props.GetProp<BoolProperty>("CastDynamicShadows") is not { Value: false }
+        CastsDynamicShadowsWhenUnbuilt = props.GetProp<BoolProperty>("CastShadows") is not { Value: false }
+                                        && props.GetProp<BoolProperty>("CastDynamicShadows") is not { Value: false };
+        CastsDynamicShadows = CastsDynamicShadowsWhenUnbuilt
                               && props.GetProp<EnumProperty>("LightShadowMode") is null or { Value.Instanced: "LightShadow_Normal" };
         MinShadowResolution = props.GetProp<IntProperty>("MinShadowResolution")?.Value ?? 0;
         MaxShadowResolution = props.GetProp<IntProperty>("MaxShadowResolution")?.Value ?? 0;

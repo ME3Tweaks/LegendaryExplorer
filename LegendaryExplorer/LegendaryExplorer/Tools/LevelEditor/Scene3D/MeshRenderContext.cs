@@ -32,8 +32,9 @@ namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 public enum ViewportLightingMode
 {
     Level,
-    Preview,
-    Unlit
+    Neutral,
+    Unlit,
+    Preview
 }
 
 /// <summary>
@@ -297,15 +298,17 @@ public class MeshRenderContext : RenderContext
 
     public bool UseDynamicLighting { get; set; } = true;
     public bool UseLightMaps { get; set; } = true;
+    public bool IsPreviewLighting => LightingMode == ViewportLightingMode.Preview;
+    public bool UsesLevelLighting => LightingMode is ViewportLightingMode.Level or ViewportLightingMode.Preview;
     public bool IsUnlit => LightingMode == ViewportLightingMode.Unlit;
     public bool AreLightMapsActive => LightingMode == ViewportLightingMode.Level && UseLightMaps;
-    public bool IsDynamicLightingActive => LightingMode == ViewportLightingMode.Preview
+    public bool IsDynamicLightingActive => LightingMode is ViewportLightingMode.Neutral or ViewportLightingMode.Preview
         || (LightingMode == ViewportLightingMode.Level && UseDynamicLighting);
 
     /// <summary>
     /// Whether the level has lights to render in additive passes.
     /// </summary>
-    public bool IsLevelLightingActive => LightingMode == ViewportLightingMode.Level && UseDynamicLighting && Lights.Length > 0;
+    public bool IsLevelLightingActive => UsesLevelLighting && (IsPreviewLighting || UseDynamicLighting) && Lights.Length > 0;
 
     /// <summary>
     /// The level lights in the scene, and a number that changes whenever they do. Thread-safe
@@ -426,7 +429,7 @@ public class MeshRenderContext : RenderContext
     private ShaderResourceView GetLightAttenuation(SceneLight light)
     {
         //positions are reconstructed from the scene depth with a perspective projection
-        if (!LightAttenuationRenderer.MayHaveAttenuation(light) || DepthBufferResourceView is null || Camera.IsOrthographic)
+        if (!LightAttenuationRenderer.MayHaveAttenuation(light, IsPreviewLighting) || DepthBufferResourceView is null || Camera.IsOrthographic)
         {
             return null;
         }
@@ -949,8 +952,8 @@ public class MeshRenderContext : RenderContext
     /// and after adding a level's lights. Otherwise shaders are loaded the first time they're needed.
     /// </summary>
     /// <param name="reportProgress">Called with the number of items loaded so far, and the total</param>
-    /// <param name="prepareLevelLighting">Also load the light shaders before switching back to level lighting.</param>
-    public void LoadPendingGameShaders(Action<int, int> reportProgress = null, bool prepareLevelLighting = false)
+    /// <param name="lightingModeToPrepare">Load light shaders for this mode before switching to it. Defaults to the current mode.</param>
+    public void LoadPendingGameShaders(Action<int, int> reportProgress = null, ViewportLightingMode? lightingModeToPrepare = null)
     {
         MaterialRenderProxy[] materials;
         lock (PendingGameShaderLoads)
@@ -959,7 +962,8 @@ public class MeshRenderContext : RenderContext
             PendingGameShaderLoads.Clear();
         }
         MeshStaticLighting[] staticLightings = [];
-        if (LightingMode == ViewportLightingMode.Level || prepareLevelLighting)
+        ViewportLightingMode mode = lightingModeToPrepare ?? LightingMode;
+        if (mode is ViewportLightingMode.Level or ViewportLightingMode.Preview)
         {
             lock (StaticLightings)
             {
@@ -990,7 +994,7 @@ public class MeshRenderContext : RenderContext
         }
         for (int i = 0; i < staticLightings.Length; i++)
         {
-            staticLightings[i].PrepareLightShaders();
+            staticLightings[i].PrepareLightShaders(mode == ViewportLightingMode.Preview);
             reportProgress?.Invoke(materials.Length + i + 1, total);
         }
     }
