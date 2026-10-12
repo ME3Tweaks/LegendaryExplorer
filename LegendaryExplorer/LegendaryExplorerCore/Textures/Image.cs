@@ -490,7 +490,7 @@ namespace LegendaryExplorerCore.Textures
         // Averages round to nearest. Truncating instead loses about 1.5 counts per level on average, and because
         // each mip is built from the previous one that compounds down the chain - visible as darker low mips in
         // dark, smooth data such as lightmaps.
-        private static byte[] downscaleARGB(byte[] src, int w, int h)
+        internal static byte[] downscaleARGB(byte[] src, int w, int h)
         {
             if (w == 1 && h == 1)
                 throw new Exception("1x1 can not be downscaled");
@@ -636,7 +636,17 @@ namespace LegendaryExplorerCore.Textures
             return encoder.EncodeToRawBytes(i, 0, out var mipW, out var mipH);
         }
 
-        public void correctMips(PixelFormat dstFormat, bool dxt1HasAlpha = false, byte dxt1Threshold = 128)
+        /// <summary>
+        /// Replaces every mip below the top one with a freshly generated chain (down to 1x1), converted to
+        /// <paramref name="dstFormat"/>. Any lower mips already on the image are discarded.
+        /// </summary>
+        /// <param name="dstFormat">The format of the finished chain.</param>
+        /// <param name="dxt1HasAlpha">Whether a DXT1 target should keep 1-bit alpha.</param>
+        /// <param name="dxt1Threshold">Alpha cut-off for DXT1 1-bit alpha.</param>
+        /// <param name="options">How to filter the lower mips. Null (or <see cref="MipGenerationOptions.Default"/>) is the
+        /// historical box filter. With any other options the top mip is left as it is whenever no format conversion is needed,
+        /// so it is never recompressed.</param>
+        public void correctMips(PixelFormat dstFormat, bool dxt1HasAlpha = false, byte dxt1Threshold = 128, MipGenerationOptions options = null)
         {
             byte[] tempData;
 
@@ -656,6 +666,12 @@ namespace LegendaryExplorerCore.Textures
 
             int width = mipMaps[0].origWidth;
             int height = mipMaps[0].origHeight;
+
+            if (options != null && !options.IsDefault)
+            {
+                correctMipsWithOptions(tempData, width, height, dstFormat, dxt1HasAlpha, dxt1Threshold, options);
+                return;
+            }
 
             if (mipMaps.Count > 1)
                 mipMaps.RemoveRange(1, mipMaps.Count - 1);
@@ -705,6 +721,128 @@ namespace LegendaryExplorerCore.Textures
                     mipMaps.Add(new MipMap(tempData, origW, origH, pixelFormat));
                 }
             }
+        }
+
+        /// <summary>
+        /// The <see cref="correctMips"/> path for non-default <see cref="MipGenerationOptions"/>: builds the whole chain as ARGB
+        /// first, then converts each level. The top mip is only rewritten when it has to change format (the same rule the
+        /// default path uses), so a top mip that is already in the target format is never recompressed.
+        /// </summary>
+        private void correctMipsWithOptions(byte[] topArgb, int width, int height, PixelFormat dstFormat, bool dxt1HasAlpha, byte dxt1Threshold, MipGenerationOptions options)
+        {
+            MipMap originalTop = mipMaps[0];
+            bool convertTop = dstFormat != pixelFormat || (dstFormat == PixelFormat.DXT1 && !dxt1HasAlpha);
+
+            List<byte[]> levels = MipGenerator.BuildChain(topArgb, width, height, options);
+
+            mipMaps.Clear();
+            if (convertTop)
+            {
+                byte[] top = dstFormat == PixelFormat.ARGB
+                    ? levels[0]
+                    : convertToFormat(PixelFormat.ARGB, levels[0], width, height, dstFormat, dxt1HasAlpha, dxt1Threshold);
+                mipMaps.Add(new MipMap(top, width, height, dstFormat));
+                pixelFormat = dstFormat;
+            }
+            else
+            {
+                mipMaps.Add(originalTop);
+            }
+
+            int levelWidth = width;
+            int levelHeight = height;
+            for (int i = 1; i < levels.Count; i++)
+            {
+                levelWidth = Math.Max(levelWidth >> 1, 1);
+                levelHeight = Math.Max(levelHeight >> 1, 1);
+                byte[] data = pixelFormat == PixelFormat.ARGB
+                    ? levels[i]
+                    : convertToFormat(PixelFormat.ARGB, levels[i], levelWidth, levelHeight, pixelFormat, dxt1HasAlpha, dxt1Threshold);
+                mipMaps.Add(new MipMap(data, levelWidth, levelHeight, pixelFormat));
+            }
+        }
+
+        /// <summary>
+        /// True when this image has a complete mip chain: more than one level, each half the size of the one above
+        /// (never below 1), ending at 1x1. This is the shape <see cref="correctMips"/> produces, and the shape
+        /// <see cref="Unreal.Classes.Texture2D.Replace"/> accepts when asked to use a supplied chain. The pixel format of
+        /// the levels does not matter.
+        /// </summary>
+        public bool HasCompleteMipChain()
+        {
+            // Note this doesn't count if you're using TextureGroup_UI
+            // Engine only takes top mip if you're using this texture group.
+            if (mipMaps == null || mipMaps.Count < 2)
+            {
+                return false;
+            }
+
+            int width = mipMaps[0].origWidth;
+            int height = mipMaps[0].origHeight;
+            for (int i = 0; i < mipMaps.Count; i++)
+            {
+                if (mipMaps[i].origWidth != width || mipMaps[i].origHeight != height)
+                {
+                    return false;
+                }
+
+                if (width == 1 && height == 1)
+                {
+                    return i == mipMaps.Count - 1;
+                }
+
+                width = Math.Max(width >> 1, 1);
+                height = Math.Max(height >> 1, 1);
+            }
+
+            // Ran out of levels before reaching 1x1
+            return false;
+        }
+
+        /// <summary>
+        /// Converts every mip of this image to <paramref name="dstFormat"/> without regenerating any of them: each level keeps
+        /// its own pixels, so a chain that was authored level by level (rather than derived from the top mip) survives.
+        /// Levels already in the target format are left untouched.
+        /// </summary>
+        /// <param name="dstFormat">The format to convert every level to.</param>
+        /// <param name="dxt1HasAlpha">Whether a DXT1 target should keep 1-bit alpha.</param>
+        /// <param name="dxt1Threshold">Alpha cut-off for DXT1 1-bit alpha.</param>
+        public void ConvertMipsTo(PixelFormat dstFormat, bool dxt1HasAlpha = false, byte dxt1Threshold = 128)
+        {
+            if (pixelFormat == dstFormat)
+            {
+                return;
+            }
+
+            var converted = new List<MipMap>(mipMaps.Count);
+            foreach (MipMap mip in mipMaps)
+            {
+                byte[] argb;
+                if (pixelFormat == PixelFormat.ARGB)
+                {
+                    argb = mip.data;
+                }
+                else
+                {
+                    int w = mip.width;
+                    int h = mip.height;
+                    argb = convertRawToARGB(mip.data, ref w, ref h, pixelFormat);
+                    // Sub-4x4 block-compressed mips decompress to a full 4x4 block; crop back to the real dimensions
+                    if (w != mip.origWidth || h != mip.origHeight)
+                    {
+                        argb = cropARGB(argb, w, mip.origWidth, mip.origHeight);
+                    }
+                }
+
+                byte[] data = dstFormat == PixelFormat.ARGB
+                    ? argb
+                    : convertToFormat(PixelFormat.ARGB, argb, mip.origWidth, mip.origHeight, dstFormat, dxt1HasAlpha, dxt1Threshold);
+                converted.Add(new MipMap(data, mip.origWidth, mip.origHeight, dstFormat));
+            }
+
+            mipMaps.Clear();
+            mipMaps.AddRange(converted);
+            pixelFormat = dstFormat;
         }
 
         public static PixelFormat getPixelFormatType(string format)
