@@ -107,7 +107,7 @@
     <PackageReference Include="Serilog" Version="4.3.0" />
     <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
     <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.6" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="4.1.2" />
     <PackageReference Include="System.Buffers" Version="4.6.1" />
     <PackageReference Include="System.Drawing.Common" Version="10.0.2" />
     <PackageReference Include="System.IO.Hashing" Version="10.0.2" />
