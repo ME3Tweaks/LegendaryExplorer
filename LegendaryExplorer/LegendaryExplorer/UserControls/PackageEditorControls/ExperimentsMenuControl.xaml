@@ -94,6 +94,7 @@
         </MenuItem>
         <MenuItem Header="Useful for Mgamerz (maybe)">
             <MenuItem Header="Mgamerz' Easy Button™" Click="MScanner_Click"/>
+            <MenuItem Header="Generate mips for selected texture" Click="GenerateMipsForTexture_Click" ToolTip="Regenerates the lower mips of the selected Texture2D from its top mip, even if it only has 1 mip."/>
 
             <!-- Most of this is old Crossgen, MER, and old OT MP things -->
             <MenuItem Header="LE2: Convert selected BioPawn to SFXPawn class with assets" Click="LE2ConvertToSFXPawn_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>

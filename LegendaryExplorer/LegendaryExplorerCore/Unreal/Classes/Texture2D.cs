@@ -1256,14 +1256,28 @@ namespace LegendaryExplorerCore.Unreal.Classes
         }
 
         /// <summary>
-        /// Generates mips for the image, even if it only has 1 mip.
+        /// Generates mips for the image, even if it only has 1 mip. The storage method of the top mip is kept:
+        /// externally stored textures stay in their TFC (bottom mips are always package stored),
+        /// package stored textures keep all mips in the package and are marked NeverStream.
         /// </summary>
         public void GenerateMips(PixelFormat destFormat = PixelFormat.Unknown)
         {
             // Needs mipped
             var newFormat = destFormat == PixelFormat.Unknown ? Image.getPixelFormatType(TextureFormat) : destFormat;
+            bool wasPackageStored = GetTopMip()?.IsPackageStored ?? true;
             var image = ToImage(Image.getPixelFormatType(TextureFormat));
-            Replace(image, Export.GetProperties(), forcedNewFormat: newFormat, forceMipping: true);
+            Replace(image, Export.GetProperties(), isPackageStored: wasPackageStored, forcedNewFormat: newFormat, forceMipping: true);
+
+            if (wasPackageStored)
+            {
+                // Replace() only sets NeverStream when there are 6+ mips; a package stored texture must always have it
+                var props = Export.GetProperties();
+                if (props.GetProp<BoolProperty>("NeverStream") is not { Value: true })
+                {
+                    props.AddOrReplaceProp(new BoolProperty(true, "NeverStream"));
+                    Export.WriteProperties(props);
+                }
+            }
         }
     }
 

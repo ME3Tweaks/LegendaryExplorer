@@ -808,6 +808,11 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
             PackageEditorExperimentsM.GenerateMaterialInstanceConstantFromMaterial(GetPEWindow());
         }
 
+        private void GenerateMipsForTexture_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.GenerateMipsForSelectedTexture(GetPEWindow());
+        }
+
         private void PrintTextureFormats_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.ShowTextureFormats(GetPEWindow());
