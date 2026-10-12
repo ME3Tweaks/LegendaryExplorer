@@ -478,8 +478,20 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <param name="forcedTFCName"></param>
         /// <param name="forcedTFCPath"></param>
         /// <param name="isPackageStored"></param>
-        /// <returns></returns>
-        public List<string> Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false, PixelFormat forcedNewFormat = PixelFormat.Unknown, bool forceMipping = false, Stream outDataOverride = null)
+        /// <param name="forcedNewFormat">Store the texture in this format instead of its current one.</param>
+        /// <param name="forceMipping">Allow a texture that currently has a single mip to be given a full mip chain
+        /// (without this, only the top mip of <paramref name="image"/> is kept for such a texture). Unless
+        /// <paramref name="useSuppliedMips"/> is set, this also regenerates the lower mips from the top mip.</param>
+        /// <param name="outDataOverride"></param>
+        /// <param name="useSuppliedMips">Use the mips already on <paramref name="image"/> instead of generating them: each level
+        /// is converted to the texture's format as it is, so a chain authored level by level (sharpened, hand tuned, from
+        /// a DCC tool) is stored as supplied. Needs a complete chain (see <see cref="Image.HasCompleteMipChain"/>); if the image
+        /// does not have one, a message is returned and the mips are generated as usual. Combine with
+        /// <paramref name="forceMipping"/> to add the chain to a single-mip texture.</param>
+        /// <param name="mipOptions">How to filter generated mips (see <see cref="MipGenerationOptions"/>). Null keeps the historical
+        /// box filter. Not used when a supplied chain is stored.</param>
+        /// <returns>Messages about anything the replacement had to change or could not honour.</returns>
+        public List<string> Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false, PixelFormat forcedNewFormat = PixelFormat.Unknown, bool forceMipping = false, Stream outDataOverride = null, bool useSuppliedMips = false, MipGenerationOptions mipOptions = null)
         {
             var messages = new List<string>();
             var textureCache = forcedTFCName ?? GetTopMip().TextureCacheName;
@@ -490,22 +502,49 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
             PixelFormat newPixelFormat = forcedNewFormat != PixelFormat.Unknown ? forcedNewFormat : pixelFormat;
 
-            // Generate mips if necessary
-            if (!image.checkDDSHaveAllMipmaps() || Mips.Count > 1 && image.mipMaps.Count <= 1 || image.pixelFormat != newPixelFormat || forceMipping)
+            bool suppliedChain = false;
+            if (useSuppliedMips)
             {
-                bool dxt1HasAlpha = false;
-                byte dxt1Threshold = 128;
+                suppliedChain = image.HasCompleteMipChain();
+                if (!suppliedChain)
+                {
+                    messages.Add("A supplied mip chain was requested, but the image does not have a complete one (every level half the size of the one above, down to 1x1). Mips were generated instead.");
+                }
+                else if (Mips.Count == 1 && !forceMipping)
+                {
+                    messages.Add("The texture has a single mip and forceMipping was not set, so only the top mip of the supplied chain was kept.");
+                }
+            }
+
+            (bool hasAlpha, byte threshold) GetDxt1AlphaSettings()
+            {
                 if (pixelFormat == PixelFormat.DXT1 && (image.HasFullAlpha() || props.GetProp<EnumProperty>("CompressionSettings") is { Value.Name: "TC_OneBitAlpha" }))
                 {
-                    dxt1HasAlpha = true;
                     if (image.pixelFormat is PixelFormat.ARGB or PixelFormat.DXT3 or PixelFormat.DXT5)
                     {
                         messages.Add("Texture was converted from full alpha to binary alpha. DXT1 does not support more than 1-bit alpha");
                     }
+                    return (true, 128);
                 }
+                return (false, 128);
+            }
+
+            if (suppliedChain)
+            {
+                // Keep the levels as authored; they only need to be stored in the texture's format
+                if (image.pixelFormat != newPixelFormat)
+                {
+                    var (dxt1HasAlpha, dxt1Threshold) = GetDxt1AlphaSettings();
+                    image.ConvertMipsTo(newPixelFormat, dxt1HasAlpha, dxt1Threshold);
+                }
+            }
+            // Generate mips if necessary
+            else if (!image.checkDDSHaveAllMipmaps() || Mips.Count > 1 && image.mipMaps.Count <= 1 || image.pixelFormat != newPixelFormat || forceMipping)
+            {
+                var (dxt1HasAlpha, dxt1Threshold) = GetDxt1AlphaSettings();
 
                 //Generate lower mips
-                image.correctMips(newPixelFormat, dxt1HasAlpha, dxt1Threshold);
+                image.correctMips(newPixelFormat, dxt1HasAlpha, dxt1Threshold, mipOptions);
             }
 
             if (Mips.Count == 1 && !forceMipping)
@@ -1260,13 +1299,16 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// externally stored textures stay in their TFC (bottom mips are always package stored),
         /// package stored textures keep all mips in the package and are marked NeverStream.
         /// </summary>
-        public void GenerateMips(PixelFormat destFormat = PixelFormat.Unknown)
+        /// <param name="destFormat">Store the texture in this format instead of its current one.</param>
+        /// <param name="options">How to filter the generated mips; null keeps the historical box filter. With non-default
+        /// options the top mip is not recompressed when the format is unchanged.</param>
+        public void GenerateMips(PixelFormat destFormat = PixelFormat.Unknown, MipGenerationOptions options = null)
         {
             // Needs mipped
             var newFormat = destFormat == PixelFormat.Unknown ? Image.getPixelFormatType(TextureFormat) : destFormat;
             bool wasPackageStored = GetTopMip()?.IsPackageStored ?? true;
             var image = ToImage(Image.getPixelFormatType(TextureFormat));
-            Replace(image, Export.GetProperties(), isPackageStored: wasPackageStored, forcedNewFormat: newFormat, forceMipping: true);
+            Replace(image, Export.GetProperties(), isPackageStored: wasPackageStored, forcedNewFormat: newFormat, forceMipping: true, mipOptions: options);
 
             if (wasPackageStored)
             {
