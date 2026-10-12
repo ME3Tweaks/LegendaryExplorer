@@ -75,13 +75,17 @@ public class UdkTextureEncodingPolicyTests
         var source = Image.LoadFromRaw(Enumerable.Range(0,16).SelectMany(_=>pixel).ToArray(),PixelFormat.ARGB,4,4);
         new Texture2D(texture).Replace(source,texture.GetProperties(),isPackageStored:true);
         var original = new Texture2D(texture).ToImage(PixelFormat.ARGB);
-        TextureEncodingPolicy.ReconstructNormalZ(original);
+        UdkTextureEncodingPolicy.ReconstructNormalZ(original);
         var decision = UdkTextureEncodingPolicy.Plan(texture,true);
         var converted = UdkTextureEncodingPolicy.CreateImage(texture,decision);
         CollectionAssert.AreEqual(original.mipMaps[0].data,converted.mipMaps[0].data);
-        var props = texture.GetProperties(); UdkTextureEncodingPolicy.PrepareProperties(props,decision);
+        var props = texture.GetProperties();
+        props.AddOrReplaceProp(new FloatProperty(-1f, "UnpackMin") { StaticArrayIndex = 3 });
+        UdkTextureEncodingPolicy.PrepareProperties(props,decision);
         Assert.AreEqual("TC_Normalmap",props.GetProp<EnumProperty>("CompressionSettings").Value.Name);
         Assert.IsFalse(props.GetProp<BoolProperty>("SRGB").Value);
         for(int lane=0;lane<3;lane++) Assert.AreEqual(-1f,props.GetProp<FloatProperty>("UnpackMin",lane).Value);
+        Assert.AreEqual(0f,props.GetProp<FloatProperty>("UnpackMin",3).Value);
+        for(int lane=0;lane<4;lane++) Assert.AreEqual(1f,props.GetProp<FloatProperty>("UnpackMax",lane).Value);
     }
 }

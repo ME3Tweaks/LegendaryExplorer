@@ -99,6 +99,83 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
             symbols.PopScope();
         }
 
+        private static bool HasStructDefaults(Struct s, HashSet<Struct> visited)
+        {
+            return visited.Add(s) && (s.DefaultProperties.Statements.Any() ||
+                s.Parent is Struct parent && HasStructDefaults(parent, visited) ||
+                s.VariableDeclarations.Any(v => ((v.VarType as StaticArrayType)?.ElementType ?? v.VarType) is Struct inner && HasStructDefaults(inner, visited)));
+        }
+
+        // LE1's PropagateStructDefaults additionally calls UStructProperty::HasValue.
+        // Evaluate effective defaults so an explicit zero can replace an inherited value.
+        private static bool HasNonZeroStructDefaults(Struct type, HashSet<Struct> visiting, IEnumerable<AssignStatement> overrides = null)
+        {
+            if (!visiting.Add(type)) return false;
+            try
+            {
+                var values = new Dictionary<(string Name, int Index), Expression>();
+                var hierarchy = new Stack<Struct>();
+                for (Struct current = type; current is not null; current = current.Parent as Struct)
+                    hierarchy.Push(current);
+                foreach (Struct current in hierarchy)
+                    Apply(current.DefaultProperties.Statements.Cast<AssignStatement>());
+                if (overrides is not null) Apply(overrides);
+                foreach (Struct current in hierarchy)
+                {
+                    foreach (VariableDeclaration member in current.VariableDeclarations)
+                    {
+                        VariableType memberType = (member.VarType as StaticArrayType)?.ElementType ?? member.VarType;
+                        for (int index = 0; index < member.ArrayLength; index++)
+                        {
+                            if (values.TryGetValue((member.Name.ToLowerInvariant(), index), out Expression value)
+                                ? HasValue(value, memberType)
+                                : memberType is Struct nested && HasNonZeroStructDefaults(nested, visiting))
+                                return true;
+                        }
+                    }
+                }
+                return false;
+
+                void Apply(IEnumerable<AssignStatement> assignments)
+                {
+                    foreach (AssignStatement assignment in assignments)
+                    {
+                        Expression target = assignment.Target;
+                        int index = 0;
+                        if (target is ArraySymbolRef array)
+                        {
+                            target = array.Array;
+                            index = (int)((IntegerLiteral)array.Index).Value;
+                        }
+                        // Defaults decompiled while loading symbols retain names but have no linked nodes.
+                        var reference = (SymbolReference)target;
+                        string memberName = (reference.Node as VariableDeclaration)?.Name ?? reference.Name;
+                        values[(memberName.ToLowerInvariant(), index)] = assignment.Value;
+                    }
+                }
+                bool HasValue(Expression value, VariableType memberType) => value switch
+                {
+                    NoneLiteral => false,
+                    IntegerLiteral number => number.Value != 0,
+                    FloatLiteral number => number.Value != 0,
+                    StringRefLiteral number => number.Value != 0,
+                    BooleanLiteral boolean => boolean.Value,
+                    NameLiteral name => !name.Value.CaseInsensitiveEquals("None"),
+                    StringLiteral text => text.Value.Length != 0,
+                    SymbolReference { Node: EnumValue enumeration } when memberType is Enumeration enumType => !enumeration.Name.CaseInsensitiveEquals(enumType.Values[0].Name),
+                    DynamicArrayLiteral array => array.Values.Count != 0,
+                    StructLiteral structure when memberType is Struct nested => HasNonZeroStructDefaults(nested, visiting, structure.Statements),
+                    VectorLiteral vector => vector.X != 0 || vector.Y != 0 || vector.Z != 0,
+                    RotatorLiteral rotation => rotation.Pitch != 0 || rotation.Yaw != 0 || rotation.Roll != 0,
+                    _ => true // Non-null object and delegate references.
+                };
+            }
+            finally
+            {
+                visiting.Remove(type);
+            }
+        }
+
         private static void SharedFunctionVerification(Function func, MEGame game, SymbolTable symbols, MessageLog log, UnrealScriptOptionsPackage usop)
         {
             bool hasStructDefaults = false;
@@ -111,7 +188,12 @@ namespace LegendaryExplorerCore.UnrealScript.Parsing
                 {
                     validator.VisitVarDecl(local, false);
                     validator2.VisitVarDecl(local, false);
-                    hasStructDefaults |= ((local.VarType as StaticArrayType)?.ElementType ?? local.VarType) is Struct s && (game.IsGame3() ? s.DefaultProperties.Statements.Any() : isNotInState);
+                    hasStructDefaults |= isNotInState && ((local.VarType as StaticArrayType)?.ElementType ?? local.VarType) is Struct s && (game switch
+                    {
+                        MEGame.LE1 => HasNonZeroStructDefaults(s, new HashSet<Struct>()),
+                        MEGame.ME3 or MEGame.LE3 => HasStructDefaults(s, new HashSet<Struct>()),
+                        _ => true
+                    });
                 }
             }
             foreach (var param in func.Parameters)

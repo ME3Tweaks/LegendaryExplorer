@@ -5,6 +5,7 @@ namespace LegendaryExplorerCore.UnrealScript.Lexing
     public sealed class ScriptToken
     {
         public readonly string Value;
+        public string RawText { get; init; }
 
         public readonly int StartPos;
         public readonly int EndPos;

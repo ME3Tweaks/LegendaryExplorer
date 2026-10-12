@@ -69,6 +69,22 @@ public class LE3ShaderParameterBinderTests
     }
 
     [TestMethod]
+    [DataRow("DecalLocalBinormal")]
+    [DataRow("DecalLocalTangent")]
+    public void DecalPixelAllocationsAreNativelyUnboundOnlyForDecalFactoriesInThePixelStage(string name)
+    {
+        var allocation = Constant(name, 0, 0, 16);
+        Assert.IsTrue(LE3ShaderParameterBinder.IsNativelyUnboundDecalPixelParameter(allocation, ShaderStage.Pixel, "FLocalDecalVertexFactory"));
+        Assert.IsTrue(LE3ShaderParameterBinder.IsNativelyUnboundDecalPixelParameter(allocation, ShaderStage.Pixel, "FGPUSkinDecalVertexFactory"));
+        Assert.IsFalse(LE3ShaderParameterBinder.IsNativelyUnboundDecalPixelParameter(allocation, ShaderStage.Vertex, "FLocalDecalVertexFactory"));
+        Assert.IsFalse(LE3ShaderParameterBinder.IsNativelyUnboundDecalPixelParameter(allocation, ShaderStage.Pixel, "FLocalVertexFactory"));
+        Assert.IsFalse(LE3ShaderParameterBinder.IsNativelyUnboundDecalPixelParameter(allocation with { Kind = ShaderParameterBindingKind.Resource },
+            ShaderStage.Pixel, "FLocalDecalVertexFactory"));
+        Assert.IsFalse(LE3ShaderParameterBinder.IsNativelyUnboundDecalPixelParameter(allocation with { Name = "DecalLocalNormal" },
+            ShaderStage.Pixel, "FLocalDecalVertexFactory"));
+    }
+
+    [TestMethod]
     [DataRow("ViewProjectionMatrix", 1, 0, 64, true)]
     [DataRow("CameraPosition", 1, 64, 16, true)]
     [DataRow("PreViewTranslation", 1, 80, 16, true)]

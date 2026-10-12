@@ -65,10 +65,12 @@ public static class UdkTextureEncodingPolicy
         if (decision.IsNormal)
         {
             props.AddOrReplaceProp(new BoolProperty(false, "SRGB"));
+            // Alpha is written too: some two-channel sources carry UnpackMin[3] = -1, which is not the
+            // signed RGB normal range (alpha 0..1) that NormalCompressionHelper and the shader expect.
             if (decision.ReconstructZ)
-                for (int lane = 0; lane < 3; lane++)
+                for (int lane = 0; lane < 4; lane++)
                 {
-                    props.AddOrReplaceProp(new FloatProperty(-1f, "UnpackMin") { StaticArrayIndex = lane });
+                    props.AddOrReplaceProp(new FloatProperty(lane < 3 ? -1f : 0f, "UnpackMin") { StaticArrayIndex = lane });
                     props.AddOrReplaceProp(new FloatProperty(1f, "UnpackMax") { StaticArrayIndex = lane });
                 }
         }

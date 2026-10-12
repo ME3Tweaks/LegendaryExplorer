@@ -43,6 +43,21 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     public string DisplayText { get; }
 
+    // Use the resolved proxy type so subclasses and collection components are
+    // categorized consistently, regardless of their export names or tags.
+    public string Category => this switch
+    {
+        { IsVolume: true } => "Volumes",
+        { IsVolumetricMesh: true } => "Volumetric meshes",
+        PawnProxy => "Pawns",
+        SkeletalMeshActorProxy or SFXStuntActorProxy => "Skeletal meshes",
+        DynamicSMActorProxy or BioArtPlaceableProxy => "Environment",
+        StaticMeshActorProxy or StaticMeshComponentActorProxy => "Static meshes",
+        PrefabInstanceProxy => "Prefabs",
+        SFXDroppedPickupProxy or SFXDroppedAmmoProxy or SFXDroppedGrenadeProxy => "Pickups",
+        _ => "Other"
+    };
+
     private bool isDirty;
     public bool IsDirty
     {
@@ -203,6 +218,10 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     public virtual bool IsVolume => false;
     public bool IsVolumetricMesh { get; protected set; }
+    /// <summary>
+    /// The actor's bHidden is set, so none of its components are rendered in game. (Individual components can also be hidden, see <see cref="PrimitiveComponentProxy.HiddenGame"/>)
+    /// </summary>
+    public bool IsHidden { get; }
 
     public TransformSnapshot SnapshotTransform() => new(location, rotation, drawScale, drawScale3D);
 
@@ -222,6 +241,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         PropertyCollection props = Properties;
 
         props.ReadProp(ref Tag);
+        IsHidden = props.GetProp<BoolProperty>("bHidden")?.Value ?? false;
 
         DisplayText = Export.ObjectName.Instanced;
         if (!Tag.Name.CaseInsensitiveEquals(Export.ClassName))
@@ -413,6 +433,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     {
         foreach (var component in Components)
         {
+            if (component.HiddenGame && !context.ShowHidden) continue;
             component.Render(context, pass);
         }
     }
@@ -778,8 +799,7 @@ public class PrefabInstanceProxy : ActorProxy
     {
         foreach (var actor in Actors)
         {
-            if (actor.IsVolume && !context.ShowVolumes) continue;
-            if (actor.IsVolumetricMesh && !context.ShowVolumetrics) continue;
+            if (!context.IsActorVisible(actor)) continue;
             actor.Render(context, pass);
         }
     }

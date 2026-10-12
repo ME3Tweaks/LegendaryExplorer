@@ -368,8 +368,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
                     (nameof(UniformPixelScalarExpressions), UniformPixelScalarExpressions),
                     (nameof(Uniform2DTextureExpressions), Uniform2DTextureExpressions),
                     (nameof(UniformCubeTextureExpressions), UniformCubeTextureExpressions),
-                    (nameof(UniformCubeTextureExpressions), UniformVertexVectorExpressions),
-                    (nameof(UniformCubeTextureExpressions), UniformVertexScalarExpressions),
+                    (nameof(UniformVertexVectorExpressions), UniformVertexVectorExpressions),
+                    (nameof(UniformVertexScalarExpressions), UniformVertexScalarExpressions),
                 };
 
                 foreach ((string prefix, MaterialUniformExpression[] expressions) in uniformExpressionArrays)

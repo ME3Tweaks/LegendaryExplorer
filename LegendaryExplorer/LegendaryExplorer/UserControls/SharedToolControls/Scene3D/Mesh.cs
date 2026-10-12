@@ -189,7 +189,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
 
         public static IVertexBase Create(Vector3 position, Vector3 tangent, Vector4 normal, Fixed4<Vector4> uvs)
         {
-            return new LEVertex(new Vector4(position, 1), tangent, normal, Vector4.Zero, uvs);
+            //The game's vertex shaders expect tangents in the packed UBYTE4N form, and unpack them with "* 2 - 1".
+            //Vertex color defaults to white, which matches the engine's null color vertex buffer.
+            return new LEVertex(new Vector4(position, 1), tangent * 0.5f + new Vector3(0.5f), normal * 0.5f + new Vector4(0.5f), Vector4.One, uvs);
         }
         public static unsafe int Stride => sizeof(Vector4) + sizeof(Vector3) + sizeof(Vector4) + sizeof(Vector4) + sizeof(Vector4) * 3 + sizeof(Vector2);
 
