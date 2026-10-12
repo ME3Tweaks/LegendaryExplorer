@@ -261,7 +261,7 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         /// </summary>
         public static ObjectInstanceDB CreateEmpty(MEGame game)
         {
-            return new ObjectInstanceDB(game, [], new CaseInsensitiveDictionary<ObjectInstanceInfo>());
+            return new ObjectInstanceDB(game, [], new CaseInsensitiveDictionary<ObjectInstanceInfo>()) { Version = 3 }; // Make sure is latest
         }
 
         public static ObjectInstanceDB Create(MEGame game, List<string> files, Action<int> numDoneReporter = null, Action<int> addExtraFiles = null, string gamePathOverride = null)
@@ -313,7 +313,9 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
         public void AddFileToDB(IMEPackage package, string filePath, bool insertAtStart = true, Func<ExportEntry, bool> objectsToAddPredicate = null, string gamePathOverride = null)
         {
             int filePathIndex = FilePaths.Count;
-            if (package.Game != Game)
+            // LMP installations may still contain unconverted LE3 packages. Their object metadata
+            // uses the same format, and belongs in the LMP install's index alongside LMP packages.
+            if (package.Game != Game && !(Game == MEGame.LMP && package.Game == MEGame.LE3))
             {
                 throw new InvalidOperationException($"Cannot add a {package.Game} file to a {Game} database");
             }
