@@ -725,13 +725,13 @@ namespace LegendaryExplorerCore.Textures
 
         /// <summary>
         /// The <see cref="correctMips"/> path for non-default <see cref="MipGenerationOptions"/>: builds the whole chain as ARGB
-        /// first, then converts each level. The top mip is only rewritten when it has to change format (the same rule the
-        /// default path uses), so a top mip that is already in the target format is never recompressed.
+        /// first, then converts each level. The top mip is only rewritten when it has to change format, so a top mip that is already
+        /// in the target format is never recompressed - not even a DXT1 one without alpha, which the default path re-encodes.
         /// </summary>
         private void correctMipsWithOptions(byte[] topArgb, int width, int height, PixelFormat dstFormat, bool dxt1HasAlpha, byte dxt1Threshold, MipGenerationOptions options)
         {
             MipMap originalTop = mipMaps[0];
-            bool convertTop = dstFormat != pixelFormat || (dstFormat == PixelFormat.DXT1 && !dxt1HasAlpha);
+            bool convertTop = dstFormat != pixelFormat;
 
             List<byte[]> levels = MipGenerator.BuildChain(topArgb, width, height, options);
 
