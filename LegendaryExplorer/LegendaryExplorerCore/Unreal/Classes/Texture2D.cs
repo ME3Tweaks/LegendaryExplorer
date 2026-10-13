@@ -585,11 +585,14 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
             var compressedMips = new List<byte[]>();
 
+            bool leStoredUncompressed = isPackageStored && Export.Game.IsLEGame() &&
+                Mips.All(x => x.storageType is StorageTypes.pccUnc or StorageTypes.pccOodle or StorageTypes.extUnc or StorageTypes.extOodle);
+
             for (int m = 0; m < image.mipMaps.Count; m++)
             {
                 // Mips go big to small
 
-                if (m > image.mipMaps.Count - 6) // 0 indexed
+                if (m > image.mipMaps.Count - 6 || leStoredUncompressed) // 0 indexed
                 {
                     // Lower 6 mips are never stored compressed so don't bother wasting time compressing the data
                     compressedMips.Add(null);
@@ -1307,21 +1310,114 @@ namespace LegendaryExplorerCore.Unreal.Classes
             // Needs mipped
             var newFormat = destFormat == PixelFormat.Unknown ? Image.getPixelFormatType(TextureFormat) : destFormat;
             bool wasPackageStored = GetTopMip()?.IsPackageStored ?? true;
-            var image = ToImage(Image.getPixelFormatType(TextureFormat));
+            // Only the top mip goes in: ToImage would run the default correctMips over it first, which re-encodes the top mip of a
+            // DXT1 texture without alpha even when the options are meant to leave it alone. Replace generates the chain.
+            var currentFormat = Image.getPixelFormatType(TextureFormat);
+            var topMip = GetTopMip();
+            var image = new Image(new List<MipMap> { new(GetTextureData(topMip, Export.Game), topMip.width, topMip.height, currentFormat) }, currentFormat);
             Replace(image, Export.GetProperties(), isPackageStored: wasPackageStored, forcedNewFormat: newFormat, forceMipping: true, mipOptions: options);
 
             if (wasPackageStored)
             {
-                // Replace() only sets NeverStream when there are 6+ mips; a package stored texture must always have it
-                var props = Export.GetProperties();
-                if (props.GetProp<BoolProperty>("NeverStream") is not { Value: true })
-                {
-                    props.AddOrReplaceProp(new BoolProperty(true, "NeverStream"));
-                    Export.WriteProperties(props);
-                }
+                EnsureNeverStream();
             }
         }
+
+        /// <summary>
+        /// Replace() only sets NeverStream when there are 6+ mips; a package stored texture must always have it
+        /// </summary>
+        private void EnsureNeverStream()
+        {
+            var props = Export.GetProperties();
+            if (props.GetProp<BoolProperty>("NeverStream") is not { Value: true })
+            {
+                props.AddOrReplaceProp(new BoolProperty(true, "NeverStream"));
+                Export.WriteProperties(props);
+            }
+        }
+
+        /// <summary>
+        /// Reads back the whole mip chain of a package stored texture exactly as it is stored (for a block compressed format
+        /// that is the encoded blocks, a sub 4x4 mip being one padded block), so that it can be kept and later put on a texture
+        /// with <see cref="ReplaceWithEncodedMips"/> without encoding it again.
+        /// </summary>
+        /// <param name="format">The pixel format of the stored mips.</param>
+        /// <param name="mips">The mips, largest first, each with its real (unpadded) size.</param>
+        /// <returns>False if the texture is not a package stored, complete chain in a known format.</returns>
+        public bool TryGetEncodedMips(out PixelFormat format, out List<EncodedMip> mips)
+        {
+            format = PixelFormat.Unknown;
+            mips = null;
+
+            var formatName = Export.GetProperty<EnumProperty>("Format")?.Value.Name;
+            if (formatName == null)
+                return false;
+            format = Image.getPixelFormatType(formatName);
+            var live = Mips.Where(x => x.storageType != StorageTypes.empty).ToList();
+            if (format == PixelFormat.Unknown || live.Count < 2 || live.Any(x => !x.IsPackageStored))
+                return false;
+
+            int width = live[0].width;
+            int height = live[0].height;
+            var result = new List<EncodedMip>(live.Count);
+            foreach (var mip in live)
+            {
+                var data = GetTextureData(mip, Export.Game);
+                int paddedWidth = width;
+                int paddedHeight = height;
+                if (format is PixelFormat.DXT1 or PixelFormat.DXT3 or PixelFormat.DXT5 or PixelFormat.ATI2 or PixelFormat.BC5 or PixelFormat.BC7)
+                {
+                    paddedWidth = Math.Max(width, 4);
+                    paddedHeight = Math.Max(height, 4);
+                }
+
+                if (data == null || data.Length != MipMap.getBufferSize(paddedWidth, paddedHeight, format))
+                    return false;
+                result.Add(new EncodedMip(width, height, data));
+                width = Math.Max(width >> 1, 1);
+                height = Math.Max(height >> 1, 1);
+            }
+
+            // A chain that stops short of 1x1 cannot be restored with ReplaceWithEncodedMips
+            if (result[^1].Width != 1 || result[^1].Height != 1)
+                return false;
+
+            mips = result;
+            return true;
+        }
+
+        /// <summary>
+        /// Stores an already encoded, complete mip chain on this texture (package stored, <see cref="PixelFormat"/> as given), the
+        /// way <see cref="GenerateMips"/> would leave it, without generating or encoding anything. Throws before changing the
+        /// texture if the chain is not usable.
+        /// </summary>
+        /// <param name="format">The pixel format the mips are encoded in.</param>
+        /// <param name="mips">Every mip from the top one down to 1x1, each half the size of the one above, with its real (unpadded) size.</param>
+        /// <returns>Messages about anything the replacement had to change.</returns>
+        public List<string> ReplaceWithEncodedMips(PixelFormat format, IReadOnlyList<EncodedMip> mips)
+        {
+            var mipMaps = new List<MipMap>(mips.Count);
+            foreach (var mip in mips)
+            {
+                mipMaps.Add(new MipMap(mip.Data, mip.Width, mip.Height, format)); // validates the size of the data
+            }
+
+            var image = new Image(mipMaps, format);
+            if (!image.HasCompleteMipChain())
+            {
+                throw new ArgumentException("The mips are not a complete chain (every level half the size of the one above, down to 1x1)", nameof(mips));
+            }
+
+            var messages = Replace(image, Export.GetProperties(), isPackageStored: true, forcedNewFormat: format, forceMipping: true, useSuppliedMips: true);
+            EnsureNeverStream();
+            return messages;
+        }
     }
+
+    /// <summary>
+    /// One level of an already encoded mip chain: its real size (not padded to a whole block) and its stored bytes.
+    /// </summary>
+    public readonly record struct EncodedMip(int Width, int Height, byte[] Data);
 
     [DebuggerDisplay(@"Texture2DMipInfo for {Export.ObjectName.Instanced} | {width}x{height} | {storageType}")]
     public class Texture2DMipInfo
