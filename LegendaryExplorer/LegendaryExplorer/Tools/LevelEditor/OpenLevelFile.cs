@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
 
@@ -26,7 +27,61 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
     /// <summary>
     /// The level's lights, which are in the render context's lights while the file is open
     /// </summary>
-    public List<Scene3D.SceneLight> Lights { get; set; } = [];
+    public IReadOnlyList<Scene3D.SceneLight> Lights => Lighting?.Lights ?? Array.Empty<Scene3D.SceneLight>();
+
+    public Scene3D.LevelLightSet Lighting { get; private set; }
+
+    /// <summary>
+    /// Rereads the level's lights. Uncommitted edits of the file's light proxies are kept
+    /// </summary>
+    internal void ReloadLights(LegendaryExplorerCore.Unreal.BinaryConverters.Level level, Scene3D.MeshRenderContext context)
+    {
+        Dictionary<ExportEntry, Scene3D.LightPreviewOverride> edits = [];
+        foreach (ILightProxy light in Actors.OfType<ILightProxy>())
+        {
+            if (light.Light.GetPreviewOverride(light.EditedOwnerTransform) is { } edit)
+                edits[light.Light.Component] = edit;
+        }
+        var replacement = Scene3D.LevelLightSet.Load(level, context.PackageCache, edits.Count > 0 ? component => edits.GetValueOrDefault(component) : null);
+        context.ReplaceLights(Lights, replacement.Lights);
+        Lighting = replacement;
+    }
+
+    /// <summary>
+    /// Rebuilds one light from its proxy's current (possibly uncommitted) settings and transform, replacing it in the scene
+    /// </summary>
+    internal void UpdateLight(ILightProxy light, Scene3D.MeshRenderContext context)
+    {
+        if (Lighting is null) return;
+        ExportEntry component = light.Light.Component;
+        Scene3D.SceneLight rebuilt = null;
+        try
+        {
+            Scene3D.LightPreviewOverride edit = light.Light.GetPreviewOverride(light.EditedOwnerTransform);
+            //the same owner transform the level's loader uses when the light isn't moved: a collection's is read from the level's collection by index
+            Matrix4x4? ownerTransform = edit?.OwnerTransform ?? light switch
+            {
+                CollectionActorComponentProxy collectionLight => collectionLight.SavedLocalToWorld,
+                ActorProxy { Export: var owner } when owner != component => LegendaryExplorerCore.Unreal.ActorUtils.GetLocalToWorld(owner),
+                _ => (Matrix4x4?)null
+            };
+            rebuilt = Scene3D.SceneLight.Create(component, OwnerClass(light), context.PackageCache, ownerTransform, edit?.Properties);
+        }
+        catch (Exception e)
+        {
+            System.Diagnostics.Debug.WriteLine($"Could not rebuild light {component.InstancedFullPath}: {e.Message}");
+        }
+        Scene3D.SceneLight previous = Lighting.ReplaceLight(component, rebuilt);
+        if (previous is not null || rebuilt is not null)
+            context.ReplaceLights(previous is null ? [] : [previous], rebuilt is null ? [] : [rebuilt]);
+    }
+
+    private static string OwnerClass(ILightProxy light) => light switch
+    {
+        CollectionActorComponentProxy collection => collection.CollectionActorExport.ClassName,
+        ActorProxy actor => actor.Export.ClassName,
+        _ => ""
+    };
 
     private readonly LevelEditor Owner;
 
@@ -83,7 +138,7 @@ public class OpenLevelFile : NotifyPropertyChangedBase, IPackageUser, IDisposabl
 
     public void HandleSaveStateChange(bool isSaving)
     {
-        Owner.HandleSaveStateChange(isSaving);
+        Owner.HandleSaveStateChange(this, isSaving);
     }
 
     #endregion

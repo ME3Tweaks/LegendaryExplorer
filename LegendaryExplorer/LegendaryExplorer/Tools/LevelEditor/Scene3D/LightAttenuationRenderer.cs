@@ -202,6 +202,7 @@ public sealed class LightAttenuationRenderer : IDisposable
     private bool FoundShadowCasters;
     //the light whose attenuation AttenuationTarget holds this frame
     private SceneLight AttenuationLight;
+    private int LightsVersion = -1;
     private readonly Dictionary<SceneLight, List<(MeshStaticLighting Caster, BoxSphereBounds Bounds)>> ShadowCasters = [];
     //lights whose attenuation failed to render, so it isn't retried every frame. Forgotten by ClearMaterials
     private readonly HashSet<SceneLight> FailedLights = [];
@@ -425,6 +426,14 @@ public sealed class LightAttenuationRenderer : IDisposable
     /// </summary>
     private void BeginFrame()
     {
+        SceneLight[] lights = Context.GetLights(out int lightsVersion);
+        if (LightsVersion != lightsVersion)
+        {
+            // Light edits replace lights every frame of a drag, so only forget the replaced lights' failures; light function
+            // materials belong to their material exports, which InvalidateLightFunctions forgets when a package changes them.
+            FailedLights.IntersectWith(lights);
+            LightsVersion = lightsVersion;
+        }
         if (Frame != Context.NumFrames)
         {
             Frame = Context.NumFrames;

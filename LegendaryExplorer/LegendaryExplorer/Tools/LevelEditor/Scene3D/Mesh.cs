@@ -181,6 +181,12 @@ public struct WorldVertex : IVertexBase
         HitTestID = hitTestId;
     }
 
+    //for the level editor's sprites
+    public WorldVertex(Vector3 position, Vector4 color, Vector3 hitTestId, Vector2 uv) : this(position, color, hitTestId)
+    {
+        UV = uv;
+    }
+
     public void ToFloats(Span<float> dest) => this.AsSpanOf<WorldVertex, float>().CopyTo(dest);
 
     public static InputElement[] InputElements =>

@@ -206,14 +206,14 @@ public class Widget : UIElement
 
         context.WorldToPixel(p2, out Vector2 axisEnd);
 
-        context.Primitives.AddLine(p1, p2, color, hitId);
+        context.UIPrimitives.AddLine(p1, p2, color, hitId);
 
         if (axisType is EAxisType.ReadOnly)
         {
             return axisEnd;
         }
 
-        var mesh = context.Primitives.BuildMesh(color, hitId, ltw);
+        var mesh = context.UIPrimitives.BuildMesh(color, hitId, ltw);
 
         if (axisType is EAxisType.Cone)
         {
@@ -273,7 +273,7 @@ public class Widget : UIElement
 
         var ltw = Matrix4x4.CreateScale(scale) * matrix;
 
-        var mesh = context.Primitives.BuildMesh(color with { W = color.W / 2 }, hitId, ltw);
+        var mesh = context.UIPrimitives.BuildMesh(color with { W = color.W / 2 }, hitId, ltw);
 
         Vector3 prevPoint = default;
 
@@ -286,7 +286,7 @@ public class Widget : UIElement
                 mesh.AddVertex(point);
                 if (j > 0)
                 {
-                    context.Primitives.AddLine(Vector3.Transform(prevPoint, ltw), Vector3.Transform(point, ltw), color, hitId);
+                    context.UIPrimitives.AddLine(Vector3.Transform(prevPoint, ltw), Vector3.Transform(point, ltw), color, hitId);
                 }
                 prevPoint = point;
             }

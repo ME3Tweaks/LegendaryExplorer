@@ -270,7 +270,7 @@ public class MeshRenderContext : RenderContext
     //parsing a package's ShaderCache is expensive, and every material in the package needs it
     private readonly Dictionary<IMEPackage, ShaderCache> SeekFreeShaderCaches = [];
     public readonly PreviewTextureCache TextureCache;
-    public readonly PackageCache PackageCache;
+    public readonly PreviewPackageCache PackageCache;
 
     /// <summary>
     /// Render meshes with the game's shaders. Materials that can't be rendered with them fall back to LEX's shader.
@@ -355,6 +355,21 @@ public class MeshRenderContext : RenderContext
         lock (LightsLock)
         {
             Lights = Lights.Where(light => !toRemove.Contains(light)).ToArray();
+            LightsVersion++;
+        }
+    }
+
+    /// <summary>
+    /// Replaces one level's lights atomically, invalidating mesh interactions and light environments once.
+    /// Other open levels keep their lights. Thread-safe.
+    /// </summary>
+    public void ReplaceLights(IEnumerable<SceneLight> previous, IEnumerable<SceneLight> replacement)
+    {
+        var toRemove = new HashSet<SceneLight>(previous);
+        SceneLight[] newLights = replacement.ToArray();
+        lock (LightsLock)
+        {
+            Lights = [.. Lights.Where(light => !toRemove.Contains(light)), .. newLights];
             LightsVersion++;
         }
     }
@@ -528,7 +543,8 @@ public class MeshRenderContext : RenderContext
         try
         {
             ExportEntry lightEnvironmentExport = null;
-            if (condensedProps.GetProp<ObjectProperty>("LightEnvironment") is { Value: not 0 } lightEnvironmentProp)
+            var lightEnvironmentProp = condensedProps.GetProp<ObjectProperty>("LightEnvironment");
+            if (lightEnvironmentProp is { Value: not 0 })
             {
                 lightEnvironmentExport = lightEnvironmentProp.ResolveToEntry(componentExport.FileRef) switch
                 {
@@ -549,7 +565,7 @@ public class MeshRenderContext : RenderContext
                     return false;
                 }
             }
-            else if (owner is null || !IsCharacterClass(owner))
+            else if (lightEnvironmentProp is { Value: 0 } || owner is null || !IsCharacterClass(owner))
             {
                 return false;
             }
@@ -819,6 +835,25 @@ public class MeshRenderContext : RenderContext
     }
 
     /// <summary>
+    /// Forget collision triangles for edited exports before rebuilding their component previews.
+    /// Other instances can then share the new geometry instead of recovering the old weakly cached mesh.
+    /// </summary>
+    public void InvalidateLevelGeometryMeshes(IMEPackage package, IReadOnlySet<int> updatedExports)
+    {
+        bool changed = false;
+        lock (LevelGeometryLock)
+        {
+            foreach (int index in updatedExports)
+            {
+                string key = $"{package.FilePath}|{index}";
+                changed |= LevelGeometryMeshes.Remove(key);
+                changed |= MeshesWithoutLevelGeometry.Remove(key);
+            }
+        }
+        if (changed) InvalidateLevelGeometry();
+    }
+
+    /// <summary>
     /// The triangles a mesh blocks line checks with, read by <paramref name="readTriangles"/> the first time the mesh is seen. Null if it has none, or they can't be read
     /// </summary>
     /// <param name="key">Identifies the mesh</param>
@@ -861,6 +896,14 @@ public class MeshRenderContext : RenderContext
             LevelGeometryMeshes[key] = new WeakReference<LevelGeometry.TriangleMesh>(mesh);
             return mesh;
         }
+    }
+
+    /// <summary>
+    /// Forgets the lights' light function materials and failed attenuations, so they're reloaded. For when a package edit may have changed them
+    /// </summary>
+    public void InvalidateLightFunctions()
+    {
+        LightAttenuations.ClearMaterials();
     }
 
     /// <summary>
@@ -931,6 +974,14 @@ public class MeshRenderContext : RenderContext
         }
     }
 
+    internal void RemovePendingGameShaderLoad(MaterialRenderProxy material)
+    {
+        lock (PendingGameShaderLoads)
+        {
+            PendingGameShaderLoads.Remove(material);
+        }
+    }
+
     /// <summary>
     /// Whether any materials have been created whose game shaders haven't been loaded by <see cref="LoadPendingGameShaders"/>
     /// </summary>
@@ -953,6 +1004,19 @@ public class MeshRenderContext : RenderContext
     /// </summary>
     /// <param name="reportProgress">Called with the number of items loaded so far, and the total</param>
     /// <param name="lightingModeToPrepare">Load light shaders for this mode before switching to it. Defaults to the current mode.</param>
+    /// <summary>
+    /// Whether <see cref="LoadPendingGameShaders"/> has anything to do for a lighting mode
+    /// </summary>
+    public bool NeedsGameShaderPreparation(ViewportLightingMode mode)
+    {
+        if (HasPendingGameShaderLoads) return true;
+        if (mode is not (ViewportLightingMode.Level or ViewportLightingMode.Preview)) return false;
+        lock (StaticLightings)
+        {
+            return StaticLightings.Any(staticLighting => !staticLighting.IsPrepared(mode == ViewportLightingMode.Preview));
+        }
+    }
+
     public void LoadPendingGameShaders(Action<int, int> reportProgress = null, ViewportLightingMode? lightingModeToPrepare = null)
     {
         MaterialRenderProxy[] materials;
@@ -1018,11 +1082,11 @@ public class MeshRenderContext : RenderContext
         }
     }
 
-    public MeshRenderContext()
+    public MeshRenderContext(bool sharePackages = true)
     {
         this.Camera.FocusDepth = 100.0f;
         TextureCache = new PreviewTextureCache(this);
-        PackageCache = new PackageCache();
+        PackageCache = new PreviewPackageCache(sharePackages);
         LightAttenuations = new LightAttenuationRenderer(this);
     }
 
@@ -1546,6 +1610,62 @@ public class MeshRenderContext : RenderContext
         ImmediateContext.VertexShader.Set(LEVertexDefaultVertexShader);
         DefaultEffect.RenderObject(ImmediateContext, mesh, (int)section.StartIndex, (int)section.TriangleCount * 3,
             Wireframe ? null : diffuseTexture ?? DefaultTextureView);
+    }
+
+    /// <summary>
+    /// Invalidates package-backed resources between frames. Returns true if any shared resource (textures, shader bytecode,
+    /// or light-environment settings) changed.
+    /// </summary>
+    public bool InvalidatePreviewResources(IMEPackage package, IReadOnlySet<int> exports) => InvalidatePreviewResources(package, exports, out _);
+
+    /// <param name="rebuild">The mesh previews that must be rebuilt to reacquire them. (Textures are reloaded in place, so they need none)</param>
+    public bool InvalidatePreviewResources(IMEPackage package, IReadOnlySet<int> exports, out PreviewRebuild rebuild)
+    {
+        //before the affected meshes are refreshed, so that they follow their materials' new dependencies
+        PackageCache.MaterialDependencies.Invalidate(package, exports);
+        InvalidateLevelGeometryMeshes(package, exports);
+        bool textures = TextureCache.Invalidate(package, exports);
+        bool shaders = exports.Any(index => package.GetEntry(index)?.ClassName == "ShaderCache");
+        lock (SeekFreeShaderCaches)
+            shaders |= SeekFreeShaderCaches.TryGetValue(package, out var previousCache)
+                       && previousCache?.Export is { } shaderExport && exports.Contains(shaderExport.UIndex);
+        int? modelToRefresh = null;
+        lock (LevelGeometryLock)
+            if (LevelModels.TryGetValue(package, out var model) && exports.Contains(model.Export.UIndex))
+                modelToRefresh = model.Export.UIndex;
+        if (modelToRefresh is { } modelIndex) SetLevelModel(package, modelIndex);
+        bool environments = exports.Any(index => package.GetEntry(index) is ExportEntry entry
+            && (entry.ClassName.Contains("LightEnvironment", StringComparison.Ordinal)
+                || entry.ClassName == "WorldInfo"));
+        if (shaders)
+        {
+            lock (SeekFreeShaderCaches) SeekFreeShaderCaches.Remove(package);
+            lock (VertexShaderCache)
+            {
+                foreach (var cached in VertexShaderCache.Values)
+                {
+                    cached.Shader.Dispose();
+                    cached.InputLayout.Dispose();
+                }
+                VertexShaderCache.Clear();
+            }
+            lock (PixelShaderCache) PixelShaderCache.DisposeValuesAndClear();
+        }
+        if (environments)
+        {
+            lock (LightEnvironments)
+            {
+                LightEnvironments.Clear();
+                WorldLightEnvironmentSettings.Clear();
+            }
+        }
+        if (textures || shaders || environments)
+        {
+            LightAttenuations.ClearMaterials();
+            ModulatedShadowsFailed = false;
+        }
+        rebuild = shaders ? PreviewRebuild.AllMeshes : environments ? PreviewRebuild.LightEnvironmentMeshes : PreviewRebuild.None;
+        return textures || shaders || environments;
     }
 
     public override void EmptyCaches()

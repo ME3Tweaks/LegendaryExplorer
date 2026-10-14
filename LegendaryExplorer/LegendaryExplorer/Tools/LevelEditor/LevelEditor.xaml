@@ -162,7 +162,7 @@
 
             <Border DockPanel.Dock="Top" Background="{StaticResource EditorPanel}" Padding="6" Margin="0,0,0,4" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}">
                 <DockPanel>
-                    <Button DockPanel.Dock="Right" Command="{Binding CommitChangesCommand}" Style="{StaticResource CommitButton}" ToolTip="Apply editor transforms to the loaded packages. Use Save All to write them to disk.">
+                    <Button DockPanel.Dock="Right" Command="{Binding CommitChangesCommand}" Style="{StaticResource CommitButton}" ToolTip="Apply editor transforms and light settings to the loaded packages. Use Save All to write them to disk.">
                         <StackPanel Orientation="Horizontal"><fa:ImageAwesome Icon="Solid_Check" Width="13" Margin="0,0,7,0" Foreground="{StaticResource EditorText}"/><TextBlock Text="Commit Changes"/></StackPanel>
                     </Button>
                     <WrapPanel VerticalAlignment="Center">
@@ -265,10 +265,12 @@
                             <ListBox.ItemTemplate><DataTemplate>
                                 <Grid>
                                     <Grid.ColumnDefinitions><ColumnDefinition Width="19"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="12"/></Grid.ColumnDefinitions>
-                                    <fa:ImageAwesome Icon="Solid_Cube" Width="12" Foreground="#CDB374" HorizontalAlignment="Left"/>
+                                    <fa:ImageAwesome Width="12" HorizontalAlignment="Left">
+                                        <fa:ImageAwesome.Style><Style TargetType="fa:ImageAwesome"><Setter Property="Icon" Value="Solid_Cube"/><Setter Property="Foreground" Value="#CDB374"/><Style.Triggers><DataTrigger Binding="{Binding Category}" Value="Lights"><Setter Property="Icon" Value="Solid_Lightbulb"/><Setter Property="Foreground" Value="#F0C04F"/></DataTrigger></Style.Triggers></Style></fa:ImageAwesome.Style>
+                                    </fa:ImageAwesome>
                                     <TextBlock Grid.Column="1" Text="{Binding DisplayText}" TextTrimming="CharacterEllipsis"/>
                                     <TextBlock Grid.Column="2" Text="{Binding Export.UIndex}" Margin="8,0,0,0" FontSize="11" Opacity="0.8"/>
-                                    <TextBlock Grid.Column="3" Text="•" Foreground="{StaticResource EditorDirty}" HorizontalAlignment="Right" Visibility="{Binding IsDirty, Converter={StaticResource BoolToVisibilityConverter}}" ToolTip="Uncommitted transform"/>
+                                    <TextBlock Grid.Column="3" Text="•" Foreground="{StaticResource EditorDirty}" HorizontalAlignment="Right" Visibility="{Binding IsDirty, Converter={StaticResource BoolToVisibilityConverter}}" ToolTip="Uncommitted change"/>
                                 </Grid>
                             </DataTemplate></ListBox.ItemTemplate>
                         </ListBox>
@@ -297,6 +299,7 @@
                                         <MenuItem Header="Show ▾" Padding="7,4">
                                             <MenuItem Header="Collision" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding ShowCollision}"/>
                                             <MenuItem Header="Hidden Actors" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding ShowHidden}"/>
+                                            <MenuItem Header="Selected Light's Reach" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding ShowLightReach}" ToolTip="Tint and outline the meshes the selected light is eligible to light"/>
                                         </MenuItem>
                                     </Menu>
                                 </WrapPanel>
@@ -361,6 +364,104 @@
                                         <DockPanel Margin="0,10,0,0"><TextBlock Text="Uniform scale" VerticalAlignment="Center"/><xctk:SingleUpDown x:Name="scaleUpDown" Width="108" HorizontalAlignment="Right" Value="{Binding DrawScale}" Increment="{Binding ScaleIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Uniform scale"/></DockPanel>
                                     </StackPanel>
                                 </Expander>
+                                <Expander Header="Light" IsExpanded="True" Padding="10,0,10,10" Visibility="{Binding IsLightSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <StackPanel>
+                                    <StackPanel DataContext="{Binding SelectedLight}">
+                                        <StackPanel.Style><Style TargetType="StackPanel"><Setter Property="IsEnabled" Value="True"/><Style.Triggers><DataTrigger Binding="{Binding SelectedActor.OwningFile.IsReadOnly, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
+                                        <DockPanel Margin="0,6,0,0">
+                                            <TextBlock DockPanel.Dock="Right" Text="Uncommitted" Foreground="{StaticResource EditorDirty}" FontSize="11" VerticalAlignment="Center" Visibility="{Binding HasChanges, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                            <CheckBox Content="Enabled" IsChecked="{Binding IsEnabled}" ToolTip="bEnabled. A disabled light lights nothing."/>
+                                        </DockPanel>
+                                        <TextBlock Text="{Binding TypeName}" Foreground="#81B3DD" FontSize="11" Margin="0,4,0,0"/>
+                                        <Grid Margin="0,8,0,0">
+                                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="150"/></Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions><RowDefinition Height="30"/><RowDefinition Height="30"/></Grid.RowDefinitions>
+                                            <TextBlock Text="Brightness" VerticalAlignment="Center"/>
+                                            <xctk:SingleUpDown Grid.Column="1" Value="{Binding Brightness}" Increment="0.1" FormatString="F3" VerticalAlignment="Center" AutomationProperties.Name="Light brightness"/>
+                                            <TextBlock Grid.Row="1" Text="Color" VerticalAlignment="Center"/>
+                                            <xctk:ColorPicker Grid.Row="1" Grid.Column="1" SelectedColor="{Binding Color}" UsingAlphaChannel="False" ShowDropDownButton="True" VerticalAlignment="Center" AutomationProperties.Name="Light color"/>
+                                        </Grid>
+                                        <Grid Visibility="{Binding HasRadius, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="150"/></Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions><RowDefinition Height="30"/><RowDefinition Height="30"/></Grid.RowDefinitions>
+                                            <TextBlock Text="Radius" VerticalAlignment="Center" ToolTip="Drag the white handle in the viewport to change it there."/>
+                                            <xctk:SingleUpDown Grid.Column="1" Value="{Binding Radius}" Increment="16" FormatString="F1" VerticalAlignment="Center" AutomationProperties.Name="Light radius"/>
+                                            <TextBlock Grid.Row="1" Text="Falloff exponent" VerticalAlignment="Center"/>
+                                            <xctk:SingleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding FalloffExponent}" Increment="0.1" FormatString="F2" VerticalAlignment="Center" AutomationProperties.Name="Light falloff exponent"/>
+                                        </Grid>
+                                        <Grid Visibility="{Binding IsSpot, Converter={StaticResource BoolToVisibilityConverter}}">
+                                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="150"/></Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions><RowDefinition Height="30"/><RowDefinition Height="30"/></Grid.RowDefinitions>
+                                            <TextBlock Text="Inner cone · degrees" VerticalAlignment="Center"/>
+                                            <xctk:SingleUpDown Grid.Column="1" Value="{Binding InnerConeAngle}" Increment="1" FormatString="F1" VerticalAlignment="Center" AutomationProperties.Name="Spot light inner cone angle"/>
+                                            <TextBlock Grid.Row="1" Text="Outer cone · degrees" VerticalAlignment="Center"/>
+                                            <xctk:SingleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding OuterConeAngle}" Increment="1" FormatString="F1" VerticalAlignment="Center" AutomationProperties.Name="Spot light outer cone angle"/>
+                                        </Grid>
+                                        <TextBlock Text="Shadows" Style="{StaticResource EditorSectionLabel}"/>
+                                        <WrapPanel>
+                                            <CheckBox Content="Cast shadows" IsChecked="{Binding CastShadows}" Margin="0,0,12,4" ToolTip="CastShadows: whether the light casts any shadows"/>
+                                            <CheckBox Content="Static" IsChecked="{Binding CastStaticShadows}" Margin="0,0,12,4" ToolTip="CastStaticShadows: precomputed shadows, and light environments' visibility tests"/>
+                                            <CheckBox Content="Dynamic" IsChecked="{Binding CastDynamicShadows}" Margin="0,0,12,4" ToolTip="CastDynamicShadows: shadows rendered at runtime"/>
+                                        </WrapPanel>
+                                        <TextBlock Text="Lighting channels" Style="{StaticResource EditorSectionLabel}"/>
+                                        <ItemsControl ItemsSource="{Binding Channels}">
+                                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate><DataTemplate><CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked}" Width="108" Margin="0,0,0,3"/></DataTemplate></ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                        <CheckBox Content="Highlight meshes in reach" IsChecked="{Binding ShowLightReach}" Margin="0,10,0,0" ToolTip="Tint and outline the meshes the selected light is eligible to light"/>
+                                        <TextBlock Text="{Binding SelectedLightReach}" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                                        <TextBlock Text="{Binding LightingRulesNote}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Expander>
+                                <Expander Header="Lights affecting this Actor" IsExpanded="True" Padding="10,4,10,10" Visibility="{Binding IsMeshSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <ItemsControl ItemsSource="{Binding SelectedActorLighting}">
+                                            <ItemsControl.ItemTemplate><DataTemplate>
+                                                <StackPanel Margin="0,0,0,12">
+                                                    <StackPanel.Style><Style TargetType="StackPanel"><Setter Property="IsEnabled" Value="True"/><Style.Triggers><DataTrigger Binding="{Binding IsReadOnly}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
+                                                    <TextBlock Text="{Binding ComponentName}" Foreground="#81B3DD" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                                                    <TextBlock Text="Uncommitted" Foreground="{StaticResource EditorDirty}" FontSize="11" Visibility="{Binding HasChanges, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                    <TextBlock Text="Lighting channels" Style="{StaticResource EditorSectionLabel}"/>
+                                                    <ItemsControl ItemsSource="{Binding Channels}">
+                                                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                                        <ItemsControl.ItemTemplate><DataTemplate><CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked}" Width="108" Margin="0,0,0,3"/></DataTemplate></ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                    <TextBlock Text="Light reception" Style="{StaticResource EditorSectionLabel}"/>
+                                                    <CheckBox Content="Accept lights" IsChecked="{Binding AcceptsLights}" Margin="0,0,0,4" ToolTip="bAcceptsLights: receive direct level lighting."/>
+                                                    <CheckBox Content="Accept dynamic lights" IsChecked="{Binding AcceptsDynamicLights}" Margin="0,0,0,4" ToolTip="bAcceptsDynamicLights: receive dynamic lights when using direct level lighting."/>
+                                                    <TextBlock Text="Shadows" Style="{StaticResource EditorSectionLabel}"/>
+                                                    <CheckBox Content="Cast shadows" IsChecked="{Binding CastShadow}" Margin="0,0,0,4" ToolTip="CastShadow: whether this component casts shadows."/>
+                                                    <CheckBox Content="Cast dynamic shadows" IsChecked="{Binding CastDynamicShadow}" Margin="0,0,0,4" ToolTip="bCastDynamicShadow: cast shadows at runtime."/>
+                                                    <CheckBox Content="Use precomputed shadows" IsChecked="{Binding UsePrecomputedShadows}" Margin="0,0,0,4" ToolTip="bUsePrecomputedShadows: use static shadowing. Changing this does not rebuild baked lighting."/>
+                                                </StackPanel>
+                                            </DataTemplate></ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <TextBlock Text="Eligibility under the viewport's current rules. It isn't a bake prediction, and an eligible light can still be blocked." TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" FontSize="11"/>
+                                        <TextBlock Text="{Binding LightingRulesNote}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="0,4,0,0"/>
+                                        <ItemsControl ItemsSource="{Binding SelectedMeshNotes}" Margin="0,4,0,0">
+                                            <ItemsControl.ItemTemplate><DataTemplate><TextBlock Text="{Binding}" TextWrapping="Wrap" Foreground="{StaticResource EditorDirty}" FontSize="11" Margin="0,2"/></DataTemplate></ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <TextBlock Text="No level light reaches this Actor." Foreground="{StaticResource EditorMuted}" Margin="0,8,0,0" Visibility="{Binding SelectedMeshLights.Any, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}"/>
+                                        <ItemsControl ItemsSource="{Binding SelectedMeshLights}" Margin="0,6,0,0">
+                                            <ItemsControl.ItemTemplate><DataTemplate>
+                                                <Button Command="{Binding Data.SelectLightCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding LightActor}" HorizontalContentAlignment="Stretch" Padding="4,3" Margin="0,1" ToolTip="Select this light">
+                                                    <DockPanel>
+                                                        <fa:ImageAwesome DockPanel.Dock="Left" Icon="Solid_Lightbulb" Width="10" Margin="0,2,7,0" VerticalAlignment="Top">
+                                                            <fa:ImageAwesome.Style><Style TargetType="fa:ImageAwesome"><Setter Property="Foreground" Value="{StaticResource EditorMuted}"/><Style.Triggers><DataTrigger Binding="{Binding IsAffecting}" Value="True"><Setter Property="Foreground" Value="#F09E1F"/></DataTrigger></Style.Triggers></Style></fa:ImageAwesome.Style>
+                                                        </fa:ImageAwesome>
+                                                        <StackPanel>
+                                                            <TextBlock TextTrimming="CharacterEllipsis"><Run Text="{Binding LightName, Mode=OneWay}"/><Run Text="{Binding LevelName, Mode=OneWay, StringFormat='  ·  {0}'}" Foreground="{StaticResource EditorMuted}"/></TextBlock>
+                                                            <TextBlock Text="{Binding Status}" FontSize="11" TextWrapping="Wrap">
+                                                                <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Foreground" Value="{StaticResource EditorDirty}"/><Style.Triggers><DataTrigger Binding="{Binding IsAffecting}" Value="True"><Setter Property="Foreground" Value="{StaticResource EditorMuted}"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                                                            </TextBlock>
+                                                        </StackPanel>
+                                                    </DockPanel>
+                                                </Button>
+                                            </DataTemplate></ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Expander>
                                 <Expander Header="Snapping" IsExpanded="True" Padding="10,7,10,10">
                                     <Grid>
                                         <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="112"/><ColumnDefinition Width="37"/></Grid.ColumnDefinitions>
@@ -396,7 +497,7 @@
                         <Button DockPanel.Dock="Right" Command="{Binding CommitChangesCommand}" Content="Commit Changes" Padding="10,5" Style="{StaticResource CommitButton}"/>
                         <Border Style="{StaticResource EditorDockTitle}"><StackPanel Orientation="Horizontal"><TextBlock Text="Changes" FontWeight="SemiBold"/><TextBlock Text="{Binding PendingChangesView.Count, StringFormat=' ({0})'}" Foreground="{StaticResource EditorMuted}"/></StackPanel></Border>
                     </DockPanel>
-                    <TextBlock DockPanel.Dock="Top" Text="Commit applies transforms to loaded packages. Save writes packages to disk." Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="10,6,10,3"/>
+                    <TextBlock DockPanel.Dock="Top" Text="Commit applies transforms and light settings to loaded packages. Save writes packages to disk." Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="10,6,10,3"/>
                     <Expander DockPanel.Dock="Bottom" Header="Rendering notes" IsExpanded="False" Margin="0" Padding="10,4">
                         <Expander.Style>
                             <Style TargetType="Expander" BasedOn="{StaticResource {x:Type Expander}}">
@@ -409,7 +510,7 @@
                         <ScrollViewer MaxHeight="70" VerticalScrollBarVisibility="Auto"><TextBlock Text="{Binding TextBelowActors}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" FontSize="11"/></ScrollViewer>
                     </Expander>
                     <Grid>
-                        <TextBlock Text="No uncommitted transforms." Foreground="{StaticResource EditorMuted}" Margin="10,6" Visibility="{Binding PendingChangesView.IsEmpty, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                        <TextBlock Text="No uncommitted changes." Foreground="{StaticResource EditorMuted}" Margin="10,6" Visibility="{Binding PendingChangesView.IsEmpty, Converter={StaticResource BoolToVisibilityConverter}}"/>
                         <ListBox ItemsSource="{Binding PendingChangesView}" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" Visibility="{Binding PendingChangesView.IsEmpty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=Not}">
                             <ListBox.ItemTemplate><DataTemplate>
                                 <Button Command="{Binding Data.SelectChangedActorCommand, Source={StaticResource bindingProxy}}" CommandParameter="{Binding}" HorizontalContentAlignment="Stretch" Padding="3,0" ToolTip="Select and frame this changed actor">

@@ -2,6 +2,7 @@
 using LegendaryExplorerCore.Gammtek.Extensions;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.SharpDX;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Collections;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
@@ -28,7 +29,96 @@ public class LevelEditorRenderContext : MeshRenderContext
 
     public readonly Widget TransformWidget;
 
-    public readonly BatchedPrimitives Primitives = new();
+    public readonly LightGizmo LightGizmo = new();
+
+    /// <summary>
+    /// Lines and meshes drawn on top of the scene: widgets, gizmos, etc
+    /// </summary>
+    public readonly BatchedPrimitives UIPrimitives = new();
+
+    /// <summary>
+    /// Lines and meshes drawn into the scene, hidden behind its geometry
+    /// </summary>
+    public readonly BatchedPrimitives WorldPrimitives = new(depthTested: true);
+
+    /// <summary>
+    /// Camera-facing sprites drawn into the scene, such as light icons
+    /// </summary>
+    public readonly SpriteBatch Sprites = new();
+
+    public readonly LightSprites LightSprites = new();
+
+    /// <summary>
+    /// The view's right and up directions in world space, for drawing things that face the camera. Correct in the top-down view too
+    /// </summary>
+    public (Vector3 Right, Vector3 Up) GetViewAxes()
+    {
+        Matrix4x4 view = Camera.ViewMatrix;
+        var right = new Vector3(view.M11, view.M21, view.M31);
+        var up = new Vector3(view.M12, view.M22, view.M32);
+        return (right.LengthSquared() > 0 ? Vector3.Normalize(right) : Vector3.UnitX, up.LengthSquared() > 0 ? Vector3.Normalize(up) : Vector3.UnitZ);
+    }
+
+    //keep in sync with the tint of highlighted meshes in LevelEditorShader.hlsl
+    public static readonly Vector4 HighlightColor = new(1f, 0.62f, 0.12f, 1);
+
+    /// <summary>
+    /// Mesh components the selected light is eligible to light. Drawn tinted and outlined
+    /// </summary>
+    public HashSet<PrimitiveComponentProxy> HighlightedComponents { get; } = [];
+
+    /// <summary>
+    /// Light components eligible to light the selected mesh. Their icons are outlined
+    /// </summary>
+    public HashSet<LegendaryExplorerCore.Packages.ExportEntry> HighlightedLights { get; } = [];
+
+    /// <summary>
+    /// Outlines a highlighted component's bounding box
+    /// </summary>
+    public void DrawHighlightBounds(BoxSphereBounds bounds)
+    {
+        Vector3 o = bounds.Origin, e = bounds.BoxExtent;
+        Span<Vector3> corners = stackalloc Vector3[8];
+        for (int i = 0; i < 8; i++)
+        {
+            corners[i] = o + new Vector3((i & 1) == 0 ? -e.X : e.X, (i & 2) == 0 ? -e.Y : e.Y, (i & 4) == 0 ? -e.Z : e.Z);
+        }
+        for (int i = 0; i < 8; i++)
+        {
+            for (int bit = 1; bit < 8; bit <<= 1)
+            {
+                if ((i & bit) == 0) WorldPrimitives.AddLine(corners[i], corners[i | bit], HighlightColor, 0xFFFFFF);
+            }
+        }
+    }
+
+    /// <summary>
+    /// The size of a pixel, in world units, at a point's depth
+    /// </summary>
+    public float WorldUnitsPerPixel(Vector3 point)
+    {
+        if (Camera.IsOrthographic || Width <= 0)
+        {
+            return Camera.OrthoWidth / Math.Max(Width, 1);
+        }
+        return WorldToScreen(point).W * 2 / (Width * Camera.ProjectionMatrix.M11);
+    }
+
+    /// <summary>
+    /// The ray through a pixel of the viewport, from the near plane into the scene
+    /// </summary>
+    public (Vector3 Origin, Vector3 Direction) GetPixelRay(int x, int y)
+    {
+        Matrix4x4.Invert(Camera.ViewProjectionMatrix, out Matrix4x4 screenToWorld);
+        float ndcX = 2f * (x + 0.5f) / Width - 1;
+        float ndcY = 1 - 2f * (y + 0.5f) / Height;
+        //reversed depth: the near plane is at 1
+        Vector4 near = Vector4.Transform(new Vector4(ndcX, ndcY, 1, 1), screenToWorld);
+        Vector4 far = Vector4.Transform(new Vector4(ndcX, ndcY, 0.5f, 1), screenToWorld);
+        var origin = new Vector3(near.X, near.Y, near.Z) / near.W;
+        Vector3 direction = new Vector3(far.X, far.Y, far.Z) / far.W - origin;
+        return (origin, direction.LengthSquared() > 0 ? Vector3.Normalize(direction) : Camera.CameraForward);
+    }
 
     private readonly Dictionary<string, OutlinerCategoryState> _categories = [];
 
@@ -48,6 +138,7 @@ public class LevelEditorRenderContext : MeshRenderContext
     {
         ActorProxy actor => IsActorVisible(actor),
         AxisHitProxy => TransformWidget.Attach is { } actor && IsActorVisible(actor),
+        LightHandleHitProxy => LightGizmo.Attach is ActorProxy light && IsActorVisible(light),
         _ => true
     };
 
@@ -58,7 +149,7 @@ public class LevelEditorRenderContext : MeshRenderContext
 
     private bool IsReadOnly;
 
-    public LevelEditorRenderContext(bool readOnly = false) : base()
+    public LevelEditorRenderContext(bool readOnly = false) : base(sharePackages: !readOnly)
     {
         BackgroundColor = System.Windows.Media.Color.FromRgb(0x99, 0x99, 0x99);
         Camera.FirstPerson = true;
@@ -73,6 +164,11 @@ public class LevelEditorRenderContext : MeshRenderContext
         if (TransformWidget.IsDragging)
         {
             TransformWidget.EndDrag();
+            return true;
+        }
+        if (LightGizmo.IsDragging)
+        {
+            LightGizmo.EndDrag();
             return true;
         }
         if (base.MouseUp(button, x, y)) return true;
@@ -107,6 +203,10 @@ public class LevelEditorRenderContext : MeshRenderContext
                 TransformWidget.EndDrag();
             }
         }
+        if (LightGizmo.IsDragging && Mouse.LeftButton is MouseButtonState.Released)
+        {
+            LightGizmo.EndDrag();
+        }
         if (HitBufferView is not null)
         {
             IHitProxy selected = GetHitProxy(x, y);
@@ -118,6 +218,10 @@ public class LevelEditorRenderContext : MeshRenderContext
                     TransformWidget.CurrentAxis = axisProxy.Axis;
                     TransformWidget.BeginDrag(x, y);
                     return true;
+                case LightHandleHitProxy handleProxy when button is MouseButtons.Left:
+                    LightGizmo.BeginDrag(handleProxy.Handle);
+                    if (LightGizmo.IsDragging) return true;
+                    break;
             }
         }
         return base.MouseDown(button, x, y);
@@ -136,6 +240,17 @@ public class LevelEditorRenderContext : MeshRenderContext
             TransformWidget.Drag(this, x, y);
             return true;
         }
+        if (LightGizmo.IsDragging)
+        {
+            //failsafe if mouseup event was not captured
+            if (Mouse.LeftButton is MouseButtonState.Released)
+            {
+                LightGizmo.EndDrag();
+                return true;
+            }
+            LightGizmo.Drag(this, x, y);
+            return true;
+        }
         if (base.MouseMove(x, y)) return true;
 
         if (HitBufferView is not null)
@@ -143,10 +258,14 @@ public class LevelEditorRenderContext : MeshRenderContext
             IHitProxy selected = GetHitProxy(x, y);
 
             TransformWidget.CurrentAxis = EWidgetAxis.None;
+            LightGizmo.HoveredHandle = LightHandle.None;
             switch (selected)
             {
                 case AxisHitProxy axisProxy:
                     TransformWidget.CurrentAxis = axisProxy.Axis;
+                    break;
+                case LightHandleHitProxy handleProxy:
+                    LightGizmo.HoveredHandle = handleProxy.Handle;
                     break;
             }
         }
@@ -222,12 +341,14 @@ public class LevelEditorRenderContext : MeshRenderContext
 
     public void DrawUI()
     {
+        WorldPrimitives.Render(this);
+        Sprites.Render(this);
         foreach (UIElement uiElem in DrawList_UI)
         {
             if (uiElem == TransformWidget && TransformWidget.Attach is { } actor && !IsActorVisible(actor)) continue;
             uiElem.Draw(this);
         }
-        Primitives.Render(this);
+        UIPrimitives.Render(this);
     }
 
     public void LoadActors(IList<ActorProxy> actors)
@@ -236,6 +357,12 @@ public class LevelEditorRenderContext : MeshRenderContext
         foreach (var actor in actors)
         {
             actor.HitID = HitProxies.Add(actor);
+        }
+        if (!DrawList_UI.Contains(LightGizmo))
+        {
+            //before the transform widget, so that the widget is drawn over the light's radius
+            DrawList_UI.Insert(0, LightGizmo);
+            LightGizmo.GetHandleHitProxies(ref HitProxies);
         }
         if (!IsReadOnly && !DrawList_UI.Contains(TransformWidget))
         {
@@ -260,6 +387,9 @@ public class LevelEditorRenderContext : MeshRenderContext
         DrawList_3D.DisposeAndClear();
         DrawList_UI.Clear();
         TransformWidget.Attach = null;
+        LightGizmo.Attach = null;
+        HighlightedComponents.Clear();
+        HighlightedLights.Clear();
     }
 
     public override void CreateSizeDependentResources(int width, int height, Texture2D newBackBuffer)
@@ -270,6 +400,14 @@ public class LevelEditorRenderContext : MeshRenderContext
     public override void DisposeSizeDependentResources()
     {
         base.DisposeSizeDependentResources();
+    }
+
+    public override void DisposeResources()
+    {
+        LightSprites.Dispose();
+        //its batches are keyed by the sprite textures just disposed
+        Sprites.Clear();
+        base.DisposeResources();
     }
 
     internal void RemoveActor(ActorProxy actor)

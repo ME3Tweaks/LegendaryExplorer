@@ -554,8 +554,39 @@ public sealed class DynamicLightEnvironment
     /// <summary>
     /// FDynamicLightEnvironmentState::DoesLightAffectOwner. (Light functions and precomputed shadowing don't matter to light environments)
     /// </summary>
-    private bool DoesLightAffectOwner(SceneLight light, BoxSphereBounds bounds, LightingChannels ownerChannels)
+    private bool DoesLightAffectOwner(SceneLight light, BoxSphereBounds bounds, LightingChannels ownerChannels) =>
+        GetOwnerExclusion(light, bounds, ownerChannels) is LightEligibility.Affects;
+
+    /// <summary>
+    /// For diagnostics: whether the light environment composites the light, under the same rules as <see cref="Compute"/>, and if not, why.
+    /// Whether its visibility trace to the light is blocked isn't considered
+    /// </summary>
+    public LightEligibility GetEligibility(SceneLight light)
     {
+        if (light.HasLightEnvironment)
+        {
+            return LightEligibility.BelongsToLightEnvironment;
+        }
+        if (light.IsDominant && !Settings.ForceCompositeAllLights)
+        {
+            return LightEligibility.DominantNotComposited;
+        }
+        (BoxSphereBounds bounds, LightingChannels channels) = GetOwnerBoundsAndChannels();
+        LightEligibility exclusion = GetOwnerExclusion(light, bounds, channels);
+        return exclusion is LightEligibility.Affects ? LightEligibility.LightEnvironment : exclusion;
+    }
+
+    private LightEligibility GetOwnerExclusion(SceneLight light, BoxSphereBounds bounds, LightingChannels ownerChannels)
+    {
+        //(UE3's AffectsBounds includes the light's inclusion and exclusion volumes)
+        if (!light.AffectsBounds(bounds))
+        {
+            return LightEligibility.OutOfRange;
+        }
+        if (light.GetVolumeExclusion(bounds) is var volumeExclusion and not LightEligibility.Affects)
+        {
+            return volumeExclusion;
+        }
         //a light's CompositeDynamic channel stands in for Dynamic: lights that only have Dynamic don't affect light environments
         uint lightChannels = light.LightingChannels.Channels & ~LightingChannels.DynamicBit;
         if ((light.LightingChannels.Channels & LightingChannels.CompositeDynamicBit) != 0)
@@ -564,7 +595,7 @@ public sealed class DynamicLightEnvironment
         }
         if ((lightChannels & ownerChannels.Channels) == 0)
         {
-            return false;
+            return LightEligibility.LightingChannels;
         }
         //ULightComponent::AffectsLevel: a level whose lighting was built on its own only has its own static-shadowing lights,
         //and lights can be limited to their own level and some others
@@ -573,14 +604,13 @@ public sealed class DynamicLightEnvironment
         bool isOtherLevel = !light.LevelName.Equals(levelName, StringComparison.OrdinalIgnoreCase);
         if (isOtherLevel && light.HasStaticShadowing && level.Flags.Has(UnrealFlags.EPackageFlags.SelfContainedLighting))
         {
-            return false;
+            return LightEligibility.SelfContainedLighting;
         }
         if (light.OnlyAffectSameAndSpecifiedLevels && isOtherLevel && !light.OtherLevelsToAffect.Contains(levelName))
         {
-            return false;
+            return LightEligibility.OtherLevel;
         }
-        //(UE3's AffectsBounds includes the light's inclusion and exclusion volumes)
-        return light.AffectsBounds(bounds) && light.AffectsVolumes(bounds);
+        return LightEligibility.Affects;
     }
 
     /// <summary>

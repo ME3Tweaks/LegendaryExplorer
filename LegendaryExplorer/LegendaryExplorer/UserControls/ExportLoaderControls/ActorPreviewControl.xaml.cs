@@ -2,7 +2,9 @@ using LegendaryExplorer.Tools.LevelEditor;
 using LegendaryExplorer.Tools.LevelEditor.Scene3D;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using System;
+using System.Collections.Frozen;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -147,8 +149,13 @@ public partial class ActorPreviewControl : ExportLoaderControl, IActorEditorCont
         RenderContext.DrawUI();
     }
 
+    /// <summary>
+    /// Actor classes the level editor shows, but that a preview of the actor alone has nothing useful to show for (a light is just its icon)
+    /// </summary>
+    private static readonly FrozenSet<string> ExcludedClasses = new[] { "Light" }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
+
     public override bool CanParse(ExportEntry exportEntry) =>
-        !exportEntry.IsDefaultObject && ActorProxy.CanCreate(exportEntry);
+        !exportEntry.IsDefaultObject && ActorProxy.CanCreate(exportEntry) && !exportEntry.IsA(ExcludedClasses);
 
     public override void LoadExport(ExportEntry exportEntry)
     {

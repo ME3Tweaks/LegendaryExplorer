@@ -10,7 +10,7 @@ public sealed class OutlinerGroupState : NotifyPropertyChangedBase
 {
     public OutlinerCategoryState Category { get; init; }
 
-    private bool _isExpanded = true;
+    private bool _isExpanded;
     public bool IsExpanded
     {
         get => _isExpanded;
@@ -22,7 +22,7 @@ public sealed class OutlinerCategoryState(string name) : NotifyPropertyChangedBa
 {
     public string Name { get; } = name;
 
-    private bool _isVisible = name is not ("Volumes" or "Volumetric meshes");
+    private bool _isVisible = name is not ("Volumes" or "Volumetric meshes" or "Lights");
     public bool IsVisible
     {
         get => _isVisible;

@@ -258,6 +258,11 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     /// </summary>
     public bool CanRenderWithGameShaders => GameShaderError is null;
 
+    /// <summary>
+    /// <see cref="GameShaderError"/>, without loading the shaders. Null if they haven't been loaded yet
+    /// </summary>
+    public string LoadedGameShaderError => AttemptedShaderLoad ? gameShaderError : null;
+
     public MaterialRenderProxy(MeshRenderContext context, ExportEntry export) : base(export, context.PackageCache, true)
     {
         Context = context;
@@ -289,6 +294,8 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     {
         gameShaderError = e.Message;
     }
+
+    internal void CancelPendingShaderLoad() => Context.RemovePendingGameShaderLoad(this);
 
     /// <summary>
     /// Loads the game's shaders for this material, if they haven't been already. Thread-safe.

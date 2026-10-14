@@ -172,6 +172,8 @@ namespace LegendaryExplorerCore.Unreal.BinaryConverters
             return new LinearColor(vec.X, vec.Y, vec.Z, vec.W);
         }
 
+        public Vector3 ToVector3() => new(R, G, B);
+
         public static LinearColor Black => new(0, 0, 0, 1);
         public static LinearColor White => new(1, 1, 1, 1);
     }

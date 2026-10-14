@@ -280,6 +280,14 @@ public abstract class RenderContext
         EnableAlphaChannel = 1 << 5,
 
         //level editor flags
+        /// <summary>
+        /// Primitives are textured sprites, tinted by their vertex color. Transparent texels are discarded
+        /// </summary>
+        Sprite = 1 << 26,
+        /// <summary>
+        /// The mesh is eligible for the selected light, so it's tinted
+        /// </summary>
+        Highlighted = 1 << 27,
         Unlit = 1 << 28,
         Wireframe = 1 << 29,
         Selected = 1 << 30,

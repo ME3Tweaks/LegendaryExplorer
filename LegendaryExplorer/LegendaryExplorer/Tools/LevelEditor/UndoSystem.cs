@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using LegendaryExplorer.Misc;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -23,6 +24,22 @@ public interface IUndoAction
     string Description { get; }
     void Undo();
     void Redo();
+
+    /// <summary>
+    /// What it edits was replaced (such as an actor rebuilt after another tool edited it), so undoing or redoing it would change nothing
+    /// </summary>
+    bool IsOrphaned { get; }
+}
+
+/// <summary>
+/// An action that can absorb the next one, so that a continuous edit (such as dragging a value) is undone in one step
+/// </summary>
+public interface IMergeableUndoAction : IUndoAction
+{
+    /// <summary>
+    /// Extends this action to include <paramref name="next"/>, which follows it directly. Returns false if they're separate edits
+    /// </summary>
+    bool TryMerge(IUndoAction next);
 }
 
 public class TransformAction : IUndoAction
@@ -43,6 +60,7 @@ public class TransformAction : IUndoAction
 
     public void Undo() => _actor.RestoreTransform(_before);
     public void Redo() => _actor.RestoreTransform(_after);
+    public bool IsOrphaned => _actor.IsDisposed;
 }
 
 public class UndoHistory : NotifyPropertyChangedBase
@@ -63,6 +81,12 @@ public class UndoHistory : NotifyPropertyChangedBase
 
     public void Push(IUndoAction action)
     {
+        if (_undoStack.TryPeek(out IUndoAction previous) && previous is IMergeableUndoAction mergeable && mergeable.TryMerge(action))
+        {
+            _redoStack.Clear();
+            NotifyCanUndoRedoChanged();
+            return;
+        }
         if (_undoStack.Count >= MaxHistorySize)
         {
             // Convert to array, keep most recent entries
@@ -124,5 +148,23 @@ public class UndoHistory : NotifyPropertyChangedBase
         _undoStack.Clear();
         _redoStack.Clear();
         NotifyCanUndoRedoChanged();
+    }
+
+    /// <summary>
+    /// Forgets the actions whose subjects were replaced. Each action restores absolute values of its own subject,
+    /// so the others are unaffected by the removal
+    /// </summary>
+    public void RemoveOrphaned()
+    {
+        static bool Prune(Stack<IUndoAction> stack)
+        {
+            //newest first, so they're pushed back oldest first
+            IUndoAction[] kept = stack.Where(action => !action.IsOrphaned).ToArray();
+            if (kept.Length == stack.Count) return false;
+            stack.Clear();
+            for (int i = kept.Length - 1; i >= 0; i--) stack.Push(kept[i]);
+            return true;
+        }
+        if (Prune(_undoStack) | Prune(_redoStack)) NotifyCanUndoRedoChanged();
     }
 }

@@ -29,6 +29,7 @@ public class PreviewTextureCache : IDisposable
         /// </summary>
         //public ExportEntry TextureExport { get; set; }
         public string InstanceFullPath { get; }
+        public ExportEntry Export { get; }
 
         /// <summary>
         /// The Direct3D ShaderResourceView for binding to shaders. Reads raw texel values.
@@ -56,8 +57,8 @@ public class PreviewTextureCache : IDisposable
         /// <summary>
         /// How the game samples this texture outside [0,1]. (The texture's AddressX and AddressY)
         /// </summary>
-        public readonly TextureAddressMode AddressU = TextureAddressMode.Wrap;
-        public readonly TextureAddressMode AddressV = TextureAddressMode.Wrap;
+        public TextureAddressMode AddressU { get; private set; } = TextureAddressMode.Wrap;
+        public TextureAddressMode AddressV { get; private set; } = TextureAddressMode.Wrap;
 
         /// <summary>
         /// Creates a new cache entry for the given texture.
@@ -65,19 +66,35 @@ public class PreviewTextureCache : IDisposable
         public TextureEntry(MeshRenderContext renderContext, ExportEntry export)
         {
             MemoryAnalyzer.AddTrackedMemoryItem($"PreviewTexture {export.ObjectName}", new WeakReference(this));
+            Export = export;
             InstanceFullPath = export.InstancedFullPath;
             IsTextureCube = export.ClassName == "TextureCube";
+            Load(renderContext);
+        }
+
+        private void Load(MeshRenderContext renderContext)
+        {
             if (!IsTextureCube)
             {
-                PropertyCollection props = export.GetProperties();
+                PropertyCollection props = Export.GetProperties();
                 AddressU = GetAddressMode(props.GetProp<EnumProperty>("AddressX"));
                 AddressV = GetAddressMode(props.GetProp<EnumProperty>("AddressY"));
             }
 
-            MeshRenderContext.LoadedTexture loaded = IsTextureCube ? renderContext.LoadUnrealTextureCube(export) : renderContext.LoadUnrealTexture(export);
+            MeshRenderContext.LoadedTexture loaded = IsTextureCube ? renderContext.LoadUnrealTextureCube(Export) : renderContext.LoadUnrealTexture(Export);
             Texture = loaded.Texture;
             TextureView = CreateView(renderContext, loaded.ViewFormat);
             LinearTextureView = loaded.SRGBViewFormat is Format srgbFormat ? CreateView(renderContext, srgbFormat) : TextureView;
+        }
+
+        /// <summary>
+        /// Rereads the edited export into this same entry, so that the materials and light-maps that hold it show the edit without being rebuilt.
+        /// Call between frames. If it can't be read, the entry is left without resources, as if disposed
+        /// </summary>
+        internal virtual void Reload(MeshRenderContext renderContext)
+        {
+            Dispose();
+            Load(renderContext);
         }
 
         private static TextureAddressMode GetAddressMode(EnumProperty textureAddress) => textureAddress?.Value.Name switch
@@ -135,14 +152,14 @@ public class PreviewTextureCache : IDisposable
             TFBM_RANDOM,
         }
 
-        readonly float FrameRate;
-        readonly int HorizontalImages;
-        readonly int VerticalImages;
-        readonly TextureFlipBookMethod FBMethod;
+        float FrameRate;
+        int HorizontalImages;
+        int VerticalImages;
+        TextureFlipBookMethod FBMethod;
 
-        readonly float FrameTime;
-        readonly float HorizontalScale;
-        readonly float VerticalScale;
+        float FrameTime;
+        float HorizontalScale;
+        float VerticalScale;
 
         int CurrentRow;
         int CurrentColumn;
@@ -150,7 +167,19 @@ public class PreviewTextureCache : IDisposable
 
         public FlipBookTextureEntry(MeshRenderContext renderContext, ExportEntry export) : base(renderContext, export)
         {
-            var props = export.GetProperties();
+            ReadFlipBook();
+        }
+
+        internal override void Reload(MeshRenderContext renderContext)
+        {
+            base.Reload(renderContext);
+            ReadFlipBook();
+            CurrentRow = CurrentColumn = 0;
+        }
+
+        private void ReadFlipBook()
+        {
+            var props = Export.GetProperties();
             FrameRate = props.GetProp<FloatProperty>("FrameRate")?.Value ?? 4f;
             HorizontalImages = props.GetProp<IntProperty>("HorizontalImages")?.Value ?? 1;
             VerticalImages = props.GetProp<IntProperty>("VerticalImages")?.Value ?? 1;
@@ -376,40 +405,72 @@ public class PreviewTextureCache : IDisposable
     }
 
     /// <summary>
-    /// Stores loaded textures by their full name.
+    /// Reloads the cached textures read from edited exports in place. Call between frames.
+    /// (A relinked import has a new path, so it's cached separately the next time it's loaded)
+    /// </summary>
+    /// <returns>Whether any cached texture was affected</returns>
+    public bool Invalidate(IMEPackage package, IReadOnlySet<int> exports)
+    {
+        bool changed = false;
+        lock (textureLoadLock)
+        {
+            foreach (var (key, entry) in AssetCache)
+            {
+                if (entry.Export?.FileRef != package || !exports.Contains(entry.Export.UIndex)) continue;
+                changed = true;
+                try
+                {
+                    entry.Reload(RenderContext);
+                }
+                catch (Exception e)
+                {
+                    //renders as missing, and is loaded afresh the next time it's asked for
+                    Debug.WriteLine($"Could not reload texture {entry.InstanceFullPath}: {e.Message}");
+                    entry.Dispose();
+                    AssetCache.Remove(key);
+                }
+            }
+        }
+        return changed;
+    }
+
+    /// <summary>
+    /// Stores loaded textures by <see cref="CacheKey"/>.
     /// </summary>
     private Dictionary<string, TextureEntry> AssetCache { get; } = [];
 
+    /// <summary>
+    /// Identifies a texture asset: copies of the same texture in different packages share it, and an import shares it with the export it resolves to
+    /// </summary>
+    private static string CacheKey(IEntry texture) => $"{texture.ClassName}|{texture.MemoryFullPath}";
+
     private readonly Lock textureLoadLock = new Lock();
+
     /// <summary>
     /// Queues a texture for eventual loading.
     /// </summary>
-    /// <param name="cacheKey">Textures are cached by their path, unless this is given. For textures whose paths aren't unique between packages</param>
-    public TextureEntry LoadTexture(IEntry textureEntry, PackageCache packageCache = null, string cacheKey = null)
+    public TextureEntry LoadTexture(IEntry textureEntry, PackageCache packageCache = null)
     {
         string ifp = textureEntry.InstancedFullPath;
-        if (AssetCache.TryGetValue(cacheKey ?? ifp, out TextureEntry entry))
-        {
-            entry.LastUsageTime = DateTime.Now;
-            return entry;
-        }
+        string cacheKey = CacheKey(textureEntry);
         lock (textureLoadLock)
         {
+            //found without resolving an import
+            if (AssetCache.TryGetValue(cacheKey, out TextureEntry entry))
+            {
+                entry.LastUsageTime = DateTime.Now;
+                return entry;
+            }
             if (textureEntry is ImportEntry import)
             {
                 textureEntry = EntryImporter.ResolveImport(import, packageCache);
             }
             if (textureEntry is ExportEntry textureExport)
             {
-                if (AssetCache.TryGetValue(cacheKey ?? textureExport.InstancedFullPath, out entry))
-                {
-                    entry.LastUsageTime = DateTime.Now;
-                    return entry;
-                }
                 try
                 {
                     entry = textureExport.ClassName is "TextureFlipBook" ? new FlipBookTextureEntry(RenderContext, textureExport) : new TextureEntry(RenderContext, textureExport);
-                    AssetCache.Add(cacheKey ?? entry.InstanceFullPath, entry);
+                    AssetCache.Add(cacheKey, entry);
                     return entry;
                 }
                 catch

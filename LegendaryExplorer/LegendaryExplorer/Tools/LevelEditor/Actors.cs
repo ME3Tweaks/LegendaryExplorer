@@ -47,6 +47,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     // categorized consistently, regardless of their export names or tags.
     public string Category => this switch
     {
+        ILightProxy => "Lights",
         { IsVolume: true } => "Volumes",
         { IsVolumetricMesh: true } => "Volumetric meshes",
         PawnProxy => "Pawns",
@@ -79,11 +80,29 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     protected TransformSnapshot _cleanSnapshot;
 
-    public void MarkClean()
+    public virtual void MarkClean()
     {
         _cleanSnapshot = SnapshotTransform();
         IsDirty = false;
     }
+
+    /// <summary>
+    /// The transform differs from the committed one
+    /// </summary>
+    public bool IsTransformDirty => !SnapshotTransform().Equals(_cleanSnapshot);
+
+    protected virtual bool HasUncommittedChanges() => IsTransformDirty
+        || Components.OfType<MeshComponentProxy>().Any(mesh => mesh.ExistingLighting?.HasChanges == true);
+
+    internal void RefreshLightingDirty() => UpdateDirty();
+
+    internal void OnActorLightingEdited(MeshComponentProxy mesh, ActorLightingSettings before, ActorLightingSettings after)
+    {
+        UpdateDirty();
+        Editor?.OnActorLightingEdited(mesh, before, after);
+    }
+
+    protected void UpdateDirty() => IsDirty = HasUncommittedChanges();
 
     private bool _isBeingAnimated;
     public bool IsBeingAnimated
@@ -130,7 +149,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
                 if (value.Roll != oldValue.Roll) OnPropertyChanged(nameof(RollDegrees));
                 UpdateLocalToWorld();
                 if (!IsBeingAnimated)
-                    IsDirty = !SnapshotTransform().Equals(_cleanSnapshot);
+                    UpdateDirty();
             }
         }
     }
@@ -153,7 +172,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
                 if (value.Z != oldValue.Z) OnPropertyChanged(nameof(ZPos));
                 UpdateLocalToWorld();
                 if (!IsBeingAnimated)
-                    IsDirty = !SnapshotTransform().Equals(_cleanSnapshot);
+                    UpdateDirty();
             }
         }
     }
@@ -177,7 +196,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
                 if (value.Z != oldValue.Z) OnPropertyChanged(nameof(ZScale));
                 UpdateLocalToWorld();
                 if (!IsBeingAnimated)
-                    IsDirty = !SnapshotTransform().Equals(_cleanSnapshot);
+                    UpdateDirty();
             }
         }
     }
@@ -194,7 +213,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
             {
                 UpdateLocalToWorld();
                 if (!IsBeingAnimated)
-                    IsDirty = !SnapshotTransform().Equals(_cleanSnapshot);
+                    UpdateDirty();
             }
         }
     }
@@ -208,7 +227,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
             {
                 UpdateLocalToWorld();
                 if (!IsBeingAnimated)
-                    IsDirty = !SnapshotTransform().Equals(_cleanSnapshot);
+                    UpdateDirty();
             }
         }
     }
@@ -217,13 +236,29 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
                            && !(Editor?.IsApplyingUndoRedo ?? false);
 
     public virtual bool IsVolume => false;
-    public bool IsVolumetricMesh { get; protected set; }
+    private bool isVolumetricMesh;
+    public bool IsVolumetricMesh
+    {
+        get => isVolumetricMesh;
+        //a preview refresh can change it, which moves the actor to another outliner category
+        protected set
+        {
+            if (SetProperty(ref isVolumetricMesh, value)) OnPropertyChanged(nameof(Category));
+        }
+    }
     /// <summary>
     /// The actor's bHidden is set, so none of its components are rendered in game. (Individual components can also be hidden, see <see cref="PrimitiveComponentProxy.HiddenGame"/>)
     /// </summary>
-    public bool IsHidden { get; }
+    public bool IsHidden { get; protected set; }
 
     public TransformSnapshot SnapshotTransform() => new(location, rotation, drawScale, drawScale3D);
+
+    // Prefab placement is derived state, including in read-only previews. It must bypass editor mutation guards.
+    internal void SetPrefabTransform(Matrix4x4 transform)
+    {
+        (location, _, rotation) = transform.UnrealDecompose();
+        UpdateLocalToWorld();
+    }
 
     public void RestoreTransform(TransformSnapshot snapshot)
     {
@@ -326,12 +361,13 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         "PrefabInstance",
         "SFXDroppedGrenade",
         "SFXDroppedAmmo",
-        "SFXDroppedPickup"
+        "SFXDroppedPickup",
+        "Light"
     }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
     public static bool CanCreate(ExportEntry actorExport)
     {
-        return actorExport.IsA(SupportedClasses);
+        return actorExport.IsA(SupportedClasses) && (!actorExport.IsA("Light") || LightActorProxy.HasSupportedLight(actorExport));
     }
 
     //KEEP IN SYNC WITH CanCreate!
@@ -390,6 +426,10 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         {
             return new SFXDroppedPickupProxy(context, actorExport);
         }
+        if (GlobalUnrealObjectInfo.IsA(className, "Light", actorExport.Game))
+        {
+            return LightActorProxy.HasSupportedLight(actorExport) ? new LightActorProxy(context, actorExport) : null;
+        }
         return null;
         //return new ActorProxy(context, actorExport);
     }
@@ -434,7 +474,15 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         foreach (var component in Components)
         {
             if (component.HiddenGame && !context.ShowHidden) continue;
+            // Meshes eligible for the selected light are tinted, and outlined after lighting so the outline survives additive light passes.
+            bool highlighted = context.HighlightedComponents.Contains(component);
+            if (highlighted)
+            {
+                context.RenderFlags |= LevelEditorRenderContext.ShaderFlags.Highlighted;
+                if (pass is RenderPass.Base) context.DrawHighlightBounds(component.GetBounds());
+            }
             component.Render(context, pass);
+            context.RenderFlags &= ~LevelEditorRenderContext.ShaderFlags.Highlighted;
         }
     }
 
@@ -487,6 +535,30 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         Export.WriteProperties(props);
     }
 
+    /// <summary>
+    /// Applies mesh dependency edits without replacing the actor that selection and undo actions refer to.
+    /// Structural actor/collection edits and non-mesh components still use the existing rebuild path.
+    /// </summary>
+    public virtual bool TryRefreshPreview(IMEPackage package, HashSet<int> updatedExports, bool force = false)
+    {
+        if (Export.FileRef == package && updatedExports.Contains(Export.UIndex) && this is not StaticMeshComponentActorProxy
+            || this is CollectionActorComponentProxy collection && collection.CollectionActorExport.FileRef == package
+                && updatedExports.Contains(collection.CollectionActorExport.UIndex)
+            || Components.Any(component => component is not MeshComponentProxy && component.Export.FileRef == package
+                && component.TestUIndexes(updatedExports)))
+            return false;
+
+        bool refreshed = false;
+        foreach (var component in Components.OfType<MeshComponentProxy>())
+            refreshed |= component.RefreshPreview(package, updatedExports, force);
+        // ParentAnimComponent transforms must propagate even to children whose own settings did not change.
+        if (refreshed)
+            foreach (var component in Components) component.UpdateLocalToWorld();
+        if (refreshed && this is StaticMeshActorProxy or StaticMeshComponentActorProxy or DynamicSMActorProxy)
+            IsVolumetricMesh = Components.OfType<StaticMeshComponentProxy>().Any(component => component.IsVolumetric);
+        return refreshed;
+    }
+
     public virtual bool TestUIndexes(HashSet<int> uIndexes)
     {
         if (uIndexes.Contains(Export.UIndex))
@@ -512,8 +584,12 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         }
     }
 
+    // The component ApplyMorphFace morphed, which is morphed again when a preview refresh reloads it
+    private SkeletalMeshComponentProxy MorphedComponent;
+
     protected void ApplyMorphFace(SkeletalMeshComponentProxy skeletalMeshComponent)
     {
+        MorphedComponent = skeletalMeshComponent;
         if (Properties.GetProp<ObjectProperty>("MorphHead")?.ResolveToExport(Pcc, Editor?.PackageCache) is ExportEntry morphHead)
         {
             (BonePosition[] bonePositions, Vector3[][] vertexOffsets) = LegendaryExplorerCore.Unreal.Classes.BioMorphFace.GetBoneAndVertexPositions(morphHead);
@@ -521,8 +597,22 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         }
     }
 
+    /// <summary>
+    /// Called when a preview refresh reloads one of the actor's skeletal mesh components, to reapply what the actor sets up on it
+    /// (rather than the component's own properties). The morph is reread, so it matches the actor's current MorphHead
+    /// </summary>
+    internal virtual void OnComponentReloaded(SkeletalMeshComponentProxy component)
+    {
+        if (component == MorphedComponent) ApplyMorphFace(component);
+    }
+
     #region IDisposable
     protected bool isDisposed;
+
+    /// <summary>
+    /// Replaced or closed. Undo actions that refer to it are orphaned
+    /// </summary>
+    public bool IsDisposed => isDisposed;
 
     protected virtual void Dispose(bool disposing)
     {
@@ -627,15 +717,26 @@ public class SFXStuntActorProxy : ActorProxy
     public SFXStuntActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         AddComponent(context.RenderContext, ref BodyMesh);
+        ApplyDefaultBodyTranslation();
+        AddComponent(context.RenderContext, ref HeadMesh);
+        ApplyMorphFace(HeadMesh);
+        AddComponent(context.RenderContext, ref HairMesh);
+        AddComponent(context.RenderContext, ref HeadGearMesh);
+    }
+
+    private void ApplyDefaultBodyTranslation()
+    {
         if (BodyMesh.Translation == Vector3.Zero)
         {
             //from the defaultproperties, which condenseproperties currently does not fetch
             BodyMesh.Translation = new Vector3(0, 0, -88);
         }
-        AddComponent(context.RenderContext, ref HeadMesh);
-        ApplyMorphFace(HeadMesh);
-        AddComponent(context.RenderContext, ref HairMesh);
-        AddComponent(context.RenderContext, ref HeadGearMesh);
+    }
+
+    internal override void OnComponentReloaded(SkeletalMeshComponentProxy component)
+    {
+        if (component == BodyMesh) ApplyDefaultBodyTranslation();
+        base.OnComponentReloaded(component);
     }
 
     public override void SetAnimation(AnimSequence animSequence, float pos)
@@ -712,12 +813,17 @@ public abstract class CollectionActorComponentProxy : ActorProxy
 {
     public ExportEntry CollectionActorExport { get; }
 
+    /// <summary>
+    /// The transform stored in the collection's binary, as of the last load or commit
+    /// </summary>
+    public Matrix4x4 SavedLocalToWorld { get; private set; }
+
     protected CollectionActorComponentProxy(IActorEditorContext context, StaticCollectionActor collectionActor, ExportEntry componentActor, int index) : base(componentActor)
     {
         Editor = context;
         CollectionActorExport = collectionActor.Export;
 
-        LocalToWorld = collectionActor.LocalToWorldTransforms[index];
+        LocalToWorld = SavedLocalToWorld = collectionActor.LocalToWorldTransforms[index];
         (location, drawScale3D, rotation) = collectionActor.GetDecomposedTransformationForIndex(index);
         if (drawScale3D.X == drawScale3D.Y && drawScale3D.X == drawScale3D.Z)
         {
@@ -740,6 +846,7 @@ public abstract class CollectionActorComponentProxy : ActorProxy
         }
         Matrix4x4 m = ActorUtils.ComposeLocalToWorld(Location, Rotation, DrawScale * DrawScale3D, PrePivot);
         collectionActor.LocalToWorldTransforms[idx] = m;
+        SavedLocalToWorld = m;
     }
 
     public override bool TestUIndexes(HashSet<int> uIndexes)
@@ -761,30 +868,88 @@ public class StaticMeshComponentActorProxy : CollectionActorComponentProxy
 public class PrefabInstanceProxy : ActorProxy
 {
     private readonly List<ActorProxy> Actors = [];
+
+    /// <summary>
+    /// The prefab's actors, which aren't in the editor's actor list
+    /// </summary>
+    internal IReadOnlyList<ActorProxy> Children => Actors;
     private readonly List<Matrix4x4> RelativeMatrices = [];
+    // Not Editor, which is cleared for a prefab nested in another prefab, but is still needed to reload its children
+    private readonly IActorEditorContext PreviewContext;
+    // The template and its archetype list's entries, including imports, since relinking one changes the prefab without changing any export
+    private readonly HashSet<IEntry> TemplateLinks = [];
 
     public PrefabInstanceProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
-        PackageCache packageCache = context.RenderContext.PackageCache;
-        if (Properties.GetProp<ObjectProperty>("TemplatePrefab")?
-            .ResolveToExport(Pcc, packageCache) is ExportEntry prefab
-            && prefab.GetProperty<ArrayProperty<ObjectProperty>>("PrefabArchetypes") is { } prefabActors)
-        {
+        PreviewContext = context;
+        LoadChildren();
+    }
 
+    private void LoadChildren()
+    {
+        var context = PreviewContext;
+        PackageCache packageCache = context.RenderContext.PackageCache;
+        TemplateLinks.Clear();
+        ObjectProperty templateProp = Properties.GetProp<ObjectProperty>("TemplatePrefab");
+        if (templateProp?.ResolveToEntry(Pcc) is { } templateEntry) TemplateLinks.Add(templateEntry);
+        if (templateProp?.ResolveToExport(Pcc, packageCache) is not { } prefab) return;
+        TemplateLinks.Add(prefab);
+        if (prefab.GetProperty<ArrayProperty<ObjectProperty>>("PrefabArchetypes") is { } prefabActors)
+        {
             foreach (var objProp in prefabActors)
             {
+                if (objProp.ResolveToEntry(prefab.FileRef) is { } archetypeEntry) TemplateLinks.Add(archetypeEntry);
                 if (objProp.TryResolveExport(prefab.FileRef, packageCache, out ExportEntry prefabActor)
                     && Create(context, prefabActor) is ActorProxy prefabActorProxy)
                 {
                     prefabActorProxy.Editor = null; // prevent IsDirty being marked
 
                     var actorRelative = ActorUtils.ComposeLocalToWorld(prefabActorProxy.Location, prefabActorProxy.Rotation, Vector3.One);
-                    (prefabActorProxy.Location, _, prefabActorProxy.Rotation) = (actorRelative * LocalToWorld).UnrealDecompose();
+                    prefabActorProxy.SetPrefabTransform(actorRelative * LocalToWorld);
                     Actors.Add(prefabActorProxy);
                     RelativeMatrices.Add(actorRelative);
                 }
             }
         }
+    }
+
+    public override bool TryRefreshPreview(IMEPackage package, HashSet<int> updatedExports, bool force = false)
+    {
+        if (Export.FileRef == package && updatedExports.Contains(Export.UIndex)) return false;
+        if (TemplateLinks.Any(link => link.FileRef == package && updatedExports.Contains(link.UIndex)))
+        {
+            foreach (var child in Actors) child.Dispose();
+            Actors.Clear();
+            RelativeMatrices.Clear();
+            LoadChildren();
+            return true;
+        }
+        bool refreshed = false;
+        for (int i = Actors.Count - 1; i >= 0; i--)
+        {
+            var child = Actors[i];
+            if (child.TryRefreshPreview(package, updatedExports, force))
+                refreshed = true;
+            else if (child.Export.FileRef == package && child.TestUIndexes(updatedExports))
+            {
+                child.Dispose();
+                if (Create(PreviewContext, child.Export) is { } replacement)
+                {
+                    replacement.Editor = null;
+                    var relative = ActorUtils.ComposeLocalToWorld(replacement.Location, replacement.Rotation, Vector3.One);
+                    replacement.SetPrefabTransform(relative * LocalToWorld);
+                    Actors[i] = replacement;
+                    RelativeMatrices[i] = relative;
+                }
+                else
+                {
+                    Actors.RemoveAt(i);
+                    RelativeMatrices.RemoveAt(i);
+                }
+                refreshed = true;
+            }
+        }
+        return refreshed;
     }
 
     public override void UpdateScene(LevelEditorRenderContext context, float deltaTime)
@@ -811,7 +976,7 @@ public class PrefabInstanceProxy : ActorProxy
         for (int i = 0; i < Actors.Count; i++)
         {
             ActorProxy actor = Actors[i];
-            (actor.Location, _, actor.Rotation) = (RelativeMatrices[i] * LocalToWorld).UnrealDecompose();
+            actor.SetPrefabTransform(RelativeMatrices[i] * LocalToWorld);
         }
     }
 

@@ -625,6 +625,11 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
     public Dictionary<string, ModelPreviewMaterial<TVertex>> Materials { get; } = [];
 
     /// <summary>
+    /// The materials that can be rendered with the game's shaders
+    /// </summary>
+    internal IEnumerable<MaterialRenderProxy> GetRenderProxies() => Materials.Values.Cast<object>().OfType<LEShaderPreviewMaterial>().Select(mat => mat.RenderProxy);
+
+    /// <summary>
     /// Creates a preview of a generic untextured mesh
     /// </summary>
     public ModelPreview(MeshRenderContext renderContext, Mesh<TVertex> mesh, PreloadedModelData preloadedData = null)
@@ -646,7 +651,8 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
     /// Creates a preview of the given <see cref="StaticMesh"/>.
     /// </summary>
     /// <param name="staticLighting">A component's precomputed lighting for this LOD. The preview takes ownership of it</param>
-    public ModelPreview(MeshRenderContext renderContext, StaticMesh m, int selectedLOD, MeshStaticLighting staticLighting = null)
+    public ModelPreview(MeshRenderContext renderContext, StaticMesh m, int selectedLOD, MeshStaticLighting staticLighting = null,
+        IReadOnlyList<IEntry> materialOverrides = null)
     {
         if (selectedLOD < 0)  //PREVIEW BUG WORKAROUND
             return;
@@ -719,13 +725,18 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
         var sections = new List<ModelPreviewSection>();
         foreach (var element in lodModel.Elements)
         {
-            if (element.Material is 0 || !m.Export.FileRef.IsEntry(element.Material))
+            // Overrides belong to the component's package, which may differ from the mesh's package.
+            // MaterialIndex identifies the override slot; section order does not.
+            IEntry matEntry = materialOverrides is not null && element.MaterialIndex >= 0 && element.MaterialIndex < materialOverrides.Count
+                ? materialOverrides[element.MaterialIndex]
+                : null;
+            matEntry ??= m.Export.FileRef.GetEntry(element.Material);
+            if (matEntry is null)
             {
                 sections.Add(new ModelPreviewSection(null, element.FirstIndex, element.NumTriangles));
             }
             else
             {
-                IEntry matEntry = m.Export.FileRef.GetEntry(element.Material);
                 AddMaterial(renderContext, matEntry, staticLighting?.LightMapType ?? ELightMapType.LMT_None);
                 sections.Add(new ModelPreviewSection(matEntry.InstancedFullPath, element.FirstIndex, element.NumTriangles));
             }
@@ -779,16 +790,17 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
     /// Creates a preview of the given <see cref="SkeletalMesh"/>.
     /// </summary>
     /// <param name="staticLighting">For level meshes lit by level lighting: the lighting of LOD <paramref name="lightingLOD"/>, the one that's rendered</param>
-    public ModelPreview(MeshRenderContext renderContext, SkeletalMesh m, MeshStaticLighting staticLighting = null, int lightingLOD = 0)
+    public ModelPreview(MeshRenderContext renderContext, SkeletalMesh m, MeshStaticLighting staticLighting = null, int lightingLOD = 0, IReadOnlyList<IEntry> materialOverrides = null)
     {
         var mats = new string[m.Materials.Length];
         // STEP 1: MATERIALS
         for (int i = 0; i < m.Materials.Length; i++)
         {
-            int materialUIndex = m.Materials[i];
-            if (materialUIndex is not 0)
+            IEntry matEntry = materialOverrides is not null && i < materialOverrides.Count
+                ? materialOverrides[i] : null;
+            matEntry ??= m.Export.FileRef.GetEntry(m.Materials[i]);
+            if (matEntry is not null)
             {
-                IEntry matEntry = m.Export.FileRef.GetEntry(materialUIndex);
                 mats[i] = matEntry.InstancedFullPath;
                 AddMaterial(renderContext, matEntry);
             }
@@ -827,10 +839,9 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
             var sections = new List<ModelPreviewSection>();
             foreach (var section in lodmodel.Sections)
             {
-                if (section.MaterialIndex < Materials.Count)
-                {
-                    sections.Add(new ModelPreviewSection(mats[section.MaterialIndex], section.BaseIndex, (uint)section.NumTriangles));
-                }
+                // Like static meshes' sections, one without a material is kept, so that wireframe views still draw it
+                string material = section.MaterialIndex < mats.Length ? mats[section.MaterialIndex] : null;
+                sections.Add(new ModelPreviewSection(material, section.BaseIndex, (uint)section.NumTriangles));
             }
             bool isLightingLOD = staticLighting is not null && LODs.Count == lightingLOD;
             LODs.Add(new ModelPreviewLOD<TVertex>(mesh, sections) { StaticLighting = isLightingLOD ? staticLighting : null });
@@ -927,6 +938,8 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
     /// </summary>
     public void Dispose()
     {
+        foreach (var material in Materials.Values.OfType<LEShaderPreviewMaterial>())
+            material.RenderProxy.CancelPendingShaderLoad();
         Materials.Clear();
         foreach (var lod in LODs)
         {

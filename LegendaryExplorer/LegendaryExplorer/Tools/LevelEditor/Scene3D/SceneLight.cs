@@ -1,5 +1,6 @@
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Packages.CloningImportingAndRelinking;
+using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
@@ -191,7 +192,7 @@ public sealed class SceneLight
         CastsStaticShadows = props.GetProp<BoolProperty>("CastShadows") is not { Value: false } && props.GetProp<BoolProperty>("CastStaticShadows") is not { Value: false };
         CastsCompositeShadow = props.GetProp<BoolProperty>("bCastCompositeShadow") is not { Value: false };
         AffectsCompositeShadowDirection = props.GetProp<BoolProperty>("bAffectCompositeShadowDirection") is not { Value: false };
-        ModShadowColor = props.GetProp<StructProperty>("ModShadowColor") is { } modShadowColorProp ? ToVector3(CommonStructs.GetLinearColor(modShadowColorProp)) : Vector3.Zero;
+        ModShadowColor = props.GetProp<StructProperty>("ModShadowColor") is { } modShadowColorProp ? CommonStructs.GetLinearColor(modShadowColorProp).ToVector3() : Vector3.Zero;
         if (export.Game.IsGame3())
         {
             BouncedLightColor = (props.GetProp<StructProperty>("LightEnv_BouncedModulationColor") is { } bouncedColorProp ? ToLinear(bouncedColorProp) : Vector3.One)
@@ -238,7 +239,7 @@ public sealed class SceneLight
         Matrix4x4 lightToWorld = type is SceneLightType.Point or SceneLightType.Spot
             ? swapXZ * Matrix4x4.CreateTranslation(translation) * parentToWorld
             : swapXZ * parentToWorld;
-        lightToWorld = RemoveScaling(lightToWorld);
+        lightToWorld = lightToWorld.WithoutScaling();
         WorldToLight = Matrix4x4.Invert(lightToWorld, out Matrix4x4 worldToLight) ? worldToLight : Matrix4x4.Identity;
 
         //LightComponent's defaults: CastShadows, CastDynamicShadows, LightShadow_Normal
@@ -293,48 +294,63 @@ public sealed class SceneLight
     }
 
     /// <summary>
+    /// The type of light a light component is. Null if it's not a supported type
+    /// </summary>
+    public static SceneLightType? GetLightType(ExportEntry lightComponent)
+    {
+        MEGame game = lightComponent.Game;
+        if (GlobalUnrealObjectInfo.IsA(lightComponent.ClassName, "SpotLightComponent", game))
+        {
+            return SceneLightType.Spot;
+        }
+        if (GlobalUnrealObjectInfo.IsA(lightComponent.ClassName, "PointLightComponent", game))
+        {
+            return SceneLightType.Point;
+        }
+        //including DominantDirectionalLightComponent, whose dominant shadows aren't supported
+        if (GlobalUnrealObjectInfo.IsA(lightComponent.ClassName, "DirectionalLightComponent", game))
+        {
+            return SceneLightType.Directional;
+        }
+        if (GlobalUnrealObjectInfo.IsA(lightComponent.ClassName, "SkyLightComponent", game))
+        {
+            return SceneLightType.Sky;
+        }
+        return null;
+    }
+
+    /// <summary>
     /// Reads a light component. Returns null if it's not a supported type of light, or it's disabled.
     /// </summary>
     /// <param name="ownerClass">The class of the actor that owns the light</param>
-    /// <param name="ownerTransform">The transform the owner gives the light, for a light component without a CachedParentToWorld</param>
-    public static SceneLight Create(ExportEntry lightComponent, string ownerClass, PackageCache packageCache, Matrix4x4? ownerTransform = null)
+    /// <param name="ownerTransform">The current transform supplied by the owner. CachedParentToWorld is only a fallback when no owner transform is available.</param>
+    /// <param name="overrides">Uncommitted editor values, which replace the component's (resolved) properties of the same names</param>
+    public static SceneLight Create(ExportEntry lightComponent, string ownerClass, PackageCache packageCache, Matrix4x4? ownerTransform = null,
+        IReadOnlyList<Property> overrides = null)
     {
-        MEGame game = lightComponent.Game;
-        SceneLightType type;
-        if (GlobalUnrealObjectInfo.IsA(lightComponent.ClassName, "SpotLightComponent", game))
-        {
-            type = SceneLightType.Spot;
-        }
-        else if (GlobalUnrealObjectInfo.IsA(lightComponent.ClassName, "PointLightComponent", game))
-        {
-            type = SceneLightType.Point;
-        }
-        //including DominantDirectionalLightComponent, whose dominant shadows aren't supported
-        else if (GlobalUnrealObjectInfo.IsA(lightComponent.ClassName, "DirectionalLightComponent", game))
-        {
-            type = SceneLightType.Directional;
-        }
-        else if (GlobalUnrealObjectInfo.IsA(lightComponent.ClassName, "SkyLightComponent", game))
-        {
-            type = SceneLightType.Sky;
-        }
-        else
+        if (GetLightType(lightComponent) is not SceneLightType type)
         {
             return null;
         }
         var props = lightComponent.GetCondensedProperties(packageCache, resolveImports: true, mergeStructs: true);
+        foreach (Property property in overrides ?? [])
+        {
+            props.AddOrReplaceProp(property);
+        }
         if (props.GetProp<BoolProperty>("bEnabled") is { Value: false })
         {
             return null;
         }
         Matrix4x4 parentToWorld = Matrix4x4.Identity;
-        if (props.GetProp<StructProperty>("CachedParentToWorld") is { } parentToWorldProp)
-        {
-            parentToWorld = CommonStructs.GetMatrix(parentToWorldProp);
-        }
-        else if (ownerTransform is { } transform)
+        // The cooked cache is stale after editing an actor or collection transform. Both preview and bake
+        // load through this path, so use the current owner transform whenever one is available.
+        if (ownerTransform is { } transform)
         {
             parentToWorld = transform;
+        }
+        else if (props.GetProp<StructProperty>("CachedParentToWorld") is { } parentToWorldProp)
+        {
+            parentToWorld = CommonStructs.GetMatrix(parentToWorldProp);
         }
         //sky lights are the same everywhere
         else if (type is not SceneLightType.Sky)
@@ -403,7 +419,12 @@ public sealed class SceneLight
     /// <summary>
     /// Reads the lights in a level's actors. (Stand-alone light actors, and StaticLightCollectionActors)
     /// </summary>
-    public static List<SceneLight> LoadLevelLights(Level level, PackageCache packageCache)
+    public static List<SceneLight> LoadLevelLights(Level level, PackageCache packageCache) =>
+        LoadLevelLights(level, packageCache, null);
+
+    /// <param name="previewOverride">The level editor's uncommitted edits to a light component, if it has any</param>
+    internal static List<SceneLight> LoadLevelLights(Level level, PackageCache packageCache, Action<ExportEntry> trackDependency,
+        Func<ExportEntry, LightPreviewOverride> previewOverride = null)
     {
         IMEPackage pcc = level.Export.FileRef;
         var lights = new List<SceneLight>();
@@ -417,6 +438,7 @@ public sealed class SceneLight
             {
                 if (actor.ClassName == "StaticLightCollectionActor")
                 {
+                    trackDependency?.Invoke(actor);
                     //StaticLightCollectionActor::UpdateComponentsInternal gives each component its stored transform
                     var collection = actor.GetBinaryData<StaticLightCollectionActor>();
                     for (int i = 0; i < collection.Components.Count; i++)
@@ -428,9 +450,14 @@ public sealed class SceneLight
                         }
                     }
                 }
-                else if (actor.GetProperty<ObjectProperty>("LightComponent")?.ResolveToEntry(pcc) is ExportEntry lightComponent)
+                else
                 {
-                    TryAdd(lightComponent, actor.ClassName, ActorUtils.GetLocalToWorld(actor));
+                    var lightReference = actor.GetProperty<ObjectProperty>("LightComponent");
+                    // Remember even an empty/disabled light actor, so assigning or enabling its component refreshes it.
+                    if (lightReference is not null || GlobalUnrealObjectInfo.IsA(actor.ClassName, "Light", pcc.Game))
+                        trackDependency?.Invoke(actor);
+                    if (lightReference?.ResolveToEntry(pcc) is ExportEntry lightComponent)
+                        TryAdd(lightComponent, actor.ClassName, ActorUtils.GetLocalToWorld(actor));
                 }
             }
             catch
@@ -442,9 +469,11 @@ public sealed class SceneLight
 
         void TryAdd(ExportEntry lightComponent, string ownerClass, Matrix4x4? ownerTransform)
         {
+            trackDependency?.Invoke(lightComponent);
             try
             {
-                if (Create(lightComponent, ownerClass, packageCache, ownerTransform) is { } light)
+                LightPreviewOverride edit = previewOverride?.Invoke(lightComponent);
+                if (Create(lightComponent, ownerClass, packageCache, edit?.OwnerTransform ?? ownerTransform, edit?.Properties) is { } light)
                 {
                     lights.Add(light);
                 }
@@ -496,60 +525,33 @@ public sealed class SceneLight
     /// <summary>
     /// The bUseVolumes test of FLightSceneInfoCompact::AffectsPrimitive. Exclusion volumes take precedence
     /// </summary>
-    public bool AffectsVolumes(BoxSphereBounds bounds)
+    public bool AffectsVolumes(BoxSphereBounds bounds) => GetVolumeExclusion(bounds) is LightEligibility.Affects;
+
+    /// <summary>
+    /// Why the bUseVolumes test excludes the bounds, or <see cref="LightEligibility.Affects"/> if it doesn't
+    /// </summary>
+    public LightEligibility GetVolumeExclusion(BoxSphereBounds bounds)
     {
         if (!UseVolumes)
         {
-            return true;
+            return LightEligibility.Affects;
         }
         foreach (ConvexVolume volume in ExclusionVolumes)
         {
-            if (IntersectsBox(volume, bounds))
+            if (volume.IntersectsBox(bounds))
             {
-                return false;
+                return LightEligibility.ExclusionVolume;
             }
         }
         foreach (ConvexVolume volume in InclusionVolumes)
         {
-            if (IntersectsBox(volume, bounds))
+            if (volume.IntersectsBox(bounds))
             {
-                return true;
+                return LightEligibility.Affects;
             }
         }
-        return InclusionVolumes.Length == 0;
+        return InclusionVolumes.Length == 0 ? LightEligibility.Affects : LightEligibility.OutsideInclusionVolumes;
     }
-
-    //FConvexVolume::IntersectBox: the box is outside if it's entirely in front of any plane
-    private static bool IntersectsBox(ConvexVolume volume, BoxSphereBounds bounds)
-    {
-        foreach (Plane plane in volume.Planes ?? [])
-        {
-            Vector3 n = plane.Normal;
-            float distance = Vector3.Dot(n, bounds.Origin) - plane.D;
-            float pushOut = MathF.Abs(n.X) * bounds.BoxExtent.X + MathF.Abs(n.Y) * bounds.BoxExtent.Y + MathF.Abs(n.Z) * bounds.BoxExtent.Z;
-            if (distance > pushOut)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    //FMatrix::RemoveScaling: normalizes the axes
-    private static Matrix4x4 RemoveScaling(Matrix4x4 m)
-    {
-        static (float, float, float) Normalize(float x, float y, float z)
-        {
-            float length = MathF.Sqrt(x * x + y * y + z * z);
-            return length > 1e-8f ? (x / length, y / length, z / length) : (x, y, z);
-        }
-        (m.M11, m.M12, m.M13) = Normalize(m.M11, m.M12, m.M13);
-        (m.M21, m.M22, m.M23) = Normalize(m.M21, m.M22, m.M23);
-        (m.M31, m.M32, m.M33) = Normalize(m.M31, m.M32, m.M33);
-        return m;
-    }
-
-    private static Vector3 ToVector3(LinearColor color) => new(color.R, color.G, color.B);
 
     //FLinearColor(FColor) decodes with a 2.2 gamma
     private static Vector3 ToLinear(StructProperty colorProp)
@@ -560,10 +562,22 @@ public sealed class SceneLight
 }
 
 /// <summary>
+/// The level editor's uncommitted edits to a light, which previews use in place of the saved values
+/// </summary>
+/// <param name="OwnerTransform">The edited owner (or collection) transform. Null if it isn't edited</param>
+/// <param name="Properties">Edited component properties, which replace the resolved properties of the same names</param>
+public sealed record LightPreviewOverride(Matrix4x4? OwnerTransform, IReadOnlyList<Property> Properties);
+
+/// <summary>
 /// UE3's FLightingChannelContainer: a light only affects primitives it shares a channel with
 /// </summary>
 public readonly record struct LightingChannels(uint Channels)
 {
+    /// <summary>
+    /// The channels' property names, in bit order
+    /// </summary>
+    public static IReadOnlyList<string> Names => ChannelNames;
+
     private static readonly string[] ChannelNames =
     [
         "BSP", "Static", "Dynamic", "CompositeDynamic", "Skybox",

@@ -75,9 +75,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         var key = (category, group.Name);
         if (!_outlinerGroupStates.TryGetValue(key, out var state))
         {
+            // Categories start collapsed; levels, including those inside a category, start expanded.
             _outlinerGroupStates[key] = state = new OutlinerGroupState
             {
-                Category = group.Name is string name ? RenderContext.GetCategoryState(name) : null
+                Category = group.Name is string name ? RenderContext.GetCategoryState(name) : null,
+                IsExpanded = group.Name is not string
             };
         }
         return state;
@@ -215,6 +217,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 else
                 {
                     RenderContext.UseGameShaders = false;
+                    LightDiagnosticsStale = true;
                 }
                 OnPropertyChanged(nameof(CanConfigureLevelLighting));
             }
@@ -235,6 +238,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 OnPropertyChanged(nameof(IsUnlit));
                 OnPropertyChanged(nameof(LightingMenuHeader));
                 OnPropertyChanged(nameof(CanConfigureLevelLighting));
+                OnPropertyChanged(nameof(LightingRulesNote));
+                LightDiagnosticsStale = true;
                 if (value is (ViewportLightingMode.Level or ViewportLightingMode.Preview) && RenderContext.UseGameShaders)
                 {
                     EnableGameShaders();
@@ -282,33 +287,19 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     public ICommand SetLightingModeCommand { get; private set; }
 
-    //The renderer only switches to game shaders (and level lighting) once they're loaded, so that it doesn't load them one material at a time on the UI thread
-    private async void EnableGameShaders()
+    // Mode switches share the same serialized shader worker as package refreshes.
+    private void EnableGameShaders()
     {
-        ViewportLightingMode modeToPrepare = LightingMode;
-        bool prepareLevelLighting = modeToPrepare is (ViewportLightingMode.Level or ViewportLightingMode.Preview)
-                                    && RenderContext.LightingMode != modeToPrepare;
-        if (RenderContext.HasPendingGameShaderLoads || prepareLevelLighting)
+        // Switching to a mode that's already prepared needn't suspend rendering, or wait for anything but loads and refreshes,
+        // which read the scene in the background. (Saves don't)
+        if (OpenFiles.Count == 0 || _busyCount == 0 && !PreviewRefreshInProgress && !RenderContext.NeedsGameShaderPreparation(_lightingMode))
         {
-            IsBusy = true;
-            BusyText = "Loading game shaders...";
-            try
-            {
-                await Task.Run(() => RenderContext.LoadPendingGameShaders(ReportGameShaderLoadProgress, modeToPrepare)).ConfigureAwait(true);
-            }
-            catch (Exception e)
-            {
-                //materials that failed to load will be retried, and fall back to LEX's shader, when rendered
-                Debug.WriteLine($"Failed to load game shaders: {e}");
-            }
-            finally
-            {
-                IsBusy = false;
-            }
+            RenderContext.UseGameShaders = _useGameShaders;
+            RenderContext.LightingMode = _lightingMode;
+            return;
         }
-        //they may have been turned back off while loading
-        RenderContext.UseGameShaders = _useGameShaders;
-        RenderContext.LightingMode = _lightingMode;
+        PreviewShaderPreparationRequested = true;
+        PreviewUpdateTimer.Start();
     }
 
     //Can be called from a background thread
@@ -376,9 +367,24 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         {
             UseGameShaders = _useGameShaders
         };
+        // Not Background: continuous rendering of a slow scene (such as preview lighting) never leaves the dispatcher idle,
+        // so a Background timer could starve and leave lighting-mode switches and package refreshes pending indefinitely.
+        PreviewUpdateTimer = new DispatcherTimer(DispatcherPriority.Normal, Dispatcher)
+        {
+            Interval = TimeSpan.FromMilliseconds(75)
+        };
+        PreviewUpdateTimer.Tick += ProcessPreviewUpdates;
+        RenderContext.PackageCache.PackageUpdated += QueuePreviewUpdate;
         RenderContext.TransformWidget.OnDragComplete = OnWidgetDragComplete;
+        RenderContext.LightGizmo.OnDragComplete = OnLightGizmoDragComplete;
         ActorsView = CollectionViewSource.GetDefaultView(Actors);
         ActorsView.Filter = ActorFilter;
+        // A preview refresh can change a mesh's category (whether it's volumetric)
+        if (ActorsView is ICollectionViewLiveShaping { CanChangeLiveGrouping: true } liveView)
+        {
+            liveView.LiveGroupingProperties.Add(nameof(ActorProxy.Category));
+            liveView.IsLiveGrouping = true;
+        }
         UpdateOutlinerGrouping();
 
         // A separate view keeps the change list independent of outliner searching/grouping.
@@ -433,6 +439,14 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private void RenderScene(object sender, EventArgs e)
     {
+        ApplyActorLightingEdits();
+        ApplyLightEdits();
+        UpdateLightHighlights();
+        if (LightDiagnosticsStale && !RenderContext.LightGizmo.IsDragging && !RenderContext.TransformWidget.IsDragging
+            && LightDiagnosticsThrottle.ElapsedMilliseconds > 250)
+        {
+            RefreshLightingDiagnostics();
+        }
         // Match MeshRenderContext.CreateRasterizerState, which disables near/far depth clipping.
         if (UseFrustumCulling) viewFrustum.Update(RenderContext.Camera.ViewProjectionMatrix, depthClipEnabled: false);
         RenderContext.CullingFrustum = UseFrustumCulling ? viewFrustum : null;
@@ -478,12 +492,18 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private void SelectActor(ActorProxy actor, bool focus)
     {
+        // A handle drag belongs to the light it started on, so it's recorded before the gizmo moves to another
+        if (actor != selectedActor) RenderContext.LightGizmo.EndDrag();
         var prev = selectedActor;
         if (SetProperty(ref selectedActor, actor, nameof(SelectedActor)))
         {
             if (prev is not null)
             {
                 prev.PropertyChanged -= OnActorPropertyChanged;
+            }
+            if (prev is ILightProxy { Light: { } prevLight })
+            {
+                prevLight.PropertyChanged -= OnSelectedLightChanged;
             }
             if (selectedActor is not null)
             {
@@ -494,6 +514,16 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             {
                 _preEditSnapshot = null;
             }
+            _preEditLightSettings = null;
+            if (selectedActor is ILightProxy { Light: { } light })
+            {
+                light.PropertyChanged += OnSelectedLightChanged;
+                _preEditLightSettings = light.Settings;
+            }
+            RenderContext.LightGizmo.Attach = selectedActor as ILightProxy;
+            OnPropertyChanged(nameof(SelectedLight));
+            OnPropertyChanged(nameof(IsLightSelected));
+            RefreshLightingDiagnostics();
         }
         if (focus && selectedActor is not null)
         {
@@ -556,7 +586,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         {
             StatusBar_LeftMostText.Text = "Failed to load " + Path.GetFileName(s);
             MessageBox.Show($"Error loading {Path.GetFileName(s)}:\n{e.Message}");
-            IsBusy = false;
             IsBusyTaskbar = false;
         }
     }
@@ -615,6 +644,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         var openFile = new OpenLevelFile(this, pcc, levelExport);
         // Register the OpenLevelFile as a user of the package for update notifications
         pcc.RegisterTool(openFile);
+        RenderContext.PackageCache.UsePackage(pcc);
         OpenFiles.Add(openFile);
         HasAnyFileOpen = true;
 
@@ -623,7 +653,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         Level levelBin = levelExport.GetBinaryData<Level>();
         bool isFirstFile = OpenFiles.Count == 1;
 
-        IsBusy = true;
+        // Callers hold a RenderGuard, which keeps the editor busy until every file is loaded
         BusyText = $"Loading {Path.GetFileName(path)}...";
 
         bool loadGameShaders = RenderContext.UseGameShaders;
@@ -667,17 +697,17 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void CloseAllFiles()
     {
         Game = MEGame.Unknown;
-        if (selectedActor is not null)
-        {
-            selectedActor.PropertyChanged -= OnActorPropertyChanged;
-            selectedActor = null;
-        }
+        // Through SelectActor, so that the details panes stop showing (and offering to select) the closed levels' actors
+        SelectActor(null, false);
+        PendingLightEdits.Clear();
         SceneViewer.SetShouldRender(false);
+        PendingPreviewUpdates.Clear();
         RenderContext.UnloadLevel();
         Actors.Clear();
         foreach (var file in OpenFiles)
         {
             file.Dispose();
+            StopTrackingSave(file);
         }
         OpenFiles.Clear();
         HasAnyFileOpen = false;
@@ -720,8 +750,14 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         RenderContext.RemoveLights(file.Lights);
         RenderContext.ForgetLevel(file.Package);
 
+        string filePath = file.FilePath;
         file.Dispose();
+        StopTrackingSave(file);
         OpenFiles.Remove(file);
+        // Drops the cache's reference (and its update observer), so reopening the file without other users reads it from disk.
+        // Kept if other open levels imported from it
+        RenderContext.PackageCache.StopUsingPackage(filePath);
+        UndoHistory.RemoveOrphaned();
         HasAnyFileOpen = OpenFiles.Count > 0;
         UpdateGlobalDirtyState();
         UpdateTitle();
@@ -788,6 +824,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                     }
                 }
             }
+            else if (className is "StaticLightCollectionActor")
+            {
+                actors.AddRange(CreateCollectionLights(actorExport, owningFile));
+            }
             else if (ActorProxy.Create(this, actorExport) is { } actorProxy)
             {
                 actorProxy.OwningFile = owningFile;
@@ -804,12 +844,29 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
 
         //The level's lights, for rendering static meshes the way the game lights them. (Light actors aren't otherwise shown)
-        RenderContext.RemoveLights(owningFile.Lights);
-        owningFile.Lights = SceneLight.LoadLevelLights(level, RenderContext.PackageCache);
-        RenderContext.AddLights(owningFile.Lights);
+        owningFile.ReloadLights(level, RenderContext);
         //The level's BSP blocks light environments' visibility traces
         RenderContext.SetLevelModel(level.Export.FileRef, level.Model);
         return new(actors, ignoredActorClasses);
+    }
+
+    /// <summary>
+    /// Proxies for a StaticLightCollectionActor's supported lights. Lights without a stored transform can't be placed, so they aren't editable
+    /// </summary>
+    private List<ActorProxy> CreateCollectionLights(ExportEntry collectionExport, OpenLevelFile owningFile)
+    {
+        var lights = new List<ActorProxy>();
+        var slca = collectionExport.GetBinaryData<StaticLightCollectionActor>();
+        if (slca.Components is null) return lights;
+        for (int i = 0; i < slca.Components.Count && i < slca.LocalToWorldTransforms.Count; i++)
+        {
+            if (collectionExport.FileRef.TryGetUExport(slca.Components[i], out ExportEntry lightComponent)
+                && SceneLight.GetLightType(lightComponent) is { } type)
+            {
+                lights.Add(new StaticLightCollectionComponentProxy(this, lightComponent, slca, i, type) { OwningFile = owningFile });
+            }
+        }
+        return lights;
     }
 
     public void RemoveActor(ActorProxy actor)
@@ -864,6 +921,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public ICommand ToggleOrthoViewCommand { get; set; }
     public ICommand FocusFileCommand { get; set; }
     public ICommand SelectChangedActorCommand { get; set; }
+    public ICommand SelectLightCommand { get; set; }
     private void LoadCommands()
     {
         SetLightingModeCommand = new RelayCommand(mode => LightingMode = (ViewportLightingMode)mode);
@@ -917,6 +975,15 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 SelectAndRevealActor(actor);
             }
         });
+        SelectLightCommand = new RelayCommand(parameter =>
+        {
+            if (parameter is ActorProxy light)
+            {
+                // Lights are hidden by default, and selecting one from the details pane means wanting to see it
+                RenderContext.GetCategoryState(light.Category).IsVisible = true;
+                SelectAndRevealActor(light);
+            }
+        });
     }
 
     #endregion
@@ -948,6 +1015,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             {
                 _preEditSnapshot = SelectedActor.SnapshotTransform();
             }
+            _preEditLightSettings = SelectedLight?.Settings;
         }
     }
 
@@ -963,6 +1031,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             {
                 _preEditSnapshot = SelectedActor.SnapshotTransform();
             }
+            _preEditLightSettings = SelectedLight?.Settings;
         }
     }
     #endregion
@@ -1065,17 +1134,27 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             }
             if (actor is CollectionActorComponentProxy cacp)
             {
-                if (!collectionActorMap.TryGetValue(cacp.CollectionActorExport.UIndex, out var collectionActor))
+                bool moved = cacp.IsTransformDirty;
+                // A light whose settings alone changed must not rewrite (and so rebuild) its whole collection.
+                if (moved)
                 {
-                    collectionActor = (StaticCollectionActor)ObjectBinary.From(cacp.CollectionActorExport);
-                    collectionActorMap.Add(cacp.CollectionActorExport.UIndex, collectionActor);
+                    if (!collectionActorMap.TryGetValue(cacp.CollectionActorExport.UIndex, out var collectionActor))
+                    {
+                        collectionActor = (StaticCollectionActor)ObjectBinary.From(cacp.CollectionActorExport);
+                        collectionActorMap.Add(cacp.CollectionActorExport.UIndex, collectionActor);
+                    }
+                    cacp.CommitChanges(collectionActor);
                 }
-                cacp.CommitChanges(collectionActor);
+                if (cacp is ILightProxy collectionLight)
+                {
+                    collectionLight.Light.Commit(moved ? cacp.LocalToWorld : null);
+                }
             }
             else
             {
-                actor.CommitChanges();
+                if (actor.IsTransformDirty || actor is ILightProxy) actor.CommitChanges();
             }
+            foreach (var mesh in MeshComponents(actor)) mesh.ExistingLighting?.Commit();
             actor.MarkClean();
         }
 
@@ -1084,6 +1163,15 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             collectionActor.Export.WriteBinary(collectionActor);
         }
         file.IsDirty = false;
+        // Committing rebuilds the committed actors, which would orphan the actions that refer to them
+        ClearUndoHistory();
+    }
+
+    private void ClearUndoHistory()
+    {
+        UndoHistory.Clear();
+        _preEditSnapshot = selectedActor?.SnapshotTransform();
+        _preEditLightSettings = SelectedLight?.Settings;
     }
 
     private void CommitSingleFileExecute(object parameter)
@@ -1212,10 +1300,15 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         var d = new SaveFileDialog { Filter = fileFilter };
         if (d.ShowDialog() == true)
         {
-            IsBusy = true;
-            BusyText = "Saving...";
-            await fileToSave.Package.SaveAsync(d.FileName);
-            IsBusy = false;
+            SetBusy("Saving...");
+            try
+            {
+                await fileToSave.Package.SaveAsync(d.FileName);
+            }
+            finally
+            {
+                EndBusy();
+            }
         }
     }
 
@@ -1223,14 +1316,128 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     #region HandleUpdate
 
-    public void HandleFileUpdate(OpenLevelFile file, List<PackageUpdate> updates)
-    {
-        if (file.LevelExport is null) return;
+    private readonly PreviewUpdateQueue PendingPreviewUpdates = new();
+    private readonly DispatcherTimer PreviewUpdateTimer;
+    private bool PreviewRefreshInProgress;
+    private bool PreviewShaderPreparationRequested;
+    private bool PreviewClosed;
 
-        IEnumerable<PackageUpdate> relevantUpdates = updates.Where(x => x.Change.Has(PackageChange.Export));
-        HashSet<int> updatedExports = relevantUpdates.Select(x => x.Index).ToHashSet();
-        if (updatedExports.Contains(file.LevelExport.UIndex))
+    public void HandleFileUpdate(OpenLevelFile file, List<PackageUpdate> updates) =>
+        QueuePreviewUpdate(file.Package, updates);
+
+    private void QueuePreviewUpdate(IMEPackage package, List<PackageUpdate> updates)
+    {
+        if (!Dispatcher.CheckAccess())
         {
+            Dispatcher.InvokeAsync(() => QueuePreviewUpdate(package, updates));
+            return;
+        }
+        if (PreviewClosed || OpenFiles.Count == 0) return;
+        // Both the open level and the dependency observer may notify us; the queue deduplicates indices.
+        PendingPreviewUpdates.Add(package, updates);
+        if (PendingPreviewUpdates.HasUpdates) PreviewUpdateTimer.Start();
+    }
+
+    private async void ProcessPreviewUpdates(object sender, EventArgs e)
+    {
+        // Package loading and shader preparation also read the scene on background threads.
+        // Keep edits queued until those readers finish, and suspend rendering while replacing GPU resources. (Package saves aren't readers of the scene)
+        if (_busyCount > 0 || PreviewRefreshInProgress || RenderContext.TransformWidget.IsDragging || RenderContext.LightGizmo.IsDragging) return;
+        PreviewUpdateTimer.Stop();
+        if ((!PendingPreviewUpdates.HasUpdates && !PreviewShaderPreparationRequested) || OpenFiles.Count == 0 || PreviewClosed) return;
+        PreviewRefreshInProgress = true;
+        var watch = Stopwatch.StartNew();
+        SceneViewer.SetShouldRender(false);
+        SetBusy(PendingPreviewUpdates.HasUpdates ? "Refreshing preview..." : "Preparing lighting...");
+        var errors = new List<string>();
+        try
+        {
+            bool changed = PreviewShaderPreparationRequested;
+            PreviewShaderPreparationRequested = false;
+            // Each package is applied separately, so that one failing doesn't drop the others' updates
+            foreach (var (package, exports) in PendingPreviewUpdates.Drain())
+                changed |= TryRefresh(Path.GetFileName(package.FilePath), errors, () => ApplyPreviewUpdate(package, exports, errors));
+            var mode = LightingMode;
+            if (changed && UseGameShaders)
+                await Task.Run(() => RenderContext.LoadPendingGameShaders(ReportGameShaderLoadProgress, mode));
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Could not load game shaders: {ex}");
+            errors.Add($"Game shaders: {ex.Message}");
+        }
+        finally
+        {
+            Debug.WriteLine($"Lighting preview refresh: {watch.Elapsed.TotalMilliseconds:F0} ms");
+            LightDiagnosticsStale = true;
+            //actors rebuilt by other tools' edits
+            UndoHistory.RemoveOrphaned();
+            RenderContext.UseGameShaders = _useGameShaders;
+            RenderContext.LightingMode = _lightingMode;
+            PreviewRefreshInProgress = false;
+            EndBusy();
+            SceneViewer.SetShouldRender(!PreviewClosed && OpenFiles.Count > 0);
+            if ((PendingPreviewUpdates.HasUpdates || PreviewShaderPreparationRequested) && !PreviewClosed) PreviewUpdateTimer.Start();
+        }
+        if (errors.Count > 0 && !PreviewClosed)
+        {
+            const int maxListed = 8;
+            string list = string.Join("\n", errors.Take(maxListed)) + (errors.Count > maxListed ? $"\n...and {errors.Count - maxListed} more" : "");
+            MessageBox.Show(this, $"Parts of the preview couldn't be refreshed, and may be missing until their packages change again:\n{list}", "Preview refresh");
+        }
+    }
+
+    /// <summary>
+    /// Runs one part of a preview refresh, recording its failure instead of abandoning the rest: shared resources may already have been
+    /// released, so every part still needs its chance to reacquire them
+    /// </summary>
+    /// <returns>Whether the part changed, which a failed part may have</returns>
+    private static bool TryRefresh(string part, List<string> errors, Func<bool> refresh)
+    {
+        try
+        {
+            return refresh();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Could not refresh the preview of {part}: {ex}");
+            errors.Add($"{part}: {ex.Message}");
+            return true;
+        }
+    }
+
+    private bool ApplyPreviewUpdate(IMEPackage package, HashSet<int> updatedExports, List<string> errors)
+    {
+        bool changed = RenderContext.InvalidatePreviewResources(package, updatedExports, out PreviewRebuild rebuild);
+        // Meshes that must be rebuilt to reacquire released resources, whether or not they depend on the edited exports
+        bool MustRebuild(ActorProxy actor) => rebuild is PreviewRebuild.AllMeshes
+            || rebuild is PreviewRebuild.LightEnvironmentMeshes && MeshComponents(actor).Any(mesh => mesh.IsLitByLightEnvironment);
+        var file = OpenFiles.FirstOrDefault(open => open.Package == package);
+        bool reloadLevel = file is not null && updatedExports.Contains(file.LevelExport.UIndex);
+        // Decided against the old dependency snapshots, but reloaded after the actors, so rebuilt light proxies' discarded edits aren't reapplied.
+        var lightFiles = OpenFiles.Where(openFile => !(openFile == file && reloadLevel)
+            && openFile.Lighting?.IsAffectedBy(package, updatedExports) == true).ToList();
+        changed |= lightFiles.Count > 0;
+        foreach (var actor in Actors.Where(actor => actor.OwningFile != file).ToList())
+            changed |= TryRefresh(actor.DisplayText, errors, () => actor.TryRefreshPreview(package, updatedExports, MustRebuild(actor)));
+        if (file is not null)
+            changed |= ApplyLevelActorUpdate(file, reloadLevel, updatedExports, MustRebuild, errors);
+        if (lightFiles.Count > 0) RenderContext.InvalidateLightFunctions();
+        foreach (var openFile in lightFiles)
+            TryRefresh($"{openFile.FileName} lights", errors, () =>
+            {
+                openFile.ReloadLights(openFile.LevelExport.GetBinaryData<Level>(), RenderContext);
+                return true;
+            });
+        return changed;
+    }
+
+    private bool ApplyLevelActorUpdate(OpenLevelFile file, bool reloadLevel, HashSet<int> updatedExports, Func<ActorProxy, bool> mustRebuild, List<string> errors)
+    {
+        bool changed = false;
+        if (reloadLevel)
+        {
+            changed = true;
             ReloadFile(file);
         }
         else
@@ -1243,9 +1450,14 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             for (int i = file.Actors.Count - 1; i >= 0; i--)
             {
                 ActorProxy alteredActor = file.Actors[i];
+                if (TryRefresh(alteredActor.DisplayText, errors, () => alteredActor.TryRefreshPreview(file.Package, updatedExports, mustRebuild(alteredActor))))
+                {
+                    changed = true;
+                    continue;
+                }
                 if (alteredActor.TestUIndexes(updatedExports))
                 {
-                    updated = true;
+                    changed = updated = true;
                     if (alteredActor == SelectedActor)
                     {
                         reselectUIndex = alteredActor.Export.UIndex;
@@ -1292,6 +1504,13 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                             }
                         }
                     }
+                    else if (className is "StaticLightCollectionActor")
+                    {
+                        foreach (var light in CreateCollectionLights(newCollectionActor, file))
+                        {
+                            AddActor(light, false);
+                        }
+                    }
                 }
             }
             if (updated)
@@ -1309,6 +1528,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 }
             }
         }
+        return changed;
     }
 
     private void ReloadFile(OpenLevelFile file)
@@ -1365,8 +1585,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private void OnActorPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        if (_isApplyingUndoRedo || RenderContext.TransformWidget.IsDragging) return;
         if (e.PropertyName is not (nameof(ActorProxy.Location) or nameof(ActorProxy.Rotation) or nameof(ActorProxy.DrawScale) or nameof(ActorProxy.DrawScale3D))) return;
+        // Which lights reach the selection depends on its bounds. Refreshed once a drag ends
+        LightDiagnosticsStale = true;
+        if (_isApplyingUndoRedo || RenderContext.TransformWidget.IsDragging) return;
 
         if (sender is ActorProxy actor && _preEditSnapshot is { } before)
         {
@@ -1385,6 +1607,272 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         UndoHistory.Push(new TransformAction(actor, before, after, $"Drag {actor.Export.ObjectName.Instanced}"));
         _preEditSnapshot = after;
     }
+
+    #region Lights
+
+    public ObservableCollectionExtended<EditableActorLighting> SelectedActorLighting { get; } = [];
+    private readonly HashSet<MeshComponentProxy> PendingActorLightingEdits = [];
+
+    public void OnActorLightingEdited(MeshComponentProxy mesh, ActorLightingSettings before, ActorLightingSettings after)
+    {
+        if (!_isApplyingUndoRedo) UndoHistory.Push(new ActorLightingAction(mesh.Lighting, before, after));
+        PendingActorLightingEdits.Add(mesh);
+        LightDiagnosticsStale = true;
+    }
+
+    private void ApplyActorLightingEdits()
+    {
+        if (PendingActorLightingEdits.Count == 0 || PreviewRefreshInProgress) return;
+        foreach (var mesh in PendingActorLightingEdits)
+        {
+            if (mesh.Actor is { IsDisposed: false, OwningFile: { } file } actor && OpenFiles.Contains(file) && file.Actors.Contains(actor))
+                mesh.RefreshPreview(mesh.Export.FileRef, new HashSet<int> { mesh.Export.UIndex }, force: true);
+        }
+        PendingActorLightingEdits.Clear();
+        LightDiagnosticsStale = true;
+    }
+
+    private LightSettings? _preEditLightSettings;
+
+    /// <summary>
+    /// The selected light's editable settings. Null if the selection isn't a light
+    /// </summary>
+    public EditableLight SelectedLight => (selectedActor as ILightProxy)?.Light;
+    public bool IsLightSelected => SelectedLight is not null;
+
+    // Lights whose uncommitted edits haven't been rebuilt into the scene yet. Rebuilt once per frame, however many edits there were.
+    private readonly HashSet<ILightProxy> PendingLightEdits = [];
+
+    public void OnLightEdited(ILightProxy light)
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.InvokeAsync(() => OnLightEdited(light));
+            return;
+        }
+        PendingLightEdits.Add(light);
+    }
+
+    private void ApplyLightEdits()
+    {
+        if (PendingLightEdits.Count == 0 || PreviewRefreshInProgress) return;
+        foreach (ILightProxy light in PendingLightEdits)
+        {
+            // Proxies replaced by a reload or closed with their file are skipped.
+            if (light is ActorProxy { OwningFile: { } file } actor && OpenFiles.Contains(file) && file.Actors.Contains(actor))
+            {
+                file.UpdateLight(light, RenderContext);
+            }
+        }
+        PendingLightEdits.Clear();
+        LightDiagnosticsStale = true;
+    }
+
+    private void OnSelectedLightChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(EditableLight.Settings) || sender is not EditableLight light) return;
+        // Undo, redo and handle drags record their own history.
+        if (!_isApplyingUndoRedo && !RenderContext.LightGizmo.IsDragging && _preEditLightSettings is { } before && before != light.Settings
+            && selectedActor is not null)
+        {
+            UndoHistory.Push(new LightSettingsAction(light, before, light.Settings, selectedActor.Export.ObjectName.Instanced));
+        }
+        _preEditLightSettings = light.Settings;
+    }
+
+    private void OnLightGizmoDragComplete(ILightProxy light, LightSettings before, LightSettings after)
+    {
+        if (light is not ActorProxy actor) return;
+        UndoHistory.Push(new LightSettingsAction(light.Light, before, after, actor.Export.ObjectName.Instanced));
+        _preEditLightSettings = after;
+        LightDiagnosticsStale = true;
+    }
+
+    // Uses the active viewport's rules: Level lighting includes the last build's records; the other modes ignore them, like Preview lighting.
+    private bool IgnorePrecomputedLighting => LightingMode != ViewportLightingMode.Level;
+
+    private static IEnumerable<MeshComponentProxy> MeshComponents(ActorProxy actor) => actor is PrefabInstanceProxy prefab
+        ? prefab.Children.SelectMany(MeshComponents)
+        : actor.Components.OfType<MeshComponentProxy>();
+
+    private SceneLight SelectedSceneLight => selectedActor is ILightProxy proxy ? selectedActor.OwningFile?.Lighting?.Find(proxy.Light.Component) : null;
+
+    private bool _showLightReach;
+    /// <summary>
+    /// Highlight the meshes the selected light is eligible to light
+    /// </summary>
+    public bool ShowLightReach
+    {
+        get => _showLightReach;
+        set
+        {
+            if (SetProperty(ref _showLightReach, value)) LightDiagnosticsStale = true;
+        }
+    }
+
+    /// <summary>
+    /// Highlights the meshes the selected light is eligible to light, if <see cref="ShowLightReach"/>. Cheap enough to do every frame, so it follows drags
+    /// </summary>
+    private void UpdateLightHighlights()
+    {
+        RenderContext.HighlightedComponents.Clear();
+        if (ShowLightReach && SelectedSceneLight is { } light)
+        {
+            FindLightReach(light, RenderContext.HighlightedComponents);
+        }
+    }
+
+    /// <summary>
+    /// Counts the meshes a light is eligible to light, directly and through light environments, optionally collecting them
+    /// </summary>
+    private (int Direct, int Environments) FindLightReach(SceneLight light, HashSet<PrimitiveComponentProxy> meshes)
+    {
+        int direct = 0, environments = 0;
+        bool ignorePrecomputed = IgnorePrecomputedLighting;
+        foreach (ActorProxy actor in Actors)
+        {
+            if (actor is ILightProxy) continue;
+            foreach (MeshComponentProxy mesh in MeshComponents(actor))
+            {
+                if (mesh.GetLightEligibility(light, ignorePrecomputed) is { } eligibility && eligibility.IsAffecting())
+                {
+                    meshes?.Add(mesh);
+                    if (eligibility is LightEligibility.LightEnvironment) environments++;
+                    else direct++;
+                }
+            }
+        }
+        return (direct, environments);
+    }
+
+    private void RefreshSelectedLightReach()
+    {
+        if (selectedActor is not ILightProxy proxy)
+        {
+            SelectedLightReach = null;
+            return;
+        }
+        SceneLight light = SelectedSceneLight;
+        if (!proxy.Light.Settings.Enabled)
+        {
+            SelectedLightReach = "Disabled: lights nothing.";
+        }
+        else if (light is null)
+        {
+            SelectedLightReach = "Not in the preview (unsupported or unreadable settings).";
+        }
+        else
+        {
+            (int direct, int environments) = FindLightReach(light, null);
+            SelectedLightReach = $"Eligible to light {direct} mesh{(direct == 1 ? "" : "es")} directly and {environments} through light environments"
+                                 + (ShowLightReach ? " (highlighted)." : ".");
+        }
+    }
+
+    private string _selectedLightReach;
+    public string SelectedLightReach
+    {
+        get => _selectedLightReach;
+        private set => SetProperty(ref _selectedLightReach, value);
+    }
+
+    public string LightingRulesNote => LightingMode switch
+    {
+        ViewportLightingMode.Preview => "Preview rules: current light settings and positions; the last bake's light-map and irrelevance records are ignored. Preview lighting is direct light only, with no bounced light.",
+        ViewportLightingMode.Level => "Level rules: includes the last bake's light-map and irrelevance records. Bounced light comes only from the existing light-maps, so it doesn't follow edits.",
+        _ => "This lighting mode doesn't show the level's lights. Eligibility uses preview rules."
+    };
+
+    private bool LightDiagnosticsStale;
+    private readonly Stopwatch LightDiagnosticsThrottle = Stopwatch.StartNew();
+
+    public ObservableCollectionExtended<LightRelevance> SelectedMeshLights { get; } = [];
+    public ObservableCollectionExtended<string> SelectedMeshNotes { get; } = [];
+
+    private bool _isMeshSelected;
+    public bool IsMeshSelected
+    {
+        get => _isMeshSelected;
+        private set => SetProperty(ref _isMeshSelected, value);
+    }
+
+    /// <summary>
+    /// Lists the lights relevant to the selected mesh: those eligible to light it, and those that reach it but are excluded, with the reason.
+    /// Also notes where the mesh's appearance doesn't come from the level's lights
+    /// </summary>
+    private void RefreshLightingDiagnostics()
+    {
+        LightDiagnosticsStale = false;
+        LightDiagnosticsThrottle.Restart();
+        RefreshSelectedLightReach();
+        RenderContext.HighlightedLights.Clear();
+        var rows = new List<LightRelevance>();
+        var notes = new List<string>();
+        List<MeshComponentProxy> meshes = selectedActor is null or ILightProxy ? [] : MeshComponents(selectedActor).ToList();
+        IsMeshSelected = meshes.Count > 0;
+        var lighting = meshes.Select(mesh => mesh.Lighting).ToList();
+        if (!SelectedActorLighting.SequenceEqual(lighting))
+        {
+            foreach (var settings in lighting) settings.RefreshEnvironments();
+            SelectedActorLighting.ReplaceAll(lighting);
+        }
+        if (meshes.Count > 0)
+        {
+            bool ignorePrecomputed = IgnorePrecomputedLighting;
+            var proxies = new Dictionary<ExportEntry, ActorProxy>();
+            foreach (ActorProxy actor in Actors)
+            {
+                if (actor is ILightProxy proxy) proxies[proxy.Light.Component] = actor;
+            }
+            foreach (SceneLight light in RenderContext.GetLights(out _))
+            {
+                LightEligibility? best = null;
+                foreach (MeshComponentProxy mesh in meshes)
+                {
+                    if (mesh.GetLightEligibility(light, ignorePrecomputed) is { } eligibility
+                        && (best is null || eligibility.IsMoreRelevantThan(best.Value)))
+                    {
+                        best = eligibility;
+                    }
+                }
+                // Lights that don't reach the mesh at all aren't worth listing.
+                if (best is not { } result || !result.Reaches()) continue;
+                proxies.TryGetValue(light.Export, out ActorProxy lightActor);
+                rows.Add(new LightRelevance(lightActor?.DisplayText ?? light.Export.ObjectName.Instanced, light.LevelName, result.Describe(),
+                    result.IsAffecting(), lightActor));
+                if (result.IsAffecting()) RenderContext.HighlightedLights.Add(light.Export);
+            }
+            if (meshes.All(mesh => !mesh.IsLitByLevelLights))
+            {
+                notes.Add(Game.IsLEGame()
+                    ? "The level's lights don't light this mesh in the viewport (its lighting couldn't be read), so it's shown with neutral lighting."
+                    : "Level lighting previews need a Legendary Edition game; this mesh is shown with neutral lighting.");
+            }
+            else if (meshes.Any(mesh => mesh.IsLitByLightEnvironment))
+            {
+                notes.Add("Lit by a light environment, which composites the lights below into a few lights. Whether each light is blocked from it isn't shown here.");
+            }
+            if (!UseGameShaders)
+            {
+                notes.Add("Game shaders are off, so every mesh uses LEX's neutral shader.");
+            }
+            else
+            {
+                foreach (var material in meshes.SelectMany(mesh => mesh.GameShaderMaterials).Distinct())
+                {
+                    if (material.LoadedGameShaderError is { } error)
+                    {
+                        notes.Add($"{material.InstancedFullPath} uses LEX's neutral shader: {error}");
+                    }
+                }
+            }
+        }
+        rows.Sort((a, b) => a.IsAffecting != b.IsAffecting ? b.IsAffecting.CompareTo(a.IsAffecting) : string.Compare(a.LightName, b.LightName, StringComparison.OrdinalIgnoreCase));
+        SelectedMeshLights.ReplaceAll(rows);
+        SelectedMeshNotes.ReplaceAll(notes);
+    }
+
+    #endregion
 
     private bool ActorFilter(object obj)
     {
@@ -1469,9 +1957,18 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
     }
 
+    // The busy indicator disables the editor's controls, but not dropping files on the window. Loading or refreshing must finish
+    // before the scene can be replaced, since background work is still reading it
+    private bool CanChangeFiles => !IsBusy && !PreviewRefreshInProgress && !loadingBakePreview;
+
     private void Window_DragOver(object sender, DragEventArgs e)
     {
-        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+        if (!CanChangeFiles)
+        {
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
+        }
+        else if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
             string ext = Path.GetExtension(files[0]).ToLower();
@@ -1490,7 +1987,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private async void Window_Drop(object sender, DragEventArgs e)
     {
-        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+        if (CanChangeFiles && e.Data.GetDataPresent(DataFormats.FileDrop))
         {
             bool isFirst = true;
             var files = (string[])e.Data.GetData(DataFormats.FileDrop);
@@ -1500,6 +1997,12 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 string q = files.Length is 1 ? "these files" : "";
                 var result = MessageBox.Show("Do you want to add" + q + "to the existing level view? Select no to unload all open files first.", "Add to files?", MessageBoxButton.YesNoCancel);
                 if (result == MessageBoxResult.Cancel) return;
+                //a refresh can start while the question is shown
+                if (!CanChangeFiles)
+                {
+                    MessageBox.Show(this, "The Level Editor started refreshing its preview. Drop the files again once it has finished.", "Level Editor is busy");
+                    return;
+                }
                 isFirst = result == MessageBoxResult.No;
             }
             foreach (string file in files)
@@ -1530,7 +2033,14 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void LevelEditor_Closing(object sender, CancelEventArgs e)
     {
         if (e.Cancel) return;
-        if (loadingBakePreview || (IsBakePreview && IsBusy)) { e.Cancel = true; return; }
+        if (IsBusy || PreviewRefreshInProgress || loadingBakePreview)
+        {
+            // Background loads and saves are still using the scene and its packages
+            e.Cancel = true;
+            MessageBox.Show(this, "The Level Editor can't close until it has finished" + (string.IsNullOrEmpty(BusyText) ? "." : $": {BusyText}"),
+                "Level Editor is busy");
+            return;
+        }
 
         var dirtyFiles = OpenFiles.Where(f => f.IsDirty || f.Package.IsModified).ToList();
         if (!IsBakePreview && dirtyFiles.Count > 0)
@@ -1548,6 +2058,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
         CloseAllFiles();
 
+        PreviewClosed = true;
+        PreviewUpdateTimer.Stop();
+        PendingPreviewUpdates.Clear();
+        RenderContext.PackageCache.PackageUpdated -= QueuePreviewUpdate;
         RenderContext.UpdateScene -= UpdateScene;
         RenderContext.RenderScene -= RenderScene;
         RenderContext.SelectActor -= ViewportActorSelect;
@@ -1733,6 +2247,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             {
                 ReloadFile(file);
             }
+            UndoHistory.RemoveOrphaned();
         }
     }
 
@@ -1743,11 +2258,13 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     #region Busy variables
 
     private bool _isBusy;
+    // Loading, Save As and preview refreshes can overlap, so the editor is busy until each has ended. (Package saves are tracked by SavingFiles)
+    private int _busyCount;
 
     public bool IsBusy
     {
         get => _isBusy;
-        set => SetProperty(ref _isBusy, value);
+        private set => SetProperty(ref _isBusy, value);
     }
 
     private bool _isBusyTaskbar;
@@ -1766,27 +2283,46 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         set => SetProperty(ref _busyText, value);
     }
 
+    /// <summary>
+    /// Marks the start of an operation the editor must wait for. Pair each call with <see cref="EndBusy"/>
+    /// </summary>
     public virtual void SetBusy(string text = null)
     {
-        BusyText = text;
-        IsBusy = true;
+        //a nested operation without its own text keeps its outer operation's
+        if (!IsBusy || text is not null) BusyText = text;
+        _busyCount++;
+        UpdateIsBusy();
     }
     public virtual void EndBusy()
     {
-        IsBusy = false;
+        if (_busyCount > 0) _busyCount--;
+        UpdateIsBusy();
     }
 
-    public void HandleSaveStateChange(bool isSaving)
+    // Files whose packages are being saved. Tracked by file rather than counted, so that a save whose end is never reported
+    // (because its file was closed, and so stopped being a user of the package) can't leave the editor busy for good
+    private readonly HashSet<OpenLevelFile> SavingFiles = [];
+
+    public void HandleSaveStateChange(OpenLevelFile file, bool isSaving)
     {
-        if (isSaving)
+        if (!Dispatcher.CheckAccess())
         {
-            SetBusy("Saving");
+            Dispatcher.InvokeAsync(() => HandleSaveStateChange(file, isSaving));
+            return;
         }
-        else
+        if (isSaving ? SavingFiles.Add(file) : SavingFiles.Remove(file))
         {
-            EndBusy();
+            if (isSaving) BusyText = "Saving";
+            UpdateIsBusy();
         }
     }
+
+    private void StopTrackingSave(OpenLevelFile file)
+    {
+        if (SavingFiles.Remove(file)) UpdateIsBusy();
+    }
+
+    private void UpdateIsBusy() => IsBusy = _busyCount > 0 || SavingFiles.Count > 0;
 
     #endregion
 

@@ -255,7 +255,7 @@ public sealed class MeshStaticLighting : IDisposable
     /// <summary>
     /// Reads a static mesh component's precomputed lighting for one LOD. Returns null if that isn't possible
     /// </summary>
-    public static MeshStaticLighting Create(MeshRenderContext context, ExportEntry componentExport, StaticMesh mesh, int lod)
+    public static MeshStaticLighting Create(MeshRenderContext context, ExportEntry componentExport, StaticMesh mesh, int lod, PropertyCollection condensedProps = null)
     {
         if (!componentExport.Game.IsLEGame() || lod >= mesh.LODModels.Length)
         {
@@ -282,7 +282,7 @@ public sealed class MeshStaticLighting : IDisposable
                 staticLighting.IrrelevantLights.Add(CommonStructs.GetGuid(guidProp));
             }
         }
-        var condensedProps = componentExport.GetCondensedProperties(context.PackageCache, resolveImports: true, mergeStructs: true);
+        condensedProps ??= componentExport.GetCondensedProperties(context.PackageCache, resolveImports: true, mergeStructs: true);
         //A disabled light environment (as InterpActors' are by default) isn't used, so the primitive is lit like any other
         staticLighting.UsesLightEnvironment = context.ResolveLightEnvironment(componentExport, condensedProps, staticLighting.OwnerActor,
             out DynamicLightEnvironment lightEnvironment);
@@ -532,7 +532,8 @@ public sealed class MeshStaticLighting : IDisposable
     private void UpdateInteractions(BoxSphereBounds bounds, bool ignorePrecomputed)
     {
         SceneLight[] lights = Context.GetLights(out int lightsVersion);
-        if (lightsVersion == InteractionsLightsVersion && ignorePrecomputed == InteractionsIgnorePrecomputed && bounds.Origin == InteractionsBounds.Origin && bounds.SphereRadius == InteractionsBounds.SphereRadius)
+        if (lightsVersion == InteractionsLightsVersion && ignorePrecomputed == InteractionsIgnorePrecomputed && bounds.Origin == InteractionsBounds.Origin && bounds.SphereRadius == InteractionsBounds.SphereRadius
+            && bounds.BoxExtent == InteractionsBounds.BoxExtent)
         {
             return;
         }
@@ -567,32 +568,78 @@ public sealed class MeshStaticLighting : IDisposable
     /// FLightSceneInfoCompact::AffectsPrimitive (ULightComponent::AffectsPrimitive), minus the light environment and bAcceptsLights tests, which the callers make
     /// </summary>
     /// <param name="compareLightingChannels">False for line checks, which ignore lighting channels</param>
-    private bool AffectsPrimitive(SceneLight light, BoxSphereBounds bounds, bool compareLightingChannels = true, bool ignorePrecomputed = false)
+    private bool AffectsPrimitive(SceneLight light, BoxSphereBounds bounds, bool compareLightingChannels = true, bool ignorePrecomputed = false) =>
+        GetPrimitiveExclusion(light, bounds, compareLightingChannels, ignorePrecomputed) is LightEligibility.Affects;
+
+    /// <summary>
+    /// <see cref="AffectsPrimitive"/>, returning the first test the light fails
+    /// </summary>
+    private LightEligibility GetPrimitiveExclusion(SceneLight light, BoxSphereBounds bounds, bool compareLightingChannels, bool ignorePrecomputed)
     {
         //a light that belongs to a light environment only affects its primitives, which aren't lit by static lighting (and don't block visibility traces)
         if (light.HasLightEnvironment)
         {
-            return false;
+            return LightEligibility.BelongsToLightEnvironment;
         }
-        if (compareLightingChannels && !light.LightingChannels.OverlapsWith(LightingChannels) || !light.AffectsBounds(bounds) || !light.AffectsVolumes(bounds))
+        if (!light.AffectsBounds(bounds))
         {
-            return false;
+            return LightEligibility.OutOfRange;
+        }
+        if (light.GetVolumeExclusion(bounds) is var volumeExclusion and not LightEligibility.Affects)
+        {
+            return volumeExclusion;
+        }
+        if (compareLightingChannels && !light.LightingChannels.OverlapsWith(LightingChannels))
+        {
+            return LightEligibility.LightingChannels;
         }
         if (!AcceptsDynamicLights && !light.HasStaticShadowing)
         {
-            return false;
+            return LightEligibility.DynamicLightsNotAccepted;
         }
         //a level whose lighting was built on its own only has precomputed lighting for its own lights
         if (!ignorePrecomputed && HasSelfContainedLighting && light.HasStaticShadowing && !light.LevelName.Equals(LevelName, StringComparison.OrdinalIgnoreCase))
         {
-            return false;
+            return LightEligibility.SelfContainedLighting;
         }
         if (light.OnlyAffectSameAndSpecifiedLevels && !light.LevelName.Equals(LevelName, StringComparison.OrdinalIgnoreCase)
             && !light.OtherLevelsToAffect.Contains(LevelName))
         {
-            return false;
+            return LightEligibility.OtherLevel;
         }
-        return true;
+        return LightEligibility.Affects;
+    }
+
+    /// <summary>
+    /// For diagnostics: whether the light reaches this mesh under the same rules as <see cref="GetLightInteractions"/>, and if not, why.
+    /// Not for meshes that <see cref="UsesLightEnvironment"/>; their light environment decides
+    /// </summary>
+    /// <param name="ignorePrecomputed">Ignore the last lighting build's records, as preview lighting does</param>
+    public LightEligibility GetEligibility(SceneLight light, BoxSphereBounds bounds, bool ignorePrecomputed)
+    {
+        if (!AcceptsLights)
+        {
+            return LightEligibility.LightsNotAccepted;
+        }
+        LightEligibility exclusion = GetPrimitiveExclusion(light, bounds, compareLightingChannels: true, ignorePrecomputed);
+        if (exclusion is not LightEligibility.Affects)
+        {
+            return exclusion;
+        }
+        //mirrors GetInteraction
+        if (!ignorePrecomputed && light.HasStaticShadowing)
+        {
+            if (LightMapLightGuids.Contains(light.LightmapGuid))
+            {
+                return LightEligibility.BakedIntoLightMap;
+            }
+            if (!ShadowVertexBuffers.Any(buffer => buffer.LightGuid == light.LightGuid) && !ShadowMaps.Any(shadowMap => shadowMap.LightGuid == light.LightGuid)
+                && IrrelevantLights.Contains(light.LightGuid))
+            {
+                return LightEligibility.BakedIrrelevant;
+            }
+        }
+        return LightEligibility.Affects;
     }
 
     /// <summary>
@@ -631,20 +678,37 @@ public sealed class MeshStaticLighting : IDisposable
         return new LightInteraction(light, StaticShadowingType.None, null, null);
     }
 
+    private bool PreparedForLevelLighting, PreparedForPreviewLighting;
+
+    /// <summary>
+    /// Whether <see cref="PrepareLightShaders"/> has nothing left to do for the lighting mode
+    /// </summary>
+    internal bool IsPrepared(bool previewLighting) =>
+        (previewLighting ? PreparedForPreviewLighting : PreparedForLevelLighting) || UsesLightEnvironment || GetBounds is null;
+
     /// <summary>
     /// Computes the light interactions and loads the light shaders they need, so that it doesn't happen during rendering. Thread-safe
     /// </summary>
     internal void PrepareLightShaders(bool previewLighting)
     {
-        if (UsesLightEnvironment || GetBounds is null)
+        // Prepared once per lighting mode. Lights added or changed later (by edits) have their shaders loaded as they're first rendered,
+        // so a preview refresh only prepares the meshes it rebuilt, rather than every mesh in every level
+        ref bool prepared = ref previewLighting ? ref PreparedForPreviewLighting : ref PreparedForLevelLighting;
+        if (prepared || UsesLightEnvironment || GetBounds is null)
         {
             return;
         }
+        prepared = true;
         foreach (LightInteraction interaction in GetLightInteractions(GetBounds(), previewLighting))
         {
             foreach (MaterialRenderProxy material in Materials)
             {
-                material.GetLightShaders(interaction.Light.Type, interaction.Shadowing);
+                var (vertex, pixel) = material.GetLightShaders(interaction.Light.Type, interaction.Shadowing);
+                if (Context.Device is not null && vertex is not null && pixel is not null)
+                {
+                    Context.GetCachedVertexShader(vertex.Guid, vertex.ShaderByteCode);
+                    Context.GetCachedPixelShader(pixel.Guid, pixel.ShaderByteCode);
+                }
             }
         }
     }
@@ -667,9 +731,8 @@ public sealed class MeshStaticLighting : IDisposable
         {
             return null;
         }
-        //Light-map and shadow-map textures are usually top-level objects with generated names, which aren't unique between levels.
-        //So they're cached by file and export, rather than by path like other textures
-        return Context.TextureCache.LoadTexture(textureExport, Context.PackageCache, $"{pcc.FilePath}|{uIndex}");
+        //Light-map and shadow-map textures are top-level objects with generated names, but their memory paths include their level's name, so they're unique
+        return Context.TextureCache.LoadTexture(textureExport, Context.PackageCache);
     }
 
     public void Dispose()

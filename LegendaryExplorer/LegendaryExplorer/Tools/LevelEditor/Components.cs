@@ -76,14 +76,20 @@ public class PrimitiveComponentProxy : NotifyPropertyChangedBase, IDisposable
     /// <summary>
     /// Not rendered in game. Only shown in the level editor when <see cref="LevelEditorRenderContext.ShowHidden"/> is set
     /// </summary>
-    public bool HiddenGame { get; }
+    public bool HiddenGame { get; private set; }
 
     protected PrimitiveComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent)
     {
         Actor = parent;
         Export = componentExport;
         RenderContext = context;
-        Properties = componentExport.GetCondensedProperties();
+        ReadProperties();
+    }
+
+    protected void ReadProperties()
+    {
+        Properties = Export.GetCondensedProperties(RenderContext.PackageCache, resolveImports: true, mergeStructs: true);
+        if (this is MeshComponentProxy mesh) mesh.ExistingLighting?.ReloadAndApply(Properties);
         HiddenGame = Properties.GetProp<BoolProperty>("HiddenGame")?.Value ?? false;
 
         var rotationProp = Properties.GetProp<StructProperty>("Rotation");
@@ -221,16 +227,51 @@ public class PrimitiveComponentProxy : NotifyPropertyChangedBase, IDisposable
 public abstract class MeshComponentProxy : PrimitiveComponentProxy
 {
     public bool IsVolumetric;
+    public abstract bool RefreshPreview(IMEPackage package, IReadOnlySet<int> updatedExports, bool force = false);
     public string MeshIFP { get; protected set; }
     protected ModelPreview<VertexType> Mesh;
     public int LOD;
     public List<IEntry> MaterialOverrides = [];
+
+    // Created only when the component is selected for editing.
+    private EditableActorLighting lighting;
+    public EditableActorLighting Lighting => lighting ??= new EditableActorLighting(this, RenderContext);
+    internal EditableActorLighting ExistingLighting => lighting;
 
     /// <summary>
     /// How the mesh is part of the light environment that lights it, if it's lit by one
     /// </summary>
     private LightEnvironmentPrimitive LightEnvironmentPrimitive;
     private DynamicLightEnvironment LightEnvironment;
+
+    /// <summary>
+    /// How the level's lights light the rendered LOD directly. Null if they don't (or it couldn't be read)
+    /// </summary>
+    protected MeshStaticLighting StaticLighting;
+
+    /// <summary>
+    /// For diagnostics: whether a light reaches the mesh under the viewport's current rules, directly or through its light environment.
+    /// Null if the level's lights don't light the mesh in this viewport (its lighting couldn't be read, or the game isn't supported)
+    /// </summary>
+    /// <param name="ignorePrecomputed">Ignore the last lighting build's records, as preview lighting does</param>
+    public LightEligibility? GetLightEligibility(SceneLight light, bool ignorePrecomputed)
+    {
+        if (LightEnvironment is not null) return LightEnvironment.GetEligibility(light);
+        if (StaticLighting is { UsesLightEnvironment: false }) return StaticLighting.GetEligibility(light, GetBounds(), ignorePrecomputed);
+        return null;
+    }
+
+    public bool IsLitByLightEnvironment => LightEnvironment is not null;
+
+    /// <summary>
+    /// Whether the level's lights light the mesh in the viewport, directly or through its light environment
+    /// </summary>
+    public bool IsLitByLevelLights => LightEnvironment is not null || StaticLighting is { UsesLightEnvironment: false };
+
+    /// <summary>
+    /// The mesh's materials that can be rendered with the game's shaders
+    /// </summary>
+    public IEnumerable<MaterialRenderProxy> GameShaderMaterials => Mesh?.GetRenderProxies() ?? [];
 
     /// <summary>
     /// Whether the mesh is in the game's scene: neither it nor its actor is hidden in game
@@ -276,6 +317,12 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
 
     protected MeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent) : base(context, componentExport, parent)
     {
+        ReadMaterialOverrides();
+    }
+
+    protected void ReadMaterialOverrides()
+    {
+        MaterialOverrides.Clear();
         if (Properties.GetProp<ArrayProperty<ObjectProperty>>("Materials") is { } mats)
         {
             MaterialOverrides.AddRange(mats.Select(x => x.Value != 0 ? x.ResolveToEntry(Export.FileRef) : null));
@@ -291,34 +338,50 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
         return Mesh.LODs[LOD].Mesh.TransformedBounds;
     }
 
-    protected override void Dispose(bool disposing)
+    protected void ReleaseMesh()
     {
         if (LightEnvironmentPrimitive is not null)
         {
             RenderContext.RemoveLightEnvironmentPrimitive(LightEnvironment, LightEnvironmentPrimitive);
             LightEnvironmentPrimitive = null;
         }
+        LightEnvironment = null;
+        StaticLighting = null;
         Mesh?.Dispose();
+        Mesh = null;
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        ReleaseMesh();
         base.Dispose(disposing);
     }
 }
 
 public class StaticMeshComponentProxy : MeshComponentProxy
 {
-    private readonly Mesh<WorldVertex> CollisionMesh;
-    private readonly MeshStaticLighting StaticLighting;
+    private Mesh<WorldVertex> CollisionMesh;
+    private PreviewMeshDependencies Dependencies;
 
     public StaticMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent) : base(context, componentExport, parent)
     {
+        LoadMesh();
+    }
+
+    private void LoadMesh()
+    {
+        var context = RenderContext;
+        Dependencies = new PreviewMeshDependencies(Export, context.PackageCache);
         if (Properties.GetProp<ObjectProperty>("StaticMesh")?.ResolveToExport(Export.FileRef, context.PackageCache) is ExportEntry meshExport)
         {
             StaticMesh stm = meshExport.GetBinaryData<StaticMesh>();
             if (stm.LODModels.Length > LOD)
             {
-                stm.SetMaterials(MaterialOverrides, true);
+                foreach (var element in stm.LODModels[LOD].Elements)
+                    Dependencies.Track(meshExport.FileRef.GetEntry(element.Material));
+                MeshStaticLighting staticLighting = MeshStaticLighting.Create(context, Export, stm, LOD, Properties);
+                Mesh = new ModelPreview<VertexType>(context, stm, LOD, staticLighting, MaterialOverrides);
                 MaterialOverrides.Clear();
-                MeshStaticLighting staticLighting = MeshStaticLighting.Create(context, Export, stm, LOD);
-                Mesh = new ModelPreview<VertexType>(context, stm, LOD, staticLighting);
                 MeshIFP = meshExport.InstancedFullPath;
                 if (staticLighting is not null)
                 {
@@ -342,6 +405,25 @@ public class StaticMeshComponentProxy : MeshComponentProxy
             CollisionMesh = context.GetMeshFromAggGeom(stm.GetCollisionMeshProperty(Export.FileRef));
             UpdateSelfLocalToWorld();
         }
+    }
+
+    /// <summary>
+    /// Refreshes only this component's rendering resources. Its actor, transform, selection, and undo history stay intact.
+    /// Called on the UI/render thread between frames.
+    /// </summary>
+    public override bool RefreshPreview(IMEPackage package, IReadOnlySet<int> updatedExports, bool force = false)
+    {
+        if (!force && !Dependencies.IsAffectedBy(package, updatedExports)) return false;
+        RenderContext.InvalidateLevelGeometry();
+        ReleaseMesh();
+        CollisionMesh?.Dispose();
+        CollisionMesh = null;
+        MeshIFP = null;
+        IsVolumetric = false;
+        ReadProperties();
+        ReadMaterialOverrides();
+        LoadMesh();
+        return true;
     }
 
     /// <summary>
@@ -421,17 +503,29 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
 {
     SkinnedMeshRenderer skinnedMeshRenderer;
     AnimSequencePlayer animPlayer;
+    private PreviewMeshDependencies Dependencies;
+    private AnimSequence CurrentAnimation;
+    private float AnimationPosition;
 
     /// <summary>
     /// When set, the component is transformed relative to this component instead of its actor (ParentAnimComponent with bTransformFromAnimParent).
     /// Must come before this component in its actor's <see cref="ActorProxy.Components"/>, so that it's updated first
     /// </summary>
-    private readonly PrimitiveComponentProxy TransformParent;
+    private PrimitiveComponentProxy TransformParent;
 
     protected override Matrix4x4 ParentToWorld => TransformParent?.LocalToWorld ?? base.ParentToWorld;
 
     public SkeletalMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent) : base(context, componentExport, parent)
     {
+        LoadMesh();
+    }
+
+    private void LoadMesh()
+    {
+        var context = RenderContext;
+        var parent = Actor;
+        Dependencies = new PreviewMeshDependencies(Export, context.PackageCache);
+        TransformParent = null;
         bool bTransformFromAnimParent = Properties.GetProp<BoolProperty>("bTransformFromAnimParent")?.Value ?? true;
         if (bTransformFromAnimParent
             && Properties.GetProp<ObjectProperty>("ParentAnimComponent")?.ResolveToEntry(Export.FileRef) is ExportEntry parentAnimExport
@@ -443,25 +537,25 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
         if (Properties.GetProp<ObjectProperty>("SkeletalMesh")?.ResolveToExport(Export.FileRef, context.PackageCache) is ExportEntry meshExport)
         {
             SkeletalMesh skm = meshExport.GetBinaryData<SkeletalMesh>();
-            PropertyCollection condensedProps = null;
             bool usesLightEnvironment = false;
             DynamicLightEnvironment lightEnvironment = null;
             if (skm.LODModels.Length > LOD)
             {
-                skm.SetMaterials(MaterialOverrides, true);
-                MaterialOverrides.Clear();
+                foreach (int material in skm.Materials)
+                    Dependencies.Track(meshExport.FileRef.GetEntry(material));
                 //Without a light environment (or with a disabled one), the mesh is lit by the level's lights directly
                 MeshStaticLighting staticLighting = null;
                 if (Export.Game.IsLEGame())
                 {
-                    condensedProps = Export.GetCondensedProperties(context.PackageCache, resolveImports: true, mergeStructs: true);
-                    usesLightEnvironment = context.ResolveLightEnvironment(Export, condensedProps, parent?.Export, out lightEnvironment);
+                    usesLightEnvironment = context.ResolveLightEnvironment(Export, Properties, parent?.Export, out lightEnvironment);
                     if (!usesLightEnvironment)
                     {
-                        staticLighting = MeshStaticLighting.CreateDynamic(context, Export, condensedProps);
+                        staticLighting = MeshStaticLighting.CreateDynamic(context, Export, Properties);
                     }
                 }
-                Mesh = new ModelPreview<VertexType>(context, skm, staticLighting, LOD);
+                Mesh = new ModelPreview<VertexType>(context, skm, staticLighting, LOD, MaterialOverrides);
+                StaticLighting = staticLighting;
+                MaterialOverrides.Clear();
                 MeshIFP = meshExport.InstancedFullPath;
                 skinnedMeshRenderer = new SkinnedMeshRenderer();
                 skinnedMeshRenderer.BuildFromSkeletalMesh(meshExport.FileRef.Game, skm.LODModels[LOD]);
@@ -471,12 +565,28 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
             if (Mesh is not null && lightEnvironment is not null)
             {
                 //MeshComponent's defaults: CastShadow, bCastDynamicShadow
-                bool castsShadow = condensedProps.GetProp<BoolProperty>("CastShadow") is not { Value: false }
-                                   && condensedProps.GetProp<BoolProperty>("bCastDynamicShadow") is not { Value: false };
-                JoinLightEnvironment(context, lightEnvironment, LightingChannels.FromProperty(condensedProps.GetProp<StructProperty>("LightingChannels"), default,
+                bool castsShadow = Properties.GetProp<BoolProperty>("CastShadow") is not { Value: false }
+                                   && Properties.GetProp<BoolProperty>("bCastDynamicShadow") is not { Value: false };
+                JoinLightEnvironment(context, lightEnvironment, LightingChannels.FromProperty(Properties.GetProp<StructProperty>("LightingChannels"), default,
                     isInitialized: false, LightingChannels.DynamicPrimitiveDefault), castsShadow);
             }
         }
+    }
+
+    public override bool RefreshPreview(IMEPackage package, IReadOnlySet<int> updatedExports, bool force = false)
+    {
+        if (!force && !Dependencies.IsAffectedBy(package, updatedExports)) return false;
+        ReleaseMesh();
+        skinnedMeshRenderer = null;
+        animPlayer = null;
+        MeshIFP = null;
+        ReadProperties();
+        ReadMaterialOverrides();
+        LoadMesh();
+        // Its actor's class defaults and morph face. (Its transform is updated by the actor after the refresh)
+        Actor?.OnComponentReloaded(this);
+        SetAnimation(CurrentAnimation, AnimationPosition);
+        return true;
     }
 
     public override void UpdateScene(MeshRenderContext context, float deltaTime)
@@ -495,6 +605,8 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
 
     public void SetAnimation(AnimSequence animSequence, float pos)
     {
+        CurrentAnimation = animSequence;
+        AnimationPosition = pos;
         if (animPlayer is null) return;
         if (animSequence is null)
         {
