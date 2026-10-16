@@ -1,3 +1,4 @@
+using static LegendaryExplorer.Lightmaps.Game.LightmapMapping;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -154,6 +155,8 @@ public sealed class LightmassInstance : LightmassMapping
     public Vector3 BoundsMin, BoundsMax;
     public int MeshIndex, LevelId;
     public bool CastShadow, CastShadowAsTwoSided;
+    /// <summary>bSelfShadowOnly: the mesh only shadows itself (GI_INSTANCE_SELFSHADOWONLY)</summary>
+    public bool SelfShadowOnly;
     public LightmassElementSettings Settings = new();
     public List<LightmassLight> RelevantLights = [];
     public List<LightmassMaterial> ElementMaterials = [];
@@ -222,7 +225,7 @@ public sealed class LightmassTerrainMapping : LightmassMapping
     public ExportEntry Component;
     public LightmapRef Target;
     public int LevelId;
-    public bool CastShadow, BilinearFilter;
+    public bool CastShadow, SelfShadowOnly, BilinearFilter;
     public int SectionBaseX, SectionBaseY, SectionSizeX, SectionSizeY, TrueSectionSizeX, TrueSectionSizeY, ExpandQuadsX, ExpandQuadsY;
     public Matrix4x4 LocalToWorld;
     public Vector3 BoundsMin, BoundsMax;
@@ -263,6 +266,7 @@ public sealed class LightmassScene
 
 public sealed class LightmassSceneOptions
 {
+    public LightAssignmentPolicy AssignmentPolicy = LightAssignmentPolicy.RecomputeAssignments;
     /// <summary>
     /// Renders materials with the game's shaders for their diffuse, emissive and opacity (see <see cref="LightmassMaterialCapture"/>).
     /// Null: every material is a constant <see cref="DefaultAlbedo"/>.
@@ -309,15 +313,17 @@ public sealed class LightmassSceneBuilder : IDisposable
     LightmassScene scene;
 
     /// <summary>Why lights do or don't reach primitives, tallied per light type and added to the report once the scene is built.</summary>
-    enum Relevance { ChannelsDontOverlap, OutOfRange, OutsideInclusionVolumes, OtherLevels, NotListedByVanillaLightmap, NoVanillaShadowMap, Affects, AffectsShadowMap }
-    readonly Dictionary<(SceneLightType Type, Relevance Why), int> relevance = new();
+    readonly Dictionary<(SceneLightType Type, string Why), int> relevance = new();
 
     public LightmassSceneBuilder(LightmassSceneOptions options = null) => this.options = options ?? new LightmassSceneOptions();
 
+    /// <summary>Builds the scene. A builder builds one scene: its caches are for the levels it was given.</summary>
     /// <param name="levels">The persistent level first, then its streaming levels.</param>
     public LightmassScene Build(IReadOnlyList<IMEPackage> levels, Action<string> log = null)
     {
+        if (scene != null) throw new InvalidOperationException("A LightmassSceneBuilder builds one scene; use a new builder for another.");
         scene = new LightmassScene { Levels = levels.ToList() };
+        log?.Invoke($"Light assignment policy: {options.AssignmentPolicy.Describe()}");
         if (levels.Count > 0 && levels[0].Exports.FirstOrDefault(e => e.ClassName.EndsWith("WorldInfo") && e.ObjectName.Name.EndsWith("WorldInfo")) is { } worldInfo)
             scene.World = LightmassWorldSettings.FromWorldInfo(worldInfo);
 
@@ -332,7 +338,7 @@ public sealed class LightmassSceneBuilder : IDisposable
         foreach (var package in levels)
         {
             foreach (var r in PackageLightmaps.Enumerate(package))
-                vanillaListed.UnionWith(LightGuids(r.LightMap));
+                vanillaListed.UnionWith(PrimitiveLightAssignments.Guids(r.LightMap));
             foreach (var (guid, sdf) in PackageShadowMaps.Lights(package))
                 vanillaShadowed[guid] = vanillaShadowed.GetValueOrDefault(guid) || sdf;
         }
@@ -357,7 +363,7 @@ public sealed class LightmassSceneBuilder : IDisposable
         }
         scene.Meshes = meshes.Values.ToList();
         scene.Materials = materials.Values.ToList();
-        foreach (var ((type, why), n) in relevance) scene.Report[$"relevance: {type} {RelevanceText(why)}"] = n;
+        foreach (var ((type, why), n) in relevance) scene.Report[$"relevance: {type} {why}"] = n;
         foreach (var (min, max) in scene.ImportanceVolumes) log?.Invoke($"importance volume {min} .. {max}");
         log?.Invoke($"{scene.Instances.Count} mesh instances ({scene.Instances.Count(i => i.Target != null)} to bake) of {scene.Meshes.Count} meshes, " +
                     $"{scene.BspMappings.Count} BSP mappings ({scene.BspMappings.Count(b => b.Lightmaps.Count > 0)} to bake), " +
@@ -371,25 +377,12 @@ public sealed class LightmassSceneBuilder : IDisposable
     /// archetype chain can end before the class default, where UE3 falls back to it; e.g. sky lights' CastShadows=False is only on
     /// Default__SkyLightComponent, so without it every sky light would cast shadows.
     /// </summary>
-    PropertyCollection Properties(ExportEntry export)
-    {
-        var props = export.GetCondensedProperties(packageCache, resolveImports: true, mergeStructs: true);
-        if (ClassDefault(export) is { } cdo && cdo != export)
-            foreach (var p in cdo.GetCondensedProperties(packageCache, resolveImports: true, mergeStructs: true))
-                if (props.GetProp<Property>(p.Name, p.StaticArrayIndex) == null && p is not ObjectProperty) props.Add(p);
-        return props;
-    }
+    PropertyCollection Properties(ExportEntry export) =>
+        effectiveProperties.TryGetValue(export, out var props) ? props : effectiveProperties[export] = EffectiveLightingProperties.Read(export, packageCache);
 
-    readonly Dictionary<string, ExportEntry> classDefaults = new(StringComparer.OrdinalIgnoreCase);
-
-    ExportEntry ClassDefault(ExportEntry export)
-    {
-        string key = export.ClassName;
-        if (classDefaults.TryGetValue(key, out var cdo)) return cdo;
-        var classExport = Resolve(export.Class);
-        cdo = classExport?.FileRef.FindExport("Default__" + classExport.ObjectName.Instanced);
-        return classDefaults[key] = cdo;
-    }
+    //the levels don't change during a build, so each object's properties are read once (a collection actor's for each of its many components).
+    //Class defaults are read once per package cache
+    readonly Dictionary<ExportEntry, PropertyCollection> effectiveProperties = [];
 
     // ================= lights =================
 
@@ -402,15 +395,14 @@ public sealed class LightmassSceneBuilder : IDisposable
             if (light.HasLightEnvironment) { scene.Count($"light: {kind} in a light environment"); continue; }
             var props = Properties(light.Export);
             bool castShadows = props.GetProp<BoolProperty>("CastShadows") is not { Value: false };
-            bool castStaticShadows = props.GetProp<BoolProperty>("CastStaticShadows") is not { Value: false };
+            bool castStaticShadows = light.CastsStaticShadows;
             bool vanillaShadowMapped = vanillaShadowed.TryGetValue(light.LightGuid, out bool vanillaSdf);
             // Lights with static lighting bake their direct and bounce light. Dominant lights render direct light dynamically over
             // precomputed shadows, and bake only their bounce light (UE3 Lightmass's GI_LIGHT_DOMINANT handling).
             bool lit = light.HasStaticLighting || light.IsDominant && light.HasStaticShadowing;
             // Shadow maps: the light is rendered dynamically over precomputed shadows. UE3 gives them to lights with static shadowing but no
             // static lighting (toggleable lights); BioWare's bakes also gave them to static lights on some primitives.
-            bool shadowTwin = !light.IsDominant && light.Type != SceneLightType.Sky && light.HasStaticShadowing && castShadows && castStaticShadows
-                && (!light.HasStaticLighting || vanillaShadowMapped);
+            bool shadowTwin = LightAssignment.HasShadowMapEntry(light, options.AssignmentPolicy, vanillaShadowMapped);
             if (!lit && !shadowTwin) { scene.Count($"light: {kind} without static lighting or shadowing"); continue; }
             if (shadowTwin)
             {
@@ -509,16 +501,27 @@ public sealed class LightmassSceneBuilder : IDisposable
         var props = Properties(component);
         var smc = ObjectBinary.From<StaticMeshComponent>(component);
         bool hasLightmap = smc.LODData.Any(l => IsRebakeable(l.LightMap));
-        // UE3 builds static lighting for primitives with static shadowing that accept lights (UStaticMeshComponent::GetStaticLightingInfo).
-        // Static mesh actors and collections are static; other owners (InterpActor, ...) are movable, but BioWare baked many that never
-        // move, and those carry a lightmap.
-        bool staticOwner = ownerClass is "StaticMeshActor" or "StaticMeshCollectionActor";
+        // UE3 builds static lighting only for primitives with static shadowing that accept lights (UStaticMeshComponent::GetStaticLightingInfo): the
+        // others neither receive nor cast static shadows. Unless bUsePrecomputedShadows says otherwise, static mesh actors, collections and anything
+        // BioWare baked (InterpActors that never move, ...) have static shadowing. Neither visibility nor a light environment changes that; a light
+        // environment only keeps the level's lights off the primitive (ULightComponent::AffectsPrimitive).
+        bool staticShadowing = LightAssignment.HasStaticShadowing(component, props, smc);
         bool acceptsLights = props.GetProp<BoolProperty>("bAcceptsLights") is not { Value: false };
-        if (!hasLightmap && !(staticOwner && acceptsLights)) { scene.Count($"mesh: {ownerClass} without static lighting"); return; }
-        if (props.GetProp<ObjectProperty>("StaticMesh") is not { Value: not 0 } meshProp) { scene.Count("mesh: no StaticMesh"); return; }
+        bool contextOnly = options.ContextOnly.Contains(component.FileRef);
+        if (!staticShadowing || !acceptsLights)
+        {
+            // An existing lightmap stays as it is, and the report says why.
+            scene.Count(hasLightmap && !contextOnly
+                ? $"mesh: existing lightmap kept, {(staticShadowing ? "doesn't accept lights" : "without static shadowing")}"
+                : $"mesh: {ownerClass} without static lighting");
+            return;
+        }
+        bool usesEnvironment = EffectiveLightingProperties.UsesLightEnvironment(component, props, component.Parent as ExportEntry, packageCache, out _);
+        var (meshProp, meshPropertyPackage) = EffectiveLightingProperties.Reference(component, "StaticMesh", packageCache);
+        if (meshProp is not { Value: not 0 }) { scene.Count("mesh: no StaticMesh"); return; }
 
         var resolver = Resolver(component.FileRef);
-        var meshEntry = component.FileRef.GetEntry(meshProp.Value);
+        var meshEntry = meshPropertyPackage.GetEntry(meshProp.Value);
         var (meshExport, staticMesh) = resolver.Get(meshEntry);
         if (staticMesh == null || staticMesh.LODModels.Length == 0)
         {
@@ -527,14 +530,16 @@ public sealed class LightmassSceneBuilder : IDisposable
         }
         var mesh = GetMesh(meshExport, staticMesh);
 
-        bool castShadow = props.GetProp<BoolProperty>("CastShadow") is not { Value: false };
+        var shadowSettings = ShadowParticipation.Read(props);
+        bool castShadow = shadowSettings.BakesShadow;
         var channels = LightingChannels.FromProperty(props.GetProp<StructProperty>("LightingChannels"), default, isInitialized: false, LightingChannels.StaticPrimitiveDefault);
         var settings = LightmassElementSettings.From(props.GetProp<StructProperty>("LightmassSettings"), scene.World.EmissiveBoost);
-        var materialOverrides = props.GetProp<ArrayProperty<ObjectProperty>>("Materials");
+        // Inherited like the mesh, from archetypes in other packages too
+        var (materialOverrides, materialOverridePackage) = EffectiveLightingProperties.Inherited<ArrayProperty<ObjectProperty>>(component, "Materials", packageCache);
         var l2w = WorldTransforms.Component(component);
         int thisMeshIndex = meshIndex++;
         string levelName = component.FileRef.FileNameNoExtension;
-        bool contextOnly = options.ContextOnly.Contains(component.FileRef);
+        bool bakesEnvironmentLitMesh = false, castsEnvironmentLitMesh = false;
 
         for (int lod = 0; lod < staticMesh.LODModels.Length; lod++)
         {
@@ -545,7 +550,7 @@ public sealed class LightmassSceneBuilder : IDisposable
             if (lod > 0 && !bake) continue;
             if (!bake && !castShadow) continue;
 
-            var (min, max) = Bounds(lodModel.PositionVertexBuffer.VertexData, l2w);
+            var (min, max, receiverBounds) = MeshBounds(lodModel.PositionVertexBuffer.VertexData, l2w);
             var instance = new LightmassInstance
             {
                 Guid = Guid.NewGuid(),
@@ -557,7 +562,8 @@ public sealed class LightmassSceneBuilder : IDisposable
                 MeshIndex = thisMeshIndex,
                 LevelId = levelId,
                 CastShadow = castShadow,
-                CastShadowAsTwoSided = props.GetProp<BoolProperty>("bCastShadowAsTwoSided") is { Value: true },
+                CastShadowAsTwoSided = shadowSettings.TwoSided,
+                SelfShadowOnly = shadowSettings.SelfShadowOnly,
                 Settings = settings,
             };
 
@@ -567,7 +573,7 @@ public sealed class LightmassSceneBuilder : IDisposable
                 int materialIndex = element.MaterialIndex;
                 IEntry materialEntry = null;
                 if (materialOverrides != null && materialIndex >= 0 && materialIndex < materialOverrides.Count && materialOverrides[materialIndex].Value != 0)
-                    materialEntry = component.FileRef.GetEntry(materialOverrides[materialIndex].Value);
+                    materialEntry = materialOverridePackage.GetEntry(materialOverrides[materialIndex].Value);
                 else if (element.Material != 0)
                     materialEntry = meshExport.FileRef.GetEntry(element.Material);
                 instance.ElementMaterials.Add(GetMaterial(materialEntry, settings.DiffuseBoost));
@@ -575,141 +581,87 @@ public sealed class LightmassSceneBuilder : IDisposable
 
             if (bake)
             {
-                instance.Target = new LightmapRef(component, $"LOD{lod}", lightmap, smc);
-                if (TextureAllocation(component.FileRef, lightmap) is { } size)
+                if (!IsCompatible(component.FileRef, lightmap, lodModel, mesh.LightMapCoordinateIndex))
+                    scene.Count("mapping: incompatible allocation, UV channel or vertex sample count (kept)");
+                else
                 {
-                    (instance.SizeX, instance.SizeY) = size;
-                    if (mesh.LightMapCoordinateIndex >= lodModel.VertexBuffer.NumTexCoords)
-                    {
-                        scene.Count("mapping: texture lightmap on a mesh without its lightmap UV channel (kept)");
-                        instance.Target = null;
-                        instance.SizeX = instance.SizeY = 0;
-                    }
-                }
-                if (instance.Target != null)
-                {
-                    // Vertex lightmaps hold one sample per vertex of the LOD.
-                    if (!instance.IsTextureMapping && VertexSampleCount(lightmap) != lodModel.PositionVertexBuffer.VertexData.Length)
-                    {
-                        scene.Count("mapping: vertex lightmap sample count differs from the vertex count (kept)");
-                        instance.Target = null;
-                    }
-                    else scene.Count($"mapping: {lightmap.LightMapType}");
+                    instance.Target = new LightmapRef(component, $"LOD{lod}", lightmap, smc);
+                    if (TextureAllocation(component.FileRef, lightmap) is { } size)
+                        (instance.SizeX, instance.SizeY) = size;
+                    scene.Count($"mapping: {lightmap.LightMapType}");
                 }
             }
             if (instance.Target == null && (lod > 0 || !castShadow)) continue;
             if (instance.Target == null) instance.SizeX = instance.SizeY = OccluderMappingSize;
 
-            if (acceptsLights || instance.Target != null)
-                instance.RelevantLights = RelevantLights(min, max, channels, levelName, lightmap,
-                    PackageShadowMaps.LightGuids(new LightmapRef(component, $"LOD{lod}", lightmap, smc)));
+            instance.RelevantLights = RelevantLights(receiverBounds, lightmap, PackageShadowMaps.LightGuids(new LightmapRef(component, $"LOD{lod}", lightmap, smc)),
+                new LightPrimitiveSettings(channels, levelName, AcceptsDynamicLights: props.GetProp<BoolProperty>("bAcceptsDynamicLights") is not { Value: false },
+                    UsesLightEnvironment: usesEnvironment));
             scene.Instances.Add(instance);
+            bakesEnvironmentLitMesh |= usesEnvironment && instance.Target != null;
+            castsEnvironmentLitMesh |= usesEnvironment && instance.Target == null;
         }
+        // per exported component; level lights don't reach a primitive a light environment lights (ULightComponent::AffectsPrimitive)
+        if (bakesEnvironmentLitMesh) scene.Count("mesh: lit by a light environment (baked with bounced light only)");
+        else if (castsEnvironmentLitMesh) scene.Count("mesh: lit by a light environment (shadow caster only)");
     }
 
     /// <summary>
-    /// The lights that reach a primitive (ULightComponent::AffectsPrimitive), as BioWare's bake split them: a light some vanilla lightmap or
-    /// shadow map mentions lights it only if its vanilla lightmap lists it, and shadows it (the shadow-only twin, or a dominant light) only if
-    /// its vanilla shadow maps are for it. Lights nothing mentions are new, and reach it by UE3's rules.
-    /// BioWare's bakes are the ground truth for which lights reach what: e.g. BioP_SPDish's sun can reach every chunk by its lighting
-    /// channels, but only the background chunk's lightmaps list it. Lightmass lists a light only when some texel isn't fully occluded, so
-    /// lights the vanilla lists leave out were blocked or excluded when BioWare baked. BioWare also shadow-mapped static lights on some
-    /// primitives while lightmapping them on others, which Lightmass can't decide per primitive, hence the shadow-only twins.
+    /// Shared preview/bake eligibility followed by bake output routing. Preserve mode retains BioWare's per-primitive
+    /// assignments for compatibility; recompute uses current settings and lets Lightmass resolve current occlusion.
+    /// Recompute does not allocate missing mappings. Static lights bake direct light, dominant lights bake bounce and
+    /// shadows, and toggleable lights bake shadows without adding a duplicate direct contribution.
     /// </summary>
     /// <param name="vanillaLightmap">The primitive's LE3 lightmap; null when it has none to go by (an occluder).</param>
     /// <param name="vanillaShadows">The lights (LightGuid) its LE3 shadow maps are for.</param>
-    List<LightmassLight> RelevantLights(Vector3 min, Vector3 max, LightingChannels channels, string levelName, LightMap vanillaLightmap, IReadOnlySet<Guid> vanillaShadows)
+    /// <param name="primitive">The primitive's settings. Only primitives that accept lights get static lighting</param>
+    List<LightmassLight> RelevantLights(BoxSphereBounds bounds, LightMap vanillaLightmap, IReadOnlySet<Guid> vanillaShadows, LightPrimitiveSettings primitive)
     {
-        var bounds = new BoxSphereBounds { Origin = (min + max) / 2, BoxExtent = (max - min) / 2, SphereRadius = Vector3.Distance(min, max) / 2 };
-        var vanillaLights = vanillaLightmap != null ? LightGuids(vanillaLightmap).ToHashSet() : null;
+        var source = PrimitiveLightAssignments.Create(vanillaLightmap, vanillaShadows);
         var result = new List<LightmassLight>();
         foreach (var light in scene.Lights)
         {
             var l = light.Light;
-            var why = Relevance.Affects;
-            if (!l.LightingChannels.OverlapsWith(channels)) why = Relevance.ChannelsDontOverlap;
-            else if (!l.AffectsBounds(bounds)) why = Relevance.OutOfRange;
-            else if (!l.AffectsVolumes(bounds)) why = Relevance.OutsideInclusionVolumes;
-            else if (l.OnlyAffectSameAndSpecifiedLevels && !l.LevelName.Equals(levelName, StringComparison.OrdinalIgnoreCase) && !l.OtherLevelsToAffect.Contains(levelName))
-                why = Relevance.OtherLevels;
-            else if (vanillaLights != null && (vanillaListed.Contains(l.LightmapGuid) || vanillaShadowed.ContainsKey(l.LightGuid)))
+            bool known = vanillaListed.Contains(l.LightmapGuid) || vanillaShadowed.ContainsKey(l.LightGuid);
+            var eligibility = LightAssignment.Evaluate(l, bounds, primitive);
+            if (eligibility == LightEligibility.Affects)
+                eligibility = LightAssignment.EvaluateHistory(l, options.AssignmentPolicy, known, source);
+            string why = eligibility.Describe();
+            if (eligibility == LightEligibility.Affects)
             {
-                bool lightsIt = !light.ShadowOnly && !l.IsDominant;
-                if (lightsIt && !vanillaLights.Contains(l.LightmapGuid)) why = Relevance.NotListedByVanillaLightmap;
-                else if (!lightsIt && !vanillaShadows.Contains(l.LightGuid)) why = Relevance.NoVanillaShadowMap;
-            }
-            if (why == Relevance.Affects)
-            {
-                if (light.ShadowOnly) why = Relevance.AffectsShadowMap;
-                result.Add(light);
+                // A light is in the scene once per output (its main entry and any shadow-only twin); a primitive gets at most one of them.
+                if (!LightAssignment.RoutesToBake(l, light.ShadowOnly, options.AssignmentPolicy, known, source))
+                    why = light.ShadowOnly ? "affects, but its shadow map isn't baked here" : "affects, but its main entry isn't baked here";
+                else
+                {
+                    if (light.ShadowOnly) why = "shadow map affects";
+                    result.Add(light);
+                }
             }
             relevance[(l.Type, why)] = relevance.GetValueOrDefault((l.Type, why)) + 1;
         }
         return result;
     }
 
-    static string RelevanceText(Relevance why) => why switch
-    {
-        Relevance.ChannelsDontOverlap => "lighting channels don't overlap",
-        Relevance.OutOfRange => "out of range",
-        Relevance.OutsideInclusionVolumes => "outside its inclusion volumes",
-        Relevance.OtherLevels => "limited to other levels",
-        Relevance.NotListedByVanillaLightmap => "not listed by the vanilla lightmap",
-        Relevance.NoVanillaShadowMap => "without a vanilla shadow map here",
-        Relevance.AffectsShadowMap => "shadow map affects",
-        _ => "affects",
-    };
-
-    /// <summary>Lightmap types this bake writes: the directional, Vector and Simple ones LE3 renders (LMT_5 is never rendered).</summary>
-    static bool IsRebakeable(LightMap lm) => lm?.LightMapType is ELightMapType.LMT_1D or ELightMapType.LMT_2D or ELightMapType.LMT_3
-        or ELightMapType.LMT_4 or ELightMapType.LMT_6;
-
-    static Guid[] LightGuids(LightMap lm) => lm switch
-    {
-        LightMap_1D l => l.LightGuids ?? [],
-        LightMap_2D l => l.LightGuids ?? [],
-        LightMap_3 l => l.LightGuids ?? [],
-        LightMap_4or6 l => l.LightGuids ?? [],
-        LightMap_5 l => l.LightGuids ?? [],
-        _ => [],
-    };
-
-    static int VertexSampleCount(LightMap lm) => lm switch
-    {
-        LightMap_1D d => d.DirectionalSamples?.Length ?? 0,
-        LightMap_3 v => v.DirectionalSamples?.Length ?? 0,
-        _ => -1,
-    };
-
     /// <summary>
-    /// A texture lightmap's mapping size: its padded atlas allocation (interior plus LE3's one-texel ring), which with bPadMappings
-    /// gives Lightmass the same interior texel grid on the same UVs. Null for vertex lightmaps.
+    /// A mesh's world-space box, and its bounds as UE3 gives a primitive (its local bounds transformed, as UPrimitiveComponent::Bounds) for
+    /// deciding which lights reach it
     /// </summary>
-    static (int, int)? TextureAllocation(IMEPackage package, LightMap lm)
-    {
-        var (texture, scale, bias) = lm switch
-        {
-            LightMap_2D d => (d.Texture1, d.CoordinateScale, d.CoordinateBias),
-            LightMap_4or6 v => (v.Texture1, v.CoordinateScale, v.CoordinateBias),
-            _ => (0, default, default),
-        };
-        if (texture == 0 || !package.TryGetUExport(texture, out var tex)) return null;
-        var p = tex.GetProperties();
-        int w = p.GetProp<IntProperty>("SizeX")?.Value ?? 0, h = p.GetProp<IntProperty>("SizeY")?.Value ?? 0;
-        var rect = AtlasRect.FromCoordinates(scale, bias, w, h, padding: 1);
-        return (rect.Width, rect.Height);
-    }
-
-    static (Vector3, Vector3) Bounds(Vector3[] positions, Matrix4x4 l2w)
+    static (Vector3 Min, Vector3 Max, BoxSphereBounds Receiver) MeshBounds(Vector3[] positions, Matrix4x4 l2w)
     {
         var min = new Vector3(float.MaxValue); var max = new Vector3(float.MinValue);
+        var local = new Box();
         foreach (var p in positions)
         {
+            local.Add(p);
             var w = Vector3.Transform(p, l2w);
             min = Vector3.Min(min, w); max = Vector3.Max(max, w);
         }
-        return (min, max);
+        return (min, max, new BoxSphereBounds(local).TransformBy(l2w));
     }
+
+    static BoxSphereBounds BoundsOf(Vector3 min, Vector3 max) =>
+        new() { Origin = (min + max) / 2, BoxExtent = (max - min) / 2, SphereRadius = Vector3.Distance(min, max) / 2 };
 
     LightmassMesh GetMesh(ExportEntry export, StaticMesh staticMesh)
     {
@@ -782,8 +734,8 @@ public sealed class LightmassSceneBuilder : IDisposable
             mapping.SizeX = (int)MathF.Round(scale.X * (p.GetProp<IntProperty>("SizeX")?.Value ?? 0)) + 2;
             mapping.SizeY = (int)MathF.Round(scale.Y * (p.GetProp<IntProperty>("SizeY")?.Value ?? 0)) + 2;
             mapping.Lightmaps = lightmaps;
-            mapping.RelevantLights = RelevantLights(mapping.BoundsMin, mapping.BoundsMax, BspChannels(model, nodes), package.FileNameNoExtension, lightmaps[0].LightMap,
-                lightmaps.SelectMany(PackageShadowMaps.LightGuids).ToHashSet());
+            mapping.RelevantLights = RelevantLights(BoundsOf(mapping.BoundsMin, mapping.BoundsMax), lightmaps[0].LightMap,
+                lightmaps.SelectMany(PackageShadowMaps.LightGuids).ToHashSet(), new LightPrimitiveSettings(BspChannels(model, nodes), package.FileNameNoExtension));
             scene.BspMappings.Add(mapping);
             scene.Count("mapping: BSP LMT_2D surface group");
         }
@@ -891,8 +843,7 @@ public sealed class LightmassSceneBuilder : IDisposable
                 NumPatchesX = Int("NumPatchesX"), NumPatchesY = Int("NumPatchesY"),
                 StaticLightingResolution = Math.Max(1, Int("StaticLightingResolution", 4)),
             };
-            int heights = terrain.NumVerticesX * terrain.NumVerticesY;
-            if (heights == 0 || terrain.Binary.Heights.Length != heights || terrain.Binary.InfoData.Length != heights)
+            if (!HasMatchingHeightField(props, terrain.Binary))
             {
                 scene.Count("terrain: height field doesn't match its size (left out)");
                 continue;
@@ -920,13 +871,21 @@ public sealed class LightmassSceneBuilder : IDisposable
                 var cprops = Properties(componentExport);
                 int C(string name) => cprops.GetProp<IntProperty>(name)?.Value ?? 0;
                 var component = ObjectBinary.From<TerrainComponent>(componentExport);
+                if (TerrainSectionExclusion(cprops) is { } excluded)
+                {
+                    if (!contextOnly && component.LightMap is { LightMapType: not ELightMapType.LMT_None })
+                        scene.Count($"mapping: terrain lightmap kept, {excluded}");
+                    continue;
+                }
+                var shadowSettings = ShadowParticipation.Read(cprops);
                 var mapping = new LightmassTerrainMapping
                 {
                     Guid = Guid.NewGuid(),
                     Terrain = terrain,
                     Component = componentExport,
                     LevelId = levelId,
-                    CastShadow = cprops.GetProp<BoolProperty>("CastShadow") is { Value: true } || cprops.GetProp<BoolProperty>("bCastHiddenShadow") is { Value: true },
+                    CastShadow = shadowSettings.BakesShadow,
+                    SelfShadowOnly = shadowSettings.SelfShadowOnly,
                     BilinearFilter = bilinear,
                     SectionBaseX = C("SectionBaseX"), SectionBaseY = C("SectionBaseY"),
                     SectionSizeX = C("SectionSizeX"), SectionSizeY = C("SectionSizeY"),
@@ -950,7 +909,7 @@ public sealed class LightmassSceneBuilder : IDisposable
                         mapping.Target = new LightmapRef(componentExport, "Terrain", lightmap, component);
                     else scene.Count("mapping: terrain lightmap of another size than its section's (kept)");
                 }
-                else if (!contextOnly && component.LightMap is { LightMapType: not ELightMapType.LMT_None }) scene.Count($"mapping: terrain {component.LightMap.LightMapType} (kept)");
+                else if (!contextOnly && component.LightMap is { LightMapType: not ELightMapType.LMT_None }) scene.Count($"mapping: terrain lightmap kept, {component.LightMap.LightMapType} isn't rebaked");
                 if (mapping.Target == null && !mapping.CastShadow) continue;
 
                 var min = new Vector3(float.MaxValue); var max = new Vector3(float.MinValue);
@@ -970,7 +929,9 @@ public sealed class LightmassSceneBuilder : IDisposable
                 if (mapping.Target != null)
                 {
                     var channels = LightingChannels.FromProperty(cprops.GetProp<StructProperty>("LightingChannels"), default, isInitialized: false, LightingChannels.StaticPrimitiveDefault);
-                    mapping.RelevantLights = RelevantLights(min, max, channels, package.FileNameNoExtension, mapping.Target.LightMap, PackageShadowMaps.LightGuids(mapping.Target));
+                    mapping.RelevantLights = RelevantLights(BoundsOf(min, max), mapping.Target.LightMap, PackageShadowMaps.LightGuids(mapping.Target),
+                        new LightPrimitiveSettings(channels, package.FileNameNoExtension,
+                            AcceptsDynamicLights: cprops.GetProp<BoolProperty>("bAcceptsDynamicLights") is not { Value: false }));
                     scene.Count("mapping: terrain LMT_2D");
                 }
                 else scene.Count("terrain: shadow-casting sections without a lightmap to rebake");
@@ -979,6 +940,52 @@ public sealed class LightmassSceneBuilder : IDisposable
             }
             if (added) scene.Terrains.Add(terrain);
         }
+    }
+
+    /// <summary>Whether a terrain's height field has a height and info flags for each of its vertices; Lightmass can't use one that doesn't</summary>
+    public static bool HasMatchingHeightField(PropertyCollection terrainProps, Terrain binary)
+    {
+        int heights = (terrainProps.GetProp<IntProperty>("NumVerticesX")?.Value ?? 0) * (terrainProps.GetProp<IntProperty>("NumVerticesY")?.Value ?? 0);
+        return heights > 0 && binary.Heights.Length == heights && binary.InfoData.Length == heights;
+    }
+
+    /// <summary>
+    /// Why a terrain section isn't in the bake, or null if it is: as for meshes, UE3 only builds static lighting for sections with static shadowing
+    /// that accept lights (UTerrainComponent::GetStaticLightingInfo)
+    /// </summary>
+    public static string TerrainSectionExclusion(PropertyCollection sectionProps) =>
+        sectionProps.GetProp<BoolProperty>("bUsePrecomputedShadows") is { Value: false } ? "without static shadowing"
+        : sectionProps.GetProp<BoolProperty>("bAcceptsLights") is { Value: false } ? "doesn't accept lights"
+        : null;
+
+    /// <summary>
+    /// How many of the level's terrain sections the bake exports as shadow casters: those of its Terrain actors with a usable height field that take part
+    /// in static lighting and cast shadows. (A section with no visible quads is counted, though the bake then leaves it out.)
+    /// </summary>
+    public static int ShadowCastingTerrainSections(IMEPackage package, Level level, PackageCache cache) =>
+        ShadowCastingTerrainSections(TerrainActors(package, level), cache);
+
+    /// <summary>The level's Terrain actors, which the bake gets terrain sections from</summary>
+    public static ExportEntry[] TerrainActors(IMEPackage package, Level level) =>
+        level.Actors.Where(u => u != 0).Select(u => package.TryGetUExport(u, out var actor) ? actor : null).Where(actor => actor?.ClassName == "Terrain").ToArray();
+
+    /// <inheritdoc cref="ShadowCastingTerrainSections(IMEPackage, Level, PackageCache)"/>
+    public static int ShadowCastingTerrainSections(IEnumerable<ExportEntry> terrainActors, PackageCache cache)
+    {
+        int sections = 0;
+        foreach (var actor in terrainActors)
+        {
+            var package = actor.FileRef;
+            var props = EffectiveLightingProperties.Read(actor, cache);
+            if (!HasMatchingHeightField(props, ObjectBinary.From<Terrain>(actor))) continue;
+            foreach (var componentProp in props.GetProp<ArrayProperty<ObjectProperty>>("TerrainComponents") ?? Enumerable.Empty<ObjectProperty>())
+            {
+                if (package.TryGetUExport(componentProp.Value, out var section) && EffectiveLightingProperties.Read(section, cache) is var sectionProps
+                    && TerrainSectionExclusion(sectionProps) is null && ShadowParticipation.Read(sectionProps).BakesShadow)
+                    sections++;
+            }
+        }
+        return sections;
     }
 
     /// <summary>A terrain vertex's world position, as Lightmass places it (FTerrainComponentStaticLighting::GetVertex, without displacement).</summary>
@@ -1213,7 +1220,13 @@ public sealed class LightmassSceneBuilder : IDisposable
             if (points.Count == 0 && actor.GetProperty<ObjectProperty>("Brush") is { Value: not 0 } brush && package.TryGetUExport(brush.Value, out var modelExport))
                 points.AddRange(ObjectBinary.From<Model>(modelExport).Points);
             if (points.Count == 0) { scene.Count("importance volume without geometry"); continue; }
-            var (min, max) = Bounds(points.ToArray(), ActorUtils.GetLocalToWorld(actor));
+            var localToWorld = ActorUtils.GetLocalToWorld(actor);
+            var min = new Vector3(float.MaxValue); var max = new Vector3(float.MinValue);
+            foreach (var point in points)
+            {
+                var world = Vector3.Transform(point, localToWorld);
+                min = Vector3.Min(min, world); max = Vector3.Max(max, world);
+            }
             scene.ImportanceVolumes.Add((min, max));
         }
     }

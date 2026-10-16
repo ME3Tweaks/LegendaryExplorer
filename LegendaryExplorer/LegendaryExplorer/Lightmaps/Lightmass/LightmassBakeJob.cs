@@ -11,6 +11,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.Runtime.Serialization;
 
 namespace LegendaryExplorer.Lightmaps.Lightmass;
 
@@ -31,7 +32,14 @@ public sealed class LightmassBakeJob
     public List<LightmassBakeJobFile> Files { get; set; } = [];
 
     [JsonConverter(typeof(StringEnumConverter))]
+    public LightAssignmentPolicy AssignmentPolicy { get; set; } = LightAssignmentPolicy.RecomputeAssignments;
+
+    [JsonConverter(typeof(StringEnumConverter))]
     public LightmassQuality Quality { get; set; } = LightmassQuality.Preview;
+
+    // Only deserialization starts in compatibility mode. Explicit JSON values are applied afterwards.
+    [OnDeserializing]
+    private void ReadLegacyDefaults(StreamingContext context) => AssignmentPolicy = LightAssignmentPolicy.PreserveExistingAssignments;
 
     /// <summary>Name of the texture file cache the streamed lightmap textures go in. An existing cache of that name is added to.</summary>
     public string TfcName { get; set; } = "Textures_DLC_MOD_LEXLightmaps";
@@ -45,7 +53,9 @@ public sealed class LightmassBakeJob
     /// <summary>Reads a job file. Relative paths in it are relative to the job file's folder, so a job can travel with its levels.</summary>
     public static LightmassBakeJob Load(string path)
     {
-        var job = JsonConvert.DeserializeObject<LightmassBakeJob>(File.ReadAllText(path)) ?? new LightmassBakeJob();
+        // A file with no job in it is read like one with no settings: an old job, which preserves assignments (see ReadLegacyDefaults)
+        var job = JsonConvert.DeserializeObject<LightmassBakeJob>(File.ReadAllText(path))
+                  ?? new LightmassBakeJob { AssignmentPolicy = LightAssignmentPolicy.PreserveExistingAssignments };
         string folder = Path.GetDirectoryName(Path.GetFullPath(path));
         string Resolve(string p) => string.IsNullOrWhiteSpace(p) ? p : Path.GetFullPath(p, folder);
         job.Files ??= [];
@@ -77,6 +87,7 @@ public sealed class LightmassBakeJob
     public List<string> Problems()
     {
         var problems = new List<string>();
+        if (!Enum.IsDefined(AssignmentPolicy)) problems.Add("Unknown light assignment policy.");
         if (ResolvedUdkBinaries is not { } udk)
             problems.Add($"Choose UDK's Binaries folder: SwarmAgent.exe version {RequiredSwarmVersion} is required (February 2015 UDK).");
         else
@@ -202,7 +213,7 @@ public sealed class LightmassBakeJob
                 TfcName = TfcName,
                 TfcDirectory = preview.TemporaryDirectory,
                 CopiedCacheSource = preview.CopiedCacheSource,
-                Scene = new LightmassSceneOptions { ContextOnly = contextOnly },
+                Scene = new LightmassSceneOptions { ContextOnly = contextOnly, AssignmentPolicy = AssignmentPolicy },
             };
             preview.Result = LightmassBake.Run(packages, settings, log, cancel);
             cancel.ThrowIfCancellationRequested();

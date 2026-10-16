@@ -69,6 +69,8 @@ public sealed class PreviewMeshDependencies
             }
             Exports.Add(export);
             Track(export.Archetype);
+            Track(export.Class);
+            if (EffectiveLightingProperties.ClassDefault(export, Cache) is { } cdo) Track(cdo);
             // Object indices belong to the package at each inheritance link.
             var props = export.GetProperties();
             foreach (string name in new[] { "StaticMesh", "SkeletalMesh", "LightEnvironment", "m_pBaseMaterial", "Parent" })

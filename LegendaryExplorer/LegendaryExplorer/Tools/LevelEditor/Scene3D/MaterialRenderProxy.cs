@@ -11,6 +11,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Threading;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 
@@ -126,12 +127,42 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     }
 
     public EBlendMode BlendMode;
+    /// <summary>
+    /// The base material's bIsMasked, which the material compiler sets for masked and soft masked materials that have an opacity mask
+    /// </summary>
+    private bool HasOpacityMask;
+    /// <summary>
+    /// FMaterialResource::IsMasked: casts shadows with its own coverage, from its masked shadow depth shaders. A masked blend mode without an opacity mask
+    /// isn't, and casts like an opaque material
+    /// </summary>
+    public bool IsMasked => IsMaskedMaterial(BlendMode, HasOpacityMask);
+    /// <summary>
+    /// Whether the material casts shadows: its blend mode isn't translucent (UE3's IsTranslucentBlendMode, which soft masked isn't), unless translucency
+    /// is cast as masked (not supported)
+    /// </summary>
+    public bool CastsShadowDepth => CastsShadowDepthWith(BlendMode);
+
+    /// <summary>
+    /// Whether a bake shadows light through the material by its transmission, partially or colored (translucent, alpha composite and modulate materials,
+    /// as LightmassSceneBuilder exports them). Additive materials let all light through, so they block none, in the bake or the preview
+    /// </summary>
+    public bool BakesTransmission => BlendMode is EBlendMode.BLEND_Translucent or EBlendMode.BLEND_AlphaComposite or EBlendMode.BLEND_Modulate;
+
+    public static bool IsMaskedMaterial(EBlendMode blendMode, bool bIsMasked) =>
+        bIsMasked && blendMode is EBlendMode.BLEND_Masked or EBlendMode.BLEND_SoftMasked;
+
+    public static bool CastsShadowDepthWith(EBlendMode blendMode) =>
+        blendMode is EBlendMode.BLEND_Opaque or EBlendMode.BLEND_Masked or EBlendMode.BLEND_SoftMasked;
     public bool UseHairPass;
     public bool IsUnlit;
     /// <summary>
     /// Backfaces aren't culled
     /// </summary>
     public bool IsTwoSided;
+    /// <summary>
+    /// A translucent material that casts shadows as if it were masked (bCastLitTranslucencyShadowAsMasked)
+    /// </summary>
+    public bool CastsLitTranslucencyShadowAsMasked;
 
     // materials that displace vertices disqualify the mesh from culling 
     public bool HasUndisplacedVertices { get; private set; }
@@ -237,6 +268,8 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     //Shaders aren't loaded in the constructor, since that's expensive and they aren't needed if game shaders are never turned on.
     //See MeshRenderContext.LoadPendingGameShaders
     private volatile bool AttemptedShaderLoad;
+    //set while the material waits in its context's queue, see CanRenderWithGameShaders
+    private volatile bool QueuedForGameShaderLoad;
     private readonly object ShaderLoadLock = new();
     private readonly MeshRenderContext Context;
 
@@ -254,9 +287,13 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     }
 
     /// <summary>
-    /// Loads the shaders if they haven't been already.
+    /// Loads the shaders if they haven't been already, unless they're queued for <see cref="MeshRenderContext.LoadPendingGameShaders"/> to load in the background:
+    /// until it has, this is false, so that they aren't loaded in the middle of a frame
     /// </summary>
-    public bool CanRenderWithGameShaders => GameShaderError is null;
+    public bool CanRenderWithGameShaders => !AwaitsGameShaderLoad && GameShaderError is null;
+
+    /// <summary>Whether the shaders are queued for <see cref="MeshRenderContext.LoadPendingGameShaders"/>, and nothing has loaded them yet</summary>
+    internal bool AwaitsGameShaderLoad => QueuedForGameShaderLoad && !AttemptedShaderLoad;
 
     /// <summary>
     /// <see cref="GameShaderError"/>, without loading the shaders. Null if they haven't been loaded yet
@@ -283,9 +320,13 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
         LightMapType = lightMapType;
         if (!AttemptedShaderLoad)
         {
+            QueuedForGameShaderLoad = true;
             Context.AddPendingGameShaderLoad(this);
         }
     }
+
+    /// <summary>Called by the context when it takes the material off its queue, to load it or not</summary>
+    internal void Dequeued() => QueuedForGameShaderLoad = false;
 
     /// <summary>
     /// Call if rendering with game shaders fails, so that this material falls back to the LEX shader
@@ -295,14 +336,30 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
         gameShaderError = e.Message;
     }
 
-    internal void CancelPendingShaderLoad() => Context.RemovePendingGameShaderLoad(this);
+    internal void CancelPendingShaderLoad()
+    {
+        Dequeued();
+        Context.RemovePendingGameShaderLoad(this);
+    }
 
     /// <summary>
-    /// Loads the game's shaders for this material, if they haven't been already. Thread-safe.
+    /// Loads the game's shaders for this material, and prepares its shadow depth shaders from them, if they haven't been already. Thread-safe.
     /// </summary>
     public void LoadGameShaders()
     {
-        if (AttemptedShaderLoad) return;
+        if (!AttemptedShaderLoad)
+        {
+            LoadBaseShaders();
+        }
+        //outside ShaderLoadLock, since preparing takes the LightShaders lock. If the load above threw, they're left pending until it's tried again
+        if (ShadowShadersPending)
+        {
+            PrepareShadowShaders();
+        }
+    }
+
+    private void LoadBaseShaders()
+    {
         lock (ShaderLoadLock)
         {
             if (AttemptedShaderLoad) return;
@@ -336,6 +393,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
 
         var props = mat.GetProperties(packageCache: assetCache);
         Enum.TryParse(props.GetProp<EnumProperty>("BlendMode")?.Value ?? "BLEND_Opaque", out BlendMode);
+        HasOpacityMask = props.GetProp<BoolProperty>("bIsMasked") is { Value: true };
 
         //if a MIC had a StaticPermutationResource, the shaders came from that instead
         bool isShaderMapOwner = !FoundShaderMapOwner;
@@ -351,6 +409,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
 
         UseHairPass = props.GetProp<BoolProperty>("bHairPass") is { Value: true };
         IsTwoSided = props.GetProp<BoolProperty>("TwoSided") is { Value: true };
+        CastsLitTranslucencyShadowAsMasked = props.GetProp<BoolProperty>("bCastLitTranslucencyShadowAsMasked") is { Value: true };
         IsUnlit = props.GetProp<EnumProperty>("LightingModel") is {} lightingModelProp && lightingModelProp.Value == "MLM_Unlit";
 
         var expressionsProp = props.GetProp<ArrayProperty<ObjectProperty>>("Expressions");
@@ -395,8 +454,13 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     {
         try
         {
+            //the shadow depth shaders are read in the same lookup, when the material has any to use (see PrepareShadowShaders)
+            string[] shadowShaderTypes = !CastsShadowDepth ? [] : IsMasked ? [ShadowDepthVertexShaderType, ShadowDepthPixelShaderType]
+                : HasUndisplacedVertices ? [] : [ShadowDepthVertexShaderType];
             (ShaderMap, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndShaders(mat, Context.GetSeekFreeShaderCache,
-                GetShaderTypeNames(LightMapType));
+                [.. GetShaderTypeNames(LightMapType), .. shadowShaderTypes]);
+            ShadowDepthVertexShader = shaders.FirstOrDefault(shader => shader?.ShaderType.Name == ShadowDepthVertexShaderType);
+            ShadowDepthPixelShader = shaders.FirstOrDefault(shader => shader?.ShaderType.Name == ShadowDepthPixelShaderType);
 
             (UnrealVertexShader, UnrealPixelShader) = SelectShaders(shaders, IsUnlit, LightMapType, out bool usesLightMap);
             UsesLightMap = usesLightMap;
@@ -485,6 +549,111 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
             }
             return SHLightPassShaders;
         }
+    }
+
+    /// <param name="Pixel">Null for an opaque material, whose depth UE3 writes with the default material's pixel shader</param>
+    /// <param name="DepthPixelShader">For an opaque material: that pixel shader, compiled for the vertex shader's outputs
+    /// (<see cref="LightAttenuationRenderer.DepthPixelShaderByteCode"/>)</param>
+    internal sealed record ShadowDepthShaders(TShadowDepthVertexShader Vertex, TShadowDepthPixelShader Pixel, byte[] DepthPixelShader);
+
+    private const string ShadowDepthVertexShaderType = "TShadowDepthVertexShader<ShadowDepth_PerspectiveCorrect>";
+    private const string ShadowDepthPixelShaderType = "TShadowDepthPixelShaderTRUEFALSE";
+    //read with the base shaders, for PrepareShadowShaders. Only the shader data: their D3D shaders are made when first drawn
+    private Shader ShadowDepthVertexShader, ShadowDepthPixelShader;
+
+    //what happens to a section's shadow when the material's shadow depth shaders can't be used
+    internal const string NoMaskedShadow = "masked shadow coverage is unavailable (section omitted from shadow depth).";
+    internal const string UndeformedShadow = "shadow depth uses undeformed mesh geometry.";
+    internal string ShadowShaderFallback => IsMasked ? NoMaskedShadow : UndeformedShadow;
+
+    private bool LoadedShadowShaders;
+    //set once by PrepareShadowShaders, and only cleared afterwards (by the render thread), so it's read without the lock
+    private ShadowDepthShaders shadowShaders;
+    internal ShadowDepthShaders ShadowShaders => Volatile.Read(ref shadowShaders);
+    private string shadowDepthError;
+    /// <summary>Why the preview's shadow depth from this material differs from the game's, or null</summary>
+    public string ShadowDepthError => Volatile.Read(ref shadowDepthError);
+
+    // Runs once the base shaders have been loaded (LoadGameShaders), whose lookup read the shadow depth shaders
+    internal void PrepareShadowShaders()
+    {
+        lock (LightShaders)
+        {
+            if (LoadedShadowShaders || !AttemptedShaderLoad) return;
+            try
+            {
+                if (!CastsShadowDepth)
+                {
+                    //translucent materials don't cast shadows in UE3, unless they're cast as masked
+                    if (CastsLitTranslucencyShadowAsMasked)
+                        Volatile.Write(ref shadowDepthError, "Translucency cast as masked (bCastLitTranslucencyShadowAsMasked) isn't supported in Preview; it casts no shadow.");
+                    return;
+                }
+                //Masked materials cast with their own shaders' coverage. UE3 draws opaque ones with the default material's shaders (plain geometry, as the
+                //preview's own depth shader does), unless the material moves its vertices (world position offset), when it has its own vertex shader
+                //(FShadowDepthVertexShader::ShouldCache)
+                if (!IsMasked && HasUndisplacedVertices)
+                {
+                    //no vertex shader of its own to look for
+                    return;
+                }
+                if (LightShaderMapOwner is null || ShaderMap is null)
+                {
+                    //it has no shader map to look in, which the material's own error says why
+                    Volatile.Write(ref shadowDepthError, $"It has no game shaders ({gameShaderError ?? "they weren't loaded"}): {ShadowShaderFallback}");
+                    return;
+                }
+                //its shader map may lack only the base pass shaders that error is about, so the shadow shaders were still looked for
+                string baseShaderProblem = gameShaderError is null ? "" : $" (its other game shaders: {gameShaderError})";
+                (Shader vertex, Shader pixel) shaders = (ShadowDepthVertexShader, ShadowDepthPixelShader);
+                bool usable = shaders.vertex is TShadowDepthVertexShader { VertexFactoryParameters.Parameters: FLocalVertexFactoryShaderParameters };
+                if (IsMasked)
+                {
+                    if (usable && shaders.pixel is TShadowDepthPixelShader ps)
+                        Volatile.Write(ref shadowShaders, new ShadowDepthShaders((TShadowDepthVertexShader)shaders.vertex, ps, null));
+                    else
+                        Volatile.Write(ref shadowDepthError, $"No compatible game shadow shader{baseShaderProblem}: {NoMaskedShadow}");
+                }
+                else if (!usable)
+                {
+                    Volatile.Write(ref shadowDepthError, $"No compatible game shadow vertex shader for its world position offset{baseShaderProblem}: {UndeformedShadow}");
+                }
+                else
+                {
+                    //compiled here, with the other preparation, rather than when it's first drawn
+                    var vertex = (TShadowDepthVertexShader)shaders.vertex;
+                    byte[] depthPixelShader;
+                    try
+                    {
+                        depthPixelShader = Context.GetDepthPixelShaderByteCode(vertex);
+                    }
+                    catch (Exception e)
+                    {
+                        Volatile.Write(ref shadowDepthError, $"A depth pixel shader for its game shadow vertex shader couldn't be compiled ({e.Message}): {UndeformedShadow}");
+                        return;
+                    }
+                    if (depthPixelShader is null)
+                        Volatile.Write(ref shadowDepthError, $"Its game shadow vertex shader's outputs couldn't be matched by a depth pixel shader: {UndeformedShadow}");
+                    else
+                        Volatile.Write(ref shadowShaders, new ShadowDepthShaders(vertex, null, depthPixelShader));
+                }
+            }
+            finally
+            {
+                //after the shaders, so that a material no longer pending has its final shaders and error
+                Volatile.Write(ref LoadedShadowShaders, true);
+            }
+        }
+    }
+
+    /// <summary>Whether <see cref="PrepareShadowShaders"/> hasn't run yet (it runs once the base shaders are loaded), so the material has no shadow depth shaders for now</summary>
+    internal bool ShadowShadersPending => !Volatile.Read(ref LoadedShadowShaders);
+
+    /// <summary>The shadow depth shaders don't work for this material: its shadows use the plain depth shader from now on</summary>
+    internal void DisableShadowShaders(string error)
+    {
+        Volatile.Write(ref shadowDepthError, error);
+        Volatile.Write(ref shadowShaders, null);
     }
 
     //Call under the LightShaders lock

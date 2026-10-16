@@ -44,6 +44,14 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
 {
     public ObservableCollectionExtended<BakeFileItem> Files { get; } = [];
 
+    public IReadOnlyDictionary<LightAssignmentPolicy, string> AssignmentPolicies { get; } = Enum.GetValues<LightAssignmentPolicy>().ToDictionary(p => p, p => p.Describe());
+    private LightAssignmentPolicy assignmentPolicy = LightAssignmentPolicy.RecomputeAssignments;
+    public LightAssignmentPolicy AssignmentPolicy
+    {
+        get => assignmentPolicy;
+        set { if (SetProperty(ref assignmentPolicy, value)) ScheduleValidation(); }
+    }
+
     public IReadOnlyList<LightmassQuality> Qualities { get; } = Enum.GetValues<LightmassQuality>();
 
     private LightmassQuality quality = LightmassQuality.Preview;
@@ -177,6 +185,7 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
     {
         Files = Files.Select(f => new LightmassBakeJobFile { Path = f.Path, Editable = f.Editable }).ToList(),
         Quality = Quality,
+        AssignmentPolicy = AssignmentPolicy,
         TfcName = TfcName,
         UdkBinaries = UdkBinaries,
         OutputDirectory = SaveInPlace || string.IsNullOrWhiteSpace(OutputDirectory) ? null : OutputDirectory,
@@ -187,6 +196,7 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
         Files.ClearEx();
         AddFiles(job.Files.Select(f => (f.Path, f.Editable)));
         Quality = job.Quality;
+        AssignmentPolicy = job.AssignmentPolicy;
         TfcName = job.TfcName;
         UdkBinaries = job.ResolvedUdkBinaries;
         OutputDirectory = job.OutputDirectory;

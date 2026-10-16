@@ -39,6 +39,7 @@ public struct ModelPreviewSection
     /// How many triangles, starting from the vertex at <see cref="StartIndex"/>, that this section describes.
     /// </summary>
     public uint TriangleCount;
+    public bool CastsShadow;
 
     /// <summary>
     /// Constructs a new MaterialPreviewSection.
@@ -46,11 +47,13 @@ public struct ModelPreviewSection
     /// <param name="materialname">The name of the material to be applied to the triangles in this section.</param>
     /// <param name="startindex">The first index into the LOD mesh index buffer that this section describes.</param>
     /// <param name="trianglecount">How many triangles, starting from the vertex at <see cref="StartIndex"/>, that this section describes.</param>
-    public ModelPreviewSection(string materialname, uint startindex, uint trianglecount)
+    /// <param name="castsShadow">The static mesh section's bEnableShadowCasting flag.</param>
+    public ModelPreviewSection(string materialname, uint startindex, uint trianglecount, bool castsShadow = true)
     {
         MaterialName = materialname;
         StartIndex = startindex;
         TriangleCount = trianglecount;
+        CastsShadow = castsShadow;
     }
 }
 
@@ -272,7 +275,7 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
             TextureMap.TryGetValue(diffEntry.InstancedFullPath, out FallbackDiffTexture);
         }
         Pass = mat.UseHairPass ? RenderPass.Hair
-            : IsTranslucent ? RenderPass.Translucent
+            : DrawsInTranslucentPass ? RenderPass.Translucent
             : RenderPass.Base;
         BlendDescription = mat.BlendMode switch
         {
@@ -368,8 +371,10 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
     public override bool CanCullByBounds(MeshRenderContext context) =>
         !context.UseGameShaders || RenderProxy.HasUndisplacedVertices;
 
-    //same as UE3's IsTranslucentBlendMode
-    private bool IsTranslucent => ((MaterialRenderProxy)Material).BlendMode is not (EBlendMode.BLEND_Opaque or EBlendMode.BLEND_Masked);
+    //translucent blend modes (UE3's IsTranslucentBlendMode), and soft masked, which UE3 also draws in the translucency pass (TranslucentRendering.cpp) and
+    //without light passes (LightRendering.cpp), though it isn't translucent: it casts shadows like a masked material. UE3 also writes soft masked depth
+    //before the base pass (RenderSoftMaskedDepth), which the preview doesn't, so translucency behind a soft masked surface can draw over it here
+    private bool DrawsInTranslucentPass => ((MaterialRenderProxy)Material).BlendMode is not (EBlendMode.BLEND_Opaque or EBlendMode.BLEND_Masked);
 
     /// <summary>
     /// Renders the given <see cref="ModelPreviewSection"/> of a <see cref="ModelPreviewLOD"/> using the game's shader, if <see cref="MeshRenderContext.UseGameShaders"/> is set.
@@ -395,7 +400,8 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
                     material.MarkGameShadersFailed(e);
                 }
             }
-            if (!material.CanRenderWithGameShaders && !LoggedFallback)
+            //(not while it waits for its shaders to be loaded in the background, which this mustn't do in its place)
+            if (!LoggedFallback && !material.AwaitsGameShaderLoad && !material.CanRenderWithGameShaders)
             {
                 LoggedFallback = true;
                 Debug.WriteLine($"{InstancedFullPath} will be rendered with the LEX shader: {material.GameShaderError}");
@@ -427,7 +433,7 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
         //and the base pass has just the directional light. (Translucency isn't darkened by them, so it keeps the SH light in the base pass)
         (Shader vertexShader, Shader pixelShader) shLightPassShaders = default;
         SHVectorRGB shIncidentLighting = default;
-        if (lightEnvironment is { UsesSHLight: true, RendersSHLightAfterModulatedShadows: true } && !IsTranslucent && context.AreModulatedShadowsActive
+        if (lightEnvironment is { UsesSHLight: true, RendersSHLightAfterModulatedShadows: true } && !DrawsInTranslucentPass && context.AreModulatedShadowsActive
             && material.GetSHLightPassShaders() is ({ } shVertexShader, { } shPixelShader))
         {
             shLightPassShaders = (shVertexShader, shPixelShader);
@@ -446,7 +452,7 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
         context.ImmediateContext.InputAssembler.SetVertexBuffers(MeshStaticLighting.VertexStreamSlot,
             new VertexBufferBinding(lod.StaticLighting?.VertexStream, MeshStaticLighting.VertexStreamStride, 0));
         //translucency is depth tested against the opaque geometry, but doesn't occlude anything itself
-        context.ImmediateContext.OutputMerger.SetDepthStencilState(IsTranslucent ? context.TranslucentDepthState : context.DefaultDepthState);
+        context.ImmediateContext.OutputMerger.SetDepthStencilState(DrawsInTranslucentPass ? context.TranslucentDepthState : context.DefaultDepthState);
         //meshes whose transform mirrors them have reversed winding
         bool reverseCulling = mesh.LocalToWorld.GetDeterminant() < 0;
         context.SetMeshRasterizerState(material.IsTwoSided, reverseCulling);
@@ -539,7 +545,7 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
     {
         var material = (MaterialRenderProxy)Material;
         //UE3 renders lit translucency differently, and unlit materials have no light shaders
-        if (!context.UseGameShaders || !context.IsLevelLightingActive || context.Wireframe || IsTranslucent
+        if (!context.UseGameShaders || !context.IsLevelLightingActive || context.Wireframe || DrawsInTranslucentPass
             || !UsesLevelLighting(lod, material, context) || !material.CanRenderWithGameShaders
             || material.GetBasePassShaders(context, usesLevelLights: true, out _).vertexShader is null)
         {
@@ -614,6 +620,7 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
 /// </summary>
 public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
 {
+    private readonly MeshRenderContext RenderContext;
     /// <summary>
     /// Contains the geometry and section information for each level-of-detail in the model.
     /// </summary>
@@ -634,6 +641,7 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
     /// </summary>
     public ModelPreview(MeshRenderContext renderContext, Mesh<TVertex> mesh, PreloadedModelData preloadedData = null)
     {
+        RenderContext = renderContext;
         //Preloaded
         var sections = new List<ModelPreviewSection>();
         if (preloadedData != null)
@@ -654,6 +662,7 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
     public ModelPreview(MeshRenderContext renderContext, StaticMesh m, int selectedLOD, MeshStaticLighting staticLighting = null,
         IReadOnlyList<IEntry> materialOverrides = null)
     {
+        RenderContext = renderContext;
         if (selectedLOD < 0)  //PREVIEW BUG WORKAROUND
             return;
 
@@ -733,12 +742,12 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
             matEntry ??= m.Export.FileRef.GetEntry(element.Material);
             if (matEntry is null)
             {
-                sections.Add(new ModelPreviewSection(null, element.FirstIndex, element.NumTriangles));
+                sections.Add(new ModelPreviewSection(null, element.FirstIndex, element.NumTriangles, element.bEnableShadowCasting));
             }
             else
             {
                 AddMaterial(renderContext, matEntry, staticLighting?.LightMapType ?? ELightMapType.LMT_None);
-                sections.Add(new ModelPreviewSection(matEntry.InstancedFullPath, element.FirstIndex, element.NumTriangles));
+                sections.Add(new ModelPreviewSection(matEntry.InstancedFullPath, element.FirstIndex, element.NumTriangles, element.bEnableShadowCasting));
             }
         }
         var mesh = new Mesh<TVertex>(renderContext.Device, triangles, vertices);
@@ -748,41 +757,45 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
             staticLighting.GetBounds = () => mesh.TransformedBounds;
             staticLighting.GetLocalToWorld = () => mesh.LocalToWorld;
             staticLighting.Materials = Materials.Values.Cast<object>().OfType<LEShaderPreviewMaterial>().Select(mat => mat.RenderProxy).ToArray();
-            staticLighting.DrawShadowCaster = ctx => DrawShadowCasterSections(ctx, mesh, sections);
+            staticLighting.ShadowCastingMaterials = ShadowCastingMaterials(sections);
+            staticLighting.DrawShadowCaster = (ctx, pass) => DrawShadowCasterSections(ctx, pass, mesh, sections);
         }
     }
 
     /// <summary>
-    /// For shadow depth passes: binds a LOD's buffers and draws its sections, except translucent ones, which don't cast dynamic shadows. The caller sets the shaders
+    /// The game materials of the sections that cast shadows
     /// </summary>
-    internal void DrawShadowCaster(DeviceContext ctx, int lod)
+    private MaterialRenderProxy[] ShadowCastingMaterials(List<ModelPreviewSection> sections) => sections
+        .Where(section => section.CastsShadow && section.MaterialName is not null)
+        .Select(section => Materials.TryGetValue(section.MaterialName, out var material) && material is LEShaderPreviewMaterial gameMaterial ? gameMaterial.RenderProxy : null)
+        .Where(proxy => proxy is not null).Distinct().ToArray();
+
+    /// <summary>
+    /// Draws a LOD's enabled shadow sections with material coverage and sidedness.
+    /// </summary>
+    internal void DrawShadowCaster(DeviceContext ctx, ShadowDepthPass pass, int lod)
     {
         if (lod < LODs.Count)
         {
-            DrawShadowCasterSections(ctx, LODs[lod].Mesh, LODs[lod].Sections);
+            DrawShadowCasterSections(ctx, pass, LODs[lod].Mesh, LODs[lod].Sections);
         }
     }
 
     /// <summary>
-    /// For shadow depth passes: binds the mesh's buffers and draws its sections, except translucent ones, which don't cast dynamic shadows. The caller sets the shaders
+    /// Draws enabled sections through the shadow renderer, which binds each section's coverage shader.
     /// </summary>
-    private void DrawShadowCasterSections(DeviceContext ctx, Mesh<TVertex> mesh, List<ModelPreviewSection> sections)
+    private void DrawShadowCasterSections(DeviceContext ctx, ShadowDepthPass pass, Mesh<TVertex> mesh, List<ModelPreviewSection> sections)
     {
         if (mesh.Vertices.Count is 0)
         {
             return;
         }
-        ctx.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
-        ctx.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(mesh.VertexBuffer, TVertex.Stride, 0));
-        ctx.InputAssembler.SetIndexBuffer(mesh.IndexBuffer, SharpDX.DXGI.Format.R32_UInt, 0);
         foreach (ModelPreviewSection section in sections)
         {
-            if (section.MaterialName is not null && Materials.TryGetValue(section.MaterialName, out ModelPreviewMaterial<TVertex> material)
-                && material is LEShaderPreviewMaterial { RenderProxy.BlendMode: not (EBlendMode.BLEND_Opaque or EBlendMode.BLEND_Masked) })
-            {
-                continue;
-            }
-            ctx.DrawIndexed((int)section.TriangleCount * 3, (int)section.StartIndex, 0);
+            if (!section.CastsShadow) continue;
+            MaterialRenderProxy proxy = section.MaterialName is not null && Materials.TryGetValue(section.MaterialName, out var material)
+                && material is LEShaderPreviewMaterial gameMaterial ? gameMaterial.RenderProxy : null;
+            RenderContext.LightAttenuations.DrawShadowSection(ctx, mesh, section, proxy, pass);
         }
     }
 
@@ -792,6 +805,7 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
     /// <param name="staticLighting">For level meshes lit by level lighting: the lighting of LOD <paramref name="lightingLOD"/>, the one that's rendered</param>
     public ModelPreview(MeshRenderContext renderContext, SkeletalMesh m, MeshStaticLighting staticLighting = null, int lightingLOD = 0, IReadOnlyList<IEntry> materialOverrides = null)
     {
+        RenderContext = renderContext;
         var mats = new string[m.Materials.Length];
         // STEP 1: MATERIALS
         for (int i = 0; i < m.Materials.Length; i++)
@@ -807,8 +821,16 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
         }
 
         // STEP 2: LODS
+        //each LOD's sections' shadow casting (SkeletalMeshLODInfo.bEnableShadowCasting, by section). USkeletalMesh::PostLoad replaces LODInfo with all-true
+        //flags if it doesn't have an entry per LOD. Otherwise UE3 expects one flag per section; a section a short list doesn't reach casts here
+        var lodInfos = m.Export.GetProperty<ArrayProperty<StructProperty>>("LODInfo");
+        if (lodInfos?.Count != m.LODModels.Length)
+        {
+            lodInfos = null;
+        }
         foreach (var lodmodel in m.LODModels)
         {
+            var enableShadowCasting = LODs.Count < lodInfos?.Count ? lodInfos[LODs.Count].GetProp<ArrayProperty<BoolProperty>>("bEnableShadowCasting") : null;
             // Vertices
             var vertices = new List<TVertex>(m.Export.Game == MEGame.ME1 ? lodmodel.ME1VertexBufferGPUSkin.Length : lodmodel.VertexBufferGPUSkin.VertexData.Length);
             Fixed4<Vector4> uvs = default;
@@ -837,11 +859,13 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
             var mesh = new Mesh<TVertex>(renderContext.Device, triangles, vertices, isDynamic: true);
             // Sections
             var sections = new List<ModelPreviewSection>();
-            foreach (var section in lodmodel.Sections)
+            for (int sectionIndex = 0; sectionIndex < lodmodel.Sections.Length; sectionIndex++)
             {
+                var section = lodmodel.Sections[sectionIndex];
                 // Like static meshes' sections, one without a material is kept, so that wireframe views still draw it
                 string material = section.MaterialIndex < mats.Length ? mats[section.MaterialIndex] : null;
-                sections.Add(new ModelPreviewSection(material, section.BaseIndex, (uint)section.NumTriangles));
+                bool castsShadow = enableShadowCasting is null || sectionIndex >= enableShadowCasting.Count || enableShadowCasting[sectionIndex].Value;
+                sections.Add(new ModelPreviewSection(material, section.BaseIndex, (uint)section.NumTriangles, castsShadow));
             }
             bool isLightingLOD = staticLighting is not null && LODs.Count == lightingLOD;
             LODs.Add(new ModelPreviewLOD<TVertex>(mesh, sections) { StaticLighting = isLightingLOD ? staticLighting : null });
@@ -850,7 +874,8 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
                 staticLighting.GetBounds = () => mesh.TransformedBounds;
                 staticLighting.GetLocalToWorld = () => mesh.LocalToWorld;
                 staticLighting.Materials = Materials.Values.Cast<object>().OfType<LEShaderPreviewMaterial>().Select(mat => mat.RenderProxy).ToArray();
-                staticLighting.DrawShadowCaster = ctx => DrawShadowCasterSections(ctx, mesh, sections);
+                staticLighting.ShadowCastingMaterials = ShadowCastingMaterials(sections);
+                staticLighting.DrawShadowCaster = (ctx, pass) => DrawShadowCasterSections(ctx, pass, mesh, sections);
             }
         }
         if (staticLighting is not null && LODs.Count <= lightingLOD)

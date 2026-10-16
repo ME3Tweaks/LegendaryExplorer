@@ -168,7 +168,7 @@ public sealed class LightmassExporter(LightmassScene scene, IniFile ini, Lightma
     /// WriteBaseMeshInstanceData: FStaticLightingMeshInstanceData (96), the relevant lights, visibility IDs (none) and an FMaterialElementData
     /// (44) per element. The diffuse boosts are already in the materials' diffuse.
     /// </summary>
-    static void WriteBaseInstance(LightmassWriter w, Guid guid, int triangles, int vertices, int meshIndex, int levelId, bool castShadow,
+    static void WriteBaseInstance(LightmassWriter w, Guid guid, int triangles, int vertices, int meshIndex, int levelId, bool castShadow, bool selfShadowOnly,
         bool castShadowAsTwoSided, List<LightmassLight> relevantLights, Vector3 boundsMin, Vector3 boundsMax, IEnumerable<LightmassElement> elements)
     {
         long start = w.Position;
@@ -180,7 +180,9 @@ public sealed class LightmassExporter(LightmassScene scene, IniFile ini, Lightma
         w.Int(0); // TextureCoordinateIndex
         w.Int(meshIndex);
         w.Int(levelId);
-        w.UInt(castShadow ? 1u : 0u); // LightingFlags: GI_INSTANCE_CASTSHADOW
+        // LightingFlags: GI_INSTANCE_CASTSHADOW, GI_INSTANCE_SELFSHADOWONLY. Never GI_INSTANCE_TWOSIDED: UE3 builds static mesh and terrain lighting meshes
+        // with bTwoSidedMaterial FALSE (UnStaticMeshLight.cpp, TerrainLight.cpp); materials say whether they're two-sided themselves
+        w.UInt((castShadow ? 1u : 0u) | (selfShadowOnly ? 4u : 0u));
         w.Bool(castShadowAsTwoSided);
         // UDK-2015-02 inserts two flags here, unlike IB (same struct size, so NumRelevantLights moves from 52 to 60; UDK.exe's
         // WriteBaseMeshInstanceData): one from the owning actor's flags and one set for a particular component class. Both are
@@ -213,7 +215,7 @@ public sealed class LightmassExporter(LightmassScene scene, IniFile ini, Lightma
     {
         var lod = instance.Mesh.Mesh.LODModels[instance.LodIndex];
         WriteBaseInstance(w, instance.Guid, lod.IndexBuffer.Length / 3, VertexCount(lod), instance.MeshIndex, instance.LevelId, instance.CastShadow,
-            instance.CastShadowAsTwoSided, instance.RelevantLights, instance.BoundsMin, instance.BoundsMax,
+            instance.SelfShadowOnly, instance.CastShadowAsTwoSided, instance.RelevantLights, instance.BoundsMin, instance.BoundsMax,
             instance.ElementMaterials.Select(m => new LightmassElement(m, instance.Settings)));
 
         long start = w.Position;
@@ -235,7 +237,7 @@ public sealed class LightmassExporter(LightmassScene scene, IniFile ini, Lightma
     static void WriteBspMapping(LightmassWriter w, LightmassBspMapping m)
     {
         // UE3 gives every BSP mapping MeshIndex INDEX_NONE, so BSP never counts as another LOD of the same mesh.
-        WriteBaseInstance(w, m.Guid, m.TriangleElements.Count, m.Vertices.Count, -1, m.LevelId, true, m.CastShadowAsTwoSided, m.RelevantLights,
+        WriteBaseInstance(w, m.Guid, m.TriangleElements.Count, m.Vertices.Count, -1, m.LevelId, true, false, m.CastShadowAsTwoSided, m.RelevantLights,
             m.BoundsMin, m.BoundsMax, m.Elements);
         // FStaticLightingMappingData: Lightmass finds a mapping's mesh by the mapping's own GUID; the second is the model's LightingGuid in UE3, unused.
         w.Guid(m.Guid);
@@ -276,7 +278,7 @@ public sealed class LightmassExporter(LightmassScene scene, IniFile ini, Lightma
     /// </summary>
     static void WriteTerrainMapping(LightmassWriter w, LightmassTerrainMapping m)
     {
-        WriteBaseInstance(w, m.Guid, m.Quads.Count * 2, m.Quads.Count * 4, -1, m.LevelId, m.CastShadow, false, m.RelevantLights,
+        WriteBaseInstance(w, m.Guid, m.Quads.Count * 2, m.Quads.Count * 4, -1, m.LevelId, m.CastShadow, m.SelfShadowOnly, false, m.RelevantLights,
             m.BoundsMin, m.BoundsMax, [m.Element]);
         w.Guid(m.Guid);
         w.Guid(m.Terrain.Guid);

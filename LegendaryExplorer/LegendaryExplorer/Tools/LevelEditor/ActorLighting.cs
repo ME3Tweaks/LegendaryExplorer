@@ -185,7 +185,7 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
             foreach (var property in changed) props.AddOrReplaceProp(property);
             Component.WriteProperties(props);
         }
-        SavedProperties = Component.GetCondensedProperties(Context.PackageCache, resolveImports: true, mergeStructs: true);
+        SavedProperties = EffectiveLightingProperties.ReadPrimitive(Component, Context.PackageCache);
         cleanSettings = settings;
         RefreshEnvironments();
         NotifySettings();

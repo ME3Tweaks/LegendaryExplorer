@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using LegendaryExplorerCore.GameFilesystem;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.BinaryConverters.Shaders;
@@ -178,6 +179,9 @@ public sealed class LightAttenuationRenderer : IDisposable
     private DepthStencilState ShadowVolumeState;
     private DepthStencilState ShadowProjectionState;
     private RasterizerState NoCullRasterizerState;
+    //one-sided casters in the shadow depth pass: culled like the scene's meshes, but unclipped by depth like NoCullRasterizerState
+    private RasterizerState ShadowDepthCullBackState;
+    private RasterizerState ShadowDepthCullFrontState;
     private Texture2D ShadowDepthBuffer;
     private DepthStencilView ShadowDepthBufferView;
     private ShaderResourceView ShadowDepthBufferResourceView;
@@ -204,6 +208,10 @@ public sealed class LightAttenuationRenderer : IDisposable
     private SceneLight AttenuationLight;
     private int LightsVersion = -1;
     private readonly Dictionary<SceneLight, List<(MeshStaticLighting Caster, BoxSphereBounds Bounds)>> ShadowCasters = [];
+    //what FindShadowCasters found for each mesh, kept across frames (see there)
+    private readonly Dictionary<MeshStaticLighting, (BoxSphereBounds Bounds, bool InScene, SceneLight[] Lights)> CasterLights = [];
+    private int CasterLightsVersion = -1;
+    private bool CasterLightsPreview;
     //lights whose attenuation failed to render, so it isn't retried every frame. Forgotten by ClearMaterials
     private readonly HashSet<SceneLight> FailedLights = [];
 
@@ -291,7 +299,7 @@ public sealed class LightAttenuationRenderer : IDisposable
             var shadowLight = ShadowLight.FromSceneLight(light);
             foreach ((MeshStaticLighting caster, BoxSphereBounds bounds) in casters)
             {
-                var subject = new[] { new ShadowCaster(caster.GetLocalToWorld, caster.DrawShadowCaster) };
+                var subject = new[] { new ShadowCaster(caster.GetLocalToWorld, caster.DrawShadowCaster, caster.ShadowSettings.TwoSided) };
                 if (ProjectedShadowInfo.Create(subject, shadowLight, bounds, Context.Camera, Context.Width, Context.Height) is { } shadow)
                 {
                     shadows.Add(shadow);
@@ -360,7 +368,7 @@ public sealed class LightAttenuationRenderer : IDisposable
             {
                 if (primitive.DrawShadowCaster is not null && primitive.IsInScene() && primitive.IsShown())
                 {
-                    subject.Add(new ShadowCaster(primitive.GetLocalToWorld, primitive.DrawShadowCaster));
+                    subject.Add(new ShadowCaster(primitive.GetLocalToWorld, primitive.DrawShadowCaster, primitive.CastShadowAsTwoSided));
                 }
             }
             if (subject.Count == 0 || lightEnvironment.GetLighting() is not { ShadowLight: { } shadowLight })
@@ -465,34 +473,65 @@ public sealed class LightAttenuationRenderer : IDisposable
     }
 
     /// <summary>
-    /// The meshes each light casts per-object shadows from: those in the game's scene, and shown in the editor, whose shadows from it weren't precomputed
-    /// (<see cref="MeshStaticLighting.CastsDynamicShadowFrom"/>)
+    /// Preview selects blockers from current shadow settings, independently of editor visibility and receiver assignments.
+    /// Level lighting retains its runtime interaction selection.
     /// </summary>
     private void FindShadowCasters()
     {
         bool previewLighting = Context.IsPreviewLighting;
+        SceneLight[] lights = Context.GetLights(out int lightsVersion);
+        //the lights each mesh casts shadows from only change with the lights (and the lighting mode and assignment policy, which replace them), and the
+        //mesh's bounds and visibility. Mesh setting edits replace the mesh's lighting
+        if (CasterLightsVersion != lightsVersion || CasterLightsPreview != previewLighting)
+        {
+            CasterLights.Clear();
+            (CasterLightsVersion, CasterLightsPreview) = (lightsVersion, previewLighting);
+        }
+        var current = new HashSet<MeshStaticLighting>();
         foreach (MeshStaticLighting staticLighting in Context.GetStaticLightings())
         {
             bool castsShadow = previewLighting ? staticLighting.IsPreviewShadowCaster : staticLighting.IsDynamicShadowCaster;
             if (!castsShadow || staticLighting.DrawShadowCaster is null || staticLighting.GetBounds is null || staticLighting.GetLocalToWorld is null
-                || !staticLighting.IsInScene() || !staticLighting.IsShown())
+                || !previewLighting && (!staticLighting.IsInScene() || !staticLighting.IsShown()))
             {
                 continue;
             }
+            current.Add(staticLighting);
             BoxSphereBounds bounds = staticLighting.GetBounds();
-            foreach (LightInteraction interaction in staticLighting.GetLightInteractions(bounds))
+            bool inScene = staticLighting.IsInScene();
+            if (!CasterLights.TryGetValue(staticLighting, out var cached) || cached.InScene != inScene || !SameBounds(cached.Bounds, bounds))
             {
-                bool castsShadowFromLight = previewLighting ? staticLighting.CastsPreviewShadowFrom(interaction.Light) : staticLighting.CastsDynamicShadowFrom(interaction.Light);
-                if (castsShadowFromLight && CastsPerObjectShadows(interaction.Light, previewLighting))
+                CasterLights[staticLighting] = cached = (bounds, inScene, ShadowLights(staticLighting, bounds, lights, previewLighting));
+            }
+            foreach (SceneLight light in cached.Lights)
+            {
+                if (!ShadowCasters.TryGetValue(light, out var casters))
                 {
-                    if (!ShadowCasters.TryGetValue(interaction.Light, out var casters))
-                    {
-                        ShadowCasters[interaction.Light] = casters = [];
-                    }
-                    casters.Add((staticLighting, bounds));
+                    ShadowCasters[light] = casters = [];
                 }
+                casters.Add((staticLighting, bounds));
             }
         }
+        if (CasterLights.Count > current.Count)
+        {
+            foreach (MeshStaticLighting removed in CasterLights.Keys.Where(caster => !current.Contains(caster)).ToArray())
+            {
+                CasterLights.Remove(removed);
+            }
+        }
+
+        static bool SameBounds(BoxSphereBounds a, BoxSphereBounds b) => a.Origin == b.Origin && a.BoxExtent == b.BoxExtent && a.SphereRadius == b.SphereRadius;
+    }
+
+    /// <summary>
+    /// The lights a mesh casts per-object shadows from
+    /// </summary>
+    private static SceneLight[] ShadowLights(MeshStaticLighting staticLighting, BoxSphereBounds bounds, SceneLight[] lights, bool previewLighting)
+    {
+        IEnumerable<SceneLight> candidates = previewLighting ? lights : staticLighting.GetLightInteractions(bounds).Select(interaction => interaction.Light);
+        return candidates.Where(light => CastsPerObjectShadows(light, previewLighting) && (previewLighting
+            ? staticLighting.CastsPreviewShadowFrom(light) && staticLighting.IsShadowRelevant(light, bounds)
+            : staticLighting.CastsDynamicShadowFrom(light))).ToArray();
     }
 
     /// <returns>The projection shaders for shadows that attenuate a light, and for modulated shadows from a point light. Either is null if it can't be loaded</returns>
@@ -543,7 +582,187 @@ public sealed class LightAttenuationRenderer : IDisposable
     }
 
     /// <summary>
-    /// FProjectedShadowInfo::RenderDepth: the subject's depth from the light, in the top left of the shadow depth buffer, inside its border
+    /// Draws one section of a caster into the shadow depth buffer: with the material's own shadow depth shaders when it has them (masked coverage,
+    /// vertex deformation), otherwise as plain geometry. Translucent sections, and masked ones without shaders, don't cast.
+    /// </summary>
+    internal void DrawShadowSection<TVertex>(DeviceContext ctx, Mesh<TVertex> mesh, ModelPreviewSection section, MaterialRenderProxy material, ShadowDepthPass pass)
+        where TVertex : IVertexBase
+    {
+        if (!section.CastsShadow || material is { CastsShadowDepth: false }) return;
+        ctx.Rasterizer.State = pass.TwoSided || material?.IsTwoSided == true ? NoCullRasterizerState
+            : mesh.LocalToWorld.GetDeterminant() < 0 ? ShadowDepthCullFrontState
+            : ShadowDepthCullBackState;
+        if (mesh is Mesh<LEVertex> gameMesh && material?.ShadowShaders is { } shaders && SetGameShadowShaders(ctx, gameMesh, material, shaders, pass))
+        {
+            Context.LEEffect.RenderObject(ctx, gameMesh, (int)section.StartIndex, (int)section.TriangleCount * 3);
+            return;
+        }
+        // An opaque silhouette is a misleading substitute for unavailable masked coverage.
+        if (material is { IsMasked: true }) return;
+        ctx.InputAssembler.InputLayout = ShadowDepthInputLayout;
+        ctx.VertexShader.Set(ShadowDepthVertexShader);
+        ctx.PixelShader.Set(ShadowDepthPixelShader);
+        ctx.VertexShader.SetConstantBuffer(0, ShadowDepthConstantBuffer);
+        ctx.PixelShader.SetConstantBuffer(0, ShadowDepthConstantBuffer);
+        ctx.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
+        ctx.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(mesh.VertexBuffer, TVertex.Stride, 0));
+        ctx.InputAssembler.SetIndexBuffer(mesh.IndexBuffer, Format.R32_UInt, 0);
+        ctx.DrawIndexed((int)section.TriangleCount * 3, (int)section.StartIndex, 0);
+    }
+
+    /// <summary>
+    /// Binds the material's shadow depth shaders and their parameters. If they can't be used, the material falls back to the plain depth shader from then on
+    /// </summary>
+    private bool SetGameShadowShaders(DeviceContext ctx, Mesh<LEVertex> mesh, MaterialRenderProxy material, MaterialRenderProxy.ShadowDepthShaders shaders, ShadowDepthPass pass)
+    {
+        var (vertex, pixel) = (shaders.Vertex, shaders.Pixel);
+        LEEffect effect = Context.LEEffect;
+        try
+        {
+            effect.PixelShaderResources.Reset();
+            var (vs, layout) = Context.GetCachedVertexShader(vertex.Guid, vertex.ShaderByteCode);
+            PixelShader ps = pixel is not null
+                ? Context.GetCachedPixelShader(pixel.Guid, pixel.ShaderByteCode)
+                : DepthPixelShaderFor(vertex.Guid, shaders.DepthPixelShader);
+            effect.PrepDraw(ctx, vs, ps, layout, null);
+            Span<byte> vb = effect.VertexShaderConstantBuffer;
+            Span<byte> pb = effect.PixelShaderConstantBuffer;
+            vb.Clear();
+            pb.Clear();
+            ((FLocalVertexFactoryShaderParameters)vertex.VertexFactoryParameters.Parameters).WriteValues(vb, Context, mesh, material);
+            vertex.MaterialParameters.WriteValues(vb, Context, mesh, material);
+            vb.WriteVal(vertex.ProjectionMatrix, pass.WorldToShadow);
+            vb.WriteVal(vertex.InvMaxSubjectDepth, pass.InvMaxSubjectDepth);
+            vb.WriteVal(vertex.DepthBias, pass.DepthBias);
+            vb.WriteVal(vertex.bClampToNearPlane, 0f);
+            if (pixel is not null)
+            {
+                pixel.MaterialParameters.WriteValues(pb, Context, mesh, material);
+                pb.WriteVal(pixel.InvMaxSubjectDepth, pass.InvMaxSubjectDepth);
+                pb.WriteVal(pixel.DepthBias, pass.DepthBias);
+            }
+            else
+            {
+                //the generated depth shader reads the caster's depth constants, which RenderShadowDepth has set
+                ctx.PixelShader.SetConstantBuffer(DepthPixelShaderConstantSlot, ShadowDepthConstantBuffer);
+            }
+            return true;
+        }
+        //the shaders or their parameters don't fit this material. A lost device isn't the material's fault, and is handled where the device is
+        catch (Exception e) when (!IsDeviceLost(e))
+        {
+            material.DisableShadowShaders(pixel is null
+                ? $"Game shadow vertex shader failed ({e.Message}): {MaterialRenderProxy.UndeformedShadow}"
+                : $"Game shadow shaders failed ({e.Message}): {MaterialRenderProxy.NoMaskedShadow}");
+            effect.PixelShaderResources.Reset();
+            return false;
+        }
+    }
+
+    private static bool IsDeviceLost(Exception e) => e is SharpDX.SharpDXException { ResultCode.Code: var code }
+        && (code == SharpDX.DXGI.ResultCode.DeviceRemoved.Result.Code || code == SharpDX.DXGI.ResultCode.DeviceReset.Result.Code
+            || code == SharpDX.DXGI.ResultCode.DeviceHung.Result.Code);
+
+    //LEEffect binds its constants to slots 0-2, and its hit proxy constants to slot 3 (HIT_PROXY_CONSTANT_BUFFER_SLOT), which shadow depth passes
+    //don't draw: RenderShadowDepth unbinds this before hit proxies are drawn, which bind their own
+    private const int DepthPixelShaderConstantSlot = 3;
+    //by the vertex shader they're for
+    private readonly Dictionary<Guid, PixelShader> DepthPixelShaders = [];
+
+    /// <summary>
+    /// UE3 draws an opaque material's shadow depth with its own vertex shader (if it moves its vertices) and the default material's pixel shader, which only
+    /// writes the interpolated depth. This is that pixel shader for the vertex shader, from the bytecode MaterialRenderProxy.PrepareShadowShaders compiled
+    /// (see <see cref="DepthPixelShaderByteCode"/>)
+    /// </summary>
+    private PixelShader DepthPixelShaderFor(Guid vertexShader, byte[] bytecode)
+    {
+        if (!DepthPixelShaders.TryGetValue(vertexShader, out PixelShader pixelShader))
+        {
+            DepthPixelShaders[vertexShader] = pixelShader = new PixelShader(Context.Device, bytecode);
+        }
+        return pixelShader;
+    }
+
+    /// <summary>Releases generated shaders when their source bytecode changes, even if the vertex shader GUID is unchanged.</summary>
+    internal void ClearDepthPixelShaders()
+    {
+        foreach (PixelShader depthPixelShader in DepthPixelShaders.Values) depthPixelShader.Dispose();
+        DepthPixelShaders.Clear();
+    }
+
+    /// <summary>
+    /// A ps_5_0 pixel shader that writes the vertex shader's ShadowDepth (TEXCOORD4, the shadow space Z) as ShadowDepthPixelShader.usf does for
+    /// perspective correct depth. It declares all of the vertex shader's outputs in its register order, since a material whose blend mode isn't opaque
+    /// passes its vertex factory's interpolants too (ShadowDepthVertexShader.usf, !MATERIALBLENDING_SOLID), and the stages only link if each input is on
+    /// the vertex shader's register. Null if the vertex shader has no such depth, or the inputs don't land on its registers
+    /// </summary>
+    public static byte[] DepthPixelShaderByteCode(byte[] vertexShaderByteCode)
+    {
+        static bool IsDepth(ShaderParameterDescription p) => p.SystemValueType == SystemValueType.Undefined && p.SemanticIndex == 4
+            && p.SemanticName.Equals("TEXCOORD", StringComparison.OrdinalIgnoreCase) && p.ComponentType == RegisterComponentType.Float32
+            && BitOperations.PopCount((uint)p.UsageMask) == 1; //one component, which the compiler may pack into another interpolant's register
+        static int FirstComponent(ShaderParameterDescription p) => BitOperations.TrailingZeroCount((uint)p.UsageMask);
+
+        using var vertexReflection = new ShaderReflection(vertexShaderByteCode);
+        var outputs = Enumerable.Range(0, vertexReflection.Description.OutputParameters).Select(vertexReflection.GetOutputParameterDescription)
+            .OrderBy(p => p.Register).ThenBy(FirstComponent).ToArray();
+        if (outputs.Count(IsDepth) != 1)
+        {
+            return null;
+        }
+        var members = new List<string>();
+        for (int i = 0; i < outputs.Length; i++)
+        {
+            var p = outputs[i];
+            string type = p.ComponentType switch
+            {
+                RegisterComponentType.Float32 => "float",
+                RegisterComponentType.SInt32 => "nointerpolation int",
+                RegisterComponentType.UInt32 => "nointerpolation uint",
+                _ => null
+            };
+            string semantic = p.SystemValueType switch
+            {
+                SystemValueType.Position => "SV_Position",
+                SystemValueType.Undefined => $"{p.SemanticName}{p.SemanticIndex}",
+                _ => null
+            };
+            if (type is null || semantic is null)
+            {
+                return null;
+            }
+            int width = BitOperations.PopCount((uint)p.UsageMask);
+            members.Add($"    {type}{(width > 1 ? width : "")} {(IsDepth(p) ? "Depth" : $"Unused{i}")} : {semantic};");
+        }
+        string code = $$"""
+            cbuffer ShadowDepthConstants : register(b{{DepthPixelShaderConstantSlot}})
+            {
+                row_major float4x4 LocalToWorld;
+                row_major float4x4 WorldToShadow;
+                float InvMaxSubjectDepth;
+                float DepthBias;
+            };
+            struct Interpolants
+            {
+            {{string.Join("\n", members)}}
+            };
+            float Main(Interpolants input) : SV_Depth
+            {
+                return saturate(input.Depth * InvMaxSubjectDepth + DepthBias);
+            }
+            """;
+        using ShaderBytecode bytecode = ShaderBytecode.Compile(code, "Main", "ps_5_0").Bytecode;
+        using var pixelReflection = new ShaderReflection(bytecode.Data);
+        var inputs = Enumerable.Range(0, pixelReflection.Description.InputParameters).Select(pixelReflection.GetInputParameterDescription).ToArray();
+        static (string, int, int, RegisterComponentMaskFlags) Slot(ShaderParameterDescription p) =>
+            (p.SystemValueType == SystemValueType.Position ? "SV_POSITION" : p.SemanticName.ToUpperInvariant(), p.SemanticIndex, p.Register, p.UsageMask);
+        //the inputs it reads must be where the vertex shader writes them
+        var written = outputs.Select(Slot).ToHashSet();
+        return inputs.All(p => written.Contains(Slot(p))) && inputs.Any(IsDepth) ? bytecode.Data : null;
+    }
+
+    /// <summary>
+    /// FProjectedShadowInfo::RenderDepth: the subject's depth from the light, inside the shadow buffer's border.
     /// </summary>
     private void RenderShadowDepth(ProjectedShadowInfo shadow)
     {
@@ -569,8 +788,13 @@ public sealed class LightAttenuationRenderer : IDisposable
                 DepthBias = shadow.DepthBias,
             };
             ctx.UpdateSubresource(ref constants, ShadowDepthConstantBuffer);
-            caster.Draw(ctx);
+            caster.Draw(ctx, new ShadowDepthPass(constants.WorldToShadow, constants.InvMaxSubjectDepth, constants.DepthBias, caster.TwoSided));
         }
+        //materials' shadow depth shaders bind their own textures, samplers and constants
+        Context.LEEffect.PixelShaderResources.Reset();
+        ctx.PixelShader.SetShaderResources(0, NoShaderResources);
+        ctx.PixelShader.SetConstantBuffer(DepthPixelShaderConstantSlot, null);
+        Context.RestoreDefaultSamplers();
         ctx.Rasterizer.SetViewport(0, 0, Context.Width, Context.Height);
     }
 
@@ -817,6 +1041,16 @@ public sealed class LightAttenuationRenderer : IDisposable
                 FillMode = FillMode.Solid,
                 IsDepthClipEnabled = false,
             });
+            //UE3's FShadowDepthDrawingPolicy culls with the scene's winding (CM_CW, or CM_CCW when reversed): the shadow matrices keep UE3's handedness
+            RasterizerState ShadowCullState(CullMode cullMode) => new(device, new RasterizerStateDescription
+            {
+                CullMode = cullMode,
+                FillMode = FillMode.Solid,
+                IsFrontCounterClockwise = true,
+                IsDepthClipEnabled = false,
+            });
+            ShadowDepthCullBackState = ShadowCullState(CullMode.Back);
+            ShadowDepthCullFrontState = ShadowCullState(CullMode.Front);
             ShadowDepthBuffer = new Texture2D(device, new Texture2DDescription
             {
                 ArraySize = 1,
@@ -888,6 +1122,7 @@ public sealed class LightAttenuationRenderer : IDisposable
         IncompleteProjectionShaders.Clear();
         FailedLights.Clear();
         ShadowCasters.Clear();
+        CasterLights.Clear();
         Frame = uint.MaxValue;
     }
 
@@ -939,6 +1174,9 @@ public sealed class LightAttenuationRenderer : IDisposable
         ShadowVolumeState?.Dispose();
         ShadowProjectionState?.Dispose();
         NoCullRasterizerState?.Dispose();
+        ShadowDepthCullBackState?.Dispose();
+        ShadowDepthCullFrontState?.Dispose();
+        ClearDepthPixelShaders();
         ShadowDepthBufferResourceView?.Dispose();
         ShadowDepthBufferView?.Dispose();
         ShadowDepthBuffer?.Dispose();

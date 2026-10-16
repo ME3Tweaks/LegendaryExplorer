@@ -1,3 +1,4 @@
+using LegendaryExplorer.Lightmaps.Lightmass;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.Resources;
 using LegendaryExplorerCore.Gammtek;
@@ -267,6 +268,8 @@ public class MeshRenderContext : RenderContext
     private readonly Dictionary<RenderTargetBlendDescription, BlendState> BlendStateCache = new(new BlendDescComparer());
     private readonly ConcurrentDictionary<Guid, (VertexShader Shader, InputLayout InputLayout)> VertexShaderCache = new();
     private readonly ConcurrentDictionary<Guid, PixelShader> PixelShaderCache = new();
+    //compiled for shadow depth vertex shaders, which material instances without a static permutation share with their parent. A null value is one that can't be matched
+    private readonly ConcurrentDictionary<Guid, Lazy<byte[]>> DepthPixelShaderByteCodes = new();
     //parsing a package's ShaderCache is expensive, and every material in the package needs it
     private readonly Dictionary<IMEPackage, ShaderCache> SeekFreeShaderCaches = [];
     public readonly PreviewTextureCache TextureCache;
@@ -290,6 +293,69 @@ public class MeshRenderContext : RenderContext
     //replaced rather than modified, so it can be read without locking
     private SceneLight[] Lights = [];
     private int LightsVersion;
+    //replaced under LightsLock rather than modified, like Lights
+    private LightAssignmentHistory assignmentHistory = LightAssignmentHistory.Empty;
+    internal LightAssignmentHistory AssignmentHistory => Volatile.Read(ref assignmentHistory);
+    private LightAssignmentPolicy assignmentPolicy = LightAssignmentPolicy.RecomputeAssignments;
+    public LightAssignmentPolicy AssignmentPolicy
+    {
+        get => assignmentPolicy;
+        set
+        {
+            if (assignmentPolicy == value) return;
+            if (!Enum.IsDefined(value)) throw new ArgumentOutOfRangeException(nameof(value));
+            lock (LightsLock)
+            {
+                assignmentPolicy = value;
+                LightsVersion++;
+            }
+            // Preparation will run on the editor's background worker before rendering resumes.
+            lock (StaticLightings)
+                foreach (var lighting in StaticLightings) lighting.InvalidatePreviewPreparation();
+        }
+    }
+
+    /// <summary>Whether ForgetLevel dropped the level since it was last opened, and how many times either happened</summary>
+    private sealed class LevelCaptureState
+    {
+        public bool Forgotten;
+        public int Generation;
+    }
+
+    //per level (weakly, so closed levels aren't kept alive), so that a capture that was reading a level that was closed, or closed and reopened,
+    //doesn't add the old records back; and how many times ClearLights dropped every level. Guarded by LightsLock
+    private readonly System.Runtime.CompilerServices.ConditionalWeakTable<IMEPackage, LevelCaptureState> LevelCaptures = new();
+    private int LightsClears;
+
+    /// <summary>
+    /// Records the level's light assignments as they are now, unless it has them already
+    /// </summary>
+    /// <param name="opening">The level is being opened, so it's captured even if it was forgotten before (an open package can be reopened)</param>
+    internal void CaptureAssignments(IMEPackage package, bool opening = false)
+    {
+        int clears, generation;
+        LevelCaptureState state;
+        lock (LightsLock)
+        {
+            state = LevelCaptures.GetValue(package, static _ => new LevelCaptureState());
+            if (opening && state.Forgotten)
+            {
+                state.Forgotten = false;
+                state.Generation++;
+            }
+            if (assignmentHistory.Contains(package) || state.Forgotten) return;
+            (clears, generation) = (LightsClears, state.Generation);
+        }
+        //parsing the package's primitives takes a while, so it's done outside the lock
+        var records = LightAssignmentHistory.Read(package);
+        lock (LightsLock)
+        {
+            //closed (and maybe reopened) meanwhile, or captured by another thread
+            if (clears != LightsClears || state.Generation != generation || assignmentHistory.Contains(package)) return;
+            Volatile.Write(ref assignmentHistory, assignmentHistory.With(records));
+            LightsVersion++;
+        }
+    }
 
     /// <summary>
     /// Select level lighting, a neutral preview light, or material colors without lighting.
@@ -342,6 +408,8 @@ public class MeshRenderContext : RenderContext
         lock (LightsLock)
         {
             Lights = [];
+            Volatile.Write(ref assignmentHistory, LightAssignmentHistory.Empty);
+            LightsClears++;
             LightsVersion++;
         }
     }
@@ -374,7 +442,7 @@ public class MeshRenderContext : RenderContext
         }
     }
 
-    private readonly LightAttenuationRenderer LightAttenuations;
+    internal readonly LightAttenuationRenderer LightAttenuations;
 
     /// <summary>
     /// Whether the actor is shown in this view, so that its meshes cast their dynamic shadows
@@ -540,76 +608,26 @@ public class MeshRenderContext : RenderContext
     internal bool ResolveLightEnvironment(ExportEntry componentExport, PropertyCollection condensedProps, ExportEntry owner, out DynamicLightEnvironment lightEnvironment)
     {
         lightEnvironment = null;
+        if (!EffectiveLightingProperties.UsesLightEnvironment(componentExport, condensedProps, owner, PackageCache, out ExportEntry lightEnvironmentExport))
+        {
+            return false;
+        }
+        if (!SupportsLightEnvironments(componentExport.Game))
+        {
+            return true;
+        }
         try
         {
-            ExportEntry lightEnvironmentExport = null;
-            var lightEnvironmentProp = condensedProps.GetProp<ObjectProperty>("LightEnvironment");
-            if (lightEnvironmentProp is { Value: not 0 })
-            {
-                lightEnvironmentExport = lightEnvironmentProp.ResolveToEntry(componentExport.FileRef) switch
-                {
-                    ExportEntry export => export,
-                    ImportEntry import => LegendaryExplorerCore.Packages.CloningImportingAndRelinking.EntryImporter.ResolveImport(import, PackageCache),
-                    _ => null
-                };
-                //A light environment that belongs to another actor placed in a level is deliberately shared with it. Any other that isn't the actor's own
-                //was inherited from an archetype (at any depth) or class defaults, and belongs to the actor like everything else it inherits: it has its own instance
-                if (owner is not null && lightEnvironmentExport is not null && lightEnvironmentExport.Parent != owner && !IsPlacedActor(lightEnvironmentExport.Parent)
-                    && FindInstancedComponent(owner, lightEnvironmentExport) is { } ownLightEnvironment)
-                {
-                    lightEnvironmentExport = ownLightEnvironment;
-                }
-                if (lightEnvironmentExport is not null
-                    && lightEnvironmentExport.GetCondensedProperties(PackageCache, resolveImports: true).GetProp<BoolProperty>("bEnabled") is { Value: false })
-                {
-                    return false;
-                }
-            }
-            else if (lightEnvironmentProp is { Value: 0 } || owner is null || !IsCharacterClass(owner))
-            {
-                return false;
-            }
-            if (SupportsLightEnvironments(componentExport.Game))
-            {
-                //a shared light environment is its actor's. An inherited one with no instance of its own is still this actor's alone
-                ExportEntry lightEnvironmentOwner = lightEnvironmentExport?.Parent is ExportEntry outer && outer != owner && IsPlacedActor(outer) ? outer : owner;
-                lightEnvironment = GetLightEnvironment(lightEnvironmentOwner, lightEnvironmentExport);
-            }
+            //a shared light environment is its actor's. An inherited one with no instance of its own is still this actor's alone
+            ExportEntry lightEnvironmentOwner = lightEnvironmentExport?.Parent is ExportEntry outer && outer != owner
+                && EffectiveLightingProperties.IsPlacedActor(outer) ? outer : owner;
+            lightEnvironment = GetLightEnvironment(lightEnvironmentOwner, lightEnvironmentExport);
             return true;
         }
         catch (Exception e)
         {
-            System.Diagnostics.Debug.WriteLine($"Could not resolve the light environment of {componentExport.InstancedFullPath}, so it's lit like other meshes: {e.Message}");
-            lightEnvironment = null;
+            System.Diagnostics.Debug.WriteLine($"Could not read the light environment of {componentExport.InstancedFullPath}, so it's lit like other meshes: {e.Message}");
             return false;
-        }
-
-        //Pawns, stunt actors and SFXSkeletalMeshActors have a BioDynamicLightEnvironmentComponent in their class defaults
-        static bool IsCharacterClass(ExportEntry actor) =>
-            GlobalUnrealObjectInfo.IsA(actor.ClassName, "Pawn", actor.Game)
-            || GlobalUnrealObjectInfo.IsA(actor.ClassName, "SFXStuntActor", actor.Game)
-            || GlobalUnrealObjectInfo.IsA(actor.ClassName, "SFXSkeletalMeshActor", actor.Game);
-
-        //an actor in a level (whose outer is the level), rather than an archetype or class default object
-        static bool IsPlacedActor(IEntry entry) => entry is ExportEntry { IsDefaultObject: false, Parent: ExportEntry { ClassName: "Level" } };
-
-        //the actor's instance of a template component: its subobject of the same name, or else the first of the same class
-        static ExportEntry FindInstancedComponent(ExportEntry actor, ExportEntry template)
-        {
-            ExportEntry sameClass = null;
-            foreach (ExportEntry child in actor.GetChildren<ExportEntry>())
-            {
-                if (child.ClassName != template.ClassName)
-                {
-                    continue;
-                }
-                if (child.ObjectName == template.ObjectName)
-                {
-                    return child;
-                }
-                sameClass ??= child;
-            }
-            return sameClass;
         }
     }
 
@@ -912,6 +930,16 @@ public class MeshRenderContext : RenderContext
     /// </summary>
     public void ForgetLevel(IMEPackage level)
     {
+        //the level's imports key the class defaults
+        EffectiveLightingProperties.InvalidateDefaults(PackageCache);
+        lock (LightsLock)
+        {
+            Volatile.Write(ref assignmentHistory, assignmentHistory.Without(level));
+            var state = LevelCaptures.GetValue(level, static _ => new LevelCaptureState());
+            state.Forgotten = true;
+            state.Generation++;
+            LightsVersion++;
+        }
         lock (LightEnvironments)
         {
             WorldLightEnvironmentSettings.Remove(level);
@@ -997,14 +1025,6 @@ public class MeshRenderContext : RenderContext
     }
 
     /// <summary>
-    /// Loads the game shaders of every material created since the last call, and creates their D3D shaders.
-    /// Then loads the light shaders that the level's lights need (see <see cref="MeshStaticLighting.GetLightInteractions"/>).
-    /// Loading them can take seconds for a whole level, so call this on a background thread before turning on <see cref="UseGameShaders"/>,
-    /// and after adding a level's lights. Otherwise shaders are loaded the first time they're needed.
-    /// </summary>
-    /// <param name="reportProgress">Called with the number of items loaded so far, and the total</param>
-    /// <param name="lightingModeToPrepare">Load light shaders for this mode before switching to it. Defaults to the current mode.</param>
-    /// <summary>
     /// Whether <see cref="LoadPendingGameShaders"/> has anything to do for a lighting mode
     /// </summary>
     public bool NeedsGameShaderPreparation(ViewportLightingMode mode)
@@ -1017,6 +1037,16 @@ public class MeshRenderContext : RenderContext
         }
     }
 
+    /// <summary>
+    /// Loads the game shaders of every material created since the last call, and creates their D3D shaders, and prepares their shadow depth shaders.
+    /// Then loads the light shaders that the level's lights need (see <see cref="MeshStaticLighting.GetLightInteractions"/>).
+    /// Loading them can take seconds for a whole level, so call this on a background thread before turning on <see cref="UseGameShaders"/>,
+    /// and after adding a level's lights. Otherwise shaders are loaded the first time they're needed.
+    /// </summary>
+    /// <param name="reportProgress">Called with the number of items loaded so far, and the total</param>
+    /// <param name="lightingModeToPrepare">Load light shaders for this mode before switching to it. Defaults to the current mode.</param>
+    /// <exception cref="AggregateException">Some materials' game shaders failed to load, one inner exception each. Everything else was still done,
+    /// and those materials are retried when they're rendered, falling back to LEX's shader</exception>
     public void LoadPendingGameShaders(Action<int, int> reportProgress = null, ViewportLightingMode? lightingModeToPrepare = null)
     {
         MaterialRenderProxy[] materials;
@@ -1025,41 +1055,63 @@ public class MeshRenderContext : RenderContext
             materials = [.. PendingGameShaderLoads];
             PendingGameShaderLoads.Clear();
         }
-        MeshStaticLighting[] staticLightings = [];
-        ViewportLightingMode mode = lightingModeToPrepare ?? LightingMode;
-        if (mode is ViewportLightingMode.Level or ViewportLightingMode.Preview)
+        try
         {
-            lock (StaticLightings)
+            MeshStaticLighting[] staticLightings = [];
+            ViewportLightingMode mode = lightingModeToPrepare ?? LightingMode;
+            if (mode is ViewportLightingMode.Level or ViewportLightingMode.Preview)
             {
-                staticLightings = [.. StaticLightings];
-            }
-        }
-        int total = materials.Length + staticLightings.Length;
-        for (int i = 0; i < materials.Length; i++)
-        {
-            MaterialRenderProxy material = materials[i];
-            material.LoadGameShaders();
-            if (Device is not null && material.CanRenderWithGameShaders)
-            {
-                GetCachedVertexShader(material.UnrealVertexShader.Guid, material.UnrealVertexShader.ShaderByteCode);
-                GetCachedPixelShader(material.UnrealPixelShader.Guid, material.UnrealPixelShader.ShaderByteCode);
-                if (material.NoLightMapVertexShader is not null)
+                lock (StaticLightings)
                 {
-                    GetCachedVertexShader(material.NoLightMapVertexShader.Guid, material.NoLightMapVertexShader.ShaderByteCode);
-                    GetCachedPixelShader(material.NoLightMapPixelShader.Guid, material.NoLightMapPixelShader.ShaderByteCode);
-                }
-                if (material.PreviewVertexShader is not null)
-                {
-                    GetCachedVertexShader(material.PreviewVertexShader.Guid, material.PreviewVertexShader.ShaderByteCode);
-                    GetCachedPixelShader(material.PreviewPixelShader.Guid, material.PreviewPixelShader.ShaderByteCode);
+                    staticLightings = [.. StaticLightings];
                 }
             }
-            reportProgress?.Invoke(i + 1, total);
+            int total = materials.Length + staticLightings.Length;
+            //one material failing doesn't stop the others, which were taken off the queue: its failure is reported after them
+            List<Exception> failures = null;
+            for (int i = 0; i < materials.Length; i++)
+            {
+                MaterialRenderProxy material = materials[i];
+                try
+                {
+                    material.LoadGameShaders();
+                    if (Device is not null && material.CanRenderWithGameShaders)
+                    {
+                        GetCachedVertexShader(material.UnrealVertexShader.Guid, material.UnrealVertexShader.ShaderByteCode);
+                        GetCachedPixelShader(material.UnrealPixelShader.Guid, material.UnrealPixelShader.ShaderByteCode);
+                        if (material.NoLightMapVertexShader is not null)
+                        {
+                            GetCachedVertexShader(material.NoLightMapVertexShader.Guid, material.NoLightMapVertexShader.ShaderByteCode);
+                            GetCachedPixelShader(material.NoLightMapPixelShader.Guid, material.NoLightMapPixelShader.ShaderByteCode);
+                        }
+                        if (material.PreviewVertexShader is not null)
+                        {
+                            GetCachedVertexShader(material.PreviewVertexShader.Guid, material.PreviewVertexShader.ShaderByteCode);
+                            GetCachedPixelShader(material.PreviewPixelShader.Guid, material.PreviewPixelShader.ShaderByteCode);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    //usually creating its D3D shaders failed, after its shadow shaders were prepared. (If loading them threw, they stay pending until they're tried again, when it's drawn)
+                    (failures ??= []).Add(new Exception($"{material.InstancedFullPath}: {e.Message}", e));
+                }
+                reportProgress?.Invoke(i + 1, total);
+            }
+            for (int i = 0; i < staticLightings.Length; i++)
+            {
+                staticLightings[i].PrepareLightShaders(mode == ViewportLightingMode.Preview);
+                reportProgress?.Invoke(materials.Length + i + 1, total);
+            }
+            if (failures is not null)
+            {
+                throw new AggregateException("Some materials couldn't load their game shaders", failures);
+            }
         }
-        for (int i = 0; i < staticLightings.Length; i++)
+        finally
         {
-            staticLightings[i].PrepareLightShaders(mode == ViewportLightingMode.Preview);
-            reportProgress?.Invoke(materials.Length + i + 1, total);
+            // The snapshot is no longer in the queue. Release every material even if progress reporting or light preparation throws.
+            foreach (MaterialRenderProxy material in materials) material.Dequeued();
         }
     }
 
@@ -1558,6 +1610,16 @@ public class MeshRenderContext : RenderContext
         return blendState;
     }
 
+    /// <summary>
+    /// <see cref="LightAttenuationRenderer.DepthPixelShaderByteCode"/> for a shadow depth vertex shader, compiled once per shader.
+    /// Failures are cached too, and rethrown until the shader caches are invalidated.
+    /// </summary>
+    internal byte[] GetDepthPixelShaderByteCode(LegendaryExplorerCore.Unreal.BinaryConverters.Shaders.Shader vertexShader)
+    {
+        return DepthPixelShaderByteCodes.GetOrAdd(vertexShader.Guid,
+            _ => new Lazy<byte[]>(() => LightAttenuationRenderer.DepthPixelShaderByteCode(vertexShader.ShaderByteCode))).Value;
+    }
+
     // Cache hits do not take a lock. Creation is serialized to avoid duplicate D3D resources
     // when the background shader loader and render thread request the same shader.
     public (VertexShader, InputLayout) GetCachedVertexShader(Guid id, byte[] shaderBytecode)
@@ -1639,6 +1701,8 @@ public class MeshRenderContext : RenderContext
                 || entry.ClassName == "WorldInfo"));
         if (shaders)
         {
+            DepthPixelShaderByteCodes.Clear();
+            LightAttenuations.ClearDepthPixelShaders();
             lock (SeekFreeShaderCaches) SeekFreeShaderCaches.Remove(package);
             lock (VertexShaderCache)
             {
@@ -1671,7 +1735,10 @@ public class MeshRenderContext : RenderContext
     public override void EmptyCaches()
     {
         PackageCache?.ReleasePackages();
+        //they're keyed by the levels' imports, and hold the released packages' class default objects
+        EffectiveLightingProperties.InvalidateDefaults(PackageCache);
         LightAttenuations?.ClearMaterials();
+        LightAttenuations?.ClearDepthPixelShaders();
         ModulatedShadowsFailed = false;
         lock (SeekFreeShaderCaches)
         {
@@ -1679,8 +1746,10 @@ public class MeshRenderContext : RenderContext
         }
         lock (PendingGameShaderLoads)
         {
+            foreach (MaterialRenderProxy material in PendingGameShaderLoads) material.Dequeued();
             PendingGameShaderLoads.Clear();
         }
+        DepthPixelShaderByteCodes.Clear();
         //light environments themselves belong to their meshes' components, which remove them when disposed
         lock (LightEnvironments)
         {

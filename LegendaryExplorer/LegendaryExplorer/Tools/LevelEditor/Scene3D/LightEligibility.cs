@@ -3,7 +3,7 @@ namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 /// <summary>
 /// Whether a light reaches a primitive under the viewport's current light-selection rules, and if not, the first rule that excludes it.
 /// Eligibility doesn't mean that every point on the primitive is lit: occlusion is decided by the renderer.
-/// These are the preview's rules, not the Lightmass baker's; the two can differ until they share an evaluation.
+/// Preview and bake share assignment eligibility; baked output and runtime routing remain separate.
 /// </summary>
 public enum LightEligibility
 {
@@ -44,6 +44,10 @@ public enum LightEligibility
     /// </summary>
     BelongsToLightEnvironment,
     /// <summary>
+    /// The primitive is lit by a light environment, so the level's lights don't light it directly (ULightComponent::AffectsPrimitive)
+    /// </summary>
+    LitByLightEnvironment,
+    /// <summary>
     /// A dominant light, which light environments only composite with bForceCompositeAllLights
     /// </summary>
     DominantNotComposited,
@@ -51,6 +55,10 @@ public enum LightEligibility
     /// Level lighting only: the last lighting build recorded that the light doesn't reach the primitive (IrrelevantLights)
     /// </summary>
     BakedIrrelevant,
+    /// <summary>
+    /// Preserve existing assignments: the last bake gave the primitive's lightmap and shadow maps other lights than this one, which it knows from other primitives
+    /// </summary>
+    PreservedAssignment,
 }
 
 public static class LightEligibilityExtensions
@@ -89,7 +97,9 @@ public static class LightEligibilityExtensions
         LightEligibility.DynamicLightsNotAccepted => "The mesh doesn't accept dynamic lights",
         LightEligibility.LightsNotAccepted => "The mesh doesn't accept lights",
         LightEligibility.BelongsToLightEnvironment => "The light belongs to a light environment",
+        LightEligibility.LitByLightEnvironment => "The mesh is lit by a light environment",
         LightEligibility.DominantNotComposited => "Dominant lights aren't composited into this light environment",
+        LightEligibility.PreservedAssignment => "Excluded by preserved lightmap/shadowmap assignments",
         LightEligibility.BakedIrrelevant => "Excluded by the last lighting build",
         _ => eligibility.ToString()
     };

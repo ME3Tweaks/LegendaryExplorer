@@ -1,4 +1,5 @@
 using LegendaryExplorer.Dialogs;
+using LegendaryExplorer.Lightmaps.Lightmass;
 using LegendaryExplorer.Misc;
 using LegendaryExplorer.SharedUI;
 using LegendaryExplorer.SharedUI.Bases;
@@ -8,6 +9,7 @@ using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.SharpDX;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
 using LegendaryExplorer.Tools.PackageEditor;
@@ -252,6 +254,25 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
     }
 
+    public LightAssignmentPolicy AssignmentPolicy
+    {
+        get => RenderContext.AssignmentPolicy;
+        set
+        {
+            if (RenderContext.AssignmentPolicy == value) return;
+            RenderContext.AssignmentPolicy = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(PreserveAssignments));
+            OnPropertyChanged(nameof(RecomputeAssignments));
+            OnPropertyChanged(nameof(LightingRulesNote));
+            LightDiagnosticsStale = true;
+            if (IsPreviewLighting && UseGameShaders) EnableGameShaders();
+        }
+    }
+    public bool PreserveAssignments => AssignmentPolicy == LightAssignmentPolicy.PreserveExistingAssignments;
+    public bool RecomputeAssignments => AssignmentPolicy == LightAssignmentPolicy.RecomputeAssignments;
+    public ICommand SetAssignmentPolicyCommand { get; private set; }
+
     public bool IsLevelLighting => LightingMode == ViewportLightingMode.Level;
     public bool IsNeutralLighting => LightingMode == ViewportLightingMode.Neutral;
     public bool IsPreviewLighting => LightingMode == ViewportLightingMode.Preview;
@@ -442,6 +463,12 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         ApplyActorLightingEdits();
         ApplyLightEdits();
         UpdateLightHighlights();
+        // Meshes created outside a load or refresh (Matinee's actors, a reset) queue their materials too.
+        // They use LEX's shader until the next preparation batch, which suspends rendering and shows the busy overlay while loading shaders.
+        if (_useGameShaders && _busyCount == 0 && !PreviewRefreshInProgress && !PreviewShaderPreparationRequested && RenderContext.HasPendingGameShaderLoads)
+        {
+            EnableGameShaders();
+        }
         if (LightDiagnosticsStale && !RenderContext.LightGizmo.IsDragging && !RenderContext.TransformWidget.IsDragging
             && LightDiagnosticsThrottle.ElapsedMilliseconds > 250)
         {
@@ -659,10 +686,19 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         bool loadGameShaders = RenderContext.UseGameShaders;
         var (actors, ignoredClasses) = await Task.Run(() =>
         {
+            RenderContext.CaptureAssignments(pcc, opening: true);
             var result = LoadActors(levelBin, openFile);
             if (loadGameShaders)
             {
-                RenderContext.LoadPendingGameShaders(ReportGameShaderLoadProgress);
+                try
+                {
+                    RenderContext.LoadPendingGameShaders(ReportGameShaderLoadProgress);
+                }
+                catch (AggregateException e)
+                {
+                    //the level still loads: those materials are retried when rendered, falling back to LEX's shader
+                    RecordGameShaderLoadFailures(e);
+                }
             }
             return result;
         }).ConfigureAwait(true);
@@ -694,6 +730,13 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         UpdateTitle();
     }
 
+    /// <summary>
+    /// Materials whose game shaders failed in a batch (<see cref="MeshRenderContext.LoadPendingGameShaders"/>) are retried when drawn. Only one that fails
+    /// then too uses LEX's shader, and its error is in the lighting diagnostics (<see cref="MaterialRenderProxy.LoadedGameShaderError"/>), so the batch's
+    /// failures are only logged. Can be called from a background thread
+    /// </summary>
+    private static void RecordGameShaderLoadFailures(AggregateException e) => Debug.WriteLine(e);
+
     private void CloseAllFiles()
     {
         Game = MEGame.Unknown;
@@ -702,6 +745,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         PendingLightEdits.Clear();
         SceneViewer.SetShouldRender(false);
         PendingPreviewUpdates.Clear();
+        PreviewShaderPreparationRequested = false;
         RenderContext.UnloadLevel();
         Actors.Clear();
         foreach (var file in OpenFiles)
@@ -710,6 +754,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             StopTrackingSave(file);
         }
         OpenFiles.Clear();
+        UnshadowedGeometry.Clear();
         HasAnyFileOpen = false;
         TextBelowActors = "";
         IsDirty = false;
@@ -754,6 +799,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         file.Dispose();
         StopTrackingSave(file);
         OpenFiles.Remove(file);
+        UnshadowedGeometry.Remove(file.Package);
         // Drops the cache's reference (and its update observer), so reopening the file without other users reads it from disk.
         // Kept if other open levels imported from it
         RenderContext.PackageCache.StopUsingPackage(filePath);
@@ -924,6 +970,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public ICommand SelectLightCommand { get; set; }
     private void LoadCommands()
     {
+        SetAssignmentPolicyCommand = new RelayCommand(policy => AssignmentPolicy = (LightAssignmentPolicy)policy);
         SetLightingModeCommand = new RelayCommand(mode => LightingMode = (ViewportLightingMode)mode);
         OpenFileCommand = new GenericCommand(OpenFile, () => CanEditScene);
         AddFileCommand = new GenericCommand(AddFile, () => CanEditScene);
@@ -1103,7 +1150,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 return;
             }
         }
-        new LightmassBaker.LightmassBakerWindow(OpenFiles.Select(f => (f.FilePath, !f.IsReadOnly))).Show();
+        new LightmassBaker.LightmassBakerWindow(OpenFiles.Select(f => (f.FilePath, !f.IsReadOnly))) { AssignmentPolicy = AssignmentPolicy }.Show();
     }
 
     #endregion
@@ -1333,6 +1380,15 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             return;
         }
         if (PreviewClosed || OpenFiles.Count == 0) return;
+        // A class default object, or a package an import resolves through, may have changed
+        EffectiveLightingProperties.InvalidateDefaults(RenderContext.PackageCache);
+        //the level's BSP and terrain actors are read again if its Level or Model changed; any update (a class default, say) can change which terrain sections cast
+        if (UnshadowedGeometry.TryGetValue(package, out var geometry)
+            && updates.Any(update => (update.Change & PackageChange.Entry) != 0 && (update.Index == geometry.LevelUIndex || update.Index == geometry.ModelUIndex)))
+        {
+            UnshadowedGeometry.Remove(package);
+        }
+        foreach (var entry in UnshadowedGeometry.Values) entry.TerrainSections = null;
         // Both the open level and the dependency observer may notify us; the queue deduplicates indices.
         PendingPreviewUpdates.Add(package, updates);
         if (PendingPreviewUpdates.HasUpdates) PreviewUpdateTimer.Start();
@@ -1344,7 +1400,12 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         // Keep edits queued until those readers finish, and suspend rendering while replacing GPU resources. (Package saves aren't readers of the scene)
         if (_busyCount > 0 || PreviewRefreshInProgress || RenderContext.TransformWidget.IsDragging || RenderContext.LightGizmo.IsDragging) return;
         PreviewUpdateTimer.Stop();
-        if ((!PendingPreviewUpdates.HasUpdates && !PreviewShaderPreparationRequested) || OpenFiles.Count == 0 || PreviewClosed) return;
+        if (OpenFiles.Count == 0 || PreviewClosed)
+        {
+            PreviewShaderPreparationRequested = false;
+            return;
+        }
+        if (!PendingPreviewUpdates.HasUpdates && !PreviewShaderPreparationRequested) return;
         PreviewRefreshInProgress = true;
         var watch = Stopwatch.StartNew();
         SceneViewer.SetShouldRender(false);
@@ -1360,6 +1421,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             var mode = LightingMode;
             if (changed && UseGameShaders)
                 await Task.Run(() => RenderContext.LoadPendingGameShaders(ReportGameShaderLoadProgress, mode));
+        }
+        catch (AggregateException ex)
+        {
+            //nothing is missing: those materials are retried when rendered, falling back to LEX's shader
+            RecordGameShaderLoadFailures(ex);
         }
         catch (Exception ex)
         {
@@ -1778,12 +1844,75 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     public string LightingRulesNote => LightingMode switch
     {
-        ViewportLightingMode.Preview => "Preview rules: current light settings and positions; the last bake's light-map and irrelevance records are ignored. Preview lighting is direct light only, with no bounced light.",
+        ViewportLightingMode.Preview => $"{AssignmentPolicy.Describe()}: shared preview/bake eligibility. Direct lighting only; occlusion is approximate and bounced light is absent." + (PreserveAssignments ? " Historical exclusions remain until you select Recompute assignments." : ""),
         ViewportLightingMode.Level => "Level rules: includes the last bake's light-map and irrelevance records. Bounced light comes only from the existing light-maps, so it doesn't follow edits.",
-        _ => "This lighting mode doesn't show the level's lights. Eligibility uses preview rules."
+        _ => $"This mode does not show level lights. Eligibility uses {AssignmentPolicy.Describe()}."
     };
 
     private bool LightDiagnosticsStale;
+
+    /// <summary>
+    /// A level's bake occluders that the preview has no shadow geometry for. Whether it has BSP, and which actors are terrains, come from the level's own
+    /// binaries, read again when its Level or Model export is updated (or, as a backstop, when its export count changes). The terrain sections that cast also depend on
+    /// class defaults, so they're counted again after any update
+    /// </summary>
+    private sealed class UnshadowedGeometryEntry
+    {
+        public int ExportCount;
+        //the exports they were read from
+        public int LevelUIndex, ModelUIndex;
+        public bool HasBsp;
+        public ExportEntry[] TerrainActors = [];
+        public int? TerrainSections;
+    }
+
+    private readonly Dictionary<IMEPackage, UnshadowedGeometryEntry> UnshadowedGeometry = [];
+
+    /// <summary>
+    /// The level's occluders in a Lightmass bake that the preview has no shadow geometry for: its BSP, and the terrain sections that take part in
+    /// static lighting and cast shadows (as LightmassSceneBuilder exports them). Spline meshes aren't baked at all
+    /// </summary>
+    private Dictionary<string, int> UnshadowedGeometryCounts(IMEPackage package)
+    {
+        //what can't be read counts as none until it's read again: when the Level export (or for terrain sections, anything) is updated, or exports are added
+        if (!UnshadowedGeometry.TryGetValue(package, out var entry) || entry.ExportCount != package.ExportCount)
+        {
+            UnshadowedGeometry[package] = entry = new UnshadowedGeometryEntry { ExportCount = package.ExportCount };
+            try
+            {
+                if (package.Exports.FirstOrDefault(e => e.ClassName == "Level") is { } levelExport)
+                {
+                    //before it's parsed, so that one that can't be is read again when it's updated
+                    entry.LevelUIndex = levelExport.UIndex;
+                    var level = levelExport.GetBinaryData<Level>();
+                    entry.ModelUIndex = level.Model;
+                    entry.HasBsp = package.TryGetUExport(level.Model, out var modelExport) && modelExport.GetBinaryData<Model>().Nodes.Length > 0;
+                    entry.TerrainActors = Lightmaps.Lightmass.LightmassSceneBuilder.TerrainActors(package, level);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"Could not read {package.FileNameNoExtension}'s BSP and terrain actors: {e.Message}");
+            }
+        }
+        if (entry.TerrainSections is null)
+        {
+            try
+            {
+                entry.TerrainSections = entry.TerrainActors.Length == 0 ? 0
+                    : Lightmaps.Lightmass.LightmassSceneBuilder.ShadowCastingTerrainSections(entry.TerrainActors, RenderContext.PackageCache);
+            }
+            catch (Exception e)
+            {
+                entry.TerrainSections = 0;
+                Debug.WriteLine($"Could not count {package.FileNameNoExtension}'s terrain sections: {e.Message}");
+            }
+        }
+        var counts = new Dictionary<string, int>();
+        if (entry.HasBsp) counts["level(s) of BSP"] = 1;
+        if (entry.TerrainSections > 0) counts["terrain section(s)"] = entry.TerrainSections.Value;
+        return counts;
+    }
     private readonly Stopwatch LightDiagnosticsThrottle = Stopwatch.StartNew();
 
     public ObservableCollectionExtended<LightRelevance> SelectedMeshLights { get; } = [];
@@ -1809,6 +1938,23 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         var rows = new List<LightRelevance>();
         var notes = new List<string>();
         List<MeshComponentProxy> meshes = selectedActor is null or ILightProxy ? [] : MeshComponents(selectedActor).ToList();
+        //the preview's limits only matter in Preview lighting, and only for a selected mesh
+        if (IsPreviewLighting && meshes.Count > 0)
+        {
+            notes.AddRange(meshes.SelectMany(mesh => mesh.ShadowNotes).Distinct());
+            var totals = new SortedDictionary<string, int>();
+            foreach (var file in OpenFiles)
+                foreach (var (className, count) in UnshadowedGeometryCounts(file.Package))
+                    totals[className] = totals.GetValueOrDefault(className) + count;
+            var unsupported = totals.Select(total => $"{total.Value} {total.Key}").ToArray();
+            if (unsupported.Length > 0)
+                notes.Add("Preview has no shadow geometry for BSP or terrain, which block light in a Lightmass bake: " + string.Join(", ", unsupported) + ".");
+            if (PreserveAssignments && RenderContext.AssignmentHistory.Problems is { Count: > 0 } problems)
+                notes.Add("Some source assignments could not be read; preservation is incomplete: " + string.Join("; ", problems.Take(3)));
+            //meshes without static lighting (skeletal meshes, movable meshes) have no bake mapping to lack
+            if (meshes.Any(mesh => mesh.ReceivesStaticLighting && !mesh.HasCompatibleBakeMapping))
+                notes.Add("One or more receivers lack a compatible bake mapping. Recompute assignments does not create mappings; preview light may have no bake output.");
+        }
         IsMeshSelected = meshes.Count > 0;
         var lighting = meshes.Select(mesh => mesh.Lighting).ToList();
         if (!SelectedActorLighting.SequenceEqual(lighting))
@@ -1838,7 +1984,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 // Lights that don't reach the mesh at all aren't worth listing.
                 if (best is not { } result || !result.Reaches()) continue;
                 proxies.TryGetValue(light.Export, out ActorProxy lightActor);
-                rows.Add(new LightRelevance(lightActor?.DisplayText ?? light.Export.ObjectName.Instanced, light.LevelName, result.Describe(),
+                string reason = result.Describe();
+                if (ignorePrecomputed && result.IsAffecting() && !light.HasStaticLighting && !light.HasStaticShadowing)
+                    reason += " (runtime only; no bake contribution)";
+                rows.Add(new LightRelevance(lightActor?.DisplayText ?? light.Export.ObjectName.Instanced, light.LevelName, reason,
                     result.IsAffecting(), lightActor));
                 if (result.IsAffecting()) RenderContext.HighlightedLights.Add(light.Export);
             }
@@ -1852,6 +2001,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             {
                 notes.Add("Lit by a light environment, which composites the lights below into a few lights. Whether each light is blocked from it isn't shown here.");
             }
+            if (selectedActor?.OwningFile?.IsReadOnly == true)
+                notes.Add("Context-only level: it contributes geometry and lights, but its mappings are not baked in the editor handoff.");
             if (!UseGameShaders)
             {
                 notes.Add("Game shaders are off, so every mesh uses LEX's neutral shader.");

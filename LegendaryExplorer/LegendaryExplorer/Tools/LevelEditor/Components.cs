@@ -88,7 +88,7 @@ public class PrimitiveComponentProxy : NotifyPropertyChangedBase, IDisposable
 
     protected void ReadProperties()
     {
-        Properties = Export.GetCondensedProperties(RenderContext.PackageCache, resolveImports: true, mergeStructs: true);
+        Properties = EffectiveLightingProperties.ReadPrimitive(Export, RenderContext.PackageCache);
         if (this is MeshComponentProxy mesh) mesh.ExistingLighting?.ReloadAndApply(Properties);
         HiddenGame = Properties.GetProp<BoolProperty>("HiddenGame")?.Value ?? false;
 
@@ -253,13 +253,20 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
     /// For diagnostics: whether a light reaches the mesh under the viewport's current rules, directly or through its light environment.
     /// Null if the level's lights don't light the mesh in this viewport (its lighting couldn't be read, or the game isn't supported)
     /// </summary>
-    /// <param name="ignorePrecomputed">Ignore the last lighting build's records, as preview lighting does</param>
+    /// <param name="ignorePrecomputed">Preview the current scene without sampling baked lighting; the selected assignment policy still applies</param>
     public LightEligibility? GetLightEligibility(SceneLight light, bool ignorePrecomputed)
     {
         if (LightEnvironment is not null) return LightEnvironment.GetEligibility(light);
         if (StaticLighting is { UsesLightEnvironment: false }) return StaticLighting.GetEligibility(light, GetBounds(), ignorePrecomputed);
         return null;
     }
+
+    public IEnumerable<string> ShadowNotes => StaticLighting?.ShadowNotes() ?? [];
+
+    public bool HasCompatibleBakeMapping => StaticLighting?.HasCompatibleBakeMapping == true;
+
+    /// <summary>Whether a bake builds static lighting for the mesh (see <see cref="MeshStaticLighting.ReceivesStaticLighting"/>)</summary>
+    public bool ReceivesStaticLighting => StaticLighting?.ReceivesStaticLighting == true;
 
     public bool IsLitByLightEnvironment => LightEnvironment is not null;
 
@@ -301,7 +308,8 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
         {
             GetBounds = () => lod.Mesh.TransformedBounds,
             GetLocalToWorld = () => lod.Mesh.LocalToWorld,
-            DrawShadowCaster = castsShadow ? ctx => Mesh?.DrawShadowCaster(ctx, lodIndex) : null,
+            DrawShadowCaster = castsShadow ? (ctx, pass) => Mesh?.DrawShadowCaster(ctx, pass, lodIndex) : null,
+            CastShadowAsTwoSided = ShadowParticipation.Read(Properties).TwoSided,
             IsInScene = IsInScene,
             IsShown = IsShown,
             LightingChannels = lightingChannels,
@@ -323,9 +331,12 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
     protected void ReadMaterialOverrides()
     {
         MaterialOverrides.Clear();
-        if (Properties.GetProp<ArrayProperty<ObjectProperty>>("Materials") is { } mats)
+        //as the bake reads them: from the nearest object in the archetype chain that sets them (an empty array overrides its archetypes' too),
+        //including archetypes in other packages (prefabs in the persistent level, class defaults' subobjects), which condensed properties leave out
+        var (mats, package) = EffectiveLightingProperties.Inherited<ArrayProperty<ObjectProperty>>(Export, "Materials", RenderContext.PackageCache);
+        if (mats is not null)
         {
-            MaterialOverrides.AddRange(mats.Select(x => x.Value != 0 ? x.ResolveToEntry(Export.FileRef) : null));
+            MaterialOverrides.AddRange(mats.Select(x => x.Value != 0 ? x.ResolveToEntry(package) : null));
         }
     }
 
@@ -372,7 +383,7 @@ public class StaticMeshComponentProxy : MeshComponentProxy
     {
         var context = RenderContext;
         Dependencies = new PreviewMeshDependencies(Export, context.PackageCache);
-        if (Properties.GetProp<ObjectProperty>("StaticMesh")?.ResolveToExport(Export.FileRef, context.PackageCache) is ExportEntry meshExport)
+        if (EffectiveLightingProperties.ResolveReference(Export, "StaticMesh", context.PackageCache) is { } meshExport)
         {
             StaticMesh stm = meshExport.GetBinaryData<StaticMesh>();
             if (stm.LODModels.Length > LOD)
@@ -534,7 +545,8 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
             TransformParent = parentAnimComponent;
             base.UpdateLocalToWorld();
         }
-        if (Properties.GetProp<ObjectProperty>("SkeletalMesh")?.ResolveToExport(Export.FileRef, context.PackageCache) is ExportEntry meshExport)
+        //like the static mesh, it may come from an archetype in another package
+        if (EffectiveLightingProperties.ResolveReference(Export, "SkeletalMesh", context.PackageCache) is { } meshExport)
         {
             SkeletalMesh skm = meshExport.GetBinaryData<SkeletalMesh>();
             bool usesLightEnvironment = false;

@@ -182,7 +182,8 @@ public sealed class SceneLight
     /// </summary>
     public bool HasLightEnvironment { get; }
 
-    private SceneLight(SceneLightType type, ExportEntry export, PropertyCollection props, Matrix4x4 parentToWorld, bool hasStaticShadowing, PackageCache packageCache)
+    private SceneLight(SceneLightType type, ExportEntry export, PropertyCollection props, Matrix4x4 parentToWorld, bool hasStaticShadowing,
+        bool hasLightEnvironment, bool hasFunction, PackageCache packageCache)
     {
         Type = type;
         Export = export;
@@ -199,7 +200,7 @@ public sealed class SceneLight
                                 * (props.GetProp<FloatProperty>("LightEnv_BouncedLightBrightness")?.Value ?? 1);
         }
         TraceDistance = props.GetProp<FloatProperty>("TraceDistance")?.Value ?? 100000;
-        HasLightEnvironment = props.GetProp<ObjectProperty>("LightEnvironment") is { Value: not 0 };
+        HasLightEnvironment = hasLightEnvironment;
         UseVolumes = props.GetProp<BoolProperty>("bUseVolumes") is { Value: true };
         if (UseVolumes)
         {
@@ -253,19 +254,14 @@ public sealed class SceneLight
         //PointLightComponent's default
         ShadowRadiusMultiplier = props.GetProp<FloatProperty>("ShadowRadiusMultiplier")?.Value ?? 1.1f;
 
-        if (props.GetProp<ObjectProperty>("Function")?.ResolveToEntry(export.FileRef) is ExportEntry lightFunction)
+        if (hasFunction && EffectiveLightingProperties.ResolveReference(export, "Function", packageCache, props) is { } lightFunction)
         {
-            PropertyCollection lightFunctionProps = lightFunction.GetCondensedProperties(packageCache, resolveImports: true);
+            PropertyCollection lightFunctionProps = EffectiveLightingProperties.Read(lightFunction, packageCache);
             if (lightFunctionProps.GetProp<StructProperty>("Scale") is { } scaleProp)
             {
                 LightFunctionScale = CommonStructs.GetVector3(scaleProp);
             }
-            LightFunctionMaterial = lightFunctionProps.GetProp<ObjectProperty>("SourceMaterial")?.ResolveToEntry(lightFunction.FileRef) switch
-            {
-                ExportEntry materialExport => materialExport,
-                ImportEntry materialImport => EntryImporter.ResolveImport(materialImport, packageCache),
-                _ => null
-            };
+            LightFunctionMaterial = EffectiveLightingProperties.ResolveReference(lightFunction, "SourceMaterial", packageCache);
         }
         Radius = props.GetProp<FloatProperty>("Radius")?.Value ?? 1024;
         FalloffExponent = props.GetProp<FloatProperty>("FalloffExponent")?.Value ?? 2;
@@ -332,7 +328,7 @@ public sealed class SceneLight
         {
             return null;
         }
-        var props = lightComponent.GetCondensedProperties(packageCache, resolveImports: true, mergeStructs: true);
+        var props = EffectiveLightingProperties.Read(lightComponent, packageCache);
         foreach (Property property in overrides ?? [])
         {
             props.AddOrReplaceProp(property);
@@ -357,18 +353,22 @@ public sealed class SceneLight
         {
             return null;
         }
-        return new SceneLight(type, lightComponent, props, parentToWorld, GetHasStaticShadowing(type, ownerClass, props), packageCache)
+        //each is an archetype and class default chain walk, so each is looked up once
+        bool hasLightEnvironment = EffectiveLightingProperties.HasReference(lightComponent, "LightEnvironment", packageCache, props);
+        bool hasFunction = EffectiveLightingProperties.HasReference(lightComponent, "Function", packageCache, props);
+        return new SceneLight(type, lightComponent, props, parentToWorld, GetHasStaticShadowing(type, ownerClass, props, hasLightEnvironment, hasFunction),
+            hasLightEnvironment, hasFunction, packageCache)
         {
-            HasStaticLighting = GetHasStaticLighting(ownerClass, props)
+            HasStaticLighting = GetHasStaticLighting(ownerClass, props, hasLightEnvironment, hasFunction)
         };
     }
 
     /// <summary>
     /// ULightComponent::HasStaticShadowing
     /// </summary>
-    private static bool GetHasStaticShadowing(SceneLightType type, string ownerClass, PropertyCollection props)
+    private static bool GetHasStaticShadowing(SceneLightType type, string ownerClass, PropertyCollection props, bool hasLightEnvironment, bool hasFunction)
     {
-        if (props.GetProp<BoolProperty>("bForceDynamicLight") is { Value: true } || props.GetProp<ObjectProperty>("LightEnvironment") is { Value: not 0 })
+        if (props.GetProp<BoolProperty>("bForceDynamicLight") is { Value: true } || hasLightEnvironment)
         {
             return false;
         }
@@ -376,18 +376,18 @@ public sealed class SceneLight
         //Sky lights also need the static lighting conditions: a bStatic owner (not a toggleable one), and no light function
         return type is SceneLightType.Sky
             ? !ownerClass.Contains("Movable", StringComparison.OrdinalIgnoreCase) && !ownerClass.Contains("Toggleable", StringComparison.OrdinalIgnoreCase)
-              && props.GetProp<ObjectProperty>("Function") is not { Value: not 0 }
+              && !hasFunction
             : !ownerClass.Contains("Movable", StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>
     /// ULightComponent::HasStaticLighting: a static owner (the light actors that aren't movable or toggleable), no light function, not forced to be dynamic, and no light environment
     /// </summary>
-    private static bool GetHasStaticLighting(string ownerClass, PropertyCollection props) =>
+    private static bool GetHasStaticLighting(string ownerClass, PropertyCollection props, bool hasLightEnvironment, bool hasFunction) =>
         !ownerClass.Contains("Movable", StringComparison.OrdinalIgnoreCase) && !ownerClass.Contains("Toggleable", StringComparison.OrdinalIgnoreCase)
-        && props.GetProp<ObjectProperty>("Function") is not { Value: not 0 }
+        && !hasFunction
         && props.GetProp<BoolProperty>("bForceDynamicLight") is not { Value: true }
-        && props.GetProp<ObjectProperty>("LightEnvironment") is not { Value: not 0 };
+        && !hasLightEnvironment;
 
     /// <summary>
     /// GetDirectIntensity: the light's linear color at a point, attenuated by its radius (and cone, for spot lights). Not for sky lights

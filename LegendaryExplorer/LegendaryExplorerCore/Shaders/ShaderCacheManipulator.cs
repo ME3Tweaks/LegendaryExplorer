@@ -582,6 +582,11 @@ namespace LegendaryExplorerCore.Shaders
 
             UMultiMap<NameReference, ShaderReference> GetShaderRefs(MaterialShaderMap shaderMap)
             {
+                //the reference shader cache has no shader map for these static parameters: the material has no shaders
+                if (shaderMap is null)
+                {
+                    return null;
+                }
                 if (!vertexFactoryShaders)
                 {
                     return shaderMap.Shaders;

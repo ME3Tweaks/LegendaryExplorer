@@ -10,7 +10,13 @@ namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 /// <summary>
 /// A mesh that casts a projected shadow: drawn into the shadow map with its own local to world transform
 /// </summary>
-internal readonly record struct ShadowCaster(Func<Matrix4x4> GetLocalToWorld, Action<DeviceContext> Draw);
+internal readonly record struct ShadowCaster(Func<Matrix4x4> GetLocalToWorld, Action<DeviceContext, ShadowDepthPass> Draw, bool TwoSided = false);
+
+/// <summary>
+/// What drawing a caster into a shadow's depth needs, besides its own transform: the shadow's projection and depth range, and whether the caster's component
+/// casts two-sided shadows (bCastShadowAsTwoSided)
+/// </summary>
+public readonly record struct ShadowDepthPass(Matrix4x4 WorldToShadow, float InvMaxSubjectDepth, float DepthBias, bool TwoSided);
 
 /// <summary>
 /// What a projected shadow needs to know about the light that casts it

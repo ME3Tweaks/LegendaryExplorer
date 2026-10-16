@@ -130,7 +130,7 @@ public sealed class EditableLight : NotifyPropertyChangedBase
     /// <returns>The component's saved settings</returns>
     private LightSettings ReadComponent()
     {
-        PropertyCollection props = Component.GetCondensedProperties(PackageCache, resolveImports: true, mergeStructs: true);
+        PropertyCollection props = EffectiveLightingProperties.Read(Component, PackageCache);
         ComponentTranslation = props.GetProp<StructProperty>("Translation") is { } translation ? CommonStructs.GetVector3(translation) : Vector3.Zero;
         ResolvedChannels = props.GetProp<StructProperty>("LightingChannels");
         return LightSettings.Read(props);

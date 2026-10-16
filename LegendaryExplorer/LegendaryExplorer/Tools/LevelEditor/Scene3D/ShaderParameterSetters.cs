@@ -669,7 +669,7 @@ internal static class ShaderParameterSetters
         bytes[..Math.Min(bytes.Length, param.NumBytes)].CopyTo(buff[param.BaseIndex..]);
     }
 
-    private static unsafe void WriteVal<T>(this Span<byte> buff, FShaderParameter param, T val) where T : unmanaged
+    internal static unsafe void WriteVal<T>(this Span<byte> buff, FShaderParameter param, T val) where T : unmanaged
     {
         if (!param.IsBound())
         {

@@ -31,6 +31,9 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
         private readonly List<string> Uniform2DTextureExpressions = [];
         public Dictionary<string, PreviewTextureCache.TextureEntry> TextureMap;
         private MaterialShaderMap ShaderMap;
+        //the outermost material instance with a static permutation, or else the base material, owns the shaders: once one has been read, materials further up
+        //the chain mustn't replace them, even when the caches have none for it (as the Level Editor's MaterialRenderProxy does)
+        private bool FoundShaderMapOwner;
         private uint CachedPixelFrameNumber = uint.MaxValue;
         private uint CachedVertexFrameNumber = uint.MaxValue;
         private readonly List<Vector4> CachedVertexScalarParameters = [];
@@ -51,7 +54,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
             Enum.TryParse(props.GetProp<EnumProperty>("BlendMode")?.Value ?? "BLEND_Opaque", out BlendMode);
 
             //if the MIC had a StaticPermutationResource, this is already set
-            if (Uniform2DTextureExpressions.IsEmpty())
+            if (!FoundShaderMapOwner)
             {
                 foreach (int uIndex in parsedMaterial.SM3MaterialResource.UniformExpressionTextures)
                 {
@@ -95,7 +98,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
             }
 
             //if the MIC had a StaticPermutationResource, this is already set
-            if (ShaderMap is null)
+            if (!FoundShaderMapOwner)
             {
                 LoadShaders(mat);
             }
@@ -103,6 +106,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
 
         private void LoadShaders(ExportEntry mat)
         {
+            FoundShaderMapOwner = true;
             (ShaderMap, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndShaders(mat, VERTEX_SHADER_TYPE_NAME, LIT_PIXEL_SHADER_TYPE_NAME, UNLIT_PIXEL_SHADER_TYPE_NAME);
 
             VertexShader = (VertexShaderType)shaders[0];
@@ -146,7 +150,7 @@ namespace LegendaryExplorer.UserControls.SharedToolControls.LegacyScene3D
                 }
             }
 
-            if (ObjectBinary.From(matInst) is MaterialInstance binary)
+            if (!FoundShaderMapOwner && ObjectBinary.From(matInst) is MaterialInstance binary)
             {
                 foreach (int uIndex in binary.SM3StaticPermutationResource.UniformExpressionTextures)
                 {

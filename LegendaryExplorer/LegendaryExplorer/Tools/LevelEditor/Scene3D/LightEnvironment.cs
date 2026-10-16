@@ -134,9 +134,13 @@ public sealed class LightEnvironmentPrimitive
     public Func<BoxSphereBounds> GetBounds;
     public Func<Matrix4x4> GetLocalToWorld;
     /// <summary>
-    /// Draws the primitive's shadow-casting sections with the shaders the caller has set, binding its vertex buffer at slot 0. Null if it doesn't cast shadows
+    /// Draws the primitive's shadow-casting sections into a shadow's depth (see <see cref="LightAttenuationRenderer.DrawShadowSection{TVertex}"/>). Null if it doesn't cast shadows
     /// </summary>
-    public Action<DeviceContext> DrawShadowCaster;
+    public Action<DeviceContext, ShadowDepthPass> DrawShadowCaster;
+    /// <summary>
+    /// bCastShadowAsTwoSided: its one-sided sections aren't culled in the shadow's depth
+    /// </summary>
+    public bool CastShadowAsTwoSided;
     /// <summary>
     /// Whether the primitive is in the game's scene (its actor and component aren't hidden in game)
     /// </summary>

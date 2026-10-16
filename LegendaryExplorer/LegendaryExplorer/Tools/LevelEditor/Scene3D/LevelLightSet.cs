@@ -35,6 +35,8 @@ public sealed class LevelLightSet
             try
             {
                 TrackEntry(export.Archetype);
+                TrackEntry(export.Class);
+                if (EffectiveLightingProperties.ClassDefault(export, cache) is { } cdo) TrackEntry(cdo);
                 // Read each link in its own package; inherited object indices cannot be used in another package.
                 var properties = export.GetProperties();
                 foreach (string name in new[] { "Function", "SourceMaterial", "Parent" })

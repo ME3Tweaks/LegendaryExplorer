@@ -1,3 +1,4 @@
+using LegendaryExplorer.Lightmaps.Game;
 using LegendaryExplorerCore.Gammtek;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
@@ -144,6 +145,8 @@ public sealed class MeshStaticLighting : IDisposable
     //the level (package) the primitive is in, and whether its lighting was built without other levels' lights (PKG_SelfContainedLighting)
     private string LevelName;
     private bool HasSelfContainedLighting;
+    private PrimitiveLightAssignments SourceAssignments = PrimitiveLightAssignments.Empty;
+    public bool HasCompatibleBakeMapping { get; private set; }
 
     /// <summary>
     /// The component is lit by a light environment (as dynamic actors are), which the level's lights don't affect directly
@@ -159,6 +162,10 @@ public sealed class MeshStaticLighting : IDisposable
     /// Whether the component casts shadows (CastShadow)
     /// </summary>
     private bool CastsShadow;
+    internal ShadowParticipation ShadowSettings { get; private set; }
+    private bool HasNonWhiteVertexColors;
+    private bool HasShadowParent;
+    public int PreviewLod { get; private set; }
 
     /// <summary>
     /// The actor that owns the component. Null if its outer isn't an export
@@ -204,6 +211,10 @@ public sealed class MeshStaticLighting : IDisposable
     /// The materials of the mesh this lighting is for. Set by the mesh's <see cref="ModelPreview{TVertex}"/>, so that their light shaders can be loaded ahead of time
     /// </summary>
     internal IEnumerable<MaterialRenderProxy> Materials = [];
+    /// <summary>
+    /// The materials of the sections that cast shadows (bEnableShadowCasting). Set by the mesh's <see cref="ModelPreview{TVertex}"/>
+    /// </summary>
+    internal IEnumerable<MaterialRenderProxy> ShadowCastingMaterials = [];
     internal Func<BoxSphereBounds> GetBounds;
 
     /// <summary>
@@ -224,20 +235,63 @@ public sealed class MeshStaticLighting : IDisposable
     public bool CastsDynamicShadowFrom(SceneLight light) => IsDynamicShadowCaster && light.CastsDynamicShadows && (!HasStaticShadowing || !light.HasStaticShadowing);
 
     /// <summary>
-    /// UE3 previews uncached static-light interactions with projected shadows even when bCastDynamicShadow is false.
-    /// Light environments render their own shadows.
+    /// Whether the bake builds static lighting for the mesh: it's a StaticMeshComponent (the bake exports that class only; skeletal meshes have none in UE3)
+    /// with static shadowing that accepts lights (UStaticMeshComponent::GetStaticLightingInfo), whether or not a light environment lights it. Only such
+    /// meshes get a lightmap, or cast static shadows
     /// </summary>
-    internal bool IsPreviewShadowCaster => !UsesLightEnvironment && (HasStaticShadowing && CastsShadow || IsDynamicShadowCaster);
+    public bool ReceivesStaticLighting => IsBakedClass && HasStaticShadowing && AcceptsLights;
 
-    internal bool CastsPreviewShadowFrom(SceneLight light) => IsPreviewShadowCaster
-        && (HasStaticShadowing && light.HasStaticShadowing
-            ? CastsShadow && light.CastsStaticShadows
-            : IsDynamicShadowCaster && (light.HasStaticShadowing ? light.CastsDynamicShadowsWhenUnbuilt : light.CastsDynamicShadows));
+    //the component's class is the one LightmassSceneBuilder exports
+    private bool IsBakedClass;
 
     /// <summary>
-    /// Draws the mesh's shadow-casting sections with the shaders the caller has set, binding its vertex buffer at slot 0. Set by the mesh's <see cref="ModelPreview{TVertex}"/>
+    /// Whether the preview may draw shadows from the mesh: the static shadows its bake casts, and runtime shadows. Light environments render their own
+    /// runtime shadows. UE3 previews uncached static-light interactions with projected shadows even when bCastDynamicShadow is false.
     /// </summary>
-    internal Action<SharpDX.Direct3D11.DeviceContext> DrawShadowCaster;
+    internal bool IsPreviewShadowCaster => ReceivesStaticLighting && ShadowSettings.BakesShadow || IsDynamicShadowCaster;
+
+    /// <summary>
+    /// Whether the preview draws the light's shadow from the mesh: as baked, for a light with static shadowing and a mesh with static shadowing,
+    /// whether or not the mesh is hidden. Otherwise the runtime shadow
+    /// </summary>
+    internal bool CastsPreviewShadowFrom(SceneLight light) => HasStaticShadowing && light.HasStaticShadowing
+        ? ReceivesStaticLighting && ShadowSettings.CastsDirect(light, staticShadowing: true, hidden: false)
+        : IsDynamicShadowCaster && ShadowSettings.CastsDirect(light, HasStaticShadowing, hidden: !IsInScene());
+
+    /// <summary>
+    /// Whether the light's shadow from this caster is worth rendering. A precomputed shadow, as the bake makes it, blocks the light wherever it
+    /// reaches: Lightmass traces against every shadow-casting mesh (FStaticLightingAggregateMesh::AddMesh), whatever its lighting channels or level,
+    /// and whatever its own bake omitted. A runtime shadow needs the light to affect the caster, as UE3 only casts it through a light-primitive interaction.
+    /// </summary>
+    internal bool IsShadowRelevant(SceneLight light, BoxSphereBounds bounds) => HasStaticShadowing && light.HasStaticShadowing
+        ? !light.HasLightEnvironment && light.AffectsBounds(bounds)
+        : LightAssignment.Evaluate(light, bounds, new LightPrimitiveSettings(LightingChannels, LevelName, AcceptsLights, AcceptsDynamicLights)) == LightEligibility.Affects;
+
+    public IEnumerable<string> ShadowNotes()
+    {
+        if (HasShadowParent) yield return "Shadow-parent grouping is not supported; Preview treats static casters separately.";
+        if (ShadowSettings.SelfShadowOnly) yield return "Self-shadow-only caster (bSelfShadowOnly): Preview doesn't draw its shadow, which only falls on itself.";
+        if (HasNonWhiteVertexColors) yield return "Preview uses white vertex colors; vertex-color-driven masks or deformation may differ from the bake.";
+        //the rest are about the shadows the preview draws from the mesh: none with game shaders off (no level light is drawn), or if it casts none
+        if (!Context.UseGameShaders || !IsPreviewShadowCaster) yield break;
+        MaterialRenderProxy[] casting = ShadowCastingMaterials.ToArray();
+        //only those cast with their own shaders: a masked material without them casts no shadow, which its own error says
+        if (casting.Any(material => material.IsMasked && material.ShadowShaders is not null))
+            yield return "Masked shadows evaluate the live material. Animated/view-dependent coverage may differ from the bake's material capture.";
+        if (casting.Any(material => material.ShadowShadersPending && material.CastsShadowDepth && (material.IsMasked || !material.HasUndisplacedVertices)))
+            yield return "Shadow shaders are still loading: until they're ready, masked sections cast no shadow, and vertex-offset sections cast undeformed ones.";
+        if (ReceivesStaticLighting && ShadowSettings.BakesShadow && casting.Any(material => material.BakesTransmission))
+            yield return "Translucent sections cast no shadow in Preview, but a bake shadows light through them by their transmission (partial or colored shadows), if it can capture their material.";
+        if (ShadowSettings.IndirectOnly) yield return "Indirect-only shadow caster: Preview has no bounced light, so it casts no static direct shadow.";
+        if (PreviewLod != 0) yield return "Preview shadows use the displayed LOD; the baker uses LOD 0 to shadow other meshes.";
+        foreach (var material in casting)
+            if (material.ShadowDepthError is { } error) yield return $"{material.InstancedFullPath}: {error}";
+    }
+
+    /// <summary>
+    /// Draws the mesh's shadow-casting sections into a shadow's depth (see <see cref="LightAttenuationRenderer.DrawShadowSection{TVertex}"/>). Set by the mesh's <see cref="ModelPreview{TVertex}"/>
+    /// </summary>
+    internal Action<SharpDX.Direct3D11.DeviceContext, ShadowDepthPass> DrawShadowCaster;
     internal Func<Matrix4x4> GetLocalToWorld;
 
     private readonly object InteractionsLock = new();
@@ -272,8 +326,12 @@ public sealed class MeshStaticLighting : IDisposable
         }
         var staticLighting = new MeshStaticLighting(context)
         {
-            OwnerActor = componentExport.Parent as ExportEntry
+            OwnerActor = componentExport.Parent as ExportEntry,
+            IsBakedClass = componentExport.ClassName == "StaticMeshComponent"
         };
+        context.CaptureAssignments(componentExport.FileRef);
+        staticLighting.SourceAssignments = context.AssignmentHistory.Get(componentExport, $"LOD{lod}");
+        staticLighting.PreviewLod = lod;
         PropertyCollection props = componentExport.GetProperties();
         if (props.GetProp<ArrayProperty<StructProperty>>("IrrelevantLights") is { } irrelevantLights)
         {
@@ -282,7 +340,7 @@ public sealed class MeshStaticLighting : IDisposable
                 staticLighting.IrrelevantLights.Add(CommonStructs.GetGuid(guidProp));
             }
         }
-        condensedProps ??= componentExport.GetCondensedProperties(context.PackageCache, resolveImports: true, mergeStructs: true);
+        condensedProps ??= EffectiveLightingProperties.ReadPrimitive(componentExport, context.PackageCache);
         //A disabled light environment (as InterpActors' are by default) isn't used, so the primitive is lit like any other
         staticLighting.UsesLightEnvironment = context.ResolveLightEnvironment(componentExport, condensedProps, staticLighting.OwnerActor,
             out DynamicLightEnvironment lightEnvironment);
@@ -293,11 +351,11 @@ public sealed class MeshStaticLighting : IDisposable
         //FPrimitiveSceneInfo's bStaticShadowing (bUsePrecomputedShadows) and bCastDynamicShadow (CastShadow && bCastDynamicShadow, which MeshComponent defaults to true).
         //StaticMeshActor's component template sets bUsePrecomputedShadows. If it isn't found (in case the archetype chain couldn't be resolved),
         //a mesh with any precomputed lighting, or in a StaticMeshCollectionActor, is taken to have it
-        bool usesPrecomputedShadows = condensedProps.GetProp<BoolProperty>("bUsePrecomputedShadows")?.Value
-                                      ?? (componentExport.Parent?.ClassName == "StaticMeshCollectionActor"
-                                          || component.LODData.Any(lodData => lodData.LightMap is { LightMapType: not ELightMapType.LMT_None }
-                                                                              || lodData.ShadowMaps.Length > 0 || lodData.ShadowVertexBuffers.Length > 0));
+        bool usesPrecomputedShadows = LightAssignment.HasStaticShadowing(componentExport, condensedProps, component);
         staticLighting.HasStaticShadowing = usesPrecomputedShadows;
+        //(the buffers hold LegendaryExplorerCore's Color, not SharpDX's)
+        staticLighting.HasNonWhiteVertexColors = mesh.LODModels[lod].ColorVertexBuffer?.VertexData?.Any(c => c != OpaqueWhite) == true
+            || (lod < component.LODData.Length && component.LODData[lod].OverrideVertexColors?.VertexData?.Any(c => c != OpaqueWhite) == true);
         staticLighting.CastsDynamicShadow = staticLighting.CastsShadow && condensedProps.GetProp<BoolProperty>("bCastDynamicShadow") is not { Value: false };
         staticLighting.IsDynamicShadowCaster = staticLighting.CastsDynamicShadow
                                                //shadow groups (a shadow parent's children cast with it) aren't supported
@@ -307,6 +365,9 @@ public sealed class MeshStaticLighting : IDisposable
         {
             staticLighting.Load(component.LODData[lod], componentExport.FileRef, mesh, lod);
         }
+        //judged on LOD 0, whichever LOD is shown: it's the one other meshes are shadowed by, and the one a receiver is seen with up close
+        staticLighting.HasCompatibleBakeMapping = staticLighting.ReceivesStaticLighting && component.LODData.Length > 0 && mesh.LODModels.Length > 0
+            && LightmapMapping.IsCompatible(componentExport.FileRef, component.LODData[0].LightMap, mesh.LODModels[0], ComponentGeometry.CoordinateIndex(mesh.Export));
         context.RegisterStaticLighting(staticLighting);
         return staticLighting;
     }
@@ -349,7 +410,9 @@ public sealed class MeshStaticLighting : IDisposable
     /// <param name="defaultChannels">The channels UE3 initializes unset lighting channels to</param>
     private void ReadPrimitiveSettings(ExportEntry componentExport, PropertyCollection condensedProps, LightingChannels defaultChannels)
     {
-        CastsShadow = condensedProps.GetProp<BoolProperty>("CastShadow") is not { Value: false };
+        ShadowSettings = ShadowParticipation.Read(condensedProps);
+        HasShadowParent = condensedProps.GetProp<ObjectProperty>("ShadowParent") is { Value: not 0 };
+        CastsShadow = ShadowSettings.CastShadow;
         LightingChannels = LightingChannels.FromProperty(condensedProps.GetProp<StructProperty>("LightingChannels"), default, isInitialized: false, defaultChannels);
         //Component archetypes set bAcceptsLights. Only an explicit false is trusted, in case the archetype chain couldn't be resolved
         AcceptsLights = condensedProps.GetProp<BoolProperty>("bAcceptsLights") is not { Value: false };
@@ -470,7 +533,7 @@ public sealed class MeshStaticLighting : IDisposable
         }
 
         //Like the game's vertex factory, light-map UVs are only available if the mesh has that UV channel
-        int lightMapCoordinateIndex = mesh.Export.GetProperty<IntProperty>("LightMapCoordinateIndex")?.Value ?? 0;
+        int lightMapCoordinateIndex = ComponentGeometry.CoordinateIndex(mesh.Export);
         StaticMeshVertexBuffer vertexBuffer = lodModel.VertexBuffer;
         bool hasLightMapCoordinates = lightMapCoordinateIndex >= 0 && lightMapCoordinateIndex < vertexBuffer.NumTexCoords;
         if (!hasLightMapCoordinates)
@@ -565,7 +628,8 @@ public sealed class MeshStaticLighting : IDisposable
     }
 
     /// <summary>
-    /// FLightSceneInfoCompact::AffectsPrimitive (ULightComponent::AffectsPrimitive), minus the light environment and bAcceptsLights tests, which the callers make
+    /// FLightSceneInfoCompact::AffectsPrimitive (ULightComponent::AffectsPrimitive) through the shared <see cref="LightAssignment.Evaluate"/>, minus the test of whether
+    /// the primitive is lit by a light environment, which the callers make. When ignoring precomputed lighting, the assignment policy's history test follows
     /// </summary>
     /// <param name="compareLightingChannels">False for line checks, which ignore lighting channels</param>
     private bool AffectsPrimitive(SceneLight light, BoxSphereBounds bounds, bool compareLightingChannels = true, bool ignorePrecomputed = false) =>
@@ -576,45 +640,18 @@ public sealed class MeshStaticLighting : IDisposable
     /// </summary>
     private LightEligibility GetPrimitiveExclusion(SceneLight light, BoxSphereBounds bounds, bool compareLightingChannels, bool ignorePrecomputed)
     {
-        //a light that belongs to a light environment only affects its primitives, which aren't lit by static lighting (and don't block visibility traces)
-        if (light.HasLightEnvironment)
-        {
-            return LightEligibility.BelongsToLightEnvironment;
-        }
-        if (!light.AffectsBounds(bounds))
-        {
-            return LightEligibility.OutOfRange;
-        }
-        if (light.GetVolumeExclusion(bounds) is var volumeExclusion and not LightEligibility.Affects)
-        {
-            return volumeExclusion;
-        }
-        if (compareLightingChannels && !light.LightingChannels.OverlapsWith(LightingChannels))
-        {
-            return LightEligibility.LightingChannels;
-        }
-        if (!AcceptsDynamicLights && !light.HasStaticShadowing)
-        {
-            return LightEligibility.DynamicLightsNotAccepted;
-        }
-        //a level whose lighting was built on its own only has precomputed lighting for its own lights
-        if (!ignorePrecomputed && HasSelfContainedLighting && light.HasStaticShadowing && !light.LevelName.Equals(LevelName, StringComparison.OrdinalIgnoreCase))
-        {
-            return LightEligibility.SelfContainedLighting;
-        }
-        if (light.OnlyAffectSameAndSpecifiedLevels && !light.LevelName.Equals(LevelName, StringComparison.OrdinalIgnoreCase)
-            && !light.OtherLevelsToAffect.Contains(LevelName))
-        {
-            return LightEligibility.OtherLevel;
-        }
-        return LightEligibility.Affects;
+        var result = LightAssignment.Evaluate(light, bounds,
+            new LightPrimitiveSettings(LightingChannels, LevelName, AcceptsLights, AcceptsDynamicLights, HasSelfContainedLighting),
+            compareLightingChannels, honorSelfContained: !ignorePrecomputed);
+        if (result != LightEligibility.Affects || !ignorePrecomputed || !compareLightingChannels) return result;
+        return LightAssignment.EvaluateHistory(light, Context.AssignmentPolicy, Context.AssignmentHistory.IsKnown(light), SourceAssignments);
     }
 
     /// <summary>
     /// For diagnostics: whether the light reaches this mesh under the same rules as <see cref="GetLightInteractions"/>, and if not, why.
     /// Not for meshes that <see cref="UsesLightEnvironment"/>; their light environment decides
     /// </summary>
-    /// <param name="ignorePrecomputed">Ignore the last lighting build's records, as preview lighting does</param>
+    /// <param name="ignorePrecomputed">Preview the current scene without sampling baked lighting; the selected assignment policy still applies</param>
     public LightEligibility GetEligibility(SceneLight light, BoxSphereBounds bounds, bool ignorePrecomputed)
     {
         if (!AcceptsLights)
@@ -678,7 +715,11 @@ public sealed class MeshStaticLighting : IDisposable
         return new LightInteraction(light, StaticShadowingType.None, null, null);
     }
 
-    private bool PreparedForLevelLighting, PreparedForPreviewLighting;
+    private static readonly LegendaryExplorerCore.SharpDX.Color OpaqueWhite = new(255, 255, 255, 255);
+
+    //InvalidatePreviewPreparation clears it from the UI thread while shader preparation reads it on a worker
+    private volatile bool PreparedForLevelLighting, PreparedForPreviewLighting;
+    internal void InvalidatePreviewPreparation() => PreparedForPreviewLighting = false;
 
     /// <summary>
     /// Whether <see cref="PrepareLightShaders"/> has nothing left to do for the lighting mode
@@ -693,12 +734,13 @@ public sealed class MeshStaticLighting : IDisposable
     {
         // Prepared once per lighting mode. Lights added or changed later (by edits) have their shaders loaded as they're first rendered,
         // so a preview refresh only prepares the meshes it rebuilt, rather than every mesh in every level
-        ref bool prepared = ref previewLighting ? ref PreparedForPreviewLighting : ref PreparedForLevelLighting;
-        if (prepared || UsesLightEnvironment || GetBounds is null)
+        if (IsPrepared(previewLighting))
         {
             return;
         }
-        prepared = true;
+        //set before preparing, so that an invalidation while it runs isn't lost. (Not through a ref, which would lose the volatile access)
+        if (previewLighting) PreparedForPreviewLighting = true;
+        else PreparedForLevelLighting = true;
         foreach (LightInteraction interaction in GetLightInteractions(GetBounds(), previewLighting))
         {
             foreach (MaterialRenderProxy material in Materials)

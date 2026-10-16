@@ -276,7 +276,9 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         PropertyCollection props = Properties;
 
         props.ReadProp(ref Tag);
-        IsHidden = props.GetProp<BoolProperty>("bHidden")?.Value ?? false;
+        //classes such as Trigger are hidden by default
+        IsHidden = (props.GetProp<BoolProperty>("bHidden")
+                    ?? EffectiveLightingProperties.ClassDefaultProperty<BoolProperty>(actorExport, "bHidden", context.RenderContext.PackageCache))?.Value ?? false;
 
         DisplayText = Export.ObjectName.Instanced;
         if (!Tag.Name.CaseInsensitiveEquals(Export.ClassName))

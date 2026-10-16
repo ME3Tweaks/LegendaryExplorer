@@ -67,6 +67,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="Quality" VerticalAlignment="Center" Margin="0,0,10,6"/>
                 <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Qualities}" SelectedItem="{Binding Quality}" Margin="0,0,6,6" HorizontalAlignment="Left" MinWidth="160"/>
@@ -87,6 +88,10 @@
                 <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding UdkBinaries, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,6,0"
                          ToolTip="UDK's Binaries folder. Requires SwarmAgent.exe version 1.7.6517, included with the February 2015 UDK."/>
                 <Button Grid.Row="3" Grid.Column="2" Content="Browse..." Click="BrowseUdk_Click" Padding="8,2"/>
+
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Assignments" VerticalAlignment="Center" Margin="0,6,10,0"/>
+                <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding AssignmentPolicies}" SelectedValue="{Binding AssignmentPolicy}" SelectedValuePath="Key" DisplayMemberPath="Value" Margin="0,6,6,0" HorizontalAlignment="Left" MinWidth="160"
+                          ToolTip="Preserve existing assignments keeps historical restrictions. Recompute assignments uses current settings and geometry. Neither option creates missing bake mappings."/>
             </Grid>
 
             <TextBlock Grid.Row="3" Text="{Binding Problems}" Foreground="OrangeRed" TextWrapping="Wrap" Margin="0,8,0,0">
