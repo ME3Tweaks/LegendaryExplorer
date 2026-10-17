@@ -39,14 +39,52 @@ namespace LegendaryExplorer.Tools.TextureStudio
             set => SetProperty(ref _isExpanded, value);
         }
 
+        private bool _isFilteredOut;
+        /// <summary>
+        /// If this node is hidden by the tree search filter
+        /// </summary>
+        public bool IsFilteredOut
+        {
+            get => _isFilteredOut;
+            set => SetProperty(ref _isFilteredOut, value);
+        }
+
+        /// <summary>
+        /// Filters this node and its children by object name. A node stays visible if it matches, one of its parents matches, or one of its children matches.
+        /// </summary>
+        /// <param name="searchText">Text to search for. Null or empty shows everything.</param>
+        /// <param name="parentMatched">If a parent of this node matched the search</param>
+        /// <returns>True if this node is visible</returns>
+        public bool ApplyFilter(string searchText, bool parentMatched = false)
+        {
+            bool showAll = parentMatched || string.IsNullOrEmpty(searchText);
+            bool selfMatched = showAll || ObjectName.Contains(searchText, StringComparison.OrdinalIgnoreCase);
+
+            bool childMatched = false;
+            foreach (var child in Children.OfType<TextureMapMemoryEntryWPF>())
+            {
+                // Must visit every child so each one updates its own visibility
+                childMatched |= child.ApplyFilter(searchText, selfMatched);
+            }
+
+            if (!selfMatched && childMatched)
+            {
+                // Only a descendant matched, so open this node to reveal it
+                IsExpanded = true;
+            }
+
+            IsFilteredOut = !(selfMatched || childMatched);
+            return !IsFilteredOut;
+        }
+
         public void OnIsExpandedChanged()
         {
-            Debug.WriteLine($"IsExpanded: {IsExpanded} {InstancedFullPath}");
+            Debug.WriteLine($"IsExpanded: {IsExpanded} {MemoryFullPath}");
         }
 
         public void OnIsSelectedChanged()
         {
-            Debug.WriteLine($"IsSelected: {IsSelected} {InstancedFullPath}");
+            Debug.WriteLine($"IsSelected: {IsSelected} {MemoryFullPath}");
         }
 
         // Todo: Add cubemap icon
