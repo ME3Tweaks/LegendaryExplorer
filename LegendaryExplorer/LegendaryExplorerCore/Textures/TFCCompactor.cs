@@ -67,6 +67,14 @@ namespace LegendaryExplorerCore.Textures
         public List<string> TFCsToCompact { get; set; }
 
         /// <summary>
+        /// Full paths of TFCs that are not in <see cref="BaseCompactionPath"/> or the game at <see cref="GamePath"/>, but that
+        /// textures being compacted keep their data in. This lets TFCs be read where they are, such as in another game's
+        /// installation, rather than copied into the folder being compacted first. Matched by file name; TFCs in
+        /// <see cref="BaseCompactionPath"/> take precedence.
+        /// </summary>
+        public List<string> AdditionalTFCs { get; set; }
+
+        /// <summary>
         /// Maps CRC -> where it goes in new TFCs
         /// </summary>
         public Dictionary<uint, TFCInfo> OutputMapping = new();
@@ -211,15 +219,23 @@ namespace LegendaryExplorerCore.Textures
             TFCCompactor compactor = new TFCCompactor(infoPackage);
 
             var rootNodes = new List<TextureMapMemoryEntry>();
-            textureMap ??= TextureMapGenerator.GenerateMapForFolder(infoPackage.BaseCompactionPath, x => new TextureMapMemoryEntry(x), x => rootNodes.Add(x), progressDelegate, cts);
+            textureMap ??= TextureMapGenerator.GenerateMapForFolder(infoPackage.BaseCompactionPath, x => new TextureMapMemoryEntry(x), x => rootNodes.Add(x), progressDelegate, cts, infoPackage.AdditionalTFCs);
             Debug.WriteLine($@"Texture map count: {textureMap.CalculatedMap.Count}");
 
-            // CRC Check
-            if (textureMap.CalculatedMap.Any(x => x.HasUnmatchedCRCs))
+            // CRC Check. Only textures this compaction moves (or repoints) matter: the rest are left as they are, so a
+            // texture in a TFC that isn't being compacted, or one filtered out by RootTexturesOnly, can't break it.
+            var unmatched = textureMap.CalculatedMap
+                .SelectMany(x => x.GetAllTextureEntries())
+                .Where(x => x.HasUnmatchedCRCs && x.Instances.Count > 0
+                            && (compactor.infoPackage.RootTexturesOnly is not { } rootOnly || x.Instances[0].IsRootTexture == rootOnly)
+                            && x.Instances.Any(i => i.CompressedMipInfos.Count > 0 && compactor.infoPackage.TFCsToCompact.Contains(i.TFCName)))
+                .ToList();
+            if (unmatched.Count > 0)
             {
                 // ERROR: UNMATCHED CRCS
                 // Textures are not properly named and unique
-                errorCallback?.Invoke("There are unmatched CRCs in this directory. Textures with same full instanced paths must have the same textures. Use Texture Studio to identify and fix these issues.");
+                var examples = string.Join(", ", unmatched.Take(10).Select(x => $"{x.InstancedFullPath} ({string.Join(", ", x.Instances.Select(i => i.PackageName).Distinct())})"));
+                errorCallback?.Invoke($"There are unmatched CRCs in this directory. Textures with same full instanced paths must have the same textures. Use Texture Studio to identify and fix these issues. {unmatched.Count} texture(s): {examples}");
                 return;
             }
 
@@ -229,6 +245,15 @@ namespace LegendaryExplorerCore.Textures
                 File.Delete(f); // Delete existing TFCs in staging dir
             }
             var gameFiles = MELoadedFiles.GetFilesLoadedInGame(textureMap.Game, includeTFCs: true, gameRootOverride: infoPackage.GamePath);
+
+            // add TFCs that are read from elsewhere
+            if (infoPackage.AdditionalTFCs != null)
+            {
+                foreach (var additionalTFC in infoPackage.AdditionalTFCs)
+                {
+                    gameFiles[Path.GetFileName(additionalTFC)] = additionalTFC;
+                }
+            }
 
             // add TFCs from the directory we're compacting so we can pull data out
             foreach (var basePathTFC in Directory.GetFiles(infoPackage.BaseCompactionPath, "*.tfc", SearchOption.AllDirectories))
@@ -418,7 +443,11 @@ namespace LegendaryExplorerCore.Textures
 
                         // Ensure you use .From() and not the typed version so it properly serializes back.
                         var t2d = (UTexture2D) ObjectBinary.From(exportToUpdate);
-                        t2d.Mips.RemoveAll(x => x.StorageType == StorageTypes.empty); // Remove empty mips
+                        var properties = exportToUpdate.GetProperties();
+
+                        // Remove empty mips, so the mips line up with the ones written to the TFC. This updates the size
+                        // properties too: they must describe the first mip that's left, not the one that was removed.
+                        Texture2D.RemoveEmptyMips(t2d, properties);
 
                         // Update offset
                         for (int i = 0; i < updateInfo.MipOffsetMap.Count; i++)
@@ -433,7 +462,6 @@ namespace LegendaryExplorerCore.Textures
                         exportToUpdate.WriteBinary(t2d);
 
                         // Update TFC properties
-                        var properties = exportToUpdate.GetProperties();
                         properties.AddOrReplaceProp(new FGuid(updateInfo.TFCGuid).ToStructProperty("TFCFileGuid"));
                         properties.AddOrReplaceProp(new NameProperty(updateInfo.TFCName, "TextureFileCacheName"));
                         exportToUpdate.WriteProperties(properties);
