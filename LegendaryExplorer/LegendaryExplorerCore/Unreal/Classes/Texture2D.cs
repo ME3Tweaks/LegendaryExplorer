@@ -82,6 +82,29 @@ namespace LegendaryExplorerCore.Unreal.Classes
             Mips.RemoveAll(x => x.storageType == StorageTypes.empty);
         }
 
+        /// <summary>
+        /// Removes the empty mips (mips with no data, which LE ships at the top of some textures) from a texture's binary, and
+        /// updates its properties to describe what is left: SizeX/SizeY become the first remaining mip's, and MipTailBaseIdx,
+        /// if present, drops by the number of mips removed. Nothing is written back to the export.
+        /// </summary>
+        /// <returns>The number of mips removed.</returns>
+        public static int RemoveEmptyMips(UTexture2D texture, PropertyCollection properties)
+        {
+            int removed = texture.Mips.RemoveAll(x => x.StorageType == StorageTypes.empty);
+            if (removed == 0 || texture.Mips.Count == 0)
+                return removed;
+
+            properties.AddOrReplaceProp(new IntProperty(texture.Mips[0].SizeX, @"SizeX"));
+            properties.AddOrReplaceProp(new IntProperty(texture.Mips[0].SizeY, @"SizeY"));
+            var mipTailBaseIdx = properties.GetProp<IntProperty>(@"MipTailBaseIdx");
+            if (mipTailBaseIdx != null)
+            {
+                mipTailBaseIdx.Value = Math.Max(0, mipTailBaseIdx.Value - removed);
+            }
+
+            return removed;
+        }
+
         public Texture2DMipInfo GetTopMip()
         {
             return Mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
