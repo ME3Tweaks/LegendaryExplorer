@@ -94,6 +94,8 @@
         </MenuItem>
         <MenuItem Header="Useful for Mgamerz (maybe)">
             <MenuItem Header="Mgamerz' Easy Button™" Click="MScanner_Click"/>
+            <MenuItem Header="Generate mips for selected texture" Click="GenerateMipsForTexture_Click" ToolTip="Regenerates the lower mips of the selected Texture2D from its top mip, even if it only has 1 mip."/>
+            <MenuItem Header="Generate sharpened (Lanczos) mips for selected texture" Click="GenerateSharpenedMipsForTexture_Click" ToolTip="Like 'Generate mips', but builds each mip with a Lanczos downscale in premultiplied alpha, a mild sharpen and padded transparent colour. Better for cut-out art shown through Scaleform. The top mip is not recompressed."/>
 
             <!-- Most of this is old Crossgen, MER, and old OT MP things -->
             <MenuItem Header="LE2: Convert selected BioPawn to SFXPawn class with assets" Click="LE2ConvertToSFXPawn_Click" Visibility="{x:Static global:App.IsDebugVisibility}"/>

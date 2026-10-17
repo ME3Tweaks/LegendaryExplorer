@@ -343,7 +343,7 @@ public class LE3LightShaderObjectTests
                     var receive = (FShaderParameter)copy.GetType().GetField("bReceiveDynamicShadows").GetValue(copy);
                     Assert.AreEqual((ushort)16, receive.NumBytes);
                     if (light == "Directional") Assert.AreEqual(receive, ((FDirectionalLightPolicy.PixelParametersType)copiedPolicy).bReceiveDynamicShadows);
-                    if (light == "Point") Assert.AreEqual(((FPointLightPolicy.PixelParametersType)copiedPolicy).WorldIncidentLighting,
+                    if (light == "Point") Assert.AreEqual(((FPointLightPolicy.PixelParametersType)copiedPolicy).LightColorAndFalloffExponent,
                         ((FPointLightPolicy.PixelParametersType)copiedPolicy).LightColorAndFalloffExponent);
                 }
                 // Constructor validity is independent of ShouldCache eligibility. Synthetic GPU

@@ -23,6 +23,7 @@ using LegendaryExplorerCore.GameFilesystem;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Textures;
 using LegendaryExplorerCore.TLK.ME1;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -806,6 +807,16 @@ namespace LegendaryExplorer.UserControls.PackageEditorControls
         private void GenerateMaterialInstanceConstant_Click(object sender, RoutedEventArgs e)
         {
             PackageEditorExperimentsM.GenerateMaterialInstanceConstantFromMaterial(GetPEWindow());
+        }
+
+        private void GenerateMipsForTexture_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.GenerateMipsForSelectedTexture(GetPEWindow());
+        }
+
+        private void GenerateSharpenedMipsForTexture_Click(object sender, RoutedEventArgs e)
+        {
+            PackageEditorExperimentsM.GenerateMipsForSelectedTexture(GetPEWindow(), MipGenerationOptions.HighQuality);
         }
 
         private void PrintTextureFormats_Click(object sender, RoutedEventArgs e)

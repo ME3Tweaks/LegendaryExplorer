@@ -1885,6 +1885,32 @@ return;
                 JsonConvert.SerializeObject(le1VertexMap));
         }
 
+        /// <summary>
+        /// Regenerates the lower mips of the selected Texture2D from its top mip, even if it only has 1 mip
+        /// (Texture2D.Replace() will not generate mips for a single-mip texture on its own).
+        /// </summary>
+        /// <param name="options">How to filter the mips; null is the historical box filter.</param>
+        public static void GenerateMipsForSelectedTexture(PackageEditorWindow pe, MipGenerationOptions options = null)
+        {
+            if (pe.Pcc == null || !pe.TryGetSelectedExport(out var texExport) || !texExport.IsTexture())
+            {
+                MessageBox.Show("Select a Texture2D export first.");
+                return;
+            }
+
+            try
+            {
+                var tex = new Texture2D(texExport);
+                int oldMipCount = tex.Mips.Count;
+                tex.GenerateMips(options: options);
+                MessageBox.Show($"Generated mips for {texExport.InstancedFullPath}.\nMip count: {oldMipCount} -> {new Texture2D(texExport).Mips.Count}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error generating mips: {ex.Message}");
+            }
+        }
+
         public static void ShowTextureFormats(PackageEditorWindow pe)
         {
             List<string> texFormats = [];

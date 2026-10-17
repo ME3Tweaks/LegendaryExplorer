@@ -54,6 +54,28 @@ namespace LegendaryExplorerCore.UDK
         /// List of sublevel names to ignore when importing static lighting. This is useful for levels that have sublevels that are not relevant to the lighting bake or should not be modified.
         /// </summary>
         public string[] IgnoredSublevelNames { get; set; }
+
+        // MILAN CHANGE - 2026-10-11 - hooks so the caller can cache the (expensive) BC7 mip chains of ported lightmaps.
+        // All optional: with none of them set, lightmaps are mipped exactly as before.
+
+        /// <summary>
+        /// Called for each ported lightmap texture that still has a single mip, right before its mips would be generated. The
+        /// texture's export holds the UDK pixels at this point. Return true if the callback installed a complete mip chain
+        /// itself (for example from a cache, with <see cref="Texture2D.ReplaceWithEncodedMips"/>); the mips are then not generated.
+        /// </summary>
+        public Func<ExportEntry, bool> TryUsePrecomputedLightmapMips;
+
+        /// <summary>
+        /// Called for each ported lightmap texture right after its mips were generated (not when
+        /// <see cref="TryUsePrecomputedLightmapMips"/> handled it), so a caller can store the result.
+        /// </summary>
+        public Action<ExportEntry> LightmapMipsGenerated;
+
+        /// <summary>
+        /// How the lower mips of a ported lightmap are filtered. Null keeps the historical box filter. Anything that caches
+        /// the generated mips should include these options in its key.
+        /// </summary>
+        public MipGenerationOptions LightmapMipOptions { get; set; }
     }
 
     public static class StaticLightingImporter
@@ -93,20 +115,23 @@ namespace LegendaryExplorerCore.UDK
         }
 
         /// <summary>
-        /// Trashes all lightmaps/shadowmaps in a file in preparing for bringing in new lightmap data
+        /// Clears replaceable lighting while preserving excluded and unmatched mesh components.
         /// </summary>
         /// <param name="mePackage"></param>
-        private static void ClearLightmaps(IMEPackage mePackage, LightingImportSetup setup)
+        private static void ClearLightmaps(IMEPackage mePackage, LightingImportSetup setup,
+            ISet<ExportEntry> unmatchedMeshComponents)
         {
             // StaticMeshes
             foreach (var smc in mePackage.Exports.Where(x => x.IsA("StaticMeshComponent")).ToList())
             {
                 var meBin = ObjectBinary.From<StaticMeshComponent>(smc);
-                if (setup.ShouldKeepLightMap != null && setup.ShouldKeepLightMap(smc))
+                if (unmatchedMeshComponents.Contains(smc) || (setup.ShouldKeepLightMap?.Invoke(smc) ?? false))
                 {
                     foreach (var lod in meBin.LODData)
                     {
                         KeepLightMapTextures(lod.LightMap, mePackage, setup);
+                        KeepShadowMaps(mePackage, lod.ShadowMaps, setup);
+                        KeepShadowMaps(mePackage, lod.ShadowVertexBuffers, setup);
                     }
                 }
                 else
@@ -270,13 +295,15 @@ namespace LegendaryExplorerCore.UDK
         }
 
         /// <summary>
-        /// Ports a lightmap from UDK into the given MEPackage, package stored. For it to work properly it must be moved to TFC as lighting requires TFC
+        /// Ports a lightmap from UDK into the given MEPackage, package stored, with a full mip chain. This does not move it to a TFC;
+        /// a caller that wants it external has to do that afterwards.
         /// </summary>
         /// <param name="mePackage"></param>
         /// <param name="textureUIndex">On input, this is the UIndex in the UDKPackage. On exit, it should be the MEPackage UIndex.</param>
         /// <param name="udkPackage"></param>
+        /// <param name="setup">Optional mip hooks and options (see <see cref="LightingImportSetup.TryUsePrecomputedLightmapMips"/>).</param>
         /// <exception cref="NotImplementedException"></exception>
-        private static void PortLightMap(IMEPackage mePackage, ref int textureUIndex, UDKPackage udkPackage)
+        private static void PortLightMap(IMEPackage mePackage, ref int textureUIndex, UDKPackage udkPackage, LightingImportSetup setup = null)
         {
             if (textureUIndex == 0)
                 return;
@@ -303,8 +330,13 @@ namespace LegendaryExplorerCore.UDK
             var tex = new Texture2D(lightmapTex);
             if (tex.Mips.Count == 1)
             {
+                // 10/13/2026 - Add support for caller to supply their own lightmap data
+                if (setup?.TryUsePrecomputedLightmapMips?.Invoke(lightmapTex) == true)
+                    return;
+
                 var format = mePackage.Game.IsLEGame() ? PixelFormat.BC7 : PixelFormat.DXT1;
-                tex.GenerateMips(format);
+                tex.GenerateMips(format, setup?.LightmapMipOptions);
+                setup?.LightmapMipsGenerated?.Invoke(lightmapTex);
             }
         }
 
@@ -365,8 +397,20 @@ namespace LegendaryExplorerCore.UDK
 
 
 
-            // Remove so we don't have any collisions
-            ClearLightmaps(mePackage, setup);
+            // Older bakes a pipeline uses may have deliberately excluded/unresolved actors may have no UDK counterpart.
+            // Preserve their lighting before clearing shared textures; only matched components are relit.
+            var unmatchedMeshComponents = new HashSet<ExportEntry>();
+            foreach (var smc in mePackage.Exports.Where(x => x.IsA("StaticMeshComponent")))
+            {
+                if (!meToUdkRemapping.ContainsKey(smc))
+                {
+                    if (udkPackage.FindExport(smc.InstancedFullPath, smc.ClassName) is { } udkSmc)
+                        meToUdkRemapping[smc] = udkSmc;
+                    else
+                        unmatchedMeshComponents.Add(smc);
+                }
+            }
+            ClearLightmaps(mePackage, setup, unmatchedMeshComponents);
 
             // Import the lightmaps
 
@@ -376,7 +420,7 @@ namespace LegendaryExplorerCore.UDK
             // StaticMeshComponent
             foreach (var smc in mePackage.Exports.Where(x => x.IsA("StaticMeshComponent")).ToList())
             {
-                if (setup.ShouldKeepLightMap?.Invoke(smc) ?? false)
+                if (unmatchedMeshComponents.Contains(smc) || (setup.ShouldKeepLightMap?.Invoke(smc) ?? false))
                 {
                     continue; // Do not install this lightmap.
                 }
@@ -390,10 +434,11 @@ namespace LegendaryExplorerCore.UDK
                 {
                     var meBin = ObjectBinary.From<StaticMeshComponent>(smc);
                     var uBin = ObjectBinary.From<StaticMeshComponent>(udkSmc);
-                    meBin.LODData = uBin.LODData;
+                    // Older UDK maps may lack paint; the target component remains authoritative.
+                    meBin.LODData = StaticMeshComponentLightingData.MergeLighting(meBin.LODData, uBin.LODData);
                     foreach (var lod in meBin.LODData)
                     {
-                        PortLightMaps(lod.LightMap, smc, udkPackage);
+                        PortLightMaps(lod.LightMap, smc, udkPackage, setup);
                         PortShadowMaps(ref lod.ShadowMaps, smc, udkPackage);
                         PortShadowMaps(ref lod.ShadowVertexBuffers, smc, udkPackage);
                     }
@@ -438,7 +483,7 @@ namespace LegendaryExplorerCore.UDK
                 var meBin = ObjectBinary.From<TerrainComponent>(tc);
                 var udkBin = ObjectBinary.From<TerrainComponent>(tcp.Value);
                 meBin.LightMap = udkBin.LightMap;
-                PortLightMaps(meBin.LightMap, tc, udkPackage); // Must assign UDK version here.
+                PortLightMaps(meBin.LightMap, tc, udkPackage, setup); // Must assign UDK version here.
                 tc.WriteBinary(meBin);
             }
 
@@ -468,7 +513,7 @@ namespace LegendaryExplorerCore.UDK
                     udkBin.Model = owningModel.UIndex;
                     udkBin.Elements[i].Component = mc.UIndex; // Point to self
                     udkBin.Elements[i].Material = mePackage.FindEntry(udkPackage.GetEntry(udkBin.Elements[i].Material).InstancedFullPath)?.UIndex ?? 0; // Point to material
-                    PortLightMaps(udkBin.Elements[i].LightMap, mc, udkPackage);
+                    PortLightMaps(udkBin.Elements[i].LightMap, mc, udkPackage, setup);
                     PortShadowMaps(ref udkBin.Elements[i].ShadowMaps, mc, udkPackage);
                 }
                 // Yes write UDK version as we just relinked it to us
@@ -535,7 +580,7 @@ namespace LegendaryExplorerCore.UDK
                         throw new InvalidDataException($"Cannot map UDK decal receiver #{sr.Component} for {meDecal.InstancedFullPath}");
                     if (!exportedReceiverIndices.Contains(receiver.UIndex)) continue;
                     sr.Component = receiver.UIndex;
-                    PortLightMaps(sr.LightMap, receiver, udkPackage);
+                    PortLightMaps(sr.LightMap, receiver, udkPackage, setup);
                     sr.ShadowMap1D ??= [];
                     PortShadowMaps(ref sr.ShadowMap1D, meDecal, udkPackage);
                     combined.Add(sr);
@@ -683,7 +728,7 @@ namespace LegendaryExplorerCore.UDK
             shadowMaps = finalShadowMapsArray.ToArray();
         }
 
-        private static void PortLightMaps(LightMap lmWithUdkRefs, ExportEntry meComponent, UDKPackage udkPackage)
+        private static void PortLightMaps(LightMap lmWithUdkRefs, ExportEntry meComponent, UDKPackage udkPackage, LightingImportSetup setup = null)
         {
             if (lmWithUdkRefs is LightMap_1D lm1d)
             {
@@ -693,10 +738,10 @@ namespace LegendaryExplorerCore.UDK
             else if (lmWithUdkRefs is LightMap_2D lm2d)
             {
                 // Has textures
-                PortLightMap(meComponent.FileRef, ref lm2d.Texture1, udkPackage);
-                PortLightMap(meComponent.FileRef, ref lm2d.Texture2, udkPackage);
-                PortLightMap(meComponent.FileRef, ref lm2d.Texture3, udkPackage);
-                PortLightMap(meComponent.FileRef, ref lm2d.Texture4, udkPackage);
+                PortLightMap(meComponent.FileRef, ref lm2d.Texture1, udkPackage, setup);
+                PortLightMap(meComponent.FileRef, ref lm2d.Texture2, udkPackage, setup);
+                PortLightMap(meComponent.FileRef, ref lm2d.Texture3, udkPackage, setup);
+                PortLightMap(meComponent.FileRef, ref lm2d.Texture4, udkPackage, setup);
             }
             else if (lmWithUdkRefs is LightMap_3 lm3)
             {
@@ -705,9 +750,9 @@ namespace LegendaryExplorerCore.UDK
             else if (lmWithUdkRefs is LightMap_4or6 lm46)
             {
                 // Has textures
-                PortLightMap(meComponent.FileRef, ref lm46.Texture1, udkPackage);
-                PortLightMap(meComponent.FileRef, ref lm46.Texture2, udkPackage);
-                PortLightMap(meComponent.FileRef, ref lm46.Texture3, udkPackage);
+                PortLightMap(meComponent.FileRef, ref lm46.Texture1, udkPackage, setup);
+                PortLightMap(meComponent.FileRef, ref lm46.Texture2, udkPackage, setup);
+                PortLightMap(meComponent.FileRef, ref lm46.Texture3, udkPackage, setup);
             }
             else if (lmWithUdkRefs is LightMap_5 lm5)
             {
@@ -716,8 +761,28 @@ namespace LegendaryExplorerCore.UDK
         }
 
         /// <summary>
-        /// Ensures a lightmap reference will not be deleted by static lighting import
+        /// Protects shadow resources shared with components whose lighting is being replaced.
         /// </summary>
+        private static void KeepShadowMaps(IMEPackage package, int[] shadowMaps, LightingImportSetup setup)
+        {
+            for (int i = 0; i < shadowMaps.Length; i++)
+            {
+                // Shadow maps and their textures may be shared with a component being replaced.
+                // Clone both into the kept namespace so cleanup cannot invalidate the preserved LOD.
+                KeepLightMap(package, ref shadowMaps[i], setup);
+                if (package.TryGetUExport(shadowMaps[i], out var shadowMap)
+                    && shadowMap.ClassName == "ShadowMap2D"
+                    && shadowMap.GetProperty<ObjectProperty>("Texture") is { } texture)
+                {
+                    var textureIndex = texture.Value;
+                    KeepLightMap(package, ref textureIndex, setup);
+                    texture.Value = textureIndex;
+                    shadowMap.WriteProperty(texture);
+                }
+            }
+        }
+
+        /// <summary>Ensures lightmap textures will not be deleted by static lighting import.</summary>
         private static void KeepLightMapTextures(LightMap bin, IMEPackage sourcePackage, LightingImportSetup setup)
         {
             if (bin is LightMap_1D lm1d)

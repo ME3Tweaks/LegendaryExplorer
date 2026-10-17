@@ -177,6 +177,14 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                 CaseInsensitiveDictionary<UState> existingStates)
                 = GetClassMembers(classObj);
 
+            // 10/16/2026 - Mgamerz - Recompiling a native class can cause offsets to shift 
+            // which will crash the game, so keep them stable across compile
+            var originalPropertyOrder = new Dictionary<int, int>();
+            foreach (UProperty existingProperty in GetMembers<UProperty>(classObj))
+            {
+                originalPropertyOrder.TryAdd(existingProperty.Export.UIndex, originalPropertyOrder.Count);
+            }
+
             //Stub out all the child exports, and trash existing ones that don't get re-used
 
             var completions = new List<Action<UnrealScriptOptionsPackage>>();
@@ -363,7 +371,11 @@ namespace LegendaryExplorerCore.UnrealScript.Compiling
                     completion(usop);
                 }
 
-                IEnumerable<UField> allChildren = compiledProperties.Values.Cast<UField>().Concat(compiledFunctions).Concat(compiledStates).Concat(compiledStructs).Concat(compiledEnums).Concat(compiledConsts);
+                // 10/16/2026 - Mgamerz - Recompiling a native class can cause offsets to shift 
+                // which will crash the game, so keep them stable across compile
+                // Put new properties after the original native ones.
+                IEnumerable<UProperty> orderedProperties = compiledProperties.Values.OrderBy(prop => originalPropertyOrder.TryGetValue(prop.Export.UIndex, out int index) ? index : int.MaxValue);
+                IEnumerable<UField> allChildren = orderedProperties.Cast<UField>().Concat(compiledFunctions).Concat(compiledStates).Concat(compiledStructs).Concat(compiledEnums).Concat(compiledConsts);
                 if (childrenHaveBeenAdded || childrenHaveBeenTrashed)
                 {
                     classObj.Children = 0;
