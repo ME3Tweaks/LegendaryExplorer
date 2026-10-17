@@ -82,6 +82,29 @@ namespace LegendaryExplorerCore.Unreal.Classes
             Mips.RemoveAll(x => x.storageType == StorageTypes.empty);
         }
 
+        /// <summary>
+        /// Removes the empty mips (mips with no data, which LE ships at the top of some textures) from a texture's binary, and
+        /// updates its properties to describe what is left: SizeX/SizeY become the first remaining mip's, and MipTailBaseIdx,
+        /// if present, drops by the number of mips removed. Nothing is written back to the export.
+        /// </summary>
+        /// <returns>The number of mips removed.</returns>
+        public static int RemoveEmptyMips(UTexture2D texture, PropertyCollection properties)
+        {
+            int removed = texture.Mips.RemoveAll(x => x.StorageType == StorageTypes.empty);
+            if (removed == 0 || texture.Mips.Count == 0)
+                return removed;
+
+            properties.AddOrReplaceProp(new IntProperty(texture.Mips[0].SizeX, @"SizeX"));
+            properties.AddOrReplaceProp(new IntProperty(texture.Mips[0].SizeY, @"SizeY"));
+            var mipTailBaseIdx = properties.GetProp<IntProperty>(@"MipTailBaseIdx");
+            if (mipTailBaseIdx != null)
+            {
+                mipTailBaseIdx.Value = Math.Max(0, mipTailBaseIdx.Value - removed);
+            }
+
+            return removed;
+        }
+
         public Texture2DMipInfo GetTopMip()
         {
             return Mips.FirstOrDefault(x => x.storageType != StorageTypes.empty);
@@ -490,8 +513,9 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <paramref name="forceMipping"/> to add the chain to a single-mip texture.</param>
         /// <param name="mipOptions">How to filter generated mips (see <see cref="MipGenerationOptions"/>). Null keeps the historical
         /// box filter. Not used when a supplied chain is stored.</param>
+        /// <param name="callbacks">Optional hooks, for example to supply a cached encoded chain instead of generating one (see <see cref="TextureReplaceCallbacks"/>).</param>
         /// <returns>Messages about anything the replacement had to change or could not honour.</returns>
-        public List<string> Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false, PixelFormat forcedNewFormat = PixelFormat.Unknown, bool forceMipping = false, Stream outDataOverride = null, bool useSuppliedMips = false, MipGenerationOptions mipOptions = null)
+        public List<string> Replace(Image image, PropertyCollection props, string fileSourcePath = null, string forcedTFCName = null, string forcedTFCPath = null, bool isPackageStored = false, PixelFormat forcedNewFormat = PixelFormat.Unknown, bool forceMipping = false, Stream outDataOverride = null, bool useSuppliedMips = false, MipGenerationOptions mipOptions = null, TextureReplaceCallbacks callbacks = null)
         {
             var messages = new List<string>();
             var textureCache = forcedTFCName ?? GetTopMip().TextureCacheName;
@@ -518,9 +542,11 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
             (bool hasAlpha, byte threshold) GetDxt1AlphaSettings()
             {
-                if (pixelFormat == PixelFormat.DXT1 && (image.HasFullAlpha() || props.GetProp<EnumProperty>("CompressionSettings") is { Value.Name: "TC_OneBitAlpha" }))
+                // CompressionNoAlpha discards alpha; otherwise keep 1-bit alpha when the image has any to keep
+                if (pixelFormat == PixelFormat.DXT1 && props.GetProp<BoolProperty>("CompressionNoAlpha") is not { Value: true }
+                    && (props.GetProp<EnumProperty>("CompressionSettings") is { Value.Name: "TC_OneBitAlpha" } || image.HasTransparency()))
                 {
-                    if (image.pixelFormat is PixelFormat.ARGB or PixelFormat.DXT3 or PixelFormat.DXT5)
+                    if (image.pixelFormat is PixelFormat.DXT3 or PixelFormat.DXT5 || image.HasFullAlpha())
                     {
                         messages.Add("Texture was converted from full alpha to binary alpha. DXT1 does not support more than 1-bit alpha");
                     }
@@ -543,8 +569,35 @@ namespace LegendaryExplorerCore.Unreal.Classes
             {
                 var (dxt1HasAlpha, dxt1Threshold) = GetDxt1AlphaSettings();
 
-                //Generate lower mips
-                image.correctMips(newPixelFormat, dxt1HasAlpha, dxt1Threshold, mipOptions);
+                //2026-10-14 - the caller may supply (and keep) the encoded chain, see TextureReplaceCallbacks
+                TextureEncodeRequest request = null;
+                if (callbacks != null)
+                {
+                    var top = image.mipMaps[0];
+                    request = new TextureEncodeRequest
+                    {
+                        Export = Export,
+                        SourceData = top.data,
+                        Width = top.origWidth,
+                        Height = top.origHeight,
+                        SourceFormat = image.pixelFormat,
+                        DestinationFormat = newPixelFormat,
+                        Dxt1HasAlpha = dxt1HasAlpha,
+                        Dxt1Threshold = dxt1Threshold,
+                        MipOptions = mipOptions
+                    };
+                }
+
+                if (request == null || !TryUseSuppliedEncodedMips(image, request, callbacks))
+                {
+                    //Generate lower mips
+                    image.correctMips(newPixelFormat, dxt1HasAlpha, dxt1Threshold, mipOptions);
+
+                    if (request != null && callbacks.MipsEncoded != null && image.HasCompleteMipChain())
+                    {
+                        callbacks.MipsEncoded(request, image.mipMaps.Select(x => new EncodedMip(x.origWidth, x.origHeight, x.data)).ToList());
+                    }
+                }
             }
 
             if (Mips.Count == 1 && !forceMipping)
@@ -585,11 +638,14 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
             var compressedMips = new List<byte[]>();
 
+            bool leStoredUncompressed = isPackageStored && Export.Game.IsLEGame() &&
+                Mips.All(x => x.storageType is StorageTypes.pccUnc or StorageTypes.pccOodle or StorageTypes.extUnc or StorageTypes.extOodle);
+
             for (int m = 0; m < image.mipMaps.Count; m++)
             {
                 // Mips go big to small
 
-                if (m > image.mipMaps.Count - 6) // 0 indexed
+                if (m > image.mipMaps.Count - 6 || leStoredUncompressed) // 0 indexed
                 {
                     // Lower 6 mips are never stored compressed so don't bother wasting time compressing the data
                     compressedMips.Add(null);
@@ -1051,22 +1107,23 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
         public static void UpdateLODBiasForTexture(ExportEntry export, PropertyCollection props, List<Texture2DMipInfo> Mips)
         {
-            var maxLodInfo = TextureLODInfo.LEMaxLodSizes(export.Game);
-            var texGroup = props.GetProp<EnumProperty>(@"LODGroup");
-            if (texGroup != null && maxLodInfo.TryGetValue(texGroup.Value.Instanced, out int maxDimension))
+            var lodBias = CalculateInternalFormatLODBias(export, props.GetProp<EnumProperty>(@"LODGroup"), Mips[0].width, Mips[0].height);
+            if (lodBias == null)
             {
-                // cubemaps will have null texture group. we don't want to update these
-                int lodBias = 0;
-                while (Mips[0].width > maxDimension || Mips[0].height > maxDimension)
-                {
-                    lodBias--;
-                    maxDimension *= 2;
-                }
+                // Cap unknown: a positive bias can still only lower the texture's resolution
+                if (props.GetProp<IntProperty>(@"InternalFormatLODBias")?.Value > 0)
+                    props.RemoveNamedProperty(@"InternalFormatLODBias");
+                return;
+            }
 
-                if (lodBias != 0)
-                {
-                    props.AddOrReplaceProp(new IntProperty(lodBias, @"InternalFormatLodBias"));
-                }
+            if (lodBias != 0)
+            {
+                props.AddOrReplaceProp(new IntProperty(lodBias.Value, @"InternalFormatLODBias"));
+            }
+            else
+            {
+                // A bias left from the original texture (e.g. +1 on an uncompressed normal map) would cap the new one below its size
+                props.RemoveNamedProperty(@"InternalFormatLODBias");
             }
         }
 
@@ -1076,31 +1133,52 @@ namespace LegendaryExplorerCore.Unreal.Classes
         /// <param name="export"></param>
         public static void UpdateLODBiasForTexture(ExportEntry export)
         {
-            var maxLodInfo = TextureLODInfo.LEMaxLodSizes(export.Game);
-            var texGroup = export.GetProperty<EnumProperty>(@"LODGroup");
-            if (texGroup != null && maxLodInfo.TryGetValue(texGroup.Value.Instanced, out int maxDimension))
+            var t2d = ObjectBinary.From<UTexture2D>(export);
+            var topMip = t2d.Mips.First(x => x.StorageType != StorageTypes.empty);
+            var lodBias = CalculateInternalFormatLODBias(export, export.GetProperty<EnumProperty>(@"LODGroup"), topMip.SizeX, topMip.SizeY);
+            if (lodBias == null)
             {
-                // cubemaps will have null texture group. we don't want to update these
-                var t2d = ObjectBinary.From<UTexture2D>(export);
-                int lodBias = 0;
-                var topMip = t2d.Mips.First(x => x.StorageType != StorageTypes.empty);
-                while (topMip.SizeX > maxDimension || topMip.SizeY > maxDimension)
-                {
-                    lodBias--;
-                    maxDimension *= 2;
-                }
-
-                if (lodBias != 0)
-                {
-                    // Adjust LOD Bias
-                    export.WriteProperty(new IntProperty(lodBias, @"InternalFormatLODBias"));
-                }
-                else
-                {
-                    // Do not set
+                // Cap unknown: a positive bias can still only lower the texture's resolution
+                if (export.GetProperty<IntProperty>(@"InternalFormatLODBias")?.Value > 0)
                     export.RemoveProperty(@"InternalFormatLODBias");
-                }
+                return;
             }
+
+            if (lodBias != 0)
+            {
+                // Adjust LOD Bias
+                export.WriteProperty(new IntProperty(lodBias.Value, @"InternalFormatLODBias"));
+            }
+            else
+            {
+                // Do not set
+                export.RemoveProperty(@"InternalFormatLODBias");
+            }
+        }
+
+        /// <summary>
+        /// The InternalFormatLODBias that lets a texture of the given size stream its top mip: LE shifts the LOD group's
+        /// MaxLODSize (and MinLODSize) down by this many mips, so each -1 doubles the cap. Null when the cap is unknown
+        /// (cubemap faces, or a group with no known MaxLODSize).
+        /// </summary>
+        private static int? CalculateInternalFormatLODBias(ExportEntry export, EnumProperty texGroup, int width, int height)
+        {
+            // Cubemap faces are sized by their cube
+            if (export.Parent is ExportEntry { ClassName: "TextureCube" })
+                return null;
+
+            // LODGroup is not serialized when it is the default, TEXTUREGROUP_World
+            var groupName = texGroup?.Value.Instanced ?? "TEXTUREGROUP_World";
+            if (!TextureLODInfo.LEMaxLodSizes(export.Game).TryGetValue(groupName, out int maxDimension))
+                return null;
+
+            int lodBias = 0;
+            while (width > maxDimension || height > maxDimension)
+            {
+                lodBias--;
+                maxDimension *= 2;
+            }
+            return lodBias;
         }
 
         /// <summary>
@@ -1307,21 +1385,146 @@ namespace LegendaryExplorerCore.Unreal.Classes
             // Needs mipped
             var newFormat = destFormat == PixelFormat.Unknown ? Image.getPixelFormatType(TextureFormat) : destFormat;
             bool wasPackageStored = GetTopMip()?.IsPackageStored ?? true;
-            var image = ToImage(Image.getPixelFormatType(TextureFormat));
+            // Only the top mip goes in: ToImage would run the default correctMips over it first, which re-encodes the top mip of a
+            // DXT1 texture without alpha even when the options are meant to leave it alone. Replace generates the chain.
+            var currentFormat = Image.getPixelFormatType(TextureFormat);
+            var topMip = GetTopMip();
+            var image = new Image(new List<MipMap> { new(GetTextureData(topMip, Export.Game), topMip.width, topMip.height, currentFormat) }, currentFormat);
             Replace(image, Export.GetProperties(), isPackageStored: wasPackageStored, forcedNewFormat: newFormat, forceMipping: true, mipOptions: options);
 
             if (wasPackageStored)
             {
-                // Replace() only sets NeverStream when there are 6+ mips; a package stored texture must always have it
-                var props = Export.GetProperties();
-                if (props.GetProp<BoolProperty>("NeverStream") is not { Value: true })
-                {
-                    props.AddOrReplaceProp(new BoolProperty(true, "NeverStream"));
-                    Export.WriteProperties(props);
-                }
+                EnsureNeverStream();
             }
         }
+
+        /// <summary>
+        /// Replace() only sets NeverStream when there are 6+ mips; a package stored texture must always have it
+        /// </summary>
+        private void EnsureNeverStream()
+        {
+            var props = Export.GetProperties();
+            if (props.GetProp<BoolProperty>("NeverStream") is not { Value: true })
+            {
+                props.AddOrReplaceProp(new BoolProperty(true, "NeverStream"));
+                Export.WriteProperties(props);
+            }
+        }
+
+        /// <summary>
+        /// Reads back the whole mip chain of a package stored texture exactly as it is stored (for a block compressed format
+        /// that is the encoded blocks, a sub 4x4 mip being one padded block), so that it can be kept and later put on a texture
+        /// with <see cref="ReplaceWithEncodedMips"/> without encoding it again.
+        /// </summary>
+        /// <param name="format">The pixel format of the stored mips.</param>
+        /// <param name="mips">The mips, largest first, each with its real (unpadded) size.</param>
+        /// <returns>False if the texture is not a package stored, complete chain in a known format.</returns>
+        public bool TryGetEncodedMips(out PixelFormat format, out List<EncodedMip> mips)
+        {
+            format = PixelFormat.Unknown;
+            mips = null;
+
+            var formatName = Export.GetProperty<EnumProperty>("Format")?.Value.Name;
+            if (formatName == null)
+                return false;
+            format = Image.getPixelFormatType(formatName);
+            var live = Mips.Where(x => x.storageType != StorageTypes.empty).ToList();
+            if (format == PixelFormat.Unknown || live.Count < 2 || live.Any(x => !x.IsPackageStored))
+                return false;
+
+            int width = live[0].width;
+            int height = live[0].height;
+            var result = new List<EncodedMip>(live.Count);
+            foreach (var mip in live)
+            {
+                var data = GetTextureData(mip, Export.Game);
+                int paddedWidth = width;
+                int paddedHeight = height;
+                if (format is PixelFormat.DXT1 or PixelFormat.DXT3 or PixelFormat.DXT5 or PixelFormat.ATI2 or PixelFormat.BC5 or PixelFormat.BC7)
+                {
+                    paddedWidth = Math.Max(width, 4);
+                    paddedHeight = Math.Max(height, 4);
+                }
+
+                if (data == null || data.Length != MipMap.getBufferSize(paddedWidth, paddedHeight, format))
+                    return false;
+                result.Add(new EncodedMip(width, height, data));
+                width = Math.Max(width >> 1, 1);
+                height = Math.Max(height >> 1, 1);
+            }
+
+            // A chain that stops short of 1x1 cannot be restored with ReplaceWithEncodedMips
+            if (result[^1].Width != 1 || result[^1].Height != 1)
+                return false;
+
+            mips = result;
+            return true;
+        }
+
+        /// <summary>
+        /// Stores an already encoded, complete mip chain on this texture (package stored, <see cref="PixelFormat"/> as given), the
+        /// way <see cref="GenerateMips"/> would leave it, without generating or encoding anything. Throws before changing the
+        /// texture if the chain is not usable.
+        /// </summary>
+        /// <param name="format">The pixel format the mips are encoded in.</param>
+        /// <param name="mips">Every mip from the top one down to 1x1, each half the size of the one above, with its real (unpadded) size.</param>
+        /// <returns>Messages about anything the replacement had to change.</returns>
+        public List<string> ReplaceWithEncodedMips(PixelFormat format, IReadOnlyList<EncodedMip> mips)
+        {
+            var mipMaps = new List<MipMap>(mips.Count);
+            foreach (var mip in mips)
+            {
+                mipMaps.Add(new MipMap(mip.Data, mip.Width, mip.Height, format)); // validates the size of the data
+            }
+
+            var image = new Image(mipMaps, format);
+            if (!image.HasCompleteMipChain())
+            {
+                throw new ArgumentException("The mips are not a complete chain (every level half the size of the one above, down to 1x1)", nameof(mips));
+            }
+
+            var messages = Replace(image, Export.GetProperties(), isPackageStored: true, forcedNewFormat: format, forceMipping: true, useSuppliedMips: true);
+            EnsureNeverStream();
+            return messages;
+        }
+
+        /// <summary>
+        /// Asks <see cref="TextureReplaceCallbacks.TryGetEncodedMips"/> for the chain <paramref name="request"/> describes and, if it
+        /// returns one that fits, puts it on <paramref name="image"/> as correctMips() would have.
+        /// </summary>
+        /// <returns>False if nothing usable was supplied; <paramref name="image"/> is then untouched.</returns>
+        private static bool TryUseSuppliedEncodedMips(Image image, TextureEncodeRequest request, TextureReplaceCallbacks callbacks)
+        {
+            var supplied = callbacks.TryGetEncodedMips?.Invoke(request);
+            if (supplied == null || supplied.Count == 0 || supplied[0].Width != request.Width || supplied[0].Height != request.Height)
+                return false;
+
+            var mipMaps = new List<MipMap>(supplied.Count);
+            try
+            {
+                foreach (var mip in supplied)
+                {
+                    mipMaps.Add(new MipMap(mip.Data, mip.Width, mip.Height, request.DestinationFormat)); // validates the size of the data
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            var candidate = new Image(mipMaps, request.DestinationFormat);
+            if (!candidate.HasCompleteMipChain())
+                return false;
+
+            image.SetMips(mipMaps, request.DestinationFormat);
+            return true;
+        }
     }
+
+    /// <summary>
+    /// One level of an already encoded mip chain: its real size (not padded to a whole block) and its stored bytes.
+    /// </summary>
+    public readonly record struct EncodedMip(int Width, int Height, byte[] Data);
 
     [DebuggerDisplay(@"Texture2DMipInfo for {Export.ObjectName.Instanced} | {width}x{height} | {storageType}")]
     public class Texture2DMipInfo

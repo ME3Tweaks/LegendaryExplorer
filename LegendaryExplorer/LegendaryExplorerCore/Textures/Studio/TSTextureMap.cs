@@ -487,11 +487,13 @@ namespace LegendaryExplorerCore.Textures.Studio
             }
         }
 
+        /// <param name="additionalTFCs">Full paths of TFCs outside <paramref name="rootDirectory"/> that textures in it may keep their data in. They are matched by file name, after the TFCs in <paramref name="rootDirectory"/>.</param>
         public static TextureMap GenerateMapForFolder(string rootDirectory,
             Func<IEntry, TextureMapMemoryEntry> nodeGeneratorDelegate,
             Action<TextureMapMemoryEntry> addRootElementDelegate,
             Action<string, int, int> progressDelegate = null,
-            CancellationToken cts = default)
+            CancellationToken cts = default,
+            IEnumerable<string> additionalTFCs = null)
         {
             var rootNodes = new List<TextureMapMemoryEntry>();
             var game = MEGame.Unknown;
@@ -505,8 +507,16 @@ namespace LegendaryExplorerCore.Textures.Studio
             // Mapping of full paths to their entries
             progressDelegate?.Invoke(@"Calculating texture map", -1, -1);
             var entries = new Dictionary<string, TextureMapMemoryEntry>();
-            var packageFiles = Directory.GetFiles(rootDirectory, "*.*", SearchOption.AllDirectories).Where(x => x.RepresentsPackageFilePath()).ToList();
+            var packageFiles = Directory.GetFiles(rootDirectory, "*.*", SearchOption.AllDirectories)
+                .Where(x => !x.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).Contains("LinkerPatches")) // Filter out linker patches
+                .Where(x => !Path.GetFileName(x).StartsWith("TO_", StringComparison.OrdinalIgnoreCase)) // Filter out Texture Override
+                .Where(x => x.RepresentsPackageFilePath())
+                .ToList();
             var tfcs = Directory.GetFiles(rootDirectory, "*.tfc", SearchOption.AllDirectories).ToList();
+            if (additionalTFCs != null)
+            {
+                tfcs.AddRange(additionalTFCs);
+            }
             progressDelegate?.Invoke(@"Calculating texture map", 0, packageFiles.Count);
 
             // Pass 1: Find all unique memory texture paths

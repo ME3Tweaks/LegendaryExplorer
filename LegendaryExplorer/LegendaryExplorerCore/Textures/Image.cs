@@ -614,6 +614,14 @@ namespace LegendaryExplorerCore.Textures
 
         private static byte[] convertToFormat(PixelFormat srcFormat, byte[] src, int w, int h, PixelFormat dstFormat, bool dxt1HasAlpha = false, byte dxt1Threshold = 128)
         {
+            if (dstFormat == PixelFormat.DXT1 && srcFormat == PixelFormat.ARGB)
+            {
+                // The native BC1 encoder makes every texel with alpha below 255 punch-through transparent black, so resolve
+                // the alpha here: cut at the threshold when 1-bit alpha is wanted, opaque otherwise
+                src = (byte[])src.Clone();
+                for (int i = 3; i < src.Length; i += 4)
+                    src[i] = dxt1HasAlpha && src[i] < dxt1Threshold ? (byte)0 : (byte)255;
+            }
             return TexConverter.ConvertTexture(src, (uint)w, (uint)h, srcFormat, dstFormat);
         }
 
@@ -725,13 +733,13 @@ namespace LegendaryExplorerCore.Textures
 
         /// <summary>
         /// The <see cref="correctMips"/> path for non-default <see cref="MipGenerationOptions"/>: builds the whole chain as ARGB
-        /// first, then converts each level. The top mip is only rewritten when it has to change format (the same rule the
-        /// default path uses), so a top mip that is already in the target format is never recompressed.
+        /// first, then converts each level. The top mip is only rewritten when it has to change format, so a top mip that is already
+        /// in the target format is never recompressed - not even a DXT1 one without alpha, which the default path re-encodes.
         /// </summary>
         private void correctMipsWithOptions(byte[] topArgb, int width, int height, PixelFormat dstFormat, bool dxt1HasAlpha, byte dxt1Threshold, MipGenerationOptions options)
         {
             MipMap originalTop = mipMaps[0];
-            bool convertTop = dstFormat != pixelFormat || (dstFormat == PixelFormat.DXT1 && !dxt1HasAlpha);
+            bool convertTop = dstFormat != pixelFormat;
 
             List<byte[]> levels = MipGenerator.BuildChain(topArgb, width, height, options);
 
@@ -760,6 +768,15 @@ namespace LegendaryExplorerCore.Textures
                     : convertToFormat(PixelFormat.ARGB, levels[i], levelWidth, levelHeight, pixelFormat, dxt1HasAlpha, dxt1Threshold);
                 mipMaps.Add(new MipMap(data, levelWidth, levelHeight, pixelFormat));
             }
+        }
+
+        /// <summary>
+        /// Replaces every level of this image with <paramref name="mips"/>, already encoded in <paramref name="format"/>.
+        /// </summary>
+        internal void SetMips(List<MipMap> mips, PixelFormat format)
+        {
+            mipMaps = mips;
+            pixelFormat = format;
         }
 
         /// <summary>
@@ -955,10 +972,38 @@ namespace LegendaryExplorerCore.Textures
             if (pixelFormat == PixelFormat.ARGB)
             {
                 var mip = mipMaps[0];
-                for (int i = 0; i < mip.data.Length; i += 4) // A R G B
+                for (int i = 3; i < mip.data.Length; i += 4) // B G R A
                 {
                     if (mip.data[i] != 0 && mip.data[i] != 255) return true; // Not 0 or 1
                 }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if any pixel of the top mip has an alpha below 255. Works on ARGB, DXT1, DXT3 and DXT5 images.
+        /// </summary>
+        internal bool HasTransparency()
+        {
+            if (!mipMaps.Any())
+                return false;
+
+            var mip = mipMaps[0];
+            byte[] argb = mip.data;
+            if (pixelFormat is PixelFormat.DXT1 or PixelFormat.DXT3 or PixelFormat.DXT5)
+            {
+                int w = mip.width, h = mip.height;
+                argb = convertRawToARGB(mip.data, ref w, ref h, pixelFormat);
+            }
+            else if (pixelFormat != PixelFormat.ARGB)
+            {
+                return false;
+            }
+
+            for (int i = 3; i < argb.Length; i += 4)
+            {
+                if (argb[i] != 255) return true;
             }
 
             return false;
