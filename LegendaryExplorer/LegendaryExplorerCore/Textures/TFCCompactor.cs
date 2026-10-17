@@ -265,7 +265,7 @@ namespace LegendaryExplorerCore.Textures
                     var destTFCInfo = compactor.GetOutTFC(diskSize); // Get TFC to write to
                     compactor.CRCMap[texInfo.CRC] = destTFCInfo; // Claim now so repeated CRCs aren't queued twice
 
-                    copyWorkItems.Add(new TextureCopyWorkItem(texInfo, destTFCInfo, entry.InstancedFullPath));
+                    copyWorkItems.Add(new TextureCopyWorkItem(texInfo, destTFCInfo, entry.MemoryFullPath));
                 }
             }
 

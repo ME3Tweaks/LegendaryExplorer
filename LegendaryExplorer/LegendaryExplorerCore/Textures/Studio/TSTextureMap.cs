@@ -33,15 +33,10 @@ namespace LegendaryExplorerCore.Textures.Studio
         {
             var parent = EnsureParent(exportEntry, selectedFolder, textureMapMemoryEntries, additionalTFCs, generatorDelegate, addRootNodeDelegate);
 
-            // Root-level textures (idxLink == 0, parent == null here - e.g. baked lightmap components like
-            // DirectionalMaxComponent0_2) have no parent chain to qualify their name, and the auto-generated
-            // names UnrealEd assigns them are reused by every level's lighting rebuild, so InstancedFullPath
-            // alone collides across different level files even though the actual pixel data differs. Qualify
-            // the map key with the owning package's filename in that case; non-root textures keep their
-            // existing key since their parent chain already makes InstancedFullPath globally meaningful.
-            var mapKey = parent == null
-                ? $"{Path.GetFileNameWithoutExtension(exportEntry.FileRef.FilePath)}\0{exportEntry.InstancedFullPath}"
-                : exportEntry.InstancedFullPath;
+            // Keyed by memory full path: non-forced exports are nested under their package file's name in memory,
+            // so identically named textures in different files (e.g. baked lightmap components that every level's
+            // lighting rebuild names the same) are different textures, while forced exports share one path.
+            var mapKey = exportEntry.MemoryFullPath;
 
             if (!textureMapMemoryEntries.TryGetValue(mapKey, out var memoryEntry))
             {
@@ -120,32 +115,51 @@ namespace LegendaryExplorerCore.Textures.Studio
                 parentT = parentT.Parent;
             }
 
+            // Build every parent key from the texture's own memory path prefix so the chain stays consistent
+            string memoryPrefix = null;
             TextureMapMemoryEntry lastParent = null;
-            for (int i = 0; i < parents.Count; i++)
+            if (!exportEntry.IsForcedExport)
             {
-                var p = parents[i];
-                if (!textureMapMemoryEntries.TryGetValue(p.InstancedFullPath, out lastParent))
+                // Non-forced exports live under their package file in memory. That root has no entry in the package,
+                // so generate a node from the topmost entry and rename it to the file.
+                memoryPrefix = exportEntry.FileRef.FileNameNoExtension.StripUnrealLocalization();
+                if (!textureMapMemoryEntries.TryGetValue(memoryPrefix, out lastParent))
+                {
+                    lastParent = generatorDelegate(parents.Count > 0 ? parents[0] : exportEntry);
+                    lastParent.ObjectName = memoryPrefix;
+                    lastParent.IsTexture = false;
+                    addRootNodeDelegate?.Invoke(lastParent);
+                    textureMapMemoryEntries[memoryPrefix] = lastParent;
+                }
+            }
+
+            foreach (var p in parents)
+            {
+                var key = memoryPrefix != null ? $"{memoryPrefix}.{p.InstancedFullPath}" : p.InstancedFullPath;
+                if (!textureMapMemoryEntries.TryGetValue(key, out var node))
                 {
                     if (p.IsTexture() && p is ExportEntry pe)
                     {
                         // Parent is texture. Normally this doesn't occur but devs be devs
-                        lastParent = ParseTexture(pe, selectedFolder, textureMapMemoryEntries, crcCache, additionalTFCs, generatorDelegate, addRootNodeDelegate);
+                        node = ParseTexture(pe, selectedFolder, textureMapMemoryEntries, crcCache, additionalTFCs, generatorDelegate, addRootNodeDelegate);
                     }
                     else
                     {
                         // Parent doesn't exist, create
-                        lastParent = generatorDelegate(p);
-                        lastParent.Parent = i > 0 ? textureMapMemoryEntries[parents[i - 1].InstancedFullPath] : null;
+                        node = generatorDelegate(p);
+                        node.Parent = lastParent;
                         // Set the parent child
-                        lastParent.Parent?.Children.Add(lastParent);
-                        if (lastParent.Parent == null)
+                        lastParent?.Children.Add(node);
+                        if (lastParent == null)
                         {
-                            addRootNodeDelegate?.Invoke(lastParent);
+                            addRootNodeDelegate?.Invoke(node);
                         }
                     }
 
-                    textureMapMemoryEntries[p.InstancedFullPath] = lastParent;
+                    textureMapMemoryEntries[key] = node;
                 }
+
+                lastParent = node;
             }
 
             return lastParent;
@@ -173,15 +187,15 @@ namespace LegendaryExplorerCore.Textures.Studio
         public string ObjectName { get; set; }
 
         /// <summary>
-        /// The full instanced path of this entry
+        /// The full path of this entry as it appears in game memory. Non-forced exports are nested under their package file's name.
         /// </summary>
-        public string InstancedFullPath
+        public string MemoryFullPath
         {
             get
             {
                 if (Parent != null)
                 {
-                    return $"{Parent.InstancedFullPath}.{ObjectName}";
+                    return $"{Parent.MemoryFullPath}.{ObjectName}";
                 }
                 return ObjectName;
             }
