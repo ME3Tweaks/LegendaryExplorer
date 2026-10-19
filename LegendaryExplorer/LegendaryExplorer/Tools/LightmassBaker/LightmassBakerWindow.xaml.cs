@@ -181,11 +181,15 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
         if (added.Count > 0) Files.AddRange(added);
     }
 
+    /// <summary>Not shown in the window: kept from the opened job.</summary>
+    private bool bioWareLightmassSettings = true;
+
     private LightmassBakeJob ToJob() => new()
     {
         Files = Files.Select(f => new LightmassBakeJobFile { Path = f.Path, Editable = f.Editable }).ToList(),
         Quality = Quality,
         AssignmentPolicy = AssignmentPolicy,
+        BioWareLightmassSettings = bioWareLightmassSettings,
         TfcName = TfcName,
         UdkBinaries = UdkBinaries,
         OutputDirectory = SaveInPlace || string.IsNullOrWhiteSpace(OutputDirectory) ? null : OutputDirectory,
@@ -197,6 +201,7 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
         AddFiles(job.Files.Select(f => (f.Path, f.Editable)));
         Quality = job.Quality;
         AssignmentPolicy = job.AssignmentPolicy;
+        bioWareLightmassSettings = job.BioWareLightmassSettings;
         TfcName = job.TfcName;
         UdkBinaries = job.ResolvedUdkBinaries;
         OutputDirectory = job.OutputDirectory;

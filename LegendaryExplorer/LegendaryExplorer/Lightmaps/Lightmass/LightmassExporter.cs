@@ -5,6 +5,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Numerics;
 using LegendaryExplorer.Tools.LevelEditor.Scene3D;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 
@@ -28,7 +29,7 @@ public interface ILightmassChannels
 /// (IB Lightmass.cpp:635): the scene header, user and level names, importance volumes, visibility data (none), lights, mesh
 /// instances and mappings into the job's scene channel, and each mesh and material into its own persistent channel.
 /// </summary>
-public sealed class LightmassExporter(LightmassScene scene, IniFile ini, LightmassQuality quality, ILightmassChannels channels)
+public sealed class LightmassExporter(LightmassScene scene, DuplicatingIni ini, LightmassQuality quality, ILightmassChannels channels)
 {
     /// <summary>UE3's FStaticMeshStaticLightingVertexMapping: 1 / SubDivisionStepSize² (default step 16), sampling the surface rather than only the vertices.</summary>
     const float VertexSampleToAreaRatio = 1f / (16 * 16);

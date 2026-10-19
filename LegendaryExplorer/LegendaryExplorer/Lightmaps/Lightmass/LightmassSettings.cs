@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Numerics;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 
@@ -16,42 +16,42 @@ public enum LightmassQuality
     Production,
 }
 
-/// <summary>A UE3 config file: sections of key=value lines (later keys win). Enough for Lightmass's ini.</summary>
-public sealed class IniFile
+/// <summary>Typed reads of Lightmass's ini (UDK's BaseLightmass.ini), which fail on a missing key rather than guess a default.</summary>
+public static class LightmassIni
 {
-    readonly Dictionary<string, Dictionary<string, string>> sections = new(StringComparer.OrdinalIgnoreCase);
-
-    public static IniFile Load(string path)
+    /// <summary>
+    /// Applies the solver settings BioWare changed from UE3's BaseLightmass.ini for ME3. Their other changes don't apply here:
+    /// bAllowLightmapCompression and DefaultStaticMeshLightingRes are the editor's (the bake keeps the levels' DXT1 atlases and
+    /// allocations), and bVisualizeVolumeLightSamples only makes Lightmass return debug samples for the editor to draw.
+    /// SurfaceLightSampleSpacing is for volume samples, which the bake doesn't import; a coarser spacing just makes them cheaper.
+    /// </summary>
+    public static void ApplyBioWareOverrides(this DuplicatingIni ini)
     {
-        var ini = new IniFile();
-        Dictionary<string, string> section = null;
-        foreach (string raw in File.ReadAllLines(path))
-        {
-            string line = raw.Trim();
-            if (line.Length == 0 || line[0] == ';') continue;
-            if (line[0] == '[' && line[^1] == ']')
-            {
-                string name = line[1..^1];
-                if (!ini.sections.TryGetValue(name, out section)) ini.sections[name] = section = new(StringComparer.OrdinalIgnoreCase);
-                continue;
-            }
-            int eq = line.IndexOf('=');
-            if (section != null && eq > 0) section[line[..eq].Trim()] = line[(eq + 1)..].Trim();
-        }
-        return ini;
+        Set(ini, "DevOptions.StaticShadows", "bFilterShadowFactor", "False");
+        Set(ini, "DevOptions.StaticShadows", "MinUnoccludedFraction", "0.01");
+        Set(ini, "DevOptions.StaticShadows", "NumBounceShadowRays", "4");
+        Set(ini, "DevOptions.PrecomputedDynamicObjectLighting", "SurfaceLightSampleSpacing", "750");
     }
 
-    public string Get(string section, string key) =>
-        sections.TryGetValue(section, out var s) && s.TryGetValue(key, out string v) ? v : throw new KeyNotFoundException($"[{section}] {key} is missing from the Lightmass ini");
+    /// <summary>Replaces the key whatever its case: reads match it case-insensitively, but SetSingleEntry only removes an exact match.</summary>
+    static void Set(DuplicatingIni ini, string section, string key, string value)
+    {
+        var s = ini.GetOrAddSection(section);
+        s.Entries.RemoveAll(e => key.Equals(e.Key, StringComparison.OrdinalIgnoreCase));
+        s.Entries.Add(new DuplicatingIni.IniEntry(key, value));
+    }
 
-    public float Float(string section, string key) => float.Parse(Get(section, key), CultureInfo.InvariantCulture);
-    public int Int(string section, string key) => int.Parse(Get(section, key), CultureInfo.InvariantCulture);
-    public bool Bool(string section, string key) => Get(section, key).Equals("True", StringComparison.OrdinalIgnoreCase);
+    public static string Get(this DuplicatingIni ini, string section, string key) =>
+        ini.GetValue(section, key)?.Value ?? throw new KeyNotFoundException($"[{section}] {key} is missing from the Lightmass ini");
+
+    public static float Float(this DuplicatingIni ini, string section, string key) => float.Parse(ini.Get(section, key), CultureInfo.InvariantCulture);
+    public static int Int(this DuplicatingIni ini, string section, string key) => int.Parse(ini.Get(section, key), CultureInfo.InvariantCulture);
+    public static bool Bool(this DuplicatingIni ini, string section, string key) => ini.Get(section, key).Equals("True", StringComparison.OrdinalIgnoreCase);
 
     /// <summary>A struct value such as (R=0.5,G=0.5,B=0.5).</summary>
-    public Vector3 Color(string section, string key)
+    public static Vector3 Color(this DuplicatingIni ini, string section, string key)
     {
-        string v = Get(section, key);
+        string v = ini.Get(section, key);
         float Part(string name)
         {
             int i = v.IndexOf(name + "=", StringComparison.OrdinalIgnoreCase);
@@ -139,7 +139,7 @@ public static class LightmassSceneHeader
     public sealed record Counts(int ImportanceVolumes, int DirectionalLights, int PointLights, int SpotLights, int SkyLights,
         int StaticMeshes, int Terrains, int StaticMeshInstances, int BspMappings, int TextureMappings, int VertexMappings, int TerrainMappings);
 
-    public static void Write(LightmassWriter w, IniFile ini, LightmassQuality quality, LightmassWorldSettings world, Counts counts)
+    public static void Write(LightmassWriter w, DuplicatingIni ini, LightmassQuality quality, LightmassWorldSettings world, Counts counts)
     {
         long start = w.Position;
         const string StaticLighting = "DevOptions.StaticLighting", Constants = "DevOptions.StaticLightingSceneConstants",

@@ -41,6 +41,9 @@ public sealed class LightmassBakeJob
     [OnDeserializing]
     private void ReadLegacyDefaults(StreamingContext context) => AssignmentPolicy = LightAssignmentPolicy.PreserveExistingAssignments;
 
+    /// <summary>Uses the Lightmass settings BioWare changed for ME3 (<see cref="LightmassIni.ApplyBioWareOverrides"/>) instead of UDK's stock ones.</summary>
+    public bool BioWareLightmassSettings { get; set; } = true;
+
     /// <summary>Name of the texture file cache the streamed lightmap textures go in. An existing cache of that name is added to.</summary>
     public string TfcName { get; set; } = "Textures_DLC_MOD_LEXLightmaps";
 
@@ -210,6 +213,7 @@ public sealed class LightmassBakeJob
             {
                 UdkBinaries = ResolvedUdkBinaries,
                 Quality = Quality,
+                BioWareLightmassSettings = BioWareLightmassSettings,
                 TfcName = TfcName,
                 TfcDirectory = preview.TemporaryDirectory,
                 CopiedCacheSource = preview.CopiedCacheSource,

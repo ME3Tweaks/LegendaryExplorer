@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using LegendaryExplorer.Lightmaps.Codec;
 using LegendaryExplorer.Lightmaps.Game;
+using LegendaryExplorerCore.Misc;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.Lightmaps.Lightmass;
@@ -16,6 +17,8 @@ public sealed class LightmassBakeSettings
     /// <summary>UDK's Binaries folder (SwarmAgent.exe, Win64\UnrealLightmass.exe, Win64\AgentInterface.dll).</summary>
     public string UdkBinaries;
     public LightmassQuality Quality = LightmassQuality.Preview;
+    /// <summary>Applies <see cref="LightmassIni.ApplyBioWareOverrides"/> over UDK's BaseLightmass.ini.</summary>
+    public bool BioWareLightmassSettings = true;
     public LightmassSceneOptions Scene = new();
     /// <summary>Where the mod TFC for streamed lightmap textures is written, and its name (Textures_DLC_MOD_..., for the game to find it).</summary>
     public string TfcDirectory;
@@ -71,7 +74,8 @@ public static class LightmassBake
         string win64 = Path.Combine(settings.UdkBinaries, "Win64");
         string lightmassExe = Path.Combine(win64, "UnrealLightmass.exe");
         if (!File.Exists(lightmassExe)) throw new FileNotFoundException("UnrealLightmass.exe wasn't found in the UDK's Binaries\\Win64 folder", lightmassExe);
-        var ini = IniFile.Load(Path.Combine(settings.UdkBinaries, "..", "Engine", "Config", "BaseLightmass.ini"));
+        var ini = DuplicatingIni.LoadIni(Path.Combine(settings.UdkBinaries, "..", "Engine", "Config", "BaseLightmass.ini"));
+        if (settings.BioWareLightmassSettings) ini.ApplyBioWareOverrides();
 
         var timer = Stopwatch.StartNew();
         log("Gathering the scene...");
