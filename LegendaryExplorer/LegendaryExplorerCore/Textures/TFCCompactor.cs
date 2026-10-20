@@ -241,6 +241,8 @@ namespace LegendaryExplorerCore.Textures
             }
 
             // Copy external data to new TFC(s)--------------------
+            // Ensure directory exists before trying to enumerate it.
+            Directory.CreateDirectory(infoPackage.StagingPath);
             foreach (var f in Directory.GetFiles(infoPackage.StagingPath, "*.tfc", SearchOption.TopDirectoryOnly))
             {
                 File.Delete(f); // Delete existing TFCs in staging dir
