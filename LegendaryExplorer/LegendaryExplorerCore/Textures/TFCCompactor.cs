@@ -223,13 +223,28 @@ namespace LegendaryExplorerCore.Textures
             textureMap ??= TextureMapGenerator.GenerateMapForFolder(infoPackage.BaseCompactionPath, x => new TextureMapMemoryEntry(x), x => rootNodes.Add(x), progressDelegate, cts, infoPackage.AdditionalTFCs);
             Debug.WriteLine($@"Texture map count: {textureMap.CalculatedMap.Count}");
 
+            var sourceTFCs = new HashSet<string>(infoPackage.TFCsToCompact, StringComparer.OrdinalIgnoreCase);
+            if (infoPackage.IncludeNumberedSourceTFCs)
+            {
+                foreach (var name in textureMap.CalculatedMap.SelectMany(x => x.GetAllTextureEntries())
+                             .SelectMany(x => x.Instances).Select(x => x.TFCName).Where(x => x != null).Distinct(StringComparer.OrdinalIgnoreCase))
+                {
+                    if (infoPackage.TFCsToCompact.Any(source => TFCTools.IsTFCFamilyMember(name, source)))
+                    {
+                        sourceTFCs.Add(name);
+                    }
+                }
+            }
+
+            bool ShouldCompact(TextureMapPackageEntry instance) => instance.CompressedMipInfos.Count > 0
+                && sourceTFCs.Contains(instance.TFCName)
+                && (infoPackage.RootTexturesOnly is not { } rootOnly || instance.IsRootTexture == rootOnly);
+
             // CRC Check. Only textures this compaction moves (or repoints) matter: the rest are left as they are, so a
             // texture in a TFC that isn't being compacted, or one filtered out by RootTexturesOnly, can't break it.
             var unmatched = textureMap.CalculatedMap
                 .SelectMany(x => x.GetAllTextureEntries())
-                .Where(x => x.HasUnmatchedCRCs && x.Instances.Count > 0
-                            && (compactor.infoPackage.RootTexturesOnly is not { } rootOnly || x.Instances[0].IsRootTexture == rootOnly)
-                            && x.Instances.Any(i => i.CompressedMipInfos.Count > 0 && compactor.infoPackage.TFCsToCompact.Contains(i.TFCName)))
+                .Where(x => x.HasUnmatchedCRCs && x.Instances.Any(ShouldCompact))
                 .ToList();
             if (unmatched.Count > 0)
             {
@@ -264,23 +279,11 @@ namespace LegendaryExplorerCore.Textures
                 gameFiles[Path.GetFileName(basePathTFC)] = basePathTFC;
             }
 
-            var sourceTFCs = new HashSet<string>(infoPackage.TFCsToCompact, StringComparer.OrdinalIgnoreCase);
-            if (infoPackage.IncludeNumberedSourceTFCs)
-            {
-                foreach (var file in gameFiles.Keys.Where(x => x.EndsWith(".tfc", StringComparison.OrdinalIgnoreCase)))
-                {
-                    var name = Path.GetFileNameWithoutExtension(file);
-                    if (infoPackage.TFCsToCompact.Any(source => TFCTools.IsTFCFamilyMember(name, source)))
-                        sourceTFCs.Add(name);
-                }
-            }
-
             // A split pass can leave root/non-root textures in a shared source TFC. Keep those files,
             // and avoid reusing their names for an output whose offsets would invalidate the remaining references.
             foreach (var instance in textureMap.CalculatedMap.SelectMany(x => x.GetAllTextureEntries()).SelectMany(x => x.Instances))
             {
-                if (instance.CompressedMipInfos.Count > 0 && (!sourceTFCs.Contains(instance.TFCName) ||
-                    (infoPackage.RootTexturesOnly is { } rootOnly && instance.IsRootTexture != rootOnly)))
+                if (instance.CompressedMipInfos.Count > 0 && !ShouldCompact(instance))
                     compactor.preservedSourceTFCs.Add(instance.TFCName);
             }
 
@@ -294,20 +297,18 @@ namespace LegendaryExplorerCore.Textures
             {
                 foreach (var entry in v.GetAllTextureEntries())
                 {
-                    if (!sourceTFCs.Contains(entry.Instances[0].TFCName))
+                    // Copies at one memory path can use different TFCs, or keep their mips in the package.
+                    // Pick a copy this pass will actually update, regardless of which package was scanned first.
+                    var texInfo = entry.Instances.FirstOrDefault(ShouldCompact);
+                    if (texInfo == null)
+                    {
                         continue;
+                    }
 
-                    if (compactor.infoPackage.RootTexturesOnly is { } rootTexturesOnly && entry.Instances[0].IsRootTexture != rootTexturesOnly)
-                        continue;
-
-                    if (entry.Instances[0].CompressedMipInfos.Count == 0)
-                        continue; // No external data to move
-
-                    if (!claimedCRCs.Add(entry.GetCRC()))
+                    if (!claimedCRCs.Add(texInfo.CRC))
                         continue; // Texture doesn't need ported into TFC
 
                     // texture has not been copied to TFC
-                    var texInfo = entry.Instances[0];
                     copyWorkItems.Add(new TextureCopyWorkItem(texInfo, entry.MemoryFullPath));
                 }
             }
@@ -440,8 +441,7 @@ namespace LegendaryExplorerCore.Textures
                             continue; // PCC Stored
                         }
 
-                        if (tu.CompressedMipInfos.Count == 0 || !sourceTFCs.Contains(tu.TFCName) ||
-                            (infoPackage.RootTexturesOnly is { } rootOnly && tu.IsRootTexture != rootOnly))
+                        if (!ShouldCompact(tu))
                         {
                             // None of this texture's data is being moved (e.g. package stored textures that still have TFC
                             // properties), so leave it untouched. Packages with nothing moved are then not modified or saved.
@@ -460,7 +460,7 @@ namespace LegendaryExplorerCore.Textures
                         }
 
                         // Ensure you use .From() and not the typed version so it properly serializes back.
-                        var t2d = (UTexture2D) ObjectBinary.From(exportToUpdate);
+                        var t2d = (UTexture2D)ObjectBinary.From(exportToUpdate);
                         var properties = exportToUpdate.GetProperties();
 
                         // Remove empty mips, so the mips line up with the ones written to the TFC. This updates the size
