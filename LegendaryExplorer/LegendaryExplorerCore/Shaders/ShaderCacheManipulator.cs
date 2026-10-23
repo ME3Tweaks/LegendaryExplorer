@@ -15,7 +15,8 @@ namespace LegendaryExplorerCore.Shaders
 {
     public static class ShaderCacheManipulator
     {
-        public static void CompactSeekFreeShaderCaches(IMEPackage pcc, string gamePathOverride = null)
+        /// <param name="localOnly">Keep the local shader maps the global (Ref) shader cache also has, for packages that must not depend on it</param>
+        public static void CompactSeekFreeShaderCaches(IMEPackage pcc, string gamePathOverride = null, bool localOnly = false)
         {
             var staticParamSetsInFile = new HashSet<StaticParameterSet>();
             //figure out which MaterialShaderMaps to keep
@@ -46,7 +47,10 @@ namespace LegendaryExplorerCore.Shaders
                     }
                 }
             }
-            RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSetsInFile, pcc.Game, gamePathOverride);
+            if (!localOnly)
+            {
+                RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSetsInFile, pcc.Game, gamePathOverride);
+            }
 
             var localCache = pcc.FindExport("SeekFreeShaderCache");
 
@@ -326,7 +330,8 @@ namespace LegendaryExplorerCore.Shaders
         /// </summary>
         private static Lock shaderCacheReaderObj = new();
 
-        public static List<ExportEntry> GetBrokenMaterials(IMEPackage pcc, string gamePathOverride = null)
+        /// <param name="localOnly">Treat a material as broken unless the local shader cache has its shader map, ignoring the global (Ref) shader cache</param>
+        public static List<ExportEntry> GetBrokenMaterials(IMEPackage pcc, string gamePathOverride = null, bool localOnly = false)
         {
             var brokenMaterials = new List<ExportEntry>();
             if (!pcc.Game.IsMEGame())
@@ -378,9 +383,12 @@ namespace LegendaryExplorerCore.Shaders
                 return brokenMaterials;
             }
 
-            lock (shaderCacheReaderObj)
+            if (!localOnly)
             {
-                RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSets, pcc.Game, gamePathOverride);
+                lock (shaderCacheReaderObj)
+                {
+                    RefShaderCacheReader.RemoveStaticParameterSetsThatAreInTheGlobalCache(staticParamSets, pcc.Game, gamePathOverride);
+                }
             }
 
             foreach (StaticParameterSet staticParamSet in staticParamSets)
