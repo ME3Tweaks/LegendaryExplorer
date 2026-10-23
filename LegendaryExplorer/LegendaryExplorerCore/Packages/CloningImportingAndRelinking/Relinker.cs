@@ -312,6 +312,10 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                 var functionsToRelink = rop.CrossPackageMap.Keys.OfType<ExportEntry>().Where(x => x.ClassName == "Function").ToList();
                 if (functionsToRelink.Any())
                 {
+                    // 10/22/2026 - Observed difference between ME3 and LE3 Singularity power causing fun crashes
+                    // A target-game class donor may omit a source-game override that was imported separately.
+                    // Register it before FileLib initializes against the destination package or it won't be linked in
+                    RegisterCrossGameClassFunctions(rop);
                     // Reused for every cross-game function relink that shares this rop instance (instead of a new
                     // cache root being created per call) via RelinkerOptionsPackage.GetOrCreateCrossGameFunctionSourceCache.
                     // Disposed when rop is, if rop owns it - see RelinkerOptionsPackage.Dispose.
@@ -407,6 +411,99 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Repairs a broken probe chain when porting across games; donors in target game may not reference things from the original,
+        /// so you can end up with orphaned functions that when the class GC's will crash on invocation
+        /// </summary>
+        /// <returns>The number of destination functions whose ownership or existing virtual slots changed</returns>
+        public static int RegisterCrossGameClassFunctions(RelinkerOptionsPackage rop)
+        {
+            int registered = 0;
+            foreach (var mapping in rop.CrossPackageMap)
+            {
+                // Filter out non-matching functions
+                if (mapping.Key is not ExportEntry { ClassName: "Function", Parent: ExportEntry { IsClass: true } sourceOwner } source ||
+                    mapping.Value is not ExportEntry { ClassName: "Function", Parent: ExportEntry { IsClass: true } targetOwner } target ||
+                    source.Game == target.Game || source.ObjectName != target.ObjectName)
+                    continue;
+
+                // Check local function map in the source class
+                var sourceClass = ObjectBinary.From<UClass>(sourceOwner);
+                if (!sourceClass.LocalFunctionMap.Any(kv => kv.Key == source.ObjectName && kv.Value == source.UIndex))
+                {
+                    continue;
+                }
+                // Check target function map
+                var targetClass = ObjectBinary.From<UClass>(targetOwner);
+                var namedEntries = targetClass.LocalFunctionMap.Where(kv => kv.Key == target.ObjectName).ToList();
+                if (namedEntries.Any(kv => kv.Value != target.UIndex))
+                {
+                    throw new InvalidDataException($"Cannot register {target.InstancedFullPath}: its class maps the name to another function.");
+                }
+
+                // Validate the complete chain before changing anything. We must ensure order so we don't break native classes. 
+                var seen = new HashSet<int>();
+                UField tail = null;
+                int next = targetClass.Children;
+                while (next != 0)
+                {
+                    if (!seen.Add(next) || !target.FileRef.TryGetUExport(next, out var child) || child.Parent != targetOwner || ObjectBinary.From(child) is not UField field)
+                    {
+                        throw new InvalidDataException($"Cannot register {target.InstancedFullPath}: invalid child chain at {next}.");
+                    }
+                    tail = field;
+                    next = field.Next;
+                }
+
+                bool changed = false;
+                if (!seen.Contains(target.UIndex))
+                {
+                    // The copied function's old Next belongs to its source chain. Appending must terminate
+                    // that link, rather than reconnecting part of the donor's chain and creating a cycle
+                    var function = ObjectBinary.From<UFunction>(target);
+                    function.Next = 0;
+                    target.WriteBinary(function);
+                    if (tail == null)
+                    {
+                        targetClass.Children = target.UIndex;
+                    }
+                    else
+                    {
+                        tail.Next = target.UIndex;
+                        tail.Export.WriteBinary(tail);
+                    }
+                    changed = true;
+                }
+
+                if (namedEntries.Count == 0)
+                {
+                    targetClass.LocalFunctionMap.Add(target.ObjectName, target.UIndex);
+                    changed = true;
+                }
+
+                // An override keeps the inherited slot's index. Do not sort, insert or remove virtual slots
+                if (targetClass.VirtualFunctionTable != null)
+                {
+                    for (int slot = 0; slot < targetClass.VirtualFunctionTable.Length; slot++)
+                    {
+                        int implementation = targetClass.VirtualFunctionTable[slot];
+                        if (implementation != target.UIndex && target.FileRef.GetEntry(implementation)?.ObjectName == target.ObjectName)
+                        {
+                            targetClass.VirtualFunctionTable[slot] = target.UIndex;
+                            changed = true;
+                        }
+                    }
+                }
+
+                if (changed)
+                {
+                    targetOwner.WriteBinary(targetClass);
+                    registered++;
+                }
+            }
+            return registered;
         }
 
         /// <summary>
