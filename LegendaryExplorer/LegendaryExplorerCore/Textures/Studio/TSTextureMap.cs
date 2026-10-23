@@ -536,6 +536,7 @@ namespace LegendaryExplorerCore.Textures.Studio
                 if (game != MEGame.Unknown && game != package.Game)
                 {
                     // This workspace has files from multiple games!
+                    // 10/19/2026 - Are there any textures in that would need TFC access?
                     throw new Exception("A directory being scanned cannot have packages from different games in it");
                 }
 

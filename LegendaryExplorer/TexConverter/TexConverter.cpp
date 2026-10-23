@@ -363,3 +363,53 @@ HRESULT FreePixelData(TextureBuffer* textureBuffer) {
 
 	return S_OK;
 }
+// Explicit texture import exceptions. The original LoadTexture/LoadTextureFromMemory exports above are unchanged.
+static HRESULT FinishOverrideLoad(HRESULT hr, TextureBuffer* decoded, TextureBuffer* output) {
+
+	if (FAILED(hr)) {
+		FreePixelData(decoded);
+		return hr;
+	}
+	const auto& metadata = decoded->_ScratchImage->GetMetadata();
+	decoded->PixelData = decoded->_ScratchImage->GetPixels();
+	decoded->PixelDataLength = decoded->_ScratchImage->GetPixelsSize();
+	decoded->Width = static_cast<uint32_t>(metadata.width);
+	decoded->Height = static_cast<uint32_t>(metadata.height);
+	decoded->Format = metadata.format;
+	if (output->Format == DXGI_FORMAT_UNKNOWN || output->Format == decoded->Format) {
+		*output = *decoded;
+		return S_OK;
+	}
+	hr = ConvertTexture(decoded, output);
+	FreePixelData(decoded);
+	return hr;
+}
+
+HRESULT LoadTextureWithOverrides(const char* filename, TextureBuffer* output, uint32_t overrides) {
+	if ((overrides & ~static_cast<uint32_t>(TextureLoadOverride_PreserveAllZeroTgaAlpha)) != 0 || filename == nullptr || output == nullptr || output->PixelData != nullptr) {
+		return E_INVALIDARG;
+	}
+	const char* extension = FindExtension(filename);
+	if (overrides == 0 || extension == nullptr || strcasecmp(extension, EXTENSION_TGA) != 0) {
+		return LoadTexture(filename, output);
+	}
+	TextureBuffer decoded = {};
+	decoded._ScratchImage = new DirectX::ScratchImage();
+	HRESULT hr = DirectX::LoadFromTGAFile(StringConverter.from_bytes(filename).c_str(),
+		DirectX::TGA_FLAGS_ALLOW_ALL_ZERO_ALPHA, nullptr, *decoded._ScratchImage);
+	return FinishOverrideLoad(hr, &decoded, output);
+}
+
+HRESULT LoadTextureFromMemoryWithOverrides(const void* input, size_t length, int imageType, TextureBuffer* output, uint32_t overrides) {
+	if ((overrides & ~static_cast<uint32_t>(TextureLoadOverride_PreserveAllZeroTgaAlpha)) != 0 || input == nullptr || output == nullptr || output->PixelData != nullptr) {
+		return E_INVALIDARG;
+	}
+	if (overrides == 0 || imageType != 3) {
+		return LoadTextureFromMemory(input, length, imageType, output);
+	}
+	TextureBuffer decoded = {};
+	decoded._ScratchImage = new DirectX::ScratchImage();
+	HRESULT hr = DirectX::LoadFromTGAMemory(input, length,
+		DirectX::TGA_FLAGS_ALLOW_ALL_ZERO_ALPHA, nullptr, *decoded._ScratchImage);
+	return FinishOverrideLoad(hr, &decoded, output);
+}
