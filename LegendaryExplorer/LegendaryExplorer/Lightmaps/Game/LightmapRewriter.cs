@@ -38,6 +38,8 @@ public sealed class LightmapRewriter(IMEPackage package, TfcWriter tfc, ByteEnco
         public int AllocatedLightmaps, SkippedNewMappings;
         /// <summary>Targets whose baked lighting was applied, keyed independently of their parsed component binaries.</summary>
         public HashSet<(ExportEntry Owner, string Slot)> AppliedLightmaps { get; } = [];
+        /// <summary>New mappings solved without any direct lighting in an LE1/LE2 lightmap: they get only their shadow maps (LightmassMappingAllocator.KeepsNewLightmap).</summary>
+        public HashSet<(ExportEntry Owner, string Slot)> ShadowOnlyAllocations { get; } = [];
         /// <summary>
         /// A check on vertex order: per written vertex lightmap (8+ vertices lit in both), the correlation of log brightness at
         /// the vertex normal between the new and the original samples, and the same with the new samples shifted by half the

@@ -15,17 +15,29 @@ namespace LegendaryExplorer.Lightmaps.Lightmass;
 /// <summary>Creates standard UE3 directional lightmaps for newly allocated mappings, after successful solves only.</summary>
 public static class LightmassMappingAllocator
 {
-    /// <summary>Resolution zero selects vertex lighting. Texture resolutions include the padding border.</summary>
-    public static (int Width, int Height) MeshSize(PropertyCollection component, PropertyCollection mesh, int lod, bool hasUv)
+    /// <summary>
+    /// Resolution zero selects vertex lighting. Texture resolutions include the padding border. An unset LightMapResolution is
+    /// UStaticMesh's intrinsic 0 in LE1 and LE2, whose bakes vertex-light those meshes; LE3's bakes texture-map many of them.
+    /// </summary>
+    public static (int Width, int Height) MeshSize(MEGame game, PropertyCollection component, PropertyCollection mesh, int lod, bool hasUv)
     {
         int resolution = component.GetProp<BoolProperty>("bOverrideLightMapRes") is { Value: true }
             ? component.GetProp<IntProperty>("OverriddenLightMapRes")?.Value ?? 0
-            : mesh.GetProp<IntProperty>("LightMapResolution")?.Value ?? 32;
+            : mesh.GetProp<IntProperty>("LightMapResolution")?.Value ?? (game is MEGame.LE3 ? 32 : 0);
         if (resolution <= 0 || !hasUv) return (0, 0);
         int size = Math.Clamp(resolution >> Math.Min(lod, 10), 4, 2048);
         size = (size + 3) & ~3;
         return (size, size);
     }
+
+    /// <summary>
+    /// Whether a solved new mesh lightmap is written. In LE1 and LE2 it must hold some light's direct lighting (every vanilla lightmap lists
+    /// one) or an LE1 GI-only light's bounce; otherwise the primitive gets only its shadow maps, as their bakes have it. The solve, not the
+    /// vanilla data, decides which lights reach it. LE3, BSP and terrain keep bounce-only lightmaps.
+    /// </summary>
+    /// <param name="directLights">The lights whose direct lighting the result holds</param>
+    public static bool KeepsNewLightmap(MEGame game, LightmassMapping mapping, IReadOnlyCollection<Guid> directLights) =>
+        game is MEGame.LE3 || mapping is not LightmassInstance instance || directLights.Count > 0 || instance.RelevantLights.Any(l => l.IndirectOnly);
 
     public static bool IsComplete(LightmassMapping mapping, LightmassMappingResult result)
     {
@@ -113,6 +125,22 @@ public static class LightmassMappingAllocator
         Guid[] Guids(LightmassMappingResult result) => result.LightGuids
             .Select(g => scene.Lights.FirstOrDefault(l => l.Guid == g && !l.ShadowOnly && !l.IndirectOnly))
             .Where(l => l != null).Select(l => l.Light.LightmapGuid).Distinct().ToArray();
+        // Dominant lights' direct lighting is never baked (their entry brings bounce and shadow maps)
+        Guid[] Direct(LightmassMappingResult result) => result.LightGuids
+            .Where(g => scene.Lights.Any(l => l.Guid == g && !l.ShadowOnly && !l.IndirectOnly && !l.Light.IsDominant)).ToArray();
+        var shadowOnly = mappings.Where(m => !KeepsNewLightmap(package.Game, m, Direct(results[m.Guid]))).ToArray();
+        foreach (var target in shadowOnly.SelectMany(m => m.Targets).Where(t => t.Owner.FileRef == package))
+        {
+            // A LOD without a record gets one, without a lightmap, to hold the solve's shadow maps
+            if (target.LightMap == null)
+            {
+                if (!binaries.TryGetValue(target.Owner, out var binary))
+                    binaries[target.Owner] = binary = ObjectBinary.From(target.Owner);
+                EnsureLods((StaticMeshComponent)binary, int.Parse(target.Slot.AsSpan(3)) + 1);
+            }
+            summary.ShadowOnlyAllocations.Add((target.Owner, target.Slot));
+        }
+        mappings = mappings.Except(shadowOnly).ToArray();
 
         void Apply(LightmassMapping mapping, Func<LightmapRef, LightMap> create)
         {

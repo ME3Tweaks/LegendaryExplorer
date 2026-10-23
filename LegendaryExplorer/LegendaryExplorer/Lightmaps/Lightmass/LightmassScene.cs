@@ -459,8 +459,8 @@ public sealed class LightmassSceneBuilder : IDisposable
             }
             else
             {
-                // LE3's lightmaps hold their lights' direct lighting (they list them in LightGuids), so it goes in the direct lightmap
-                // rather than a shadow map, whatever UseDirectLightMap says. Primitives that get a shadow map instead get the twin.
+                // Direct lighting goes in the lightmaps of the primitives this entry reaches (LightAssignment.BakesDirectLighting);
+                // primitives that get a shadow map of the light get the twin instead.
                 result.Flags |= LightFlags.HasStaticLighting | LightFlags.UseDirectLightMap;
             }
             ApplyGiOverrides(result, props);
@@ -626,9 +626,19 @@ public sealed class LightmassSceneBuilder : IDisposable
                 materialEntries.Add(materialEntry);
             }
 
+            var vanillaShadows = PackageShadowMaps.LightGuids(receiver);
+            var primitive = new LightPrimitiveSettings(channels, levelName, AcceptsDynamicLights: props.GetProp<BoolProperty>("bAcceptsDynamicLights") is not { Value: false },
+                UsesLightEnvironment: usesEnvironment, ForceDirectLightMap: props.GetProp<BoolProperty>("bForceDirectLightMap") is { Value: true });
+            var reaching = allocate ? RelevantLights(receiverBounds, lightmap, vanillaShadows, primitive, record: false).Where(l => ReachesBox(l.Light, min, max)).ToList() : [];
+            if (allocate && !NeedsNewMapping(component.Game, reaching, hasShadowLayout: shadowLayout != null))
+            {
+                allocate = false;
+                scene.Count("mapping: no new lightmap (no light's direct lighting goes in it)");
+            }
+
             if (allocate && lodModel.PositionVertexBuffer.VertexData.Length > 0)
             {
-                var size = LightmassMappingAllocator.MeshSize(props, Properties(meshExport), lod,
+                var size = LightmassMappingAllocator.MeshSize(component.Game, props, Properties(meshExport), lod,
                     LightmassMappingAllocator.HasUsableUv(lodModel, mesh.LightMapCoordinateIndex));
                 bool supported = materialEntries.Count > 0 && materialEntries.All(m => SupportsNewLightmap(m, size.Width > 0));
                 // A valid vertex policy is a useful fallback when a texture policy was not cooked for this material.
@@ -669,9 +679,7 @@ public sealed class LightmassSceneBuilder : IDisposable
             if (!instance.HasOutput && (lod > 0 || !castShadow)) continue;
             if (!instance.HasOutput) instance.SizeX = instance.SizeY = OccluderMappingSize;
 
-            instance.RelevantLights = RelevantLights(receiverBounds, lightmap, PackageShadowMaps.LightGuids(new LightmapRef(component, $"LOD{lod}", lightmap, smc)),
-                new LightPrimitiveSettings(channels, levelName, AcceptsDynamicLights: props.GetProp<BoolProperty>("bAcceptsDynamicLights") is not { Value: false },
-                    UsesLightEnvironment: usesEnvironment), shadowOnlyTarget: instance.ShadowTarget != null);
+            instance.RelevantLights = RelevantLights(receiverBounds, lightmap, vanillaShadows, primitive, shadowOnlyTarget: instance.ShadowTarget != null);
             scene.Instances.Add(instance);
             bakesEnvironmentLitMesh |= usesEnvironment && instance.Target != null;
             castsEnvironmentLitMesh |= usesEnvironment && instance.Target == null;
@@ -680,6 +688,31 @@ public sealed class LightmassSceneBuilder : IDisposable
         if (bakesEnvironmentLitMesh) scene.Count("mesh: lit by a light environment (baked with bounced light only)");
         else if (castsEnvironmentLitMesh) scene.Count("mesh: lit by a light environment (shadow caster only)");
     }
+
+    /// <summary>
+    /// Whether a primitive without a lightmap gets one to solve, given the lights the bake would route to it. LE1's and LE2's bakes give a
+    /// primitive a lightmap only for lights whose direct lighting goes in it (every vanilla lightmap lists one; LE1's GI-only lights also
+    /// need one), so a primitive its lights all reach through shadow maps stays a shadow-only receiver where it already is one. Occlusion is
+    /// only known after the solve, so <see cref="LightmassMappingAllocator.KeepsNewLightmap"/> makes the final decision. LE3 allocates for
+    /// bounce light alone.
+    /// </summary>
+    /// <param name="relevantLights">Those whose radius reaches the primitive (<see cref="ReachesBox"/>): UE3's sphere test admits lights that light none of it,
+    /// which the vanilla bakes leave out</param>
+    public static bool NeedsNewLightmap(MEGame game, IEnumerable<LightmassLight> relevantLights) =>
+        game is MEGame.LE3 || relevantLights.Any(l => !l.ShadowOnly && !l.Light.IsDominant);
+
+    /// <summary>
+    /// Whether a primitive without a lightmap gets a new mapping to solve. Without a lightmap it still needs an output for its shadow maps:
+    /// its existing shadow-only layout, or else a new mapping whose lightmap the solve drops (LightmassMappingAllocator.KeepsNewLightmap).
+    /// </summary>
+    /// <param name="reaching">The lights the bake routes to it whose radius reaches it</param>
+    public static bool NeedsNewMapping(MEGame game, IReadOnlyCollection<LightmassLight> reaching, bool hasShadowLayout) =>
+        NeedsNewLightmap(game, reaching) || !hasShadowLayout && reaching.Count > 0;
+
+    /// <summary>Whether any of the box is within a point or spot light's radius. Other lights reach everything.</summary>
+    public static bool ReachesBox(SceneLight light, Vector3 min, Vector3 max) =>
+        light.Type is not (SceneLightType.Point or SceneLightType.Spot)
+        || Vector3.DistanceSquared(Vector3.Clamp(light.Position, min, max), light.Position) <= light.Radius * light.Radius;
 
     readonly Dictionary<(IEntry Material, bool Texture), bool> allocationPolicies = new();
     readonly Dictionary<IMEPackage, ShaderCache> allocationShaderCaches = new();
@@ -718,14 +751,16 @@ public sealed class LightmassSceneBuilder : IDisposable
     /// <summary>
     /// Shared preview/bake eligibility followed by bake output routing. Preserve mode retains BioWare's per-primitive
     /// assignments for compatibility; recompute uses current settings and lets Lightmass resolve current occlusion.
-    /// Allocation is independent of assignment policy. Static lights bake direct light, dominant lights bake bounce and
-    /// shadows, and toggleable lights bake shadows without adding a duplicate direct contribution.
+    /// Allocation is independent of assignment policy. Static lights bake direct light (or, in LE1/LE2, shadow maps where
+    /// UseStaticLighting says so), dominant lights bake bounce and shadows, and toggleable lights bake shadows without adding
+    /// a duplicate direct contribution.
     /// </summary>
     /// <param name="vanillaLightmap">The primitive's LE3 lightmap; null when it has none to go by (an occluder).</param>
     /// <param name="vanillaShadows">The lights (LightGuid) its LE3 shadow maps are for.</param>
     /// <param name="primitive">The primitive's settings. Only primitives that accept lights get static lighting</param>
+    /// <param name="record">Whether to add the outcomes to the report's relevance tallies</param>
     List<LightmassLight> RelevantLights(BoxSphereBounds bounds, LightMap vanillaLightmap, IReadOnlySet<Guid> vanillaShadows, LightPrimitiveSettings primitive,
-        bool shadowOnlyTarget = false)
+        bool shadowOnlyTarget = false, bool record = true)
     {
         var source = PrimitiveLightAssignments.Create(vanillaLightmap, vanillaShadows);
         var result = new List<LightmassLight>();
@@ -740,15 +775,18 @@ public sealed class LightmassSceneBuilder : IDisposable
             if (eligibility == LightEligibility.Affects)
             {
                 // A light is in the scene once per output (its main entry and any shadow-only twin); a primitive gets at most one of them.
-                if (!light.IndirectOnly && !LightAssignment.RoutesToBake(l, light.ShadowOnly, options.AssignmentPolicy, known, source, shadowOnlyTarget))
-                    why = light.ShadowOnly ? "affects, but its shadow map isn't baked here" : "affects, but its main entry isn't baked here";
+                if (!light.IndirectOnly && !LightAssignment.RoutesToBake(l, light.ShadowOnly, options.AssignmentPolicy, known, source, shadowOnlyTarget,
+                        primitive.ForceDirectLightMap))
+                    why = light.ShadowOnly ? "affects, but its shadow map isn't baked here"
+                        : options.AssignmentPolicy == LightAssignmentPolicy.RecomputeAssignments && !LightAssignment.BakesDirectLighting(l, primitive.ForceDirectLightMap)
+                            ? "affects through shadow maps (UseDirectLightMap is off)" : "affects, but its main entry isn't baked here";
                 else
                 {
                     if (light.ShadowOnly) why = "shadow map affects";
                     result.Add(light);
                 }
             }
-            relevance[(l.Type, why)] = relevance.GetValueOrDefault((l.Type, why)) + 1;
+            if (record) relevance[(l.Type, why)] = relevance.GetValueOrDefault((l.Type, why)) + 1;
         }
         return result;
     }
@@ -829,7 +867,8 @@ public sealed class LightmassSceneBuilder : IDisposable
                             allocation.AllocateLightmap = true;
                             allocation.Lightmaps.Add(new LightmapRef(componentExport, $"Element{e}", element.LightMap, component));
                             allocation.RelevantLights = RelevantLights(BoundsOf(allocation.BoundsMin, allocation.BoundsMax), element.LightMap,
-                                PackageShadowMaps.LightGuids(allocation.Lightmaps[0]), new LightPrimitiveSettings(BspChannels(model, nodes), package.FileNameNoExtension));
+                                PackageShadowMaps.LightGuids(allocation.Lightmaps[0]), new LightPrimitiveSettings(BspChannels(model, nodes), package.FileNameNoExtension,
+                                    ForceDirectLightMap: ForcesDirectLightMap(componentExport)));
                             scene.BspMappings.Add(allocation);
                             scene.Count("mapping: new BSP LMT_2D surface group");
                             continue;
@@ -862,7 +901,8 @@ public sealed class LightmassSceneBuilder : IDisposable
             mapping.SizeY = (int)MathF.Round(scale.Y * (p.GetProp<IntProperty>("SizeY")?.Value ?? 0)) + 2;
             mapping.Lightmaps = lightmaps;
             mapping.RelevantLights = RelevantLights(BoundsOf(mapping.BoundsMin, mapping.BoundsMax), lightmaps[0].LightMap,
-                lightmaps.SelectMany(PackageShadowMaps.LightGuids).ToHashSet(), new LightPrimitiveSettings(BspChannels(model, nodes), package.FileNameNoExtension));
+                lightmaps.SelectMany(PackageShadowMaps.LightGuids).ToHashSet(), new LightPrimitiveSettings(BspChannels(model, nodes), package.FileNameNoExtension,
+                    ForceDirectLightMap: ForcesDirectLightMap(lightmaps[0].Owner)));
             scene.BspMappings.Add(mapping);
             scene.Count("mapping: BSP LMT_2D surface group");
         }
@@ -874,6 +914,9 @@ public sealed class LightmassSceneBuilder : IDisposable
             scene.Count("BSP: shadow-casting surfaces without a lightmap to rebake");
         }
     }
+
+    /// <summary>bForceDirectLightMap, which UE3 gives a ModelComponent from its surfaces' PF_ForceLightMap</summary>
+    bool ForcesDirectLightMap(ExportEntry component) => Properties(component).GetProp<BoolProperty>("bForceDirectLightMap") is { Value: true };
 
     /// <summary>One padded planar chart per BSP node, using its surface's world-units-per-texel setting.</summary>
     public static bool AllocateBspCharts(LightmassBspMapping mapping, Model model, List<int> nodes)
@@ -1113,7 +1156,8 @@ public sealed class LightmassSceneBuilder : IDisposable
                     var channels = LightingChannels.FromProperty(cprops.GetProp<StructProperty>("LightingChannels"), default, isInitialized: false, LightingChannels.StaticPrimitiveDefault);
                     mapping.RelevantLights = RelevantLights(BoundsOf(min, max), mapping.Target.LightMap, PackageShadowMaps.LightGuids(mapping.Target),
                         new LightPrimitiveSettings(channels, package.FileNameNoExtension,
-                            AcceptsDynamicLights: cprops.GetProp<BoolProperty>("bAcceptsDynamicLights") is not { Value: false }));
+                            AcceptsDynamicLights: cprops.GetProp<BoolProperty>("bAcceptsDynamicLights") is not { Value: false },
+                            ForceDirectLightMap: props.GetProp<BoolProperty>("bForceDirectLightMap") is { Value: true }));
                     scene.Count("mapping: terrain LMT_2D");
                 }
                 else scene.Count("terrain: shadow-casting sections without a lightmap to rebake");

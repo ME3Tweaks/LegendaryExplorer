@@ -275,7 +275,7 @@ public static class LightmassBake
             LightmassMappingAllocator.Write(package, tfc, scene, result.Results, summary);
             result.Rewrites[package] = summary;
             log($"{package.FileNameNoExtension}: {LightmassBakeReport.LightmapLine(summary)}");
-            var shadows = result.ShadowMaps[package] = new LightmassShadowMapWriter(package, tfc, scene, result.Results).Write(summary.AppliedLightmaps);
+            var shadows = result.ShadowMaps[package] = new LightmassShadowMapWriter(package, tfc, scene, result.Results).Write(summary.AppliedLightmaps, summary.ShadowOnlyAllocations);
             log($"{package.FileNameNoExtension}: {LightmassBakeReport.ShadowLine(shadows)}");
         }
         tfc.PreserveUnwrittenTextures(packages);
@@ -292,6 +292,7 @@ public static class LightmassBakeReport
     public static string LightmapLine(LightmapRewriter.Summary s) =>
         $"{s.Allocations} texture lightmaps in {s.TextureSets} atlases, {s.VertexLightmaps} vertex lightmaps" +
         (s.AllocatedLightmaps > 0 ? $" ({s.AllocatedLightmaps} newly allocated)" : "") +
+        (s.ShadowOnlyAllocations.Count > 0 ? $" ({s.ShadowOnlyAllocations.Count} new mappings without direct lighting got only shadow maps)" : "") +
         (s.SkippedNewMappings > 0 ? $" ({s.SkippedNewMappings} new mappings left unchanged: missing, invalid or unmapped results)" : "") +
         (s.UnbakedSets > 0 ? $" ({s.UnbakedSets} atlases with nothing baked left as they were)" : "");
 

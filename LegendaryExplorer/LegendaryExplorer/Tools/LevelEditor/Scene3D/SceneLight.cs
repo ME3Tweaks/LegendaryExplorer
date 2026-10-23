@@ -143,6 +143,9 @@ public sealed class SceneLight
     /// </summary>
     public bool HasStaticLighting { get; private init; }
 
+    /// <summary>ULightComponent.UseDirectLightMap: a static light's direct lighting goes in lightmaps rather than shadow maps (UseStaticLighting)</summary>
+    public bool UseDirectLightMap { get; private init; }
+
     /// <summary>
     /// A dominant light. LE1 environments take the world's dominant directional; later games need bForceCompositeAllLights.
     /// </summary>
@@ -403,7 +406,8 @@ public sealed class SceneLight
         return new SceneLight(type, lightComponent, props, parentToWorld, GetHasStaticShadowing(type, ownerClass, props, hasLightEnvironment, hasFunction),
             hasLightEnvironment, hasFunction, packageCache)
         {
-            HasStaticLighting = GetHasStaticLighting(ownerClass, props, hasLightEnvironment, hasFunction)
+            HasStaticLighting = GetHasStaticLighting(ownerClass, props, hasLightEnvironment, hasFunction),
+            UseDirectLightMap = props.GetProp<BoolProperty>("UseDirectLightMap") is { Value: true }
         };
     }
 

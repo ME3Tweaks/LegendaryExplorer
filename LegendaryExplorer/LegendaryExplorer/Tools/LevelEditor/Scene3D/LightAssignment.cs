@@ -135,8 +135,10 @@ public sealed record PrimitiveLightAssignments(bool HasSourceRecord, IReadOnlySe
 
 /// <summary>Effective receiver settings. Output mappings and runtime rendering are separate from eligibility.</summary>
 /// <param name="UsesLightEnvironment">Lit by a light environment, which excludes level lights except LE1's bypass lights</param>
+/// <param name="ForceDirectLightMap">bForceDirectLightMap: static lights' direct lighting goes in the lightmap whatever their UseDirectLightMap</param>
 public readonly record struct LightPrimitiveSettings(LightingChannels Channels, string LevelName,
-    bool AcceptsLights = true, bool AcceptsDynamicLights = true, bool SelfContainedLighting = false, bool UsesLightEnvironment = false);
+    bool AcceptsLights = true, bool AcceptsDynamicLights = true, bool SelfContainedLighting = false, bool UsesLightEnvironment = false,
+    bool ForceDirectLightMap = false);
 
 public static class LightAssignment
 {
@@ -193,18 +195,30 @@ public static class LightAssignment
     }
 
     /// <summary>
+    /// Whether a static light's direct lighting goes in a primitive's lightmap rather than a shadow map. LE1's and LE2's bakes follow
+    /// ULightComponent::UseStaticLighting for point, spot and directional lights; sky lights can't be shadow-mapped, so their lightmaps hold
+    /// static sky lighting whatever UseDirectLightMap says. LE3's lightmaps hold every static light's direct lighting.
+    /// </summary>
+    public static bool BakesDirectLighting(SceneLight light, bool forceDirectLightMap) =>
+        light.HasStaticLighting && (light.Export.Game is MEGame.LE3 || light.Type is SceneLightType.Sky || light.UseDirectLightMap || forceDirectLightMap
+            || !light.HasStaticShadowing);
+
+    /// <summary>
     /// Whether the bake gives the light a shadow-only entry, for the primitives that get it through shadow maps: lights with static shadowing but no
-    /// static lighting (toggleable lights), and when preserving assignments, static lights BioWare shadow-mapped on some primitives. Dominant lights
-    /// get their shadow maps from their main entry. A light that casts no static shadows has none to map, and sky lights can't be shadow-mapped.
+    /// static lighting (toggleable lights), static lights that don't use direct lightmaps, and when preserving assignments, static lights BioWare
+    /// shadow-mapped on some primitives. Dominant lights get their shadow maps from their main entry. A light that casts no static shadows has none
+    /// to map, and sky lights can't be shadow-mapped.
     /// </summary>
     /// <param name="vanillaShadowMapped">Whether some shadow map in the levels is for the light</param>
     public static bool HasShadowMapEntry(SceneLight light, LightAssignmentPolicy policy, bool vanillaShadowMapped, bool hasShadowOnlyReceivers = false) =>
         !light.IsDominant && light.Type != SceneLightType.Sky && light.HasStaticShadowing && light.CastsStaticShadows
-        && (!light.HasStaticLighting || hasShadowOnlyReceivers || policy == LightAssignmentPolicy.PreserveExistingAssignments && vanillaShadowMapped);
+        && (!BakesDirectLighting(light, forceDirectLightMap: false) || hasShadowOnlyReceivers
+            || policy == LightAssignmentPolicy.PreserveExistingAssignments && vanillaShadowMapped);
 
     /// <summary>Keep BioWare's per-receiver direct/shadow split. New assignments choose exactly one direct contribution.</summary>
+    /// <param name="forceDirectLightMap">The primitive's bForceDirectLightMap (<see cref="BakesDirectLighting"/>)</param>
     public static bool RoutesToBake(SceneLight light, bool shadowOnly, LightAssignmentPolicy policy, bool known,
-        PrimitiveLightAssignments source, bool shadowOnlyReceiver = false)
+        PrimitiveLightAssignments source, bool shadowOnlyReceiver = false, bool forceDirectLightMap = false)
     {
         if (!light.HasStaticShadowing && !light.HasStaticLighting) return false;
         // No compatible lightmap shader exists on a shadow-only receiver. Solve its shadows without baking a direct contribution.
@@ -222,6 +236,6 @@ public static class LightAssignment
             return shadowOnly ? !direct && mapped : direct;
         }
         if (light.IsDominant) return !shadowOnly; // Lightmass exports bounce plus a shadow map, never baked direct.
-        return shadowOnly == !light.HasStaticLighting;
+        return shadowOnly != BakesDirectLighting(light, forceDirectLightMap);
     }
 }

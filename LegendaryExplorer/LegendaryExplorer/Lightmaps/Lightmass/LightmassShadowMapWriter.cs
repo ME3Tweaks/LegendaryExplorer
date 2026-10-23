@@ -44,7 +44,8 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
     readonly Dictionary<string, EObjectFlags?> templateFlags = new();
 
     /// <param name="appliedLightmaps">Only targets whose new lightmaps were successfully applied may replace their shadow data.</param>
-    public Summary Write(IReadOnlySet<(ExportEntry Owner, string Slot)> appliedLightmaps)
+    /// <param name="shadowOnlyAllocations">New mappings that get only their shadow maps (LightmapRewriter.Summary.ShadowOnlyAllocations)</param>
+    public Summary Write(IReadOnlySet<(ExportEntry Owner, string Slot)> appliedLightmaps, IReadOnlySet<(ExportEntry Owner, string Slot)> shadowOnlyAllocations = null)
     {
         var summary = new Summary();
         var lights = scene.Lights.ToDictionary(l => l.Guid);
@@ -53,7 +54,8 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
         foreach (var mapping in scene.Mappings)
         {
             if (!results.TryGetValue(mapping.Guid, out var result)) continue;
-            bool shadowsOnly = mapping is LightmassInstance { ShadowTarget: not null };
+            bool shadowsOnly = mapping is LightmassInstance { ShadowTarget: not null }
+                || shadowOnlyAllocations != null && mapping.Targets.Any(t => shadowOnlyAllocations.Contains((t.Owner, t.Slot)));
             // A malformed/incomplete result must not erase the receiver's existing shadows.
             int count = mapping.Cost;
             if (result.IsTextureMapping != mapping.IsTextureMapping
