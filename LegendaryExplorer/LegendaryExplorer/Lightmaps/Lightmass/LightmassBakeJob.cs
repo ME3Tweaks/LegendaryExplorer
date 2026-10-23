@@ -141,8 +141,9 @@ public sealed class LightmassBakeJob
         var warnings = new List<string>();
         if (!string.IsNullOrWhiteSpace(TfcName) && !TfcName.StartsWith("Textures_DLC_MOD_", StringComparison.OrdinalIgnoreCase))
             warnings.Add("Texture caches for DLC mods are usually named Textures_DLC_MOD_<mod name>.");
-        string cooked = LE3Directory.CookedPCPath;
-        bool IsGameFolder(string dir) => cooked != null && dir != null && Path.GetFullPath(dir).TrimEnd('\\').Equals(Path.GetFullPath(cooked).TrimEnd('\\'), StringComparison.OrdinalIgnoreCase);
+        string[] cookedFolders = [LE1Directory.CookedPCPath, LE2Directory.CookedPCPath, LE3Directory.CookedPCPath];
+        bool IsGameFolder(string dir) => dir != null && cookedFolders.Any(cooked => cooked != null
+            && Path.GetFullPath(dir).TrimEnd('\\').Equals(Path.GetFullPath(cooked).TrimEnd('\\'), StringComparison.OrdinalIgnoreCase));
         if (IsGameFolder(ResolvedTfcDirectory))
             warnings.Add("The texture cache would be written into the game's own CookedPCConsole folder.");
         if (string.IsNullOrWhiteSpace(OutputDirectory) && Files.Any(f => f.Editable && IsGameFolder(Path.GetDirectoryName(f.Path))))
@@ -194,9 +195,8 @@ public sealed class LightmassBakeJob
         if (Problems() is { Count: > 0 } problems) throw new InvalidOperationException(string.Join("\n", problems));
         var preview = new LightmassBakePreview(this, LockTfc());
 
-        // The persistent level goes first: its WorldInfo holds the scene's Lightmass settings
         log($"Lightmass and Swarm from {ResolvedUdkBinaries}");
-        var ordered = Files.OrderByDescending(f => Path.GetFileName(f.Path).StartsWith("BioP_", StringComparison.OrdinalIgnoreCase)).ToList();
+        var ordered = Files.ToList();
         var packages = preview.Packages;
         try
         {
@@ -206,9 +206,14 @@ public sealed class LightmassBakeJob
                 log($"Opening {Path.GetFileName(file.Path)}...");
                 var package = MEPackageHandler.OpenMEPackage(file.Path, forceLoadFromDisk: true);
                 packages.Add(package);
-                if (package.Game != MEGame.LE3) throw new NotSupportedException($"{Path.GetFileName(file.Path)} is a {package.Game} file: only LE3 levels can be baked.");
+                ValidateGame(package.Game, packages[0].Game);
             }
             var contextOnly = packages.Where((p, i) => !ordered[i].Editable).ToHashSet();
+            // Follow actual streaming references: LE1's persistent worlds are not named BioP_.
+            var world = FindWorldPackage(packages);
+            packages.Remove(world);
+            packages.Insert(0, world);
+            log($"World settings: {world.FileNameNoExtension} ({world.Game})");
             var settings = new LightmassBakeSettings
             {
                 UdkBinaries = ResolvedUdkBinaries,
@@ -228,6 +233,23 @@ public sealed class LightmassBakeJob
             preview.Dispose();
             throw;
         }
+    }
+
+    public static void ValidateGame(MEGame game, MEGame sceneGame)
+    {
+        if (game is not (MEGame.LE1 or MEGame.LE2 or MEGame.LE3))
+            throw new NotSupportedException($"{game} levels cannot be baked; choose LE1, LE2 or LE3 levels.");
+        if (game != sceneGame) throw new NotSupportedException($"A bake cannot mix {sceneGame} and {game} packages.");
+    }
+
+    /// <summary>Prefer the world which streams the supplied levels; retain input order for standalone scenes.</summary>
+    public static IMEPackage FindWorldPackage(IReadOnlyList<IMEPackage> packages)
+    {
+        var names = packages.Select(p => p.FileNameNoExtension).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        return packages.OrderByDescending(p => p.Exports.Where(e => e.ClassName.StartsWith("LevelStreaming", StringComparison.Ordinal))
+            .Count(e => e.GetProperty<NameProperty>("PackageName") is { } name && names.Contains(name.Value.Instanced)))
+            .ThenByDescending(p => p.Exports.Count(e => e.ClassName.StartsWith("LevelStreaming", StringComparison.Ordinal)))
+            .First();
     }
 
     /// <summary>

@@ -35,6 +35,7 @@ public sealed class LightmapRewriter(IMEPackage package, TfcWriter tfc, ByteEnco
         public List<string> Notes = [];
         /// <summary>Per-vertex lightmaps (LMT_1D, LMT_3) written from the bake, and those whose sample count isn't the mesh's vertex count.</summary>
         public int VertexLightmaps, VertexCountMismatches;
+        public int AllocatedLightmaps, SkippedNewMappings;
         /// <summary>Targets whose baked lighting was applied, keyed independently of their parsed component binaries.</summary>
         public HashSet<(ExportEntry Owner, string Slot)> AppliedLightmaps { get; } = [];
         /// <summary>

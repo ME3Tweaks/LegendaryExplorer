@@ -373,7 +373,10 @@ public sealed class MeshStaticLighting : IDisposable
         }
         //judged on LOD 0, whichever LOD is shown: it's the one other meshes are shadowed by, and the one a receiver is seen with up close
         staticLighting.HasCompatibleBakeMapping = staticLighting.ReceivesStaticLighting && component.LODData.Length > 0 && mesh.LODModels.Length > 0
-            && LightmapMapping.IsCompatible(componentExport.FileRef, component.LODData[0].LightMap, mesh.LODModels[0], ComponentGeometry.CoordinateIndex(mesh.Export));
+            && (LightmapMapping.IsCompatible(componentExport.FileRef, component.LODData[0].LightMap, mesh.LODModels[0], ComponentGeometry.CoordinateIndex(mesh.Export))
+                || component.LODData[0].LightMap.LightMapType == ELightMapType.LMT_None
+                    && LightmapMapping.ShadowAllocation(new LightmapRef(componentExport, "LOD0", component.LODData[0].LightMap, component),
+                        mesh.LODModels[0], ComponentGeometry.CoordinateIndex(mesh.Export)) != null);
         context.RegisterStaticLighting(staticLighting);
         return staticLighting;
     }
@@ -646,6 +649,7 @@ public sealed class MeshStaticLighting : IDisposable
     /// </summary>
     private LightEligibility GetPrimitiveExclusion(SceneLight light, BoxSphereBounds bounds, bool compareLightingChannels, bool ignorePrecomputed)
     {
+        if (light.BakedGIOnly) return LightEligibility.BakedGIOnly;
         var result = LightAssignment.Evaluate(light, bounds,
             new LightPrimitiveSettings(LightingChannels, LevelName, AcceptsLights, AcceptsDynamicLights, HasSelfContainedLighting),
             compareLightingChannels, honorSelfContained: !ignorePrecomputed);

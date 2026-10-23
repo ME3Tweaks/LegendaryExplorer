@@ -29,13 +29,13 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="0,0,0,6"
-                       Text="Bakes static lighting for LE3 levels with UDK's Lightmass, writing it into the levels' existing lightmaps (each keeps its type and layout). Inspect the baked lighting before choosing Save or Discard. Add every level that makes up the scene: for a persistent level, Add Streaming Levels adds the ones it streams in. Untick Bake for files that should only cast shadows and bounce light."/>
+                       Text="Bakes static lighting for LE1, LE2 and LE3 levels with UDK's Lightmass. Existing lightmaps keep their type; missing mappings are allocated where geometry and cooked shaders support them. Inspect the baked lighting before choosing Save or Discard. Add every level that makes up the scene: Add Streaming Levels follows their streaming references. Untick Bake for files that should only cast shadows and bounce light."/>
 
             <DockPanel Grid.Row="1" IsEnabled="{Binding IsIdle}">
                 <StackPanel DockPanel.Dock="Right" Margin="6,0,0,0" Width="150">
                     <Button Content="Add Files..." Click="AddFiles_Click" Margin="0,0,0,4" Padding="4,2"/>
                     <Button Content="Add Streaming Levels" Click="AddStreamingLevels_Click" Margin="0,0,0,4" Padding="4,2"
-                            ToolTip="Adds the levels the persistent (BioP) files in the list stream in. They're looked for next to the persistent level first, then among the game's files."/>
+                            ToolTip="Adds the levels streamed by files in the list, including LE1 area files. They're looked for next to the source level first, then among the game's files."/>
                     <Button Content="Remove" Click="Remove_Click" Margin="0,0,0,4" Padding="4,2"/>
                     <Button Content="Clear" Click="Clear_Click" Margin="0,0,0,4" Padding="4,2"/>
                 </StackPanel>
@@ -91,7 +91,7 @@
 
                 <TextBlock Grid.Row="4" Grid.Column="0" Text="Assignments" VerticalAlignment="Center" Margin="0,6,10,0"/>
                 <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding AssignmentPolicies}" SelectedValue="{Binding AssignmentPolicy}" SelectedValuePath="Key" DisplayMemberPath="Value" Margin="0,6,6,0" HorizontalAlignment="Left" MinWidth="160"
-                          ToolTip="Preserve existing assignments keeps historical restrictions. Recompute assignments uses current settings and geometry. Neither option creates missing bake mappings."/>
+                          ToolTip="Preserve existing assignments keeps historical restrictions. Recompute assignments uses current settings and geometry. Both allocate missing mappings where supported."/>
             </Grid>
 
             <TextBlock Grid.Row="3" Text="{Binding Problems}" Foreground="OrangeRed" TextWrapping="Wrap" Margin="0,8,0,0">

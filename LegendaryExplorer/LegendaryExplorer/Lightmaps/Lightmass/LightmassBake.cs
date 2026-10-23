@@ -75,7 +75,7 @@ public static class LightmassBake
         string lightmassExe = Path.Combine(win64, "UnrealLightmass.exe");
         if (!File.Exists(lightmassExe)) throw new FileNotFoundException("UnrealLightmass.exe wasn't found in the UDK's Binaries\\Win64 folder", lightmassExe);
         var ini = DuplicatingIni.LoadIni(Path.Combine(settings.UdkBinaries, "..", "Engine", "Config", "BaseLightmass.ini"));
-        if (settings.BioWareLightmassSettings) ini.ApplyBioWareOverrides();
+        if (settings.BioWareLightmassSettings && levels.Count > 0 && levels[0].Game == MEGame.LE3) ini.ApplyBioWareOverrides();
 
         var timer = Stopwatch.StartNew();
         log("Gathering the scene...");
@@ -111,7 +111,7 @@ public static class LightmassBake
         var mappings = scene.Mappings.ToDictionary(i => i.Guid);
         if (mappings.Count == 0)
         {
-            log("Nothing to bake: no lightmaps in these levels.");
+            log("Nothing to bake: no compatible lightmap or shadow-only mappings in these levels.");
             return result;
         }
 
@@ -264,7 +264,7 @@ public static class LightmassBake
     {
         string tfcDirectory = settings.TfcDirectory ?? Path.GetDirectoryName(levels[0].FilePath);
         using var source = new LightmassBakeSource(scene, result.Results);
-        var packages = scene.Mappings.Where(m => result.Results.ContainsKey(m.Guid)).SelectMany(m => m.Targets).Select(t => t.Owner.FileRef).Distinct().ToList();
+        var packages = scene.Mappings.Where(m => result.Results.ContainsKey(m.Guid)).SelectMany(m => m.OutputTargets).Select(t => t.Owner.FileRef).Distinct().ToList();
         var tfc = new TfcWriter(tfcDirectory, settings.TfcName, append: true, sourcePackages: packages,
             copiedCacheSource: settings.CopiedCacheSource);
         result.TfcPath = tfc.FilePath;
@@ -272,6 +272,7 @@ public static class LightmassBake
         {
             cancel.ThrowIfCancellationRequested();
             var summary = new LightmapRewriter(package, tfc, ByteEncoding.Gamma22, source, VectorBrightness).RewriteAll(settings.Repack);
+            LightmassMappingAllocator.Write(package, tfc, scene, result.Results, summary);
             result.Rewrites[package] = summary;
             log($"{package.FileNameNoExtension}: {LightmassBakeReport.LightmapLine(summary)}");
             var shadows = result.ShadowMaps[package] = new LightmassShadowMapWriter(package, tfc, scene, result.Results).Write(summary.AppliedLightmaps);
@@ -290,15 +291,17 @@ public static class LightmassBakeReport
 
     public static string LightmapLine(LightmapRewriter.Summary s) =>
         $"{s.Allocations} texture lightmaps in {s.TextureSets} atlases, {s.VertexLightmaps} vertex lightmaps" +
+        (s.AllocatedLightmaps > 0 ? $" ({s.AllocatedLightmaps} newly allocated)" : "") +
+        (s.SkippedNewMappings > 0 ? $" ({s.SkippedNewMappings} new mappings left unchanged: missing, invalid or unmapped results)" : "") +
         (s.UnbakedSets > 0 ? $" ({s.UnbakedSets} atlases with nothing baked left as they were)" : "");
 
     public static string Summary(LightmassBakeResult result, bool preview = false)
     {
         int mappings = result.Scene?.Mappings.Count() ?? 0;
-        if (mappings == 0) return "There was nothing to bake: none of the baked files have lightmaps that can be rebaked.";
+        if (mappings == 0) return "There was nothing to bake: none of the baked files have compatible lightmap or shadow-only mappings.";
         var lines = new List<string>
         {
-            $"Lightmass baked {result.Results.Count} of {mappings} lightmaps in {result.LightmassTime:hh\\:mm\\:ss}" +
+            $"Lightmass baked {result.Results.Count} of {mappings} mappings in {result.LightmassTime:hh\\:mm\\:ss}" +
             (result.Complete ? "." : $" ({result.FailedTasks} failed, {result.MissingMappings} missing: they keep their original lighting).")
         };
         foreach (var (package, summary) in result.Rewrites)

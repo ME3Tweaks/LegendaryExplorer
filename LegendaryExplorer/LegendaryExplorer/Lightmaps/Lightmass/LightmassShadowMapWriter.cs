@@ -18,7 +18,7 @@ namespace LegendaryExplorer.Lightmaps.Lightmass;
 /// <list type="bullet">
 /// <item>Texture mappings get a ShadowMap2D per light, the same size as the primitive's lightmap allocation, packed into new PF_G8
 /// ShadowMapTexture2D atlases (up to 1024). Visibility atlases hold gamma-encoded bytes (SRGB) and are stored in the package (NeverStream);
-/// distance field atlases hold linear bytes and go to the mod TFC.</item>
+/// distance field atlases hold linear bytes and go to the mod TFC when their receivers have streaming instances.</item>
 /// <item>Vertex mappings get a ShadowMap1D per light: a visibility per vertex.</item>
 /// <item>Each primitive's statically irrelevant lights are updated: the lights that reach it but are in neither its lightmap nor a shadow
 /// map. The renderer would otherwise light it with them dynamically, unshadowed.</item>
@@ -53,7 +53,15 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
         foreach (var mapping in scene.Mappings)
         {
             if (!results.TryGetValue(mapping.Guid, out var result)) continue;
-            var mine = mapping.Targets.Where(t => t.Owner.FileRef == package && appliedLightmaps.Contains((t.Owner, t.Slot)))
+            bool shadowsOnly = mapping is LightmassInstance { ShadowTarget: not null };
+            // A malformed/incomplete result must not erase the receiver's existing shadows.
+            int count = mapping.Cost;
+            if (result.IsTextureMapping != mapping.IsTextureMapping
+                || result.IsTextureMapping && (result.SizeX != mapping.SizeX || result.SizeY != mapping.SizeY)
+                || !result.IsTextureMapping && result.SizeX != count
+                || result.Coverage?.Length != count || !result.Coverage.Any(c => c != 0)
+                || result.ShadowMaps.Any(s => result.IsTextureMapping ? s.Values?.Length != count : s.Samples?.Length != count)) continue;
+            var mine = mapping.OutputTargets.Where(t => t.Owner.FileRef == package && (shadowsOnly || appliedLightmaps.Contains((t.Owner, t.Slot))))
                 .Select(Fresh).ToList();
             if (mine.Count == 0) continue;
             foreach (var t in mine)
@@ -63,7 +71,7 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
             }
             foreach (var shadow in result.ShadowMaps)
             {
-                if (!lights.TryGetValue(shadow.LightGuid, out var light)) continue;
+                if (!lights.TryGetValue(shadow.LightGuid, out var light) || light.IndirectOnly) continue;
                 if (result.IsTextureMapping) pending.Add(new Pending(mapping, result, shadow, light.Light.LightGuid, mine));
                 else
                 {
@@ -87,7 +95,7 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
             }
         }
 
-        var newTextures = WriteAtlases(pending, summary);
+        var newTextures = WriteAtlases(pending, oldTextures, summary);
         summary.TextureShadowMaps = pending.Count;
 
         foreach (var (mapping, result, t) in targets)
@@ -135,14 +143,19 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
     // ================= texture shadow maps =================
 
     /// <summary>Packs the pending shadow maps into atlases, writes the textures and makes a ShadowMap2D for each. Returns the new textures.</summary>
-    List<(ExportEntry Texture, Atlas Atlas)> WriteAtlases(List<Pending> pending, Summary summary)
+    List<(ExportEntry Texture, Atlas Atlas)> WriteAtlases(List<Pending> pending, Dictionary<LightmapRef, HashSet<int>> oldTextures, Summary summary)
     {
+        var levelExport = package.Exports.FirstOrDefault(e => e.ClassName == "Level" && e.ObjectName.Name == "PersistentLevel");
+        var streamingSources = levelExport == null ? new HashSet<int>() : ObjectBinary.From<Level>(levelExport).TextureToInstancesMap
+            .Where(kv => kv.Value.Instances.Length > 0).Select(kv => kv.Key).ToHashSet();
         var requests = pending.Select(p =>
         {
             bool padded = p.Mapping.Padded && p.Result.SizeX > 2 && p.Result.SizeY > 2;
             int pad = padded ? 1 : 0;
             bool sdf = p.Shadow.SignedDistanceField;
-            return new AtlasRequest(p, sdf ? "sdf" : "vis", p.Result.SizeX - 2 * pad, p.Result.SizeY - 2 * pad, Streamed: sdf, Bounds(p.Mapping), pad);
+            // New receivers (and later rebakes of them) have no streaming instances to inherit. Keep their shadows resident.
+            bool streamed = sdf && p.Targets.All(t => StreamingSourceTextures(t, oldTextures).Any(streamingSources.Contains));
+            return new AtlasRequest(p, sdf ? "sdf" : "vis", p.Result.SizeX - 2 * pad, p.Result.SizeY - 2 * pad, Streamed: streamed, Bounds(p.Mapping), pad);
         });
         var created = new List<(ExportEntry, Atlas)>();
         foreach (var atlas in AtlasPacker.Pack(requests))
@@ -170,10 +183,10 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
                 return g8;
             }).ToList();
             var texture = NewTexture();
-            LightmapTextureWriter.Write(texture, "PF_G8", atlas.SizeX, atlas.SizeY, encoded, sdf ? tfc : null, srgb: sdf ? false : null);
+            LightmapTextureWriter.Write(texture, "PF_G8", atlas.SizeX, atlas.SizeY, encoded, atlas.Streamed ? tfc : null, srgb: sdf ? false : null);
             var props = texture.GetProperties();
-            props.AddOrReplaceProp(new IntProperty(1, "ShadowmapFlags")); // SMF_Streamed
-            if (!sdf) props.AddOrReplaceProp(new BoolProperty(true, "NeverStream"));
+            props.AddOrReplaceProp(new IntProperty(atlas.Streamed ? 1 : 0, "ShadowmapFlags")); // SMF_Streamed
+            if (!atlas.Streamed) props.AddOrReplaceProp(new BoolProperty(true, "NeverStream"));
             texture.WriteProperties(props);
             created.Add((texture, atlas));
             summary.Atlases++;
@@ -302,8 +315,9 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
             LightmassTerrainMapping m => m.RelevantLights,
             _ => [],
         }).Select(l => l.Light.LightGuid);
-        var used = result.LightGuids.Concat(result.ShadowMaps.Select(s => s.LightGuid))
-            .Select(g => lights.TryGetValue(g, out var l) ? l.Light.LightGuid : Guid.Empty).ToHashSet();
+        var used = (mapping is LightmassInstance { ShadowTarget: not null } ? [] : result.LightGuids).Concat(result.ShadowMaps.Select(s => s.LightGuid))
+            .Where(g => lights.TryGetValue(g, out var l) && !l.IndirectOnly)
+            .Select(g => lights[g].Light.LightGuid).ToHashSet();
         IEnumerable<Guid> Update(IEnumerable<Guid> old) => old.Concat(relevant).Where(g => !used.Contains(g)).Distinct();
 
         switch (t.Binary)
@@ -330,6 +344,13 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
 
     static int? Index(string slot, string prefix) => slot.StartsWith(prefix) && int.TryParse(slot.AsSpan(prefix.Length), out int i) ? i : null;
 
+    static IEnumerable<int> StreamingSourceTextures(LightmapRef target, Dictionary<LightmapRef, HashSet<int>> oldTextures)
+    {
+        foreach (int texture in oldTextures[target]) yield return texture;
+        if (target.LightMap is LightMap_2D d) yield return d.Texture1;
+        else if (target.LightMap is LightMap_4or6 v) yield return v.Texture1;
+    }
+
     /// <summary>The level's texture streaming map: each new streamed atlas gets the instances of the textures its primitives used.</summary>
     void InheritStreamingInstances(List<(ExportEntry Texture, Atlas Atlas)> created, Dictionary<LightmapRef, HashSet<int>> oldTextures, HashSet<int> unused)
     {
@@ -341,13 +362,7 @@ public sealed class LightmassShadowMapWriter(IMEPackage package, TfcWriter tfc, 
         foreach (var (texture, atlas) in created.Where(c => c.Atlas.Streamed))
         {
             var owners = atlas.Placements.SelectMany(p => ((Pending)p.Request.Key).Targets).ToHashSet();
-            var from = new HashSet<int>();
-            foreach (var t in owners)
-            {
-                from.UnionWith(oldTextures[t]);
-                if (t.LightMap is LightMap_2D d) from.Add(d.Texture1);
-                else if (t.LightMap is LightMap_4or6 v) from.Add(v.Texture1);
-            }
+            var from = owners.SelectMany(t => StreamingSourceTextures(t, oldTextures)).ToHashSet();
             var instances = map.Where(kv => from.Contains(kv.Key)).SelectMany(kv => kv.Value.Instances)
                 .GroupBy(i => (i.BoundingSphere.Center, i.BoundingSphere.W, i.TexelFactor)).Select(g => g.First()).ToArray();
             if (instances.Length == 0) continue;

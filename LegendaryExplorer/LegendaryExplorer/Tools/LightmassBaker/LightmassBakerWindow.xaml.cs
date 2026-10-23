@@ -235,10 +235,10 @@ public partial class LightmassBakerWindow : TrackingNotifyPropertyChangedWindowB
 
     private void AddStreamingLevels_Click(object sender, RoutedEventArgs e)
     {
-        var persistent = Files.Where(f => f.FileName.StartsWith("BioP_", StringComparison.OrdinalIgnoreCase)).ToList();
+        var persistent = Files.ToList();
         if (persistent.Count == 0)
         {
-            MessageBox.Show(this, "Add a persistent level (BioP_...) first: its streaming levels are the ones added.", "Lightmass Baker");
+            MessageBox.Show(this, "Add a persistent level first: its streaming levels are the ones added.", "Lightmass Baker");
             return;
         }
         int before = Files.Count;

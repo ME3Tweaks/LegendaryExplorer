@@ -61,6 +61,7 @@ public enum LightEligibility
     PreservedAssignment,
     /// <summary>The preview cannot resolve the environment's complete source list.</summary>
     UnresolvedEnvironmentSources,
+    BakedGIOnly,
 }
 
 public static class LightEligibilityExtensions
@@ -88,6 +89,7 @@ public static class LightEligibilityExtensions
     public static string Describe(this LightEligibility eligibility) => eligibility switch
     {
         LightEligibility.Affects => "Affects",
+        LightEligibility.BakedGIOnly => "Baked indirect lighting only",
         LightEligibility.BakedIntoLightMap => "Affects through the baked light-map",
         LightEligibility.LightEnvironment => "Affects through the light environment",
         LightEligibility.OutOfRange => "Out of range",

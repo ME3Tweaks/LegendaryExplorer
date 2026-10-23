@@ -75,6 +75,8 @@ public sealed class SceneLight
     /// (unless they were never built with it). UE3's ULightComponent::HasStaticShadowing
     /// </summary>
     public bool HasStaticShadowing { get; }
+    /// <summary>LE1's editor override: this light supplies baked indirect light, never a direct preview pass.</summary>
+    public bool BakedGIOnly { get; }
 
     public LightingChannels LightingChannels { get; }
 
@@ -227,6 +229,7 @@ public sealed class SceneLight
         Type = type;
         Export = export;
         HasStaticShadowing = hasStaticShadowing;
+        BakedGIOnly = export.Game == MEGame.LE1 && props.GetProp<BoolProperty>("bBakedGIOnly") is { Value: true };
         IsDominant = export.ClassName.StartsWith("Dominant", StringComparison.Ordinal);
         //LightComponent's defaults: CastShadows, CastStaticShadows, bCastCompositeShadow, bAffectCompositeShadowDirection
         CastsStaticShadows = props.GetProp<BoolProperty>("CastShadows") is not { Value: false } && props.GetProp<BoolProperty>("CastStaticShadows") is not { Value: false };

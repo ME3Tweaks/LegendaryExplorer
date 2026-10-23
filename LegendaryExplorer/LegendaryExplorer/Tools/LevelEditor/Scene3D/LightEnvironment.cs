@@ -479,7 +479,7 @@ internal static class LightEnvironmentDirectLighting
         && (primitive.HasStaticShadowing || light.IsDominant || !light.CastsCompositeShadow);
 
     public static LightEligibility Evaluate(SceneLight light, LightEnvironmentPrimitive primitive, BoxSphereBounds bounds, IMEPackage level) =>
-        LightAssignment.Evaluate(light, bounds, new LightPrimitiveSettings(primitive.LightingChannels, level.FileNameNoExtension,
+        light.BakedGIOnly ? LightEligibility.BakedGIOnly : LightAssignment.Evaluate(light, bounds, new LightPrimitiveSettings(primitive.LightingChannels, level.FileNameNoExtension,
             primitive.AcceptsLights, primitive.AcceptsDynamicLights, level.Flags.Has(UnrealFlags.EPackageFlags.SelfContainedLighting)),
             honorSelfContained: true);
 
@@ -1297,6 +1297,7 @@ public sealed class DynamicLightEnvironment
 
     private LightEligibility GetOwnerExclusion(SceneLight light, BoxSphereBounds bounds, LightingChannels ownerChannels)
     {
+        if (light.BakedGIOnly) return LightEligibility.BakedGIOnly;
         //(UE3's AffectsBounds includes the light's inclusion and exclusion volumes)
         if (!light.AffectsBounds(bounds))
         {

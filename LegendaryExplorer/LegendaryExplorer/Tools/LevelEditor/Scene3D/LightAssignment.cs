@@ -198,15 +198,20 @@ public static class LightAssignment
     /// get their shadow maps from their main entry. A light that casts no static shadows has none to map, and sky lights can't be shadow-mapped.
     /// </summary>
     /// <param name="vanillaShadowMapped">Whether some shadow map in the levels is for the light</param>
-    public static bool HasShadowMapEntry(SceneLight light, LightAssignmentPolicy policy, bool vanillaShadowMapped) =>
+    public static bool HasShadowMapEntry(SceneLight light, LightAssignmentPolicy policy, bool vanillaShadowMapped, bool hasShadowOnlyReceivers = false) =>
         !light.IsDominant && light.Type != SceneLightType.Sky && light.HasStaticShadowing && light.CastsStaticShadows
-        && (!light.HasStaticLighting || policy == LightAssignmentPolicy.PreserveExistingAssignments && vanillaShadowMapped);
+        && (!light.HasStaticLighting || hasShadowOnlyReceivers || policy == LightAssignmentPolicy.PreserveExistingAssignments && vanillaShadowMapped);
 
     /// <summary>Keep BioWare's per-receiver direct/shadow split. New assignments choose exactly one direct contribution.</summary>
     public static bool RoutesToBake(SceneLight light, bool shadowOnly, LightAssignmentPolicy policy, bool known,
-        PrimitiveLightAssignments source)
+        PrimitiveLightAssignments source, bool shadowOnlyReceiver = false)
     {
         if (!light.HasStaticShadowing && !light.HasStaticLighting) return false;
+        // No compatible lightmap shader exists on a shadow-only receiver. Solve its shadows without baking a direct contribution.
+        // Historical eligibility is still checked separately by EvaluateHistory.
+        if (shadowOnlyReceiver)
+            return light.Type != SceneLightType.Sky && light.HasStaticShadowing && light.CastsStaticShadows
+                && (light.IsDominant ? !shadowOnly : shadowOnly);
         if (policy == LightAssignmentPolicy.PreserveExistingAssignments && known && source.HasSourceRecord)
         {
             bool mapped = source.Shadows.Contains(light.LightGuid);

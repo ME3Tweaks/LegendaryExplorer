@@ -773,9 +773,9 @@ public static class ToolSet
             {
                 (new Tools.LightmassBaker.LightmassBakerWindow()).Show();
             },
-            tags = ["user", "developer", "me3", "lightmap", "lighting", "lightmass", "bake", "shadow"],
+            tags = ["user", "developer", "me1", "me2", "me3", "lightmap", "lighting", "lightmass", "bake", "shadow"],
             category = "Meshes + Textures",
-            description = "Lightmass Baker rebuilds the static lighting of LE3 levels with UDK's Lightmass, writing it into the levels' existing lightmaps. Requires UDK-2015-02.",
+            description = "Lightmass Baker rebuilds static lighting for LE1, LE2 and LE3, preserving existing lightmap types and supporting shadow-only meshes. Requires UDK-2015-02.",
         });
         #endregion
 

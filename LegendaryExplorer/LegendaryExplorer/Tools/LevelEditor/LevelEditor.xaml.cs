@@ -1953,7 +1953,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 notes.Add("Some source assignments could not be read; preservation is incomplete: " + string.Join("; ", problems.Take(3)));
             //meshes without static lighting (skeletal meshes, movable meshes) have no bake mapping to lack
             if (meshes.Any(mesh => mesh.ReceivesStaticLighting && !mesh.HasCompatibleBakeMapping))
-                notes.Add("One or more receivers lack a compatible bake mapping. Recompute assignments does not create mappings; preview light may have no bake output.");
+                notes.Add("One or more receivers need a new bake mapping. The baker checks geometry and cooked shader support before allocating one; see its report for unsupported receivers.");
         }
         IsMeshSelected = meshes.Count > 0;
         var lighting = meshes.Select(mesh => mesh.Lighting).ToList();

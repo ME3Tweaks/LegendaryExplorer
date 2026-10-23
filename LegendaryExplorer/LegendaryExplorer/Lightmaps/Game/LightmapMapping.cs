@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Numerics;
 using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
@@ -7,6 +9,38 @@ namespace LegendaryExplorer.Lightmaps.Game;
 /// <summary>Mappings the baker can rewrite without allocating a new lightmap or changing cooked material shaders.</summary>
 public static class LightmapMapping
 {
+    /// <summary>Reuse a shadow-only receiver's mapping kind and resolution without allocating a lightmap.
+    /// Mixed vertex/texture policies and inconsistent layouts cannot be represented by a single solve.</summary>
+    public static (int Width, int Height)? ShadowAllocation(LightmapRef receiver, StaticMeshRenderData lod, int coordinateIndex)
+    {
+        var shadows = PackageShadowMaps.Of(receiver);
+        if (shadows.Count == 0) return null;
+        if (shadows.All(s => s.PerVertex))
+            return shadows.All(s => ObjectBinary.From<ShadowMap1D>(s.Export).Samples.Length == lod.PositionVertexBuffer.VertexData.Length)
+                && lod.PositionVertexBuffer.VertexData.Length > 0 ? (0, 0) : null;
+        if (shadows.Any(s => s.PerVertex) || coordinateIndex < 0 || coordinateIndex >= lod.VertexBuffer.NumTexCoords) return null;
+        (int Width, int Height)? size = null;
+        foreach (var shadow in shadows)
+        {
+            var props = shadow.Export.GetProperties();
+            if (props.GetProp<ObjectProperty>("Texture") is not { Value: > 0 } texture
+                || !receiver.Owner.FileRef.TryGetUExport(texture.Value, out var export)) return null;
+            int width = export.GetProperty<IntProperty>("SizeX")?.Value ?? 0;
+            int height = export.GetProperty<IntProperty>("SizeY")?.Value ?? 0;
+            if (width <= 0 || height <= 0 || props.GetProp<StructProperty>("CoordinateScale") is not { } scaleProp
+                || props.GetProp<StructProperty>("CoordinateBias") is not { } biasProp) return null;
+            static Vector2 Vector(StructProperty p) => new(p.GetProp<FloatProperty>("X")?.Value ?? 0, p.GetProp<FloatProperty>("Y")?.Value ?? 0);
+            var scale = Vector(scaleProp);
+            var bias = Vector(biasProp);
+            if (!float.IsFinite(scale.X + scale.Y + bias.X + bias.Y) || scale.X <= 0 || scale.Y <= 0
+                || bias.X < 0 || bias.Y < 0 || bias.X + scale.X > 1.00001f || bias.Y + scale.Y > 1.00001f) return null;
+            var rect = AtlasRect.FromCoordinates(scale, bias, width, height, padding: 1);
+            if (rect.Width <= 2 || rect.Height <= 2 || size is { } previous && previous != (rect.Width, rect.Height)) return null;
+            size = (rect.Width, rect.Height);
+        }
+        return size;
+    }
+
     public static bool IsRebakeable(LightMap map) => map?.LightMapType is ELightMapType.LMT_1D or ELightMapType.LMT_2D
         or ELightMapType.LMT_3 or ELightMapType.LMT_4 or ELightMapType.LMT_6;
 

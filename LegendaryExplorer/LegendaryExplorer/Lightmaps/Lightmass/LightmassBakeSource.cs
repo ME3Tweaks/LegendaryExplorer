@@ -36,7 +36,7 @@ public sealed class LightmassBakeSource : ILightingSource, IDisposable
 
     public LightmassBakeSource(LightmassScene scene, IReadOnlyDictionary<Guid, LightmassMappingResult> results)
     {
-        lightGuids = scene.Lights.Where(l => !l.ShadowOnly).ToDictionary(l => l.Guid, l => l.Light.LightmapGuid);
+        lightGuids = scene.Lights.Where(l => !l.ShadowOnly && !l.IndirectOnly).ToDictionary(l => l.Guid, l => l.Light.LightmapGuid);
         foreach (var mapping in scene.Mappings)
         {
             if (!results.TryGetValue(mapping.Guid, out var result)) continue;
@@ -50,7 +50,7 @@ public sealed class LightmassBakeSource : ILightingSource, IDisposable
 
     /// <summary>The light GUIDs Lightmass reported for a lightmap, or null if it wasn't baked.</summary>
     public Guid[] LightGuids(LightmapRef r) => byLightmap.TryGetValue((r.Owner, r.Slot), out var e)
-        ? e.Result.LightGuids.Select(g => lightGuids[g]).Distinct().ToArray() : null;
+        ? e.Result.LightGuids.Where(lightGuids.ContainsKey).Select(g => lightGuids[g]).Distinct().ToArray() : null;
 
     public Func<Vector2, (Lighting Lighting, TangentFrame Frame)> For(LightmapRef r)
     {

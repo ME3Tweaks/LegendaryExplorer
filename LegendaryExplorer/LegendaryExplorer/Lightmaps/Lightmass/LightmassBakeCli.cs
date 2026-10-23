@@ -71,6 +71,8 @@ public static class LightmassBakeCli
             Settings.LoadSettings();
             LegendaryExplorerCoreLib.InitLib(null, message => Log($"Save failed: {message}"));
             CoreLibSettingsBridge.MapSettingsIntoBridge();
+            LE1Directory.ReloadDefaultGamePath();
+            LE2Directory.ReloadDefaultGamePath();
             LE3Directory.ReloadDefaultGamePath();
 
             var job = LightmassBakeJob.Load(jobPath);

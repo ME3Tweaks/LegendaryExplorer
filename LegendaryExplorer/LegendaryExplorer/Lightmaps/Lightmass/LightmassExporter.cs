@@ -105,7 +105,7 @@ public sealed class LightmassExporter(LightmassScene scene, DuplicatingIni ini, 
                 // FStaticLightingTextureMappingData
                 w.Int(mapping.SizeX);
                 w.Int(mapping.SizeY);
-                w.Int(mapping.Target != null ? mapping.Mesh.LightMapCoordinateIndex : 0);
+                w.Int(mapping.HasOutput ? mapping.Mesh.LightMapCoordinateIndex : 0);
                 w.Bool(true); // bBilinearFilter (bUseBilinearFilterLightmaps)
             }
             foreach (var mapping in vertexMappings)
