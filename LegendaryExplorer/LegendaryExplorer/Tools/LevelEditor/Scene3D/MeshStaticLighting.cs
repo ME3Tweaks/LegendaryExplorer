@@ -158,6 +158,9 @@ public sealed class MeshStaticLighting : IDisposable
     /// </summary>
     public DynamicLightEnvironment LightEnvironment { get; internal set; }
 
+    /// <summary>Why the component's light environment isn't rendered, if it <see cref="UsesLightEnvironment"/> but has none</summary>
+    public string UnsupportedLightEnvironmentReason { get; private set; }
+
     /// <summary>
     /// Whether the component casts shadows (CastShadow)
     /// </summary>
@@ -192,13 +195,15 @@ public sealed class MeshStaticLighting : IDisposable
     /// which only consider primitives that CastShadow and have static shadowing, and that the light affects (see <see cref="BlocksVisibilityTraceTo"/>).
     /// Hidden primitives still block them
     /// </summary>
-    internal bool CanBlockVisibilityTraces => CastsShadow && HasStaticShadowing && AcceptsLights && !UsesLightEnvironment && GetBounds is not null;
+    internal bool CanBlockVisibilityTraces => CastsShadow && HasStaticShadowing && AcceptsLights && GetBounds is not null;
 
     /// <summary>
-    /// Whether the mesh blocks a light environment's visibility trace to <paramref name="light"/>: the light affects it (ULightComponent::AffectsPrimitive, ignoring
-    /// lighting channels). It has no light environment, so the light mustn't either, and it must accept lights
+    /// Whether the mesh blocks a light environment's visibility trace to <paramref name="light"/>. LE1 applies AffectsPrimitive, channels
+    /// included; the other games ignore channels and exclude environment primitives.
     /// </summary>
-    internal bool BlocksVisibilityTraceTo(SceneLight light) => CanBlockVisibilityTraces && AffectsPrimitive(light, GetBounds(), compareLightingChannels: false);
+    internal bool BlocksVisibilityTraceTo(SceneLight light) => CanBlockVisibilityTraces
+        && (!UsesLightEnvironment || light.BypassesLightEnvironments)
+        && AffectsPrimitive(light, GetBounds(), compareLightingChannels: light.Export.Game is MEGame.LE1);
 
     /// <summary>
     /// CastShadow and bCastDynamicShadow, including inherited values: whether the mesh casts dynamic shadows, if something renders them (a light, or its light environment)
@@ -226,7 +231,7 @@ public sealed class MeshStaticLighting : IDisposable
     /// <summary>
     /// FPrimitiveSceneInfo's bStaticShadowing (bUsePrecomputedShadows, which level static meshes have): the shadows of static-shadowing lights are precomputed for it
     /// </summary>
-    private bool HasStaticShadowing;
+    internal bool HasStaticShadowing;
 
     /// <summary>
     /// FLightPrimitiveInteraction's bCastShadow, for a light that reaches the mesh: a mesh with precomputed shadows only casts dynamic shadows from lights
@@ -343,8 +348,9 @@ public sealed class MeshStaticLighting : IDisposable
         condensedProps ??= EffectiveLightingProperties.ReadPrimitive(componentExport, context.PackageCache);
         //A disabled light environment (as InterpActors' are by default) isn't used, so the primitive is lit like any other
         staticLighting.UsesLightEnvironment = context.ResolveLightEnvironment(componentExport, condensedProps, staticLighting.OwnerActor,
-            out DynamicLightEnvironment lightEnvironment);
+            out DynamicLightEnvironment lightEnvironment, out string unsupportedReason);
         staticLighting.LightEnvironment = lightEnvironment;
+        staticLighting.UnsupportedLightEnvironmentReason = unsupportedReason;
         //Static meshes in levels have static shadowing, so UE3 initializes unset channels to Static. Light environments' primitives don't, so they get Dynamic
         staticLighting.ReadPrimitiveSettings(componentExport, condensedProps,
             staticLighting.UsesLightEnvironment ? LightingChannels.DynamicPrimitiveDefault : LightingChannels.StaticPrimitiveDefault);
@@ -631,7 +637,7 @@ public sealed class MeshStaticLighting : IDisposable
     /// FLightSceneInfoCompact::AffectsPrimitive (ULightComponent::AffectsPrimitive) through the shared <see cref="LightAssignment.Evaluate"/>, minus the test of whether
     /// the primitive is lit by a light environment, which the callers make. When ignoring precomputed lighting, the assignment policy's history test follows
     /// </summary>
-    /// <param name="compareLightingChannels">False for line checks, which ignore lighting channels</param>
+    /// <param name="compareLightingChannels">False for the LE2/LE3 preview's line checks; LE1 checks channels</param>
     private bool AffectsPrimitive(SceneLight light, BoxSphereBounds bounds, bool compareLightingChannels = true, bool ignorePrecomputed = false) =>
         GetPrimitiveExclusion(light, bounds, compareLightingChannels, ignorePrecomputed) is LightEligibility.Affects;
 

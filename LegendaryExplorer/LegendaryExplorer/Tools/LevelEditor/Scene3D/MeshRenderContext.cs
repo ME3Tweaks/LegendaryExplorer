@@ -561,11 +561,7 @@ public class MeshRenderContext : RenderContext
         {
             return;
         }
-        DynamicLightEnvironment[] lightEnvironments;
-        lock (LightEnvironments)
-        {
-            lightEnvironments = [.. LightEnvironments.Values];
-        }
+        DynamicLightEnvironment[] lightEnvironments = GetLightEnvironments();
         if (lightEnvironments.Length == 0)
         {
             return;
@@ -590,11 +586,13 @@ public class MeshRenderContext : RenderContext
     private readonly Dictionary<(ExportEntry owner, ExportEntry lightEnvironment), DynamicLightEnvironment> LightEnvironments = [];
     //each level's WorldInfo settings that light environments use: CharacterLightingContrastFactor and bAllowLightEnvSphericalHarmonicLights. Guarded by LightEnvironments
     private readonly Dictionary<IMEPackage, (float, bool)> WorldLightEnvironmentSettings = [];
+    //Each game's installed environment defaults; guarded by LightEnvironments
+    private readonly Dictionary<MEGame, LightEnvironmentSettings.InstalledDefaults> InstalledEnvironmentDefaults = [];
 
     /// <summary>
-    /// Whether light environments are supported for the game. Only LE3's are
+    /// Whether any of the game's light environment strategies are implemented; each environment's mode is checked separately
     /// </summary>
-    internal static bool SupportsLightEnvironments(MEGame game) => game is MEGame.LE3;
+    internal static bool SupportsLightEnvironments(MEGame game) => GameLightingProfile.ForGame(game).SupportsLightEnvironments;
 
     /// <summary>
     /// Finds the light environment a primitive component is lit by: its LightEnvironment, unless that's disabled.
@@ -602,18 +600,25 @@ public class MeshRenderContext : RenderContext
     /// </summary>
     /// <param name="condensedProps">The component's properties, including inherited ones</param>
     /// <param name="owner">The actor that owns the component</param>
-    /// <param name="lightEnvironment">The light environment, if it's used and light environments are supported for the game (only LE3's are).
+    /// <param name="lightEnvironment">The light environment, if it's used and its game and mode are supported.
     /// The component joins it with <see cref="AddLightEnvironmentPrimitive"/></param>
     /// <returns>Whether the component is lit by a light environment. False if its light environment can't be read</returns>
-    internal bool ResolveLightEnvironment(ExportEntry componentExport, PropertyCollection condensedProps, ExportEntry owner, out DynamicLightEnvironment lightEnvironment)
+    internal bool ResolveLightEnvironment(ExportEntry componentExport, PropertyCollection condensedProps, ExportEntry owner, out DynamicLightEnvironment lightEnvironment) =>
+        ResolveLightEnvironment(componentExport, condensedProps, owner, out lightEnvironment, out _);
+
+    /// <param name="unsupportedReason">Why the component's light environment isn't rendered, when it uses one and <paramref name="lightEnvironment"/> is null</param>
+    internal bool ResolveLightEnvironment(ExportEntry componentExport, PropertyCollection condensedProps, ExportEntry owner, out DynamicLightEnvironment lightEnvironment,
+        out string unsupportedReason)
     {
         lightEnvironment = null;
+        unsupportedReason = null;
         if (!EffectiveLightingProperties.UsesLightEnvironment(componentExport, condensedProps, owner, PackageCache, out ExportEntry lightEnvironmentExport))
         {
             return false;
         }
         if (!SupportsLightEnvironments(componentExport.Game))
         {
+            unsupportedReason = "light environments aren't implemented for this game";
             return true;
         }
         try
@@ -621,7 +626,7 @@ public class MeshRenderContext : RenderContext
             //a shared light environment is its actor's. An inherited one with no instance of its own is still this actor's alone
             ExportEntry lightEnvironmentOwner = lightEnvironmentExport?.Parent is ExportEntry outer && outer != owner
                 && EffectiveLightingProperties.IsPlacedActor(outer) ? outer : owner;
-            lightEnvironment = GetLightEnvironment(lightEnvironmentOwner, lightEnvironmentExport);
+            lightEnvironment = GetLightEnvironment(lightEnvironmentOwner, lightEnvironmentExport, out unsupportedReason);
             return true;
         }
         catch (Exception e)
@@ -633,14 +638,16 @@ public class MeshRenderContext : RenderContext
 
     /// <summary>
     /// The light environment whose LightEnvironment component is <paramref name="lightEnvironmentExport"/>: the existing one, or a new one, which is only kept once
-    /// a primitive joins it (<see cref="AddLightEnvironmentPrimitive"/>). Null if light environments aren't supported for the game (only LE3's are)
+    /// a primitive joins it (<see cref="AddLightEnvironmentPrimitive"/>). Null if the game or the environment's mode isn't supported
     /// </summary>
     /// <param name="owner">The actor that owns the light environment</param>
     /// <param name="lightEnvironmentExport">Null for a character with the class's default light environment</param>
-    private DynamicLightEnvironment GetLightEnvironment(ExportEntry owner, ExportEntry lightEnvironmentExport)
+    private DynamicLightEnvironment GetLightEnvironment(ExportEntry owner, ExportEntry lightEnvironmentExport, out string unsupportedReason)
     {
+        unsupportedReason = null;
         if ((owner ?? lightEnvironmentExport) is not { } entry || !SupportsLightEnvironments(entry.Game))
         {
+            unsupportedReason = "light environments aren't implemented for this game";
             return null;
         }
         IMEPackage level = entry.FileRef;
@@ -663,10 +670,28 @@ public class MeshRenderContext : RenderContext
                 WorldLightEnvironmentSettings[level] = worldSettings;
             }
         }
-        LightEnvironmentSettings settings = lightEnvironmentExport is null ? new LightEnvironmentSettings { IsBio = true, SynthesizeSHLight = true }
+        LightEnvironmentSettings settings = lightEnvironmentExport is null ? LightEnvironmentSettings.CreateDefaults(entry.Game, isBio: true)
             : LightEnvironmentSettings.Read(lightEnvironmentExport, PackageCache);
+        GetInstalledEnvironmentDefaults(entry.Game).ApplyTo(settings);
+        //Unimplemented modes fall back with their reason rather than borrowing another game's strategy
+        if (GameLightingProfile.GetEnvironmentSupport(settings) is { } reason)
+        {
+            unsupportedReason = reason;
+            return null;
+        }
         //(if another thread made one for the same component meanwhile, AddLightEnvironmentPrimitive keeps whichever is added first)
         return new DynamicLightEnvironment(this, owner, lightEnvironmentExport, settings, worldSettings.contrastFactor, worldSettings.allowSHLights);
+    }
+
+    private LightEnvironmentSettings.InstalledDefaults GetInstalledEnvironmentDefaults(MEGame game)
+    {
+        lock (LightEnvironments)
+        {
+            if (InstalledEnvironmentDefaults.TryGetValue(game, out var cached)) return cached;
+        }
+        //(read outside the lock; the first stored wins)
+        var defaults = LightEnvironmentSettings.InstalledDefaults.Load(game, PackageCache);
+        lock (LightEnvironments) return InstalledEnvironmentDefaults.TryAdd(game, defaults) ? defaults : InstalledEnvironmentDefaults[game];
     }
 
     /// <summary>
@@ -681,7 +706,7 @@ public class MeshRenderContext : RenderContext
         {
             if (FindWorldInfo(FindPersistentLevel(level) ?? level) is { } worldInfo)
             {
-                PropertyCollection worldProps = worldInfo.GetProperties();
+                PropertyCollection worldProps = EffectiveLightingProperties.Read(worldInfo, PackageCache);
                 settings = (worldProps.GetProp<FloatProperty>("CharacterLightingContrastFactor")?.Value ?? 1.5f,
                     worldProps.GetProp<BoolProperty>("bAllowLightEnvSphericalHarmonicLights")?.Value ?? true);
             }
@@ -743,6 +768,11 @@ public class MeshRenderContext : RenderContext
             kept.AddPrimitive(primitive);
             return kept;
         }
+    }
+
+    internal DynamicLightEnvironment[] GetLightEnvironments()
+    {
+        lock (LightEnvironments) return [.. LightEnvironments.Values];
     }
 
     /// <summary>
@@ -875,7 +905,7 @@ public class MeshRenderContext : RenderContext
     /// The triangles a mesh blocks line checks with, read by <paramref name="readTriangles"/> the first time the mesh is seen. Null if it has none, or they can't be read
     /// </summary>
     /// <param name="key">Identifies the mesh</param>
-    internal LevelGeometry.TriangleMesh GetLevelGeometryMesh(string key, Func<(Vector3[] Positions, int[] Indices)> readTriangles)
+    internal LevelGeometry.TriangleMesh GetLevelGeometryMesh(string key, Func<(Vector3[] Positions, int[] Indices)> readTriangles, kDOPTreeCompact collisionTree = null)
     {
         LevelGeometry.TriangleMesh mesh;
         lock (LevelGeometryLock)
@@ -893,7 +923,7 @@ public class MeshRenderContext : RenderContext
         try
         {
             (Vector3[] positions, int[] indices) = readTriangles();
-            mesh = LevelGeometry.TriangleMesh.Create(positions, indices);
+            mesh = LevelGeometry.TriangleMesh.Create(positions, indices, collisionTree);
         }
         catch (Exception e)
         {
@@ -1698,7 +1728,8 @@ public class MeshRenderContext : RenderContext
         if (modelToRefresh is { } modelIndex) SetLevelModel(package, modelIndex);
         bool environments = exports.Any(index => package.GetEntry(index) is ExportEntry entry
             && (entry.ClassName.Contains("LightEnvironment", StringComparison.Ordinal)
-                || entry.ClassName == "WorldInfo"));
+                || entry.ClassName == "WorldInfo"
+                || (entry.Game is MEGame.LE1 && entry.IsDefaultObject && entry.IsA("LightComponent"))));
         if (shaders)
         {
             DepthPixelShaderByteCodes.Clear();
@@ -1721,6 +1752,7 @@ public class MeshRenderContext : RenderContext
             {
                 LightEnvironments.Clear();
                 WorldLightEnvironmentSettings.Clear();
+                InstalledEnvironmentDefaults.Clear();
             }
         }
         if (textures || shaders || environments)
@@ -1754,6 +1786,7 @@ public class MeshRenderContext : RenderContext
         lock (LightEnvironments)
         {
             WorldLightEnvironmentSettings.Clear();
+            InstalledEnvironmentDefaults.Clear();
         }
         lock (LevelGeometryLock)
         {
@@ -2034,16 +2067,33 @@ public class MeshRenderContext : RenderContext
         }
         var pixelData = new Fixed6<byte[]>();
 
-        //should be the same for all textures
-        uint size = (uint)faceTextures[0].GetTopMip().width;
         var format = (Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(
             LegendaryExplorerCore.Textures.Image.getPixelFormatType(faceTextures[0].Export.GetProperty<EnumProperty>("Format").Value.Name));
+        // D3D requires equal faces, but cooked faces can differ (LE2's Bch_OCEAN_CUBEA has one 256px face).
+        int size = faceTextures[0].Mips
+            .Where(mip => mip.storageType != StorageTypes.empty && mip.width > 0 && mip.width == mip.height)
+            .Select(mip => mip.width)
+            .OrderByDescending(width => width)
+            .FirstOrDefault(width => Enumerable.Range(0, 6).All(i => faceTextures[i].Mips
+                .Any(mip => mip.storageType != StorageTypes.empty && mip.width == width && mip.height == width)));
+        if (size == 0)
+        {
+            throw new InvalidDataException($"Cubemap {textureCubeExport.InstancedFullPath} has no square mip size shared by all six faces.");
+        }
         for (int i = 0; i < 6; i++)
         {
-            pixelData[i] = this.ReadTextureData(faceTextures[i].GetTopMip());
+            var faceFormat = (Format)LegendaryExplorerCore.Textures.TexConverter.GetDXGIFormatForPixelFormat(
+                LegendaryExplorerCore.Textures.Image.getPixelFormatType(faceTextures[i].Export.GetProperty<EnumProperty>("Format").Value.Name));
+            if (faceFormat != format)
+            {
+                throw new InvalidDataException($"Cubemap {textureCubeExport.InstancedFullPath} has inconsistent face formats.");
+            }
+            var mip = faceTextures[i].Mips.First(mip => mip.storageType != StorageTypes.empty && mip.width == size && mip.height == size);
+            pixelData[i] = this.ReadTextureData(mip);
         }
         var srgbFormats = IsSRGB(faceTextures[0].Export) ? RenderContextExtensions.GetSRGBFormats(format) : null;
-        Texture2D texture = this.LoadTextureCube(size, format, pixelData, srgbFormats?.Typeless);
+        uint textureSize = (uint)(format.IsCompressed() ? Math.Max(4, size) : size);
+        Texture2D texture = this.LoadTextureCube(textureSize, format, pixelData, srgbFormats?.Typeless);
         return new LoadedTexture(texture, srgbFormats?.UNorm ?? format, srgbFormats?.SRGB);
     }
 

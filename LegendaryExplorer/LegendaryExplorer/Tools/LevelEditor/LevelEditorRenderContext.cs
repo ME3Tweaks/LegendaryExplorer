@@ -351,6 +351,16 @@ public class LevelEditorRenderContext : MeshRenderContext
         UIPrimitives.Render(this);
     }
 
+    public override void Update(float timestep)
+    {
+        // Pose before skinning; hidden actors still need current bounds for light environments.
+        base.Update(timestep);
+        foreach (ActorProxy actor in DrawList_3D)
+        {
+            actor.UpdateScene(this, timestep);
+        }
+    }
+
     public void LoadActors(IList<ActorProxy> actors)
     {
         DrawList_3D.AddRange(actors);

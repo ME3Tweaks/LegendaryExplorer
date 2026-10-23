@@ -256,7 +256,7 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
     /// <param name="ignorePrecomputed">Preview the current scene without sampling baked lighting; the selected assignment policy still applies</param>
     public LightEligibility? GetLightEligibility(SceneLight light, bool ignorePrecomputed)
     {
-        if (LightEnvironment is not null) return LightEnvironment.GetEligibility(light);
+        if (LightEnvironment is not null) return LightEnvironment.GetEligibility(light, LightEnvironmentPrimitive, GetBounds());
         if (StaticLighting is { UsesLightEnvironment: false }) return StaticLighting.GetEligibility(light, GetBounds(), ignorePrecomputed);
         return null;
     }
@@ -269,6 +269,15 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
     public bool ReceivesStaticLighting => StaticLighting?.ReceivesStaticLighting == true;
 
     public bool IsLitByLightEnvironment => LightEnvironment is not null;
+
+    /// <summary>The settings of the light environment that lights the mesh, if any</summary>
+    public LightEnvironmentSettings LightEnvironmentSettings => LightEnvironment?.Settings;
+
+    /// <summary>The mesh's light environment uses lighting the viewport doesn't implement</summary>
+    public bool UsesUnsupportedLightEnvironment { get; protected set; }
+
+    /// <summary>Why, if <see cref="UsesUnsupportedLightEnvironment"/></summary>
+    public string UnsupportedLightEnvironmentReason { get; protected set; }
 
     /// <summary>
     /// Whether the level's lights light the mesh in the viewport, directly or through its light environment
@@ -295,8 +304,9 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
     /// </summary>
     /// <param name="castsShadow">CastShadow and bCastDynamicShadow, including inherited values</param>
     /// <param name="staticLighting">For static meshes: its <see cref="MeshStaticLighting.LightEnvironment"/> is set to the light environment joined</param>
+    /// <param name="hasBone">For skeletal meshes: whether the mesh has a named bone</param>
     protected void JoinLightEnvironment(MeshRenderContext context, DynamicLightEnvironment lightEnvironment, LightingChannels lightingChannels, bool castsShadow,
-        MeshStaticLighting staticLighting = null)
+        MeshStaticLighting staticLighting = null, Func<string, bool> hasBone = null)
     {
         if (lightEnvironment is null || Mesh is null || Mesh.LODs.Count <= LOD)
         {
@@ -313,10 +323,18 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
             IsInScene = IsInScene,
             IsShown = IsShown,
             LightingChannels = lightingChannels,
+            AcceptsLights = Properties.GetProp<BoolProperty>("bAcceptsLights") is not { Value: false },
+            AcceptsDynamicLights = Properties.GetProp<BoolProperty>("bAcceptsDynamicLights") is not { Value: false },
+            HasStaticShadowing = staticLighting?.HasStaticShadowing ?? Properties.GetProp<BoolProperty>("bUsePrecomputedShadows") is { Value: true },
+            HasShadowParent = Properties.GetProp<ObjectProperty>("ShadowParent") is { Value: not 0 },
+            SelfShadowOnly = Properties.GetProp<BoolProperty>("bSelfShadowOnly") is { Value: true },
+            Component = Export,
+            HasBone = hasBone,
         };
         //another of the light environment's primitives may have joined it first
         LightEnvironment = context.AddLightEnvironmentPrimitive(lightEnvironment, LightEnvironmentPrimitive);
         lod.LightEnvironment = LightEnvironment;
+        lod.LightEnvironmentPrimitive = LightEnvironmentPrimitive;
         if (staticLighting is not null)
         {
             staticLighting.LightEnvironment = LightEnvironment;
@@ -357,6 +375,8 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
             LightEnvironmentPrimitive = null;
         }
         LightEnvironment = null;
+        UsesUnsupportedLightEnvironment = false;
+        UnsupportedLightEnvironmentReason = null;
         StaticLighting = null;
         Mesh?.Dispose();
         Mesh = null;
@@ -397,13 +417,15 @@ public class StaticMeshComponentProxy : MeshComponentProxy
                 if (staticLighting is not null)
                 {
                     StaticLighting = staticLighting;
+                    UsesUnsupportedLightEnvironment = staticLighting.UsesLightEnvironment && staticLighting.LightEnvironment is null;
+                    UnsupportedLightEnvironmentReason = staticLighting.UnsupportedLightEnvironmentReason;
                     staticLighting.IsInScene = IsInScene;
                     staticLighting.IsShown = IsShown;
                     //only light environments trace against the level's geometry. (UpdateSelfLocalToWorld adds it to the geometry)
                     if (MeshRenderContext.SupportsLightEnvironments(Export.Game))
                     {
                         staticLighting.GeometryMesh = context.GetLevelGeometryMesh($"{meshExport.FileRef.FilePath}|{meshExport.UIndex}",
-                            () => ReadLineCheckTriangles(stm));
+                            () => ReadLineCheckTriangles(stm), stm.kDOPTreeME3UDKLE);
                     }
                     JoinLightEnvironment(context, staticLighting.LightEnvironment, staticLighting.Channels, staticLighting.CastsDynamicShadow, staticLighting);
                 }
@@ -559,7 +581,9 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
                 MeshStaticLighting staticLighting = null;
                 if (Export.Game.IsLEGame())
                 {
-                    usesLightEnvironment = context.ResolveLightEnvironment(Export, Properties, parent?.Export, out lightEnvironment);
+                    usesLightEnvironment = context.ResolveLightEnvironment(Export, Properties, parent?.Export, out lightEnvironment, out string unsupportedReason);
+                    UsesUnsupportedLightEnvironment = usesLightEnvironment && lightEnvironment is null;
+                    UnsupportedLightEnvironmentReason = unsupportedReason;
                     if (!usesLightEnvironment)
                     {
                         staticLighting = MeshStaticLighting.CreateDynamic(context, Export, Properties);
@@ -579,8 +603,9 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
                 //MeshComponent's defaults: CastShadow, bCastDynamicShadow
                 bool castsShadow = Properties.GetProp<BoolProperty>("CastShadow") is not { Value: false }
                                    && Properties.GetProp<BoolProperty>("bCastDynamicShadow") is not { Value: false };
+                var boneNames = new HashSet<string>(skm.RefSkeleton.Select(bone => bone.Name.Instanced), StringComparer.OrdinalIgnoreCase);
                 JoinLightEnvironment(context, lightEnvironment, LightingChannels.FromProperty(Properties.GetProp<StructProperty>("LightingChannels"), default,
-                    isInitialized: false, LightingChannels.DynamicPrimitiveDefault), castsShadow);
+                    isInitialized: false, LightingChannels.DynamicPrimitiveDefault), castsShadow, hasBone: boneNames.Contains);
             }
         }
     }

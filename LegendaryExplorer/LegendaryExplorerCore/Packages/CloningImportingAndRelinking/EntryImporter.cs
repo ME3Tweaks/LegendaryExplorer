@@ -1872,6 +1872,28 @@ namespace LegendaryExplorerCore.Packages.CloningImportingAndRelinking
                     }
                     nextfile = bioXNextFileLookup(game, nextfile.ToLower());
                 }
+
+                // LE2's Omega sectors have no separator before the sector number: BioA_OmgHub300_barone
+                // imports from BioP_OmgHub, which is tried after the ordinary parents.
+                string[] fileNameSegments = filenameWithoutExtension.Split('_');
+                if (fileNameSegments.Length >= 2 && fileNameSegments[0].Length == 4)
+                {
+                    string sector = fileNameSegments[1];
+                    if (game == MEGame.LE2 && filenameWithoutExtension[3] is 'a' or 'd' or 's'
+                        && sector.Length == 9 && sector.StartsWith("omghub", StringComparison.Ordinal)
+                        && sector[6..].All(char.IsAsciiDigit))
+                    {
+                        if (includeNonBioPTiers)
+                        {
+                            string hub = $"bio{filenameWithoutExtension[3]}_omghub";
+                            associatedFiles.Add($"{hub}{bioFileExt}");
+                            if (includeLocalizations) associatedFiles.Add($"{hub}_LOC_{localization}{bioFileExt}");
+                        }
+                        associatedFiles.Add($"biop_omghub{bioFileExt}");
+                        if (includeNonBioPTiers && includeLocalizations)
+                            associatedFiles.Add($"biop_omghub_LOC_{localization}{bioFileExt}");
+                    }
+                }
             }
 
             return associatedFiles;

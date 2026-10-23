@@ -60,10 +60,10 @@ internal static class ShaderParameterSetters
         MeshStaticLighting staticLighting, bool usePreviewLighting, SkyLighting skyLighting, LightEnvironmentLighting lightEnvironment = null)
     {
         //A light environment's sky light. (Its SH light, if it has one, can't be rendered by the shaders without one, so they get it as the sky lighting it was converted to)
-        SkyLighting lightEnvironmentSky = default;
+        SkyLighting lightEnvironmentSky = skyLighting;
         if (lightEnvironment is not null && !(lightEnvironment.UsesSHLight && pixelShader is TBasePassPixelShader<FSHLightLightMapPolicy.PixelParametersType>))
         {
-            lightEnvironmentSky = new SkyLighting(lightEnvironment.UpperSkyColor, lightEnvironment.LowerSkyColor);
+            lightEnvironmentSky = new SkyLighting(skyLighting.Upper + lightEnvironment.UpperSkyColor, skyLighting.Lower + lightEnvironment.LowerSkyColor);
         }
         switch (pixelShader)
         {
@@ -592,8 +592,8 @@ internal static class ShaderParameterSetters
             //only sampled when EnableScreenDoorFade is set, which it never is
             context.LEEffect.PixelShaderResources.Set(p.ScreenDoorNoiseTexture.BaseIndex, null);
         }
-        //Bioware addition: (DirectScale, IndirectScale, 0, 0), see FMaterialPixelShaderParameters::SetMesh in LE3
-        buffer.WriteVal(p.WrapLightingParameters, new Vector4(PreviewLighting.WrapLightingDirectScale, PreviewLighting.WrapLightingIndirectScale, 0, 0));
+        //BioWare addition: (DirectScale, IndirectScale, 0, 0), from the material's game
+        buffer.WriteVal(p.WrapLightingParameters, GameLightingProfile.ForGame(mat.Game).WrapLightingParameters);
     }
 
     public static void WriteValues(this ref FSceneTextureShaderParameters p, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)

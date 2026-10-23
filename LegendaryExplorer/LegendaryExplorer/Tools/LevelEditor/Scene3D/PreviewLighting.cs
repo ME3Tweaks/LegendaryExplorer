@@ -34,11 +34,6 @@ public class PreviewLighting
     /// </summary>
     public LinearColor LowerSkyColor { get; set; } = new(0.08f, 0.07f, 0.06f, 1);
 
-    //LE3's BioEngine.ini [WrapLighting] DirectScale and IndirectScale.
-    //The game multiplies these by per-primitive scales, which are 1 when not otherwise specified.
-    public const float WrapLightingDirectScale = 0.33f;
-    public const float WrapLightingIndirectScale = 0.05f;
-
     /// <summary>
     /// Gets the world-space direction pointing towards the directional light
     /// </summary>

@@ -134,7 +134,7 @@ public sealed record PrimitiveLightAssignments(bool HasSourceRecord, IReadOnlySe
 }
 
 /// <summary>Effective receiver settings. Output mappings and runtime rendering are separate from eligibility.</summary>
-/// <param name="UsesLightEnvironment">Lit by a light environment, so no level light affects it directly. The preview's callers test this themselves</param>
+/// <param name="UsesLightEnvironment">Lit by a light environment, which excludes level lights except LE1's bypass lights</param>
 public readonly record struct LightPrimitiveSettings(LightingChannels Channels, string LevelName,
     bool AcceptsLights = true, bool AcceptsDynamicLights = true, bool SelfContainedLighting = false, bool UsesLightEnvironment = false);
 
@@ -151,16 +151,34 @@ public static class LightAssignment
     {
         if (!primitive.AcceptsLights) return LightEligibility.LightsNotAccepted;
         if (light.HasLightEnvironment) return LightEligibility.BelongsToLightEnvironment;
-        if (primitive.UsesLightEnvironment) return LightEligibility.LitByLightEnvironment;
+        if (primitive.UsesLightEnvironment && !light.BypassesLightEnvironments) return LightEligibility.LitByLightEnvironment;
         if (!light.AffectsBounds(bounds)) return LightEligibility.OutOfRange;
         if (light.GetVolumeExclusion(bounds) is var volume and not LightEligibility.Affects) return volume;
         if (compareChannels && !light.LightingChannels.OverlapsWith(primitive.Channels)) return LightEligibility.LightingChannels;
         if (!primitive.AcceptsDynamicLights && !light.HasStaticShadowing) return LightEligibility.DynamicLightsNotAccepted;
-        bool sameLevel = string.Equals(light.LevelName, primitive.LevelName, StringComparison.OrdinalIgnoreCase);
-        if (honorSelfContained && primitive.SelfContainedLighting && light.HasStaticShadowing && !sameLevel) return LightEligibility.SelfContainedLighting;
-        if (light.OnlyAffectSameAndSpecifiedLevels && !sameLevel && !light.OtherLevelsToAffect.Contains(primitive.LevelName)) return LightEligibility.OtherLevel;
+        return EvaluateLevel(light, primitive.LevelName, primitive.SelfContainedLighting, honorSelfContained);
+    }
+
+    /// <summary>LE1 tests the source package's self-contained flag; later games keep the existing policy</summary>
+    internal static LightEligibility EvaluateLevel(SceneLight light, string levelName, bool receiverSelfContained, bool honorSelfContained = true)
+    {
+        bool sameLevel = string.Equals(light.LevelName, levelName, StringComparison.OrdinalIgnoreCase);
+        bool selfContained = light.Export.Game is MEGame.LE1
+            ? light.Export.FileRef.Flags.Has(UnrealFlags.EPackageFlags.SelfContainedLighting)
+            : receiverSelfContained;
+        if (honorSelfContained && selfContained && light.HasStaticShadowing && !sameLevel) return LightEligibility.SelfContainedLighting;
+        if (light.OnlyAffectSameAndSpecifiedLevels && !sameLevel && !IsOtherLevelToAffect(light, levelName)) return LightEligibility.OtherLevel;
         return LightEligibility.Affects;
     }
+
+    /// <summary>
+    /// LE1 matches each OtherLevelsToAffect entry as a case-insensitive prefix of level names (RVA 0xcd59e0), so "BIOA_NOR10_03"
+    /// covers BIOA_NOR10_03_DSG. Later games match names exactly.
+    /// </summary>
+    private static bool IsOtherLevelToAffect(SceneLight light, string levelName) =>
+        light.Export.Game is MEGame.LE1
+            ? light.OtherLevelsToAffect.Any(prefix => levelName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            : light.OtherLevelsToAffect.Contains(levelName);
 
     /// <summary>Historical eligibility, independent of the bake's direct/shadow output routing.</summary>
     public static LightEligibility EvaluateHistory(SceneLight light, LightAssignmentPolicy policy, bool known,

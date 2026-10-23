@@ -79,16 +79,32 @@ public static class RenderContextExtensions
 
     public static Texture2D LoadTextureCube(this RenderContext renderContext, uint size, Format format, Fixed6<byte[]> faceData, Format? resourceFormat = null)
     {
+        if (size == 0 || size > int.MaxValue) throw new ArgumentOutOfRangeException(nameof(size));
+        int requiredBytes = GetMipByteSize(format, (int)size, (int)size, out _);
+        // UpdateSubresource takes a pointer, so a short face would read past the array.
+        for (int i = 0; i < faceData.Length; i++)
+        {
+            if (faceData[i] is null || faceData[i].Length < requiredBytes)
+            {
+                throw new ArgumentException($"Cubemap face {i} needs {requiredBytes} bytes for {size}x{size} {format}, but has {faceData[i]?.Length ?? 0}.", nameof(faceData));
+            }
+        }
         Texture2DDescription texture2DDescription = GetTextureDescription(size, size, format, true, out int pitch);
         texture2DDescription.Format = resourceFormat ?? format;
         var tex = new Texture2D(renderContext.Device, texture2DDescription);
-
-        for (int i = 0; i < faceData.Length; i++)
+        try
         {
-            renderContext.Device.ImmediateContext.UpdateSubresource(faceData[i], tex, i, pitch);
+            for (int i = 0; i < faceData.Length; i++)
+            {
+                renderContext.Device.ImmediateContext.UpdateSubresource(faceData[i], tex, i, pitch);
+            }
+            return tex;
         }
-
-        return tex;
+        catch
+        {
+            tex.Dispose();
+            throw;
+        }
     }
 
     public static unsafe Texture2D LoadTextureFromFile(this RenderContext renderContext, string filename)

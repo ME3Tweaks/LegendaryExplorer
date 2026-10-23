@@ -82,6 +82,9 @@ public class ModelPreviewLOD<Vertex> where Vertex : IVertexBase
     /// </summary>
     public DynamicLightEnvironment LightEnvironment;
 
+    /// <summary>This LOD's bounds, channels and acceptance in <see cref="LightEnvironment"/>, for directly drawn lights</summary>
+    public LightEnvironmentPrimitive LightEnvironmentPrimitive;
+
     /// <summary>
     /// Creates a new ModelPreviewLOD.
     /// </summary>
@@ -429,6 +432,8 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
         //a mesh lit by a light environment gets its directional light and SH (or sky) light in the base pass
         LightEnvironmentLighting lightEnvironment = !usesLevelLighting && lod.LightEnvironment is not null && context.IsLevelLightingActive && !material.IsUnlit
             ? lod.LightEnvironment.GetLighting() : null;
+        if (lightEnvironment is not null && lod.LightEnvironmentPrimitive is { } primitive && lod.LightEnvironment.LevelPackage is { } level)
+            skyLighting = LightEnvironmentDirectLighting.GetSkyLighting(lightEnvironment, primitive, mesh.TransformedBounds, level);
         //UE3 renders a shadow-casting light environment's SH light in its own pass after the modulated shadows, so that they don't darken it,
         //and the base pass has just the directional light. (Translucency isn't darkened by them, so it keeps the SH light in the base pass)
         (Shader vertexShader, Shader pixelShader) shLightPassShaders = default;
@@ -538,7 +543,8 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
     };
 
     /// <summary>
-    /// Adds each of the level's lights that this section isn't light-mapped for, as UE3's TMeshLightingDrawingPolicy does.
+    /// Adds this environment's synthesized points, or the level's lights that this section isn't light-mapped for,
+    /// as UE3's TMeshLightingDrawingPolicy does.
     /// The passes are queued, and drawn by <see cref="MeshRenderContext.EndLightingPass"/> grouped by light
     /// </summary>
     public override void RenderLighting(ModelPreviewLOD<LEVertex> lod, ModelPreviewSection s, MeshRenderContext context)
@@ -546,15 +552,38 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
         var material = (MaterialRenderProxy)Material;
         //UE3 renders lit translucency differently, and unlit materials have no light shaders
         if (!context.UseGameShaders || !context.IsLevelLightingActive || context.Wireframe || DrawsInTranslucentPass
-            || !UsesLevelLighting(lod, material, context) || !material.CanRenderWithGameShaders
-            || material.GetBasePassShaders(context, usesLevelLights: true, out _).vertexShader is null)
+            || material.IsUnlit || !material.CanRenderWithGameShaders)
         {
             return;
         }
+        if (lod.LightEnvironment?.GetLighting() is { } environment && !UsesLevelLighting(lod, material, context))
+        {
+            if (material.GetLightEnvironmentShaders(context, environment) is not ({ }, { }))
+                return;
+            foreach (SceneLight light in environment.PointLights)
+                Queue(new LightInteraction(light, StaticShadowingType.None, null, null));
+            //Sky contributions are in the base pass; separate dynamic shadows come with attenuation.
+            if (environment.DirectLights.Count > 0 && lod.LightEnvironmentPrimitive is { } primitive
+                && lod.LightEnvironment.LevelPackage is { } level)
+            {
+                foreach (SceneLight light in environment.DirectLights)
+                {
+                    if (light.Type is not SceneLightType.Sky && LightEnvironmentDirectLighting.Affects(light, primitive, lod.Mesh.TransformedBounds, level))
+                        Queue(new LightInteraction(light, StaticShadowingType.None, null, null));
+                }
+            }
+            return;
+        }
+        if (!UsesLevelLighting(lod, material, context)
+            || material.GetBasePassShaders(context, usesLevelLights: true, out _).vertexShader is null)
+            return;
         foreach (LightInteraction interaction in lod.StaticLighting.GetLightInteractions(lod.Mesh.TransformedBounds))
+            Queue(interaction);
+
+        void Queue(LightInteraction interaction)
         {
             (Shader vertexShader, Shader pixelShader) = material.GetLightShaders(interaction.Light.Type, interaction.Shadowing);
-            if (vertexShader is not null)
+            if (vertexShader is not null && pixelShader is not null)
             {
                 context.QueueLightPass(interaction.Light, lightAttenuation => DrawLightPass(lod, s, context, material, interaction, vertexShader, pixelShader, lightAttenuation));
             }
@@ -574,7 +603,7 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
         {
             effect.PixelShaderResources.Reset();
             context.ImmediateContext.InputAssembler.SetVertexBuffers(MeshStaticLighting.VertexStreamSlot,
-                new VertexBufferBinding(lod.StaticLighting.VertexStream, MeshStaticLighting.VertexStreamStride, 0));
+                new VertexBufferBinding(lod.StaticLighting?.VertexStream, MeshStaticLighting.VertexStreamStride, 0));
             context.ImmediateContext.OutputMerger.SetDepthStencilState(context.LightPassDepthState);
             context.SetMeshRasterizerState(material.IsTwoSided, mesh.LocalToWorld.GetDeterminant() < 0);
             PixelShader ps = context.GetCachedPixelShader(pixelShader.Guid, pixelShader.ShaderByteCode);

@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 
 /// <summary>
 /// The level's static geometry, for testing whether a line is blocked, as UE3's line checks against level geometry do for light environments' visibility traces:
-/// the levels' BSP, and a bounding volume hierarchy of the mesh instances, each with its own hierarchy of triangles in local space (shared between instances of a mesh)
+/// the levels' BSP, and a BVH of mesh instances, each with its mesh's serialized kDOP tree in local space
 /// </summary>
 public sealed class LevelGeometry
 {
@@ -20,13 +21,11 @@ public sealed class LevelGeometry
     }
 
     /// <summary>
-    /// A mesh's triangles, in its local space, and their hierarchy
+    /// A mesh's collision triangles and serialized kDOP tree, in local space
     /// </summary>
     public sealed class TriangleMesh
     {
-        private readonly Vector3[] Positions;
-        private readonly int[] Indices;
-        private readonly Bvh Hierarchy;
+        private readonly StaticMeshCollisionTree Tree;
 
         public readonly Vector3 BoundsMin;
         public readonly Vector3 BoundsMax;
@@ -34,7 +33,7 @@ public sealed class LevelGeometry
         /// <summary>
         /// The triangles of <paramref name="indices"/>, skipping any with an index outside <paramref name="positions"/>. Null if none are left
         /// </summary>
-        public static TriangleMesh Create(Vector3[] positions, int[] indices)
+        public static TriangleMesh Create(Vector3[] positions, int[] indices, kDOPTreeCompact collisionTree = null)
         {
             var validIndices = new List<int>(indices.Length - indices.Length % 3);
             for (int i = 0; i + 2 < indices.Length; i += 3)
@@ -47,63 +46,25 @@ public sealed class LevelGeometry
                     validIndices.Add(c);
                 }
             }
-            return validIndices.Count > 0 ? new TriangleMesh(positions, validIndices.ToArray()) : null;
+            return validIndices.Count > 0 ? new TriangleMesh(positions, validIndices.ToArray(), collisionTree) : null;
         }
 
-        private TriangleMesh(Vector3[] positions, int[] indices)
+        private TriangleMesh(Vector3[] positions, int[] indices, kDOPTreeCompact collisionTree)
         {
-            Positions = positions;
-            Indices = indices;
-            int numTriangles = indices.Length / 3;
-            var mins = new Vector3[numTriangles];
-            var maxs = new Vector3[numTriangles];
-            for (int i = 0; i < numTriangles; i++)
+            Vector3 min = new(float.MaxValue), max = new(float.MinValue);
+            foreach (int index in indices)
             {
-                Vector3 a = positions[indices[i * 3]], b = positions[indices[i * 3 + 1]], c = positions[indices[i * 3 + 2]];
-                mins[i] = Vector3.Min(a, Vector3.Min(b, c));
-                maxs[i] = Vector3.Max(a, Vector3.Max(b, c));
+                min = Vector3.Min(min, positions[index]);
+                max = Vector3.Max(max, positions[index]);
             }
-            Hierarchy = new Bvh(mins, maxs);
-            (BoundsMin, BoundsMax) = Hierarchy.RootBounds;
+            (BoundsMin, BoundsMax) = (min, max);
+            Tree = new StaticMeshCollisionTree(positions, indices, BoundsMin, BoundsMax, collisionTree);
         }
 
         /// <summary>
-        /// Whether the segment from <paramref name="start"/> to <paramref name="end"/> crosses a triangle (from either side)
+        /// Whether the segment from <paramref name="start"/> to <paramref name="end"/> hits a triangle from either side, contacts at its ends included
         /// </summary>
-        /// <param name="tMargin">Crossings this close to either end, as a fraction of the segment, don't count</param>
-        public bool IntersectsSegment(Vector3 start, Vector3 end, float tMargin) => Hierarchy.AnyHit(start, end, (triangle, origin, direction) =>
-        {
-            Vector3 a = Positions[Indices[triangle * 3]], b = Positions[Indices[triangle * 3 + 1]], c = Positions[Indices[triangle * 3 + 2]];
-            return SegmentIntersectsTriangle(origin, direction, a, b, c, tMargin);
-        });
-
-        //Möller–Trumbore, two-sided, with t in the segment
-        private static bool SegmentIntersectsTriangle(Vector3 origin, Vector3 direction, Vector3 a, Vector3 b, Vector3 c, float tMargin)
-        {
-            Vector3 edge1 = b - a;
-            Vector3 edge2 = c - a;
-            Vector3 p = Vector3.Cross(direction, edge2);
-            float determinant = Vector3.Dot(edge1, p);
-            if (MathF.Abs(determinant) < 1e-12f)
-            {
-                return false;
-            }
-            float invDeterminant = 1 / determinant;
-            Vector3 s = origin - a;
-            float u = Vector3.Dot(s, p) * invDeterminant;
-            if (u < 0 || u > 1)
-            {
-                return false;
-            }
-            Vector3 q = Vector3.Cross(s, edge1);
-            float v = Vector3.Dot(direction, q) * invDeterminant;
-            if (v < 0 || u + v > 1)
-            {
-                return false;
-            }
-            float t = Vector3.Dot(edge2, q) * invDeterminant;
-            return t > tMargin && t < 1 - tMargin;
-        }
+        public bool IntersectsSegment(Vector3 start, Vector3 end) => Tree.Intersects(start, end);
     }
 
     private readonly Instance[] Instances;
@@ -130,26 +91,22 @@ public sealed class LevelGeometry
                 continue;
             }
             instances.Add(new Instance { Owner = primitive, Mesh = mesh, WorldToLocal = worldToLocal });
-            (Vector3 min, Vector3 max) = TransformBox(mesh.BoundsMin, mesh.BoundsMax, localToWorld);
-            mins.Add(min);
-            maxs.Add(max);
+            //The octree culls by component bounds before each mesh tests its root bounds (LE1 RVA 0x452160)
+            BoxSphereBounds bounds = primitive.GetBounds();
+            mins.Add(bounds.Origin - bounds.BoxExtent);
+            maxs.Add(bounds.Origin + bounds.BoxExtent);
         }
         Instances = instances.ToArray();
         InstanceHierarchy = new Bvh(mins.ToArray(), maxs.ToArray());
     }
 
-    //how close to either end of a segment, in world units, a triangle can be without blocking it
-    private const float SegmentEndTolerance = 0.01f;
-
     /// <summary>
     /// Whether a light environment's visibility trace to <paramref name="light"/>, from <paramref name="start"/> to <paramref name="end"/>, is blocked by the level's geometry:
-    /// the meshes that block traces to that light (<see cref="MeshStaticLighting.BlocksVisibilityTraceTo"/>), other than <paramref name="ignoredActor"/>'s, as UE3's
-    /// SingleLineCheck ignores the light environment's owner
+    /// the meshes that block traces to that light (<see cref="MeshStaticLighting.BlocksVisibilityTraceTo"/>), except <paramref name="ignoredActor"/>'s.
     /// </summary>
     public bool IsSegmentBlocked(Vector3 start, Vector3 end, SceneLight light, ExportEntry ignoredActor)
     {
-        float length = Vector3.Distance(start, end);
-        if (length <= SegmentEndTolerance * 2)
+        if (start == end)
         {
             return false;
         }
@@ -161,8 +118,6 @@ public sealed class LevelGeometry
                 return true;
             }
         }
-        //as a fraction of the segment, which is the same in each mesh's local space, since the transforms are affine
-        float tMargin = SegmentEndTolerance / length;
         return InstanceHierarchy.AnyHit(start, end, (index, _, _) =>
         {
             Instance instance = Instances[index];
@@ -170,7 +125,7 @@ public sealed class LevelGeometry
             {
                 return false;
             }
-            return instance.Mesh.IntersectsSegment(Vector3.Transform(start, instance.WorldToLocal), Vector3.Transform(end, instance.WorldToLocal), tMargin);
+            return instance.Mesh.IntersectsSegment(Vector3.Transform(start, instance.WorldToLocal), Vector3.Transform(end, instance.WorldToLocal));
         });
     }
 
@@ -223,17 +178,6 @@ public sealed class LevelGeometry
         static bool ChildOutside(BspNode node, bool front, bool outside) => front ? outside || IsCsg(node) : outside && !IsCsg(node);
     }
 
-    private static (Vector3 min, Vector3 max) TransformBox(Vector3 min, Vector3 max, Matrix4x4 m)
-    {
-        Vector3 center = Vector3.Transform((min + max) / 2, m);
-        Vector3 extent = (max - min) / 2;
-        var worldExtent = new Vector3(
-            MathF.Abs(m.M11) * extent.X + MathF.Abs(m.M21) * extent.Y + MathF.Abs(m.M31) * extent.Z,
-            MathF.Abs(m.M12) * extent.X + MathF.Abs(m.M22) * extent.Y + MathF.Abs(m.M32) * extent.Z,
-            MathF.Abs(m.M13) * extent.X + MathF.Abs(m.M23) * extent.Y + MathF.Abs(m.M33) * extent.Z);
-        return (center - worldExtent, center + worldExtent);
-    }
-
     /// <summary>
     /// A bounding volume hierarchy of items with axis-aligned bounds, split at the median along the longest axis of their centers
     /// </summary>
@@ -247,8 +191,6 @@ public sealed class LevelGeometry
         private readonly List<int> NodeOffsets = [];
         private readonly List<int> NodeCounts = [];
         private readonly int[] Items;
-
-        public (Vector3, Vector3) RootBounds => NodeMins.Count > 0 ? (NodeMins[0], NodeMaxs[0]) : (Vector3.Zero, Vector3.Zero);
 
         public Bvh(Vector3[] mins, Vector3[] maxs)
         {

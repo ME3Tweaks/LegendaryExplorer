@@ -28,7 +28,7 @@ public enum LightEligibility
     /// </summary>
     OtherLevel,
     /// <summary>
-    /// Level lighting only: the primitive's level was built with only its own static lights (PKG_SelfContainedLighting)
+    /// The source package's self-containment excludes this cross-level static light (LE1).
     /// </summary>
     SelfContainedLighting,
     /// <summary>
@@ -48,7 +48,7 @@ public enum LightEligibility
     /// </summary>
     LitByLightEnvironment,
     /// <summary>
-    /// A dominant light, which light environments only composite with bForceCompositeAllLights
+    /// A dominant light excluded by this game's environment source routing
     /// </summary>
     DominantNotComposited,
     /// <summary>
@@ -59,6 +59,8 @@ public enum LightEligibility
     /// Preserve existing assignments: the last bake gave the primitive's lightmap and shadow maps other lights than this one, which it knows from other primitives
     /// </summary>
     PreservedAssignment,
+    /// <summary>The preview cannot resolve the environment's complete source list.</summary>
+    UnresolvedEnvironmentSources,
 }
 
 public static class LightEligibilityExtensions
@@ -93,12 +95,13 @@ public static class LightEligibilityExtensions
         LightEligibility.OutsideInclusionVolumes => "Outside the light's inclusion volumes",
         LightEligibility.LightingChannels => "No lighting channel in common",
         LightEligibility.OtherLevel => "The light only affects its own and specified levels",
-        LightEligibility.SelfContainedLighting => "The mesh's level has self-contained lighting",
+        LightEligibility.SelfContainedLighting => "Package self-contained lighting excludes this cross-level light",
         LightEligibility.DynamicLightsNotAccepted => "The mesh doesn't accept dynamic lights",
         LightEligibility.LightsNotAccepted => "The mesh doesn't accept lights",
         LightEligibility.BelongsToLightEnvironment => "The light belongs to a light environment",
         LightEligibility.LitByLightEnvironment => "The mesh is lit by a light environment",
         LightEligibility.DominantNotComposited => "Dominant lights aren't composited into this light environment",
+        LightEligibility.UnresolvedEnvironmentSources => "The light environment has unavailable sources or an ambiguous dominant directional light",
         LightEligibility.PreservedAssignment => "Excluded by preserved lightmap/shadowmap assignments",
         LightEligibility.BakedIrrelevant => "Excluded by the last lighting build",
         _ => eligibility.ToString()

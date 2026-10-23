@@ -39,10 +39,10 @@ public sealed class ComponentGeometry
 
     /// <summary>
     /// StaticMesh.LightMapCoordinateIndex. It is serialized only when it differs from the class default, which is 0:
-    /// LE3's UStaticMesh intrinsic-defaults function (FUN_7ff74b063610, passed to UClass::Constructor by
+    /// LE3's UStaticMesh intrinsic-defaults function (RVA 0x7d3610, passed to UClass::Constructor by
     /// GetUStaticMeshStaticClass) zeroes +0x98 with one 8-byte store, i.e. LightMapResolution and LightMapCoordinateIndex,
     /// as IB's UStaticMesh::InitializeIntrinsicPropertyValues does. LE3 doesn't clamp it: the vertex factory binds the
-    /// lightmap UV stream only when 0 &lt;= index &lt; NumTexCoords (FUN_7ff74b05f480), so an out-of-range index means no
+    /// lightmap UV stream only when 0 &lt;= index &lt; NumTexCoords (RVA 0x7cf480), so an out-of-range index means no
     /// lightmap UVs. Game data agrees: texture lightmaps exist on one-UV meshes that don't serialize the index.
     /// </summary>
     public static int CoordinateIndex(ExportEntry meshExport) =>

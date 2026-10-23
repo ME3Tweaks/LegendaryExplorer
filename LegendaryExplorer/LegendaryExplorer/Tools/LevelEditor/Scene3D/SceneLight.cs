@@ -142,7 +142,7 @@ public sealed class SceneLight
     public bool HasStaticLighting { get; private init; }
 
     /// <summary>
-    /// A dominant light (DominantDirectionalLightComponent etc.). Light environments only composite these if bForceCompositeAllLights
+    /// A dominant light. LE1 environments take the world's dominant directional; later games need bForceCompositeAllLights.
     /// </summary>
     public bool IsDominant { get; }
 
@@ -167,7 +167,7 @@ public sealed class SceneLight
     public Vector3 ModShadowColor { get; }
 
     /// <summary>
-    /// LE3's LightEnv_BouncedModulationColor, scaled by LightEnv_BouncedLightBrightness: what light environments scale the light they bounce from the light by
+    /// LightEnv_BouncedModulationColor scaled by LightEnv_BouncedLightBrightness: sky bounce in LE2, every light's bounce in LE3.
     /// </summary>
     public Vector3 BouncedLightColor { get; } = Vector3.One;
 
@@ -178,9 +178,48 @@ public sealed class SceneLight
 
     /// <summary>
     /// The light belongs to a light environment (its LightEnvironment is set). It only lights that light environment's primitives, directly, and isn't in the world's
-    /// light lists, so it isn't composited into light environments (ULightComponent::Attach, AffectsPrimitive). Lighting the primitives directly isn't supported
+    /// light lists, so it isn't composited into light environments (ULightComponent::Attach, AffectsPrimitive).
+    /// Synthesized points are drawn through the environment's own list; package-owned environment lights aren't routed.
     /// </summary>
     public bool HasLightEnvironment { get; }
+
+    /// <summary>LE1 permits this unowned light to affect primitives that belong to a light environment.</summary>
+    public bool BypassesLightEnvironments { get; }
+
+    /// <summary>bAllowedToBypassLightEnvironments on an unowned light; routing differs by game (<see cref="DynamicLightEnvironment"/>)</summary>
+    public bool AllowedToBypassLightEnvironments { get; }
+
+    /// <summary>For a synthesized point with a normal shadow: the environment whose primitives cast (and receive) it</summary>
+    internal DynamicLightEnvironment ShadowSubject { get; }
+
+    /// <summary>A point in its environment's draw list, never registered as a level light</summary>
+    /// <param name="shadowSubject">Non-null if the point casts a normal shadow from the environment's primitives</param>
+    internal static SceneLight CreateEnvironmentPoint(ExportEntry owner, Vector3 position, float radius, Vector3 color, float falloffExponent = 2,
+        DynamicLightEnvironment shadowSubject = null, float shadowRadiusMultiplier = 1.1f, int minShadowResolution = 0, int maxShadowResolution = 0,
+        int shadowFadeResolution = 0) =>
+        new(owner, position, radius, color, falloffExponent, shadowSubject, shadowRadiusMultiplier, minShadowResolution, maxShadowResolution, shadowFadeResolution);
+
+    private SceneLight(ExportEntry owner, Vector3 position, float radius, Vector3 color, float falloffExponent, DynamicLightEnvironment shadowSubject,
+        float shadowRadiusMultiplier, int minShadowResolution, int maxShadowResolution, int shadowFadeResolution)
+    {
+        Type = SceneLightType.Point;
+        Export = owner;
+        HasLightEnvironment = true;
+        Position = position;
+        Radius = radius;
+        Color = color;
+        FalloffExponent = falloffExponent;
+        Direction = Vector3.UnitZ;
+        WorldToLight = Matrix4x4.CreateTranslation(-position);
+        LevelName = owner?.FileRef.FileNameNoExtension ?? "";
+        //A normal shadow attenuates only this point; modulated ones come from LightEnvironmentLighting
+        ShadowSubject = shadowSubject;
+        CastsDynamicShadows = CastsDynamicShadowsWhenUnbuilt = shadowSubject is not null;
+        ShadowRadiusMultiplier = shadowRadiusMultiplier;
+        MinShadowResolution = minShadowResolution;
+        MaxShadowResolution = maxShadowResolution;
+        ShadowFadeResolution = shadowFadeResolution;
+    }
 
     private SceneLight(SceneLightType type, ExportEntry export, PropertyCollection props, Matrix4x4 parentToWorld, bool hasStaticShadowing,
         bool hasLightEnvironment, bool hasFunction, PackageCache packageCache)
@@ -194,13 +233,15 @@ public sealed class SceneLight
         CastsCompositeShadow = props.GetProp<BoolProperty>("bCastCompositeShadow") is not { Value: false };
         AffectsCompositeShadowDirection = props.GetProp<BoolProperty>("bAffectCompositeShadowDirection") is not { Value: false };
         ModShadowColor = props.GetProp<StructProperty>("ModShadowColor") is { } modShadowColorProp ? CommonStructs.GetLinearColor(modShadowColorProp).ToVector3() : Vector3.Zero;
-        if (export.Game.IsGame3())
+        if (export.Game.IsGame3() || export.Game is MEGame.LE2)
         {
             BouncedLightColor = (props.GetProp<StructProperty>("LightEnv_BouncedModulationColor") is { } bouncedColorProp ? ToLinear(bouncedColorProp) : Vector3.One)
-                                * (props.GetProp<FloatProperty>("LightEnv_BouncedLightBrightness")?.Value ?? 1);
+                                * (props.GetProp<FloatProperty>("LightEnv_BouncedLightBrightness")?.Value ?? (export.Game is MEGame.LE2 ? 0 : 1));
         }
         TraceDistance = props.GetProp<FloatProperty>("TraceDistance")?.Value ?? 100000;
         HasLightEnvironment = hasLightEnvironment;
+        AllowedToBypassLightEnvironments = !hasLightEnvironment && props.GetProp<BoolProperty>("bAllowedToBypassLightEnvironments") is { Value: true };
+        BypassesLightEnvironments = export.Game is MEGame.LE1 && AllowedToBypassLightEnvironments;
         UseVolumes = props.GetProp<BoolProperty>("bUseVolumes") is { Value: true };
         if (UseVolumes)
         {

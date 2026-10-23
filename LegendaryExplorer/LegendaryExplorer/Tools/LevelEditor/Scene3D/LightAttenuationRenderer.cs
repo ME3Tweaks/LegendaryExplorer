@@ -207,7 +207,7 @@ public sealed class LightAttenuationRenderer : IDisposable
     //the light whose attenuation AttenuationTarget holds this frame
     private SceneLight AttenuationLight;
     private int LightsVersion = -1;
-    private readonly Dictionary<SceneLight, List<(MeshStaticLighting Caster, BoxSphereBounds Bounds)>> ShadowCasters = [];
+    private readonly Dictionary<SceneLight, List<(ShadowCaster Caster, BoxSphereBounds Bounds)>> ShadowCasters = [];
     //what FindShadowCasters found for each mesh, kept across frames (see there)
     private readonly Dictionary<MeshStaticLighting, (BoxSphereBounds Bounds, bool InScene, SceneLight[] Lights)> CasterLights = [];
     private int CasterLightsVersion = -1;
@@ -294,12 +294,22 @@ public sealed class LightAttenuationRenderer : IDisposable
                 System.Diagnostics.Debug.WriteLine($"Could not find the meshes that cast dynamic shadows, so none are rendered this frame: {e.Message}");
             }
         }
-        if (ShadowCasters.TryGetValue(light, out var casters) && (projectionShader = GetProjectionShaders(light.Export.Game).Item1) is not null)
+        if (light.ShadowSubject is { } subjectEnvironment && (projectionShader = GetProjectionShaders(light.Export.Game).Item1) is not null)
+        {
+            //a synthesized point's normal shadow, cast by its environment's primitives as one group
+            List<ShadowCaster> subject = GetEnvironmentSubject(subjectEnvironment);
+            (BoxSphereBounds bounds, _) = subjectEnvironment.GetOwnerBoundsAndChannels();
+            if (subject.Count > 0 && ProjectedShadowInfo.Create(subject, ShadowLight.FromSceneLight(light), bounds, Context.Camera, Context.Width, Context.Height) is { } shadow)
+            {
+                shadows.Add(shadow);
+            }
+        }
+        else if (ShadowCasters.TryGetValue(light, out var casters) && (projectionShader = GetProjectionShaders(light.Export.Game).Item1) is not null)
         {
             var shadowLight = ShadowLight.FromSceneLight(light);
-            foreach ((MeshStaticLighting caster, BoxSphereBounds bounds) in casters)
+            foreach ((ShadowCaster caster, BoxSphereBounds bounds) in casters)
             {
-                var subject = new[] { new ShadowCaster(caster.GetLocalToWorld, caster.DrawShadowCaster, caster.ShadowSettings.TwoSided) };
+                var subject = new[] { caster };
                 if (ProjectedShadowInfo.Create(subject, shadowLight, bounds, Context.Camera, Context.Width, Context.Height) is { } shadow)
                 {
                     shadows.Add(shadow);
@@ -363,30 +373,27 @@ public sealed class LightAttenuationRenderer : IDisposable
         foreach (DynamicLightEnvironment lightEnvironment in lightEnvironments)
         {
             //the light environment's meshes cast its shadow together, as the shadow group of the actor's components
-            var subject = new List<ShadowCaster>();
-            foreach (LightEnvironmentPrimitive primitive in lightEnvironment.GetPrimitives())
-            {
-                if (primitive.DrawShadowCaster is not null && primitive.IsInScene() && primitive.IsShown())
-                {
-                    subject.Add(new ShadowCaster(primitive.GetLocalToWorld, primitive.DrawShadowCaster, primitive.CastShadowAsTwoSided));
-                }
-            }
-            if (subject.Count == 0 || lightEnvironment.GetLighting() is not { ShadowLight: { } shadowLight })
+            List<ShadowCaster> subject = GetEnvironmentSubject(lightEnvironment);
+            if (subject.Count == 0 || lightEnvironment.GetLighting() is not { } lighting)
             {
                 continue;
             }
             MEGame game = lightEnvironment.Owner?.Game ?? lightEnvironment.Export?.Game ?? MEGame.LE3;
-            if ((projectionShader ??= GetProjectionShaders(game).Item2) is null)
-            {
-                return;
-            }
-            //a point light, with the light environment's shadow resolutions
-            var light = new ShadowLight(SceneLightType.Point, shadowLight.Position, Vector3.UnitX, shadowLight.Radius, ShadowRadiusMultiplier: 1.1f,
-                shadowLight.MinShadowResolution, shadowLight.MaxShadowResolution, shadowLight.ShadowFadeResolution, game);
             (BoxSphereBounds bounds, _) = lightEnvironment.GetOwnerBoundsAndChannels();
-            if (ProjectedShadowInfo.Create(subject, light, bounds, Context.Camera, Context.Width, Context.Height) is { } shadow)
+            //(LE1 MultiLight's first point casts a modulated shadow besides the environment's shadow light)
+            foreach (LightEnvironmentShadowLight shadowLight in lighting.ShadowLights)
             {
-                shadows.Add((shadow, shadowLight));
+                if ((projectionShader ??= GetProjectionShaders(game).Item2) is null)
+                {
+                    return;
+                }
+                //a point light, with the light environment's shadow resolutions
+                var light = new ShadowLight(SceneLightType.Point, shadowLight.Position, Vector3.UnitX, shadowLight.Radius, shadowLight.ShadowRadiusMultiplier,
+                    shadowLight.MinShadowResolution, shadowLight.MaxShadowResolution, shadowLight.ShadowFadeResolution, game);
+                if (ProjectedShadowInfo.Create(subject, light, bounds, Context.Camera, Context.Width, Context.Height) is { } shadow)
+                {
+                    shadows.Add((shadow, shadowLight));
+                }
             }
         }
         if (shadows.Count == 0)
@@ -427,6 +434,20 @@ public sealed class LightAttenuationRenderer : IDisposable
         ctx.Draw(3, 0);
         ctx.PixelShader.SetShaderResource(0, null);
         ctx.OutputMerger.SetBlendState(null);
+    }
+
+    //the light environment's primitives that are in the scene, shown, and cast shadows
+    private static List<ShadowCaster> GetEnvironmentSubject(DynamicLightEnvironment lightEnvironment)
+    {
+        var subject = new List<ShadowCaster>();
+        foreach (LightEnvironmentPrimitive primitive in lightEnvironment.GetPrimitives())
+        {
+            if (primitive.DrawShadowCaster is not null && primitive.IsInScene() && primitive.IsShown())
+            {
+                subject.Add(new ShadowCaster(primitive.GetLocalToWorld, primitive.DrawShadowCaster, primitive.CastShadowAsTwoSided));
+            }
+        }
+        return subject;
     }
 
     /// <summary>
@@ -509,7 +530,25 @@ public sealed class LightAttenuationRenderer : IDisposable
                 {
                     ShadowCasters[light] = casters = [];
                 }
-                casters.Add((staticLighting, bounds));
+                casters.Add((new ShadowCaster(staticLighting.GetLocalToWorld, staticLighting.DrawShadowCaster, staticLighting.ShadowSettings.TwoSided), bounds));
+            }
+        }
+        //Environment direct routing is the same in Level and Preview modes.
+        foreach (DynamicLightEnvironment environment in Context.GetLightEnvironments())
+        {
+            if (environment.GetLighting() is not { } lighting || environment.LevelPackage is not { } level) continue;
+            foreach (LightEnvironmentPrimitive primitive in environment.GetPrimitives())
+            {
+                if (primitive.GetBounds is null || primitive.GetLocalToWorld is null || !primitive.IsInScene() || !primitive.IsShown()) continue;
+                BoxSphereBounds bounds = primitive.GetBounds();
+                foreach (SceneLight light in lighting.DirectLights)
+                {
+                    if (!CastsPerObjectShadows(light, previewLighting: false)
+                        || !LightEnvironmentDirectLighting.CastsSeparateShadow(light, primitive)
+                        || !LightEnvironmentDirectLighting.Affects(light, primitive, bounds, level)) continue;
+                    if (!ShadowCasters.TryGetValue(light, out var casters)) ShadowCasters[light] = casters = [];
+                    casters.Add((new ShadowCaster(primitive.GetLocalToWorld, primitive.DrawShadowCaster, primitive.CastShadowAsTwoSided), bounds));
+                }
             }
         }
         if (CasterLights.Count > current.Count)

@@ -107,7 +107,6 @@ public partial class ActorPreviewControl : ExportLoaderControl, IActorEditorCont
         }
 
         _controlIsLoaded = true;
-        RenderContext.UpdateScene += OnUpdateScene;
         RenderContext.RenderScene += OnRenderScene;
         if (Parent is TabItem { Parent: TabControl tc })
             tc.SelectionChanged += HostingTabSelectionChanged;
@@ -126,11 +125,6 @@ public partial class ActorPreviewControl : ExportLoaderControl, IActorEditorCont
             bool shouldRender = e.AddedItems.Contains(ti);
             SceneViewer?.SetShouldRender(shouldRender);
         }
-    }
-
-    private void OnUpdateScene(object sender, float deltaTime)
-    {
-        _actor?.UpdateScene(RenderContext, deltaTime);
     }
 
     private void OnRenderScene(object sender, EventArgs e)
@@ -215,7 +209,6 @@ public partial class ActorPreviewControl : ExportLoaderControl, IActorEditorCont
 
     public override void Dispose()
     {
-        RenderContext.UpdateScene -= OnUpdateScene;
         RenderContext.RenderScene -= OnRenderScene;
         _actor?.Dispose();
         _actor = null;

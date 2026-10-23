@@ -1991,7 +1991,21 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                     result.IsAffecting(), lightActor));
                 if (result.IsAffecting()) RenderContext.HighlightedLights.Add(light.Export);
             }
-            if (meshes.All(mesh => !mesh.IsLitByLevelLights))
+            foreach (var group in meshes.Where(mesh => mesh.UsesUnsupportedLightEnvironment)
+                         .GroupBy(mesh => (mesh.Export.Game, mesh.UnsupportedLightEnvironmentReason)))
+            {
+                notes.Add($"This {group.Key.Game} light environment isn't previewed: {group.Key.UnsupportedLightEnvironmentReason ?? "its mode isn't implemented"}. "
+                          + "Lighting and shadows it would supply are missing; the mesh uses neutral lighting.");
+            }
+            if (meshes.Any(mesh => mesh.IsLitByLightEnvironment && mesh.Export.Game is MEGame.LE1 or MEGame.LE2))
+            {
+                notes.Add("LE1/LE2 light environments show their settled synthesis. Transition timing, Kismet-driven runtime changes and in-game image parity aren't verified.");
+            }
+            if (meshes.Any(mesh => mesh.LightEnvironmentSettings is { } s && (s.WrapLightingDirectMultiplier != 1 || s.WrapLightingIndirectMultiplier != 1)))
+            {
+                notes.Add("This light environment's wrap-lighting multipliers aren't applied; the viewport uses the game's stock wrap-lighting constants.");
+            }
+            if (meshes.All(mesh => !mesh.IsLitByLevelLights) && meshes.Any(mesh => !mesh.UsesUnsupportedLightEnvironment))
             {
                 notes.Add(Game.IsLEGame()
                     ? "The level's lights don't light this mesh in the viewport (its lighting couldn't be read), so it's shown with neutral lighting."
