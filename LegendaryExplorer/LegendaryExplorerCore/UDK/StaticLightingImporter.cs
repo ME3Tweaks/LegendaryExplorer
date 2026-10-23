@@ -580,6 +580,16 @@ namespace LegendaryExplorerCore.UDK
                         throw new InvalidDataException($"Cannot map UDK decal receiver #{sr.Component} for {meDecal.InstancedFullPath}");
                     if (!exportedReceiverIndices.Contains(receiver.UIndex)) continue;
                     sr.Component = receiver.UIndex;
+                    // UDK's decal clipping keeps faces that run parallel to the projection, which BioWare data
+                    // culls; they render as streaks. Without per-decal-vertex lighting
+                    // the geometry is lighting independent, so the source projection can be kept as authored.
+                    var source = original.StaticReceivers.FirstOrDefault(x => x.Component == receiver.UIndex);
+                    if (source != null && HasNoPerVertexLighting(source) && HasNoPerVertexLighting(sr))
+                    {
+                        sr.Vertices = source.Vertices;
+                        sr.Indices = source.Indices;
+                        sr.NumTriangles = source.NumTriangles;
+                    }
                     PortLightMaps(sr.LightMap, receiver, udkPackage, setup);
                     sr.ShadowMap1D ??= [];
                     PortShadowMaps(ref sr.ShadowMap1D, meDecal, udkPackage);
@@ -592,6 +602,13 @@ namespace LegendaryExplorerCore.UDK
             return importedDecals;
             // END MILAN CHANGE
         }
+
+        /// <summary>
+        /// Whether a decal receiver stores no lighting tied to its own vertex order (no LMT_1D samples or ShadowMap1Ds),
+        /// so its projection geometry can be swapped without misaligning lighting data.
+        /// </summary>
+        private static bool HasNoPerVertexLighting(StaticReceiverData sr) =>
+            (sr.LightMap == null || sr.LightMap.LightMapType == ELightMapType.LMT_None) && (sr.ShadowMap1D == null || sr.ShadowMap1D.Length == 0);
 
         /// <summary>
         /// Brings legacy decal static receivers in line with the new lighting on their receiving components.
