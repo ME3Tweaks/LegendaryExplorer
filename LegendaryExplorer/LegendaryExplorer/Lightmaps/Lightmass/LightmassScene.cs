@@ -638,20 +638,19 @@ public sealed class LightmassSceneBuilder : IDisposable
 
             if (allocate && lodModel.PositionVertexBuffer.VertexData.Length > 0)
             {
-                var size = LightmassMappingAllocator.MeshSize(component.Game, props, Properties(meshExport), lod,
+                var preferred = LightmassMappingAllocator.MeshSize(component.Game, props, Properties(meshExport), lod,
                     LightmassMappingAllocator.HasUsableUv(lodModel, mesh.LightMapCoordinateIndex));
-                bool supported = materialEntries.Count > 0 && materialEntries.All(m => SupportsNewLightmap(m, size.Width > 0));
-                // A valid vertex policy is a useful fallback when a texture policy was not cooked for this material.
-                if (!supported && size.Width > 0 && materialEntries.Count > 0 && materialEntries.All(m => SupportsNewLightmap(m, false)))
-                {
-                    size = (0, 0);
-                    supported = true;
-                }
-                if (supported)
+                // The shadow maps come out in the mapping's kind, and the receiver's materials draw each with a light pass of that kind
+                var shadowed = reaching.Where(IsShadowMapped).ToList();
+                bool Lightmap(bool texture) => materialEntries.Count > 0 && materialEntries.All(m => SupportsNewLightmap(m, texture));
+                bool Shadows(bool texture) => shadowed.All(l => materialEntries.All(m => SupportsShadowMaps(m, l, texture)));
+                var size = ChooseMappingSize(preferred, shadowLayout, texture => Lightmap(texture) && Shadows(texture))
+                    ?? ChooseMappingSize(preferred, shadowLayout, Lightmap);
+                if (size is { } chosen)
                 {
                     instance.AllocateLightmap = true;
                     instance.Target = receiver;
-                    (instance.SizeX, instance.SizeY) = size;
+                    (instance.SizeX, instance.SizeY) = chosen;
                     shadowLayout = null;
                     scene.Count(instance.IsTextureMapping ? "mapping: new LMT_2D" : "mapping: new LMT_1D");
                 }
@@ -680,6 +679,7 @@ public sealed class LightmassSceneBuilder : IDisposable
             if (!instance.HasOutput) instance.SizeX = instance.SizeY = OccluderMappingSize;
 
             instance.RelevantLights = RelevantLights(receiverBounds, lightmap, vanillaShadows, primitive, shadowOnlyTarget: instance.ShadowTarget != null);
+            if (instance.HasOutput) ReportUnsupportedShadowMaps(instance, materialEntries);
             scene.Instances.Add(instance);
             bakesEnvironmentLitMesh |= usesEnvironment && instance.Target != null;
             castsEnvironmentLitMesh |= usesEnvironment && instance.Target == null;
@@ -714,38 +714,88 @@ public sealed class LightmassSceneBuilder : IDisposable
         light.Type is not (SceneLightType.Point or SceneLightType.Spot)
         || Vector3.DistanceSquared(Vector3.Clamp(light.Position, min, max), light.Position) <= light.Radius * light.Radius;
 
-    readonly Dictionary<(IEntry Material, bool Texture), bool> allocationPolicies = new();
-    readonly Dictionary<IMEPackage, ShaderCache> allocationShaderCaches = new();
+    /// <summary>
+    /// The first of a new mapping's possible sizes whose kind (texture or vertex) <paramref name="supports"/> accepts: the preferred size, then the
+    /// receiver's existing shadow-only layout, then vertex lighting. Null if none is.
+    /// </summary>
+    public static (int Width, int Height)? ChooseMappingSize((int Width, int Height) preferred, (int Width, int Height)? shadowLayout, Func<bool, bool> supports)
+    {
+        foreach (var size in new (int Width, int Height)[] { preferred, shadowLayout ?? preferred, (0, 0) })
+            if (supports(size.Width > 0)) return size;
+        return null;
+    }
+
+    /// <summary>A light the bake gives the primitive a shadow map of: a shadow-only entry, or a dominant light (which bakes no direct lighting)</summary>
+    static bool IsShadowMapped(LightmassLight light) => (light.ShadowOnly || light.Light.IsDominant) && light.Light.Type != SceneLightType.Sky;
+
+    /// <summary>
+    /// The light pass UE3 draws a shadow-mapped light with on a receiver: TLightVertexShader/TLightPixelShader of its light policy and static
+    /// shadowing policy (texture, distance field texture or vertex shadow maps), as the material's cooked shader map names them.
+    /// </summary>
+    public static (string Vertex, string Pixel) ShadowMapLightShaders(SceneLightType type, bool texture, bool distanceField)
+    {
+        string light = type switch
+        {
+            SceneLightType.Spot => "FSpotLightPolicy",
+            SceneLightType.Directional => "FDirectionalLightPolicy",
+            SceneLightType.Point => "FPointLightPolicy",
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, "sky lights have no shadow maps")
+        };
+        string shadowing = !texture ? "FShadowVertexBufferPolicy" : distanceField ? "FSignedDistanceFieldShadowTexturePolicy" : "FShadowTexturePolicy";
+        return ($"TLightVertexShader{light}{shadowing}", $"TLightPixelShader{light}{shadowing}");
+    }
+
+    /// <summary>Reports each shadow-mapped light whose light pass, in the mapping's kind, isn't cooked for every one of the receiver's materials.</summary>
+    void ReportUnsupportedShadowMaps(LightmassInstance instance, List<IEntry> materials)
+    {
+        foreach (var light in instance.RelevantLights.Where(IsShadowMapped).Where(l => ReachesBox(l.Light, instance.BoundsMin, instance.BoundsMax)))
+            if (!materials.All(m => SupportsShadowMaps(m, light, instance.IsTextureMapping)))
+                scene.Count($"shadow maps: {light.Light.Type} {(instance.IsTextureMapping ? "texture" : "vertex")} shadow maps without a cooked light pass on the receiver's material (written anyway)");
+    }
 
     bool SupportsNewLightmap(IEntry entry, bool texture)
     {
-        if (entry == null) return false;
-        if (allocationPolicies.TryGetValue((entry, texture), out bool supported)) return supported;
+        string policy = texture ? "FDirectionalLightMapTexturePolicy" : "FDirectionalVertexLightMapPolicy";
+        return entry != null && HasCookedShaders(entry, $"TBasePassVertexShader{policy}FNoDensityPolicy", $"TBasePassPixelShader{policy}NoSkyLight");
+    }
+
+    /// <summary>A missing material is drawn with the default material, which has every light pass.</summary>
+    bool SupportsShadowMaps(IEntry entry, LightmassLight light, bool texture)
+    {
+        var (vertex, pixel) = ShadowMapLightShaders(light.Light.Type, texture, light.SignedDistanceField);
+        return entry == null || HasCookedShaders(entry, vertex, pixel);
+    }
+
+    readonly Dictionary<(IEntry Material, string VertexShader), bool> cookedShaders = new();
+    readonly Dictionary<IMEPackage, ShaderCache> allocationShaderCaches = new();
+
+    /// <summary>Whether the material's cooked shader map (its own, or its nearest parent's with one) has both shaders. Unlit materials have no lighting passes.</summary>
+    bool HasCookedShaders(IEntry entry, string vertexShader, string pixelShader)
+    {
+        if (cookedShaders.TryGetValue((entry, vertexShader), out bool cooked)) return cooked;
         try
         {
-            if (ReadMaterial(entry).Unlit) return allocationPolicies[(entry, texture)] = true;
+            if (ReadMaterial(entry).Unlit) return cookedShaders[(entry, vertexShader)] = true;
             var current = Resolve(entry);
             for (int depth = 0; current != null && depth < 16; depth++)
             {
                 var props = current.GetProperties();
                 if (current.ClassName == "Material" || props.GetProp<BoolProperty>("bHasStaticPermutationResource") is { Value: true })
                 {
-                    string policy = texture ? "FDirectionalLightMapTexturePolicy" : "FDirectionalVertexLightMapPolicy";
                     ShaderCache Cache(IMEPackage p)
                     {
                         if (!allocationShaderCaches.TryGetValue(p, out var cache))
                             allocationShaderCaches[p] = cache = p.FindExport("SeekFreeShaderCache", "ShaderCache") is { } e ? ObjectBinary.From<ShaderCache>(e) : null;
                         return cache;
                     }
-                    var (_, shaders) = LegendaryExplorerCore.Shaders.ShaderCacheManipulator.GetMaterialShaderMapAndShaders(current, Cache,
-                        $"TBasePassVertexShader{policy}FNoDensityPolicy", $"TBasePassPixelShader{policy}NoSkyLight");
-                    return allocationPolicies[(entry, texture)] = shaders.All(s => s != null);
+                    var (_, shaders) = LegendaryExplorerCore.Shaders.ShaderCacheManipulator.GetMaterialShaderMapAndShaders(current, Cache, vertexShader, pixelShader);
+                    return cookedShaders[(entry, vertexShader)] = shaders.All(s => s != null);
                 }
                 current = props.GetProp<ObjectProperty>("Parent") is { Value: not 0 } parent ? Resolve(current.FileRef.GetEntry(parent.Value)) : null;
             }
         }
         catch (Exception e) { scene.Count($"mapping: shader policy lookup failed ({e.GetType().Name})"); }
-        return allocationPolicies[(entry, texture)] = false;
+        return cookedShaders[(entry, vertexShader)] = false;
     }
 
     /// <summary>

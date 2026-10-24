@@ -622,7 +622,7 @@ public sealed class LightAttenuationRenderer : IDisposable
 
     /// <summary>
     /// Draws one section of a caster into the shadow depth buffer: with the material's own shadow depth shaders when it has them (masked coverage,
-    /// vertex deformation), otherwise as plain geometry. Translucent sections, and masked ones without shaders, don't cast.
+    /// vertex deformation), otherwise as plain geometry. Translucent sections (unless cast as masked), and masked ones without shaders, don't cast.
     /// </summary>
     internal void DrawShadowSection<TVertex>(DeviceContext ctx, Mesh<TVertex> mesh, ModelPreviewSection section, MaterialRenderProxy material, ShadowDepthPass pass)
         where TVertex : IVertexBase
@@ -637,7 +637,7 @@ public sealed class LightAttenuationRenderer : IDisposable
             return;
         }
         // An opaque silhouette is a misleading substitute for unavailable masked coverage.
-        if (material is { IsMasked: true }) return;
+        if (material is { CastsMaskedShadow: true }) return;
         ctx.InputAssembler.InputLayout = ShadowDepthInputLayout;
         ctx.VertexShader.Set(ShadowDepthVertexShader);
         ctx.PixelShader.Set(ShadowDepthPixelShader);

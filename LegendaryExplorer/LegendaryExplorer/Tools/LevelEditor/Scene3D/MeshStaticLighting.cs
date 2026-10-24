@@ -281,12 +281,15 @@ public sealed class MeshStaticLighting : IDisposable
         if (!Context.UseGameShaders || !IsPreviewShadowCaster) yield break;
         MaterialRenderProxy[] casting = ShadowCastingMaterials.ToArray();
         //only those cast with their own shaders: a masked material without them casts no shadow, which its own error says
-        if (casting.Any(material => material.IsMasked && material.ShadowShaders is not null))
+        if (casting.Any(material => material.CastsMaskedShadow && material.ShadowShaders is not null))
             yield return "Masked shadows evaluate the live material. Animated/view-dependent coverage may differ from the bake's material capture.";
-        if (casting.Any(material => material.ShadowShadersPending && material.CastsShadowDepth && (material.IsMasked || !material.HasUndisplacedVertices)))
+        if (casting.Any(material => material.ShadowShadersPending && material.CastsShadowDepth && (material.CastsMaskedShadow || !material.HasUndisplacedVertices)))
             yield return "Shadow shaders are still loading: until they're ready, masked sections cast no shadow, and vertex-offset sections cast undeformed ones.";
-        if (ReceivesStaticLighting && ShadowSettings.BakesShadow && casting.Any(material => material.BakesTransmission))
+        if (ReceivesStaticLighting && ShadowSettings.BakesShadow && casting.Any(material => material.BakesTransmission && !material.CastsShadowDepth))
             yield return "Translucent sections cast no shadow in Preview, but a bake shadows light through them by their transmission (partial or colored shadows), if it can capture their material.";
+        //the bake reads Lightmass's own bCastShadowAsMasked instead
+        if (ReceivesStaticLighting && ShadowSettings.BakesShadow && casting.Any(material => material.BakesTransmission && material.CastsShadowDepth))
+            yield return "Translucency cast as masked (bCastLitTranslucencyShadowAsMasked) casts a masked shadow in Preview, as at runtime, but a bake shadows light through it by its transmission, unless its Lightmass settings cast it as masked.";
         if (ShadowSettings.IndirectOnly) yield return "Indirect-only shadow caster: Preview has no bounced light, so it casts no static direct shadow.";
         if (PreviewLod != 0) yield return "Preview shadows use the displayed LOD; the baker uses LOD 0 to shadow other meshes.";
         foreach (var material in casting)

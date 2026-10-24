@@ -138,9 +138,13 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     public bool IsMasked => IsMaskedMaterial(BlendMode, HasOpacityMask);
     /// <summary>
     /// Whether the material casts shadows: its blend mode isn't translucent (UE3's IsTranslucentBlendMode, which soft masked isn't), unless translucency
-    /// is cast as masked (not supported)
+    /// is cast as masked
     /// </summary>
-    public bool CastsShadowDepth => CastsShadowDepthWith(BlendMode);
+    public bool CastsShadowDepth => CastsShadowDepthWith(BlendMode, CastsLitTranslucencyShadowAsMasked);
+    /// <summary>
+    /// Whether the material casts with its own shadow depth shaders, which clip by its opacity mask: it's masked, or casts translucency as masked
+    /// </summary>
+    public bool CastsMaskedShadow => CastsMaskedShadowWith(BlendMode, HasOpacityMask, CastsLitTranslucencyShadowAsMasked);
 
     /// <summary>
     /// Whether a bake shadows light through the material by its transmission, partially or colored (translucent, alpha composite and modulate materials,
@@ -151,8 +155,13 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     public static bool IsMaskedMaterial(EBlendMode blendMode, bool bIsMasked) =>
         bIsMasked && blendMode is EBlendMode.BLEND_Masked or EBlendMode.BLEND_SoftMasked;
 
-    public static bool CastsShadowDepthWith(EBlendMode blendMode) =>
-        blendMode is EBlendMode.BLEND_Opaque or EBlendMode.BLEND_Masked or EBlendMode.BLEND_SoftMasked;
+    // LE1/LE2/LE3 FShadowDepthDrawingPolicyFactory::DrawDynamicMesh (RVAs 0x776100, 0x36c550, 0x383040) and the drawing policy (RVAs 0x771610,
+    // 0x3640a0, 0x379560) test the blend mode and the flag as UE3 does
+    public static bool CastsShadowDepthWith(EBlendMode blendMode, bool castLitTranslucencyShadowAsMasked) => castLitTranslucencyShadowAsMasked
+        || blendMode is EBlendMode.BLEND_Opaque or EBlendMode.BLEND_Masked or EBlendMode.BLEND_SoftMasked;
+
+    public static bool CastsMaskedShadowWith(EBlendMode blendMode, bool bIsMasked, bool castLitTranslucencyShadowAsMasked) =>
+        castLitTranslucencyShadowAsMasked || IsMaskedMaterial(blendMode, bIsMasked);
     public bool UseHairPass;
     public bool IsUnlit;
     /// <summary>
@@ -160,7 +169,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     /// </summary>
     public bool IsTwoSided;
     /// <summary>
-    /// A translucent material that casts shadows as if it were masked (bCastLitTranslucencyShadowAsMasked)
+    /// Casts shadows as if it were masked, even when translucent (bCastLitTranslucencyShadowAsMasked): installed hair materials set it
     /// </summary>
     public bool CastsLitTranslucencyShadowAsMasked;
 
@@ -455,7 +464,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
         try
         {
             //the shadow depth shaders are read in the same lookup, when the material has any to use (see PrepareShadowShaders)
-            string[] shadowShaderTypes = !CastsShadowDepth ? [] : IsMasked ? [ShadowDepthVertexShaderType, ShadowDepthPixelShaderType]
+            string[] shadowShaderTypes = !CastsShadowDepth ? [] : CastsMaskedShadow ? [ShadowDepthVertexShaderType, ShadowDepthPixelShaderType]
                 : HasUndisplacedVertices ? [] : [ShadowDepthVertexShaderType];
             (ShaderMap, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndShaders(mat, Context.GetSeekFreeShaderCache,
                 [.. GetShaderTypeNames(LightMapType), .. shadowShaderTypes]);
@@ -564,7 +573,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
     //what happens to a section's shadow when the material's shadow depth shaders can't be used
     internal const string NoMaskedShadow = "masked shadow coverage is unavailable (section omitted from shadow depth).";
     internal const string UndeformedShadow = "shadow depth uses undeformed mesh geometry.";
-    internal string ShadowShaderFallback => IsMasked ? NoMaskedShadow : UndeformedShadow;
+    internal string ShadowShaderFallback => CastsMaskedShadow ? NoMaskedShadow : UndeformedShadow;
 
     private bool LoadedShadowShaders;
     //set once by PrepareShadowShaders, and only cleared afterwards (by the render thread), so it's read without the lock
@@ -582,17 +591,12 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
             if (LoadedShadowShaders || !AttemptedShaderLoad) return;
             try
             {
-                if (!CastsShadowDepth)
-                {
-                    //translucent materials don't cast shadows in UE3, unless they're cast as masked
-                    if (CastsLitTranslucencyShadowAsMasked)
-                        Volatile.Write(ref shadowDepthError, "Translucency cast as masked (bCastLitTranslucencyShadowAsMasked) isn't supported in Preview; it casts no shadow.");
-                    return;
-                }
-                //Masked materials cast with their own shaders' coverage. UE3 draws opaque ones with the default material's shaders (plain geometry, as the
-                //preview's own depth shader does), unless the material moves its vertices (world position offset), when it has its own vertex shader
-                //(FShadowDepthVertexShader::ShouldCache)
-                if (!IsMasked && HasUndisplacedVertices)
+                //translucent materials don't cast shadows in UE3, unless they're cast as masked
+                if (!CastsShadowDepth) return;
+                //Masked materials, and translucency cast as masked, cast with their own shaders' coverage. UE3 draws opaque ones with the default
+                //material's shaders (plain geometry, as the preview's own depth shader does), unless the material moves its vertices (world position
+                //offset), when it has its own vertex shader (FShadowDepthVertexShader::ShouldCache)
+                if (!CastsMaskedShadow && HasUndisplacedVertices)
                 {
                     //no vertex shader of its own to look for
                     return;
@@ -607,7 +611,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
                 string baseShaderProblem = gameShaderError is null ? "" : $" (its other game shaders: {gameShaderError})";
                 (Shader vertex, Shader pixel) shaders = (ShadowDepthVertexShader, ShadowDepthPixelShader);
                 bool usable = shaders.vertex is TShadowDepthVertexShader { VertexFactoryParameters.Parameters: FLocalVertexFactoryShaderParameters };
-                if (IsMasked)
+                if (CastsMaskedShadow)
                 {
                     if (usable && shaders.pixel is TShadowDepthPixelShader ps)
                         Volatile.Write(ref shadowShaders, new ShadowDepthShaders((TShadowDepthVertexShader)shaders.vertex, ps, null));
