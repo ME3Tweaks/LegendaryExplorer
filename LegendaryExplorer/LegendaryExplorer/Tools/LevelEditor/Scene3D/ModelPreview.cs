@@ -562,6 +562,8 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
                 return;
             foreach (SceneLight light in environment.PointLights)
                 Queue(new LightInteraction(light, StaticShadowingType.None, null, null));
+            if (environment.RimLight?.GetLight(context.Camera.EyePosition) is { } rim)
+                Queue(new LightInteraction(rim, StaticShadowingType.None, null, null));
             //Sky contributions are in the base pass; separate dynamic shadows come with attenuation.
             if (environment.DirectLights.Count > 0 && lod.LightEnvironmentPrimitive is { } primitive
                 && lod.LightEnvironment.LevelPackage is { } level)
@@ -788,6 +790,7 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
             staticLighting.Materials = Materials.Values.Cast<object>().OfType<LEShaderPreviewMaterial>().Select(mat => mat.RenderProxy).ToArray();
             staticLighting.ShadowCastingMaterials = ShadowCastingMaterials(sections);
             staticLighting.DrawShadowCaster = (ctx, pass) => DrawShadowCasterSections(ctx, pass, mesh, sections);
+            staticLighting.DrawModShadowReceiver = (ctx, pass) => DrawModShadowReceiverSections(ctx, pass, mesh, sections);
         }
     }
 
@@ -811,7 +814,34 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
     }
 
     /// <summary>
-    /// Draws enabled sections through the shadow renderer, which binds each section's coverage shader.
+    /// Draws a LOD's sections with their materials' FModShadowMesh shaders, to mask a LightShadow_ModulateBetter shadow off them
+    /// </summary>
+    internal void DrawModShadowReceiver(DeviceContext ctx, ModShadowReceiverPass pass, int lod)
+    {
+        if (lod < LODs.Count)
+        {
+            DrawModShadowReceiverSections(ctx, pass, LODs[lod].Mesh, LODs[lod].Sections);
+        }
+    }
+
+    private void DrawModShadowReceiverSections(DeviceContext ctx, ModShadowReceiverPass pass, Mesh<TVertex> mesh, List<ModelPreviewSection> sections)
+    {
+        //only game meshes have the vertices the materials' shaders read
+        if (mesh is not Mesh<LEVertex> gameMesh || gameMesh.Vertices.Count is 0)
+        {
+            return;
+        }
+        foreach (ModelPreviewSection section in sections)
+        {
+            if (section.MaterialName is not null && Materials.TryGetValue(section.MaterialName, out var material) && material is LEShaderPreviewMaterial gameMaterial)
+            {
+                RenderContext.LightAttenuations.DrawModShadowReceiverSection(ctx, gameMesh, section, gameMaterial.RenderProxy, pass);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Draws enabled sections through the shadow renderer, which binds each section's coverage shader. A subject mask draws every section
     /// </summary>
     private void DrawShadowCasterSections(DeviceContext ctx, ShadowDepthPass pass, Mesh<TVertex> mesh, List<ModelPreviewSection> sections)
     {
@@ -821,7 +851,7 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
         }
         foreach (ModelPreviewSection section in sections)
         {
-            if (!section.CastsShadow) continue;
+            if (!section.CastsShadow && !pass.SubjectMask) continue;
             MaterialRenderProxy proxy = section.MaterialName is not null && Materials.TryGetValue(section.MaterialName, out var material)
                 && material is LEShaderPreviewMaterial gameMaterial ? gameMaterial.RenderProxy : null;
             RenderContext.LightAttenuations.DrawShadowSection(ctx, mesh, section, proxy, pass);
@@ -905,6 +935,7 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
                 staticLighting.Materials = Materials.Values.Cast<object>().OfType<LEShaderPreviewMaterial>().Select(mat => mat.RenderProxy).ToArray();
                 staticLighting.ShadowCastingMaterials = ShadowCastingMaterials(sections);
                 staticLighting.DrawShadowCaster = (ctx, pass) => DrawShadowCasterSections(ctx, pass, mesh, sections);
+                staticLighting.DrawModShadowReceiver = (ctx, pass) => DrawModShadowReceiverSections(ctx, pass, mesh, sections);
             }
         }
         if (staticLighting is not null && LODs.Count <= lightingLOD)

@@ -319,6 +319,8 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
             GetBounds = () => lod.Mesh.TransformedBounds,
             GetLocalToWorld = () => lod.Mesh.LocalToWorld,
             DrawShadowCaster = castsShadow ? (ctx, pass) => Mesh?.DrawShadowCaster(ctx, pass, lodIndex) : null,
+            DrawModShadowReceiver = (ctx, pass) => Mesh?.DrawModShadowReceiver(ctx, pass, lodIndex),
+            ModShadowCulling = ModulatedShadowCullingFlags.Read(Properties, skeletal: GlobalUnrealObjectInfo.IsA(Export.ClassName, "SkeletalMeshComponent", Export.Game)),
             CastShadowAsTwoSided = ShadowParticipation.Read(Properties).TwoSided,
             IsInScene = IsInScene,
             IsShown = IsShown,

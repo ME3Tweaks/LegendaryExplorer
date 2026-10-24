@@ -380,7 +380,8 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         {
             return new StaticMeshActorProxy(context, actorExport);
         }
-        if (GlobalUnrealObjectInfo.IsA(className, "SFXSkeletalMeshActor", actorExport.Game))
+        if (GlobalUnrealObjectInfo.IsA(className, "SFXSkeletalMeshActor", actorExport.Game) 
+         || GlobalUnrealObjectInfo.IsA(className, "SFXSkeletalMeshActorMAT", actorExport.Game))
         {
             return new SFXSkeletalMeshActorProxy(context, actorExport);
         }
@@ -591,6 +592,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     protected void ApplyMorphFace(SkeletalMeshComponentProxy skeletalMeshComponent)
     {
+        if (skeletalMeshComponent is null) return;
         MorphedComponent = skeletalMeshComponent;
         if (Properties.GetProp<ObjectProperty>("MorphHead")?.ResolveToExport(Pcc, Editor?.PackageCache) is ExportEntry morphHead)
         {
@@ -668,7 +670,7 @@ public class SFXSkeletalMeshActorProxy : SkeletalMeshActorProxy
 {
     public SkeletalMeshComponentProxy HeadMesh;
     public SkeletalMeshComponentProxy HairMesh;
-    public SkeletalMeshComponentProxy HeadGearMesh;
+    public SkeletalMeshComponentProxy HeadGearMesh; //ME3/LE3
     public SFXSkeletalMeshActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         AddComponent(context.RenderContext, ref HeadMesh);

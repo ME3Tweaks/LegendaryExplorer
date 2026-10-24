@@ -221,6 +221,13 @@ public sealed class MeshStaticLighting : IDisposable
     /// </summary>
     internal IEnumerable<MaterialRenderProxy> ShadowCastingMaterials = [];
     internal Func<BoxSphereBounds> GetBounds;
+    /// <summary>Where the mesh masks LightShadow_ModulateBetter shadows off itself</summary>
+    internal ModulatedShadowCulling ModShadowCulling;
+    /// <summary>
+    /// Draws the mesh with its materials' FModShadowMesh shaders, to mask a LightShadow_ModulateBetter shadow off it (see
+    /// <see cref="LightAttenuationRenderer.DrawModShadowReceiverSection"/>). Set by the mesh's <see cref="ModelPreview{TVertex}"/>
+    /// </summary>
+    internal Action<SharpDX.Direct3D11.DeviceContext, ModShadowReceiverPass> DrawModShadowReceiver;
 
     /// <summary>
     /// Whether the mesh can cast dynamic (projected) shadows from the lights that reach it: it casts dynamic shadows, and isn't lit by a light environment
@@ -277,6 +284,9 @@ public sealed class MeshStaticLighting : IDisposable
         if (HasShadowParent) yield return "Shadow-parent grouping is not supported; Preview treats static casters separately.";
         if (ShadowSettings.SelfShadowOnly) yield return "Self-shadow-only caster (bSelfShadowOnly): Preview doesn't draw its shadow, which only falls on itself.";
         if (HasNonWhiteVertexColors) yield return "Preview uses white vertex colors; vertex-color-driven masks or deformation may differ from the bake.";
+        //(set only when the mesh received a LightShadow_ModulateBetter shadow)
+        foreach (var material in Materials)
+            if (material.ModShadowMaskError is { } maskError) yield return $"{material.InstancedFullPath}: {maskError}";
         //the rest are about the shadows the preview draws from the mesh: none with game shaders off (no level light is drawn), or if it casts none
         if (!Context.UseGameShaders || !IsPreviewShadowCaster) yield break;
         MaterialRenderProxy[] casting = ShadowCastingMaterials.ToArray();
@@ -423,6 +433,8 @@ public sealed class MeshStaticLighting : IDisposable
     private void ReadPrimitiveSettings(ExportEntry componentExport, PropertyCollection condensedProps, LightingChannels defaultChannels)
     {
         ShadowSettings = ShadowParticipation.Read(condensedProps);
+        ModShadowCulling = ModulatedShadowCullingFlags.Read(condensedProps,
+            skeletal: LegendaryExplorerCore.Unreal.ObjectInfo.GlobalUnrealObjectInfo.IsA(componentExport.ClassName, "SkeletalMeshComponent", componentExport.Game));
         HasShadowParent = condensedProps.GetProp<ObjectProperty>("ShadowParent") is { Value: not 0 };
         CastsShadow = ShadowSettings.CastShadow;
         LightingChannels = LightingChannels.FromProperty(condensedProps.GetProp<StructProperty>("LightingChannels"), default, isInitialized: false, defaultChannels);

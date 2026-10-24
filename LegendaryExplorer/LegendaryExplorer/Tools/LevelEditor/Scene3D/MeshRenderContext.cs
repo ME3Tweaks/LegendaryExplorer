@@ -584,8 +584,12 @@ public class MeshRenderContext : RenderContext
 
     //light environments that have primitives, by their component (and the actor that owns them, since actors can share an archetype's)
     private readonly Dictionary<(ExportEntry owner, ExportEntry lightEnvironment), DynamicLightEnvironment> LightEnvironments = [];
-    //each level's WorldInfo settings that light environments use: CharacterLightingContrastFactor and bAllowLightEnvSphericalHarmonicLights. Guarded by LightEnvironments
-    private readonly Dictionary<IMEPackage, (float, bool)> WorldLightEnvironmentSettings = [];
+
+    private readonly record struct WorldLightEnvironmentSettings(float CharacterLightingContrastFactor, bool AllowSphericalHarmonicLights,
+        bool AllowModulateBetterShadows);
+
+    //each level's persistent WorldInfo settings that light environments use. Guarded by LightEnvironments
+    private readonly Dictionary<IMEPackage, WorldLightEnvironmentSettings> CachedWorldLightEnvironmentSettings = [];
     //Each game's installed environment defaults; guarded by LightEnvironments
     private readonly Dictionary<MEGame, LightEnvironmentSettings.InstalledDefaults> InstalledEnvironmentDefaults = [];
 
@@ -651,7 +655,7 @@ public class MeshRenderContext : RenderContext
             return null;
         }
         IMEPackage level = entry.FileRef;
-        (float contrastFactor, bool allowSHLights) worldSettings;
+        WorldLightEnvironmentSettings worldSettings;
         bool hasWorldSettings;
         //the lock is held briefly, since the render thread takes it every frame: the settings are read (from packages, on the loading thread) outside it
         lock (LightEnvironments)
@@ -660,19 +664,20 @@ public class MeshRenderContext : RenderContext
             {
                 return lightEnvironment;
             }
-            hasWorldSettings = WorldLightEnvironmentSettings.TryGetValue(level, out worldSettings);
+            hasWorldSettings = CachedWorldLightEnvironmentSettings.TryGetValue(level, out worldSettings);
         }
         if (!hasWorldSettings)
         {
             worldSettings = ReadWorldLightEnvironmentSettings(level);
             lock (LightEnvironments)
             {
-                WorldLightEnvironmentSettings[level] = worldSettings;
+                CachedWorldLightEnvironmentSettings[level] = worldSettings;
             }
         }
         LightEnvironmentSettings settings = lightEnvironmentExport is null ? LightEnvironmentSettings.CreateDefaults(entry.Game, isBio: true)
             : LightEnvironmentSettings.Read(lightEnvironmentExport, PackageCache);
         GetInstalledEnvironmentDefaults(entry.Game).ApplyTo(settings);
+        settings.AllowModulateBetterShadows = worldSettings.AllowModulateBetterShadows;
         //Unimplemented modes fall back with their reason rather than borrowing another game's strategy
         if (GameLightingProfile.GetEnvironmentSupport(settings) is { } reason)
         {
@@ -680,7 +685,8 @@ public class MeshRenderContext : RenderContext
             return null;
         }
         //(if another thread made one for the same component meanwhile, AddLightEnvironmentPrimitive keeps whichever is added first)
-        return new DynamicLightEnvironment(this, owner, lightEnvironmentExport, settings, worldSettings.contrastFactor, worldSettings.allowSHLights);
+        return new DynamicLightEnvironment(this, owner, lightEnvironmentExport, settings, worldSettings.CharacterLightingContrastFactor,
+            worldSettings.AllowSphericalHarmonicLights);
     }
 
     private LightEnvironmentSettings.InstalledDefaults GetInstalledEnvironmentDefaults(MEGame game)
@@ -695,20 +701,22 @@ public class MeshRenderContext : RenderContext
     }
 
     /// <summary>
-    /// The WorldInfo settings that light environments in a level use: CharacterLightingContrastFactor and bAllowLightEnvSphericalHarmonicLights.
+    /// The WorldInfo settings that light environments in a level use: CharacterLightingContrastFactor, bAllowLightEnvSphericalHarmonicLights,
+    /// and bAllowModulateBetterShadows.
     /// The game reads them from the persistent level's WorldInfo (GWorld->GetWorldInfo(TRUE)), not the streamed-in level's own
     /// </summary>
-    private (float contrastFactor, bool allowSHLights) ReadWorldLightEnvironmentSettings(IMEPackage level)
+    private WorldLightEnvironmentSettings ReadWorldLightEnvironmentSettings(IMEPackage level)
     {
         //Default__WorldInfo's values
-        (float, bool) settings = (1.5f, true);
+        WorldLightEnvironmentSettings settings = new(1.5f, true, true);
         try
         {
             if (FindWorldInfo(FindPersistentLevel(level) ?? level) is { } worldInfo)
             {
                 PropertyCollection worldProps = EffectiveLightingProperties.Read(worldInfo, PackageCache);
-                settings = (worldProps.GetProp<FloatProperty>("CharacterLightingContrastFactor")?.Value ?? 1.5f,
-                    worldProps.GetProp<BoolProperty>("bAllowLightEnvSphericalHarmonicLights")?.Value ?? true);
+                settings = new WorldLightEnvironmentSettings(worldProps.GetProp<FloatProperty>("CharacterLightingContrastFactor")?.Value ?? 1.5f,
+                    worldProps.GetProp<BoolProperty>("bAllowLightEnvSphericalHarmonicLights")?.Value ?? true,
+                    worldProps.GetProp<BoolProperty>("bAllowModulateBetterShadows")?.Value ?? true);
             }
         }
         catch (Exception e)
@@ -972,7 +980,7 @@ public class MeshRenderContext : RenderContext
         }
         lock (LightEnvironments)
         {
-            WorldLightEnvironmentSettings.Remove(level);
+            CachedWorldLightEnvironmentSettings.Remove(level);
         }
         //its lights' light function materials and failures, and the meshes that cast shadows from them, which would keep the level loaded
         LightAttenuations.ClearMaterials();
@@ -1751,7 +1759,7 @@ public class MeshRenderContext : RenderContext
             lock (LightEnvironments)
             {
                 LightEnvironments.Clear();
-                WorldLightEnvironmentSettings.Clear();
+                CachedWorldLightEnvironmentSettings.Clear();
                 InstalledEnvironmentDefaults.Clear();
             }
         }
@@ -1785,7 +1793,7 @@ public class MeshRenderContext : RenderContext
         //light environments themselves belong to their meshes' components, which remove them when disposed
         lock (LightEnvironments)
         {
-            WorldLightEnvironmentSettings.Clear();
+            CachedWorldLightEnvironmentSettings.Clear();
             InstalledEnvironmentDefaults.Clear();
         }
         lock (LevelGeometryLock)

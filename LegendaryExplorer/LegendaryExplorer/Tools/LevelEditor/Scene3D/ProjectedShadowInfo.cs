@@ -16,7 +16,19 @@ internal readonly record struct ShadowCaster(Func<Matrix4x4> GetLocalToWorld, Ac
 /// What drawing a caster into a shadow's depth needs, besides its own transform: the shadow's projection and depth range, and whether the caster's component
 /// casts two-sided shadows (bCastShadowAsTwoSided)
 /// </summary>
-public readonly record struct ShadowDepthPass(Matrix4x4 WorldToShadow, float InvMaxSubjectDepth, float DepthBias, bool TwoSided);
+/// <param name="SubjectMask">Instead, the caster's opaque surfaces are drawn from the camera (WorldToShadow is the view projection), to mask a shadow off its
+/// subject (see <see cref="LightAttenuationRenderer"/>)</param>
+public readonly record struct ShadowDepthPass(Matrix4x4 WorldToShadow, float InvMaxSubjectDepth, float DepthBias, bool TwoSided, bool SubjectMask = false);
+
+/// <summary>
+/// A primitive that may mask a LightShadow_ModulateBetter shadow off itself where it faces away from the light or is emissive
+/// </summary>
+internal readonly record struct ModShadowReceiver(Func<BoxSphereBounds> GetBounds, Action<DeviceContext, ModShadowReceiverPass> Draw, ModulatedShadowCulling Culling);
+
+/// <summary>
+/// What a receiver's FModShadowMesh shaders need: the shadow's light position, and where the receiver masks the shadow off (AttenAllowed)
+/// </summary>
+public readonly record struct ModShadowReceiverPass(Vector3 LightPosition, ModulatedShadowCulling Culling);
 
 /// <summary>
 /// What a projected shadow needs to know about the light that casts it
@@ -265,6 +277,23 @@ internal sealed class ProjectedShadowInfo
         {
             Vector4 clip = Vector4.Transform(new Vector4(corner, 1), viewProjection);
             int outside = (clip.X < -clip.W ? 1 : 0) | (clip.X > clip.W ? 2 : 0) | (clip.Y < -clip.W ? 4 : 0) | (clip.Y > clip.W ? 8 : 0) | (clip.W <= 0 ? 16 : 0);
+            allOutside &= outside;
+        }
+        return allOutside == 0;
+    }
+
+    /// <summary>
+    /// FConvexVolume::IntersectBox with the receiver frustum: false only if the box is entirely outside one of its planes
+    /// </summary>
+    public bool ReceiverFrustumIntersects(BoxSphereBounds bounds)
+    {
+        int allOutside = 0b111111;
+        for (int i = 0; i < 8; i++)
+        {
+            Vector3 corner = bounds.Origin + bounds.BoxExtent * new Vector3((i & 1) != 0 ? 1 : -1, (i & 2) != 0 ? 1 : -1, (i & 4) != 0 ? 1 : -1);
+            Vector4 clip = Vector4.Transform(new Vector4(corner + PreShadowTranslation, 1), ReceiverMatrix);
+            int outside = (clip.X < -clip.W ? 1 : 0) | (clip.X > clip.W ? 2 : 0) | (clip.Y < -clip.W ? 4 : 0) | (clip.Y > clip.W ? 8 : 0)
+                          | (clip.Z < 0 ? 16 : 0) | (clip.Z > clip.W ? 32 : 0);
             allOutside &= outside;
         }
         return allOutside == 0;

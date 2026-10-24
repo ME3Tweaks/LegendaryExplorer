@@ -38,6 +38,9 @@ internal sealed class BioLightAxisState
         return CachedDirection;
     }
 
+    /// <summary>A fresh search from the previous direction, as every role but the non-cinematic key does (LE2 0x18ddc0)</summary>
+    public Vector3 FindDirection(in SHVector luminance) => Search(luminance, PreviousDirection, out _);
+
     /// <summary>The six seeds and the worker: the highest strictly positive result, otherwise zero</summary>
     internal static Vector3[] Seeds(Vector3 previous)
     {

@@ -202,20 +202,28 @@ public sealed class SceneLight
     internal static SceneLight CreateEnvironmentPoint(ExportEntry owner, Vector3 position, float radius, Vector3 color, float falloffExponent = 2,
         DynamicLightEnvironment shadowSubject = null, float shadowRadiusMultiplier = 1.1f, int minShadowResolution = 0, int maxShadowResolution = 0,
         int shadowFadeResolution = 0) =>
-        new(owner, position, radius, color, falloffExponent, shadowSubject, shadowRadiusMultiplier, minShadowResolution, maxShadowResolution, shadowFadeResolution);
+        new(SceneLightType.Point, owner, position, Vector3.UnitZ, radius, color, falloffExponent, shadowSubject, shadowRadiusMultiplier,
+            minShadowResolution, maxShadowResolution, shadowFadeResolution);
 
-    private SceneLight(ExportEntry owner, Vector3 position, float radius, Vector3 color, float falloffExponent, DynamicLightEnvironment shadowSubject,
-        float shadowRadiusMultiplier, int minShadowResolution, int maxShadowResolution, int shadowFadeResolution)
+    /// <summary>A directional light in its environment's draw list, shining along <paramref name="direction"/></summary>
+    /// <param name="shadowSubject">Non-null if the light casts a normal shadow from the environment's primitives</param>
+    internal static SceneLight CreateEnvironmentDirectional(ExportEntry owner, Vector3 direction, Vector3 color, DynamicLightEnvironment shadowSubject = null) =>
+        new(SceneLightType.Directional, owner, Vector3.Zero, Vector3.Normalize(direction), 1024, color, 2, shadowSubject, 1.1f, 0, 0, 0);
+
+    private SceneLight(SceneLightType type, ExportEntry owner, Vector3 position, Vector3 direction, float radius, Vector3 color, float falloffExponent,
+        DynamicLightEnvironment shadowSubject, float shadowRadiusMultiplier, int minShadowResolution, int maxShadowResolution, int shadowFadeResolution)
     {
-        Type = SceneLightType.Point;
+        Type = type;
         Export = owner;
         HasLightEnvironment = true;
         Position = position;
         Radius = radius;
         Color = color;
         FalloffExponent = falloffExponent;
-        Direction = Vector3.UnitZ;
+        Direction = direction;
+        //(only light functions use the light's space, and these have none)
         WorldToLight = Matrix4x4.CreateTranslation(-position);
+        TraceDistance = 100000;
         LevelName = owner?.FileRef.FileNameNoExtension ?? "";
         //A normal shadow attenuates only this point; modulated ones come from LightEnvironmentLighting
         ShadowSubject = shadowSubject;

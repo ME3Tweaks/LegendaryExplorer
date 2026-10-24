@@ -178,7 +178,9 @@ public sealed class LightAttenuationRenderer : IDisposable
     private DepthStencilState ShadowDepthState;
     private DepthStencilState ShadowVolumeState;
     private DepthStencilState ShadowProjectionState;
+    private DepthStencilState ClearStencilOnSurfaceState;
     private RasterizerState NoCullRasterizerState;
+    private RasterizerState SubjectMaskRasterizerState;
     //one-sided casters in the shadow depth pass: culled like the scene's meshes, but unclipped by depth like NoCullRasterizerState
     private RasterizerState ShadowDepthCullBackState;
     private RasterizerState ShadowDepthCullFrontState;
@@ -235,6 +237,11 @@ public sealed class LightAttenuationRenderer : IDisposable
     /// </summary>
     private static bool CastsPerObjectShadows(SceneLight light, bool previewLighting)
     {
+        //a synthesized light's normal shadow, from its environment's primitives only
+        if (light.ShadowSubject is not null)
+        {
+            return true;
+        }
         //Use the existing per-object projection path for unbuilt static shadows, as UE3's editor does.
         if (previewLighting && light.HasStaticShadowing && light.Type is not SceneLightType.Sky)
         {
@@ -370,7 +377,8 @@ public sealed class LightAttenuationRenderer : IDisposable
         BeginFrame();
         List<(ProjectedShadowInfo Shadow, LightEnvironmentShadowLight ShadowLight)> shadows = [];
         TModShadowProjectionPixelShader<FPointLightPolicy.ModShadowPixelParamsType> projectionShader = null;
-        foreach (DynamicLightEnvironment lightEnvironment in lightEnvironments)
+        DynamicLightEnvironment[] environments = [.. lightEnvironments];
+        foreach (DynamicLightEnvironment lightEnvironment in environments)
         {
             //the light environment's meshes cast its shadow together, as the shadow group of the actor's components
             List<ShadowCaster> subject = GetEnvironmentSubject(lightEnvironment);
@@ -412,11 +420,19 @@ public sealed class LightAttenuationRenderer : IDisposable
         }
         ctx.ClearRenderTargetView(ModulationTarget.Target, new RawColor4(1, 1, 1, 1));
         PixelShader pixelShader = Context.GetCachedPixelShader(projectionShader.Guid, projectionShader.ShaderByteCode);
+        List<ModShadowReceiver> modShadowReceivers = null;
         foreach ((ProjectedShadowInfo shadow, LightEnvironmentShadowLight shadowLight) in shadows)
         {
             RenderShadowDepth(shadow);
+            //found once, for the first shadow that needs them
+            bool maskReceivers = shadowLight.ModulateBetter && GameLightingProfile.ForGame(shadow.Light.Game).AllowBetterModulatedShadows;
+            if (maskReceivers)
+            {
+                modShadowReceivers ??= GetModShadowReceivers(environments);
+            }
             RenderProjection(shadow, ModulationTarget.Target, pixelShader, buffer => ShaderParameterSetters.WriteModShadowProjectionValues(projectionShader, buffer, Context,
-                shadow, shadowLight, SceneDepthCopyView, PointClampSampler, ShadowDepthBufferResourceView, ShadowComparisonSampler));
+                shadow, shadowLight, SceneDepthCopyView, PointClampSampler, ShadowDepthBufferResourceView, ShadowComparisonSampler),
+                shadowLight.CullsOnSubject, maskReceivers ? modShadowReceivers : null, shadowLight.Position);
         }
         Context.LEEffect.PixelShaderResources.Reset();
         ctx.Rasterizer.SetViewport(0, 0, Context.Width, Context.Height);
@@ -627,6 +643,15 @@ public sealed class LightAttenuationRenderer : IDisposable
     internal void DrawShadowSection<TVertex>(DeviceContext ctx, Mesh<TVertex> mesh, ModelPreviewSection section, MaterialRenderProxy material, ShadowDepthPass pass)
         where TVertex : IVertexBase
     {
+        if (pass.SubjectMask)
+        {
+            //UE3 masks the subject with the depth of its opaque elements (FDepthDrawingPolicyFactory, DDM_NonMaskedOnly)
+            if (material is { } opaque && (!MaterialRenderProxy.CastsShadowDepthWith(opaque.BlendMode, false) || opaque.IsMasked)) return;
+            ctx.Rasterizer.State = SubjectMaskRasterizerState;
+            ctx.PixelShader.Set(null);
+            DrawPlainDepth(ctx, mesh, section);
+            return;
+        }
         if (!section.CastsShadow || material is { CastsShadowDepth: false }) return;
         ctx.Rasterizer.State = pass.TwoSided || material?.IsTwoSided == true ? NoCullRasterizerState
             : mesh.LocalToWorld.GetDeterminant() < 0 ? ShadowDepthCullFrontState
@@ -638,15 +663,72 @@ public sealed class LightAttenuationRenderer : IDisposable
         }
         // An opaque silhouette is a misleading substitute for unavailable masked coverage.
         if (material is { CastsMaskedShadow: true }) return;
+        ctx.PixelShader.Set(ShadowDepthPixelShader);
+        ctx.PixelShader.SetConstantBuffer(0, ShadowDepthConstantBuffer);
+        DrawPlainDepth(ctx, mesh, section);
+    }
+
+    //the section's geometry with VSShadowDepth, whose constants are set (the pixel shader is the caller's)
+    private void DrawPlainDepth<TVertex>(DeviceContext ctx, Mesh<TVertex> mesh, ModelPreviewSection section) where TVertex : IVertexBase
+    {
         ctx.InputAssembler.InputLayout = ShadowDepthInputLayout;
         ctx.VertexShader.Set(ShadowDepthVertexShader);
-        ctx.PixelShader.Set(ShadowDepthPixelShader);
         ctx.VertexShader.SetConstantBuffer(0, ShadowDepthConstantBuffer);
-        ctx.PixelShader.SetConstantBuffer(0, ShadowDepthConstantBuffer);
         ctx.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
         ctx.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(mesh.VertexBuffer, TVertex.Stride, 0));
         ctx.InputAssembler.SetIndexBuffer(mesh.IndexBuffer, Format.R32_UInt, 0);
         ctx.DrawIndexed((int)section.TriangleCount * 3, (int)section.StartIndex, 0);
+    }
+
+    /// <summary>
+    /// FMeshModShadowDrawingPolicy: draws one section of a receiver of a LightShadow_ModulateBetter shadow with its material's FModShadowMesh shaders,
+    /// whose pixel shader discards except where the surface faces away from the light or is emissive (as the receiver's culling allows), so the
+    /// shadow mask's stencil is cleared there. The games draw opaque materials that aren't unlit or non-directional (RVAs: LE1 0x77c6b0,
+    /// LE2 0x3737c0, LE3 0x38acb0)
+    /// </summary>
+    internal void DrawModShadowReceiverSection(DeviceContext ctx, Mesh<LEVertex> mesh, ModelPreviewSection section, MaterialRenderProxy material, ModShadowReceiverPass pass)
+    {
+        if (!MaterialRenderProxy.CastsShadowDepthWith(material.BlendMode, false) || material.IsUnlit || material.IsNonDirectional) return;
+        if (material.GetModShadowMeshShaders() is not (FModShadowMeshVertexShader vertex, FModShadowMeshPixelShader pixel))
+        {
+            material.SetModShadowMaskError(material.CanRenderWithGameShaders
+                ? "It has no FModShadowMesh shaders, so LightShadow_ModulateBetter shadows aren't masked off it where it faces away from the light or is emissive."
+                : "Without game shaders, LightShadow_ModulateBetter shadows aren't masked off it where it faces away from the light or is emissive.");
+            return;
+        }
+        LEEffect effect = Context.LEEffect;
+        try
+        {
+            effect.PixelShaderResources.Reset();
+            var (vs, layout) = Context.GetCachedVertexShader(vertex.Guid, vertex.ShaderByteCode);
+            PixelShader ps = Context.GetCachedPixelShader(pixel.Guid, pixel.ShaderByteCode);
+            effect.PrepDraw(ctx, vs, ps, layout, null);
+            Span<byte> vb = effect.VertexShaderConstantBuffer;
+            Span<byte> pb = effect.PixelShaderConstantBuffer;
+            vb.Clear();
+            pb.Clear();
+            if (vertex.VertexFactoryParameters.Parameters is not FLocalVertexFactoryShaderParameters vertexFactoryParameters)
+                throw new NotSupportedException($"{vertex.VertexFactoryParameters.VertexFactoryType} is not supported by the renderer");
+            vertexFactoryParameters.WriteValues(vb, Context, mesh, material);
+            vertex.MaterialParameters.WriteValues(vb, Context, mesh, material);
+            //(PreViewTranslation is always 0 here)
+            vb.WriteVal(vertex.LightPosition, new Vector4(pass.LightPosition, 1));
+            pixel.MaterialParameters.WriteValues(pb, Context, mesh, material);
+            pb.WriteVal(pixel.AttenAllowed, new Vector2(pass.Culling.HasFlag(ModulatedShadowCulling.Backfaces) ? 1 : 0,
+                pass.Culling.HasFlag(ModulatedShadowCulling.Emissive) ? 1 : 0));
+            ctx.OutputMerger.SetDepthStencilState(ClearStencilOnSurfaceState, 0);
+            Context.SetMeshRasterizerState(material.IsTwoSided, mesh.LocalToWorld.GetDeterminant() < 0);
+            effect.RenderObject(ctx, mesh, (int)section.StartIndex, (int)section.TriangleCount * 3);
+        }
+        //a lost device isn't the material's fault, and is handled where the device is
+        catch (Exception e) when (!IsDeviceLost(e))
+        {
+            material.SetModShadowMaskError($"Its FModShadowMesh shaders failed ({e.Message}), so LightShadow_ModulateBetter shadows aren't masked off it.");
+        }
+        finally
+        {
+            effect.PixelShaderResources.Reset();
+        }
     }
 
     /// <summary>
@@ -840,7 +922,12 @@ public sealed class LightAttenuationRenderer : IDisposable
     /// <summary>
     /// FProjectedShadowInfo::RenderProjection: marks the pixels inside the shadow's receiver frustum in the stencil (z-fail), then multiplies the shadow into the target
     /// </summary>
-    private void RenderProjection(ProjectedShadowInfo shadow, RenderTargetView target, PixelShader pixelShader, WriteProjectionParameters writeParameters)
+    /// <param name="maskSubject">LE1 bCullModulatedShadowOnSubject: the subject's own pixels are unmarked (RVA 0x77d600 draws the subject with stencil
+    /// Always/Replace 0)</param>
+    /// <param name="modShadowReceivers">For a LightShadow_ModulateBetter shadow: the primitives that unmark their pixels that face away from the light or are
+    /// emissive (RenderModShadowPrimitives, RVA 0x77c6b0), from <paramref name="lightPosition"/>. Null for other shadows</param>
+    private void RenderProjection(ProjectedShadowInfo shadow, RenderTargetView target, PixelShader pixelShader, WriteProjectionParameters writeParameters,
+        bool maskSubject = false, IReadOnlyList<ModShadowReceiver> modShadowReceivers = null, Vector3 lightPosition = default)
     {
         DeviceContext ctx = Context.ImmediateContext;
         LEEffect effect = Context.LEEffect;
@@ -867,6 +954,15 @@ public sealed class LightAttenuationRenderer : IDisposable
         ctx.OutputMerger.SetDepthStencilState(ShadowVolumeState, 0);
         ctx.Draw(36, 0);
 
+        if (maskSubject)
+        {
+            MaskSubject(shadow);
+        }
+        if (modShadowReceivers is not null)
+        {
+            MaskModShadowReceivers(shadow, modShadowReceivers, lightPosition);
+        }
+
         //the shadow, only where the stencil was marked
         ctx.OutputMerger.SetRenderTargets(ShadowMaskDepthStencilView, target);
         ctx.OutputMerger.SetDepthStencilState(ShadowProjectionState, 0);
@@ -879,6 +975,70 @@ public sealed class LightAttenuationRenderer : IDisposable
         effect.PixelShaderResources.Reset();
         //the shadow depth buffer is about to be the depth target again
         ctx.PixelShader.SetShaderResources(0, NoShaderResources);
+    }
+
+    //Unmarks the subject's visible opaque surfaces in the shadow mask's stencil, drawn from the camera against the scene's depth
+    private void MaskSubject(ProjectedShadowInfo shadow)
+    {
+        DeviceContext ctx = Context.ImmediateContext;
+        ctx.OutputMerger.SetRenderTargets(ShadowMaskDepthStencilView, (RenderTargetView)null);
+        ctx.OutputMerger.SetDepthStencilState(ClearStencilOnSurfaceState, 0);
+        ctx.OutputMerger.SetBlendState(null);
+        Matrix4x4 viewProjection = Context.LEEffect.ViewProjectionMatrix;
+        foreach (ShadowCaster caster in shadow.Subject)
+        {
+            var constants = new ShadowDepthConstants { LocalToWorld = caster.GetLocalToWorld(), WorldToShadow = viewProjection };
+            ctx.UpdateSubresource(ref constants, ShadowDepthConstantBuffer);
+            caster.Draw(ctx, new ShadowDepthPass(viewProjection, 0, 0, caster.TwoSided, SubjectMask: true));
+        }
+        Context.RestoreRasterizerState();
+    }
+
+    //Unmarks the receivers' pixels that their FModShadowMesh shaders don't discard
+    private void MaskModShadowReceivers(ProjectedShadowInfo shadow, IReadOnlyList<ModShadowReceiver> receivers, Vector3 lightPosition)
+    {
+        DeviceContext ctx = Context.ImmediateContext;
+        ctx.OutputMerger.SetRenderTargets(ShadowMaskDepthStencilView, (RenderTargetView)null);
+        foreach (ModShadowReceiver receiver in receivers)
+        {
+            if (shadow.ReceiverFrustumIntersects(receiver.GetBounds()))
+            {
+                receiver.Draw(ctx, new ModShadowReceiverPass(lightPosition, receiver.Culling));
+            }
+        }
+        Context.LEEffect.PixelShaderResources.Reset();
+        Context.RestoreRasterizerState();
+        Context.RestoreDefaultSamplers();
+    }
+
+    /// <summary>
+    /// The shown primitives that mask LightShadow_ModulateBetter shadows off themselves. The games add those in each shadow's receiver frustum, and the
+    /// shadow's own parent primitive, so the subject's primitives are included (RVAs: LE1 0x89e650, LE2 0x36cf70, LE3 0x384cc0 and 0x384640)
+    /// </summary>
+    private List<ModShadowReceiver> GetModShadowReceivers(IReadOnlyCollection<DynamicLightEnvironment> lightEnvironments)
+    {
+        var receivers = new List<ModShadowReceiver>();
+        foreach (MeshStaticLighting staticLighting in Context.GetStaticLightings())
+        {
+            //an environment's static meshes are its primitives
+            if (staticLighting is { DrawModShadowReceiver: { } draw, GetBounds: { } bounds, ModShadowCulling: not ModulatedShadowCulling.None }
+                && !lightEnvironments.Contains(staticLighting.LightEnvironment) && staticLighting.IsInScene() && staticLighting.IsShown())
+            {
+                receivers.Add(new ModShadowReceiver(bounds, draw, staticLighting.ModShadowCulling));
+            }
+        }
+        foreach (DynamicLightEnvironment lightEnvironment in lightEnvironments)
+        {
+            foreach (LightEnvironmentPrimitive primitive in lightEnvironment.GetPrimitives())
+            {
+                if (primitive is { DrawModShadowReceiver: { } draw, GetBounds: { } bounds, ModShadowCulling: not ModulatedShadowCulling.None }
+                    && primitive.IsInScene() && primitive.IsShown())
+                {
+                    receivers.Add(new ModShadowReceiver(bounds, draw, primitive.ModShadowCulling));
+                }
+            }
+        }
+        return receivers;
     }
 
     private void RenderLightFunction(SceneLight light, RenderTargetView target, MaterialRenderProxy material, FLightFunctionPixelShader lightFunctionShader)
@@ -1090,6 +1250,34 @@ public sealed class LightAttenuationRenderer : IDisposable
             });
             ShadowDepthCullBackState = ShadowCullState(CullMode.Back);
             ShadowDepthCullFrontState = ShadowCullState(CullMode.Front);
+            //a surface at the scene's depth (or nearer: the depth is reversed) zeroes the stencil, unmarking its pixels
+            var clearStencil = new DepthStencilOperationDescription
+            {
+                Comparison = Comparison.Always,
+                PassOperation = StencilOperation.Zero,
+                FailOperation = StencilOperation.Keep,
+                DepthFailOperation = StencilOperation.Keep,
+            };
+            ClearStencilOnSurfaceState = new DepthStencilState(device, new DepthStencilStateDescription
+            {
+                IsDepthEnabled = true,
+                DepthWriteMask = DepthWriteMask.Zero,
+                DepthComparison = Comparison.GreaterEqual,
+                IsStencilEnabled = true,
+                StencilReadMask = 0xff,
+                StencilWriteMask = 0xff,
+                FrontFace = clearStencil,
+                BackFace = clearStencil,
+            });
+            //the subject is drawn with the preview's vertex shader rather than its base pass's, so it's moved slightly toward the camera to pass against its own depth
+            SubjectMaskRasterizerState = new RasterizerState(device, new RasterizerStateDescription
+            {
+                CullMode = CullMode.None,
+                FillMode = FillMode.Solid,
+                DepthBias = 16,
+                SlopeScaledDepthBias = 1,
+                IsDepthClipEnabled = true,
+            });
             ShadowDepthBuffer = new Texture2D(device, new Texture2DDescription
             {
                 ArraySize = 1,
@@ -1215,6 +1403,8 @@ public sealed class LightAttenuationRenderer : IDisposable
         NoCullRasterizerState?.Dispose();
         ShadowDepthCullBackState?.Dispose();
         ShadowDepthCullFrontState?.Dispose();
+        ClearStencilOnSurfaceState?.Dispose();
+        SubjectMaskRasterizerState?.Dispose();
         ClearDepthPixelShaders();
         ShadowDepthBufferResourceView?.Dispose();
         ShadowDepthBufferView?.Dispose();

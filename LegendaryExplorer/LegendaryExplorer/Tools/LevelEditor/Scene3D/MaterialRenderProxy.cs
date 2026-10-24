@@ -164,6 +164,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
         castLitTranslucencyShadowAsMasked || IsMaskedMaterial(blendMode, bIsMasked);
     public bool UseHairPass;
     public bool IsUnlit;
+    public bool IsNonDirectional;
     /// <summary>
     /// Backfaces aren't culled
     /// </summary>
@@ -420,6 +421,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
         IsTwoSided = props.GetProp<BoolProperty>("TwoSided") is { Value: true };
         CastsLitTranslucencyShadowAsMasked = props.GetProp<BoolProperty>("bCastLitTranslucencyShadowAsMasked") is { Value: true };
         IsUnlit = props.GetProp<EnumProperty>("LightingModel") is {} lightingModelProp && lightingModelProp.Value == "MLM_Unlit";
+        IsNonDirectional = props.GetProp<EnumProperty>("LightingModel") is { Value.Name: "MLM_NonDirectional" };
 
         var expressionsProp = props.GetProp<ArrayProperty<ObjectProperty>>("Expressions");
         if (expressionsProp is not null)
@@ -557,6 +559,35 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
                 LoadedSHLightPassShaders = true;
             }
             return SHLightPassShaders;
+        }
+    }
+
+    private bool LoadedModShadowMeshShaders;
+    private (Shader, Shader) ModShadowMeshShaders;
+    private string modShadowMaskError;
+    /// <summary>Why this material, as a receiver, couldn't mask a LightShadow_ModulateBetter shadow off itself, or null</summary>
+    public string ModShadowMaskError => Volatile.Read(ref modShadowMaskError);
+    internal void SetModShadowMaskError(string error) => Volatile.Write(ref modShadowMaskError, error);
+
+    /// <summary>
+    /// The FModShadowMeshVertexShader and FModShadowMeshPixelShader that mask LightShadow_ModulateBetter shadows off this material where it faces away
+    /// from the light or is emissive, loading them if they haven't been. Thread-safe
+    /// </summary>
+    /// <returns>Nulls if the material doesn't have them</returns>
+    public (Shader vertexShader, Shader pixelShader) GetModShadowMeshShaders()
+    {
+        if (!CanRenderWithGameShaders || IsUnlit)
+        {
+            return (null, null);
+        }
+        lock (LightShaders)
+        {
+            if (!LoadedModShadowMeshShaders)
+            {
+                ModShadowMeshShaders = LoadLightPassShaders("FModShadowMeshVertexShader", "FModShadowMeshPixelShader");
+                LoadedModShadowMeshShaders = true;
+            }
+            return ModShadowMeshShaders;
         }
     }
 

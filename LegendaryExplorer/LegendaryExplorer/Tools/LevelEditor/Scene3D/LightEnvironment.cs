@@ -61,13 +61,37 @@ public sealed class LightEnvironmentSettings
     public LightEnvironmentShadowMode LightShadowMode = LightEnvironmentShadowMode.Modulate;
     /// <summary>LightShadowMode isn't LightShadow_Normal, whose shadow from a zero-brightness light is invisible</summary>
     public bool ModulatedShadows => LightShadowMode is not LightEnvironmentShadowMode.Normal;
+    /// <summary>
+    /// The level's WorldInfo bAllowModulateBetterShadows (default true; no installed level sets it). Without it, FScene::AddLight renders a
+    /// LightShadow_ModulateBetter shadow as LightShadow_Modulate (RVAs: LE1 0x73fefa, LE2 0x32868a, LE3 0x342f30). The game reads the persistent
+    /// level's WorldInfo; the preview resolves it from the environment owner's level through MeshRenderContext
+    /// </summary>
+    public bool AllowModulateBetterShadows = true;
+
+    //LE2 cinematic Bio lights' normal shadows (DynamicLightEnvironmentComponent); the key always has one
+    public bool AllowFillLightShadows;
+    public bool AllowRimLightShadows = true;
 
     //BioDynamicLightEnvironmentComponent
     public Vector3 KeyLightScale = Vector3.One;
+    public Vector3 FillLightScale = Vector3.One;
     public Vector3 AmbientLightScale = Vector3.One;
     public float SHAmbientScale = 0.2f;
     public bool LightAxisEnabled = true;
     public bool IsCinematicQuality;
+    /// <summary>LE2 cinematic Bio: the synthesized lights are points (SFXPointLightComponents) rather than directional lights</summary>
+    public bool UseOptimizedLightingPath = true;
+    /// <summary>LE2 cinematic Bio: how far towards a point the attenuation it's compensated for is measured, as a fraction of the bounds radius</summary>
+    public float SurfaceBoundsRatio;
+    //LE2 cinematic Bio rim light: RimLightColor (FColor / 255, alpha included) scaled by RimLightScale, turned from the viewer's horizontal direction
+    public Vector4 RimLightColor = new(1, 1, 1, 0);
+    public float RimLightScale;
+    public float RimLightYaw = -33, RimLightPitch = 30;
+    /// <summary>
+    /// [SystemSettings] MaxCharacterCinematicLightingPasses: LE2 cinematic Bio adds a fill and a rim above 1, the brighter of the two at 2.
+    /// From the installed config (3), which the PC graphics options can change in game
+    /// </summary>
+    public int MaxCinematicLightingPasses = 3;
     /// <summary>UseTargetBoneAsOrigin with a TargetBoneName: LE2/LE3 Bio environments take the owner's main skeletal mesh's bounds</summary>
     public bool UseTargetBoneAsOrigin;
     public string TargetBoneName;
@@ -144,6 +168,8 @@ public sealed class LightEnvironmentSettings
         ReadBool(ref settings.IsCharacterLightEnvironment, "bIsCharacterLightEnvironment");
         ReadBool(ref settings.OverrideOwnerLightingChannels, "bOverrideOwnerLightingChannels");
         ReadBool(ref settings.ShadowBouncedLight, "bShadowBouncedLight");
+        ReadBool(ref settings.AllowFillLightShadows, "bAllowFillLightShadows");
+        ReadBool(ref settings.AllowRimLightShadows, "bAllowRimLightShadows");
         ReadColor(ref settings.AmbientShadowColor, "AmbientShadowColor");
         ReadColor(ref settings.AmbientGlow, "AmbientGlow");
         ReadColor(ref settings.MaxModulatedShadowColor, "MaxModulatedShadowColor");
@@ -200,10 +226,21 @@ public sealed class LightEnvironmentSettings
         if (settings.IsBio)
         {
             ReadVector(ref settings.KeyLightScale, "KeyLightScale");
+            ReadVector(ref settings.FillLightScale, "FillLightScale");
             ReadVector(ref settings.AmbientLightScale, "AmbientLightScale");
             ReadFloat(ref settings.SHAmbientScale, "SHAmbientScale");
             ReadBool(ref settings.LightAxisEnabled, "LightAxisEnabled");
             settings.IsCinematicQuality = props.GetProp<EnumProperty>("QualityType") is { Value.Instanced: "DLEST_Cinematic" };
+            ReadBool(ref settings.UseOptimizedLightingPath, "UseOptimizedLightingPath");
+            ReadFloat(ref settings.SurfaceBoundsRatio, "SurfaceBoundsRatio");
+            ReadFloat(ref settings.RimLightScale, "RimLightScale");
+            ReadFloat(ref settings.RimLightYaw, "RimLightYaw");
+            ReadFloat(ref settings.RimLightPitch, "RimLightPitch");
+            if (props.GetProp<StructProperty>("RimLightColor") is { } rimColor)
+            {
+                System.Drawing.Color color = CommonStructs.GetColor(rimColor);
+                settings.RimLightColor = new Vector4(color.R, color.G, color.B, color.A) / 255;
+            }
             ReadBool(ref settings.UseTargetBoneAsOrigin, "UseTargetBoneAsOrigin");
             settings.TargetBoneName = props.GetProp<NameProperty>("TargetBoneName")?.Value.Instanced;
             ReadFloat(ref settings.WrapLightingDirectMultiplier, "WrapLightingDirectMultiplier");
@@ -242,11 +279,13 @@ public sealed class LightEnvironmentSettings
 
     /// <summary>
     /// Installed config and CDO values that environments use beyond their own properties: LE1's [LightEnvironment] DynamicLightScale and
-    /// point light CDO. Read when environments are created; missing or invalid inputs keep stock values. Other games have none
+    /// point light CDO, and LE2's [SystemSettings] MaxCharacterCinematicLightingPasses. Read when environments are created; missing or invalid
+    /// inputs keep stock values. LE3 has none
     /// </summary>
     internal sealed record InstalledDefaults
     {
         internal float DynamicLightScale { get; init; } = 1;
+        internal int MaxCinematicLightingPasses { get; init; } = 3;
         internal float FalloffExponent { get; init; } = 2;
         internal float MinShadowFalloffRadius { get; init; }
         internal float ShadowRadiusMultiplier { get; init; } = 1.1f;
@@ -259,6 +298,20 @@ public sealed class LightEnvironmentSettings
         internal static InstalledDefaults Load(MEGame game, PackageCache cache)
         {
             var result = new InstalledDefaults();
+            if (game is MEGame.LE2)
+            {
+                try
+                {
+                    string configPath = ConfigTools.GetCoalescedPath(game);
+                    using var stream = File.OpenRead(configPath);
+                    result = result with { MaxCinematicLightingPasses = ReadMaxCinematicLightingPasses(stream), ConfigPath = configPath };
+                }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine($"{game} environment config uses stock fallback: {e.Message}");
+                }
+                return result;
+            }
             if (game is not MEGame.LE1)
             {
                 return result;
@@ -287,18 +340,26 @@ public sealed class LightEnvironmentSettings
             return result;
         }
 
-        internal static float ReadDynamicLightScale(Stream stream)
+        internal static float ReadDynamicLightScale(Stream stream) =>
+            ReadEngineValue(stream, "LightEnvironment", "DynamicLightScale") is { } text
+            && float.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out float value) && float.IsFinite(value) && value > 0 ? value : 1;
+
+        internal static int ReadMaxCinematicLightingPasses(Stream stream) =>
+            ReadEngineValue(stream, "SystemSettings", "MaxCharacterCinematicLightingPasses") is { } text
+            && int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value) && value >= 0 ? value : 3;
+
+        //BioEngine.ini's only value for the key in the section, or null
+        private static string ReadEngineValue(Stream stream, string section, string key)
         {
             var files = CoalescedConverter.DecompileLE1LE2ToMemory(stream, "Coalesced_INT.bin");
             var engineFiles = files.Where(file => Path.GetFileName(file.Key).Equals("BioEngine.ini", StringComparison.OrdinalIgnoreCase)).ToArray();
-            if (engineFiles.Length != 1) return 1;
+            if (engineFiles.Length != 1) return null;
             var values = engineFiles[0].Value.Sections
-                .Where(section => string.Equals(section.Header, "LightEnvironment", StringComparison.OrdinalIgnoreCase))
-                .SelectMany(section => section.Entries)
-                .Where(entry => entry.HasValue && string.Equals(entry.Key, "DynamicLightScale", StringComparison.OrdinalIgnoreCase)).ToArray();
-            //Duplicate scalar precedence hasn't been established for LE1's FConfig cache.
-            return values.Length == 1 && float.TryParse(values[0].Value, NumberStyles.Float, CultureInfo.InvariantCulture, out float value)
-                && float.IsFinite(value) && value > 0 ? value : 1;
+                .Where(s => string.Equals(s.Header, section, StringComparison.OrdinalIgnoreCase))
+                .SelectMany(s => s.Entries)
+                .Where(entry => entry.HasValue && string.Equals(entry.Key, key, StringComparison.OrdinalIgnoreCase)).ToArray();
+            //Duplicate scalar precedence hasn't been established for the FConfig cache.
+            return values.Length == 1 ? values[0].Value : null;
         }
 
         internal InstalledDefaults ReadPointDefaults(ExportEntry pointDefault, PackageCache cache)
@@ -323,6 +384,7 @@ public sealed class LightEnvironmentSettings
 
         internal void ApplyTo(LightEnvironmentSettings settings)
         {
+            settings.MaxCinematicLightingPasses = MaxCinematicLightingPasses;
             if (settings.Game is not MEGame.LE1) return;
             settings.DynamicLightScale = DynamicLightScale;
             settings.LE1PointFalloffExponent = FalloffExponent;
@@ -365,6 +427,13 @@ public sealed class LightEnvironmentPrimitive
     /// </summary>
     public Action<DeviceContext, ShadowDepthPass> DrawShadowCaster;
     /// <summary>
+    /// Draws the primitive with its materials' FModShadowMesh shaders, to mask a LightShadow_ModulateBetter shadow off it (see
+    /// <see cref="LightAttenuationRenderer.DrawModShadowReceiverSection"/>)
+    /// </summary>
+    public Action<DeviceContext, ModShadowReceiverPass> DrawModShadowReceiver;
+    /// <summary>Where the primitive masks LightShadow_ModulateBetter shadows off itself</summary>
+    public ModulatedShadowCulling ModShadowCulling;
+    /// <summary>
     /// bCastShadowAsTwoSided: its one-sided sections aren't culled in the shadow's depth
     /// </summary>
     public bool CastShadowAsTwoSided;
@@ -395,8 +464,11 @@ public sealed class LightEnvironmentPrimitive
 /// </summary>
 public sealed class LightEnvironmentLighting
 {
-    /// <summary>Synthesized points, drawn only on this environment's primitives</summary>
+    /// <summary>Synthesized lights (points, and LE2 cinematic Bio's directional lights), drawn only on this environment's primitives</summary>
     public IReadOnlyList<SceneLight> PointLights = Array.Empty<SceneLight>();
+
+    /// <summary>LE2 cinematic Bio's rim light, which follows the viewer; drawn like <see cref="PointLights"/></summary>
+    public BioRimLight RimLight;
 
     /// <summary>
     /// Level lights drawn directly on the environment's primitives, besides (LE1) or instead of (LE2/LE3 non-composited bypass lights)
@@ -456,15 +528,99 @@ public sealed class LightEnvironmentLighting
         ShadowLight = ShadowLight,
         PointShadowLights = PointShadowLights,
         PointLights = PointLights,
+        RimLight = RimLight,
         DirectLights = DirectLights,
     };
 }
 
 /// <summary>
+/// LE2 cinematic Bio's rim light (RVA 0x18d7c0): the horizontal direction from the viewer to the environment, turned by RimLightPitch (negated)
+/// about its horizontal perpendicular and then by RimLightYaw about Z, both as UE3's table-based RotateAngleAxis does. The game takes the viewer
+/// from the player's camera or a camera actor; the preview takes the viewport camera. Created as the other Bio lights are
+/// </summary>
+public sealed class BioRimLight
+{
+    private readonly DynamicLightEnvironment Environment;
+    private readonly BoxSphereBounds Bounds;
+    private readonly Vector4 Color;
+    private readonly bool CastsShadow;
+    private readonly object CacheLock = new();
+    private Vector3 CachedViewLocation;
+    private SceneLight CachedLight;
+    private bool HasCachedLight;
+
+    internal BioRimLight(DynamicLightEnvironment environment, BoxSphereBounds bounds, Vector4 color, bool castsShadow)
+    {
+        Environment = environment;
+        Bounds = bounds;
+        Color = color;
+        CastsShadow = castsShadow;
+    }
+
+    /// <summary>The light for a view location. Null if the viewer is (nearly) straight above or below the environment</summary>
+    public SceneLight GetLight(Vector3 viewLocation)
+    {
+        lock (CacheLock)
+        {
+            if (!HasCachedLight || viewLocation != CachedViewLocation)
+            {
+                CachedLight = GetDirection(Bounds.Origin, viewLocation, Environment.Settings.RimLightYaw, Environment.Settings.RimLightPitch) is { } direction
+                    ? Environment.CreateBioLight(direction, new Vector3(Color.X, Color.Y, Color.Z), Color.W, CastsShadow, Bounds)
+                    : null;
+                CachedViewLocation = viewLocation;
+                HasCachedLight = true;
+            }
+            return CachedLight;
+        }
+    }
+
+    /// <summary>The direction towards the rim light</summary>
+    internal static Vector3? GetDirection(Vector3 origin, Vector3 viewLocation, float yaw, float pitch)
+    {
+        float x = origin.X - viewLocation.X, y = origin.Y - viewLocation.Y;
+        float lengthSquared = x * x + y * y;
+        if (lengthSquared != 1)
+        {
+            float scale = lengthSquared >= 1e-8f ? 1 / MathF.Sqrt(lengthSquared) : 0;
+            x *= scale;
+            y *= scale;
+        }
+        if (!(MathF.Max(MathF.Abs(x), MathF.Abs(y)) > 1e-4f))
+        {
+            return null;
+        }
+        //degrees to Unreal rotation units
+        const double toUnreal = 65536.0 / 360;
+        Vector3 direction = RotateAngleAxis(new Vector3(x, y, 0), (int)(pitch * -toUnreal), new Vector3(-y, x, 0));
+        return RotateAngleAxis(direction, (int)(yaw * toUnreal), Vector3.UnitZ);
+    }
+
+    //FGlobalMath's 16384-entry sine table
+    private static readonly float[] SinTable = Enumerable.Range(0, 16384).Select(i => (float)Math.Sin(i * 2 * Math.PI / 16384)).ToArray();
+
+    /// <summary>FVector::RotateAngleAxis</summary>
+    internal static Vector3 RotateAngleAxis(Vector3 v, int angle, Vector3 axis)
+    {
+        float s = SinTable[(angle >> 2) & 0x3fff];
+        float c = SinTable[((angle + 16384) >> 2) & 0x3fff];
+        float xx = axis.X * axis.X, yy = axis.Y * axis.Y, zz = axis.Z * axis.Z;
+        float xy = axis.X * axis.Y, yz = axis.Y * axis.Z, zx = axis.Z * axis.X;
+        float xs = axis.X * s, ys = axis.Y * s, zs = axis.Z * s;
+        float omc = 1 - c;
+        return new Vector3(
+            (omc * xx + c) * v.X + (omc * xy - zs) * v.Y + (omc * zx + ys) * v.Z,
+            (omc * xy + zs) * v.X + (omc * yy + c) * v.Y + (omc * yz - xs) * v.Z,
+            (omc * zx - ys) * v.X + (omc * yz + xs) * v.Y + (omc * zz + c) * v.Z);
+    }
+}
+
+/// <summary>
 /// The light a light environment creates to cast its primitives' shadow: a point light of no brightness, whose shadow modulates the scene by <see cref="ModShadowColor"/>
 /// </summary>
+/// <param name="CullsOnSubject">LE1 bCullModulatedShadowOnSubject (CinematicPlusMod): the shadow doesn't darken its own primitives</param>
+/// <param name="ModulateBetter">LightShadow_ModulateBetter: receivers mask the shadow off where they face away from the light or are emissive</param>
 public sealed record LightEnvironmentShadowLight(Vector3 Position, float Radius, float MinShadowFalloffRadius, float ShadowFalloffExponent, Vector3 ModShadowColor,
-    int MinShadowResolution, int MaxShadowResolution, int ShadowFadeResolution, float ShadowRadiusMultiplier = 1.1f);
+    int MinShadowResolution, int MaxShadowResolution, int ShadowFadeResolution, float ShadowRadiusMultiplier = 1.1f, bool CullsOnSubject = false, bool ModulateBetter = false);
 
 /// <summary>
 /// The per-primitive test for <see cref="LightEnvironmentLighting.DirectLights"/>: ULightComponent::AffectsPrimitive after its environment test
@@ -782,9 +938,9 @@ public sealed class DynamicLightEnvironment
         SHVectorRGB lightEnvironment = staticEnvironment.Shadowed + dynamicEnvironment.Shadowed;
         SHVectorRGB unshadowedEnvironment = staticEnvironment.Unshadowed + dynamicEnvironment.Unshadowed;
         ShadowInfo shadow = staticShadow;
-        if (Settings.Game is MEGame.LE2 && Settings.IsBio && !Settings.IsCinematicQuality)
+        if (Settings.Game is MEGame.LE2 && Settings.IsBio)
         {
-            //LE2's non-cinematic Bio Compose adds the shadow SH before extracting the key
+            //LE2's Bio Compose (and its cinematic synthesis, RVA 0x18a110) adds the shadow SH before extracting the shadow
             shadow = ComputeShadowInfo(staticEnvironment.ShadowEnvironment
                 + (Settings.CompositeShadowsFromDynamicLights ? dynamicEnvironment.ShadowEnvironment : default));
         }
@@ -812,9 +968,14 @@ public sealed class DynamicLightEnvironment
         };
         float contrastFactor = Settings.IsCharacterLightEnvironment ? CharacterLightingContrastFactor : 1;
         bool useBioLightAxis = Settings.IsBio && !Settings.IsCinematicQuality;
+        bool le2Cinematic = Settings.Game is MEGame.LE2 && Settings.IsBio && Settings.IsCinematicQuality;
 
+        if (le2Cinematic)
+        {
+            ComposeLE2CinematicLights(lighting, lightEnvironment, unshadowedEnvironment, bounds, contrastFactor);
+        }
         //the directional light
-        if (Settings.SynthesizeDirectionalLight
+        else if (Settings.SynthesizeDirectionalLight
             && (useBioLightAxis ? ExtractBioKeyLight(ref lightEnvironment, out Vector3 direction, out Vector3 color)
                 : ExtractDominantLight(ref lightEnvironment, out direction, out color))
             && (color.X > 0 || color.Y > 0 || color.Z > 0))
@@ -825,29 +986,32 @@ public sealed class DynamicLightEnvironment
         }
 
         //the SH or sky light, from what remains
-        SHVectorRGB ambient = lightEnvironment + unshadowedEnvironment;
-        if (useBioLightAxis)
+        if (!le2Cinematic)
         {
-            ambient *= Settings.AmbientLightScale;
-            ambient.R[0] *= Settings.SHAmbientScale;
-            ambient.G[0] *= Settings.SHAmbientScale;
-            ambient.B[0] *= Settings.SHAmbientScale;
+            SHVectorRGB ambient = lightEnvironment + unshadowedEnvironment;
+            if (useBioLightAxis)
+            {
+                ambient *= Settings.AmbientLightScale;
+                ambient.R[0] *= Settings.SHAmbientScale;
+                ambient.G[0] *= Settings.SHAmbientScale;
+                ambient.B[0] *= Settings.SHAmbientScale;
+            }
+            ambient *= 1 / contrastFactor;
+            if (UsesSHLight)
+            {
+                lighting.UsesSHLight = true;
+                //(a copy: the sky light is extracted from the original below)
+                lighting.SHIncidentLighting = ambient;
+            }
+            //the sky light: the upper hemisphere's light, then the lower's from what remains
+            Vector3 upper = ambient.Extract(SHVector.UpperSkyFunction);
+            Vector3 lower = ambient.Extract(SHVector.LowerSkyFunction);
+            lighting.UpperSkyColor = LinearColorUtils.Desaturate(upper, Settings.LightDesaturation);
+            lighting.LowerSkyColor = LinearColorUtils.Desaturate(lower, Settings.LightDesaturation);
         }
-        ambient *= 1 / contrastFactor;
-        if (Settings.SynthesizeSHLight && (AllowLightEnvSphericalHarmonicLights || Settings.ForceAllowLightEnvSphericalHarmonicLights))
-        {
-            lighting.UsesSHLight = true;
-            //(a copy: the sky light is extracted from the original below)
-            lighting.SHIncidentLighting = ambient;
-        }
-        //the sky light: the upper hemisphere's light, then the lower's from what remains
-        Vector3 upper = ambient.Extract(SHVector.UpperSkyFunction);
-        Vector3 lower = ambient.Extract(SHVector.LowerSkyFunction);
-        lighting.UpperSkyColor = LinearColorUtils.Desaturate(upper, Settings.LightDesaturation);
-        lighting.LowerSkyColor = LinearColorUtils.Desaturate(lower, Settings.LightDesaturation);
 
-        //the shadow
-        if (Settings.CastShadows && Settings.ModulatedShadows && shadow.Direction.LengthSquared() > 1e-5f)
+        //the shadow. LE2's cinematic Bio shadow light is at least modulated and spares its subject (RVA 0x18cbe0)
+        if (Settings.CastShadows && (Settings.ModulatedShadows || le2Cinematic) && shadow.Direction.LengthSquared() > 1e-5f)
         {
             //how much light remains in the shadow, as a fraction of the total
             Vector3 modShadowColor = Vector3.Min(Vector3.One, (shadow.UnshadowedIntensity - shadow.ShadowedIntensity) / Vector3.Max(shadow.UnshadowedIntensity, new Vector3(1e-5f)));
@@ -858,15 +1022,130 @@ public sealed class DynamicLightEnvironment
             float radius = bounds.SphereRadius;
             //LE2 uses ShadowLightDistance (component offset 0x12c) for all three distances
             float shadowLightDistance = Settings.ShadowLightDistance ?? Settings.LightDistance;
+            //the shadow light takes the environment's LightShadowMode (RVAs: LE2 0x208920, LE3 0x221fa0)
             lighting.ShadowLight = new LightEnvironmentShadowLight(
                 bounds.Origin + shadowDirection * radius * shadowLightDistance,
                 (Settings.ShadowDistance + shadowLightDistance + 2) * radius,
                 (shadowLightDistance + 1) * radius,
                 ShadowFalloffExponent,
                 modShadowColor,
-                Settings.MinShadowResolution, Settings.MaxShadowResolution, Settings.ShadowFadeResolution);
+                Settings.MinShadowResolution, Settings.MaxShadowResolution, Settings.ShadowFadeResolution,
+                CullsOnSubject: le2Cinematic,
+                ModulateBetter: Settings.LightShadowMode is LightEnvironmentShadowMode.ModulateBetter && Settings.AllowModulateBetterShadows);
         }
         return lighting;
+    }
+
+    private bool UsesSHLight => Settings.SynthesizeSHLight && (AllowLightEnvSphericalHarmonicLights || Settings.ForceAllowLightEnvSphericalHarmonicLights);
+
+    /// <summary>
+    /// LE2 cinematic Bio synthesis (RVA 0x18a110). Each light is its own (<see cref="CreateBioLight"/>):
+    /// <list type="bullet">
+    /// <item>a key (role 0, KeyLightScale) with a normal shadow;</item>
+    /// <item>above one MaxCharacterCinematicLightingPasses, a fill (role 2, FillLightScale) and the view-dependent rim (<see cref="BioRimLight"/>);
+    /// at two, only the brighter by luminance, and the fill isn't extracted if the rim wins;</item>
+    /// <item>the remainder as an SH light (band 0 scaled by SHAmbientScale / contrast, then all of it by AmbientLightScale) or a sky light
+    /// (desaturated and scaled by SHAmbientScale / contrast).</item>
+    /// </list>
+    /// The dominant-shadow transition is taken as finished (fraction 1), which also leaves the fill unscaled by it
+    /// </summary>
+    private void ComposeLE2CinematicLights(LightEnvironmentLighting lighting, SHVectorRGB sh, SHVectorRGB unshadowed, BoxSphereBounds bounds, float contrastFactor)
+    {
+        var lights = new List<SceneLight>();
+        if (Settings.SynthesizeDirectionalLight)
+        {
+            if (ExtractBioRoleLight(ref sh, KeyAxis, Settings.KeyLightScale, out Vector3 keyDirection, out Vector3 keyColor)
+                && CreateBioLight(keyDirection, keyColor * contrastFactor, 0, castsShadow: true, bounds) is { } key)
+            {
+                lights.Add(key);
+            }
+            if (Settings.MaxCinematicLightingPasses > 1)
+            {
+                SHVectorRGB beforeFill = sh;
+                //each role reports whether its color has a positive channel
+                bool hasFill = ExtractBioRoleLight(ref sh, FillAxis, Settings.FillLightScale, out Vector3 fillDirection, out Vector3 fillColor)
+                               && Max(fillColor) > 1e-8f;
+                Vector4 rimColor = Settings.RimLightColor * Settings.RimLightScale;
+                var rimRgb = new Vector3(rimColor.X, rimColor.Y, rimColor.Z);
+                bool hasRim = MathF.Max(Max(rimRgb), rimColor.W) > 1e-4f;
+                if (Settings.MaxCinematicLightingPasses == 2 && hasRim && hasFill)
+                {
+                    if (LinearColorUtils.Luminance(rimRgb) < LinearColorUtils.Luminance(fillColor))
+                    {
+                        hasRim = false;
+                    }
+                    else
+                    {
+                        hasFill = false;
+                        sh = beforeFill;
+                    }
+                }
+                if (hasFill && CreateBioLight(fillDirection, fillColor * contrastFactor, 0, Settings.AllowFillLightShadows, bounds) is { } fill)
+                {
+                    lights.Add(fill);
+                }
+                if (hasRim)
+                {
+                    lighting.RimLight = new BioRimLight(this, bounds, rimColor * contrastFactor, Settings.AllowRimLightShadows);
+                }
+            }
+        }
+        lighting.PointLights = lights;
+
+        SHVectorRGB ambient = sh + unshadowed;
+        float ambientScale = Settings.SHAmbientScale / contrastFactor;
+        if (UsesSHLight)
+        {
+            SHVectorRGB shLight = ambient;
+            shLight.R[0] *= ambientScale;
+            shLight.G[0] *= ambientScale;
+            shLight.B[0] *= ambientScale;
+            lighting.UsesSHLight = true;
+            lighting.SHIncidentLighting = shLight * Settings.AmbientLightScale;
+        }
+        //(the game makes the sky light only without the SH light; the preview keeps it for materials without SH light shaders)
+        Vector3 upper = ambient.Extract(SHVector.UpperSkyFunction);
+        Vector3 lower = ambient.Extract(SHVector.LowerSkyFunction);
+        lighting.UpperSkyColor = LinearColorUtils.Desaturate(upper, Settings.LightDesaturation) * ambientScale;
+        lighting.LowerSkyColor = LinearColorUtils.Desaturate(lower, Settings.LightDesaturation) * ambientScale;
+
+        static float Max(Vector3 v) => MathF.Max(v.X, MathF.Max(v.Y, v.Z));
+    }
+
+    //SFXPointLightComponent keeps PointLightComponent's FalloffExponent
+    private const float BioPointFalloffExponent = 2;
+
+    /// <summary>
+    /// LE2 Bio light creation (slot 16, RVA 0x189ca0): none unless a channel (alpha included) exceeds 1e-4. With UseOptimizedLightingPath, an
+    /// SFXPointLightComponent LightDistance bounds radii out, reaching ShadowDistance + LightDistance + 2 radii, whose color is divided by its
+    /// attenuation at the point SurfaceBoundsRatio radii towards it (slot 9, RVA 0x18f9d0); otherwise a directional light. Its shadow is normal,
+    /// and its color is stored as a brightness and 8-bit channels
+    /// </summary>
+    internal SceneLight CreateBioLight(Vector3 direction, Vector3 color, float alpha, bool castsShadow, BoxSphereBounds bounds)
+    {
+        if (!(MathF.Max(MathF.Max(color.X, color.Y), MathF.Max(color.Z, alpha)) > 1e-4f) || !float.IsFinite(color.X + color.Y + color.Z))
+        {
+            return null;
+        }
+        ExportEntry owner = Owner ?? Export;
+        DynamicLightEnvironment shadowSubject = castsShadow ? this : null;
+        if (!Settings.UseOptimizedLightingPath)
+        {
+            return SceneLight.CreateEnvironmentDirectional(owner, -direction, QuantizeLightColor(color), shadowSubject);
+        }
+        float boundsRadius = bounds.SphereRadius;
+        Vector3 position = bounds.Origin + direction * boundsRadius * Settings.LightDistance;
+        float radius = (Settings.ShadowDistance + Settings.LightDistance + 2) * boundsRadius;
+        Vector3 toLight = position - bounds.Origin;
+        float distanceSquared = toLight.LengthSquared();
+        Vector3 towardLight = distanceSquared == 1 ? toLight : distanceSquared >= 1e-8f ? toLight / MathF.Sqrt(distanceSquared) : Vector3.Zero;
+        Vector3 point = bounds.Origin + towardLight * MathF.Min(MathF.Sqrt(distanceSquared) - 1, Settings.SurfaceBoundsRatio * boundsRadius);
+        float falloff = MathF.Max(1 - Vector3.DistanceSquared(point, position) / (radius * radius), 0);
+        color = QuantizeLightColor(color * MathF.Pow(falloff, -BioPointFalloffExponent));
+        //Keep invalid edited distances out of shader constants
+        return float.IsFinite(color.X + color.Y + color.Z) && float.IsFinite(radius) && radius > 0
+            ? SceneLight.CreateEnvironmentPoint(owner, position, radius, color, BioPointFalloffExponent, shadowSubject)
+            : null;
     }
 
     /// <summary>
@@ -1061,7 +1340,7 @@ public sealed class DynamicLightEnvironment
     private LightEnvironmentLighting ComposeLE1(BoxSphereBounds bounds, SHVectorRGB incident, SHVectorRGB shadow)
     {
         LE1LightEnvironmentQuality quality = Settings.EffectiveLE1Quality;
-        if (quality is LE1LightEnvironmentQuality.Unknown or LE1LightEnvironmentQuality.CinematicPlusMod)
+        if (quality is LE1LightEnvironmentQuality.Unknown)
             return null;
         ExportEntry owner = Owner ?? Export;
         var result = new LightEnvironmentLighting();
@@ -1071,7 +1350,8 @@ public sealed class DynamicLightEnvironment
         Vector3 ambientColor = incident.Project(LE1Ambient);
         SHVectorRGB sh = incident;
         Vector3 upper = Vector3.Zero, lower = Vector3.Zero;
-        bool cinematic = quality is LE1LightEnvironmentQuality.Cinematic;
+        //CinematicPlusMod synthesizes as Cinematic, and also casts the environment shadow
+        bool cinematic = quality is LE1LightEnvironmentQuality.Cinematic or LE1LightEnvironmentQuality.CinematicPlusMod;
         switch (quality)
         {
             case LE1LightEnvironmentQuality.Default:
@@ -1099,6 +1379,7 @@ public sealed class DynamicLightEnvironment
                 lower += sh.Extract(LE1LowerSky);
                 break;
             case LE1LightEnvironmentQuality.Cinematic:
+            case LE1LightEnvironmentQuality.CinematicPlusMod:
             {
                 //RVA 0x1dfa80: a key with a normal shadow and sky added, then an unshadowed fill capped against the key.
                 //Neither added color is black, so a valid direction always creates the light.
@@ -1123,7 +1404,7 @@ public sealed class DynamicLightEnvironment
             }
         }
 
-        if (Settings.CastShadows && !cinematic)
+        if (Settings.CastShadows && quality is not LE1LightEnvironmentQuality.Cinematic)
         {
             //LE1 replaces the shadow accumulator when its direction is absent or nearly vertical.
             Vector3 shadowDirection = GetLuminanceDirection(shadow);
@@ -1134,18 +1415,24 @@ public sealed class DynamicLightEnvironment
                 shadow = SHVectorRGB.FromColor(LE1DirectionalBasis(source), Settings.AmbientShadowColor);
             }
             //The ambient color has zero alpha, so it never equals black: only a degenerate direction declines the light.
+            //Only LightShadow_Modulate computes a ModShadowColor; ModulateBetter's new point keeps LightComponent's default, black
             if (Settings.ModulatedShadows
                 && ExtractLE1Point(ref shadow, bounds, isLight: false, castsShadow: true, ambientColor, addIsBlack: false,
                     modulate: Settings.LightShadowMode is LightEnvironmentShadowMode.Modulate) is { } shadowPoint
                 && float.IsFinite(shadowPoint.Radius) && shadowPoint.Radius > 0)
             {
-                result.ShadowLight = ToLE1ShadowLight(shadowPoint);
+                //RVA 0x1e0839 sets bCullModulatedShadowOnSubject on CinematicPlusMod's shadow light
+                result.ShadowLight = ToLE1ShadowLight(shadowPoint) with
+                {
+                    CullsOnSubject = quality is LE1LightEnvironmentQuality.CinematicPlusMod,
+                    ModulateBetter = Settings.LightShadowMode is LightEnvironmentShadowMode.ModulateBetter && Settings.AllowModulateBetterShadows
+                };
             }
         }
 
         float ambientScalar = cinematic ? Settings.CinematicAmbientScalar : Settings.AmbientScalar;
-        result.UpperSkyColor = QuantizeLE1LightColor(upper + ambientColor * ambientScalar);
-        result.LowerSkyColor = QuantizeLE1LightColor(lower + ambientColor * ambientScalar);
+        result.UpperSkyColor = QuantizeLightColor(upper + ambientColor * ambientScalar);
+        result.LowerSkyColor = QuantizeLightColor(lower + ambientColor * ambientScalar);
         result.PointLights = points;
         result.PointShadowLights = pointShadows;
         return result;
@@ -1201,7 +1488,7 @@ public sealed class DynamicLightEnvironment
         {
             total = color + added;
             float attenuation = radius > 0 ? MathF.Pow(MathF.Max(0, 1 - distance * distance / (radius * radius)), LE1PointFalloff) : 0;
-            lightColor = attenuation > 0 && float.IsFinite(attenuation) ? QuantizeLE1LightColor(total / attenuation) : Vector3.Zero;
+            lightColor = attenuation > 0 && float.IsFinite(attenuation) ? QuantizeLightColor(total / attenuation) : Vector3.Zero;
         }
         Vector3 modShadowColor = Vector3.Zero;
         if (castsShadow && modulate)
@@ -1220,8 +1507,8 @@ public sealed class DynamicLightEnvironment
         return new Vector3(-luminance[3], -luminance[1], luminance[2]);
     }
 
-    //LE1 SetLightColor stores max RGB as brightness and truncates gamma-encoded channels to bytes.
-    internal static Vector3 QuantizeLE1LightColor(Vector3 color)
+    //SetLightColor (LE1, and LE2 RVA 0x75960) stores max RGB as brightness and truncates gamma-encoded channels to bytes.
+    internal static Vector3 QuantizeLightColor(Vector3 color)
     {
         color = Vector3.Max(Vector3.Zero, color);
         float brightness = MathF.Max(color.X, MathF.Max(color.Y, color.Z));
@@ -1353,20 +1640,37 @@ public sealed class DynamicLightEnvironment
         return true;
     }
 
-    //The key role's axis state, guarded by CacheLock
-    private readonly BioLightAxisState KeyAxis = new();
+    //The key and (LE2 cinematic) fill roles' axis states, guarded by CacheLock
+    private readonly BioLightAxisState KeyAxis = new(), FillAxis = new();
 
     /// <summary>
-    /// The Bio non-cinematic key (role 0, RVAs LE2 0x18cf10, LE3 0x1a32d0): the light axis search (LightAxisEnabled), otherwise the luminance
-    /// direction, which LE3 clamps to the upper hemisphere. The desaturated color is extracted and scaled by KeyLightScale; LE2 desaturates again.
-    /// Transitions are settled.
+    /// The Bio non-cinematic key: role 0, then LE2 desaturates again
     /// </summary>
     private bool ExtractBioKeyLight(ref SHVectorRGB sh, out Vector3 direction, out Vector3 color)
     {
+        if (!ExtractBioRoleLight(ref sh, KeyAxis, Settings.KeyLightScale, out direction, out color))
+        {
+            return false;
+        }
+        if (Settings.Game is MEGame.LE2)
+        {
+            color = LinearColorUtils.Desaturate(color, Settings.LightDesaturation);
+        }
+        return true;
+    }
+
+    /// <summary>
+    /// A Bio role light (RVAs LE2 0x18cf10, LE3 0x1a32d0): the light axis search (LightAxisEnabled), otherwise the luminance direction, which
+    /// LE3 clamps to the upper hemisphere. The desaturated color is extracted and scaled by the role's scale. Only the non-cinematic key reuses
+    /// its last search. Transitions are settled. False if there's no direction
+    /// </summary>
+    private bool ExtractBioRoleLight(ref SHVectorRGB sh, BioLightAxisState axis, Vector3 scale, out Vector3 direction, out Vector3 color)
+    {
         SHVector luminance = sh.GetLuminance();
         color = Vector3.Zero;
-        direction = Settings.LightAxisEnabled ? KeyAxis.FindKeyDirection(luminance)
-            : new Vector3(-luminance[3], -luminance[1], Settings.Game is MEGame.LE2 ? luminance[2] : MathF.Max(luminance[2], 0));
+        direction = !Settings.LightAxisEnabled
+            ? new Vector3(-luminance[3], -luminance[1], Settings.Game is MEGame.LE2 ? luminance[2] : MathF.Max(luminance[2], 0))
+            : Settings.IsCinematicQuality || axis != KeyAxis ? axis.FindDirection(luminance) : axis.FindKeyDirection(luminance);
         float lengthSquared = direction.LengthSquared();
         if (lengthSquared < 1e-5f)
         {
@@ -1381,13 +1685,9 @@ public sealed class DynamicLightEnvironment
         if (MathF.Max(color.X, MathF.Max(color.Y, color.Z)) > 1e-8f)
         {
             sh.Extract(basis, color);
-            color *= Settings.KeyLightScale;
+            color *= scale;
         }
-        KeyAxis.PreviousDirection = direction;
-        if (Settings.Game is MEGame.LE2)
-        {
-            color = LinearColorUtils.Desaturate(color, Settings.LightDesaturation);
-        }
+        axis.PreviousDirection = direction;
         return true;
     }
 }

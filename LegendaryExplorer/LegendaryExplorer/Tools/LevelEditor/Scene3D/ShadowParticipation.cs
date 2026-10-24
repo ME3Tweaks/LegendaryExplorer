@@ -1,3 +1,4 @@
+using System;
 using LegendaryExplorerCore.Unreal;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
@@ -39,4 +40,25 @@ public readonly record struct ShadowParticipation(bool CastShadow, bool CastDyna
         if (staticShadowing && light.HasStaticShadowing) return BakesShadow && !IndirectOnly && light.CastsStaticShadows;
         return CastsRuntimeShadow(hidden) && (light.HasStaticShadowing ? light.CastsDynamicShadowsWhenUnbuilt : light.CastsDynamicShadows);
     }
+}
+
+/// <summary>
+/// Where a primitive masks LightShadow_ModulateBetter shadows off itself (bCullModulatedShadowOnBackfaces, bCullModulatedShadowOnEmissive)
+/// </summary>
+[Flags]
+public enum ModulatedShadowCulling
+{
+    None = 0,
+    /// <summary>Where the surface faces away from the shadow's light</summary>
+    Backfaces = 1,
+    /// <summary>Where the material is emissive</summary>
+    Emissive = 2
+}
+
+public static class ModulatedShadowCullingFlags
+{
+    /// <summary>LE1's MeshComponent defaults both on, and SkeletalMeshComponent turns back faces off</summary>
+    public static ModulatedShadowCulling Read(PropertyCollection props, bool skeletal) =>
+        ((props.GetProp<BoolProperty>("bCullModulatedShadowOnBackfaces")?.Value ?? !skeletal) ? ModulatedShadowCulling.Backfaces : ModulatedShadowCulling.None)
+        | ((props.GetProp<BoolProperty>("bCullModulatedShadowOnEmissive")?.Value ?? true) ? ModulatedShadowCulling.Emissive : ModulatedShadowCulling.None);
 }
