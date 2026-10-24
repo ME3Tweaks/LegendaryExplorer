@@ -68,7 +68,7 @@ public sealed class LightEnvironmentSettings
     /// </summary>
     public bool AllowModulateBetterShadows = true;
 
-    //LE2 cinematic Bio lights' normal shadows (DynamicLightEnvironmentComponent); the key always has one
+    //LE2 cinematic Bio lights' normal shadows (DynamicLightEnvironmentComponent); the key always has one. LE3's all have one
     public bool AllowFillLightShadows;
     public bool AllowRimLightShadows = true;
 
@@ -79,19 +79,23 @@ public sealed class LightEnvironmentSettings
     public float SHAmbientScale = 0.2f;
     public bool LightAxisEnabled = true;
     public bool IsCinematicQuality;
-    /// <summary>LE2 cinematic Bio: the synthesized lights are points (SFXPointLightComponents) rather than directional lights</summary>
+    /// <summary>Cinematic Bio: the synthesized lights are points (SFXPointLightComponents) rather than directional lights</summary>
     public bool UseOptimizedLightingPath = true;
-    /// <summary>LE2 cinematic Bio: how far towards a point the attenuation it's compensated for is measured, as a fraction of the bounds radius</summary>
+    /// <summary>Cinematic Bio: how far towards a point the attenuation it's compensated for is measured, as a fraction of the bounds radius</summary>
     public float SurfaceBoundsRatio;
-    //LE2 cinematic Bio rim light: RimLightColor (FColor / 255, alpha included) scaled by RimLightScale, turned from the viewer's horizontal direction
+    //Cinematic Bio rim light: RimLightColor (FColor / 255, alpha included) scaled by RimLightScale, turned from the viewer's horizontal direction
     public Vector4 RimLightColor = new(1, 1, 1, 0);
     public float RimLightScale;
     public float RimLightYaw = -33, RimLightPitch = 30;
     /// <summary>
-    /// [SystemSettings] MaxCharacterCinematicLightingPasses: LE2 cinematic Bio adds a fill and a rim above 1, the brighter of the two at 2.
-    /// From the installed config (3), which the PC graphics options can change in game
+    /// [SystemSettings] MaxCharacterCinematicLightingPasses: cinematic Bio adds a fill and a rim above 1, the brighter of the two at 2.
+    /// From the installed config (3 in LE2 and LE3), which the PC graphics options can change in game
     /// </summary>
     public int MaxCinematicLightingPasses = 3;
+    /// <summary>LE3 cinematic Bio's CinematicLightRig, whose captured lighting replaces the level's. Null without one</summary>
+    public BioLightRig CinematicLightRig;
+    /// <summary>LE3 LightRigOrientation: degrees the rig's SH is turned about Z</summary>
+    public float LightRigOrientation;
     /// <summary>UseTargetBoneAsOrigin with a TargetBoneName: LE2/LE3 Bio environments take the owner's main skeletal mesh's bounds</summary>
     public bool UseTargetBoneAsOrigin;
     public string TargetBoneName;
@@ -245,6 +249,14 @@ public sealed class LightEnvironmentSettings
             settings.TargetBoneName = props.GetProp<NameProperty>("TargetBoneName")?.Value.Instanced;
             ReadFloat(ref settings.WrapLightingDirectMultiplier, "WrapLightingDirectMultiplier");
             ReadFloat(ref settings.WrapLightingIndirectMultiplier, "WrapLightingIndirectMultiplier");
+            if (export.Game is MEGame.LE3)
+            {
+                ReadFloat(ref settings.LightRigOrientation, "LightRigOrientation");
+                if (EffectiveLightingProperties.ResolveReference(export, "CinematicLightRig", packageCache) is { } rig)
+                {
+                    settings.CinematicLightRig = BioLightRig.Read(rig, packageCache);
+                }
+            }
         }
         return settings;
 
@@ -279,8 +291,8 @@ public sealed class LightEnvironmentSettings
 
     /// <summary>
     /// Installed config and CDO values that environments use beyond their own properties: LE1's [LightEnvironment] DynamicLightScale and
-    /// point light CDO, and LE2's [SystemSettings] MaxCharacterCinematicLightingPasses. Read when environments are created; missing or invalid
-    /// inputs keep stock values. LE3 has none
+    /// point light CDO, and LE2's and LE3's [SystemSettings] MaxCharacterCinematicLightingPasses. Read when environments are created; missing or
+    /// invalid inputs keep stock values
     /// </summary>
     internal sealed record InstalledDefaults
     {
@@ -298,13 +310,13 @@ public sealed class LightEnvironmentSettings
         internal static InstalledDefaults Load(MEGame game, PackageCache cache)
         {
             var result = new InstalledDefaults();
-            if (game is MEGame.LE2)
+            if (game is MEGame.LE2 or MEGame.LE3)
             {
                 try
                 {
                     string configPath = ConfigTools.GetCoalescedPath(game);
                     using var stream = File.OpenRead(configPath);
-                    result = result with { MaxCinematicLightingPasses = ReadMaxCinematicLightingPasses(stream), ConfigPath = configPath };
+                    result = result with { MaxCinematicLightingPasses = ReadMaxCinematicLightingPasses(stream, game), ConfigPath = configPath };
                 }
                 catch (Exception e)
                 {
@@ -344,13 +356,26 @@ public sealed class LightEnvironmentSettings
             ReadEngineValue(stream, "LightEnvironment", "DynamicLightScale") is { } text
             && float.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out float value) && float.IsFinite(value) && value > 0 ? value : 1;
 
-        internal static int ReadMaxCinematicLightingPasses(Stream stream) =>
-            ReadEngineValue(stream, "SystemSettings", "MaxCharacterCinematicLightingPasses") is { } text
+        internal static int ReadMaxCinematicLightingPasses(Stream stream, MEGame game) =>
+            ReadEngineValue(stream, "SystemSettings", "MaxCharacterCinematicLightingPasses", game) is { } text
             && int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value) && value >= 0 ? value : 3;
 
         //BioEngine.ini's only value for the key in the section, or null
-        private static string ReadEngineValue(Stream stream, string section, string key)
+        private static string ReadEngineValue(Stream stream, string section, string key, MEGame game = MEGame.LE1)
         {
+            if (game is MEGame.LE3)
+            {
+                //(LE3's BioCompat compatibility-level overrides aren't applied)
+                var assets = CoalescedConverter.DecompileGame3ToAssets(stream, "Coalesced.bin", stripExtensions: true);
+                if (!assets.TryGetValue("BioEngine", out CoalesceAsset engine)) return null;
+                var game3Values = engine.Sections
+                    .Where(s => string.Equals(s.Key, section, StringComparison.OrdinalIgnoreCase))
+                    .SelectMany(s => s.Value)
+                    .Where(p => string.Equals(p.Key, key, StringComparison.OrdinalIgnoreCase))
+                    .SelectMany(p => p.Value)
+                    .Where(v => !v.IsNull).ToArray();
+                return game3Values.Length == 1 ? game3Values[0].Value : null;
+            }
             var files = CoalescedConverter.DecompileLE1LE2ToMemory(stream, "Coalesced_INT.bin");
             var engineFiles = files.Where(file => Path.GetFileName(file.Key).Equals("BioEngine.ini", StringComparison.OrdinalIgnoreCase)).ToArray();
             if (engineFiles.Length != 1) return null;
@@ -464,10 +489,10 @@ public sealed class LightEnvironmentPrimitive
 /// </summary>
 public sealed class LightEnvironmentLighting
 {
-    /// <summary>Synthesized lights (points, and LE2 cinematic Bio's directional lights), drawn only on this environment's primitives</summary>
+    /// <summary>Synthesized lights (points, and cinematic Bio's directional lights), drawn only on this environment's primitives</summary>
     public IReadOnlyList<SceneLight> PointLights = Array.Empty<SceneLight>();
 
-    /// <summary>LE2 cinematic Bio's rim light, which follows the viewer; drawn like <see cref="PointLights"/></summary>
+    /// <summary>Cinematic Bio's rim light, which follows the viewer; drawn like <see cref="PointLights"/></summary>
     public BioRimLight RimLight;
 
     /// <summary>
@@ -534,7 +559,7 @@ public sealed class LightEnvironmentLighting
 }
 
 /// <summary>
-/// LE2 cinematic Bio's rim light (RVA 0x18d7c0): the horizontal direction from the viewer to the environment, turned by RimLightPitch (negated)
+/// Cinematic Bio's rim light (RVAs LE2 0x18d7c0, LE3 0x1a3c50): the horizontal direction from the viewer to the environment, turned by RimLightPitch (negated)
 /// about its horizontal perpendicular and then by RimLightYaw about Z, both as UE3's table-based RotateAngleAxis does. The game takes the viewer
 /// from the player's camera or a camera actor; the preview takes the viewport camera. Created as the other Bio lights are
 /// </summary>
@@ -615,9 +640,86 @@ public sealed class BioRimLight
 }
 
 /// <summary>
+/// LE3's SFXLightRig, named by a cinematic Bio environment's CinematicLightRig: lighting captured for the character, whose SH and shadow replace
+/// the level's lights (RVA 0x1a4840), and scales for the key, fill and ambient
+/// </summary>
+public sealed record BioLightRig(SHVectorRGB Shadowed, SHVectorRGB Unshadowed, Vector3 ShadowDirection, Vector3 TotalShadowIntensity,
+    Vector3 KeyLightModifier, Vector3 FillLightModifier, Vector3 AmbientLightModifier)
+{
+    internal static BioLightRig Read(ExportEntry rig, PackageCache cache)
+    {
+        PropertyCollection props = EffectiveLightingProperties.Read(rig, cache);
+        return new BioLightRig(ReadSH("LightEnvironment"), ReadSH("NonShadowedLightEnvironment"),
+            props.GetProp<StructProperty>("ShadowDirection") is { } direction ? CommonStructs.GetVector3(direction) : Vector3.Zero,
+            ReadColor("TotalShadowIntensity", Vector3.Zero), ReadColor("KeyLightModifier", Vector3.One), ReadColor("FillLightModifier", Vector3.One),
+            ReadColor("AmbientLightModifier", Vector3.One));
+
+        Vector3 ReadColor(string name, Vector3 fallback)
+        {
+            if (props.GetProp<StructProperty>(name) is not { } prop) return fallback;
+            LinearColor color = CommonStructs.GetLinearColor(prop);
+            return new Vector3(color.R, color.G, color.B);
+        }
+
+        SHVectorRGB ReadSH(string name)
+        {
+            var sh = new SHVectorRGB();
+            if (props.GetProp<StructProperty>(name) is { } prop)
+            {
+                sh.R = ReadChannel(prop, "R");
+                sh.G = ReadChannel(prop, "G");
+                sh.B = ReadChannel(prop, "B");
+            }
+            return sh;
+        }
+
+        static SHVector ReadChannel(StructProperty rgb, string name)
+        {
+            var channel = new SHVector();
+            if (rgb.Properties.GetProp<StructProperty>(name) is { } prop)
+            {
+                foreach (FloatProperty v in prop.Properties.OfType<FloatProperty>())
+                {
+                    if (v.Name == "V" && v.StaticArrayIndex < SHVector.NumCoefficients) channel[v.StaticArrayIndex] = v.Value;
+                }
+            }
+            return channel;
+        }
+    }
+
+    /// <summary>The captured SH turned by LightRigOrientation about Z</summary>
+    internal static SHVectorRGB Orient(SHVectorRGB sh, float degrees)
+    {
+        float angle = (float)(degrees * (Math.PI / 180));
+        return new SHVectorRGB { R = RotateZ(sh.R, angle), G = RotateZ(sh.G, angle), B = RotateZ(sh.B, angle) };
+    }
+
+    /// <summary>
+    /// LE3's SH rotation about Z (RVA 0xb6050), as it runs: coefficients 1 and 5 take 2 and 6 where a rotation takes 3 and 7
+    /// This seems like a bug, but we should match the game's behavior
+    /// </summary>
+    internal static SHVector RotateZ(SHVector sh, float angle)
+    {
+        (float s, float c) = MathF.SinCos(angle);
+        (float s2, float c2) = MathF.SinCos(2 * angle);
+        var rotated = new SHVector();
+        rotated[0] = sh[0];
+        rotated[1] = sh[1] * c - sh[2] * s;
+        rotated[2] = sh[2];
+        rotated[3] = sh[3] * c + sh[1] * s;
+        rotated[4] = sh[4] * c2 - sh[8] * s2;
+        rotated[5] = sh[5] * c - sh[6] * s;
+        rotated[6] = sh[6];
+        rotated[7] = sh[7] * c + sh[5] * s;
+        rotated[8] = sh[8] * c2 + sh[4] * s2;
+        return rotated;
+    }
+}
+
+/// <summary>
 /// The light a light environment creates to cast its primitives' shadow: a point light of no brightness, whose shadow modulates the scene by <see cref="ModShadowColor"/>
 /// </summary>
-/// <param name="CullsOnSubject">LE1 bCullModulatedShadowOnSubject (CinematicPlusMod): the shadow doesn't darken its own primitives</param>
+/// <param name="CullsOnSubject">LE1 bCullModulatedShadowOnSubject (CinematicPlusMod), or LE2/LE3 cinematic Bio: the shadow doesn't darken its own primitives</param>
 /// <param name="ModulateBetter">LightShadow_ModulateBetter: receivers mask the shadow off where they face away from the light or are emissive</param>
 public sealed record LightEnvironmentShadowLight(Vector3 Position, float Radius, float MinShadowFalloffRadius, float ShadowFalloffExponent, Vector3 ModShadowColor,
     int MinShadowResolution, int MaxShadowResolution, int ShadowFadeResolution, float ShadowRadiusMultiplier = 1.1f, bool CullsOnSubject = false, bool ModulateBetter = false);
@@ -664,7 +766,7 @@ internal static class LightEnvironmentDirectLighting
 /// an SH (or sky) light for the remainder, and a point light that casts the primitives' shadow.
 /// LE3's BioDynamicLightEnvironmentComponent (FBioDynamicLightEnvironmentState) finds the directional light differently, and scales the lights.
 /// LE1 synthesizes point lights (ComposeLE1). LE2 and LE3 draw non-composited bypass lights directly and use the owner's main mesh's
-/// bounds for UseTargetBoneAsOrigin. Light probes and cinematic light rigs aren't supported.
+/// bounds for UseTargetBoneAsOrigin. Light probes aren't supported.
 /// </summary>
 public sealed class DynamicLightEnvironment
 {
@@ -938,7 +1040,16 @@ public sealed class DynamicLightEnvironment
         SHVectorRGB lightEnvironment = staticEnvironment.Shadowed + dynamicEnvironment.Shadowed;
         SHVectorRGB unshadowedEnvironment = staticEnvironment.Unshadowed + dynamicEnvironment.Unshadowed;
         ShadowInfo shadow = staticShadow;
-        if (Settings.Game is MEGame.LE2 && Settings.IsBio)
+        bool bioCinematic = Settings.Game is MEGame.LE2 or MEGame.LE3 && Settings.IsBio && Settings.IsCinematicQuality;
+        BioLightRig rig = bioCinematic && Settings.Game is MEGame.LE3 ? Settings.CinematicLightRig : null;
+        if (rig is not null)
+        {
+            //LE3's cinematic Compose takes the rig's lighting instead, its shadow wholly shadowed (RVA 0x1a4840)
+            lightEnvironment = BioLightRig.Orient(rig.Shadowed, Settings.LightRigOrientation);
+            unshadowedEnvironment = BioLightRig.Orient(rig.Unshadowed, Settings.LightRigOrientation);
+            shadow = new ShadowInfo(rig.ShadowDirection, Vector3.Zero, rig.TotalShadowIntensity);
+        }
+        else if (Settings.Game is MEGame.LE2 && Settings.IsBio)
         {
             //LE2's Bio Compose (and its cinematic synthesis, RVA 0x18a110) adds the shadow SH before extracting the shadow
             shadow = ComputeShadowInfo(staticEnvironment.ShadowEnvironment
@@ -968,11 +1079,10 @@ public sealed class DynamicLightEnvironment
         };
         float contrastFactor = Settings.IsCharacterLightEnvironment ? CharacterLightingContrastFactor : 1;
         bool useBioLightAxis = Settings.IsBio && !Settings.IsCinematicQuality;
-        bool le2Cinematic = Settings.Game is MEGame.LE2 && Settings.IsBio && Settings.IsCinematicQuality;
 
-        if (le2Cinematic)
+        if (bioCinematic)
         {
-            ComposeLE2CinematicLights(lighting, lightEnvironment, unshadowedEnvironment, bounds, contrastFactor);
+            ComposeBioCinematicLights(lighting, ref lightEnvironment, bounds, contrastFactor, rig);
         }
         //the directional light
         else if (Settings.SynthesizeDirectionalLight
@@ -986,12 +1096,17 @@ public sealed class DynamicLightEnvironment
         }
 
         //the SH or sky light, from what remains
-        if (!le2Cinematic)
+        if (bioCinematic && Settings.Game is MEGame.LE2)
+        {
+            ComposeLE2CinematicAmbient(lighting, lightEnvironment + unshadowedEnvironment, contrastFactor);
+        }
+        else
         {
             SHVectorRGB ambient = lightEnvironment + unshadowedEnvironment;
-            if (useBioLightAxis)
+            //(LE3's cinematic synthesis, RVA 0x1a0c80, scales it as ordinary Bio does, and by the rig's ambient modifier)
+            if (Settings.IsBio)
             {
-                ambient *= Settings.AmbientLightScale;
+                ambient *= rig is null ? Settings.AmbientLightScale : Settings.AmbientLightScale * rig.AmbientLightModifier;
                 ambient.R[0] *= Settings.SHAmbientScale;
                 ambient.G[0] *= Settings.SHAmbientScale;
                 ambient.B[0] *= Settings.SHAmbientScale;
@@ -1010,8 +1125,8 @@ public sealed class DynamicLightEnvironment
             lighting.LowerSkyColor = LinearColorUtils.Desaturate(lower, Settings.LightDesaturation);
         }
 
-        //the shadow. LE2's cinematic Bio shadow light is at least modulated and spares its subject (RVA 0x18cbe0)
-        if (Settings.CastShadows && (Settings.ModulatedShadows || le2Cinematic) && shadow.Direction.LengthSquared() > 1e-5f)
+        //the shadow. A cinematic Bio shadow light is at least modulated and spares its subject (RVAs LE2 0x18cbe0, LE3 0x1a31c0)
+        if (Settings.CastShadows && (Settings.ModulatedShadows || bioCinematic) && shadow.Direction.LengthSquared() > 1e-5f)
         {
             //how much light remains in the shadow, as a fraction of the total
             Vector3 modShadowColor = Vector3.Min(Vector3.One, (shadow.UnshadowedIntensity - shadow.ShadowedIntensity) / Vector3.Max(shadow.UnshadowedIntensity, new Vector3(1e-5f)));
@@ -1030,7 +1145,7 @@ public sealed class DynamicLightEnvironment
                 ShadowFalloffExponent,
                 modShadowColor,
                 Settings.MinShadowResolution, Settings.MaxShadowResolution, Settings.ShadowFadeResolution,
-                CullsOnSubject: le2Cinematic,
+                CullsOnSubject: bioCinematic,
                 ModulateBetter: Settings.LightShadowMode is LightEnvironmentShadowMode.ModulateBetter && Settings.AllowModulateBetterShadows);
         }
         return lighting;
@@ -1039,22 +1154,23 @@ public sealed class DynamicLightEnvironment
     private bool UsesSHLight => Settings.SynthesizeSHLight && (AllowLightEnvSphericalHarmonicLights || Settings.ForceAllowLightEnvSphericalHarmonicLights);
 
     /// <summary>
-    /// LE2 cinematic Bio synthesis (RVA 0x18a110). Each light is its own (<see cref="CreateBioLight"/>):
+    /// Cinematic Bio synthesis (RVAs LE2 0x18a110, LE3 0x1a0c80). Each light is its own (<see cref="CreateBioLight"/>):
     /// <list type="bullet">
-    /// <item>a key (role 0, KeyLightScale) with a normal shadow;</item>
+    /// <item>a key (role 0, KeyLightScale);</item>
     /// <item>above one MaxCharacterCinematicLightingPasses, a fill (role 2, FillLightScale) and the view-dependent rim (<see cref="BioRimLight"/>);
-    /// at two, only the brighter by luminance, and the fill isn't extracted if the rim wins;</item>
-    /// <item>the remainder as an SH light (band 0 scaled by SHAmbientScale / contrast, then all of it by AmbientLightScale) or a sky light
-    /// (desaturated and scaled by SHAmbientScale / contrast).</item>
+    /// at two, only the brighter by luminance, and the fill isn't extracted if the rim wins.</item>
     /// </list>
+    /// LE2's key has a normal shadow, and its fill and rim follow bAllowFillLightShadows and bAllowRimLightShadows. All of LE3's have one, as
+    /// Engine.bKeyLightShadowsOnly (RVA 0x1a0c07) is off by default and in the installed config. LE3's rig modifiers scale the key and fill.
     /// The dominant-shadow transition is taken as finished (fraction 1), which also leaves the fill unscaled by it
     /// </summary>
-    private void ComposeLE2CinematicLights(LightEnvironmentLighting lighting, SHVectorRGB sh, SHVectorRGB unshadowed, BoxSphereBounds bounds, float contrastFactor)
+    private void ComposeBioCinematicLights(LightEnvironmentLighting lighting, ref SHVectorRGB sh, BoxSphereBounds bounds, float contrastFactor, BioLightRig rig)
     {
+        bool allShadowed = Settings.Game is MEGame.LE3;
         var lights = new List<SceneLight>();
         if (Settings.SynthesizeDirectionalLight)
         {
-            if (ExtractBioRoleLight(ref sh, KeyAxis, Settings.KeyLightScale, out Vector3 keyDirection, out Vector3 keyColor)
+            if (ExtractBioRoleLight(ref sh, KeyAxis, Settings.KeyLightScale * (rig?.KeyLightModifier ?? Vector3.One), out Vector3 keyDirection, out Vector3 keyColor)
                 && CreateBioLight(keyDirection, keyColor * contrastFactor, 0, castsShadow: true, bounds) is { } key)
             {
                 lights.Add(key);
@@ -1063,7 +1179,8 @@ public sealed class DynamicLightEnvironment
             {
                 SHVectorRGB beforeFill = sh;
                 //each role reports whether its color has a positive channel
-                bool hasFill = ExtractBioRoleLight(ref sh, FillAxis, Settings.FillLightScale, out Vector3 fillDirection, out Vector3 fillColor)
+                bool hasFill = ExtractBioRoleLight(ref sh, FillAxis, Settings.FillLightScale * (rig?.FillLightModifier ?? Vector3.One), out Vector3 fillDirection,
+                                   out Vector3 fillColor)
                                && Max(fillColor) > 1e-8f;
                 Vector4 rimColor = Settings.RimLightColor * Settings.RimLightScale;
                 var rimRgb = new Vector3(rimColor.X, rimColor.Y, rimColor.Z);
@@ -1080,19 +1197,27 @@ public sealed class DynamicLightEnvironment
                         sh = beforeFill;
                     }
                 }
-                if (hasFill && CreateBioLight(fillDirection, fillColor * contrastFactor, 0, Settings.AllowFillLightShadows, bounds) is { } fill)
+                if (hasFill && CreateBioLight(fillDirection, fillColor * contrastFactor, 0, allShadowed || Settings.AllowFillLightShadows, bounds) is { } fill)
                 {
                     lights.Add(fill);
                 }
                 if (hasRim)
                 {
-                    lighting.RimLight = new BioRimLight(this, bounds, rimColor * contrastFactor, Settings.AllowRimLightShadows);
+                    lighting.RimLight = new BioRimLight(this, bounds, rimColor * contrastFactor, allShadowed || Settings.AllowRimLightShadows);
                 }
             }
         }
         lighting.PointLights = lights;
 
-        SHVectorRGB ambient = sh + unshadowed;
+        static float Max(Vector3 v) => MathF.Max(v.X, MathF.Max(v.Y, v.Z));
+    }
+
+    /// <summary>
+    /// LE2 cinematic Bio's remainder (RVA 0x18a110): an SH light (band 0 scaled by SHAmbientScale / contrast, then all of it by AmbientLightScale)
+    /// or a sky light (desaturated and scaled by SHAmbientScale / contrast)
+    /// </summary>
+    private void ComposeLE2CinematicAmbient(LightEnvironmentLighting lighting, SHVectorRGB ambient, float contrastFactor)
+    {
         float ambientScale = Settings.SHAmbientScale / contrastFactor;
         if (UsesSHLight)
         {
@@ -1108,18 +1233,16 @@ public sealed class DynamicLightEnvironment
         Vector3 lower = ambient.Extract(SHVector.LowerSkyFunction);
         lighting.UpperSkyColor = LinearColorUtils.Desaturate(upper, Settings.LightDesaturation) * ambientScale;
         lighting.LowerSkyColor = LinearColorUtils.Desaturate(lower, Settings.LightDesaturation) * ambientScale;
-
-        static float Max(Vector3 v) => MathF.Max(v.X, MathF.Max(v.Y, v.Z));
     }
 
     //SFXPointLightComponent keeps PointLightComponent's FalloffExponent
     private const float BioPointFalloffExponent = 2;
 
     /// <summary>
-    /// LE2 Bio light creation (slot 16, RVA 0x189ca0): none unless a channel (alpha included) exceeds 1e-4. With UseOptimizedLightingPath, an
-    /// SFXPointLightComponent LightDistance bounds radii out, reaching ShadowDistance + LightDistance + 2 radii, whose color is divided by its
-    /// attenuation at the point SurfaceBoundsRatio radii towards it (slot 9, RVA 0x18f9d0); otherwise a directional light. Its shadow is normal,
-    /// and its color is stored as a brightness and 8-bit channels
+    /// Cinematic Bio light creation (slot 16, RVAs LE2 0x189ca0, LE3 0x1a0840): none unless a channel (alpha included) exceeds 1e-4. With
+    /// UseOptimizedLightingPath, an SFXPointLightComponent LightDistance bounds radii out, reaching ShadowDistance + LightDistance + 2 radii, whose
+    /// color is divided by its attenuation at the point SurfaceBoundsRatio radii towards it (slot 9, RVAs 0x18f9d0, 0x1a5e30); otherwise a directional
+    /// light. Its shadow is normal, and its color is stored as a brightness and 8-bit channels
     /// </summary>
     internal SceneLight CreateBioLight(Vector3 direction, Vector3 color, float alpha, bool castsShadow, BoxSphereBounds bounds)
     {
@@ -1507,7 +1630,7 @@ public sealed class DynamicLightEnvironment
         return new Vector3(-luminance[3], -luminance[1], luminance[2]);
     }
 
-    //SetLightColor (LE1, and LE2 RVA 0x75960) stores max RGB as brightness and truncates gamma-encoded channels to bytes.
+    //SetLightColor (LE1, and RVAs LE2 0x75960, LE3 0x91010) stores max RGB as brightness and truncates gamma-encoded channels to bytes.
     internal static Vector3 QuantizeLightColor(Vector3 color)
     {
         color = Vector3.Max(Vector3.Zero, color);
@@ -1640,7 +1763,7 @@ public sealed class DynamicLightEnvironment
         return true;
     }
 
-    //The key and (LE2 cinematic) fill roles' axis states, guarded by CacheLock
+    //The key and (cinematic) fill roles' axis states, guarded by CacheLock
     private readonly BioLightAxisState KeyAxis = new(), FillAxis = new();
 
     /// <summary>

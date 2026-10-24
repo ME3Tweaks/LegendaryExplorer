@@ -922,8 +922,8 @@ public sealed class LightAttenuationRenderer : IDisposable
     /// <summary>
     /// FProjectedShadowInfo::RenderProjection: marks the pixels inside the shadow's receiver frustum in the stencil (z-fail), then multiplies the shadow into the target
     /// </summary>
-    /// <param name="maskSubject">LE1 bCullModulatedShadowOnSubject: the subject's own pixels are unmarked (RVA 0x77d600 draws the subject with stencil
-    /// Always/Replace 0)</param>
+    /// <param name="maskSubject">LE1 bCullModulatedShadowOnSubject, or the LE2/LE3 cinematic Bio shadow's scene-info bit: the subject's own pixels are
+    /// unmarked (RVAs LE1 0x77d600, LE2 0x375704, LE3 0x38cc14 draw the subject with stencil Always/Replace 0)</param>
     /// <param name="modShadowReceivers">For a LightShadow_ModulateBetter shadow: the primitives that unmark their pixels that face away from the light or are
     /// emissive (RenderModShadowPrimitives, RVA 0x77c6b0), from <paramref name="lightPosition"/>. Null for other shadows</param>
     private void RenderProjection(ProjectedShadowInfo shadow, RenderTargetView target, PixelShader pixelShader, WriteProjectionParameters writeParameters,
