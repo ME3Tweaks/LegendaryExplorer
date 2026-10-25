@@ -103,6 +103,52 @@
         </Setter.Value></Setter>
     </Style>
     <Style TargetType="Button" BasedOn="{StaticResource EditorButtonBase}"/>
+    <Style x:Key="EditorDropDownButton" TargetType="xctk:DropDownButton">
+        <Setter Property="Foreground" Value="{StaticResource EditorText}"/>
+        <Setter Property="Background" Value="{StaticResource EditorInput}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource EditorBorder}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="9,6"/>
+        <Setter Property="IsTabStop" Value="False"/>
+        <Setter Property="Template"><Setter.Value>
+            <ControlTemplate TargetType="xctk:DropDownButton">
+                <Grid>
+                    <ToggleButton x:Name="PART_DropDownButton" Background="{TemplateBinding Background}" Foreground="{TemplateBinding Foreground}"
+                                  BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}"
+                                  IsChecked="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                        <ToggleButton.Template>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <Border x:Name="Surface" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2">
+                                    <ContentPresenter Margin="{TemplateBinding Padding}" VerticalAlignment="Center" RecognizesAccessKey="True"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Surface" Property="Background" Value="{StaticResource EditorHover}"/></Trigger>
+                                    <Trigger Property="IsPressed" Value="True"><Setter TargetName="Surface" Property="Background" Value="{StaticResource EditorRaised}"/></Trigger>
+                                    <Trigger Property="IsChecked" Value="True"><Setter TargetName="Surface" Property="Background" Value="{StaticResource EditorRaised}"/></Trigger>
+                                    <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Surface" Property="BorderBrush" Value="{StaticResource EditorText}"/></Trigger>
+                                    <Trigger Property="IsEnabled" Value="False"><Setter TargetName="Surface" Property="Opacity" Value="0.4"/></Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </ToggleButton.Template>
+                        <DockPanel>
+                            <Path DockPanel.Dock="Right" Data="M 0 0 L 4 4 L 8 0 Z" Fill="{TemplateBinding Foreground}" Width="8" Height="4" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                            <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" RecognizesAccessKey="True"/>
+                        </DockPanel>
+                    </ToggleButton>
+                    <Popup x:Name="PART_Popup" AllowsTransparency="True" StaysOpen="False" Focusable="False"
+                           Placement="{TemplateBinding DropDownPosition}" PlacementTarget="{Binding ElementName=PART_DropDownButton}"
+                           IsOpen="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                        <ScrollViewer MaxHeight="{TemplateBinding MaxDropDownHeight}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <ContentPresenter x:Name="PART_ContentPresenter" Content="{TemplateBinding DropDownContent}"/>
+                        </ScrollViewer>
+                    </Popup>
+                </Grid>
+                <ControlTemplate.Triggers>
+                    <Trigger Property="IsOpen" Value="True"><Setter TargetName="PART_DropDownButton" Property="IsHitTestVisible" Value="False"/></Trigger>
+                </ControlTemplate.Triggers>
+            </ControlTemplate>
+        </Setter.Value></Setter>
+    </Style>
     <Style x:Key="EditorCompactButton" TargetType="Button" BasedOn="{StaticResource EditorButtonBase}"><Setter Property="Padding" Value="5,4"/></Style>
     <Style TargetType="ToggleButton" BasedOn="{StaticResource EditorButtonBase}">
         <Style.Triggers><Trigger Property="IsChecked" Value="True"><Setter Property="Background" Value="{StaticResource EditorAccent}"/></Trigger></Style.Triggers>

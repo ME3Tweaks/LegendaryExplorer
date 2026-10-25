@@ -182,6 +182,40 @@
                         </Border>
                         <Border Style="{StaticResource EditorToolbarSeparator}"/>
                         <ToggleButton Content="Local" IsChecked="{Binding UseLocalCoordsForWidget}" ToolTip="Use local transform axes (L). Off uses world axes."/>
+                        <xctk:DropDownButton Content="Transform settings" Style="{StaticResource EditorDropDownButton}" Margin="4,0,0,0"
+                                             ToolTip="Snapping and numeric increments for all actors" AutomationProperties.Name="Transform settings">
+                            <xctk:DropDownButton.DropDownContent>
+                                <Border Width="340" Background="{StaticResource EditorPanel}" BorderBrush="{StaticResource EditorBorder}" BorderThickness="1"
+                                        DataContext="{Binding Data, Source={StaticResource bindingProxy}}">
+                                    <StackPanel>
+                                        <Expander Header="Snapping" IsExpanded="True" Padding="10,7,10,10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="112"/><ColumnDefinition Width="37"/></Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions><RowDefinition Height="32"/><RowDefinition Height="32"/><RowDefinition Height="32"/></Grid.RowDefinitions>
+                                                <CheckBox Content="Translation" IsChecked="{Binding TranslateSnapEnabled}"/>
+                                                <xctk:SingleUpDown Grid.Column="1" Value="{Binding TranslateSnapValue}" Minimum="0.001" FormatString="F1" VerticalAlignment="Center" AutomationProperties.Name="Translation snap interval"/>
+                                                <TextBlock Grid.Column="2" Text="units" VerticalAlignment="Center" Margin="6,0,0,0" Foreground="{StaticResource EditorMuted}"/>
+                                                <CheckBox Grid.Row="1" Content="Rotation" IsChecked="{Binding RotateSnapEnabled}"/>
+                                                <xctk:SingleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding RotateSnapValue}" Minimum="0.1" Maximum="180" FormatString="F1" VerticalAlignment="Center" AutomationProperties.Name="Rotation snap interval"/>
+                                                <TextBlock Grid.Row="1" Grid.Column="2" Text="°" VerticalAlignment="Center" Margin="6,0,0,0" Foreground="{StaticResource EditorMuted}"/>
+                                                <CheckBox Grid.Row="2" Content="Scale" IsChecked="{Binding ScaleSnapEnabled}"/>
+                                                <xctk:SingleUpDown Grid.Row="2" Grid.Column="1" Value="{Binding ScaleSnapValue}" Minimum="0.01" FormatString="F1" VerticalAlignment="Center" AutomationProperties.Name="Scale snap interval"/>
+                                                <TextBlock Grid.Row="2" Grid.Column="2" Text="%" VerticalAlignment="Center" Margin="6,0,0,0" Foreground="{StaticResource EditorMuted}"/>
+                                            </Grid>
+                                        </Expander>
+                                        <Expander Header="Numeric increments" IsExpanded="True" Padding="10,7,10,10" ToolTip="Step used by the arrow keys in transform fields.">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="112"/></Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions><RowDefinition Height="32"/><RowDefinition Height="32"/><RowDefinition Height="32"/></Grid.RowDefinitions>
+                                                <TextBlock Text="Position" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Column="1" Value="{Binding PosIncrement}" Minimum="0" FormatString="F3" AutomationProperties.Name="Position numeric increment"/>
+                                                <TextBlock Grid.Row="1" Text="Rotation" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding RotIncrement}" Minimum="0" FormatString="F2" AutomationProperties.Name="Rotation numeric increment"/>
+                                                <TextBlock Grid.Row="2" Text="Scale" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="2" Grid.Column="1" Value="{Binding ScaleIncrement}" Minimum="0" FormatString="F3" AutomationProperties.Name="Scale numeric increment"/>
+                                            </Grid>
+                                        </Expander>
+                                    </StackPanel>
+                                </Border>
+                            </xctk:DropDownButton.DropDownContent>
+                        </xctk:DropDownButton>
                     </WrapPanel>
                 </DockPanel>
             </Border>
@@ -419,14 +453,26 @@
                                         <TextBlock Text="{Binding LightingRulesNote}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="0,4,0,0"/>
                                     </StackPanel>
                                 </Expander>
-                                <Expander Header="Lights affecting this Actor" IsExpanded="True" Padding="10,4,10,10" Visibility="{Binding IsMeshSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <Expander Header="Lighting" IsExpanded="True" Padding="10,4,10,10" Visibility="{Binding IsMeshSelected, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <StackPanel>
                                         <ItemsControl ItemsSource="{Binding SelectedActorLighting}">
                                             <ItemsControl.ItemTemplate><DataTemplate>
                                                 <StackPanel Margin="0,0,0,12">
                                                     <StackPanel.Style><Style TargetType="StackPanel"><Setter Property="IsEnabled" Value="True"/><Style.Triggers><DataTrigger Binding="{Binding IsReadOnly}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
-                                                    <TextBlock Text="{Binding ComponentName}" Foreground="#81B3DD" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                                                    <TextBlock Text="{Binding ActorPropertyName}" FontWeight="SemiBold" Foreground="#81B3DD" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                                                    <TextBlock Text="{Binding ComponentName, StringFormat='Export: {0}'}" TextWrapping="Wrap" Margin="0,3,0,0"/>
+                                                    <TextBlock Text="{Binding MeshName, StringFormat='Mesh: {0}'}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" Margin="0,3,0,0"/>
                                                     <TextBlock Text="Uncommitted" Foreground="{StaticResource EditorDirty}" FontSize="11" Visibility="{Binding HasChanges, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                                    <TextBlock Text="Light environment" Style="{StaticResource EditorSectionLabel}"/>
+                                                    <ComboBox ItemsSource="{Binding Environments}" SelectedItem="{Binding Environment}" DisplayMemberPath="Name" ToolTip="Choose a LightEnvironment owned by this actor or its archetype, or None for direct lighting. Commit to apply the assignment." AutomationProperties.Name="Light environment">
+                                                        <ComboBox.ItemContainerStyle><Style TargetType="ComboBoxItem"><Setter Property="IsEnabled" Value="{Binding IsSelectable}"/></Style></ComboBox.ItemContainerStyle>
+                                                    </ComboBox>
+                                                    <WrapPanel Margin="0,6,0,0">
+                                                        <Button Content="Edit properties…" Click="EditLightEnvironment_Click" IsEnabled="{Binding CanEditEnvironment}" Margin="0,0,4,4" ToolTip="Edit this actor's own LightEnvironment component."/>
+                                                        <Button Content="New dynamic" Click="CreateLightEnvironment_Click" Tag="Dynamic" IsEnabled="{Binding CanCreateEnvironment}" Margin="0,0,4,4" ToolTip="Create and assign a DynamicLightEnvironmentComponent owned by this actor."/>
+                                                        <Button Content="New Bio" Click="CreateLightEnvironment_Click" Tag="Bio" IsEnabled="{Binding CanCreateEnvironment}" Margin="0,0,0,4" ToolTip="Create and assign a BioDynamicLightEnvironmentComponent owned by this actor."/>
+                                                    </WrapPanel>
+                                                    <TextBlock Text="Assignments use Commit and Undo. New components and property edits change the package immediately; save the package to keep them. Inherited or imported environments need a local component to edit." TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" FontSize="11"/>
                                                     <TextBlock Text="Lighting channels" Style="{StaticResource EditorSectionLabel}"/>
                                                     <ItemsControl ItemsSource="{Binding Channels}">
                                                         <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
@@ -466,30 +512,6 @@
                                             </DataTemplate></ItemsControl.ItemTemplate>
                                         </ItemsControl>
                                     </StackPanel>
-                                </Expander>
-                                <Expander Header="Snapping" IsExpanded="True" Padding="10,7,10,10">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="112"/><ColumnDefinition Width="37"/></Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions><RowDefinition Height="32"/><RowDefinition Height="32"/><RowDefinition Height="32"/></Grid.RowDefinitions>
-                                        <CheckBox Content="Translation" IsChecked="{Binding TranslateSnapEnabled}"/>
-                                        <xctk:SingleUpDown Grid.Column="1" Value="{Binding TranslateSnapValue}" Minimum="0.001" FormatString="F1" VerticalAlignment="Center" AutomationProperties.Name="Translation snap interval"/>
-                                        <TextBlock Grid.Column="2" Text="units" VerticalAlignment="Center" Margin="6,0,0,0" Foreground="{StaticResource EditorMuted}"/>
-                                        <CheckBox Grid.Row="1" Content="Rotation" IsChecked="{Binding RotateSnapEnabled}"/>
-                                        <xctk:SingleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding RotateSnapValue}" Minimum="0.1" Maximum="180" FormatString="F1" VerticalAlignment="Center" AutomationProperties.Name="Rotation snap interval"/>
-                                        <TextBlock Grid.Row="1" Grid.Column="2" Text="°" VerticalAlignment="Center" Margin="6,0,0,0" Foreground="{StaticResource EditorMuted}"/>
-                                        <CheckBox Grid.Row="2" Content="Scale" IsChecked="{Binding ScaleSnapEnabled}"/>
-                                        <xctk:SingleUpDown Grid.Row="2" Grid.Column="1" Value="{Binding ScaleSnapValue}" Minimum="0.01" FormatString="F1" VerticalAlignment="Center" AutomationProperties.Name="Scale snap interval"/>
-                                        <TextBlock Grid.Row="2" Grid.Column="2" Text="%" VerticalAlignment="Center" Margin="6,0,0,0" Foreground="{StaticResource EditorMuted}"/>
-                                    </Grid>
-                                </Expander>
-                                <Expander Header="Numeric increments" Padding="10,7,10,10" ToolTip="Step used by the arrow keys in transform fields.">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="112"/></Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions><RowDefinition Height="32"/><RowDefinition Height="32"/><RowDefinition Height="32"/></Grid.RowDefinitions>
-                                        <TextBlock Text="Position" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Column="1" Value="{Binding PosIncrement}" Minimum="0" FormatString="F3" AutomationProperties.Name="Position numeric increment"/>
-                                        <TextBlock Grid.Row="1" Text="Rotation" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding RotIncrement}" Minimum="0" FormatString="F2" AutomationProperties.Name="Rotation numeric increment"/>
-                                        <TextBlock Grid.Row="2" Text="Scale" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="2" Grid.Column="1" Value="{Binding ScaleIncrement}" Minimum="0" FormatString="F3" AutomationProperties.Name="Scale numeric increment"/>
-                                    </Grid>
                                 </Expander>
                             </StackPanel>
                         </ScrollViewer>

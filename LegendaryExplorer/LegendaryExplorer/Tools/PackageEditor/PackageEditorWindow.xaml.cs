@@ -150,6 +150,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private int QueuedGotoNumber;
         private bool IsLoadingFile;
+        private int treeLoadVersion;
 
         private string _searchHintText = "Object name";
 
@@ -3165,6 +3166,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         /// <param name="loadingSize"></param>
         private void preloadPackage(string loadingName, long loadingSize)
         {
+            treeLoadVersion++; // Ignore completion of a previous package's background tree build.
             BusyText = $"Loading {loadingName}";
             IsBusy = true;
             IsLoadingFile = true;
@@ -3188,47 +3190,48 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void InitializeTreeViewBackground_Completed(Task<List<TreeViewEntry>> prevTask)
         {
-            if (prevTask.Exception == null && prevTask.Result != null)
+            try
             {
+                var nodes = prevTask.GetAwaiter().GetResult();
                 ResetTreeView();
-                AllTreeViewNodesX.AddRange(prevTask.Result);
-            }
+                AllTreeViewNodesX.AddRange(nodes);
 
-            IsLoadingFile = false;
-            if (QueuedGotoNumber != 0)
-            {
-                //Wait for UI to render
-                Dispatcher.Invoke(new Action(() => { }), DispatcherPriority.ApplicationIdle, null);
-                BusyText = $"Navigating to {QueuedGotoNumber}";
-
-                GoToNumber(QueuedGotoNumber);
-                Goto_TextBox.Text = QueuedGotoNumber.ToString();
-                if (QueuedGotoNumber > 0)
+                IsLoadingFile = false;
+                if (QueuedGotoNumber != 0)
                 {
-                    Interpreter_Tab.IsSelected = true;
+                    int target = QueuedGotoNumber;
+                    QueuedGotoNumber = 0;
+                    BusyText = $"Navigating to {target}";
+                    // Realize the tree's containers directly. Waiting for ApplicationIdle can starve
+                    // indefinitely while another window (such as the Level Editor) keeps rendering.
+                    LeftSide_TreeView.UpdateLayout();
+                    GoToNumber(target);
+                    Goto_TextBox.Text = target.ToString();
+                    if (target > 0)
+                        Interpreter_Tab.IsSelected = true;
                 }
-
-                QueuedGotoNumber = 0;
-                IsBusy = false;
             }
-            else
+            catch (Exception e)
             {
+                QueuedGotoNumber = 0;
+                StatusBar_LeftMostText.Text = "Could not finish loading the package tree";
+                Debug.WriteLine(e);
+                MessageBox.Show(this, $"Could not finish loading the package tree:\n{e.Message}", "Package Editor");
+            }
+            finally
+            {
+                IsLoadingFile = false;
                 IsBusy = false;
+                IsBusyTaskbar = false;
             }
         }
 
-        private List<TreeViewEntry> InitializeTreeViewBackground()
+        private static List<TreeViewEntry> InitializeTreeViewBackground(IMEPackage package)
         {
-            BusyText = "Loading " + Path.GetFileName(Pcc.FilePath);
-            if (Pcc == null)
-            {
-                return null;
-            }
+            IReadOnlyList<ImportEntry> Imports = package.Imports;
+            IReadOnlyList<ExportEntry> Exports = package.Exports;
 
-            IReadOnlyList<ImportEntry> Imports = Pcc.Imports;
-            IReadOnlyList<ExportEntry> Exports = Pcc.Exports;
-
-            var rootEntry = new TreeViewEntry(null, Path.GetFileName(Pcc.FilePath)) { IsExpanded = true, PackageRef = Pcc };
+            var rootEntry = new TreeViewEntry(null, Path.GetFileName(package.FilePath)) { IsExpanded = true, PackageRef = package };
 
             var rootNodes = new List<TreeViewEntry> { rootEntry };
             rootNodes.AddRange(Exports.Select(t => new TreeViewEntry(t)));
@@ -3263,14 +3266,30 @@ namespace LegendaryExplorer.Tools.PackageEditor
 
         private void InitializeTreeView()
         {
-            IsBusy = true;
-            if (Pcc == null)
+            int version = ++treeLoadVersion;
+            var package = Pcc;
+            if (package == null)
             {
+                IsLoadingFile = false;
+                IsBusy = false;
                 return;
             }
+            IsBusy = true;
+            IsLoadingFile = true;
+            BusyText = "Loading " + Path.GetFileName(package.FilePath);
 
-            Task.Run(InitializeTreeViewBackground)
-                .ContinueWithOnUIThread(InitializeTreeViewBackground_Completed);
+            Task.Run(() => InitializeTreeViewBackground(package))
+                .ContinueWithOnUIThread(task =>
+                {
+                    if (version == treeLoadVersion && ReferenceEquals(Pcc, package))
+                        InitializeTreeViewBackground_Completed(task);
+                    else if (task.Exception is { } exception)
+                        Debug.WriteLine(exception); // Observe failures from superseded loads too.
+                    else if (task.IsCompletedSuccessfully)
+                        foreach (var root in task.Result)
+                            foreach (var node in root.FlattenTree())
+                                node.Dispose(); // Discarded nodes must release their package event subscriptions.
+                });
         }
 
         /// <summary>
@@ -3783,6 +3802,11 @@ namespace LegendaryExplorer.Tools.PackageEditor
             {
                 case CurrentViewMode.Tree:
                     {
+                        if (AllTreeViewNodesX.Count == 0)
+                        {
+                            QueuedGotoNumber = entryIndex;
+                            return false;
+                        }
                         /*if (entryIndex >= -pcc.ImportCount && entryIndex < pcc.ExportCount)
                         {
                             //List<AdvancedTreeViewItem<TreeViewItem>> noNameNodes = AllTreeViewNodes.Where(s => s.Name.Length == 0).ToList();
@@ -4414,6 +4438,7 @@ namespace LegendaryExplorer.Tools.PackageEditor
         {
             if (!e.Cancel)
             {
+                treeLoadVersion++;
                 SoundTab_Soundpanel.FreeAudioResources();
                 foreach (ExportLoaderControl el in ExportLoaders.Keys)
                 {

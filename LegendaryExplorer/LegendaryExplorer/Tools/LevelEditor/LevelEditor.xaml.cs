@@ -13,6 +13,7 @@ using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
 using Microsoft.Win32;
 using LegendaryExplorer.Tools.PackageEditor;
+using LegendaryExplorer.UserControls.ExportLoaderControls;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -324,11 +325,14 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     }
 
     //Can be called from a background thread
-    private void ReportGameShaderLoadProgress(int loaded, int total)
+    private void ReportGameShaderLoadProgress(int loaded, int total) => ReportGameShaderLoadProgress(loaded, total, null);
+
+    private void ReportGameShaderLoadProgress(int loaded, int total, string fileProgress)
     {
         if (loaded % 10 == 0 || loaded == total)
         {
-            Dispatcher.InvokeAsync(() => BusyText = $"Loading game shaders ({loaded}/{total})...");
+            string progress = $"Loading game shaders ({loaded}/{total})...";
+            Dispatcher.InvokeAsync(() => BusyText = fileProgress is null ? progress : $"{fileProgress}\n{progress}");
         }
     }
 
@@ -628,7 +632,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         {
             CloseAllFiles();
             RenderContext.TextureDataOverride = readTexture;
-            foreach (var package in levels) await AddLevelPackage(package);
+            for (int i = 0; i < levels.Count; i++)
+                await AddLevelPackage(levels[i], i + 1, levels.Count);
             CenterView();
             Title = "Lightmass Preview — close this window to Save or Discard in Lightmass Baker";
         }
@@ -638,7 +643,10 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
     }
 
-    private async Task AddLevelFile(string path)
+    private static string FileLoadProgress(string path, int fileNumber, int fileCount) =>
+        $"File {fileNumber} of {fileCount} — {Path.GetFileName(path)}";
+
+    private async Task AddLevelFile(string path, int fileNumber = 1, int fileCount = 1)
     {
         path = Path.GetFullPath(path);
 
@@ -648,11 +656,13 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             return;
         }
 
+        BusyText = $"{FileLoadProgress(path, fileNumber, fileCount)}\nOpening package...";
+        await Dispatcher.Yield(DispatcherPriority.Background);
         using IMEPackage pcc = MEPackageHandler.OpenMEPackage(path);
-        await AddLevelPackage(pcc);
+        await AddLevelPackage(pcc, fileNumber, fileCount);
     }
 
-    private async Task AddLevelPackage(IMEPackage pcc)
+    private async Task AddLevelPackage(IMEPackage pcc, int fileNumber = 1, int fileCount = 1)
     {
         string path = pcc.FilePath;
         if (OpenFiles.Count > 0 && pcc.Game != Game)
@@ -681,7 +691,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         bool isFirstFile = OpenFiles.Count == 1;
 
         // Callers hold a RenderGuard, which keeps the editor busy until every file is loaded
-        BusyText = $"Loading {Path.GetFileName(path)}...";
+        string fileProgress = FileLoadProgress(path, fileNumber, fileCount);
+        BusyText = $"{fileProgress}\nLoading actors...";
 
         bool loadGameShaders = RenderContext.UseGameShaders;
         var (actors, ignoredClasses) = await Task.Run(() =>
@@ -692,7 +703,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             {
                 try
                 {
-                    RenderContext.LoadPendingGameShaders(ReportGameShaderLoadProgress);
+                    RenderContext.LoadPendingGameShaders((loaded, total) => ReportGameShaderLoadProgress(loaded, total, fileProgress));
                 }
                 catch (AggregateException e)
                 {
@@ -996,11 +1007,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         ToggleLocalCoordsCommand = new GenericCommand(() => UseLocalCoordsForWidget = !UseLocalCoordsForWidget, PackageIsLoaded);
         OpenInPackageEditorCommand = new GenericCommand(() =>
         {
-            if (SelectedActor is not null)
+            if (SelectedActor?.Export is { } export)
             {
                 var p = new PackageEditorWindow();
                 p.Show();
-                p.LoadFile(SelectedActor.Export.FileRef.FilePath, SelectedActor.Export.UIndex);
+                p.LoadPackage(export.FileRef, export.UIndex);
                 p.Activate();
             }
         }, () => CanEditScene && PackageIsLoaded() && SelectedActor is not null);
@@ -1127,9 +1138,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
             using var guard = new RenderGuard(this);
 
-            foreach (string path in selectedPaths)
+            for (int i = 0; i < selectedPaths.Count; i++)
             {
-                await AddLevelFile(path).ConfigureAwait(true);
+                await AddLevelFile(selectedPaths[i], i + 1, selectedPaths.Count).ConfigureAwait(true);
             }
         }
     }
@@ -1686,6 +1697,40 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         LightDiagnosticsStale = true;
     }
 
+    private void EditLightEnvironment_Click(object sender, RoutedEventArgs e)
+    {
+        if (!CanEditScene || sender is not FrameworkElement { DataContext: EditableActorLighting { CanEditEnvironment: true } lighting }) return;
+        ShowLightEnvironmentProperties(lighting.EditableEnvironment);
+    }
+
+    private void CreateLightEnvironment_Click(object sender, RoutedEventArgs e)
+    {
+        if (!CanEditScene || sender is not Button { DataContext: EditableActorLighting { CanCreateEnvironment: true } lighting } button) return;
+        try
+        {
+            var environment = lighting.CreateEnvironment(button.Tag as string == "Bio");
+            foreach (var settings in SelectedActorLighting) settings.RefreshEnvironments();
+            ShowLightEnvironmentProperties(environment);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, $"Could not create the light environment: {ex.Message}", "Light environment");
+        }
+    }
+
+    private void ShowLightEnvironmentProperties(ExportEntry environment)
+    {
+        if (environment is null) return;
+        // Keep package read-only state and selection fixed while this editor can write properties.
+        new ExportLoaderHostedWindow(new InterpreterExportLoader(), environment)
+        {
+            Owner = this,
+            Title = $"Light environment properties — {environment.InstancedFullPath}"
+        }.ShowDialog();
+        foreach (var settings in SelectedActorLighting) settings.RefreshEnvironments();
+        LightDiagnosticsStale = true;
+    }
+
     private void ApplyActorLightingEdits()
     {
         if (PendingActorLightingEdits.Count == 0 || PreviewRefreshInProgress) return;
@@ -2155,7 +2200,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         if (CanChangeFiles && e.Data.GetDataPresent(DataFormats.FileDrop))
         {
             bool isFirst = true;
-            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var files = ((string[])e.Data.GetData(DataFormats.FileDrop))
+                .Where(file => Path.GetExtension(file).ToLowerInvariant() is ".upk" or ".pcc" or ".sfm").ToArray();
             if (files.Length is 0) return;
             if (PackageIsLoaded())
             {
@@ -2170,22 +2216,18 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 }
                 isFirst = result == MessageBoxResult.No;
             }
-            foreach (string file in files)
+            using var guard = new RenderGuard(this);
+            if (isFirst) CloseAllFiles();
+            for (int i = 0; i < files.Length; i++)
             {
-                string ext = Path.GetExtension(file).ToLower();
-                if (ext is not (".upk" or ".pcc" or ".sfm")) continue;
-
-                if (isFirst && OpenFiles.Count == 0)
+                try
                 {
-                    await LoadFileAsync(file);
-                    isFirst = false;
+                    await AddLevelFile(files[i], i + 1, files.Length).ConfigureAwait(true);
                 }
-                else
+                catch (Exception ex)
                 {
-                    using var guard = new RenderGuard(this);
-
-                    await AddLevelFile(file).ConfigureAwait(true);
-                    isFirst = false;
+                    StatusBar_LeftMostText.Text = "Failed to load " + Path.GetFileName(files[i]);
+                    MessageBox.Show(this, $"Error loading {Path.GetFileName(files[i])}:\n{ex.Message}", "Load level");
                 }
             }
         }
@@ -2318,15 +2360,14 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
         using var guard = new RenderGuard(this);
 
-        foreach (string path in set.FilePaths)
+        var paths = set.FilePaths.Where(File.Exists).ToList();
+        for (int i = 0; i < paths.Count; i++)
         {
-            if (File.Exists(path))
-            {
-                await AddLevelFile(path).ConfigureAwait(true);
-                var openFile = OpenFiles.LastOrDefault(f => f.FilePath == path);
-                if (openFile is not null && set.ReadOnlyFilePaths.Contains(path))
-                    openFile.IsReadOnly = true;
-            }
+            string path = paths[i];
+            await AddLevelFile(path, i + 1, paths.Count).ConfigureAwait(true);
+            var openFile = OpenFiles.LastOrDefault(f => f.FilePath == path);
+            if (openFile is not null && set.ReadOnlyFilePaths.Contains(path))
+                openFile.IsReadOnly = true;
         }
     }
 

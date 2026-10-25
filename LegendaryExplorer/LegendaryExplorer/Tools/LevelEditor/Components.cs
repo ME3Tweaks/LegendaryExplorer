@@ -26,6 +26,9 @@ public class PrimitiveComponentProxy : NotifyPropertyChangedBase, IDisposable
 
     public ActorProxy Actor;
 
+    /// <summary>The actor property used to load this component, including its array index when applicable.</summary>
+    public string ActorPropertyName { get; internal set; }
+
     protected readonly MeshRenderContext RenderContext;
 
     private Rotator rotation;

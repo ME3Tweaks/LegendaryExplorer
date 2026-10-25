@@ -13,7 +13,7 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 public readonly record struct ActorLightingSettings(int? LightEnvironment, uint Channels, bool AcceptsLights,
     bool AcceptsDynamicLights, bool CastShadow, bool CastDynamicShadow, bool UsePrecomputedShadows);
 
-public sealed record LightEnvironmentOption(int? UIndex, string Name);
+public sealed record LightEnvironmentOption(int? UIndex, string Name, bool IsSelectable = true);
 
 public sealed class ActorLightingChannel : NotifyPropertyChangedBase
 {
@@ -40,12 +40,51 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
     private PropertyCollection SavedProperties;
     public ExportEntry Component => Mesh.Export;
     public string ComponentName => $"{Component.ObjectName.Instanced} (#{Component.UIndex})";
+    public string ActorPropertyName => Mesh.ActorPropertyName ?? "Mesh component";
+    public string MeshName
+    {
+        get
+        {
+            string propertyName = Component.IsA("SkeletalMeshComponent") ? "SkeletalMesh" : "StaticMesh";
+            var (property, package) = EffectiveLightingProperties.Reference(Component, propertyName, Context.PackageCache);
+            return property is { Value: not 0 }
+                ? property.ResolveToEntry(package)?.ObjectName.Instanced ?? "Unresolved mesh"
+                : "None";
+        }
+    }
     public bool IsReadOnly => Mesh.Actor is null || Mesh.Actor.IsReadOnly;
     internal bool IsOrphaned => Mesh.Actor is null || Mesh.Actor.IsDisposed;
     public ActorLightingSettings Settings => settings;
     public bool HasChanges => settings != cleanSettings;
     public IReadOnlyList<ActorLightingChannel> Channels { get; }
     public IReadOnlyList<LightEnvironmentOption> Environments { get; private set; }
+
+    internal ExportEntry EnvironmentOwner => Component.Parent is ExportEntry owner && owner.IsA("Actor") ? owner : null;
+    public bool CanCreateEnvironment => !IsReadOnly && !IsOrphaned && EffectiveLightingProperties.IsPlacedActor(EnvironmentOwner);
+    public bool CanEditEnvironment => !IsReadOnly && !IsOrphaned && EditableEnvironment is not null;
+
+    internal ExportEntry EditableEnvironment
+    {
+        get
+        {
+            if (!CanAssignEnvironment(settings.LightEnvironment)) return null;
+            var effective = SavedProperties.DeepClone();
+            foreach (var property in GetChangedProperties()) effective.AddOrReplaceProp(property);
+            EffectiveLightingProperties.UsesLightEnvironment(Component, effective, EnvironmentOwner, Context.PackageCache, out var environment);
+            // Never edit an inherited template or a dependency package through the actor inspector.
+            return EnvironmentOwner is { } owner && environment?.FileRef == Component.FileRef && environment.Parent == owner
+                && environment.IsA("LightEnvironmentComponent") ? environment : null;
+        }
+    }
+
+    internal ExportEntry CreateEnvironment(bool bio)
+    {
+        if (!CanCreateEnvironment) return null;
+        var environment = ActorLightEnvironment.Create(EnvironmentOwner, bio, Context.PackageCache);
+        RefreshEnvironments();
+        Apply(settings with { LightEnvironment = environment.UIndex });
+        return environment;
+    }
 
     internal EditableActorLighting(MeshComponentProxy mesh, MeshRenderContext context)
     {
@@ -93,26 +132,64 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
     internal void RefreshEnvironments()
     {
         var options = new List<LightEnvironmentOption>();
-        if (settings.LightEnvironment is null) options.Add(new(null, "Default (class lighting)"));
+        if (cleanSettings.LightEnvironment is null || settings.LightEnvironment is null)
+            options.Add(new(null, "Inherited (archetype / class lighting)"));
         options.Add(new(0, "None (direct lighting)"));
+        var owners = GetEnvironmentOwners();
         foreach (IEntry entry in Component.FileRef.Exports.Cast<IEntry>().Concat(Component.FileRef.Imports))
         {
-            if (entry is ExportEntry { IsDefaultObject: true }) continue;
-            if (entry.ClassName == "LightEnvironmentComponent" || GlobalUnrealObjectInfo.IsA(entry.ClassName, "LightEnvironmentComponent", Component.Game))
+            if (IsOwnedEnvironment(entry, owners))
                 options.Add(new(entry.UIndex, $"#{entry.UIndex} {entry.InstancedFullPath}"));
         }
         if (settings.LightEnvironment is { } current && options.All(option => option.UIndex != current))
-            options.Add(new(current, $"#{current} {Component.FileRef.GetEntry(current)?.InstancedFullPath ?? "Unresolved reference"}"));
+            options.Add(new(current, $"Invalid ownership or unresolved: #{current} {Component.FileRef.GetEntry(current)?.InstancedFullPath}", false));
         Environments = options;
         OnPropertyChanged(nameof(Environments));
         OnPropertyChanged(nameof(Environment));
+        OnPropertyChanged(nameof(CanEditEnvironment));
     }
 
     public LightEnvironmentOption Environment
     {
         get => Environments.FirstOrDefault(option => option.UIndex == settings.LightEnvironment);
-        set { if (value is not null) Apply(settings with { LightEnvironment = value.UIndex }); }
+        set
+        {
+            if (value is { IsSelectable: true } && CanAssignEnvironment(value.UIndex))
+                Apply(settings with { LightEnvironment = value.UIndex });
+        }
     }
+
+    // Only this actor's subobjects and those of its archetype chain are valid assignments.
+    // Resolve imports for identity checks, but keep all selectable indices in the mesh's package.
+    private HashSet<ExportEntry> GetEnvironmentOwners()
+    {
+        var owners = new HashSet<ExportEntry>();
+        var owner = EnvironmentOwner;
+        while (owner is not null && owners.Add(owner))
+        {
+            try
+            {
+                owner = EffectiveLightingProperties.Resolve(owner.Archetype, Context.PackageCache)
+                    ?? EffectiveLightingProperties.ClassDefault(owner, Context.PackageCache);
+            }
+            catch { break; } // An unavailable archetype does not make unrelated components valid.
+        }
+        return owners;
+    }
+
+    private bool IsOwnedEnvironment(IEntry entry, HashSet<ExportEntry> owners)
+    {
+        if (entry is null || !entry.IsA("LightEnvironmentComponent")) return false;
+        try
+        {
+            var environment = EffectiveLightingProperties.Resolve(entry, Context.PackageCache);
+            return environment is { IsDefaultObject: false, Parent: ExportEntry owner } && owners.Contains(owner);
+        }
+        catch { return false; } // An unresolved import cannot be offered as an assignment.
+    }
+
+    private bool CanAssignEnvironment(int? index) => index is null ? cleanSettings.LightEnvironment is null
+        : index == 0 || IsOwnedEnvironment(Component.FileRef.GetEntry(index.Value), GetEnvironmentOwners());
     public bool AcceptsLights { get => settings.AcceptsLights; set => Apply(settings with { AcceptsLights = value }); }
     public bool AcceptsDynamicLights { get => settings.AcceptsDynamicLights; set => Apply(settings with { AcceptsDynamicLights = value }); }
     public bool CastShadow { get => settings.CastShadow; set => Apply(settings with { CastShadow = value }); }
@@ -122,6 +199,9 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
     public void Apply(ActorLightingSettings value)
     {
         if (IsReadOnly || IsOrphaned || value == settings) return;
+        // Undo may restore the original reference, even when the file already contained an invalid assignment.
+        if (value.LightEnvironment != settings.LightEnvironment && value.LightEnvironment != cleanSettings.LightEnvironment
+            && !CanAssignEnvironment(value.LightEnvironment)) return;
         var before = settings;
         settings = value;
         // Resolve runtime defaults before recording history, so environment changes and undo agree with the preview.
@@ -171,7 +251,7 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
         cleanSettings = Read(properties);
         foreach (var property in pending) properties.AddOrReplaceProp(property);
         settings = Read(properties);
-        if (!Environments.Any(option => option.UIndex == settings.LightEnvironment)) RefreshEnvironments();
+        RefreshEnvironments();
         NotifySettings();
         Mesh.Actor?.RefreshLightingDirty();
     }
@@ -181,6 +261,12 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
         var changed = GetChangedProperties();
         if (changed.Count > 0)
         {
+            if (settings.LightEnvironment != cleanSettings.LightEnvironment && !CanAssignEnvironment(settings.LightEnvironment))
+                throw new InvalidOperationException("The light environment must belong to this actor or its archetype.");
+            if (settings.LightEnvironment != cleanSettings.LightEnvironment && settings.LightEnvironment is > 0
+                && EnvironmentOwner is { } owner && Component.FileRef.TryGetUExport(settings.LightEnvironment.Value, out var environment)
+                && environment.Parent == owner && environment.IsA("LightEnvironmentComponent"))
+                ActorLightEnvironment.Register(owner, environment);
             var props = Component.GetProperties();
             foreach (var property in changed) props.AddOrReplaceProp(property);
             Component.WriteProperties(props);
@@ -189,6 +275,30 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
         cleanSettings = settings;
         RefreshEnvironments();
         NotifySettings();
+    }
+}
+
+/// <summary>Creates actor-owned components; registration is deferred until the assignment is committed.</summary>
+internal static class ActorLightEnvironment
+{
+    internal static ExportEntry Create(ExportEntry owner, bool bio, PackageCache cache = null)
+    {
+        if (!EffectiveLightingProperties.IsPlacedActor(owner) || !owner.IsA("Actor"))
+            throw new ArgumentException("A light environment must belong to a placed actor.", nameof(owner));
+        string className = bio ? "BioDynamicLightEnvironmentComponent" : "DynamicLightEnvironmentComponent";
+        var environment = owner.FileRef.CreateExport(className, className, owner, prePropBinary: new byte[8], cache: cache);
+        environment.WriteProperties(new PropertyCollection { new BoolProperty(true, "bEnabled") });
+        return environment;
+    }
+
+    internal static void Register(ExportEntry owner, ExportEntry environment)
+    {
+        var properties = owner.GetProperties();
+        var components = properties.GetProp<ArrayProperty<ObjectProperty>>("Components") ?? new ArrayProperty<ObjectProperty>("Components");
+        if (components.Any(component => component.Value == environment.UIndex)) return;
+        components.Add(new ObjectProperty(environment));
+        properties.AddOrReplaceProp(components);
+        owner.WriteProperties(properties);
     }
 }
 

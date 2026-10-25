@@ -441,10 +441,12 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     {
         if (Properties.GetProp<ArrayProperty<ObjectProperty>>(propName) is { } componentArray)
         {
-            foreach (IEntry entry in componentArray.ResolveToEntries(Pcc))
+            for (int i = 0; i < componentArray.Count; i++)
             {
+                IEntry entry = componentArray[i].ResolveToEntry(Pcc);
                 if (entry is ExportEntry cmpExport && PrimitiveComponentProxy.Create(context, cmpExport, this) is T cmpProxy)
                 {
+                    cmpProxy.ActorPropertyName = $"{propName}[{i}]";
                     components.Add(cmpProxy);
                     Components.Add(cmpProxy);
                 }
@@ -458,6 +460,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         {
             if (PrimitiveComponentProxy.Create(context, componentExport, this) is T cmpProxy)
             {
+                cmpProxy.ActorPropertyName = propName;
                 component = cmpProxy;
                 Components.Add(cmpProxy);
             }
@@ -864,6 +867,7 @@ public class StaticMeshComponentActorProxy : CollectionActorComponentProxy
     public StaticMeshComponentActorProxy(IActorEditorContext context, ExportEntry smcExport, StaticMeshCollectionActor smca, int smcaIndex) : base(context, smca, smcExport, smcaIndex)
     {
         var staticMeshComponentProxy = PrimitiveComponentProxy.Create(context.RenderContext, smcExport, this);
+        staticMeshComponentProxy.ActorPropertyName = $"{smca.ComponentPropName}[{smcaIndex}]";
         Components.Add(staticMeshComponentProxy);
         IsVolumetricMesh = (staticMeshComponentProxy as StaticMeshComponentProxy)?.IsVolumetric ?? false;
     }
