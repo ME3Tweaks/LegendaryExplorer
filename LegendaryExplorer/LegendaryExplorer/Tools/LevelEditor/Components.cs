@@ -119,6 +119,11 @@ public class PrimitiveComponentProxy : NotifyPropertyChangedBase, IDisposable
             case "BrushComponent":
                 return new BrushComponentProxy(context, componentExport, parent);
         }
+        // A spline mesh needs deformation. The undeformed source mesh is not a valid preview.
+        if (GlobalUnrealObjectInfo.IsA(className, "SplineMeshComponent", componentExport.Game))
+        {
+            return new PrimitiveComponentProxy(context, componentExport, parent);
+        }
         if (GlobalUnrealObjectInfo.IsA(className, "StaticMeshComponent", componentExport.Game))
         {
             return new StaticMeshComponentProxy(context, componentExport, parent);
@@ -233,6 +238,7 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
     public abstract bool RefreshPreview(IMEPackage package, IReadOnlySet<int> updatedExports, bool force = false);
     public string MeshIFP { get; protected set; }
     protected ModelPreview<VertexType> Mesh;
+    public bool HasPreviewMesh => Mesh is not null;
     public int LOD;
     public List<IEntry> MaterialOverrides = [];
 

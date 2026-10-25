@@ -89,7 +89,7 @@ public class Widget : UIElement
 
     public override void Draw(LevelEditorRenderContext context)
     {
-        if (Attach is null) return;
+        if (Attach is null || !Attach.CanEditTransform) return;
 
         var ltw = Attach.LocalToWorld;
         var origin = ltw.Translation;

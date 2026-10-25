@@ -47,6 +47,25 @@ public class LevelEditorRenderContext : MeshRenderContext
     public readonly SpriteBatch Sprites = new();
 
     public readonly LightSprites LightSprites = new();
+    public readonly HelperSprites HelperSprites = new();
+    public ActorProxy SelectedActor { get; set; }
+    public ActorProxy RevealedHelper { get; set; }
+    public const int MaxHelperMarkers = 4096;
+    public const float HelperDrawDistance = 50000;
+    private int helperMarkers;
+
+    // A single shared sprite batch; limit submitted helpers rather than issuing per-actor draw calls.
+    // The selected helper remains available even if the budget has been reached.
+    internal bool TryDrawHelper(ActorProxy actor)
+    {
+        Vector3 position = actor.LocalToWorld.Translation;
+        if (!IsActorVisible(actor) || !WorldToPixel(position, out var pixel)
+            || pixel.X < -16 || pixel.Y < -16 || pixel.X > Width + 16 || pixel.Y > Height + 16) return false;
+        if (actor != SelectedActor && (helperMarkers >= MaxHelperMarkers
+            || Vector3.DistanceSquared(position, Camera.Position) > HelperDrawDistance * HelperDrawDistance)) return false;
+        helperMarkers++;
+        return true;
+    }
 
     /// <summary>
     /// The view's right and up directions in world space, for drawing things that face the camera. Correct in the top-down view too
@@ -132,7 +151,9 @@ public class LevelEditorRenderContext : MeshRenderContext
     }
 
     public override bool IsActorVisible(ActorProxy actor)
-        => GetCategoryState(actor.Category).IsVisible && (!actor.IsHidden || ShowHidden);
+        => actor.HasSpatialRepresentation && (actor is EditorActorProxy
+            ? actor == RevealedHelper || GetCategoryState(actor.Category).IsVisible
+            : GetCategoryState(actor.Category).IsVisible && (!actor.IsHidden || ShowHidden));
 
     private bool IsHitProxyVisible(IHitProxy hitProxy) => hitProxy switch
     {
@@ -343,6 +364,7 @@ public class LevelEditorRenderContext : MeshRenderContext
     {
         WorldPrimitives.Render(this);
         Sprites.Render(this);
+        helperMarkers = 0;
         foreach (UIElement uiElem in DrawList_UI)
         {
             if (uiElem == TransformWidget && TransformWidget.Attach is { } actor && !IsActorVisible(actor)) continue;
@@ -397,6 +419,8 @@ public class LevelEditorRenderContext : MeshRenderContext
         DrawList_3D.DisposeAndClear();
         DrawList_UI.Clear();
         TransformWidget.Attach = null;
+        SelectedActor = null;
+        RevealedHelper = null;
         LightGizmo.Attach = null;
         HighlightedComponents.Clear();
         HighlightedLights.Clear();
@@ -415,6 +439,7 @@ public class LevelEditorRenderContext : MeshRenderContext
     public override void DisposeResources()
     {
         LightSprites.Dispose();
+        HelperSprites.Dispose();
         //its batches are keyed by the sprite textures just disposed
         Sprites.Clear();
         base.DisposeResources();
@@ -425,6 +450,8 @@ public class LevelEditorRenderContext : MeshRenderContext
         if (DrawList_3D.Remove(actor))
         {
             HitProxies.RemoveAt(actor.HitID);
+            if (SelectedActor == actor) SelectedActor = null;
+            if (RevealedHelper == actor) RevealedHelper = null;
         }
     }
 

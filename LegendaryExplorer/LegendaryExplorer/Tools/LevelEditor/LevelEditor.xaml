@@ -93,12 +93,13 @@
                 </Border>
             </DataTemplate>
             <ContextMenu x:Key="ActorContextMenu">
+                <MenuItem Header="Reveal Helper" Command="{Binding Data.RevealHelperCommand, Source={StaticResource bindingProxy}}"/>
                 <MenuItem Header="Focus Camera" Command="{Binding Data.FocusSelectedCommand, Source={StaticResource bindingProxy}}" InputGestureText="F"/>
                 <MenuItem Header="Open in Package Editor" Visibility="{Binding Data.CanEditScene, Source={StaticResource bindingProxy}, Converter={StaticResource BoolToVisibilityConverter}}" Command="{Binding Data.OpenInPackageEditorCommand, Source={StaticResource bindingProxy}}"/>
             </ContextMenu>
             <Style x:Key="ActorRow" TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
                 <Setter Property="ContextMenu" Value="{StaticResource ActorContextMenu}"/>
-                <Setter Property="ToolTip" Value="{Binding DisplayText}"/>
+                <Setter Property="ToolTip" Value="{Binding CoverageToolTip}"/>
             </Style>
         </ResourceDictionary>
     </Window.Resources>
@@ -374,11 +375,14 @@
                                     <Border Background="{StaticResource EditorInput}" BorderBrush="{StaticResource EditorBorder}" BorderThickness="1" Padding="8,6" CornerRadius="2"><TextBlock Text="{Binding SelectedActor.Export.ObjectName.Instanced, TargetNullValue='Select an actor'}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/></Border>
                                     <TextBlock Text="{Binding SelectedActor.DisplayText}" Foreground="#81B3DD" FontSize="11" Margin="0,7,0,0" TextWrapping="Wrap"/>
                                     <TextBlock Text="{Binding SelectedActor.Export.UIndex, StringFormat='Export {0}'}" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="0,3,0,0"/>
+                                    <TextBlock Text="{Binding SelectedActor.CoverageLabel}" FontWeight="SemiBold" Margin="0,8,0,0"/>
+                                    <TextBlock Text="{Binding SelectedActor.CoverageReason}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" Margin="0,3,0,0"/>
+                                    <Button Content="Reveal helper in viewport" Command="{Binding RevealHelperCommand}" Margin="0,6,0,0" HorizontalAlignment="Left"/>
                                     <TextBlock Text="Read-only package" Foreground="{StaticResource EditorDirty}" Margin="0,6,0,0" Visibility="{Binding SelectedActor.OwningFile.IsReadOnly, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}"/>
                                 </StackPanel>
-                                <Expander Header="Transform" IsExpanded="True" Padding="10,0,10,10">
+                                <Expander Header="Transform" IsExpanded="True" Padding="10,0,10,10" Visibility="{Binding SelectedActor.HasSpatialRepresentation, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
                                     <StackPanel DataContext="{Binding SelectedActor}">
-                                        <StackPanel.Style><Style TargetType="StackPanel"><Setter Property="IsEnabled" Value="True"/><Style.Triggers><DataTrigger Binding="{Binding}" Value="{x:Null}"><Setter Property="IsEnabled" Value="False"/></DataTrigger><DataTrigger Binding="{Binding OwningFile.IsReadOnly}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
+                                        <StackPanel.Style><Style TargetType="StackPanel"><Setter Property="IsEnabled" Value="True"/><Style.Triggers><DataTrigger Binding="{Binding}" Value="{x:Null}"><Setter Property="IsEnabled" Value="False"/></DataTrigger><DataTrigger Binding="{Binding CanEditTransform}" Value="False"><Setter Property="IsEnabled" Value="False"/></DataTrigger><DataTrigger Binding="{Binding OwningFile.IsReadOnly}" Value="True"><Setter Property="IsEnabled" Value="False"/></DataTrigger></Style.Triggers></Style></StackPanel.Style>
                                         <TextBlock Text="Position · world units" Style="{StaticResource EditorSectionLabel}"/>
                                         <Grid>
                                             <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/></Grid.ColumnDefinitions>

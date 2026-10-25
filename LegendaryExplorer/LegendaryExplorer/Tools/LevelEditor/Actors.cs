@@ -1,4 +1,4 @@
-﻿using LegendaryExplorer.Misc;
+using LegendaryExplorer.Misc;
 using LegendaryExplorer.Tools.LevelEditor.Scene3D;
 using LegendaryExplorerCore.Helpers;
 using LegendaryExplorerCore.Packages;
@@ -7,7 +7,6 @@ using LegendaryExplorerCore.Unreal.BinaryConverters;
 using LegendaryExplorerCore.Unreal.Classes;
 using LegendaryExplorerCore.Unreal.ObjectInfo;
 using System;
-using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -45,7 +44,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
     // Use the resolved proxy type so subclasses and collection components are
     // categorized consistently, regardless of their export names or tags.
-    public string Category => this switch
+    public virtual string Category => this switch
     {
         ILightProxy => "Lights",
         { IsVolume: true } => "Volumes",
@@ -232,8 +231,41 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         }
     }
 
-    public bool IsReadOnly => (OwningFile is null || OwningFile.IsReadOnly)
-                           && !(Editor?.IsApplyingUndoRedo ?? false);
+    public virtual bool CanEditTransform => true;
+    public virtual bool HasSpatialRepresentation => true;
+    public virtual ExportEntry CollectionOwner => null;
+    public bool IsReadOnly => !CanEditTransform || ((OwningFile is null || OwningFile.IsReadOnly)
+                           && !(Editor?.IsApplyingUndoRedo ?? false));
+
+    public virtual ActorCoverage Coverage
+    {
+        get
+        {
+            if (this is ILightProxy) return new(ActorRepresentation.PartialScene,
+                "Light contribution and editor icon; preview limitations are listed under lighting details.");
+            if (this is BrushProxy && !Components.OfType<BrushComponentProxy>().Any())
+                return new(ActorRepresentation.Unsupported, "No brush component was loaded for this actor.");
+            if (this is BrushProxy) return new(ActorRepresentation.EditorMarker,
+                Export.IsA("FoliageFactory") ? "Authoring volume only; foliage instances are not rendered."
+                    : "Brush/volume wireframe only; gameplay and postprocess effects are not simulated.");
+            int meshes = Components.OfType<MeshComponentProxy>().Count(c => c.HasPreviewMesh);
+            if (meshes == 0) return new(ActorRepresentation.Unsupported, "No renderable mesh was loaded for this actor.");
+            bool partial = Components.Any(c => c is not MeshComponentProxy { HasPreviewMesh: true });
+            return new(partial ? ActorRepresentation.PartialScene : ActorRepresentation.SceneRendered,
+                partial ? "Some components have no renderable mesh." : "Loaded mesh geometry; visibility and material/lighting preview settings still apply.");
+        }
+    }
+    public string CoverageLabel => Coverage.Label;
+    public string CoverageReason => Coverage.Reason;
+    public string CoverageToolTip => $"{DisplayText}\n{CoverageLabel}: {CoverageReason}";
+
+    internal void NotifyCoverageChanged()
+    {
+        OnPropertyChanged(nameof(Coverage));
+        OnPropertyChanged(nameof(CoverageLabel));
+        OnPropertyChanged(nameof(CoverageReason));
+        OnPropertyChanged(nameof(CoverageToolTip));
+    }
 
     public virtual bool IsVolume => false;
     private bool isVolumetricMesh;
@@ -300,7 +332,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         _cleanSnapshot = SnapshotTransform();
     }
 
-    //only for use by the faux actors that are children of the CollectionActors
+    // Minimal identity for collection components, helper records and failed previews.
     protected ActorProxy(ExportEntry actorExport)
     {
         Export = actorExport;
@@ -311,6 +343,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         prePivot =  Vector3.Zero;
         rotation = new Rotator(0, 0, 0);
         Properties = [];
+        _cleanSnapshot = SnapshotTransform();
     }
 
     public void ResolveAttachment(IEnumerable<ActorProxy> actorProxies)
@@ -349,92 +382,87 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         }
     }
 
-    private static readonly FrozenSet<string> SupportedClasses = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+    // Collection exports are expanded by the level loader; they are not standalone previews.
+    public static bool CanCreate(ExportEntry actorExport, bool includeHelpers = false)
     {
-        "StaticMeshActor",
-        "SkeletalMeshActor",
-        "SFXSkeletalMeshActor",
-        "DynamicSMActor",
-        "Brush",
-        "SFXStuntActor",
-        "BioArtPlaceable",
-        "BioPawn",
-        "Pawn",
-        "PrefabInstance",
-        "SFXDroppedGrenade",
-        "SFXDroppedAmmo",
-        "SFXDroppedPickup",
-        "Light"
-    }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
-
-    public static bool CanCreate(ExportEntry actorExport)
-    {
-        return actorExport.IsA(SupportedClasses) && (!actorExport.IsA("Light") || LightActorProxy.HasSupportedLight(actorExport));
+        var kind = ActorClassification.Get(actorExport).Kind;
+        return kind != ActorKind.Collection && (kind != ActorKind.Helper || includeHelpers && actorExport.IsA("Actor"))
+            && (kind != ActorKind.Light || includeHelpers || LightActorProxy.HasSupportedLight(actorExport));
     }
 
-    //KEEP IN SYNC WITH CanCreate!
     public static ActorProxy Create(IActorEditorContext context, ExportEntry actorExport)
     {
-        string className = actorExport.ClassName;
-        if (GlobalUnrealObjectInfo.IsA(className, "StaticMeshActor", actorExport.Game))
+        var info = ActorClassification.Get(actorExport);
+        try
         {
-            return new StaticMeshActorProxy(context, actorExport);
+            return info.Kind switch
+            {
+                ActorKind.StaticMesh => new StaticMeshActorProxy(context, actorExport),
+                ActorKind.SFXSkeletalMesh => new SFXSkeletalMeshActorProxy(context, actorExport),
+                ActorKind.SkeletalMesh => new SkeletalMeshActorProxy(context, actorExport),
+                ActorKind.KAsset => new KAssetProxy(context, actorExport),
+                ActorKind.DynamicMesh => new DynamicSMActorProxy(context, actorExport),
+                ActorKind.Brush => new BrushProxy(context, actorExport),
+                ActorKind.Stunt => new SFXStuntActorProxy(context, actorExport),
+                ActorKind.Placeable => new BioArtPlaceableProxy(context, actorExport),
+                ActorKind.BioPawn => new BioPawnProxy(context, actorExport),
+                ActorKind.Pawn => new PawnProxy(context, actorExport),
+                ActorKind.Prefab => new PrefabInstanceProxy(context, actorExport),
+                ActorKind.Grenade => new SFXDroppedGrenadeProxy(context, actorExport),
+                ActorKind.Ammo => new SFXDroppedAmmoProxy(context, actorExport),
+                ActorKind.Pickup => new SFXDroppedPickupProxy(context, actorExport),
+                ActorKind.Light when LightActorProxy.HasSupportedLight(actorExport) => new LightActorProxy(context, actorExport),
+                ActorKind.Light => new EditorActorProxy(context, actorExport,
+                    new(ActorKind.Helper, "Effects helpers", "Missing or unsupported light component.")),
+                ActorKind.Collection => new EditorActorProxy(context, actorExport,
+                    new(ActorKind.Helper, "Data", "Collection container; its components have separate outliner entries.", true)),
+                _ => new EditorActorProxy(context, actorExport, info)
+            };
         }
-        if (GlobalUnrealObjectInfo.IsA(className, "SFXSkeletalMeshActor", actorExport.Game) 
-         || GlobalUnrealObjectInfo.IsA(className, "SFXSkeletalMeshActorMAT", actorExport.Game))
+        catch (Exception e) when (e is not OutOfMemoryException)
         {
-            return new SFXSkeletalMeshActorProxy(context, actorExport);
+            return EditorActorProxy.Failed(context, actorExport, e.Message);
         }
-        if (GlobalUnrealObjectInfo.IsA(className, "SkeletalMeshActor", actorExport.Game))
+    }
+
+    /// <summary>Retain the container and each local component, including unsupported or malformed components.</summary>
+    public static List<ActorProxy> CreateCollection(IActorEditorContext context, ExportEntry export)
+    {
+        List<ActorProxy> actors = [];
+        try
         {
-            return new SkeletalMeshActorProxy(context, actorExport);
+            StaticCollectionActor collection = export.ClassName == "StaticMeshCollectionActor"
+                ? export.GetBinaryData<StaticMeshCollectionActor>() : export.GetBinaryData<StaticLightCollectionActor>();
+            int unresolved = 0;
+            for (int i = 0; i < (collection.Components?.Count ?? 0); i++)
+            {
+                if (!export.FileRef.TryGetUExport(collection.Components[i], out var component)) { unresolved++; continue; }
+                ActorProxy proxy;
+                try
+                {
+                    if (i >= collection.LocalToWorldTransforms.Count) throw new InvalidOperationException("No serialized collection transform for this component.");
+                    proxy = collection switch
+                    {
+                        StaticMeshCollectionActor mesh => new StaticMeshComponentActorProxy(context, component, mesh, i),
+                        StaticLightCollectionActor light when SceneLight.GetLightType(component) is { } type
+                            => new StaticLightCollectionComponentProxy(context, component, light, i, type),
+                        _ => throw new InvalidOperationException("Unsupported collection light component.")
+                    };
+                }
+                catch (Exception e) when (e is not OutOfMemoryException)
+                {
+                    proxy = EditorActorProxy.Failed(context, component, e.Message, export);
+                }
+                actors.Add(proxy);
+            }
+            actors.Insert(0, new EditorActorProxy(context, export, new(ActorKind.Helper, "Data",
+                $"Collection container; {actors.Count} local component entries. {unresolved} null, imported or unresolved component references.", true)));
         }
-        if (GlobalUnrealObjectInfo.IsA(className, "DynamicSMActor", actorExport.Game))
+        catch (Exception e) when (e is not OutOfMemoryException)
         {
-            return new DynamicSMActorProxy(context, actorExport);
+            actors.Insert(0, EditorActorProxy.Failed(context, export, e.Message));
         }
-        if (GlobalUnrealObjectInfo.IsA(className, "Brush", actorExport.Game))
-        {
-            return new BrushProxy(context, actorExport);
-        }
-        if (GlobalUnrealObjectInfo.IsA(className, "SFXStuntActor", actorExport.Game))
-        {
-            return new SFXStuntActorProxy(context, actorExport);
-        }
-        if (GlobalUnrealObjectInfo.IsA(className, "BioArtPlaceable", actorExport.Game))
-        {
-            return new BioArtPlaceableProxy(context, actorExport);
-        }
-        if (GlobalUnrealObjectInfo.IsA(className, "BioPawn", actorExport.Game))
-        {
-            return new BioPawnProxy(context, actorExport);
-        }
-        if (GlobalUnrealObjectInfo.IsA(className, "Pawn", actorExport.Game))
-        {
-            return new PawnProxy(context, actorExport);
-        }
-        if (GlobalUnrealObjectInfo.IsA(className, "PrefabInstance", actorExport.Game))
-        {
-            return new PrefabInstanceProxy(context, actorExport);
-        }
-        if (GlobalUnrealObjectInfo.IsA(className, "SFXDroppedGrenade", actorExport.Game))
-        {
-            return new SFXDroppedGrenadeProxy(context, actorExport);
-        }
-        if (GlobalUnrealObjectInfo.IsA(className, "SFXDroppedAmmo", actorExport.Game))
-        {
-            return new SFXDroppedAmmoProxy(context, actorExport);
-        }
-        if (GlobalUnrealObjectInfo.IsA(className, "SFXDroppedPickup", actorExport.Game))
-        {
-            return new SFXDroppedPickupProxy(context, actorExport);
-        }
-        if (GlobalUnrealObjectInfo.IsA(className, "Light", actorExport.Game))
-        {
-            return LightActorProxy.HasSupportedLight(actorExport) ? new LightActorProxy(context, actorExport) : null;
-        }
-        return null;
-        //return new ActorProxy(context, actorExport);
+        return actors;
     }
 
     protected void AddComponentArray<T>(MeshRenderContext context, ref List<T> components, [CallerArgumentExpression(nameof(components))] string propName = null) where T : PrimitiveComponentProxy
@@ -560,6 +588,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         // ParentAnimComponent transforms must propagate even to children whose own settings did not change.
         if (refreshed)
             foreach (var component in Components) component.UpdateLocalToWorld();
+        if (refreshed) NotifyCoverageChanged();
         if (refreshed && this is StaticMeshActorProxy or StaticMeshComponentActorProxy or DynamicSMActorProxy)
             IsVolumetricMesh = Components.OfType<StaticMeshComponentProxy>().Any(component => component.IsVolumetric);
         return refreshed;
@@ -651,7 +680,7 @@ public class StaticMeshActorProxy : ActorProxy
     public StaticMeshActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         AddComponent(context.RenderContext, ref StaticMeshComponent);
-        IsVolumetricMesh = StaticMeshComponent.IsVolumetric;
+        IsVolumetricMesh = StaticMeshComponent?.IsVolumetric == true;
     }
 }
 
@@ -699,7 +728,7 @@ public class DynamicSMActorProxy : ActorProxy
     public DynamicSMActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
     {
         AddComponent(context.RenderContext, ref StaticMeshComponent);
-        IsVolumetricMesh = StaticMeshComponent.IsVolumetric;
+        IsVolumetricMesh = StaticMeshComponent?.IsVolumetric == true;
     }
 }
 
@@ -819,6 +848,7 @@ public class BioPawnProxy : PawnProxy
 public abstract class CollectionActorComponentProxy : ActorProxy
 {
     public ExportEntry CollectionActorExport { get; }
+    public override ExportEntry CollectionOwner => CollectionActorExport;
 
     /// <summary>
     /// The transform stored in the collection's binary, as of the last load or commit
@@ -875,6 +905,11 @@ public class StaticMeshComponentActorProxy : CollectionActorComponentProxy
 
 public class PrefabInstanceProxy : ActorProxy
 {
+    public override ActorCoverage Coverage => new(
+        Actors.Count > 0 && Actors.All(a => a.Coverage.Representation == ActorRepresentation.SceneRendered)
+            ? ActorRepresentation.SceneRendered : ActorRepresentation.PartialScene,
+        $"Prefab has {Actors.Count} children; {Actors.Count(a => a.Coverage.Representation != ActorRepresentation.SceneRendered)} have partial, helper-only or unsupported coverage.");
+
     private readonly List<ActorProxy> Actors = [];
 
     /// <summary>
@@ -990,17 +1025,18 @@ public class PrefabInstanceProxy : ActorProxy
 
     public override BoxSphereBounds GetBounds()
     {
-        if (Actors.Count is 0)
+        var spatial = Actors.Where(a => a is not EditorActorProxy && a.HasSpatialRepresentation).ToList();
+        if (spatial.Count is 0)
         {
             return new BoxSphereBounds
             {
                 Origin = LocalToWorld.Translation
             };
         }
-        var bounds = Actors[0].GetBounds();
-        for (int i = 1; i < Actors.Count; i++)
+        var bounds = spatial[0].GetBounds();
+        for (int i = 1; i < spatial.Count; i++)
         {
-            bounds = bounds.Union(Actors[i].GetBounds());
+            bounds = bounds.Union(spatial[i].GetBounds());
         }
         return bounds;
     }

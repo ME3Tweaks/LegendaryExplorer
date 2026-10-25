@@ -526,6 +526,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         // A handle drag belongs to the light it started on, so it's recorded before the gizmo moves to another
         if (actor != selectedActor) RenderContext.LightGizmo.EndDrag();
         var prev = selectedActor;
+        RenderContext.SelectedActor = actor;
+        if (prev != actor) RenderContext.RevealedHelper = null;
         if (SetProperty(ref selectedActor, actor, nameof(SelectedActor)))
         {
             if (prev is not null)
@@ -556,21 +558,23 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             OnPropertyChanged(nameof(IsLightSelected));
             RefreshLightingDiagnostics();
         }
-        if (focus && selectedActor is not null)
+        RenderContext.TransformWidget.Attach = selectedActor is { CanEditTransform: true, HasSpatialRepresentation: true }
+            ? selectedActor : null;
+        if (focus && selectedActor is { HasSpatialRepresentation: true })
         {
             FocusOnBounds(selectedActor.GetBounds());
-            RenderContext.TransformWidget.Attach = selectedActor;
         }
     }
 
     private void CenterView()
     {
-        if (Actors.Count > 0)
+        var spatialActors = Actors.Where(a => a is not EditorActorProxy && a.HasSpatialRepresentation).ToList();
+        if (spatialActors.Count > 0)
         {
-            BoxSphereBounds fullBounds = Actors[0].GetBounds();
-            for (int i = 1; i < Actors.Count; i++)
+            BoxSphereBounds fullBounds = spatialActors[0].GetBounds();
+            for (int i = 1; i < spatialActors.Count; i++)
             {
-                fullBounds = fullBounds.Union(Actors[i].GetBounds());
+                fullBounds = fullBounds.Union(spatialActors[i].GetBounds());
             }
             FocusOnBounds(fullBounds);
         }
@@ -726,7 +730,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         if (ignoredClasses.Count > 0)
         {
             string existing = string.IsNullOrEmpty(TextBelowActors) ? "" : TextBelowActors + "\n";
-            TextBelowActors = existing + $"{Path.GetFileName(path)} unrendered: {string.Join(", ", ignoredClasses)}";
+            TextBelowActors = existing + $"{Path.GetFileName(path)} unsupported (retained in outliner): {string.Join(", ", ignoredClasses.Order())}";
         }
 
         if (ExportQueuedForFocusing > 0)
@@ -868,31 +872,22 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         foreach (var actorExport in actorExports)
         {
             var className = actorExport.ClassName;
-            if (className is "StaticMeshCollectionActor")
+            if (className is "StaticMeshCollectionActor" or "StaticLightCollectionActor")
             {
-                var smca = actorExport.GetBinaryData<StaticMeshCollectionActor>();
-                for (int i = 0; i < smca.Components.Count; i++)
+                foreach (var proxy in ActorProxy.CreateCollection(this, actorExport))
                 {
-                    if (level.Export.FileRef.TryGetUExport(smca.Components[i], out ExportEntry smcExport))
-                    {
-                        var smcActor = new StaticMeshComponentActorProxy(this, smcExport, smca, i);
-                        smcActor.OwningFile = owningFile;
-                        actors.Add(smcActor);
-                    }
+                    proxy.OwningFile = owningFile;
+                    actors.Add(proxy);
+                    if (proxy.Coverage.Representation == ActorRepresentation.Unsupported)
+                        ignoredActorClasses.Add(proxy.Export.ClassName);
                 }
-            }
-            else if (className is "StaticLightCollectionActor")
-            {
-                actors.AddRange(CreateCollectionLights(actorExport, owningFile));
             }
             else if (ActorProxy.Create(this, actorExport) is { } actorProxy)
             {
                 actorProxy.OwningFile = owningFile;
                 actors.Add(actorProxy);
-            }
-            else if (className is not "BioWorldInfo")
-            {
-                ignoredActorClasses.Add(className);
+                if (actorProxy.Coverage.Representation == ActorRepresentation.Unsupported)
+                    ignoredActorClasses.Add(className);
             }
         }
         foreach (var actor in actors)
@@ -905,25 +900,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         //The level's BSP blocks light environments' visibility traces
         RenderContext.SetLevelModel(level.Export.FileRef, level.Model);
         return new(actors, ignoredActorClasses);
-    }
-
-    /// <summary>
-    /// Proxies for a StaticLightCollectionActor's supported lights. Lights without a stored transform can't be placed, so they aren't editable
-    /// </summary>
-    private List<ActorProxy> CreateCollectionLights(ExportEntry collectionExport, OpenLevelFile owningFile)
-    {
-        var lights = new List<ActorProxy>();
-        var slca = collectionExport.GetBinaryData<StaticLightCollectionActor>();
-        if (slca.Components is null) return lights;
-        for (int i = 0; i < slca.Components.Count && i < slca.LocalToWorldTransforms.Count; i++)
-        {
-            if (collectionExport.FileRef.TryGetUExport(slca.Components[i], out ExportEntry lightComponent)
-                && SceneLight.GetLightType(lightComponent) is { } type)
-            {
-                lights.Add(new StaticLightCollectionComponentProxy(this, lightComponent, slca, i, type) { OwningFile = owningFile });
-            }
-        }
-        return lights;
     }
 
     public void RemoveActor(ActorProxy actor)
@@ -979,6 +955,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public ICommand FocusFileCommand { get; set; }
     public ICommand SelectChangedActorCommand { get; set; }
     public ICommand SelectLightCommand { get; set; }
+    public ICommand RevealHelperCommand { get; set; }
     private void LoadCommands()
     {
         SetAssignmentPolicyCommand = new RelayCommand(policy => AssignmentPolicy = (LightAssignmentPolicy)policy);
@@ -996,6 +973,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         CommitChangesCommand = new GenericCommand(CommitChanges, () => CanEditScene && PackageIsLoaded());
         CommitSingleFileCommand = new RelayCommand(CommitSingleFileExecute, _ => CanEditScene && PackageIsLoaded());
         LoadRelatedLevelsCommand = new GenericCommand(LoadRelatedLevels, () => CanEditScene && PackageIsLoaded());
+        RevealHelperCommand = new GenericCommand(() =>
+        {
+            RenderContext.RevealedHelper = SelectedActor;
+            FocusOnBounds(SelectedActor.GetBounds());
+        }, () => SelectedActor is EditorActorProxy { HasSpatialRepresentation: true });
         FocusSelectedCommand = new GenericCommand(() =>
         {
             if (SelectedActor is not null)
@@ -1003,7 +985,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 SelectAndRevealActor(SelectedActor, false);
                 FocusOnBounds(SelectedActor.GetBounds());
             }
-        }, () => PackageIsLoaded() && SelectedActor is not null);
+        }, () => PackageIsLoaded() && SelectedActor is { HasSpatialRepresentation: true });
         ToggleLocalCoordsCommand = new GenericCommand(() => UseLocalCoordsForWidget = !UseLocalCoordsForWidget, PackageIsLoaded);
         OpenInPackageEditorCommand = new GenericCommand(() =>
         {
@@ -1021,7 +1003,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         ToggleOrthoViewCommand = new GenericCommand(() => IsOrthographicView = !IsOrthographicView);
         FocusFileCommand = new RelayCommand(parameter =>
         {
-            if (parameter is OpenLevelFile file && file.Actors.FirstOrDefault() is { } actor)
+            if (parameter is OpenLevelFile file && file.Actors.FirstOrDefault(a => a is not EditorActorProxy && a.HasSpatialRepresentation) is { } actor)
             {
                 SelectAndRevealActor(actor);
             }
@@ -1541,10 +1523,15 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                         savedCamPOV = (RenderContext.Camera.Position, RenderContext.Camera.Pitch, RenderContext.Camera.Yaw);
                         savedActorPos = SelectedActor.Location;
                     }
-                    if (alteredActor is CollectionActorComponentProxy cacp)
+                    if (alteredActor.Export.ClassName is "StaticMeshCollectionActor" or "StaticLightCollectionActor")
                     {
-                        //the whole collection actor gets reloaded, since its components' transforms all live in its binary
-                        collectionActorsToUpdate.Add(cacp.CollectionActorExport);
+                        collectionActorsToUpdate.Add(alteredActor.Export);
+                        continue;
+                    }
+                    if (alteredActor.CollectionOwner is { } collectionOwner)
+                    {
+                        // The whole collection is reloaded, including previously failed components.
+                        collectionActorsToUpdate.Add(collectionOwner);
                         continue;
                     }
                     RemoveActor(alteredActor);
@@ -1560,33 +1547,17 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             {
                 for (int i = file.Actors.Count - 1; i >= 0; i--)
                 {
-                    if (file.Actors[i] is CollectionActorComponentProxy cacp && cacp.CollectionActorExport == collectionActor)
+                    if (file.Actors[i].Export == collectionActor || file.Actors[i].CollectionOwner == collectionActor)
                     {
                         RemoveActor(file.Actors[i]);
                     }
                 }
                 if (file.Package.GetEntry(collectionActor.UIndex) is ExportEntry newCollectionActor)
                 {
-                    string className = newCollectionActor.ClassName;
-                    if (className is "StaticMeshCollectionActor")
+                    foreach (var proxy in ActorProxy.CreateCollection(this, newCollectionActor))
                     {
-                        var smca = newCollectionActor.GetBinaryData<StaticMeshCollectionActor>();
-                        for (int i = 0; i < smca.Components.Count; i++)
-                        {
-                            if (file.Package.TryGetUExport(smca.Components[i], out ExportEntry smcExport))
-                            {
-                                var smcActor = new StaticMeshComponentActorProxy(this, smcExport, smca, i);
-                                smcActor.OwningFile = file;
-                                AddActor(smcActor, false);
-                            }
-                        }
-                    }
-                    else if (className is "StaticLightCollectionActor")
-                    {
-                        foreach (var light in CreateCollectionLights(newCollectionActor, file))
-                        {
-                            AddActor(light, false);
-                        }
+                        proxy.OwningFile = file;
+                        AddActor(proxy, false);
                     }
                 }
             }
@@ -1665,6 +1636,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         if (e.PropertyName is not (nameof(ActorProxy.Location) or nameof(ActorProxy.Rotation) or nameof(ActorProxy.DrawScale) or nameof(ActorProxy.DrawScale3D))) return;
         // Which lights reach the selection depends on its bounds. Refreshed once a drag ends
         LightDiagnosticsStale = true;
+        if (PreviewRefreshInProgress)
+        {
+            _preEditSnapshot = selectedActor?.SnapshotTransform();
+            return;
+        }
         if (_isApplyingUndoRedo || RenderContext.TransformWidget.IsDragging) return;
 
         if (sender is ActorProxy actor && _preEditSnapshot is { } before)
@@ -2090,6 +2066,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         return obj is ActorProxy actor &&
                (actor.DisplayText.Contains(_actorFilterText, StringComparison.OrdinalIgnoreCase)
                 || actor.Export.ClassName.Contains(_actorFilterText, StringComparison.OrdinalIgnoreCase)
+                || actor.CoverageLabel.Contains(_actorFilterText, StringComparison.OrdinalIgnoreCase)
+                || actor.Category.Contains(_actorFilterText, StringComparison.OrdinalIgnoreCase)
                 || (int.TryParse(_actorFilterText.TrimStart('#'), out int index) && actor.Export.UIndex == index));
     }
 
