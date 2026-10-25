@@ -526,6 +526,10 @@ namespace LegendaryExplorerCore.Shaders
         public static (MaterialShaderMap, Shader[]) GetMaterialShaderMapAndShaders(ExportEntry material, Func<IMEPackage, ShaderCache> getSeekFreeShaderCache, params string[] shaderTypes)
             => GetMaterialShaderMapAndShaders(material, getSeekFreeShaderCache, vertexFactoryShaders: true, shaderTypes);
 
+        public static (MaterialShaderMap, Shader[]) GetMaterialShaderMapAndFactoryShaders(ExportEntry material, Func<IMEPackage, ShaderCache> getSeekFreeShaderCache,
+            string vertexFactoryType, params string[] shaderTypes)
+            => GetMaterialShaderMapAndShaders(material, getSeekFreeShaderCache, true, shaderTypes, vertexFactoryType);
+
         /// <summary>
         /// Gets shaders that aren't specific to a vertex factory, such as FLightFunctionPixelShader. They're in the material shader map itself, rather than one of its mesh shader maps.
         /// </summary>
@@ -534,11 +538,11 @@ namespace LegendaryExplorerCore.Shaders
             => GetMaterialShaderMapAndShaders(material, getSeekFreeShaderCache, vertexFactoryShaders: false, shaderTypes);
 
         private static (MaterialShaderMap, Shader[]) GetMaterialShaderMapAndShaders(ExportEntry material, Func<IMEPackage, ShaderCache> getSeekFreeShaderCache, bool vertexFactoryShaders,
-            string[] shaderTypes)
+            string[] shaderTypes, string vertexFactoryType = "FLocalVertexFactory")
         {
             StaticParameterSet sps = material.ClassName switch
             {
-                "Material" => (StaticParameterSet)ObjectBinary.From<Material>(material).SM3MaterialResource.ID,
+                "Material" or "DecalMaterial" => (StaticParameterSet)ObjectBinary.From<Material>(material).SM3MaterialResource.ID,
                 _ => ObjectBinary.From<MaterialInstance>(material).SM3StaticParameterSet
             };
             var shaders = new Shader[shaderTypes.Length];
@@ -593,7 +597,7 @@ namespace LegendaryExplorerCore.Shaders
                 }
                 foreach (MeshShaderMap meshShaderMap in shaderMap.MeshShaderMaps)
                 {
-                    if (meshShaderMap.VertexFactoryType.Name == "FLocalVertexFactory")
+                    if (meshShaderMap.VertexFactoryType.Name == vertexFactoryType)
                     {
                         return meshShaderMap.Shaders;
                     }

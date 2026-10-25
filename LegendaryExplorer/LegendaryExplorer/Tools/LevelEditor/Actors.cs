@@ -382,12 +382,23 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         }
     }
 
-    // Collection exports are expanded by the level loader; they are not standalone previews.
     public static bool CanCreate(ExportEntry actorExport, bool includeHelpers = false)
     {
         var kind = ActorClassification.Get(actorExport).Kind;
-        return kind != ActorKind.Collection && (kind != ActorKind.Helper || includeHelpers && actorExport.IsA("Actor"))
-            && (kind != ActorKind.Light || includeHelpers || LightActorProxy.HasSupportedLight(actorExport));
+        switch (kind)
+        {
+            case ActorKind.Collection:
+                // Collection exports are expanded by the level loader, not previewed individually.
+                return false;
+            case ActorKind.Helper:
+            case ActorKind.Decal:
+                // Decal surfaces need their receiving actors loaded; an isolated export only has its helper.
+                return includeHelpers && actorExport.IsA("Actor");
+            case ActorKind.Light:
+                return includeHelpers || LightActorProxy.HasSupportedLight(actorExport);
+            default:
+                return true;
+        }
     }
 
     public static ActorProxy Create(IActorEditorContext context, ExportEntry actorExport)
@@ -401,6 +412,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
                 ActorKind.SFXSkeletalMesh => new SFXSkeletalMeshActorProxy(context, actorExport),
                 ActorKind.SkeletalMesh => new SkeletalMeshActorProxy(context, actorExport),
                 ActorKind.KAsset => new KAssetProxy(context, actorExport),
+                ActorKind.Decal => new DecalActorProxy(context, actorExport),
                 ActorKind.DynamicMesh => new DynamicSMActorProxy(context, actorExport),
                 ActorKind.Brush => new BrushProxy(context, actorExport),
                 ActorKind.Stunt => new SFXStuntActorProxy(context, actorExport),
@@ -507,7 +519,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     {
         foreach (var component in Components)
         {
-            if (component.HiddenGame && !context.ShowHidden) continue;
+            if (!context.IsComponentVisible(component)) continue;
             // Meshes eligible for the selected light are tinted, and outlined after lighting so the outline survives additive light passes.
             bool highlighted = context.HighlightedComponents.Contains(component);
             if (highlighted)

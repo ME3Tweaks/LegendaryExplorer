@@ -24,6 +24,8 @@ public class Mesh<TVertex> : IDisposable where TVertex : IVertexBase
     public BoxSphereBounds BaseBounds;
 
     public BoxSphereBounds TransformedBounds;
+    // Only cooked decal meshes use the decal vertex factory and depth bias.
+    internal DecalProjection Decal;
 
     private Matrix4x4 localToWorld = Matrix4x4.Identity;
     public Matrix4x4 LocalToWorld

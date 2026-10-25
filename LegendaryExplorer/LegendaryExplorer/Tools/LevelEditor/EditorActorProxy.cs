@@ -11,7 +11,7 @@ using System.Linq;
 namespace LegendaryExplorer.Tools.LevelEditor;
 
 /// <summary>A retained, inspectable export. A marker represents a position, never an implemented scene effect.</summary>
-public sealed class EditorActorProxy : ActorProxy
+public class EditorActorProxy : ActorProxy
 {
     private ActorCoverage coverage;
     private readonly string category;
@@ -61,6 +61,7 @@ public sealed class EditorActorProxy : ActorProxy
         // Inherited transforms are values, so imported archetypes can safely supply them.
         // Do not inherit a CDO's arbitrary default Location as evidence that metadata has a useful position.
         Properties = export.GetCondensedProperties(context.PackageCache, resolveImports: true, mergeStructs: true);
+        Tag = Properties.GetProp<NameProperty>("Tag")?.Value ?? default;
         for (var ancestor = EffectiveLightingProperties.Resolve(export.Archetype, context.PackageCache);
             ancestor is not null && dependencies.Add(ancestor);
             ancestor = EffectiveLightingProperties.Resolve(ancestor.Archetype, context.PackageCache)) { }
@@ -100,6 +101,7 @@ public sealed class EditorActorProxy : ActorProxy
                 boundsComponent = new HelperBoundsProxy(previewContext.RenderContext, cylinder, this);
                 Components.Add(boundsComponent);
                 dependencies.Add(cylinder);
+                TrackBoundsAncestors(cylinder);
             }
         }
         catch (Exception e) when (e is not OutOfMemoryException)
@@ -107,6 +109,22 @@ public sealed class EditorActorProxy : ActorProxy
             coverage = coverage with { Reason = coverage.Reason + $" Bounds could not be loaded: {e.Message}" };
             NotifyCoverageChanged();
         }
+    }
+
+    private void TrackBoundsAncestors(ExportEntry cylinder)
+    {
+        var cache = previewContext.PackageCache;
+        void Track(ExportEntry ancestor)
+        {
+            var seen = new HashSet<ExportEntry>();
+            while (ancestor is not null && seen.Add(ancestor))
+            {
+                dependencies.Add(ancestor);
+                ancestor = EffectiveLightingProperties.Resolve(ancestor.Archetype, cache);
+            }
+        }
+        Track(EffectiveLightingProperties.Resolve(cylinder.Archetype, cache));
+        Track(EffectiveLightingProperties.ClassDefault(cylinder, cache));
     }
 
     private EditorActorProxy(IActorEditorContext context, ExportEntry export, string failure) : base(export)
@@ -178,11 +196,12 @@ public sealed class EditorActorProxy : ActorProxy
     public override void Render(LevelEditorRenderContext context, RenderPass pass)
     {
         // Prefab children have their owning prefab's pick identity, not independent outliner rows.
-        if (pass != RenderPass.Base || Editor is null || !hasPosition || !context.TryDrawHelper(this)) return;
+        bool selected = context.IsActorSelected(this);
+        if (pass != RenderPass.Base || Editor is null && !selected || !hasPosition || !context.TryDrawHelper(this)) return;
         Vector3 position = LocalToWorld.Translation;
         float size = Math.Max(4, 7 * context.WorldUnitsPerPixel(position));
         var (right, up) = context.GetViewAxes();
-        bool selected = context.SelectedActor == this;
+        int hitId = Editor is null ? context.SelectedActor.HitID : HitID;
         Vector4 color = selected ? LevelEditorRenderContext.HighlightColor : category switch
         {
             "Navigation" => new(0.25f, 0.9f, 0.45f, 1),
@@ -191,7 +210,7 @@ public sealed class EditorActorProxy : ActorProxy
             "Effects helpers" => new(1, 0.65f, 0.3f, 1),
             _ => new(0.85f, 0.85f, 0.85f, 1)
         };
-        context.Sprites.Add(context.HelperSprites.Get(context.Device), position, right * size, up * size, color, HitID);
+        context.Sprites.Add(context.HelperSprites.Get(context.Device), position, right * size, up * size, color, hitId);
         if (selected)
         {
             EnsureBounds();
@@ -199,7 +218,7 @@ public sealed class EditorActorProxy : ActorProxy
                 context.ScreenLabels.Add(new(pixel.X, pixel.Y - 18, $"#{Export.UIndex}"));
             Vector3 direction = Vector3.TransformNormal(Vector3.UnitX, LocalToWorld);
             if (direction.LengthSquared() > 0)
-                context.WorldPrimitives.AddLine(position, position + Vector3.Normalize(direction) * size * 3, color, HitID);
+                context.WorldPrimitives.AddLine(position, position + Vector3.Normalize(direction) * size * 3, color, hitId);
             if (extent != Vector3.Zero) context.DrawHighlightBounds(GetBounds());
         }
     }

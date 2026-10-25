@@ -23,6 +23,17 @@ public class LevelEditorRenderContext : MeshRenderContext
 {
     public event Action<ActorProxy> SelectActor;
     public List<ActorProxy> DrawList_3D = [];
+    private Dictionary<LegendaryExplorerCore.Packages.ExportEntry, MeshComponentProxy> decalReceivers;
+    internal MeshComponentProxy FindDecalReceiver(LegendaryExplorerCore.Packages.ExportEntry export)
+    {
+        decalReceivers ??= DrawList_3D.SelectMany(a => a.Components).OfType<MeshComponentProxy>()
+            .GroupBy(c => c.Export).ToDictionary(g => g.Key, g => g.First());
+        if (export is null || !decalReceivers.TryGetValue(export, out var component) || component is null) return null;
+        // In-place mesh refreshes can replace components without replacing the actor.
+        if (!component.Actor.Components.Contains(component))
+            decalReceivers[export] = component = component.Actor.Components.OfType<MeshComponentProxy>().FirstOrDefault(c => c.Export == export);
+        return component;
+    }
     public List<UIElement> DrawList_UI = [];
 
     private USparseArray<IHitProxy> HitProxies = [];
@@ -49,7 +60,6 @@ public class LevelEditorRenderContext : MeshRenderContext
     public readonly LightSprites LightSprites = new();
     public readonly HelperSprites HelperSprites = new();
     public ActorProxy SelectedActor { get; set; }
-    public ActorProxy RevealedHelper { get; set; }
     public const int MaxHelperMarkers = 4096;
     public const float HelperDrawDistance = 50000;
     private int helperMarkers;
@@ -58,10 +68,11 @@ public class LevelEditorRenderContext : MeshRenderContext
     // The selected helper remains available even if the budget has been reached.
     internal bool TryDrawHelper(ActorProxy actor)
     {
+        if (actor is DecalActorProxy && !IsActorSelected(actor) && !GetCategoryState("Effects helpers").IsVisible) return false;
         Vector3 position = actor.LocalToWorld.Translation;
         if (!IsActorVisible(actor) || !WorldToPixel(position, out var pixel)
             || pixel.X < -16 || pixel.Y < -16 || pixel.X > Width + 16 || pixel.Y > Height + 16) return false;
-        if (actor != SelectedActor && (helperMarkers >= MaxHelperMarkers
+        if (!IsActorSelected(actor) && (helperMarkers >= MaxHelperMarkers
             || Vector3.DistanceSquared(position, Camera.Position) > HelperDrawDistance * HelperDrawDistance)) return false;
         helperMarkers++;
         return true;
@@ -150,10 +161,34 @@ public class LevelEditorRenderContext : MeshRenderContext
         return state;
     }
 
+    public bool IsActorSelected(ActorProxy actor)
+    {
+        if (actor is null || SelectedActor is null) return false;
+        return Contains(SelectedActor, actor);
+
+        static bool Contains(ActorProxy candidate, ActorProxy target)
+        {
+            if (candidate == target) return true;
+            if (candidate is PrefabInstanceProxy prefab)
+                foreach (var child in prefab.Children)
+                    if (Contains(child, target)) return true;
+            return false;
+        }
+    }
+
     public override bool IsActorVisible(ActorProxy actor)
-        => actor.HasSpatialRepresentation && (actor is EditorActorProxy
-            ? actor == RevealedHelper || GetCategoryState(actor.Category).IsVisible
-            : GetCategoryState(actor.Category).IsVisible && (!actor.IsHidden || ShowHidden));
+    {
+        if (!actor.HasSpatialRepresentation) return false;
+        if (IsActorSelected(actor)) return true;
+        if (actor is DecalActorProxy)
+            return GetCategoryState("Effects helpers").IsVisible || GetCategoryState("Decals").IsVisible;
+        if (actor is EditorActorProxy) return GetCategoryState(actor.Category).IsVisible;
+        return GetCategoryState(actor.Category).IsVisible && (!actor.IsHidden || ShowHidden);
+    }
+
+    public override bool IsComponentVisible(PrimitiveComponentProxy component)
+        => IsActorSelected(component.Actor)
+            || base.IsComponentVisible(component) && (!component.HiddenGame || ShowHidden);
 
     private bool IsHitProxyVisible(IHitProxy hitProxy) => hitProxy switch
     {
@@ -385,7 +420,9 @@ public class LevelEditorRenderContext : MeshRenderContext
 
     public void LoadActors(IList<ActorProxy> actors)
     {
+        decalReceivers = null;
         DrawList_3D.AddRange(actors);
+        foreach (var decal in DrawList_3D.OfType<DecalActorProxy>()) decal.BindReceivers(this);
         foreach (var actor in actors)
         {
             actor.HitID = HitProxies.Add(actor);
@@ -413,6 +450,7 @@ public class LevelEditorRenderContext : MeshRenderContext
 
     public void UnloadLevel()
     {
+        decalReceivers = null;
         EmptyCaches();
         ClearLights();
         HitProxies.Reset();
@@ -420,7 +458,6 @@ public class LevelEditorRenderContext : MeshRenderContext
         DrawList_UI.Clear();
         TransformWidget.Attach = null;
         SelectedActor = null;
-        RevealedHelper = null;
         LightGizmo.Attach = null;
         HighlightedComponents.Clear();
         HighlightedLights.Clear();
@@ -447,19 +484,21 @@ public class LevelEditorRenderContext : MeshRenderContext
 
     internal void RemoveActor(ActorProxy actor)
     {
+        decalReceivers = null;
         if (DrawList_3D.Remove(actor))
         {
             HitProxies.RemoveAt(actor.HitID);
             if (SelectedActor == actor) SelectedActor = null;
-            if (RevealedHelper == actor) RevealedHelper = null;
         }
     }
 
     internal void AddActor(ActorProxy actor)
     {
+        decalReceivers = null;
         if (!DrawList_3D.Contains(actor))
         {
             DrawList_3D.Add(actor);
+            foreach (var decal in DrawList_3D.OfType<DecalActorProxy>()) decal.BindReceivers(this);
             actor.HitID = HitProxies.Add(actor);
         }
     }

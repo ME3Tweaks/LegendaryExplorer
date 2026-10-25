@@ -104,6 +104,8 @@ public enum RenderPass
     Hair,
     //The level's lights, each added onto the opaque geometry they light in its own pass. Must be rendered after the opaque passes
     Lighting,
+    // Cooked surface overlays, after opaque lighting and before scene translucency.
+    Decals,
     //materials that blend with what's behind them. Must be rendered after the opaque passes, since they don't write depth
     Translucent,
 
@@ -257,7 +259,7 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
     private readonly PreviewTextureCache.TextureEntry FallbackDiffTexture;
 
     /// <param name="lightMapType">The type of static light-map the mesh has. Determines which of the material's shaders are used</param>
-    public LEShaderPreviewMaterial(MeshRenderContext renderContext, ExportEntry export, ELightMapType lightMapType) : base(renderContext, export)
+    public LEShaderPreviewMaterial(MeshRenderContext renderContext, ExportEntry export, ELightMapType lightMapType, bool decal = false) : base(renderContext, export)
     {
         foreach (IEntry textureEntry in Material.Textures)
         {
@@ -271,6 +273,7 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
             }
         }
         var mat = (MaterialRenderProxy)Material;
+        if (decal) mat.VertexFactoryType = "FLocalDecalVertexFactory";
         mat.TextureMap = TextureMap;
         mat.QueueGameShaderLoad(lightMapType);
         if (TexturedPreviewMaterial.FindDiffuse(export, Material) is IEntry diffEntry)
@@ -365,6 +368,7 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
         //The game's base pass shaders write 0 to the alpha channel of the color target.
         //Don't let that through to the backbuffer, or the scene will be transparent when composited.
         BlendDescription.RenderTargetWriteMask = ColorWriteMaskFlags.Red | ColorWriteMaskFlags.Green | ColorWriteMaskFlags.Blue;
+        if (decal && mat.BlendMode == EBlendMode.BLEND_AlphaComposite) BlendDescription.IsBlendEnabled = true;
     }
 
     private bool LoggedFallback;
@@ -410,7 +414,9 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
                 Debug.WriteLine($"{InstancedFullPath} will be rendered with the LEX shader: {material.GameShaderError}");
             }
         }
-        context.RenderMeshWithDefaultEffect(lod.Mesh, s, FallbackDiffTexture?.TextureView);
+        // A diffuse-only rectangle is not a valid fallback for a decal's opacity/projection.
+        if (lod.Mesh.Decal is null)
+            context.RenderMeshWithDefaultEffect(lod.Mesh, s, FallbackDiffTexture?.TextureView);
     }
 
     /// <summary>
@@ -457,10 +463,12 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
         context.ImmediateContext.InputAssembler.SetVertexBuffers(MeshStaticLighting.VertexStreamSlot,
             new VertexBufferBinding(lod.StaticLighting?.VertexStream, MeshStaticLighting.VertexStreamStride, 0));
         //translucency is depth tested against the opaque geometry, but doesn't occlude anything itself
-        context.ImmediateContext.OutputMerger.SetDepthStencilState(DrawsInTranslucentPass ? context.TranslucentDepthState : context.DefaultDepthState);
+        context.ImmediateContext.OutputMerger.SetDepthStencilState(mesh.Decal is not null ? context.LightPassDepthState
+            : DrawsInTranslucentPass ? context.TranslucentDepthState : context.DefaultDepthState);
         //meshes whose transform mirrors them have reversed winding
         bool reverseCulling = mesh.LocalToWorld.GetDeterminant() < 0;
         context.SetMeshRasterizerState(material.IsTwoSided, reverseCulling);
+        if (mesh.Decal is { } decal) context.SetDecalRasterizerState(decal, material.IsTwoSided, reverseCulling);
 
         try
         {
@@ -651,6 +659,15 @@ file class LEShaderPreviewMaterial : ModelPreviewMaterial<LEVertex>
 /// </summary>
 public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
 {
+    internal static ModelPreview<LEVertex> CreateDecal(MeshRenderContext context, Mesh<LEVertex> mesh, ExportEntry material, MeshStaticLighting lighting)
+    {
+        var result = new ModelPreview<LEVertex>(context, mesh);
+        result.Materials.Add(material.InstancedFullPath, new LEShaderPreviewMaterial(context, material, lighting?.LightMapType ?? ELightMapType.LMT_None, decal: true)
+            { Pass = RenderPass.Decals });
+        result.LODs[0].StaticLighting = lighting;
+        result.LODs[0].Sections.Add(new(material.InstancedFullPath, 0, (uint)mesh.Triangles.Count, castsShadow: false));
+        return result;
+    }
     private readonly MeshRenderContext RenderContext;
     /// <summary>
     /// Contains the geometry and section information for each level-of-detail in the model.

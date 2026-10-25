@@ -18,6 +18,7 @@ namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
 {
     internal const string VERTEX_FACTORY_TYPE_NAME = "FLocalVertexFactory";
+    internal string VertexFactoryType { get; set; } = VERTEX_FACTORY_TYPE_NAME;
 
     /// <summary>
     /// A base pass vertex shader and pixel shader that render together. Which pair the game uses is determined by the light-map policy.
@@ -468,7 +469,7 @@ public class MaterialRenderProxy : MaterialInstanceConstantLevelEditor
             //the shadow depth shaders are read in the same lookup, when the material has any to use (see PrepareShadowShaders)
             string[] shadowShaderTypes = !CastsShadowDepth ? [] : CastsMaskedShadow ? [ShadowDepthVertexShaderType, ShadowDepthPixelShaderType]
                 : HasUndisplacedVertices ? [] : [ShadowDepthVertexShaderType];
-            (ShaderMap, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndShaders(mat, Context.GetSeekFreeShaderCache,
+            (ShaderMap, Shader[] shaders) = ShaderCacheManipulator.GetMaterialShaderMapAndFactoryShaders(mat, Context.GetSeekFreeShaderCache, VertexFactoryType,
                 [.. GetShaderTypeNames(LightMapType), .. shadowShaderTypes]);
             ShadowDepthVertexShader = shaders.FirstOrDefault(shader => shader?.ShaderType.Name == ShadowDepthVertexShaderType);
             ShadowDepthPixelShader = shaders.FirstOrDefault(shader => shader?.ShaderType.Name == ShadowDepthPixelShaderType);

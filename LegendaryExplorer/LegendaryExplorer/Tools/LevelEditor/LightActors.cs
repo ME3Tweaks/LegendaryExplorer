@@ -451,7 +451,7 @@ internal static class LightProxyVisuals
         if (!context.WorldToPixel(position, out _)) return;
         float halfSize = SpriteHalfSize(context, position);
         Vector4 color = light.DisplayColor;
-        int hitId = actor.HitID;
+        int hitId = actor.Editor is null && context.IsActorSelected(actor) ? context.SelectedActor.HitID : actor.HitID;
         (Vector3 right, Vector3 up) = context.GetViewAxes();
         context.Sprites.Add(context.LightSprites.Get(context.Device, light.Type), position, right * halfSize, up * halfSize, color, hitId);
 
@@ -610,8 +610,9 @@ public class LightActorProxy : ActorProxy, ILightProxy
 
     public override void Render(LevelEditorRenderContext context, RenderPass pass)
     {
-        //a prefab's lights (which have no editor) aren't in the level's lights, and can't be selected on their own
-        if (pass is RenderPass.Base && Editor is not null) LightProxyVisuals.DrawIcon(context, this, Light);
+        // Prefab light helpers are revealed with their selected owner and use its pick identity.
+        if (pass is RenderPass.Base && (Editor is not null || context.IsActorSelected(this)))
+            LightProxyVisuals.DrawIcon(context, this, Light);
     }
 
     public override BoxSphereBounds GetBounds() => LightBounds(Light.GetPlacement(LocalToWorld).Position);

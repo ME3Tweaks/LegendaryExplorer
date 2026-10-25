@@ -483,8 +483,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         RenderContext.CullingFrustum = UseFrustumCulling ? viewFrustum : null;
         RenderContext.ShowHidden = ShowHidden;
         Span<RenderPass> passes = ShowCollision
-            ? [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Translucent, RenderPass.Collision]
-            : [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Translucent];
+            ? [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Decals, RenderPass.Translucent, RenderPass.Collision]
+            : [RenderPass.Base, RenderPass.Hair, RenderPass.Lighting, RenderPass.Decals, RenderPass.Translucent];
 
         foreach (RenderPass pass in passes)
         {
@@ -500,9 +500,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     }
     void DoRenderPass(RenderPass pass)
     {
-        for (int i = 0; i < RenderContext.DrawList_3D.Count; i++)
+        var actors = pass == RenderPass.Decals
+            ? RenderContext.DrawList_3D.OrderBy(a => (a as DecalActorProxy)?.SortOrder ?? 0)
+            : (IEnumerable<ActorProxy>)RenderContext.DrawList_3D;
+        foreach (ActorProxy actor in actors)
         {
-            ActorProxy actor = RenderContext.DrawList_3D[i];
             if (!RenderContext.IsActorVisible(actor)) continue;
             int hitID = actor.HitID;
             RenderContext.CurrentHitTestId = new Vector3((hitID & 0xFF) / 255f, ((hitID >> 8) & 0xFF) / 255f, ((hitID >> 16) & 0xFF) / 255f);
@@ -527,7 +529,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         if (actor != selectedActor) RenderContext.LightGizmo.EndDrag();
         var prev = selectedActor;
         RenderContext.SelectedActor = actor;
-        if (prev != actor) RenderContext.RevealedHelper = null;
         if (SetProperty(ref selectedActor, actor, nameof(SelectedActor)))
         {
             if (prev is not null)
@@ -955,7 +956,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public ICommand FocusFileCommand { get; set; }
     public ICommand SelectChangedActorCommand { get; set; }
     public ICommand SelectLightCommand { get; set; }
-    public ICommand RevealHelperCommand { get; set; }
     private void LoadCommands()
     {
         SetAssignmentPolicyCommand = new RelayCommand(policy => AssignmentPolicy = (LightAssignmentPolicy)policy);
@@ -973,11 +973,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         CommitChangesCommand = new GenericCommand(CommitChanges, () => CanEditScene && PackageIsLoaded());
         CommitSingleFileCommand = new RelayCommand(CommitSingleFileExecute, _ => CanEditScene && PackageIsLoaded());
         LoadRelatedLevelsCommand = new GenericCommand(LoadRelatedLevels, () => CanEditScene && PackageIsLoaded());
-        RevealHelperCommand = new GenericCommand(() =>
-        {
-            RenderContext.RevealedHelper = SelectedActor;
-            FocusOnBounds(SelectedActor.GetBounds());
-        }, () => SelectedActor is EditorActorProxy { HasSpatialRepresentation: true });
         FocusSelectedCommand = new GenericCommand(() =>
         {
             if (SelectedActor is not null)
@@ -1019,8 +1014,6 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         {
             if (parameter is ActorProxy light)
             {
-                // Lights are hidden by default, and selecting one from the details pane means wanting to see it
-                RenderContext.GetCategoryState(light.Category).IsVisible = true;
                 SelectAndRevealActor(light);
             }
         });

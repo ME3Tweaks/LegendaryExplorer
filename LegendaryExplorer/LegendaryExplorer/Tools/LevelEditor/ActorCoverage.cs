@@ -28,7 +28,7 @@ public sealed record ActorCoverage(ActorRepresentation Representation, string Re
 internal enum ActorKind
 {
     StaticMesh, SFXSkeletalMesh, SkeletalMesh, KAsset, DynamicMesh, Brush, Stunt,
-    Placeable, BioPawn, Pawn, Prefab, Grenade, Ammo, Pickup, Light, Collection, Helper
+    Placeable, BioPawn, Pawn, Prefab, Grenade, Ammo, Pickup, Light, Collection, Decal, Helper
 }
 
 internal sealed record ActorClassInfo(ActorKind Kind, string Category = null, string Reason = null, bool DataOnly = false);
@@ -60,6 +60,7 @@ internal static class ActorClassification
         if (Is("SFXDroppedAmmo")) return new(ActorKind.Ammo);
         if (Is("SFXDroppedPickup")) return new(ActorKind.Pickup);
         if (Is("Light")) return new(ActorKind.Light);
+        if (Is("DecalActorBase")) return new(ActorKind.Decal);
 
         if (Is("WorldInfo") || Is("MaterialInstanceActor") || Is("BioSquad")
             || name is "BioPlayerSquad" or "BioWaypointSet" or "Route" or "BioSquadAmbient" or "BioSquadCombat"

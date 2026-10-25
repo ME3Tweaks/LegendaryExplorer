@@ -140,6 +140,27 @@ public class MeshRenderContext : RenderContext
     private RasterizerState WireframeRasterizerState;
     private RasterizerState CullBackRasterizerState;
     private RasterizerState CullFrontRasterizerState;
+    private readonly Dictionary<(int, float, CullMode, FillMode), RasterizerState> decalRasterizers = [];
+
+    internal void SetDecalRasterizerState(DecalProjection decal, bool twoSided, bool reverse)
+    {
+        // Reversed depth reverses UE3's signed bias. D3D11 applies the integer bias at the depth format's precision.
+        int bias = (int)Math.Clamp(-decal.DepthBias * (1 << 24), -100000, 100000);
+        var cull = twoSided ? CullMode.None : reverse ? CullMode.Front : CullMode.Back;
+        var fill = Wireframe ? FillMode.Wireframe : FillMode.Solid;
+        var key = (bias, -decal.SlopeBias, cull, fill);
+        if (!decalRasterizers.TryGetValue(key, out var state))
+        {
+            var description = new RasterizerStateDescription
+            {
+                CullMode = cull, FillMode = fill,
+                IsFrontCounterClockwise = true, IsMultisampleEnabled = SampleCount > 1,
+                DepthBias = bias, SlopeScaledDepthBias = -decal.SlopeBias
+            };
+            decalRasterizers[key] = state = new RasterizerState(Device, description);
+        }
+        ImmediateContext.Rasterizer.State = state;
+    }
     public SamplerState SampleState { get; private set; }
 
     /// <summary>
@@ -448,6 +469,10 @@ public class MeshRenderContext : RenderContext
     /// Whether the actor is shown in this view, so that its meshes cast their dynamic shadows
     /// </summary>
     public virtual bool IsActorVisible(ActorProxy actor) => true;
+
+    /// <summary>Whether a component is shown, including its owning actor's visibility.</summary>
+    public virtual bool IsComponentVisible(PrimitiveComponentProxy component)
+        => component.IsVisible && (component.Actor is null || IsActorVisible(component.Actor));
 
     //light passes queued during RenderPass.Lighting, drawn by EndLightingPass
     private readonly List<(SceneLight Light, Action<ShaderResourceView> Draw)> PendingLightPasses = [];
@@ -1593,6 +1618,8 @@ public class MeshRenderContext : RenderContext
         DefaultDepthState?.Dispose();
         CullBackRasterizerState?.Dispose();
         CullFrontRasterizerState?.Dispose();
+        foreach (var state in decalRasterizers.Values) state.Dispose();
+        decalRasterizers.Clear();
         DefaultEffect?.Dispose();
         LEVertexDefaultVertexShader?.Dispose();
         LEVertexDefaultInputLayout?.Dispose();

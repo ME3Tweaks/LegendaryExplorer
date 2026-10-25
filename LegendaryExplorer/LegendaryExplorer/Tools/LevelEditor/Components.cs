@@ -77,7 +77,7 @@ public class PrimitiveComponentProxy : NotifyPropertyChangedBase, IDisposable
     public bool IsVisible { get; set; } = true;
 
     /// <summary>
-    /// Not rendered in game. Only shown in the level editor when <see cref="LevelEditorRenderContext.ShowHidden"/> is set
+    /// Not rendered in game. Shown in the editor when ShowHidden is set or its actor is selected.
     /// </summary>
     public bool HiddenGame { get; private set; }
 
@@ -306,7 +306,7 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
     /// <summary>
     /// Whether the mesh is shown in the editor, so that it casts its dynamic shadows: neither it nor its actor's category is hidden
     /// </summary>
-    protected bool IsShown() => IsVisible && (Actor is null || RenderContext.IsActorVisible(Actor));
+    protected bool IsShown() => RenderContext.IsComponentVisible(this);
 
     /// <summary>
     /// Adds the mesh to the light environment that lights it, so that the light environment's bounds include it, and it casts the light environment's shadow
@@ -501,7 +501,7 @@ public class StaticMeshComponentProxy : MeshComponentProxy
 
     public override void Render(MeshRenderContext context, RenderPass pass)
     {
-        if (!IsVisible) return;
+        if (!context.IsComponentVisible(this)) return;
         if (pass is RenderPass.Collision)
         {
             if (CollisionMesh is not null)
@@ -647,7 +647,7 @@ public class SkeletalMeshComponentProxy : MeshComponentProxy
 
     public override void Render(MeshRenderContext context, RenderPass pass)
     {
-        if (!IsVisible) return;
+        if (!context.IsComponentVisible(this)) return;
         Mesh?.Render(pass, context, LOD);
     }
 
@@ -713,7 +713,7 @@ public class BrushComponentProxy : PrimitiveComponentProxy
 
     public override void Render(MeshRenderContext context, RenderPass pass)
     {
-        if (!IsVisible) return;
+        if (!context.IsComponentVisible(this)) return;
         if (Brush is not null)
         {
             context.RenderMeshAsWireframe(Brush);

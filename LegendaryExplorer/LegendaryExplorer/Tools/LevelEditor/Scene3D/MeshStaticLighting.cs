@@ -324,6 +324,37 @@ public sealed class MeshStaticLighting : IDisposable
         Context = context;
     }
 
+    /// <summary>Cooked decal vertex lighting. Not registered as a shadow caster or independent light receiver.</summary>
+    internal static MeshStaticLighting CreateDecal(MeshRenderContext context, ExportEntry component, StaticReceiverData receiver)
+    {
+        var lighting = new MeshStaticLighting(context);
+        var vertices = new StaticLightingVertex[receiver.Vertices.Length];
+        for (int i = 0; i < vertices.Length; i++) vertices[i].LightMapCoordinate = receiver.Vertices[i].LightMapCoordinate;
+        if (receiver.LightMap is LightMap_1D lm && lm.DirectionalSamples.Length == vertices.Length)
+        {
+            lighting.LightMapType = ELightMapType.LMT_1D;
+            lighting.Scales = [ToVector4(lm.ScaleVector1), ToVector4(lm.ScaleVector2)];
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i].SampleA = PackColor(lm.DirectionalSamples[i].Coefficient2);
+                vertices[i].SampleB = PackColor(lm.DirectionalSamples[i].Coefficient3);
+            }
+        }
+        else if (receiver.LightMap is LightMap_3 lm3 && lm3.DirectionalSamples.Length == vertices.Length)
+        {
+            lighting.LightMapType = ELightMapType.LMT_3;
+            lighting.Scales = [ToVector4(lm3.ScaleVector1), ToVector4(lm3.ScaleVector2)];
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                vertices[i].SampleA = PackColor(lm3.DirectionalSamples[i].Coefficient2);
+                vertices[i].SampleB = PackColor(lm3.DirectionalSamples[i].Coefficient3);
+            }
+        }
+        if (vertices.Length > 0)
+            lighting.VertexStream = Buffer.Create(context.Device, BindFlags.VertexBuffer, vertices);
+        return lighting;
+    }
+
     /// <summary>
     /// Reads a static mesh component's precomputed lighting for one LOD. Returns null if that isn't possible
     /// </summary>
@@ -465,12 +496,12 @@ public sealed class MeshStaticLighting : IDisposable
                 lightGuids = lm3.LightGuids;
                 samplesA = Array.ConvertAll(lm3.DirectionalSamples, s => PackColor(s.Coefficient2));
                 samplesB = Array.ConvertAll(lm3.DirectionalSamples, s => PackColor(s.Coefficient3));
-                Scales = [ToVector4(lm3.unkVector1), ToVector4(lm3.unkVector2)];
+                Scales = [ToVector4(lm3.ScaleVector1), ToVector4(lm3.ScaleVector2)];
                 break;
             case LightMap_5 lm5:
                 lightGuids = lm5.LightGuids;
                 samplesA = Array.ConvertAll(lm5.SimpleSamples, s => PackColor(s.Coefficient));
-                Scales = [ToVector4(lm5.unkVector)];
+                Scales = [ToVector4(lm5.ScaleVector)];
                 break;
             case LightMap_2D lm2D:
             {

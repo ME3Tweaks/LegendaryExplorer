@@ -516,7 +516,10 @@ internal static class ShaderParameterSetters
         }
     }
     public static void WriteValues(this ref FMaterialPixelShaderParameters p, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
-        => p.WriteValues(buffer, context, mat, mesh.TransformedBounds, mesh.LocalToWorld, mesh.WorldToLocal);
+    {
+        p.WriteValues(buffer, context, mat, mesh.TransformedBounds, mesh.LocalToWorld, mesh.WorldToLocal);
+        if (mesh.Decal is { } decal) buffer.WriteVal(p.DecalFarPlaneDistance, decal.FarPlane);
+    }
 
     /// <param name="bounds">The world bounds of what's being drawn</param>
     /// <param name="localToWorld">The transform of what's being drawn. Identity if it isn't a mesh</param>
@@ -598,6 +601,8 @@ internal static class ShaderParameterSetters
 
     public static void WriteValues(this ref FSceneTextureShaderParameters p, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
     {
+        if (mesh?.Decal is not null && (p.SceneColorTexture.IsBound() || p.SceneDepthTexture.IsBound()))
+            throw new NotSupportedException("This decal needs scene color/depth textures, which the preview does not yet supply.");
         //TODO: SceneColor and SceneDepth aren't available to materials yet. Unbound textures sample as 0
         if (p.SceneColorTexture.IsBound())
         {
@@ -640,6 +645,17 @@ internal static class ShaderParameterSetters
             buffer.WriteVal(p.LocalToWorld, mesh.LocalToWorld);
             buffer.WriteVal(p.WorldToLocal, mesh.WorldToLocal);
             buffer.WriteVal(p.LocalToWorldRotDeterminantFlip, mesh.LocalToWorld.GetDeterminant() >= 0 ? 1f : -1f);
+            if (p is FLocalDecalVertexFactoryShaderParameters decal)
+            {
+                var projection = mesh.Decal ?? throw new InvalidOperationException("Decal shader requires a cooked projection.");
+                buffer.WriteVal(decal.DecalMatrix, projection.Matrix);
+                buffer.WriteVal(decal.DecalLocation, projection.Location);
+                buffer.WriteVal(decal.DecalOffset, projection.Offset);
+                buffer.WriteVal(decal.DecalLocalTangent, projection.Tangent);
+                buffer.WriteVal(decal.DecalLocalBinormal, projection.Binormal);
+                buffer.WriteVal(decal.DecalLocalNormal, projection.Normal);
+                buffer.WriteVal(decal.DecalBlendInterval, projection.BlendInterval);
+            }
     }
 
     //Scalar uniform expressions are packed 4 to a float4 (UniformPixelScalars_N etc.). A parameter bound to a whole float4

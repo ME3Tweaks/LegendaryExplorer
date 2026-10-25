@@ -23,7 +23,7 @@ namespace LegendaryExplorerCore.Unreal.Classes
 
         private void ReadMaterial(ExportEntry export, PackageCache assetCache, bool resolveImports)
         {
-            if (export.ClassName == "Material")
+            if (export.ClassName is "Material" or "DecalMaterial")
             {
                 var parsedMaterial = ObjectBinary.From<Material>(export);
                 ReadBaseMaterial(export, assetCache, parsedMaterial);

@@ -564,7 +564,7 @@ public sealed class LightmapRewriter(IMEPackage package, TfcWriter tfc, ByteEnco
             else if (r.LightMap is LightMap_3 v3)
             {
                 var original = samples.Select(x => VectorLightmap.DecodeVertex(x.Coefficient2.R, x.Coefficient2.G, x.Coefficient2.B,
-                    x.Coefficient3.R, x.Coefficient3.G, x.Coefficient3.B, v3.unkVector1)).ToArray();
+                    x.Coefficient3.R, x.Coefficient3.G, x.Coefficient3.B, v3.ScaleVector1)).ToArray();
                 var vector = baked.Select(b =>
                 {
                     var world = LightingConversion.ToVector(b.Lighting, b.Frame, brightness: vectorBrightness);
@@ -582,7 +582,7 @@ public sealed class LightmapRewriter(IMEPackage package, TfcWriter tfc, ByteEnco
                     var written = VectorLightmap.DecodeVertex(c.Item1, c.Item2, c.Item3, d.Item1, d.Item2, d.Item3, scale);
                     (before[i], after[i]) = (VectorLightmap.Evaluate(original[i], Vector3.UnitZ, true), VectorLightmap.Evaluate(written, Vector3.UnitZ, true));
                 }
-                v3.unkVector1 = scale;
+                v3.ScaleVector1 = scale;
                 CompareVertices(before, after, summary);
             }
             RecordAppliedLightmap(r, r, summary);
