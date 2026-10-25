@@ -317,8 +317,8 @@ namespace LegendaryExplorerCore.Shaders
 
         //Offset of each MaterialShaderMap, keyed by its StaticParameterSet. Built on first use, so that looking up a MaterialShaderMap
         //doesn't have to read through every StaticParameterSet before it (~20ms per lookup for LE3)
-        private static readonly Dictionary<StaticParameterSet, int>[] MaterialShaderMapOffsets = new Dictionary<StaticParameterSet, int>[7];
-        private static readonly long[] MaterialShaderMapOffsetsFileSize = new long[7];
+        private static readonly Dictionary<StaticParameterSet, int>[] MaterialShaderMapOffsets = new Dictionary<StaticParameterSet, int>[(int)MEGame.LMP + 1];
+        private static readonly long[] MaterialShaderMapOffsetsFileSize = new long[(int)MEGame.LMP + 1];
 
         private static Dictionary<StaticParameterSet, int> GetMaterialShaderMapOffsets(MEGame game, SerializingContainer sc, long fileSize, string gamePathOverride)
         {
@@ -441,8 +441,8 @@ namespace LegendaryExplorerCore.Shaders
 
         //The header and name table of each game's ref shader cache. Reading them takes a few ms, which adds up when shaders are looked up for many materials.
         //Only used for reading, so it's safe to share between threads.
-        private static readonly IMEPackage[] ShaderCachePackages = new IMEPackage[7];
-        private static readonly long[] ShaderCachePackagesFileSize = new long[7];
+        private static readonly IMEPackage[] ShaderCachePackages = new IMEPackage[(int)MEGame.LMP + 1];
+        private static readonly long[] ShaderCachePackagesFileSize = new long[(int)MEGame.LMP + 1];
 
         /// <summary>
         /// Gets the header and name table of the ref shader cache that <paramref name="fs"/> was just opened on. Do not dispose the result.
