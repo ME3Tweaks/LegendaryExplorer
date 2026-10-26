@@ -240,7 +240,8 @@ public class MeshRenderContext : RenderContext
                 AddressV = addressV,
                 AddressW = TextureAddressMode.Wrap,
                 Filter = Filter.Anisotropic,
-                MaximumAnisotropy = 8
+                MaximumAnisotropy = 8,
+                MaximumLod = float.MaxValue // The zero-initialized default clamps sampling to mip 0.
             });
             SamplerStateCache.Add((addressU, addressV), samplerState);
         }
@@ -1439,7 +1440,8 @@ public class MeshRenderContext : RenderContext
             AddressV = TextureAddressMode.Wrap,
             AddressW = TextureAddressMode.Wrap,
             Filter = Filter.Anisotropic,
-            MaximumAnisotropy = 8
+            MaximumAnisotropy = 8,
+            MaximumLod = float.MaxValue // Allow sampling the full uploaded mip chain.
         };
         SampleState = new SamplerState(Device, ssd);
         RestoreDefaultSamplers();
