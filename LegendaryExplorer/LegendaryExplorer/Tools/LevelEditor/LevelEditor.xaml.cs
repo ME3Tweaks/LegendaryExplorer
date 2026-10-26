@@ -557,6 +557,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             RenderContext.LightGizmo.Attach = selectedActor as ILightProxy;
             OnPropertyChanged(nameof(SelectedLight));
             OnPropertyChanged(nameof(IsLightSelected));
+            OnPropertyChanged(nameof(SelectedDecal));
+            OnPropertyChanged(nameof(IsDecalSelected));
+            SelectedDecal?.RefreshFilterCandidates();
             RefreshLightingDiagnostics();
         }
         RenderContext.TransformWidget.Attach = selectedActor is { CanEditTransform: true, HasSpatialRepresentation: true }
@@ -770,6 +773,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             StopTrackingSave(file);
         }
         OpenFiles.Clear();
+        LinkedEdits.Clear();
         UnshadowedGeometry.Clear();
         HasAnyFileOpen = false;
         TextBelowActors = "";
@@ -778,9 +782,60 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         _preEditSnapshot = null;
     }
 
-    public void CloseFile(OpenLevelFile file)
+    public async void CloseFile(OpenLevelFile file)
     {
-        if (file is null) return;
+        if (file is null || !OpenFiles.Contains(file) || IsBusy || PreviewRefreshInProgress) return;
+
+        LinkedEdits.RemoveSavedGroups();
+        var group = LinkedEdits.GetLinkedFiles(file).ToList();
+        if (group.Count > 1)
+        {
+            string names = string.Join("\n", group.Select(f => f.FileName));
+            var result = MessageBox.Show(this,
+                $"Unsaved changes link these files:\n{names}\n\n" +
+                $"Yes: Commit and save all linked files, then close {file.FileName}.\n" +
+                "No: Close all listed files without saving, including their uncommitted changes.\nCancel: Keep all files open.",
+                "Linked file edits", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning, MessageBoxResult.Cancel);
+            var choice = result switch
+            {
+                MessageBoxResult.Yes => LinkedFileCloseChoice.Save,
+                MessageBoxResult.No => LinkedFileCloseChoice.Discard,
+                _ => LinkedFileCloseChoice.Cancel
+            };
+            if (choice == LinkedFileCloseChoice.Save)
+            {
+                SetBusy("Saving linked files...");
+            }
+
+            try
+            {
+                await LinkedFileEdits.CloseGroupAsync(group, file, choice, async () =>
+                {
+                    if (!CanSaveLinkedFiles(group) || !CommitChangesForFiles(group)) return false;
+                    // Committing pending edits may have added more files to this group.
+                    var linked = LinkedEdits.GetLinkedFiles(file).ToList();
+                    if (!CanSaveLinkedFiles(linked)) return false;
+                    foreach (var related in linked) await related.Package.SaveAsync();
+                    if (linked.Any(f => f.Package.IsModified)) return false;
+                    LinkedEdits.RemoveSavedGroups();
+                    return true;
+                }, CloseFileCore);
+                // Keep the association until every member was closed, or the complete group was saved.
+                LinkedEdits.RemoveClosedGroups(OpenFiles);
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(this, error.Message, "Could not close linked files");
+            }
+            finally
+            {
+                if (choice == LinkedFileCloseChoice.Save)
+                {
+                    EndBusy();
+                }
+            }
+            return;
+        }
 
         if (file.IsDirty)
         {
@@ -797,6 +852,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             if (result != MessageBoxResult.Yes) return;
         }
 
+        CloseFileCore(file);
+    }
+
+    private void CloseFileCore(OpenLevelFile file)
+    {
         if (SelectedActor is not null && file.Actors.Contains(SelectedActor))
         {
             SelectedActor = null;
@@ -1143,19 +1203,87 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     #region Commit & Save
 
+    private readonly LinkedFileEdits LinkedEdits = new();
+    public ExportEntry GetDecalDestinationLevel(IMEPackage package) =>
+        OpenFiles.FirstOrDefault(f => f.Package == package && !f.IsReadOnly)?.LevelExport;
+
+    /// <summary>Register files changed by one committed operation so they are saved or discarded together.</summary>
+    internal void RegisterLinkedFileEdits(params OpenLevelFile[] files) => LinkedEdits.Register(files);
+
+    private bool CanSaveLinkedFiles(IEnumerable<OpenLevelFile> files)
+    {
+        if (files.FirstOrDefault(f => f.IsReadOnly) is not { } blocked) return true;
+        MessageBox.Show(this, $"Saving these linked edits also requires saving {blocked.FileName}, which is read-only.", "Linked file edits");
+        return false;
+    }
+
     private void CommitChanges()
     {
         if (!PackageIsLoaded() || Actors.Count is 0) return;
 
-        foreach (var file in OpenFiles)
-        {
-            if (!file.IsReadOnly)
-                CommitChangesForFile(file);
-        }
-        IsDirty = false;
+        CommitChangesForFiles(OpenFiles.Where(f => !f.IsReadOnly));
     }
 
-    private void CommitChangesForFile(OpenLevelFile file)
+    private bool CommitChangesForFile(OpenLevelFile file) => CommitChangesForFiles([file]);
+
+    private bool CommitChangesForFiles(IEnumerable<OpenLevelFile> requested)
+    {
+        var files = requested.ToHashSet();
+        DecalPackageMigration migration;
+        try
+        {
+            // Include receiving files so their pending receiver transforms are committed with the decal.
+            var pending = new Queue<OpenLevelFile>(files);
+            while (pending.TryDequeue(out var file))
+            {
+                foreach (var decal in file.Actors.OfType<DecalActorProxy>())
+                {
+                    decal.PrepareDecalCommit();
+                    if (decal.ProjectionPackage != file.Package)
+                    {
+                        var target = OpenFiles.Single(f => f.Package == decal.ProjectionPackage);
+                        if (files.Add(target)) pending.Enqueue(target);
+                    }
+                }
+            }
+            migration = DecalPackageMigration.Prepare(files.SelectMany(f => f.Actors).OfType<DecalActorProxy>());
+        }
+        catch (Exception error) when (error is not OutOfMemoryException)
+        {
+            MessageBox.Show(this, error.Message, "Decal reprojection");
+            return false;
+        }
+        using (migration)
+        {
+            try { migration.Apply(); }
+            catch (InvalidOperationException error)
+            {
+                MessageBox.Show(this, error.Message, "Decal migration");
+                return false;
+            }
+            var selectedMove = migration.Moves.FirstOrDefault(m => m.Actor == SelectedActor);
+            foreach (var move in migration.Moves)
+            {
+                var target = OpenFiles.Single(f => f.Package == move.Destination);
+                RegisterLinkedFileEdits(move.Actor.OwningFile, target);
+                if (SelectedActor == move.Actor) SelectedActor = null;
+                RemoveActor(move.Actor);
+            }
+            foreach (var file in files) CommitPreparedFile(file);
+            foreach (var move in migration.Moves)
+            {
+                var actor = ActorProxy.Create(this, move.Destination.GetUExport(move.ActorIndex));
+                actor.OwningFile = OpenFiles.Single(f => f.Package == move.Destination);
+                AddActor(actor);
+                if (move == selectedMove) SelectedActor = actor;
+            }
+        }
+        UpdateGlobalDirtyState();
+        ClearUndoHistory();
+        return true;
+    }
+
+    private void CommitPreparedFile(OpenLevelFile file)
     {
         Dictionary<int, StaticCollectionActor> collectionActorMap = [];
 
@@ -1185,19 +1313,18 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             }
             else
             {
-                if (actor.IsTransformDirty || actor is ILightProxy) actor.CommitChanges();
+                if (actor.IsTransformDirty || actor is ILightProxy or DecalActorProxy) actor.CommitChanges();
             }
             foreach (var mesh in MeshComponents(actor)) mesh.ExistingLighting?.Commit();
-            actor.MarkClean();
+            if (actor is not DecalActorProxy) actor.MarkClean();
         }
 
         foreach (var collectionActor in collectionActorMap.Values)
         {
             collectionActor.Export.WriteBinary(collectionActor);
         }
+        foreach (var decal in file.Actors.OfType<DecalActorProxy>()) decal.MarkClean();
         file.IsDirty = false;
-        // Committing rebuilds the committed actors, which would orphan the actions that refer to them
-        ClearUndoHistory();
     }
 
     private void ClearUndoHistory()
@@ -1224,6 +1351,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             {
                 case MessageBoxResult.Yes:
                     CommitChanges();
+                    if (IsDirty) return;
                     break;
                 case MessageBoxResult.No:
                     break;
@@ -1232,6 +1360,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                     return;
             }
         }
+        if (!CanSaveLinkedFiles(LinkedEdits.FilesWithPendingEdits)) return;
         foreach (var file in OpenFiles)
         {
             if (!file.IsReadOnly && file.Package.IsModified)
@@ -1239,6 +1368,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                 await file.Package.SaveAsync();
             }
         }
+        LinkedEdits.RemoveSavedGroups();
     }
 
     private async void SaveSingleFileExecute(object parameter)
@@ -1251,7 +1381,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             switch (MessageBox.Show($"Do you want to commit changes to {file.FileName} before saving?", "Uncommitted changes", MessageBoxButton.YesNoCancel))
             {
                 case MessageBoxResult.Yes:
-                    CommitChangesForFile(file);
+                    if (!CommitChangesForFile(file)) return;
                     break;
                 case MessageBoxResult.No:
                     break;
@@ -1260,7 +1390,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                     return;
             }
         }
-        await file.Package.SaveAsync();
+        var filesToSave = LinkedEdits.GetLinkedFiles(file).ToList();
+        if (!CanSaveLinkedFiles(filesToSave)) return;
+        foreach (var related in filesToSave)
+            await related.Package.SaveAsync();
+        LinkedEdits.RemoveSavedGroups();
     }
 
     private void CloseFileExecute(object parameter)
@@ -1305,7 +1439,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             switch (MessageBox.Show($"Do you want to commit changes to {fileToSave.FileName} before saving?", "Uncommitted changes", MessageBoxButton.YesNoCancel))
             {
                 case MessageBoxResult.Yes:
-                    CommitChangesForFile(fileToSave);
+                    if (!CommitChangesForFile(fileToSave)) return;
                     break;
                 case MessageBoxResult.No:
                     break;
@@ -1333,10 +1467,25 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         var d = new SaveFileDialog { Filter = fileFilter };
         if (d.ShowDialog() == true)
         {
+            var filesToSave = LinkedEdits.GetLinkedFiles(fileToSave).ToList();
+            if (!CanSaveLinkedFiles(filesToSave)) return;
+            IReadOnlyList<LinkedFileSaveTarget> targets;
+            try { targets = LinkedFileEdits.PlanSaveAs(fileToSave, filesToSave, d.FileName); }
+            catch (InvalidOperationException error)
+            {
+                MessageBox.Show(this, error.Message, "Save linked files");
+                return;
+            }
+            var companionOverwrites = targets.Where(t => t.File != fileToSave && File.Exists(t.Path)
+                && !StringComparer.OrdinalIgnoreCase.Equals(Path.GetFullPath(t.Path), Path.GetFullPath(t.File.FilePath))).ToList();
+            if (companionOverwrites.Count > 0 && MessageBox.Show(this,
+                    "Also overwrite these linked files?\n" + string.Join("\n", companionOverwrites.Select(t => t.Path)),
+                    "Save linked files", MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.No) != MessageBoxResult.Yes) return;
             SetBusy("Saving...");
             try
             {
-                await fileToSave.Package.SaveAsync(d.FileName);
+                foreach (var target in targets) await target.File.Package.SaveAsync(target.Path);
+                LinkedEdits.RemoveSavedGroups();
             }
             finally
             {
@@ -1665,6 +1814,16 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         PendingActorLightingEdits.Add(mesh);
         LightDiagnosticsStale = true;
     }
+
+    public EditableDecal SelectedDecal => (selectedActor as DecalActorProxy)?.Decal;
+    public bool IsDecalSelected => SelectedDecal is not null;
+    public void OnDecalEdited(DecalActorProxy actor, DecalSettings before, DecalSettings after, string property)
+    {
+        if (!_isApplyingUndoRedo) UndoHistory.Push(new DecalSettingsAction(actor, before, after, property));
+    }
+
+    private void RefreshDecalFilter_Click(object sender, RoutedEventArgs e) => SelectedDecal?.RefreshFilterCandidates();
+    private void ClearDecalFilter_Click(object sender, RoutedEventArgs e) => SelectedDecal?.ClearFilter();
 
     private void EditLightEnvironment_Click(object sender, RoutedEventArgs e)
     {

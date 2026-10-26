@@ -405,6 +405,54 @@
                                         <DockPanel Margin="0,10,0,0"><TextBlock Text="Uniform scale" VerticalAlignment="Center"/><xctk:SingleUpDown x:Name="scaleUpDown" Width="108" HorizontalAlignment="Right" Value="{Binding DrawScale}" Increment="{Binding ScaleIncrement, RelativeSource={RelativeSource AncestorType=local:LevelEditor}}" FormatString="F3" AutomationProperties.Name="Uniform scale"/></DockPanel>
                                     </StackPanel>
                                 </Expander>
+                                <Expander Header="Decal projection" IsExpanded="True" Padding="10,0,10,10" Visibility="{Binding IsDecalSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding SelectedActor.DecalEditingStatus}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" Margin="0,6,0,8"/>
+                                        <Grid DataContext="{Binding SelectedDecal}" IsEnabled="{Binding IsEditable}">
+                                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="140"/></Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/>
+                                                <RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/>
+                                                <RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/>
+                                            </Grid.RowDefinitions>
+                                            <TextBlock Text="Width" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Column="1" Value="{Binding Width}" Minimum="0.01" Increment="10" FormatString="F2"/>
+                                            <TextBlock Grid.Row="1" Text="Height" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Height}" Minimum="0.01" Increment="10" FormatString="F2"/>
+                                            <TextBlock Grid.Row="2" Text="Near plane" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="2" Grid.Column="1" Value="{Binding NearPlane}" Minimum="0" Increment="10" FormatString="F2"/>
+                                            <TextBlock Grid.Row="3" Text="Far plane" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="3" Grid.Column="1" Value="{Binding FarPlane}" Increment="10" FormatString="F2"/>
+                                            <TextBlock Grid.Row="4" Text="Decal rotation · degrees" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="4" Grid.Column="1" Value="{Binding Rotation}" Increment="1" FormatString="F2"/>
+                                            <TextBlock Grid.Row="5" Text="Tile X" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="5" Grid.Column="1" Value="{Binding TileX}" Increment="0.1" FormatString="F3"/>
+                                            <TextBlock Grid.Row="6" Text="Tile Y" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="6" Grid.Column="1" Value="{Binding TileY}" Increment="0.1" FormatString="F3"/>
+                                            <TextBlock Grid.Row="7" Text="Offset X" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="7" Grid.Column="1" Value="{Binding OffsetX}" Increment="0.05" FormatString="F3"/>
+                                            <TextBlock Grid.Row="8" Text="Offset Y" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="8" Grid.Column="1" Value="{Binding OffsetY}" Increment="0.05" FormatString="F3"/>
+                                            <TextBlock Grid.Row="9" Text="Depth bias" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="9" Grid.Column="1" Value="{Binding DepthBias}" Increment="0.00001" FormatString="F6"/>
+                                            <TextBlock Grid.Row="10" Text="Sort order" VerticalAlignment="Center"/><xctk:IntegerUpDown Grid.Row="10" Grid.Column="1" Value="{Binding SortOrder}"/>
+                                        </Grid>
+                                        <StackPanel DataContext="{Binding SelectedDecal}" IsEnabled="{Binding IsEditable}" Margin="0,10,0,0">
+                                            <TextBlock Text="Receiving meshes" Style="{StaticResource EditorSectionLabel}"/>
+                                            <ComboBox ItemsSource="{x:Static local:EditableDecal.FilterModes}" DisplayMemberPath="Label" SelectedValuePath="Value"
+                                                      SelectedValue="{Binding FilterMode}" AutomationProperties.Name="Decal filter mode" ToolTip="FilterMode: all meshes, only actors in Filter, or all actors except those in Filter."/>
+                                            <TextBlock Text="{Binding FilterSummary}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="0,6,0,4"/>
+                                            <TextBlock Text="Search actors or packages" Foreground="{StaticResource EditorMuted}" FontSize="11" Margin="0,2,0,3"/>
+                                            <TextBox Text="{Binding FilterSearch, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Search decal receiving meshes" ToolTip="Search loaded mesh actors by name or package" Margin="0,0,0,4"/>
+                                            <ListBox ItemsSource="{Binding FilterCandidates}" MaxHeight="210" Background="{StaticResource EditorInput}" BorderBrush="{StaticResource EditorBorder}"
+                                                     ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
+                                                     VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" HorizontalContentAlignment="Stretch">
+                                                    <ListBox.ItemTemplate><DataTemplate>
+                                                        <CheckBox IsChecked="{Binding IsChecked}" Margin="0,3" ToolTip="{Binding Path}" HorizontalContentAlignment="Stretch">
+                                                            <StackPanel>
+                                                                <TextBlock Text="{Binding Label}" TextWrapping="Wrap"/>
+                                                                <TextBlock Text="{Binding Detail}" Foreground="{StaticResource EditorMuted}" FontSize="10" TextWrapping="Wrap"/>
+                                                            </StackPanel>
+                                                        </CheckBox>
+                                                    </DataTemplate></ListBox.ItemTemplate>
+                                            </ListBox>
+                                            <WrapPanel Margin="0,6,0,0">
+                                                <Button Content="Refresh list" Click="RefreshDecalFilter_Click" Margin="0,0,6,0"/>
+                                                <Button Content="Clear checked" Click="ClearDecalFilter_Click"/>
+                                            </WrapPanel>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Expander>
                                 <Expander Header="Light" IsExpanded="True" Padding="10,0,10,10" Visibility="{Binding IsLightSelected, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <StackPanel>
                                     <StackPanel DataContext="{Binding SelectedLight}">

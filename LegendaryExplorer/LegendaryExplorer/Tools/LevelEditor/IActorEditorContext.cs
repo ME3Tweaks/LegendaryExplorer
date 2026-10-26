@@ -15,4 +15,9 @@ public interface IActorEditorContext
 
     /// <summary>A mesh component's pending lighting settings changed.</summary>
     void OnActorLightingEdited(MeshComponentProxy mesh, ActorLightingSettings before, ActorLightingSettings after) { }
+
+    void OnDecalEdited(DecalActorProxy actor, DecalSettings before, DecalSettings after, string property) { }
+
+    /// <summary>The loaded, writable level that can receive a migrated decal.</summary>
+    ExportEntry GetDecalDestinationLevel(IMEPackage package) => null;
 }

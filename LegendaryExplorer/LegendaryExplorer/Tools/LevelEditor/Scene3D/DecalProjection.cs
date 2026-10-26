@@ -1,12 +1,51 @@
 using System;
 using System.Numerics;
 using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.BinaryConverters;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 
 /// <summary>The cooked projector's world-space frame. Receiver meshes are converted to world space once.</summary>
 internal sealed class DecalProjection
 {
+    internal static DecalProjection FromActor(PropertyCollection properties, DecalSettings settings, TransformSnapshot actor, TransformSnapshot baseline)
+    {
+        Vector3 actorScale = actor.DrawScale3D * actor.DrawScale, baselineScale = baseline.DrawScale3D * baseline.DrawScale;
+        Vector3 scale = actorScale / baselineScale;
+        if (!Finite(scale) || actorScale.X <= 0 || actorScale.Y <= 0 || actorScale.Z <= 0
+            || baselineScale.X <= 0 || baselineScale.Y <= 0 || baselineScale.Z <= 0)
+            throw new InvalidOperationException("Decal reprojection requires positive, nonzero scale. Use rotation to change its facing direction.");
+        var props = properties.DeepClone();
+        settings = settings with { Width = settings.Width * scale.Y, Height = settings.Height * scale.Z,
+            NearPlane = settings.NearPlane * scale.X, FarPlane = settings.FarPlane * scale.X };
+        settings.Write(props);
+        var rotation = actor.Rotation.ToRotationMatrix();
+        Vector3 x = Vector3.TransformNormal(Vector3.UnitX, rotation), y = Vector3.TransformNormal(Vector3.UnitY, rotation), z = Vector3.TransformNormal(Vector3.UnitZ, rotation);
+        var (sin, cos) = MathF.SinCos(settings.Rotation * MathF.PI / 180);
+        props.AddOrReplaceProp(CommonStructs.Vector3Prop(actor.Location, "HitLocation"));
+        props.AddOrReplaceProp(CommonStructs.Vector3Prop(-x, "HitNormal"));
+        props.AddOrReplaceProp(CommonStructs.Vector3Prop(-(y * cos + z * sin), "HitTangent"));
+        props.AddOrReplaceProp(CommonStructs.Vector3Prop(-y * sin + z * cos, "HitBinormal"));
+        if (settings.FarPlane <= settings.NearPlane) throw new InvalidOperationException("Far plane must be beyond the near plane.");
+        return Read(props);
+    }
+
+    internal void WriteFrame(PropertyCollection props)
+    {
+        props.AddOrReplaceProp(CommonStructs.Vector3Prop(Location, "HitLocation"));
+        props.AddOrReplaceProp(CommonStructs.Vector3Prop(Normal, "HitNormal"));
+        props.AddOrReplaceProp(CommonStructs.Vector3Prop(Tangent, "HitTangent"));
+        props.AddOrReplaceProp(CommonStructs.Vector3Prop(Binormal, "HitBinormal"));
+    }
+
+    internal bool Intersects(BoxSphereBounds bounds)
+    {
+        Vector3 center = Location - Normal * ((NearPlane + FarPlane) * 0.5f);
+        Vector3 extent = Vector3.Abs(Tangent) * (Width * 0.5f) + Vector3.Abs(Binormal) * (Height * 0.5f)
+            + Vector3.Abs(Normal) * ((FarPlane - NearPlane) * 0.5f);
+        Vector3 difference = Vector3.Abs(center - bounds.Origin) - extent - bounds.BoxExtent;
+        return difference.X <= 0 && difference.Y <= 0 && difference.Z <= 0;
+    }
     public Vector3 Location, Tangent, Binormal, Normal;
     public Vector2 Offset, BlendInterval;
     public Matrix4x4 Matrix;

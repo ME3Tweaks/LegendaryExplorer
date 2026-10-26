@@ -1,0 +1,139 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using LegendaryExplorer.Misc;
+using LegendaryExplorerCore.Packages;
+using LegendaryExplorerCore.Unreal;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
+
+namespace LegendaryExplorer.Tools.LevelEditor;
+
+public readonly record struct DecalSettings(float Width, float Height, float NearPlane, float FarPlane,
+    float TileX, float TileY, float OffsetX, float OffsetY, float Rotation, float DepthBias, int SortOrder)
+{
+    public DecalFilterSettings Filter { get; init; }
+    internal static DecalSettings Read(PropertyCollection props)
+    {
+        float F(string name, float fallback) => props.GetProp<FloatProperty>(name)?.Value ?? fallback;
+        return new(F("Width", 200), F("Height", 200), F("NearPlane", 0), F("FarPlane", 300), F("TileX", 1), F("TileY", 1),
+            F("OffsetX", 0), F("OffsetY", 0), F("DecalRotation", 0), F("DepthBias", -0.00006f), props.GetProp<IntProperty>("SortOrder")?.Value ?? 0);
+    }
+    internal void Write(PropertyCollection props)
+    {
+        foreach (var (name, value) in new[] { ("Width", Width), ("Height", Height), ("NearPlane", NearPlane), ("FarPlane", FarPlane),
+            ("TileX", TileX), ("TileY", TileY), ("OffsetX", OffsetX), ("OffsetY", OffsetY), ("DecalRotation", Rotation), ("DepthBias", DepthBias) })
+            props.AddOrReplaceProp(new FloatProperty(value, name));
+        props.AddOrReplaceProp(new IntProperty(SortOrder, "SortOrder"));
+    }
+}
+
+public sealed class EditableDecal : NotifyPropertyChangedBase
+{
+    private readonly DecalActorProxy owner;
+    private DecalSettings clean;
+    public DecalSettings Settings { get; private set; }
+    public bool HasChanges => Settings != clean;
+    internal bool FilterChanged => !Equals(Settings.Filter, clean.Filter);
+    internal bool GeometryChanged => Settings.Width != clean.Width || Settings.Height != clean.Height
+        || Settings.NearPlane != clean.NearPlane || Settings.FarPlane != clean.FarPlane || Settings.Rotation != clean.Rotation
+        || Settings.Filter.Mode != clean.Filter.Mode || Settings.Filter.Mode != "FM_None" && !Settings.Filter.SameActors(clean.Filter);
+    public bool IsEditable => !owner.IsReadOnly && owner.CanReproject;
+    internal EditableDecal(DecalActorProxy owner, PropertyCollection props)
+    {
+        this.owner = owner;
+        Settings = clean = DecalSettings.Read(props) with { Filter = DecalFilterSettings.Read(owner.DecalComponent.Export, owner.Editor.PackageCache, props) };
+    }
+    public static IReadOnlyList<DecalFilterModeOption> FilterModes { get; } =
+        [new("FM_None", "All meshes"), new("FM_Affect", "Only checked"), new("FM_Ignore", "All except checked")];
+    public string FilterMode
+    {
+        get => Settings.Filter.Mode;
+        set { if (FilterModes.Any(m => m.Value == value)) Set(Settings with { Filter = new(value, Settings.Filter.Actors) }, nameof(FilterMode)); }
+    }
+    private string filterSearch = "";
+    private List<DecalFilterCandidate> filterCandidates = [];
+    public string FilterSearch
+    {
+        get => filterSearch;
+        set { if (SetProperty(ref filterSearch, value ?? "")) OnPropertyChanged(nameof(FilterCandidates)); }
+    }
+    public IEnumerable<DecalFilterCandidate> FilterCandidates => filterCandidates.Where(c =>
+        c.Label.Contains(FilterSearch, StringComparison.OrdinalIgnoreCase) || c.Path.Contains(FilterSearch, StringComparison.OrdinalIgnoreCase));
+    public string FilterSummary => $"{Settings.Filter.Actors.Count} checked. Collections apply to all their meshes.";
+    public void RefreshFilterCandidates()
+    {
+        var loaded = owner.Editor.RenderContext.DrawList_3D.SelectMany(a => a.Components).OfType<StaticMeshComponentProxy>()
+            .Where(c => c.Actor.Editor is not null).Select(c => c.Export.Parent).OfType<ExportEntry>()
+            .Where(e => e.ClassName == "StaticMeshCollectionActor" || e.IsA("StaticMeshActor"));
+        filterCandidates = Settings.Filter.Actors.Concat(loaded).Distinct().Select(e => new DecalFilterCandidate(this, e))
+            .OrderByDescending(c => c.IsChecked).ThenBy(c => c.Label).ToList();
+        OnPropertyChanged(nameof(FilterCandidates));
+    }
+    public void SetFilterActor(IEntry actor, bool included)
+    {
+        if (actor is null || actor.Game != owner.Export.Game) return;
+        var entries = included ? Settings.Filter.Actors.Append(actor) : Settings.Filter.Actors.Where(e => e != actor);
+        Set(Settings with { Filter = new(Settings.Filter.Mode, entries) }, "Filter");
+    }
+    public void ClearFilter() => Set(Settings with { Filter = new(Settings.Filter.Mode, []) }, "Filter");
+    public float Width { get => Settings.Width; set { if (float.IsFinite(value) && value > 0) Set(Settings with { Width = value }, nameof(Width)); } }
+    public float Height { get => Settings.Height; set { if (float.IsFinite(value) && value > 0) Set(Settings with { Height = value }, nameof(Height)); } }
+    public float NearPlane { get => Settings.NearPlane; set { if (float.IsFinite(value) && value >= 0 && value < FarPlane) Set(Settings with { NearPlane = value }, nameof(NearPlane)); } }
+    public float FarPlane { get => Settings.FarPlane; set { if (float.IsFinite(value) && value > NearPlane) Set(Settings with { FarPlane = value }, nameof(FarPlane)); } }
+    public float TileX { get => Settings.TileX; set { if (float.IsFinite(value)) Set(Settings with { TileX = value }, nameof(TileX)); } }
+    public float TileY { get => Settings.TileY; set { if (float.IsFinite(value)) Set(Settings with { TileY = value }, nameof(TileY)); } }
+    public float OffsetX { get => Settings.OffsetX; set { if (float.IsFinite(value)) Set(Settings with { OffsetX = value }, nameof(OffsetX)); } }
+    public float OffsetY { get => Settings.OffsetY; set { if (float.IsFinite(value)) Set(Settings with { OffsetY = value }, nameof(OffsetY)); } }
+    public float Rotation { get => Settings.Rotation; set { if (float.IsFinite(value)) Set(Settings with { Rotation = value }, nameof(Rotation)); } }
+    public float DepthBias { get => Settings.DepthBias; set { if (float.IsFinite(value)) Set(Settings with { DepthBias = value }, nameof(DepthBias)); } }
+    public int SortOrder { get => Settings.SortOrder; set => Set(Settings with { SortOrder = value }, nameof(SortOrder)); }
+    private void Set(DecalSettings settings, string property)
+    {
+        if (!IsEditable || settings == Settings) return;
+        var before = Settings; Settings = settings;
+        OnPropertyChanged(property);
+        NotifyFilter();
+        owner.OnDecalEdited(before, settings, property);
+    }
+    internal void Restore(DecalSettings settings)
+    {
+        Settings = settings;
+        NotifySettings();
+        owner.RefreshDecalDirty();
+    }
+    internal void MarkClean(DecalSettings settings) { clean = settings; Restore(settings); }
+    private void NotifySettings()
+    {
+        NotifyFilter();
+        foreach (string name in new[] { nameof(Width), nameof(Height), nameof(NearPlane), nameof(FarPlane), nameof(TileX), nameof(TileY),
+            nameof(OffsetX), nameof(OffsetY), nameof(Rotation), nameof(DepthBias), nameof(SortOrder), nameof(IsEditable) }) OnPropertyChanged(name);
+    }
+    private void NotifyFilter()
+    {
+        bool added = false;
+        foreach (var entry in Settings.Filter.Actors)
+            if (!filterCandidates.Any(c => c.Actor == entry)) { filterCandidates.Add(new(this, entry)); added = true; }
+        if (added) OnPropertyChanged(nameof(FilterCandidates));
+        OnPropertyChanged(nameof(FilterMode));
+        OnPropertyChanged(nameof(FilterSummary));
+        foreach (var candidate in filterCandidates) candidate.Refresh();
+    }
+}
+
+public sealed class DecalSettingsAction(DecalActorProxy actor, DecalSettings before, DecalSettings after, string property) : IMergeableUndoAction
+{
+    private DecalSettings latest = after;
+    private DateTime time = DateTime.UtcNow;
+    public string Description => $"Edit decal {property}";
+    public bool IsOrphaned => actor.IsDisposed;
+    public void Undo() => actor.Decal.Restore(before);
+    public void Redo() => actor.Decal.Restore(latest);
+    public bool TryMerge(IUndoAction next)
+    {
+        if (next is not DecalSettingsAction action || action.Actor != actor || action.Property != property
+            || action.time - time > TimeSpan.FromMilliseconds(500)) return false;
+        latest = action.latest; time = action.time; return true;
+    }
+    private DecalActorProxy Actor => actor;
+    private string Property => property;
+}

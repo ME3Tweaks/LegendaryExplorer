@@ -12,41 +12,80 @@ using LegendaryExplorerCore.Unreal.ObjectInfo;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
 
-/// <summary>Cooked surfaces and an editable projector helper. No projection or package binary is rewritten.</summary>
+/// <summary>Editable static decal projector, with an uncommitted receiver-mesh preview.</summary>
 public sealed class DecalActorProxy : EditorActorProxy
 {
     private readonly DecalComponentProxy decal;
-    private readonly Matrix4x4 cookedActorTransform;
+    internal TransformSnapshot ProjectionBaseline;
+    public EditableDecal Decal { get; }
+    public bool CanReproject => decal?.EditUnsupportedReason is null && decal is not null;
+    public string DecalEditingStatus => decal?.EditingStatus ?? "No decal component.";
     public override string Category => "Decals";
     public int SortOrder => decal?.SortOrder ?? 0;
-    internal bool ProjectionMoved => LocalToWorld != cookedActorTransform;
+    public IMEPackage ProjectionPackage => decal?.ProjectionPackage ?? Export.FileRef;
+    internal DecalComponentProxy DecalComponent => decal;
     public override ActorCoverage Coverage => decal?.GetCoverage() ?? base.Coverage;
     internal void BindReceivers(LevelEditorRenderContext context) => decal?.BindReceivers(context);
 
     public DecalActorProxy(IActorEditorContext context, ExportEntry export)
         : base(context, export, new(ActorKind.Decal, "Effects helpers", "Decal projector helper; no usable cooked surface."))
     {
-        cookedActorTransform = LocalToWorld;
+        ProjectionBaseline = SnapshotTransform();
         var component = EffectiveLightingProperties.ResolveReference(export, "Decal", context.PackageCache, Properties);
         if (component is not null)
         {
             decal = new DecalComponentProxy(context.RenderContext, component, this);
             Components.Add(decal);
+            Decal = new EditableDecal(this, decal.Properties);
         }
     }
 
     public override void Render(LevelEditorRenderContext context, RenderPass pass)
     {
         base.Render(context, pass);
-        if (pass == RenderPass.Base && context.IsActorSelected(this)
-            && Matrix4x4.Invert(cookedActorTransform, out var inverse))
-            decal?.DrawProjector(context, inverse * LocalToWorld);
+        if (pass == RenderPass.Base && context.IsActorSelected(this)) decal?.DrawProjector(context, Matrix4x4.Identity);
         if (pass == RenderPass.Decals && (context.IsActorSelected(this)
             || context.GetCategoryState("Decals").IsVisible && (!IsHidden || context.ShowHidden)))
             decal?.Render(context, pass);
     }
 
-    public override BoxSphereBounds GetBounds() => ProjectionMoved ? base.GetBounds() : decal?.SurfaceBounds ?? base.GetBounds();
+    public override BoxSphereBounds GetBounds() => decal?.SurfaceBounds ?? base.GetBounds();
+
+    public override void UpdateScene(LevelEditorRenderContext context, float deltaTime)
+    {
+        base.UpdateScene(context, deltaTime);
+        decal?.EnsureProjection(context);
+    }
+
+    protected override bool HasUncommittedChanges() => base.HasUncommittedChanges() || Decal?.HasChanges == true
+        || decal?.HasReprojectedReceivers == true || decal?.HasReceiverChanges == true;
+    internal void RefreshDecalDirty() { UpdateDirty(); NotifyCoverageChanged(); OnPropertyChanged(nameof(DecalEditingStatus)); }
+    internal void OnDecalEdited(DecalSettings before, DecalSettings after, string property)
+    {
+        RefreshDecalDirty();
+        Editor?.OnDecalEdited(this, before, after, property);
+    }
+    public void PrepareDecalCommit()
+    {
+        if (IsReadOnly || decal is null) return;
+        decal.EnsureProjection(Editor.RenderContext);
+        if (IsDirty) decal.ValidateCommit();
+    }
+    public override void CommitChanges(PackageCache packageCache = null)
+    {
+        if (IsReadOnly || !IsDirty) return;
+        PrepareDecalCommit();
+        if (ProjectionPackage != Export.FileRef)
+            throw new InvalidOperationException("Commit this decal through the Level Editor to move it to its receiving package.");
+        decal?.CommitProjection();
+        base.CommitChanges(packageCache);
+    }
+    public override void MarkClean()
+    {
+        decal?.AcceptProjection();
+        ProjectionBaseline = SnapshotTransform();
+        base.MarkClean();
+    }
 
     protected override void UpdateLocalToWorld()
     {
@@ -71,7 +110,24 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     private ExportEntry material;
     private string failure;
     private string lastCoverage;
-    private readonly List<Receiver> receivers = [];
+    private List<Receiver> receivers = [];
+    private List<Receiver> originalReceivers;
+    private DecalProjection originalProjection;
+    private string originalFailure;
+    private string reprojectionError;
+    private TransformSnapshot? projectedTransform;
+    private DecalSettings projectedSettings;
+    private readonly Dictionary<ExportEntry, StaticMesh> sourceMeshes = [];
+    private List<(MeshComponentProxy Source, Matrix4x4 Transform)> projectedSources = [];
+    public bool HasReprojectedReceivers => originalReceivers is not null && !ReferenceEquals(receivers, originalReceivers);
+    public bool HasReceiverChanges => originalReceivers?.Any(Stale) == true;
+    public IMEPackage ProjectionPackage => HasReprojectedReceivers && receivers.Count > 0 ? receivers[0].Export.FileRef : Export.FileRef;
+    public string EditUnsupportedReason { get; private set; }
+    public string EditingStatus => EditUnsupportedReason ?? reprojectionError ?? (HasReprojectedReceivers
+        ? receivers.Count == 0 ? "No receiving triangles in the projection volume. Committing removes the old projected surfaces."
+        : (ProjectionPackage != Export.FileRef ? $"Committing moves this actor to {System.IO.Path.GetFileName(ProjectionPackage.FilePath)}. " : "")
+          + "Reprojected onto loaded static meshes. Committing clears baked decal lighting and shadows; decal rebaking is not yet supported."
+        : "Move, rotate or resize to reproject onto loaded static meshes. A projection must belong to one package.");
     private sealed class Receiver(StaticReceiverData data, ExportEntry export)
     {
         public readonly StaticReceiverData Data = data;
@@ -96,26 +152,36 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         {
             Properties = EffectiveLightingProperties.Read(export, context.PackageCache);
             if (!export.Game.IsLEGame()) throw new NotSupportedException("Cooked decal preview currently supports LE1, LE2 and LE3.");
-            projection = DecalProjection.Read(Properties);
+            try { projection = DecalProjection.Read(Properties); }
+            catch (NotSupportedException) { projection = DecalProjection.FromActor(Properties, DecalSettings.Read(Properties), owner.SnapshotTransform(), owner.ProjectionBaseline); }
             if (actor.Export.IsA("DecalActorMovable") || Properties.GetProp<BoolProperty>("bMovableDecal") is { Value: true })
                 throw new NotSupportedException("Movable decal reprojection is not implemented.");
-            if (export.Parent?.Parent?.ClassName != "Level")
+            if (export.Parent != actor.Export || export.Parent?.Parent?.ClassName != "Level")
                 throw new NotSupportedException("Prefab/template decal receiver remapping is not implemented.");
             material = EffectiveLightingProperties.ResolveReference(export, "DecalMaterial", context.PackageCache, Properties);
             if (material is null) throw new NotSupportedException("Decal material could not be resolved.");
+            if (Properties.GetProp<ArrayProperty<ObjectProperty>>("ReceiverImages") is { Count: > 0 })
+                EditUnsupportedReason = "Reprojection with ReceiverImages is not supported.";
             foreach (var data in export.GetBinaryData<DecalComponent>().StaticReceivers)
             {
                 var target = EffectiveLightingProperties.Resolve(export.FileRef.GetEntry(data.Component), context.PackageCache);
                 var receiver = new Receiver(data, target);
                 receivers.Add(receiver);
-                if (target?.ClassName != "StaticMeshComponent") receiver.Failure = $"Unsupported receiver: {target?.ClassName ?? "unresolved"}.";
+                if (target?.ClassName != "StaticMeshComponent")
+                {
+                    receiver.Failure = $"Unsupported receiver: {target?.ClassName ?? "unresolved"}.";
+                    EditUnsupportedReason = receiver.Failure + " Reprojection cannot replace this receiver type.";
+                }
                 else if (data.Vertices.Length == 0 || data.NumTriangles == 0) receiver.Failure = "No cooked triangles.";
                 else if (!ValidGeometry(data)) receiver.Failure = "Malformed cooked triangle data.";
-                else if (data.InstanceIndex is not (0 or -1)) receiver.Failure = "Instanced receiver is not supported.";
+                else if (data.InstanceIndex is not (0 or -1)) receiver.Failure = EditUnsupportedReason = "Instanced receiver is not supported.";
             }
-            if (receivers.Count == 0) failure = "No cooked static receivers; reprojection is not implemented.";
+            if (receivers.Count == 0) failure = "No cooked static receivers. Move or resize the projector to build a projection.";
         }
-        catch (Exception e) when (e is not OutOfMemoryException) { failure = e.Message; }
+        catch (Exception e) when (e is not OutOfMemoryException) { failure = EditUnsupportedReason = e.Message; }
+        originalProjection = projection;
+        originalReceivers = receivers;
+        originalFailure = failure;
     }
 
     internal static bool ValidGeometry(StaticReceiverData data) => data.NumTriangles <= int.MaxValue / 3
@@ -123,12 +189,20 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         && data.Indices.All(i => i < data.Vertices.Length)
         && data.Vertices.All(v => DecalProjection.Finite(v.Position));
 
-    private bool Stale(Receiver r) => owner.ProjectionMoved || r.Invalidated
+    private bool Stale(Receiver r) => r.Invalidated
         || r.Source is { } source && (source.Actor.IsDisposed || !source.Actor.Components.Contains(source)
             || source.LocalToWorld != r.OriginalTransform);
 
     internal void BindReceivers(LevelEditorRenderContext context)
     {
+        foreach (var receiver in receivers.Where(r => r.Source is not null && (r.Source.Actor.IsDisposed || !r.Source.Actor.Components.Contains(r.Source))))
+        {
+            if (context.FindDecalReceiver(receiver.Export) is { } replacement)
+            {
+                receiver.Source = replacement;
+                if (replacement.LocalToWorld != receiver.OriginalTransform || !receiver.OriginalData.SequenceEqual(receiver.Export.Data)) receiver.Invalidated = true;
+            }
+        }
         foreach (var r in receivers.Where(r => r.Failure is null && r.Source is null))
         {
             r.Source = context.FindDecalReceiver(r.Export);
@@ -138,6 +212,147 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
             r.Geometry = EffectiveLightingProperties.ResolveReference(r.Export, "StaticMesh", context.PackageCache);
             if (r.Source.Actor.IsTransformDirty) r.Invalidated = true;
         }
+    }
+
+    internal void EnsureProjection(LevelEditorRenderContext context)
+    {
+        if (owner.Decal is null || owner.Editor is null) return;
+        // The original receiver snapshot stays available for exact undo until a commit.
+        if (ReferenceEquals(receivers, originalReceivers)) BindReceivers(context);
+        bool receiverChanged = originalReceivers.Any(Stale);
+        bool geometryChanged = owner.IsTransformDirty || owner.Decal.GeometryChanged || receiverChanged;
+        if (!geometryChanged && !owner.Decal.HasChanges)
+        {
+            bool changed = projectedTransform is not null || HasReprojectedReceivers;
+            RestoreOriginal();
+            if (changed) owner.RefreshDecalDirty();
+            return;
+        }
+        var transform = owner.SnapshotTransform();
+        var settings = owner.Decal.Settings;
+        var sources = context.DrawList_3D.SelectMany(a => a.Components).OfType<StaticMeshComponentProxy>()
+            .Where(s => s.Export.ClassName == "StaticMeshComponent" && s.Actor.Editor is not null).ToList();
+        if (projectedTransform == transform && projectedSettings == settings && sources.Count == projectedSources.Count
+            && sources.Select((source, i) => ReferenceEquals(source, projectedSources[i].Source) && source.LocalToWorld == projectedSources[i].Transform).All(x => x)) return;
+        projectedTransform = transform;
+        projectedSettings = settings;
+        projectedSources = sources.Select(s => ((MeshComponentProxy)s, s.LocalToWorld)).ToList();
+        reprojectionError = null;
+        try
+        {
+            if (EditUnsupportedReason is not null) throw new NotSupportedException(EditUnsupportedReason);
+            if (!geometryChanged)
+            {
+                ReleaseGenerated();
+                receivers = originalReceivers;
+                var properties = Properties.DeepClone();
+                settings.Write(properties);
+                originalProjection.WriteFrame(properties);
+                projection = DecalProjection.Read(properties);
+                failure = originalFailure;
+            }
+            else
+            {
+                projection = DecalProjection.FromActor(Properties, settings, transform, owner.ProjectionBaseline);
+                foreach (var original in originalReceivers)
+                    if (original.Export is not null && context.FindDecalReceiver(original.Export) is not { HasPreviewMesh: true })
+                        throw new InvalidOperationException("Load all original receivers before reprojecting this decal.");
+                List<Receiver> rebuilt = [];
+                bool staticMeshes = Properties.GetProp<BoolProperty>("bProjectOnStaticMeshes") is not { Value: false };
+                bool hidden = Properties.GetProp<BoolProperty>("bProjectOnHidden") is { Value: true };
+                bool backfaces = Properties.GetProp<BoolProperty>("bProjectOnBackfaces") is { Value: true };
+                bool noClip = Properties.GetProp<BoolProperty>("bNoClip") is { Value: true };
+                float angle = Properties.GetProp<FloatProperty>("BackfaceAngle")?.Value ?? 0.01f;
+                settings.Filter.Validate(Export.FileRef);
+                foreach (var source in sources)
+                {
+                    if (!staticMeshes || !projection.Intersects(source.GetBounds())) continue;
+                    if (source.Export.Parent is not ExportEntry parent || !(parent.IsA("StaticMeshActor") || parent.ClassName == "StaticMeshCollectionActor")) continue;
+                    if (!hidden && (source.HiddenGame || source.Actor.IsHidden)) continue;
+                    if (!settings.Filter.Allows(parent)) continue;
+                    var sourceProps = EffectiveLightingProperties.Read(source.Export, context.PackageCache);
+                    if (sourceProps.GetProp<BoolProperty>("bAcceptsStaticDecals") is { Value: false }) continue;
+                    var geometry = EffectiveLightingProperties.ResolveReference(source.Export, "StaticMesh", context.PackageCache)
+                        ?? throw new InvalidOperationException("A receiving static mesh could not be resolved.");
+                    if (!sourceMeshes.TryGetValue(geometry, out var mesh)) sourceMeshes[geometry] = mesh = geometry.GetBinaryData<StaticMesh>();
+                    if (mesh.LODModels.Length == 0) throw new InvalidOperationException("A receiving static mesh has no render LOD.");
+                    int uv = geometry.GetCondensedProperties().GetProp<IntProperty>("LightMapCoordinateIndex")?.Value ?? 0;
+                    var data = DecalReprojection.Project(projection, mesh.LODModels[0], source.LocalToWorld, source.Export.UIndex, uv, backfaces, angle, noClip);
+                    if (data.NumTriangles == 0) continue;
+                    if (rebuilt.Count > 0 && rebuilt[0].Export.FileRef != source.Export.FileRef)
+                        throw new NotSupportedException("The projection spans meshes in multiple packages. A decal must project onto meshes in a single package.");
+                    rebuilt.Add(new Receiver(data, source.Export) { Source = source, Geometry = geometry,
+                        OriginalTransform = source.LocalToWorld, OriginalData = source.Export.Data.ToArray() });
+                }
+                ReleaseGenerated();
+                receivers = rebuilt;
+                failure = null;
+            }
+        }
+        catch (Exception e) when (e is not OutOfMemoryException) { reprojectionError = e.Message; }
+        UpdateMeshProjection();
+        owner.RefreshDecalDirty();
+    }
+
+    private void ReleaseGenerated()
+    {
+        if (HasReprojectedReceivers) foreach (var receiver in receivers) receiver.Mesh?.Dispose();
+    }
+    private void RestoreOriginal()
+    {
+        ReleaseGenerated();
+        receivers = originalReceivers; projection = originalProjection; failure = originalFailure;
+        reprojectionError = null; projectedTransform = null; projectedSources.Clear();
+        UpdateMeshProjection();
+    }
+    private void UpdateMeshProjection()
+    {
+        foreach (var receiver in receivers)
+            if (receiver.Mesh is { } mesh) mesh.LODs[0].Mesh.Decal = projection;
+    }
+    internal void ValidateCommit()
+    {
+        owner.Decal.Settings.Filter.Validate(Export.FileRef);
+        if (EditUnsupportedReason is not null || reprojectionError is not null)
+            throw new InvalidOperationException($"Cannot commit {owner.Export.ObjectName}: {EditUnsupportedReason ?? reprojectionError}");
+        if (ProjectionPackage != Export.FileRef && owner.Editor.GetDecalDestinationLevel(ProjectionPackage) is null)
+            throw new InvalidOperationException("The receiving package must be open and writable before moving the decal into it.");
+    }
+    internal void CommitProjection(ExportEntry destination = null)
+    {
+        ValidateCommit();
+        if (destination is null && Export.FileRef != ProjectionPackage)
+            throw new InvalidOperationException("Decal receiver references must be written in their owning package.");
+        destination ??= Export;
+        var props = destination.GetProperties();
+        var settings = owner.Decal.Settings;
+        if (owner.Decal.FilterChanged || destination != Export)
+            settings.Filter.Write(props, ProjectionPackage, destination.FileRef);
+        if (HasReprojectedReceivers)
+        {
+            settings = settings with { Width = projection.Width, Height = projection.Height, NearPlane = projection.NearPlane, FarPlane = projection.FarPlane };
+            projection.WriteFrame(props);
+            props.AddOrReplaceProp(CommonStructs.Vector3Prop(owner.Location, "location"));
+            props.AddOrReplaceProp(CommonStructs.RotatorProp(owner.Rotation, "Orientation"));
+            props.AddOrReplaceProp(new ArrayProperty<StructProperty>(receivers.Select(r => new StructProperty("DecalReceiver",
+                new PropertyCollection { new ObjectProperty(r.Export.UIndex, "Component") })), "DecalReceivers"));
+            settings.Write(props);
+            var binary = DecalComponent.Create();
+            binary.StaticReceivers = receivers.Select(r => r.Data).ToArray();
+            destination.WritePropertiesAndBinary(props, binary);
+        }
+        else { settings.Write(props); destination.WriteProperties(props); }
+    }
+    internal void AcceptProjection()
+    {
+        if (owner.Decal is null || projectedTransform is null) return;
+        if (HasReprojectedReceivers) foreach (var original in originalReceivers) original.Mesh?.Dispose();
+        originalReceivers = receivers; originalProjection = projection; originalFailure = failure;
+        foreach (var receiver in receivers) receiver.OriginalData = receiver.Export.Data.ToArray();
+        var settings = owner.Decal.Settings with { Width = projection.Width, Height = projection.Height, NearPlane = projection.NearPlane, FarPlane = projection.FarPlane };
+        settings.Write(Properties); projection.WriteFrame(Properties);
+        owner.Decal.MarkClean(settings);
+        projectedTransform = null; projectedSources.Clear();
     }
 
     internal void DrawProjector(LevelEditorRenderContext context, Matrix4x4 delta)
@@ -179,7 +394,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     public ActorCoverage GetCoverage()
     {
         string reason = failure;
-        if (owner.ProjectionMoved) reason = "Projector moved; cooked surfaces are invalid until rebuilt. Undo restores the original preview.";
+        if (reprojectionError is not null) reason = "Reprojection failed: " + reprojectionError;
         if (reason is not null) return new(ActorRepresentation.EditorMarker, reason);
         int loaded = receivers.Count(r => r.Mesh is not null && !Stale(r)
             && r.Mesh.GetRenderProxies().All(m => m.CanRenderWithGameShaders));
@@ -190,13 +405,13 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
         return new(loaded > 0 ? ActorRepresentation.PartialScene : ActorRepresentation.EditorMarker,
             $"Cooked static surfaces: {loaded}/{receivers.Count} ready. " +
             (issues.Length > 0 ? string.Join(" ", issues) + " " : "") +
-            "Requires visible loaded receivers and game shaders. Dynamic lighting/shadows and reprojection are not implemented.");
+            "Requires loaded receivers and game shaders. " + (HasReprojectedReceivers ? "Reprojected geometry has no baked decal lighting or shadows." : "Dynamic decal lighting/shadows are not implemented."));
     }
 
     public override void Render(MeshRenderContext renderContext, RenderPass pass)
     {
         if (renderContext is not LevelEditorRenderContext context) return;
-        if (failure is not null || owner.ProjectionMoved || owner.Editor is null || !context.IsComponentVisible(this)) return;
+        if (failure is not null || reprojectionError is not null || owner.Editor is null || !context.IsComponentVisible(this)) return;
         foreach (var r in receivers)
         {
             if (r.Failure is not null || r.Invalidated) continue;
@@ -255,23 +470,23 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
     public bool Refresh(IMEPackage package, HashSet<int> exports, bool force)
     {
         bool changed = false;
-        foreach (var r in receivers)
+        foreach (var r in originalReceivers.Concat(receivers).Distinct())
         {
             if (r.Export is null) continue;
             bool geometryChanged = r.Geometry?.FileRef == package && exports.Contains(r.Geometry.UIndex);
             if (force || r.Export.FileRef == package && (exports.Contains(r.Export.UIndex) || exports.Contains(r.Export.idxLink)))
             {
                 if (r.OriginalData is not null && !r.OriginalData.SequenceEqual(r.Export.Data)) r.Invalidated = true;
-                if (r.Export.FileRef == package && exports.Contains(r.Export.idxLink)) r.Invalidated = true;
                 changed = true;
             }
-            if (geometryChanged) { r.Invalidated = true; changed = true; }
+            if (geometryChanged) { r.Invalidated = true; sourceMeshes.Remove(r.Geometry); changed = true; }
             if (force)
             {
                 r.Mesh?.Dispose();
                 r.Mesh = null;
             }
         }
+        if (changed || force) { projectedTransform = null; if (force) sourceMeshes.Clear(); }
         return changed;
     }
 
@@ -281,7 +496,7 @@ public sealed class DecalComponentProxy : PrimitiveComponentProxy
 
     protected override void Dispose(bool disposing)
     {
-        if (disposing) { foreach (var r in receivers) r.Mesh?.Dispose(); receivers.Clear(); }
+        if (disposing) { foreach (var r in originalReceivers.Concat(receivers).Distinct()) r.Mesh?.Dispose(); receivers.Clear(); sourceMeshes.Clear(); }
         base.Dispose(disposing);
     }
 }
