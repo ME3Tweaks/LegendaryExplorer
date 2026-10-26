@@ -125,6 +125,11 @@ public class MeshRenderContext : RenderContext
     //lets LEVertex meshes be drawn with DefaultEffect's pixel shader
     private VertexShader LEVertexDefaultVertexShader;
     private InputLayout LEVertexDefaultInputLayout;
+    private VertexShader TerrainVertexShader;
+    private PixelShader TerrainPixelShader;
+    private InputLayout TerrainInputLayout;
+    //index buffers of terrain sections without holes or flipped quads, by section size
+    private readonly Dictionary<(int, int), (SharpDX.Direct3D11.Buffer Buffer, Format Format, int Count)> RegularTerrainIndices = [];
     private VertexShader ResolveVertexShader;
     //tonemaps pixels rendered with game shaders, to match how the game displays HDR scene color
     private PixelShader ResolvePixelShader;
@@ -1140,16 +1145,16 @@ public class MeshRenderContext : RenderContext
                     material.LoadGameShaders();
                     if (Device is not null && material.CanRenderWithGameShaders)
                     {
-                        GetCachedVertexShader(material.UnrealVertexShader.Guid, material.UnrealVertexShader.ShaderByteCode);
+                        GetCachedVertexShader(material.UnrealVertexShader.Guid, material.UnrealVertexShader.ShaderByteCode, material.VertexInputElements);
                         GetCachedPixelShader(material.UnrealPixelShader.Guid, material.UnrealPixelShader.ShaderByteCode);
                         if (material.NoLightMapVertexShader is not null)
                         {
-                            GetCachedVertexShader(material.NoLightMapVertexShader.Guid, material.NoLightMapVertexShader.ShaderByteCode);
+                            GetCachedVertexShader(material.NoLightMapVertexShader.Guid, material.NoLightMapVertexShader.ShaderByteCode, material.VertexInputElements);
                             GetCachedPixelShader(material.NoLightMapPixelShader.Guid, material.NoLightMapPixelShader.ShaderByteCode);
                         }
                         if (material.PreviewVertexShader is not null)
                         {
-                            GetCachedVertexShader(material.PreviewVertexShader.Guid, material.PreviewVertexShader.ShaderByteCode);
+                            GetCachedVertexShader(material.PreviewVertexShader.Guid, material.PreviewVertexShader.ShaderByteCode, material.VertexInputElements);
                             GetCachedPixelShader(material.PreviewPixelShader.Guid, material.PreviewPixelShader.ShaderByteCode);
                         }
                     }
@@ -1465,6 +1470,15 @@ public class MeshRenderContext : RenderContext
             LEVertexDefaultVertexShader = new VertexShader(Device, leVertexVSBytecode);
             LEVertexDefaultInputLayout = new InputLayout(Device, leVertexVSBytecode, LEVertex.InputElements);
         }
+        using (ShaderBytecode terrainVSBytecode = ShaderBytecode.Compile(EmbeddedResources.LevelEditorShader, "VSMainTerrain", "vs_5_0").Bytecode)
+        {
+            TerrainVertexShader = new VertexShader(Device, terrainVSBytecode);
+            TerrainInputLayout = new InputLayout(Device, terrainVSBytecode, TerrainVertex.InputElements);
+        }
+        using (ShaderBytecode terrainPSBytecode = ShaderBytecode.Compile(EmbeddedResources.LevelEditorShader, "PSMainTerrain", "ps_5_0").Bytecode)
+        {
+            TerrainPixelShader = new PixelShader(Device, terrainPSBytecode);
+        }
         using (ShaderBytecode resolveVSBytecode = ShaderBytecode.Compile(EmbeddedResources.LevelEditorShader, "VSMainResolve", "vs_5_0").Bytecode)
         {
             ResolveVertexShader = new VertexShader(Device, resolveVSBytecode);
@@ -1623,6 +1637,11 @@ public class MeshRenderContext : RenderContext
         DefaultEffect?.Dispose();
         LEVertexDefaultVertexShader?.Dispose();
         LEVertexDefaultInputLayout?.Dispose();
+        TerrainVertexShader?.Dispose();
+        TerrainPixelShader?.Dispose();
+        TerrainInputLayout?.Dispose();
+        foreach (var indices in RegularTerrainIndices.Values) indices.Buffer.Dispose();
+        RegularTerrainIndices.Clear();
         ResolveVertexShader?.Dispose();
         ResolvePixelShader?.Dispose();
         LEEffect?.Dispose();
@@ -1687,7 +1706,9 @@ public class MeshRenderContext : RenderContext
 
     // Cache hits do not take a lock. Creation is serialized to avoid duplicate D3D resources
     // when the background shader loader and render thread request the same shader.
-    public (VertexShader, InputLayout) GetCachedVertexShader(Guid id, byte[] shaderBytecode)
+    /// <param name="inputElements">The vertex streams the shader reads. By default <see cref="LEVertex"/> and <see cref="MeshStaticLighting"/>'s streams,
+    /// which FLocalVertexFactory shaders take. A shader is always given the layout it was first cached with</param>
+    public (VertexShader, InputLayout) GetCachedVertexShader(Guid id, byte[] shaderBytecode, InputElement[] inputElements = null)
     {
         if (VertexShaderCache.TryGetValue(id, out var cached)) return cached;
         lock (VertexShaderCache)
@@ -1698,7 +1719,7 @@ public class MeshRenderContext : RenderContext
                 InputLayout inputLayout;
                 try
                 {
-                    inputLayout = new InputLayout(Device, shaderBytecode, [.. LEVertex.InputElements, .. MeshStaticLighting.InputElements]);
+                    inputLayout = new InputLayout(Device, shaderBytecode, inputElements ?? [.. LEVertex.InputElements, .. MeshStaticLighting.InputElements]);
                 }
                 catch
                 {
@@ -1730,6 +1751,31 @@ public class MeshRenderContext : RenderContext
     /// <summary>
     /// Renders a section of a game-shader mesh with LEX's default shader. Used for materials that can't be rendered with game shaders.
     /// </summary>
+    /// <summary>The shared index buffer of a terrain section of this size with no holes or flipped quads</summary>
+    internal (SharpDX.Direct3D11.Buffer Buffer, Format Format, int Count) GetRegularTerrainIndices(int trueSizeX, int trueSizeY)
+    {
+        if (!RegularTerrainIndices.TryGetValue((trueSizeX, trueSizeY), out var entry))
+        {
+            var indices = Lightmaps.Game.TerrainHeightField.RegularIndices(trueSizeX, trueSizeY);
+            (SharpDX.Direct3D11.Buffer buffer, Format format) = TerrainSectionMesh.CreateIndexBuffer(Device, indices, (trueSizeX + 1) * (trueSizeY + 1));
+            RegularTerrainIndices[(trueSizeX, trueSizeY)] = entry = (buffer, format, indices.Count);
+        }
+        return entry;
+    }
+
+    /// <summary>Draws a terrain section with LEX's terrain shaders: neutral material, hit proxy and selection flags as for other meshes</summary>
+    internal void RenderTerrainSection(SharpDX.Direct3D11.Buffer vertexBuffer, SharpDX.Direct3D11.Buffer indexBuffer, Format indexFormat, int indexCount, Matrix4x4 localToWorld)
+    {
+        DefaultEffect.PrepDraw(ImmediateContext, AlphaBlendState, GetWorldConstants(localToWorld));
+        ImmediateContext.InputAssembler.InputLayout = TerrainInputLayout;
+        ImmediateContext.VertexShader.Set(TerrainVertexShader);
+        ImmediateContext.PixelShader.Set(TerrainPixelShader);
+        ImmediateContext.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(vertexBuffer, TerrainVertex.Stride, 0));
+        ImmediateContext.InputAssembler.SetIndexBuffer(indexBuffer, indexFormat, 0);
+        ImmediateContext.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.TriangleList;
+        ImmediateContext.DrawIndexed(indexCount, 0, 0);
+    }
+
     public void RenderMeshWithDefaultEffect(Mesh<LEVertex> mesh, ModelPreviewSection section, ShaderResourceView diffuseTexture)
     {
         DefaultEffect.PrepDraw(ImmediateContext, AlphaBlendState, GetWorldConstants(mesh.LocalToWorld));

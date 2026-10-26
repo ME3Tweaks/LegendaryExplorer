@@ -28,7 +28,7 @@ public sealed record ActorCoverage(ActorRepresentation Representation, string Re
 internal enum ActorKind
 {
     StaticMesh, SFXSkeletalMesh, SkeletalMesh, KAsset, DynamicMesh, Brush, Stunt,
-    Placeable, BioPawn, Pawn, Prefab, Grenade, Ammo, Pickup, Light, Collection, Decal, Helper
+    Placeable, BioPawn, Pawn, Prefab, Grenade, Ammo, Pickup, Light, Collection, Decal, Terrain, SplineLoft, Foliage, Helper
 }
 
 internal sealed record ActorClassInfo(ActorKind Kind, string Category = null, string Reason = null, bool DataOnly = false);
@@ -50,6 +50,7 @@ internal static class ActorClassification
         if (Is("SkeletalMeshActor")) return new(ActorKind.SkeletalMesh);
         if (Is("KAsset")) return new(ActorKind.KAsset);
         if (Is("DynamicSMActor")) return new(ActorKind.DynamicMesh);
+        if (Is("FoliageFactory")) return new(ActorKind.Foliage);
         if (Is("Brush")) return new(ActorKind.Brush);
         if (Is("SFXStuntActor")) return new(ActorKind.Stunt);
         if (Is("BioArtPlaceable")) return new(ActorKind.Placeable);
@@ -61,6 +62,8 @@ internal static class ActorClassification
         if (Is("SFXDroppedPickup")) return new(ActorKind.Pickup);
         if (Is("Light")) return new(ActorKind.Light);
         if (Is("DecalActorBase")) return new(ActorKind.Decal);
+        if (Is("Terrain")) return new(ActorKind.Terrain);
+        if (Is("SplineLoftActor")) return new(ActorKind.SplineLoft);
 
         if (Is("WorldInfo") || Is("MaterialInstanceActor") || Is("BioSquad")
             || name is "BioPlayerSquad" or "BioWaypointSet" or "Route" or "BioSquadAmbient" or "BioSquadCombat"
@@ -72,15 +75,13 @@ internal static class ActorClassification
         if (Is("PlayerStart") || name is "BioStartLocation" or "BioStartPoint")
             return new(ActorKind.Helper, "Gameplay", "Editable player/start transform; runtime spawning is not simulated.");
         if (Is("NavigationPoint") || Is("BioPathPoint") || Is("SplineActor") || name == "PathTargetPoint")
-            return new(ActorKind.Helper, "Navigation", Is("SplineLoftActor")
-                ? "Editable actor transform only; spline loft deformation and connected spline data are not rebuilt."
-                : "Editable actor transform only; navigation topology and cover-slot shapes are not rebuilt.");
+            return new(ActorKind.Helper, "Navigation", "Editable actor transform only; navigation topology and cover-slot shapes are not rebuilt.");
         if (Is("CameraActor") || Is("SceneCaptureActor"))
             return new(ActorKind.Helper, "Cameras", "Camera position and orientation only; camera preview and scene captures are not implemented.");
         if (Is("AmbientSound") || Is("WwiseAmbientSound") || name is "WwiseDistanceRTPC" or "WwiseMicPosOrient")
             return new(ActorKind.Helper, "Audio", "Sound-source position only; attenuation preview and playback are not implemented.");
         if (Is("Emitter") || Is("DecalActorBase") || Is("LensFlareSource") || Is("HeightFog")
-            || Is("FogVolumeDensityInfo") || Is("Terrain") || Is("WindDirectionalSource") || Is("WindPointSource")
+            || Is("FogVolumeDensityInfo") || Is("WindDirectionalSource") || Is("WindPointSource")
             || name is "BioSunActor" or "RadialBlurActor" or "SFXAtlasSmokeActor")
             return new(ActorKind.Helper, "Effects helpers", "Editable actor transform only; scene effects are not rendered and cooked projection/geometry data is not rebuilt.");
         if (Is("Trigger") || Is("TargetPoint") || Is("Note") || Is("RB_ConstraintActor")

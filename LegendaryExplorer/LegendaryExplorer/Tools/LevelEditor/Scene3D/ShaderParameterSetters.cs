@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
@@ -20,7 +20,7 @@ internal static class ShaderParameterSetters
     /// Writes the parameters for one of the base pass vertex shaders that <see cref="MaterialRenderProxy.SelectShaders"/> can choose
     /// </summary>
     /// <param name="lightEnvironment">The lights of the light environment that lights the mesh, which replace the preview lighting. Null if it isn't lit by one</param>
-    public static void WriteBasePassVertexShaderValues(Shader vertexShader, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat,
+    public static void WriteBasePassVertexShaderValues(Shader vertexShader, Span<byte> buffer, MeshRenderContext context, IShaderPrimitive mesh, MaterialRenderProxy mat,
         MeshStaticLighting staticLighting, LightEnvironmentLighting lightEnvironment = null)
     {
         switch (vertexShader)
@@ -56,7 +56,7 @@ internal static class ShaderParameterSetters
     /// <param name="usePreviewLighting">Light the mesh with <see cref="MeshRenderContext.Lighting"/>, rather than the level's lighting</param>
     /// <param name="skyLighting">The level's sky lighting on the mesh, for the shaders with a sky light. Unused if <paramref name="usePreviewLighting"/></param>
     /// <param name="lightEnvironment">The lights of the light environment that lights the mesh, which replace the preview lighting. Null if it isn't lit by one</param>
-    public static void WriteBasePassPixelShaderValues(Shader pixelShader, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat,
+    public static void WriteBasePassPixelShaderValues(Shader pixelShader, Span<byte> buffer, MeshRenderContext context, IShaderPrimitive mesh, MaterialRenderProxy mat,
         MeshStaticLighting staticLighting, bool usePreviewLighting, SkyLighting skyLighting, LightEnvironmentLighting lightEnvironment = null)
     {
         //A light environment's sky light. (Its SH light, if it has one, can't be rendered by the shaders without one, so they get it as the sky lighting it was converted to)
@@ -141,14 +141,10 @@ internal static class ShaderParameterSetters
     }
 
     public static void WriteValues<LightMapPolicy, DensityPolicy>(this TBasePassVertexShader<LightMapPolicy, DensityPolicy> shader,
-        Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
+        Span<byte> buffer, MeshRenderContext context, IShaderPrimitive mesh, MaterialRenderProxy mat)
         where LightMapPolicy : struct, IVertexParametersType where DensityPolicy : struct, IVertexShaderParametersType
     {
-        if (shader.VertexFactoryParameters.Parameters is not FLocalVertexFactoryShaderParameters vertexFactoryParams)
-        {
-            throw new NotSupportedException($"{shader.VertexFactoryParameters.VertexFactoryType} is not supported by the renderer");
-        }
-        vertexFactoryParams.WriteValues(buffer, context, mesh, mat);
+        shader.VertexFactoryParameters.WriteValues(buffer, context, mesh, mat);
         shader.HeightFogParameters.WriteValues(buffer, context, mesh, mat);
         shader.MaterialParameters.WriteValues(buffer, context, mesh, mat);
         //TODO: DensityPolicy params
@@ -156,7 +152,7 @@ internal static class ShaderParameterSetters
     /// <param name="usePreviewSky">Add <see cref="MeshRenderContext.Lighting"/>'s sky lighting (if the shader has a sky light), rather than <paramref name="skyLighting"/></param>
     /// <param name="skyLighting">The level's sky lighting on the mesh (FPrimitiveSceneInfo's UpperSkyLightColor and LowerSkyLightColor)</param>
     public static void WriteValues<LightMapPolicy>(this TBasePassPixelShader<LightMapPolicy> shader,
-        Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat, bool usePreviewSky, SkyLighting skyLighting)
+        Span<byte> buffer, MeshRenderContext context, IShaderPrimitive mesh, MaterialRenderProxy mat, bool usePreviewSky, SkyLighting skyLighting)
         where LightMapPolicy : struct, IPixelParametersType
     {
         shader.MaterialParameters.WriteValues(buffer, context, mesh, mat);
@@ -191,12 +187,12 @@ internal static class ShaderParameterSetters
     /// <summary>
     /// Writes the parameters for a TLightVertexShader, as UE3's TMeshLightingDrawingPolicy sets them
     /// </summary>
-    public static void WriteLightVertexShaderValues(Shader vertexShader, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat,
+    public static void WriteLightVertexShaderValues(Shader vertexShader, Span<byte> buffer, MeshRenderContext context, IShaderPrimitive mesh, MaterialRenderProxy mat,
         LightInteraction interaction)
     {
         SceneLight light = interaction.Light;
-        //FPointLightPolicy and FSpotLightPolicy: (Position + PreViewTranslation, InvRadius). PreViewTranslation is always 0 here
-        var lightPositionAndInvRadius = new Vector4(light.Position, 1 / light.Radius);
+        //FPointLightPolicy and FSpotLightPolicy: (Position + PreViewTranslation, InvRadius)
+        var lightPositionAndInvRadius = new Vector4(light.Position + context.LEEffect.PreViewTranslation, 1 / light.Radius);
         //FDirectionalLightPolicy: the direction towards the light
         Vector3 lightDirection = -light.Direction;
         //FShadowTexturePolicy (and FSignedDistanceFieldShadowTexturePolicy, which shares its vertex parameters) binds this to LightmapCoordinateScaleBias
@@ -239,7 +235,7 @@ internal static class ShaderParameterSetters
     /// Writes the parameters for a TLightPixelShader, as UE3's TMeshLightingDrawingPolicy sets them
     /// </summary>
     /// <param name="lightAttenuation">The light's attenuation in screen space, from its dynamic shadows and light function (see <see cref="LightAttenuationRenderer"/>). Null if it has none</param>
-    public static void WriteLightPixelShaderValues(Shader pixelShader, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat,
+    public static void WriteLightPixelShaderValues(Shader pixelShader, Span<byte> buffer, MeshRenderContext context, IShaderPrimitive mesh, MaterialRenderProxy mat,
         LightInteraction interaction, ShaderResourceView lightAttenuation)
     {
         SceneLight light = interaction.Light;
@@ -331,7 +327,7 @@ internal static class ShaderParameterSetters
     /// It has no shadows or light function, so no attenuation
     /// </summary>
     public static void WriteSHLightPassValues(Shader vertexShader, Shader pixelShader, Span<byte> vertexBuffer, Span<byte> pixelBuffer, MeshRenderContext context,
-        Mesh<LEVertex> mesh, MaterialRenderProxy mat, in SHVectorRGB incidentLighting)
+        IShaderPrimitive mesh, MaterialRenderProxy mat, in SHVectorRGB incidentLighting)
     {
         switch (vertexShader)
         {
@@ -353,20 +349,16 @@ internal static class ShaderParameterSetters
     }
 
     public static void WriteValues<LightTypePolicy, ShadowingTypePolicy>(this TLightVertexShader<LightTypePolicy, ShadowingTypePolicy> shader,
-        Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
+        Span<byte> buffer, MeshRenderContext context, IShaderPrimitive mesh, MaterialRenderProxy mat)
         where LightTypePolicy : struct, IVertexParametersType where ShadowingTypePolicy : struct, IVertexParametersType
     {
-        if (shader.VertexFactoryParameters.Parameters is not FLocalVertexFactoryShaderParameters vertexFactoryParams)
-        {
-            throw new NotSupportedException($"{shader.VertexFactoryParameters.VertexFactoryType} is not supported by the renderer");
-        }
-        vertexFactoryParams.WriteValues(buffer, context, mesh, mat);
+        shader.VertexFactoryParameters.WriteValues(buffer, context, mesh, mat);
         shader.MaterialParameters.WriteValues(buffer, context, mesh, mat);
     }
 
     /// <param name="lightAttenuation">The light's attenuation in screen space: its dynamic shadows and light function. Null if it has neither</param>
     public static void WriteValues<LightTypePolicy, ShadowingTypePolicy>(this TLightPixelShader<LightTypePolicy, ShadowingTypePolicy> shader,
-        Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat, ShaderResourceView lightAttenuation)
+        Span<byte> buffer, MeshRenderContext context, IShaderPrimitive mesh, MaterialRenderProxy mat, ShaderResourceView lightAttenuation)
         where LightTypePolicy : struct, IPixelParametersType where ShadowingTypePolicy : struct, IPixelParametersType
     {
         shader.MaterialParameters.WriteValues(buffer, context, mesh, mat);
@@ -496,10 +488,10 @@ internal static class ShaderParameterSetters
         }
     }
 
-    public static void WriteValues(this ref FMaterialVertexShaderParameters p, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
+    public static void WriteValues(this ref FMaterialVertexShaderParameters p, Span<byte> buffer, MeshRenderContext context, IShaderPrimitive mesh, MaterialRenderProxy mat)
     {
-        buffer.WriteVal(p.CameraWorldPosition, context.Camera.EyePosition);
-        buffer.WriteVal(p.ObjectWorldPositionAndRadius, new Vector4(mesh.TransformedBounds.Origin, mesh.TransformedBounds.SphereRadius));
+        buffer.WriteVal(p.CameraWorldPosition, context.LEEffect.ViewOrigin);
+        buffer.WriteVal(p.ObjectWorldPositionAndRadius, new Vector4(mesh.Bounds.Origin, mesh.Bounds.SphereRadius));
         buffer.WriteVal(p.ObjectOrientation, mesh.LocalToWorld.GetAxis(2).Normal());
         buffer.WriteVal(p.WindDirectionAndSpeed, Vector4.Zero);
         buffer.WriteVal(p.FoliageImpulseDirection, Vector3.Zero);
@@ -515,9 +507,9 @@ internal static class ShaderParameterSetters
             buffer.WriteVal(vectorParam.Param, vectorParamValues[vectorParam.Index]);
         }
     }
-    public static void WriteValues(this ref FMaterialPixelShaderParameters p, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
+    public static void WriteValues(this ref FMaterialPixelShaderParameters p, Span<byte> buffer, MeshRenderContext context, IShaderPrimitive mesh, MaterialRenderProxy mat)
     {
-        p.WriteValues(buffer, context, mat, mesh.TransformedBounds, mesh.LocalToWorld, mesh.WorldToLocal);
+        p.WriteValues(buffer, context, mat, mesh.Bounds, mesh.LocalToWorld, mesh.WorldToLocal);
         if (mesh.Decal is { } decal) buffer.WriteVal(p.DecalFarPlaneDistance, decal.FarPlane);
     }
 
@@ -526,7 +518,8 @@ internal static class ShaderParameterSetters
     public static void WriteValues(this ref FMaterialPixelShaderParameters p, Span<byte> buffer, MeshRenderContext context, MaterialRenderProxy mat,
         BoxSphereBounds bounds, Matrix4x4 localToWorld, Matrix4x4 worldToLocal)
     {
-        buffer.WriteVal(p.CameraWorldPosition, context.Camera.EyePosition);
+        //MaterialTemplate's WorldPosition is the translated pixel position plus this, so it must be the PreViewTranslation's view origin
+        buffer.WriteVal(p.CameraWorldPosition, context.LEEffect.ViewOrigin);
         buffer.WriteVal(p.ObjectWorldPositionAndRadius, new Vector4(bounds.Origin, bounds.SphereRadius));
         buffer.WriteVal(p.ObjectOrientation, localToWorld.GetAxis(2).Normal());
         buffer.WriteVal(p.WindDirectionAndSpeed, Vector4.Zero);
@@ -567,8 +560,9 @@ internal static class ShaderParameterSetters
         buffer.WriteVal(p.WorldToLocal, worldToLocal);
         //float3x3 shader parameters have each row padded to 4 floats, so a Matrix4x4's layout matches (the 4th column lands in the padding)
         buffer.WriteVal(p.WorldToView, effect.ViewMatrix);
+        //as FMaterialPixelShaderParameters::Set: the inverse is untranslated, the view projection translated
         buffer.WriteVal(p.InvViewProjection, effect.InverseViewProjectionMatrix);
-        buffer.WriteVal(p.ViewProjection, effect.ViewProjectionMatrix);
+        buffer.WriteVal(p.ViewProjection, effect.TranslatedViewProjectionMatrix);
 
         p.SceneTextureParameters.WriteValues(buffer, context, null, mat);
 
@@ -599,7 +593,7 @@ internal static class ShaderParameterSetters
         buffer.WriteVal(p.WrapLightingParameters, GameLightingProfile.ForGame(mat.Game).WrapLightingParameters);
     }
 
-    public static void WriteValues(this ref FSceneTextureShaderParameters p, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
+    public static void WriteValues(this ref FSceneTextureShaderParameters p, Span<byte> buffer, MeshRenderContext context, IShaderPrimitive mesh, MaterialRenderProxy mat)
     {
         if (mesh?.Decal is not null && (p.SceneColorTexture.IsBound() || p.SceneDepthTexture.IsBound()))
             throw new NotSupportedException("This decal needs scene color/depth textures, which the preview does not yet supply.");
@@ -624,7 +618,7 @@ internal static class ShaderParameterSetters
         }
     }
 
-    public static void WriteValues(this ref FHeightFogVertexShaderParameters p, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
+    public static void WriteValues(this ref FHeightFogVertexShaderParameters p, Span<byte> buffer, MeshRenderContext context, IShaderPrimitive mesh, MaterialRenderProxy mat)
     {
         //these values disable fog
         buffer.WriteVal(p.FogExtinctionDistance, new Vector4(float.MaxValue));
@@ -640,9 +634,55 @@ internal static class ShaderParameterSetters
         buffer.WriteVal(p.FogStartDistance, Vector4.Zero);
     }
 
-    public static void WriteValues(this FLocalVertexFactoryShaderParameters p, Span<byte> buffer, MeshRenderContext context, Mesh<LEVertex> mesh, MaterialRenderProxy mat)
+    /// <summary>The vertex factory's values for the primitive (its Set and SetMesh): the local factory's (and its decal variant's), or the terrain's</summary>
+    public static void WriteValues(this FVertexFactoryParameterRef vertexFactory, Span<byte> buffer, MeshRenderContext context, IShaderPrimitive mesh, MaterialRenderProxy mat)
     {
-            buffer.WriteVal(p.LocalToWorld, mesh.LocalToWorld);
+        switch (vertexFactory.Parameters)
+        {
+            case FLocalVertexFactoryShaderParameters local:
+                local.WriteValues(buffer, context, mesh, mat);
+                break;
+            case FTerrainVertexFactoryShaderParameters terrain when terrain is not FTerrainDecalVertexFactoryShaderParameters:
+                terrain.WriteValues(buffer, context, mesh);
+                break;
+            default:
+                throw new NotSupportedException($"{vertexFactory.VertexFactoryType} is not supported by the renderer");
+        }
+    }
+
+    /// <summary>
+    /// FTerrainVertexFactoryShaderParameters::Set and SetMesh, for a section at its maximum tessellation: no morphing, so the tessellation interpolation
+    /// values are the engine's constants
+    /// </summary>
+    public static void WriteValues(this FTerrainVertexFactoryShaderParameters p, Span<byte> buffer, MeshRenderContext context, IShaderPrimitive mesh)
+    {
+        TerrainVertexFactoryValues terrain = mesh.Terrain ?? throw new InvalidOperationException("Terrain shaders require a terrain section.");
+        buffer.WriteVal(p.LocalToWorld, TranslatedLocalToWorld(context, mesh));
+        buffer.WriteVal(p.WorldToLocal, mesh.WorldToLocal);
+        buffer.WriteVal(p.LocalToView, mesh.LocalToWorld * context.LEEffect.ViewMatrix);
+        buffer.WriteVal(p.TerrainLightmapCoordinateScaleBias, terrain.LightmapCoordinateScaleBias);
+        buffer.WriteVal(p.TessellationInterpolation, 1f);
+        buffer.WriteVal(p.InvMaxTesselationLevel_ZScale, terrain.InvMaxTesselationLevel_ZScale);
+        buffer.WriteVal(p.InvTerrainSize_SectionBase, terrain.InvTerrainSize_SectionBase);
+        buffer.WriteVal(p.TessellationDistanceScale, new Vector4(terrain.TessellationDistanceScale, 0, 0, 0));
+        buffer.WriteArray(p.TessInterpDistanceValues, TessInterpDistanceValues);
+    }
+
+    private static readonly Vector4[] TessInterpDistanceValues =
+    [
+        new(0, -1, 0, 0), new(16384, 16384, 0, 0), new(8192, 8192, 0, 0), new(4096, 4096, 0, 0), new(0, 4096, 0, 0)
+    ];
+
+    /// <summary>
+    /// The LocalToWorld vertex factories give game vertex shaders: the primitive's, concatenated with <see cref="LEEffect.PreViewTranslation"/>
+    /// (FLocalVertexFactoryShaderParameters::SetMesh and its terrain counterpart). WorldToLocal stays untranslated, as the shaders only transform vectors with it
+    /// </summary>
+    private static Matrix4x4 TranslatedLocalToWorld(MeshRenderContext context, IShaderPrimitive mesh) =>
+        mesh.LocalToWorld * Matrix4x4.CreateTranslation(context.LEEffect.PreViewTranslation);
+
+    public static void WriteValues(this FLocalVertexFactoryShaderParameters p, Span<byte> buffer, MeshRenderContext context, IShaderPrimitive mesh, MaterialRenderProxy mat)
+    {
+            buffer.WriteVal(p.LocalToWorld, TranslatedLocalToWorld(context, mesh));
             buffer.WriteVal(p.WorldToLocal, mesh.WorldToLocal);
             buffer.WriteVal(p.LocalToWorldRotDeterminantFlip, mesh.LocalToWorld.GetDeterminant() >= 0 ? 1f : -1f);
             if (p is FLocalDecalVertexFactoryShaderParameters decal)

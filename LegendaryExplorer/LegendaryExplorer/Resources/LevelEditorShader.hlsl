@@ -79,6 +79,28 @@ VS_OUT VSMainLEVertex(VS_IN_LEVERTEX input) {
 	return result;
 }
 
+//Terrain sections: a section-local position and its height gradient (dZ/dX, dZ/dY). The normal is the cross product of the transformed
+//grid tangents, so non-uniform terrain scale shades as it would with the transformed geometry's own normal
+struct VS_IN_TERRAIN {
+    float3 pos : POSITION0;
+    float2 gradient : TEXCOORD0;
+};
+
+VS_OUT VSMainTerrain(VS_IN_TERRAIN input) {
+	VS_OUT result = (VS_OUT)0;
+
+	result.pos = mul(float4(input.pos, 1), model);
+	result.pos = mul(result.pos, view);
+	result.pos = mul(result.pos, projection);
+
+    float3 tangentX = mul(float4(1, 0, input.gradient.x, 0), model).xyz;
+    float3 tangentY = mul(float4(0, 1, input.gradient.y, 0), model).xyz;
+    result.normal = normalize(cross(tangentX, tangentY));
+    result.color = float4(1, 1, 1, 1);
+
+	return result;
+}
+
 //UE3's default display gamma
 #define GAMMA 2.2
 
@@ -172,6 +194,27 @@ PS_OUT PSMain(PS_IN input) {
 	//This shader's colors are already gamma-encoded, so decode them
     result.color.rgb = pow(abs(result.color.rgb), GAMMA);
 
+	return result;
+}
+
+//Terrain without its layered materials: a neutral clay color, lit from above so flat ground reads against the background
+PS_OUT PSMainTerrain(PS_IN input) {
+	PS_OUT result = (PS_OUT)0;
+	float3 toLight = normalize(float3(0.35, 0.25, 1));
+	float lambert = saturate(dot(toLight, normalize(input.normal))) * 0.7 + 0.3;
+	if ((Flags & FLAG_UNLIT) != 0) lambert = 1.0;
+	result.color = float4(float3(0.72, 0.66, 0.54) * lambert, 1.0);
+    if ((Flags & FLAG_SELECTED) == FLAG_SELECTED)
+    {
+        result.color.b *= 2;
+        if ((Flags & FLAG_WIREFRAME) == FLAG_WIREFRAME) result.color = float4(1.0, 1.0, 0, 1.0);
+    }
+    else if ((Flags & FLAG_HIGHLIGHTED) == FLAG_HIGHLIGHTED)
+    {
+        result.color.rgb = lerp(result.color.rgb, float3(1.0, 0.62, 0.12), 0.35);
+    }
+    result.hitTestID = float4(HitTestID, 1.0f);
+    result.color.rgb = pow(abs(result.color.rgb), GAMMA);
 	return result;
 }
 

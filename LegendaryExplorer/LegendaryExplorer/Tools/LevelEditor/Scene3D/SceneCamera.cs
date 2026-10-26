@@ -45,7 +45,8 @@ public class SceneCamera
     public float aspect = 1.0f;
     public float FOV = MathF.PI / 3; // 60 degrees.
     public float ZNear = 0.1f;
-    public float ZFar = 100_000;
+    /// <summary>How far below <see cref="Position"/> the orthographic view reaches. Perspective views have no far plane</summary>
+    public float OrthoDepthRange = 100_000;
     public bool FirstPerson = false;
     public bool IsOrthographic = false;
     public float OrthoWidth = 5000f; // world units visible horizontally in ortho mode
@@ -179,26 +180,28 @@ public class SceneCamera
     /// Left-handed projection with reversed depth: the near plane maps to a depth of 1, and the far plane to 0.
     /// Combined with a floating-point depth buffer, this keeps precision roughly even over the whole range, which prevents z-fighting in large levels.
     /// Depth tests must use Greater instead of Less, and the depth buffer must be cleared to 0.
+    /// The perspective far plane is at infinity (UE3's FReversedZPerspectiveMatrix with MinZ == MaxZ): depth is ZNear / view depth, which stays above 0
+    /// at any distance, so the largest levels aren't cut off.
     /// </summary>
     public Matrix4x4 ProjectionMatrix
     {
         get
         {
-            float depthRange = ZFar - ZNear;
             if (IsOrthographic)
             {
+                float depthRange = OrthoDepthRange - ZNear;
                 return new Matrix4x4(
                     2f / OrthoWidth, 0, 0, 0,
                     0, 2f / (OrthoWidth / aspect), 0, 0,
                     0, 0, -1f / depthRange, 0,
-                    0, 0, ZFar / depthRange, 1);
+                    0, 0, OrthoDepthRange / depthRange, 1);
             }
             float yScale = 1f / MathF.Tan(FOV * 0.5f);
             return new Matrix4x4(
                 yScale / aspect, 0, 0, 0,
                 0, yScale, 0, 0,
-                0, 0, -ZNear / depthRange, 1,
-                0, 0, ZNear * ZFar / depthRange, 0);
+                0, 0, 0, 1,
+                0, 0, ZNear, 0);
         }
     }
 

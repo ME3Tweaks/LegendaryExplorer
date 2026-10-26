@@ -213,18 +213,23 @@ public sealed class LightmassTerrain
 {
     /// <summary>Named by content, so Swarm's cache reuses the channel until the terrain changes.</summary>
     public Guid Guid;
-    public ExportEntry Export;
-    public PropertyCollection Properties;
-    public Terrain Binary;
+    /// <summary>The height field the viewport also renders from</summary>
+    public TerrainHeightField HeightField;
     public Matrix4x4 LocalToWorld;
-    public int NumVerticesX, NumVerticesY, NumPatchesX, NumPatchesY, StaticLightingResolution;
+    public int StaticLightingResolution;
+    public ExportEntry Export => HeightField.Export;
+    public PropertyCollection Properties => HeightField.Properties;
+    public Terrain Binary => HeightField.Binary;
+    public int NumVerticesX => HeightField.NumVerticesX;
+    public int NumVerticesY => HeightField.NumVerticesY;
+    public int NumPatchesX => HeightField.NumPatchesX;
+    public int NumPatchesY => HeightField.NumPatchesY;
 
     /// <summary>The height at a vertex of the terrain's grid, clamped to the grid as Lightmass clamps it (FTerrain::Height).</summary>
-    public ushort Height(int x, int y) => Binary.Heights[Math.Clamp(y, 0, NumVerticesY - 1) * NumVerticesX + Math.Clamp(x, 0, NumVerticesX - 1)];
+    public ushort Height(int x, int y) => HeightField.Height(x, y);
 
-    /// <summary>TID_Visibility_Off: a hole in the terrain.</summary>
-    public bool IsQuadVisible(int x, int y) =>
-        ((byte)Binary.InfoData[Math.Clamp(y, 0, NumVerticesY - 1) * NumVerticesX + Math.Clamp(x, 0, NumVerticesX - 1)] & 1) == 0;
+    /// <summary>TID_Visibility_Off: a hole in the terrain. Lightmass tests each quad.</summary>
+    public bool IsQuadVisible(int x, int y) => HeightField.IsQuadVisible(x, y);
 }
 
 /// <summary>
@@ -1070,7 +1075,7 @@ public sealed class LightmassSceneBuilder : IDisposable
     /// The lighting channels of the nodes' surfaces (UE3 gives each ModelComponent its surfaces' channels). FBspSurf stores the
     /// FLightingChannelContainer bitfield, bInitialized first; an uninitialized one is BSP only.
     /// </summary>
-    static LightingChannels BspChannels(Model model, List<int> nodes)
+    internal static LightingChannels BspChannels(Model model, List<int> nodes)
     {
         uint channels = 0;
         foreach (int n in nodes)
@@ -1086,7 +1091,7 @@ public sealed class LightmassSceneBuilder : IDisposable
     // ================= terrain =================
 
     /// <summary>TERRAIN_ZSCALE: local Z per height unit (heights are centred on 32768).</summary>
-    public const float TerrainZScale = 1f / 128;
+    public const float TerrainZScale = TerrainHeightField.ZScale;
 
     /// <summary>
     /// The level's terrains, as UE3 lights them (UTerrainComponent::GetStaticLightingInfo, FLightmassExporter::WriteTerrainMapping): a
@@ -1103,15 +1108,12 @@ public sealed class LightmassSceneBuilder : IDisposable
             int Int(string name, int fallback = 0) => props.GetProp<IntProperty>(name)?.Value ?? fallback;
             var terrain = new LightmassTerrain
             {
-                Export = actor,
-                Properties = props,
-                Binary = ObjectBinary.From<Terrain>(actor),
-                LocalToWorld = ActorUtils.GetLocalToWorld(actor),
-                NumVerticesX = Int("NumVerticesX"), NumVerticesY = Int("NumVerticesY"),
-                NumPatchesX = Int("NumPatchesX"), NumPatchesY = Int("NumPatchesY"),
+                HeightField = new TerrainHeightField(actor, props),
+                //with the class default's DrawScale3D (256) when the terrain doesn't set one
+                LocalToWorld = ActorUtils.GetLocalToWorld(props),
                 StaticLightingResolution = Math.Max(1, Int("StaticLightingResolution", 4)),
             };
-            if (!HasMatchingHeightField(props, terrain.Binary))
+            if (!terrain.HeightField.IsValid)
             {
                 scene.Count("terrain: height field doesn't match its size (left out)");
                 continue;
@@ -1129,8 +1131,7 @@ public sealed class LightmassSceneBuilder : IDisposable
             var settings = LightmassElementSettings.From(props.GetProp<StructProperty>("LightmassSettings"), scene.World.EmissiveBoost);
             var element = new LightmassElement(GetMaterial(null, settings.DiffuseBoost), settings);
             int res = terrain.StaticLightingResolution;
-            // TERRAIN_PATCH_EXPAND_SCALAR (1) times DXT1's 4-texel block, in quads at the lighting resolution
-            int expand = Math.Max(1, 4 / res);
+            int expand = TerrainSection.LightMapExpandQuads(res);
             bool bilinear = props.GetProp<BoolProperty>("bBilinearFilterLightmapGeneration") is not { Value: false };
             bool added = false;
             foreach (var componentProp in props.GetProp<ArrayProperty<ObjectProperty>>("TerrainComponents") ?? Enumerable.Empty<ObjectProperty>())
@@ -1219,11 +1220,7 @@ public sealed class LightmassSceneBuilder : IDisposable
     }
 
     /// <summary>Whether a terrain's height field has a height and info flags for each of its vertices; Lightmass can't use one that doesn't</summary>
-    public static bool HasMatchingHeightField(PropertyCollection terrainProps, Terrain binary)
-    {
-        int heights = (terrainProps.GetProp<IntProperty>("NumVerticesX")?.Value ?? 0) * (terrainProps.GetProp<IntProperty>("NumVerticesY")?.Value ?? 0);
-        return heights > 0 && binary.Heights.Length == heights && binary.InfoData.Length == heights;
-    }
+    public static bool HasMatchingHeightField(ExportEntry terrain, PropertyCollection terrainProps) => new TerrainHeightField(terrain, terrainProps).IsValid;
 
     /// <summary>
     /// Why a terrain section isn't in the bake, or null if it is: as for meshes, UE3 only builds static lighting for sections with static shadowing
@@ -1253,7 +1250,7 @@ public sealed class LightmassSceneBuilder : IDisposable
         {
             var package = actor.FileRef;
             var props = EffectiveLightingProperties.Read(actor, cache);
-            if (!HasMatchingHeightField(props, ObjectBinary.From<Terrain>(actor))) continue;
+            if (!HasMatchingHeightField(actor, props)) continue;
             foreach (var componentProp in props.GetProp<ArrayProperty<ObjectProperty>>("TerrainComponents") ?? Enumerable.Empty<ObjectProperty>())
             {
                 if (package.TryGetUExport(componentProp.Value, out var section) && EffectiveLightingProperties.Read(section, cache) is var sectionProps
@@ -1267,11 +1264,8 @@ public sealed class LightmassSceneBuilder : IDisposable
     /// <summary>A terrain vertex's world position, as Lightmass places it (FTerrainComponentStaticLighting::GetVertex, without displacement).</summary>
     public static Vector3 TerrainVertex(LightmassTerrainMapping mapping, int x, int y)
     {
-        var terrain = mapping.Terrain;
-        int patchX = mapping.SectionBaseX + x, patchY = mapping.SectionBaseY + y;
-        float localX = Math.Clamp(patchX, 0, terrain.NumVerticesX - 1) - mapping.SectionBaseX;
-        float localY = Math.Clamp(patchY, 0, terrain.NumVerticesY - 1) - mapping.SectionBaseY;
-        return Vector3.Transform(new Vector3(localX, localY, (terrain.Height(patchX, patchY) - 32768f) * TerrainZScale), mapping.LocalToWorld);
+        var local = mapping.Terrain.HeightField.LocalVertex(mapping.SectionBaseX + x, mapping.SectionBaseY + y);
+        return Vector3.Transform(local - new Vector3(mapping.SectionBaseX, mapping.SectionBaseY, 0), mapping.LocalToWorld);
     }
 
     static (int, int)? TextureSize(IMEPackage package, int texture)

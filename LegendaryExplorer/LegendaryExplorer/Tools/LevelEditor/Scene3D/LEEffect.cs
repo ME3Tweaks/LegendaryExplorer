@@ -33,6 +33,15 @@ public unsafe class LEEffect : IDisposable
     public Matrix4x4 ViewMatrix { get; private set; }
     public Matrix4x4 ViewProjectionMatrix { get; private set; }
     public Matrix4x4 InverseViewProjectionMatrix { get; private set; }
+    /// <summary>The world-space position the view is from: what game shaders get as CameraWorldPos</summary>
+    public Vector3 ViewOrigin { get; private set; }
+    /// <summary>
+    /// FSceneView::PreViewTranslation, -<see cref="ViewOrigin"/>. Game vertex shaders work in this translated world space: positions given to them
+    /// (LocalToWorld, light positions, shadow projections) include it, and materials rebuild world positions by adding CameraWorldPos back
+    /// </summary>
+    public Vector3 PreViewTranslation { get; private set; }
+    /// <summary>From translated world space (see <see cref="PreViewTranslation"/>) to clip space</summary>
+    public Matrix4x4 TranslatedViewProjectionMatrix { get; private set; }
     public LEPSConstants SharedPixelConstants { get; private set; }
 
     private bool disposedValue;
@@ -131,11 +140,16 @@ public unsafe class LEEffect : IDisposable
         Matrix4x4.Invert(ViewMatrix, out Matrix4x4 inverseView);
         Matrix4x4.Invert(projection, out Matrix4x4 inverseProjection);
         InverseViewProjectionMatrix = inverseProjection * inverseView;
+        //FSceneView translates world space to the view origin (UE3 does so only for perspective views, but every view here has an eye position)
+        ViewOrigin = eyePosition;
+        PreViewTranslation = -eyePosition;
+        TranslatedViewProjectionMatrix = Matrix4x4.CreateTranslation(-PreViewTranslation) * ViewProjectionMatrix;
+        //as SetViewParameters sets them: the view origin is translated too
         var vertexConstants = new LEVSConstants
         {
-            ViewProjectionMatrix = ViewProjectionMatrix,
-            CameraPosition = new Vector4(eyePosition, 1),
-            PreViewTranslation = Vector4.Zero
+            ViewProjectionMatrix = TranslatedViewProjectionMatrix,
+            CameraPosition = new Vector4(ViewOrigin + PreViewTranslation, 1),
+            PreViewTranslation = new Vector4(PreViewTranslation, 0)
         };
         // The projection already uses reversed depth.
         float depthMul = projection.M33;
@@ -158,6 +172,13 @@ public unsafe class LEEffect : IDisposable
         {
             return;
         }
+        RenderObject(context, mesh.VertexBuffer, LEVertex.Stride, mesh.IndexBuffer, Format.R32_UInt, indexstart, indexcount);
+    }
+
+    /// <summary>Draws indexed triangles from the given buffers (bound at slot 0), with the shaders set by <see cref="PrepDraw"/> and this effect's parameters</summary>
+    public void RenderObject(DeviceContext context, SharpDX.Direct3D11.Buffer vertexBuffer, int stride, SharpDX.Direct3D11.Buffer indexBuffer, Format indexFormat,
+        int indexstart, int indexcount)
+    {
         PixelShaderResources.Apply(context.PixelShader);
         // Push per-draw data. View constants were uploaded by BeginFrame.
         //TODO: copy only the portion that is used
@@ -166,8 +187,8 @@ public unsafe class LEEffect : IDisposable
 
         // Setup buffers for rendering
         context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
-        context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(mesh.VertexBuffer, LEVertex.Stride, 0));
-        context.InputAssembler.SetIndexBuffer(mesh.IndexBuffer, Format.R32_UInt, 0);
+        context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(vertexBuffer, stride, 0));
+        context.InputAssembler.SetIndexBuffer(indexBuffer, indexFormat, 0);
 
         // Draw!!!
         context.DrawIndexed(indexcount, indexstart, 0);

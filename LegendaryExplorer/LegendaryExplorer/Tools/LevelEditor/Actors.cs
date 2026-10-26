@@ -179,6 +179,9 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
     public float YPos { get => location.Y; set => Location = location with { Y = value }; }
     public float ZPos { get => location.Z; set => Location = location with { Z = value }; }
 
+    //the class default object's, used when the actor doesn't set one
+    private readonly Vector3 defaultDrawScale3D = Vector3.One;
+
     public Vector3 DrawScale3D
     {
         get => drawScale3D;
@@ -246,8 +249,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
             if (this is BrushProxy && !Components.OfType<BrushComponentProxy>().Any())
                 return new(ActorRepresentation.Unsupported, "No brush component was loaded for this actor.");
             if (this is BrushProxy) return new(ActorRepresentation.EditorMarker,
-                Export.IsA("FoliageFactory") ? "Authoring volume only; foliage instances are not rendered."
-                    : "Brush/volume wireframe only; gameplay and postprocess effects are not simulated.");
+                "Brush/volume wireframe only; gameplay and postprocess effects are not simulated.");
             int meshes = Components.OfType<MeshComponentProxy>().Count(c => c.HasPreviewMesh);
             if (meshes == 0) return new(ActorRepresentation.Unsupported, "No renderable mesh was loaded for this actor.");
             bool partial = Components.Any(c => c is not MeshComponentProxy { HasPreviewMesh: true });
@@ -325,7 +327,12 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
 
         drawScale = props.GetProp<FloatProperty>("DrawScale")?.Value ?? 1;
         location = locationsProp != null ? CommonStructs.GetVector3(locationsProp) : Vector3.Zero;
-        drawScale3D = drawScale3DProp != null ? CommonStructs.GetVector3(drawScale3DProp) : Vector3.One;
+        //some classes scale by default: Default__Terrain's DrawScale3D is 256
+        if (drawScale3DProp is null && EffectiveLightingProperties.ClassDefaultProperty<StructProperty>(actorExport, "DrawScale3D", context.RenderContext.PackageCache) is { } defaultScale)
+        {
+            defaultDrawScale3D = CommonStructs.GetVector3(defaultScale);
+        }
+        drawScale3D = drawScale3DProp != null ? CommonStructs.GetVector3(drawScale3DProp) : defaultDrawScale3D;
         prePivot = prePivotProp != null ? CommonStructs.GetVector3(prePivotProp) : Vector3.Zero;
         rotation = rotationProp != null ? CommonStructs.GetRotator(rotationProp) : new Rotator(0, 0, 0);
         UpdateLocalToWorld();
@@ -413,6 +420,9 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
                 ActorKind.SkeletalMesh => new SkeletalMeshActorProxy(context, actorExport),
                 ActorKind.KAsset => new KAssetProxy(context, actorExport),
                 ActorKind.Decal => new DecalActorProxy(context, actorExport),
+                ActorKind.Terrain => new TerrainProxy(context, actorExport),
+                ActorKind.SplineLoft => new SplineLoftActorProxy(context, actorExport),
+                ActorKind.Foliage => new FoliageFactoryProxy(context, actorExport),
                 ActorKind.DynamicMesh => new DynamicSMActorProxy(context, actorExport),
                 ActorKind.Brush => new BrushProxy(context, actorExport),
                 ActorKind.Stunt => new SFXStuntActorProxy(context, actorExport),
@@ -566,7 +576,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
         {
             props.AddOrReplaceProp(new FloatProperty(DrawScale, "DrawScale"));
         }
-        if (props.ContainsNamedProp("DrawScale3D") || DrawScale3D != Vector3.One)
+        if (props.ContainsNamedProp("DrawScale3D") || DrawScale3D != defaultDrawScale3D)
         {
             props.AddOrReplaceProp(CommonStructs.Vector3Prop(DrawScale3D, "DrawScale3D"));
         }

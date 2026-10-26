@@ -458,6 +458,58 @@ public sealed class MeshStaticLighting : IDisposable
     }
 
     /// <summary>
+    /// A BSP element's precomputed lighting (one FModelElement of a ModelComponent): its light-map, shadow maps and irrelevant lights. Each
+    /// vertex's ShadowTexCoord is its light-map UV (FModelVertex). BSP always has static shadowing
+    /// </summary>
+    /// <param name="channels">The lighting channels UE3 gives the component from its surfaces</param>
+    internal static MeshStaticLighting CreateModelElement(MeshRenderContext context, ExportEntry componentExport, ModelElement element, int elementIndex,
+        Vector2[] lightMapCoordinates, LightingChannels channels)
+    {
+        var lighting = new MeshStaticLighting(context) { OwnerActor = null, IsBakedClass = true };
+        context.CaptureAssignments(componentExport.FileRef);
+        //named as PackageLightmaps names BSP light-maps
+        lighting.SourceAssignments = context.AssignmentHistory.Get(componentExport, $"Element{elementIndex}");
+        lighting.IrrelevantLights.UnionWith(element.IrrelevantLights ?? []);
+        PropertyCollection props = EffectiveLightingProperties.ReadPrimitive(componentExport, context.PackageCache);
+        lighting.ReadPrimitiveSettings(componentExport, props, channels);
+        lighting.HasStaticShadowing = true;
+        lighting.CastsDynamicShadow = lighting.CastsShadow && props.GetProp<BoolProperty>("bCastDynamicShadow") is not { Value: false };
+        lighting.IsDynamicShadowCaster = lighting.CastsDynamicShadow;
+        lighting.Load(element.LightMap, element.ShadowMaps ?? [], [], componentExport.FileRef, lightMapCoordinates.Length, lightMapCoordinates);
+        context.RegisterStaticLighting(lighting);
+        return lighting;
+    }
+
+    /// <summary>
+    /// A terrain section's precomputed lighting (a TerrainComponent): its light-map, shadow maps and irrelevant lights. The terrain vertex factory computes
+    /// their UVs from the vertex positions (see <see cref="TerrainSection.LightMapCoordinateScaleBias"/>). Terrain always has static shadowing
+    /// </summary>
+    /// <param name="settings">The component's lighting settings, with those ATerrain::PostLoad copies from the terrain
+    /// (see <see cref="TerrainHeightField.WithTerrainLightingSettings"/>)</param>
+    internal static MeshStaticLighting CreateTerrainSection(MeshRenderContext context, ExportEntry componentExport, LightMap lightMap, PropertyCollection settings)
+    {
+        var lighting = new MeshStaticLighting(context) { OwnerActor = componentExport.Parent as ExportEntry, IsBakedClass = true };
+        context.CaptureAssignments(componentExport.FileRef);
+        //named as PackageLightmaps names terrain light-maps
+        lighting.SourceAssignments = context.AssignmentHistory.Get(componentExport, "Terrain");
+        if (settings.GetProp<ArrayProperty<StructProperty>>("IrrelevantLights") is { } irrelevantLights)
+        {
+            foreach (StructProperty guidProp in irrelevantLights)
+            {
+                lighting.IrrelevantLights.Add(CommonStructs.GetGuid(guidProp));
+            }
+        }
+        lighting.ReadPrimitiveSettings(componentExport, settings, LightingChannels.StaticPrimitiveDefault);
+        lighting.HasStaticShadowing = true;
+        lighting.CastsDynamicShadow = lighting.CastsShadow && settings.GetProp<BoolProperty>("bCastDynamicShadow") is not { Value: false };
+        lighting.IsDynamicShadowCaster = lighting.CastsDynamicShadow;
+        int[] shadowMaps = settings.GetProp<ArrayProperty<ObjectProperty>>("ShadowMaps")?.Select(o => o.Value).ToArray() ?? [];
+        lighting.Load(lightMap ?? new LightMap(), shadowMaps, [], componentExport.FileRef, 0, null, shaderComputesCoordinates: true);
+        context.RegisterStaticLighting(lighting);
+        return lighting;
+    }
+
+    /// <summary>
     /// The primitive component's settings that decide which lights affect it
     /// </summary>
     /// <param name="defaultChannels">The channels UE3 initializes unset lighting channels to</param>
@@ -479,12 +531,31 @@ public sealed class MeshStaticLighting : IDisposable
     private void Load(StaticMeshComponentLODInfo lodInfo, IMEPackage pcc, StaticMesh mesh, int lod)
     {
         StaticMeshRenderData lodModel = mesh.LODModels[lod];
-        int numVertices = (int)lodModel.NumVertices;
+        //Like the game's vertex factory, light-map UVs are only available if the mesh has that UV channel
+        int lightMapCoordinateIndex = ComponentGeometry.CoordinateIndex(mesh.Export);
+        StaticMeshVertexBuffer vertexBuffer = lodModel.VertexBuffer;
+        Vector2[] lightMapCoordinates = null;
+        if (lightMapCoordinateIndex >= 0 && lightMapCoordinateIndex < vertexBuffer.NumTexCoords)
+        {
+            lightMapCoordinates = new Vector2[lodModel.NumVertices];
+            for (int i = 0; i < lightMapCoordinates.Length; i++)
+            {
+                StaticMeshVertexBuffer.StaticMeshFullVertex vertex = vertexBuffer.VertexData[i];
+                lightMapCoordinates[i] = vertexBuffer.bUseFullPrecisionUVs ? vertex.FullPrecisionUVs[lightMapCoordinateIndex] : vertex.HalfPrecisionUVs[lightMapCoordinateIndex];
+            }
+        }
+        Load(lodInfo.LightMap, lodInfo.ShadowMaps, lodInfo.ShadowVertexBuffers, pcc, (int)lodModel.NumVertices, lightMapCoordinates);
+    }
 
+    /// <param name="lightMapCoordinates">Each vertex's light-map UV, or null if the vertices have none</param>
+    /// <param name="shaderComputesCoordinates">The vertex factory computes light-map UVs itself (terrain), so texture light-maps and shadow maps are used without per-vertex UVs</param>
+    private void Load(LightMap lightMap, int[] shadowMapIndices, int[] shadowVertexBufferIndices, IMEPackage pcc, int numVertices, Vector2[] lightMapCoordinates,
+        bool shaderComputesCoordinates = false)
+    {
         uint[] samplesA = null;
         uint[] samplesB = null;
         Guid[] lightGuids = [];
-        switch (lodInfo.LightMap)
+        switch (lightMap)
         {
             case LightMap_1D lm1D:
                 lightGuids = lm1D.LightGuids;
@@ -545,7 +616,7 @@ public sealed class MeshStaticLighting : IDisposable
         //UE3 doesn't use a vertex light-map whose sample count doesn't match the mesh
         if (samplesA is not null && samplesA.Length == numVertices)
         {
-            LightMapType = lodInfo.LightMap.LightMapType;
+            LightMapType = lightMap.LightMapType;
         }
         else
         {
@@ -557,7 +628,7 @@ public sealed class MeshStaticLighting : IDisposable
             LightMapLightGuids.UnionWith(lightGuids);
         }
 
-        foreach (int shadowMapUIndex in lodInfo.ShadowMaps)
+        foreach (int shadowMapUIndex in shadowMapIndices)
         {
             if (pcc.TryGetUExport(shadowMapUIndex, out ExportEntry shadowMapExport))
             {
@@ -573,7 +644,7 @@ public sealed class MeshStaticLighting : IDisposable
                 }
             }
         }
-        foreach (int shadowVertexBufferUIndex in lodInfo.ShadowVertexBuffers)
+        foreach (int shadowVertexBufferUIndex in shadowVertexBufferIndices)
         {
             if (pcc.TryGetUExport(shadowVertexBufferUIndex, out ExportEntry shadowMap1DExport))
             {
@@ -587,11 +658,8 @@ public sealed class MeshStaticLighting : IDisposable
             }
         }
 
-        //Like the game's vertex factory, light-map UVs are only available if the mesh has that UV channel
-        int lightMapCoordinateIndex = ComponentGeometry.CoordinateIndex(mesh.Export);
-        StaticMeshVertexBuffer vertexBuffer = lodModel.VertexBuffer;
-        bool hasLightMapCoordinates = lightMapCoordinateIndex >= 0 && lightMapCoordinateIndex < vertexBuffer.NumTexCoords;
-        if (!hasLightMapCoordinates)
+        bool hasLightMapCoordinates = lightMapCoordinates is not null;
+        if (!hasLightMapCoordinates && !shaderComputesCoordinates)
         {
             if (!IsVertexLightMap)
             {
@@ -607,10 +675,7 @@ public sealed class MeshStaticLighting : IDisposable
             {
                 if (hasLightMapCoordinates)
                 {
-                    StaticMeshVertexBuffer.StaticMeshFullVertex vertex = vertexBuffer.VertexData[i];
-                    vertices[i].LightMapCoordinate = vertexBuffer.bUseFullPrecisionUVs
-                        ? vertex.FullPrecisionUVs[lightMapCoordinateIndex]
-                        : vertex.HalfPrecisionUVs[lightMapCoordinateIndex];
+                    vertices[i].LightMapCoordinate = lightMapCoordinates[i];
                 }
                 if (samplesA is not null)
                 {
@@ -804,7 +869,7 @@ public sealed class MeshStaticLighting : IDisposable
                 var (vertex, pixel) = material.GetLightShaders(interaction.Light.Type, interaction.Shadowing);
                 if (Context.Device is not null && vertex is not null && pixel is not null)
                 {
-                    Context.GetCachedVertexShader(vertex.Guid, vertex.ShaderByteCode);
+                    Context.GetCachedVertexShader(vertex.Guid, vertex.ShaderByteCode, material.VertexInputElements);
                     Context.GetCachedPixelShader(pixel.Guid, pixel.ShaderByteCode);
                 }
             }

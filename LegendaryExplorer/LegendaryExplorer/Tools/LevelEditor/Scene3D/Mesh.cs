@@ -12,8 +12,27 @@ using Device = SharpDX.Direct3D11.Device;
 
 namespace LegendaryExplorer.Tools.LevelEditor.Scene3D;
 
-public class Mesh<TVertex> : IDisposable where TVertex : IVertexBase
+/// <summary>
+/// What the game's shaders are told about the primitive being drawn (its FMeshElement and vertex factory): its transform and bounds, and what its
+/// vertex factory needs beyond them. A mesh of <see cref="LEVertex"/> uses FLocalVertexFactory, or FLocalDecalVertexFactory if it has a <see cref="Decal"/>
+/// </summary>
+internal interface IShaderPrimitive
 {
+    Matrix4x4 LocalToWorld { get; }
+    Matrix4x4 WorldToLocal { get; }
+    /// <summary>World-space bounds</summary>
+    BoxSphereBounds Bounds { get; }
+    /// <summary>For a cooked decal mesh: its projection</summary>
+    DecalProjection Decal => null;
+    /// <summary>For a terrain section: its FTerrainVertexFactory values</summary>
+    TerrainVertexFactoryValues Terrain => null;
+}
+
+public class Mesh<TVertex> : IDisposable, IShaderPrimitive where TVertex : IVertexBase
+{
+    BoxSphereBounds IShaderPrimitive.Bounds => TransformedBounds;
+    DecalProjection IShaderPrimitive.Decal => Decal;
+
     public readonly List<Triangle> Triangles;
     public readonly List<TVertex> Vertices;
     public SharpDX.Direct3D11.Buffer VertexBuffer { get; private set; }

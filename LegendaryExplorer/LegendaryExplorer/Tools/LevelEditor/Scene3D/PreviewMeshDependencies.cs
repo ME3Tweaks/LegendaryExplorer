@@ -75,8 +75,9 @@ public sealed class PreviewMeshDependencies
             var props = export.GetProperties();
             foreach (string name in new[] { "StaticMesh", "SkeletalMesh", "LightEnvironment", "m_pBaseMaterial", "Parent" })
                 Track(props.GetProp<ObjectProperty>(name)?.ResolveToEntry(export.FileRef));
+            // Only object arrays: a TerrainLayerSetup's Materials are FilteredMaterial structs, whose materials TerrainProxy's layer resolver tracks
             foreach (string name in new[] { "Materials", "Expressions" })
-                if (props.GetProp<ArrayProperty<ObjectProperty>>(name) is { } entries)
+                if (props.FirstOrDefault(p => p.Name == name) is ArrayProperty<ObjectProperty> entries)
                     foreach (var dependency in entries)
                         Track(dependency.ResolveToEntry(export.FileRef));
             // Edited textures are reloaded in place by the texture cache, so only their imports are tracked:

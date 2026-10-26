@@ -668,6 +668,35 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
         result.LODs[0].Sections.Add(new(material.InstancedFullPath, 0, (uint)mesh.Triangles.Count, castsShadow: false));
         return result;
     }
+    /// <summary>
+    /// A single-material world surface (a BSP element) with its precomputed lighting, set up as a static mesh section is.
+    /// A null material leaves the section unmaterialed, which only wireframe views draw.
+    /// </summary>
+    /// <param name="lighting">The surface's lighting. The preview takes ownership of it</param>
+    internal static ModelPreview<LEVertex> CreateSurface(MeshRenderContext context, Mesh<LEVertex> mesh, IEntry material, MeshStaticLighting lighting)
+    {
+        var result = new ModelPreview<LEVertex>(context, mesh);
+        string materialName = null;
+        if (material is not null)
+        {
+            result.AddMaterial(context, material, lighting?.LightMapType ?? ELightMapType.LMT_None);
+            if (result.Materials.ContainsKey(material.InstancedFullPath)) materialName = material.InstancedFullPath;
+        }
+        var sections = result.LODs[0].Sections;
+        sections.Add(new ModelPreviewSection(materialName, 0, (uint)mesh.Triangles.Count));
+        result.LODs[0].StaticLighting = lighting;
+        if (lighting is not null)
+        {
+            lighting.GetBounds = () => mesh.TransformedBounds;
+            lighting.GetLocalToWorld = () => mesh.LocalToWorld;
+            lighting.Materials = result.GetRenderProxies().ToArray();
+            lighting.ShadowCastingMaterials = result.ShadowCastingMaterials(sections);
+            lighting.DrawShadowCaster = (ctx, pass) => result.DrawShadowCasterSections(ctx, pass, mesh, sections);
+            lighting.DrawModShadowReceiver = (ctx, pass) => result.DrawModShadowReceiverSections(ctx, pass, mesh, sections);
+        }
+        return result;
+    }
+
     private readonly MeshRenderContext RenderContext;
     /// <summary>
     /// Contains the geometry and section information for each level-of-detail in the model.
@@ -707,8 +736,9 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
     /// Creates a preview of the given <see cref="StaticMesh"/>.
     /// </summary>
     /// <param name="staticLighting">A component's precomputed lighting for this LOD. The preview takes ownership of it</param>
+    /// <param name="deformation">For a spline mesh: its deformation, applied to the vertices (in component space)</param>
     public ModelPreview(MeshRenderContext renderContext, StaticMesh m, int selectedLOD, MeshStaticLighting staticLighting = null,
-        IReadOnlyList<IEntry> materialOverrides = null)
+        IReadOnlyList<IEntry> materialOverrides = null, SplineMeshDeformation deformation = null)
     {
         RenderContext = renderContext;
         if (selectedLOD < 0)  //PREVIEW BUG WORKAROUND
@@ -741,7 +771,9 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
                     uvs[j] = new Vector4(vertex.HalfPrecisionUVs[j], 0, 0);
                 }
             }
-            vertices.Add((TVertex)TVertex.Create(new Vector3(position.X, position.Y, position.Z), (Vector3)vertex.TangentX, (Vector4)vertex.TangentZ, uvs));
+            (Vector3 p, Vector3 tangentX, Vector4 tangentZ) = (new Vector3(position.X, position.Y, position.Z), (Vector3)vertex.TangentX, (Vector4)vertex.TangentZ);
+            if (deformation is not null) (p, tangentX, tangentZ) = deformation.Deform(p, tangentX, tangentZ);
+            vertices.Add((TVertex)TVertex.Create(p, tangentX, tangentZ, uvs));
         }
 
         // Sometimes there might not be an index buffer.
@@ -1006,9 +1038,17 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
             if (section.MaterialName is null)
             {
                 if (outsideView) continue;
-                if (view.Wireframe && LODs[lod].Mesh is Mesh<WorldVertex> mesh && renderPass is RenderPass.Base or RenderPass.ANY)
+                if (view.Wireframe && renderPass is RenderPass.Base or RenderPass.ANY)
                 {
-                    view.RenderMeshAsWireframe(mesh, section);
+                    switch (LODs[lod].Mesh)
+                    {
+                        case Mesh<WorldVertex> mesh:
+                            view.RenderMeshAsWireframe(mesh, section);
+                            break;
+                        case Mesh<LEVertex> mesh:
+                            view.RenderMeshWithDefaultEffect(mesh, section, null);
+                            break;
+                    }
                 }
             }
             else if (Materials.TryGetValue(section.MaterialName, out ModelPreviewMaterial<TVertex> material))

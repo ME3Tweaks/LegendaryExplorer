@@ -711,8 +711,8 @@ public sealed class LightAttenuationRenderer : IDisposable
                 throw new NotSupportedException($"{vertex.VertexFactoryParameters.VertexFactoryType} is not supported by the renderer");
             vertexFactoryParameters.WriteValues(vb, Context, mesh, material);
             vertex.MaterialParameters.WriteValues(vb, Context, mesh, material);
-            //(PreViewTranslation is always 0 here)
-            vb.WriteVal(vertex.LightPosition, new Vector4(pass.LightPosition, 1));
+            //in translated world space, like the vertex factory's positions
+            vb.WriteVal(vertex.LightPosition, new Vector4(pass.LightPosition + effect.PreViewTranslation, 1));
             pixel.MaterialParameters.WriteValues(pb, Context, mesh, material);
             pb.WriteVal(pixel.AttenAllowed, new Vector2(pass.Culling.HasFlag(ModulatedShadowCulling.Backfaces) ? 1 : 0,
                 pass.Culling.HasFlag(ModulatedShadowCulling.Emissive) ? 1 : 0));
@@ -752,7 +752,8 @@ public sealed class LightAttenuationRenderer : IDisposable
             pb.Clear();
             ((FLocalVertexFactoryShaderParameters)vertex.VertexFactoryParameters.Parameters).WriteValues(vb, Context, mesh, material);
             vertex.MaterialParameters.WriteValues(vb, Context, mesh, material);
-            vb.WriteVal(vertex.ProjectionMatrix, pass.WorldToShadow);
+            //the vertex factory's LocalToWorld includes the PreViewTranslation, so this removes it first (FShadowDepthVertexShader::SetParameters)
+            vb.WriteVal(vertex.ProjectionMatrix, Matrix4x4.CreateTranslation(-effect.PreViewTranslation) * pass.WorldToShadow);
             vb.WriteVal(vertex.InvMaxSubjectDepth, pass.InvMaxSubjectDepth);
             vb.WriteVal(vertex.DepthBias, pass.DepthBias);
             vb.WriteVal(vertex.bClampToNearPlane, 0f);

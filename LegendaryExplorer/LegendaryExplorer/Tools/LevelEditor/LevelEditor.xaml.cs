@@ -572,14 +572,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     private void CenterView()
     {
-        var spatialActors = Actors.Where(a => a is not EditorActorProxy && a.HasSpatialRepresentation).ToList();
-        if (spatialActors.Count > 0)
+        if (GetSceneBounds() is BoxSphereBounds fullBounds)
         {
-            BoxSphereBounds fullBounds = spatialActors[0].GetBounds();
-            for (int i = 1; i < spatialActors.Count; i++)
-            {
-                fullBounds = fullBounds.Union(spatialActors[i].GetBounds());
-            }
             FocusOnBounds(fullBounds);
         }
         else
@@ -590,12 +584,39 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         }
     }
 
+    private BoxSphereBounds? GetSceneBounds()
+    {
+        BoxSphereBounds? fullBounds = null;
+        foreach (ActorProxy actor in Actors.Where(a => a is not EditorActorProxy && a.HasSpatialRepresentation))
+        {
+            BoxSphereBounds bounds = actor.GetBounds();
+            fullBounds = fullBounds?.Union(bounds) ?? bounds;
+        }
+        return fullBounds;
+    }
+
+    /// <summary>
+    /// Puts the orthographic camera above everything in the scene, with a depth range that reaches below all of it
+    /// </summary>
+    private void PlaceOrthographicCamera(float x, float y)
+    {
+        const float margin = 1000;
+        float top = 40_000, bottom = -60_000;
+        if (GetSceneBounds() is BoxSphereBounds bounds)
+        {
+            top = bounds.Origin.Z + bounds.BoxExtent.Z;
+            bottom = bounds.Origin.Z - bounds.BoxExtent.Z;
+        }
+        RenderContext.Camera.Position = new Vector3(x, y, top + margin);
+        RenderContext.Camera.OrthoDepthRange = MathF.Max(top - bottom + 2 * margin, 100_000);
+    }
+
     private void FocusOnBounds(BoxSphereBounds fullBounds)
     {
         Vector3 origin = fullBounds.Origin;
         if (RenderContext.Camera.IsOrthographic)
         {
-            RenderContext.Camera.Position = new Vector3(origin.X, origin.Y, RenderContext.Camera.ZFar * 0.4f);
+            PlaceOrthographicCamera(origin.X, origin.Y);
             RenderContext.Camera.OrthoWidth = fullBounds.SphereRadius.Clamp(10, float.MaxValue) * 3f;
         }
         else
@@ -954,6 +975,13 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         foreach (var actor in actors)
         {
             actor.ResolveAttachment(actors);
+        }
+        //The level's BSP surfaces, as one world-geometry entry
+        if (level.Export.FileRef.TryGetUExport(level.Model, out ExportEntry modelExport))
+        {
+            var bsp = new LevelModelProxy(this, modelExport, level.Export) { OwningFile = owningFile };
+            if (bsp.Components.Count > 0) actors.Add(bsp);
+            else bsp.Dispose();
         }
 
         //The level's lights, for rendering static meshes the way the game lights them. (Light actors aren't otherwise shown)
@@ -2562,7 +2590,7 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                     RenderContext.Camera.SavePerspectiveState();
                     RenderContext.Camera.IsOrthographic = true;
                     var pos = RenderContext.Camera.Position;
-                    RenderContext.Camera.Position = new Vector3(pos.X, pos.Y, RenderContext.Camera.ZFar * 0.4f);
+                    PlaceOrthographicCamera(pos.X, pos.Y);
                     float focusDepth = RenderContext.Camera.FocusDepth;
                     RenderContext.Camera.OrthoWidth = MathF.Max(focusDepth * 4f, 500f);
                 }

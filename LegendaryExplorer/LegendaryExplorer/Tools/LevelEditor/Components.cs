@@ -119,10 +119,10 @@ public class PrimitiveComponentProxy : NotifyPropertyChangedBase, IDisposable
             case "BrushComponent":
                 return new BrushComponentProxy(context, componentExport, parent);
         }
-        // A spline mesh needs deformation. The undeformed source mesh is not a valid preview.
+        // Before static meshes: the undeformed source mesh is not a valid preview
         if (GlobalUnrealObjectInfo.IsA(className, "SplineMeshComponent", componentExport.Game))
         {
-            return new PrimitiveComponentProxy(context, componentExport, parent);
+            return new SplineMeshComponentProxy(context, componentExport, parent);
         }
         if (GlobalUnrealObjectInfo.IsA(className, "StaticMeshComponent", componentExport.Game))
         {
@@ -274,6 +274,9 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
 
     public bool HasCompatibleBakeMapping => StaticLighting?.HasCompatibleBakeMapping == true;
 
+    /// <summary>The light-map the preview uses for the rendered LOD (LMT_None if it has none or it can't be used)</summary>
+    public ELightMapType LightMapType => StaticLighting?.LightMapType ?? ELightMapType.LMT_None;
+
     /// <summary>Whether a bake builds static lighting for the mesh (see <see cref="MeshStaticLighting.ReceivesStaticLighting"/>)</summary>
     public bool ReceivesStaticLighting => StaticLighting?.ReceivesStaticLighting == true;
 
@@ -417,12 +420,13 @@ public class StaticMeshComponentProxy : MeshComponentProxy
         if (EffectiveLightingProperties.ResolveReference(Export, "StaticMesh", context.PackageCache) is { } meshExport)
         {
             StaticMesh stm = meshExport.GetBinaryData<StaticMesh>();
+            SplineMeshDeformation deformation = ReadDeformation(stm);
             if (stm.LODModels.Length > LOD)
             {
                 foreach (var element in stm.LODModels[LOD].Elements)
                     Dependencies.Track(meshExport.FileRef.GetEntry(element.Material));
                 MeshStaticLighting staticLighting = MeshStaticLighting.Create(context, Export, stm, LOD, Properties);
-                Mesh = new ModelPreview<VertexType>(context, stm, LOD, staticLighting, MaterialOverrides);
+                Mesh = new ModelPreview<VertexType>(context, stm, LOD, staticLighting, MaterialOverrides, deformation);
                 MaterialOverrides.Clear();
                 MeshIFP = meshExport.InstancedFullPath;
                 if (staticLighting is not null)
@@ -433,7 +437,8 @@ public class StaticMeshComponentProxy : MeshComponentProxy
                     staticLighting.IsInScene = IsInScene;
                     staticLighting.IsShown = IsShown;
                     //only light environments trace against the level's geometry. (UpdateSelfLocalToWorld adds it to the geometry)
-                    if (MeshRenderContext.SupportsLightEnvironments(Export.Game))
+                    //USplineMeshComponent::LineCheck never hits, so spline meshes don't block those traces
+                    if (MeshRenderContext.SupportsLightEnvironments(Export.Game) && deformation is null)
                     {
                         staticLighting.GeometryMesh = context.GetLevelGeometryMesh($"{meshExport.FileRef.FilePath}|{meshExport.UIndex}",
                             () => ReadLineCheckTriangles(stm), stm.kDOPTreeME3UDKLE);
@@ -446,10 +451,15 @@ public class StaticMeshComponentProxy : MeshComponentProxy
                     IsVolumetric = true;
                 }
             }
-            CollisionMesh = context.GetMeshFromAggGeom(stm.GetCollisionMeshProperty(Export.FileRef));
+            //a spline mesh's collision isn't deformed (and UE3 doesn't collide with it)
+            if (deformation is null)
+                CollisionMesh = context.GetMeshFromAggGeom(stm.GetCollisionMeshProperty(Export.FileRef));
             UpdateSelfLocalToWorld();
         }
     }
+
+    /// <summary>For spline meshes, the deformation the vertices are drawn with</summary>
+    protected virtual SplineMeshDeformation ReadDeformation(StaticMesh mesh) => null;
 
     /// <summary>
     /// Refreshes only this component's rendering resources. Its actor, transform, selection, and undo history stay intact.
@@ -541,6 +551,15 @@ public class StaticMeshComponentProxy : MeshComponentProxy
         CollisionMesh?.Dispose();
         base.Dispose(disposing);
     }
+}
+
+/// <summary>A SplineMeshComponent: its static mesh's LOD 0 deformed along its stored SplineParams</summary>
+public sealed class SplineMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent)
+    : StaticMeshComponentProxy(context, componentExport, parent)
+{
+    public SplineMeshDeformation Deformation { get; private set; }
+
+    protected override SplineMeshDeformation ReadDeformation(StaticMesh mesh) => Deformation = SplineMeshDeformation.Read(Properties, mesh.Bounds);
 }
 
 public class SkeletalMeshComponentProxy : MeshComponentProxy
@@ -725,6 +744,9 @@ public class BrushComponentProxy : PrimitiveComponentProxy
         base.UpdateLocalToWorld();
         UpdateSelfLocalToWorld();
     }
+
+    /// <summary>The bounds of the brush's convex elements (BrushAggGeom). Cooked brush models have no polygons</summary>
+    public override BoxSphereBounds GetBounds() => Brush is { Vertices.Count: > 0 } ? Brush.TransformedBounds : base.GetBounds();
 
     private void UpdateSelfLocalToWorld()
     {

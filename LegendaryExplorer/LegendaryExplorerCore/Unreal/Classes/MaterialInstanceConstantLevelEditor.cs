@@ -21,7 +21,15 @@ namespace LegendaryExplorerCore.Unreal.Classes
             ReadMaterial(export, assetCache, resolveImports);
         }
 
-        private void ReadMaterial(ExportEntry export, PackageCache assetCache, bool resolveImports)
+        /// <summary>For a material that isn't read from a single material export. It reads its parts with <see cref="ReadMaterial"/></summary>
+        protected MaterialInstanceConstantLevelEditor(MEGame game, string instancedFullPath)
+        {
+            Game = game;
+            InstancedFullPath = instancedFullPath;
+        }
+
+        /// <summary>Reads a material and the chain of materials it inherits from, most derived first</summary>
+        protected void ReadMaterial(ExportEntry export, PackageCache assetCache, bool resolveImports)
         {
             if (export.ClassName is "Material" or "DecalMaterial")
             {
