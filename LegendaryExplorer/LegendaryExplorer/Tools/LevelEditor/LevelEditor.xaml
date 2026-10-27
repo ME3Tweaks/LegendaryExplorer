@@ -109,9 +109,6 @@
         <KeyBinding Key="S" Modifiers="Control+Shift" Command="{Binding SaveAsCommand}"/>
         <KeyBinding Key="Z" Modifiers="Control" Command="{Binding UndoCommand}"/>
         <KeyBinding Key="Y" Modifiers="Control" Command="{Binding RedoCommand}"/>
-        <KeyBinding Key="F" Command="{Binding FocusSelectedCommand}"/>
-        <KeyBinding Key="L" Command="{Binding ToggleLocalCoordsCommand}"/>
-        <KeyBinding Key="NumPad5" Command="{Binding ToggleOrthoViewCommand}"/>
     </Window.InputBindings>
     <xctk:BusyIndicator IsBusy="{Binding IsBusy}" BusyContent="{Binding BusyText}">
         <DockPanel Background="{StaticResource EditorChrome}">
@@ -243,17 +240,21 @@
                     <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch" Visibility="{Binding CanEditScene, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                     <DockPanel Grid.Column="0" Background="{StaticResource EditorPanel}">
-                        <Border DockPanel.Dock="Top" Background="{StaticResource EditorChrome}"><Border Style="{StaticResource EditorDockTitle}"><TextBlock Text="World Outliner" FontWeight="SemiBold"/></Border></Border>
+                        <DockPanel DockPanel.Dock="Top" Background="{StaticResource EditorChrome}">
+                            <Button DockPanel.Dock="Right" Content="Collapse all" Click="CollapseOutlinerGroups_Clicked" IsEnabled="{Binding HasAnyFileOpen}" Padding="5,4" Margin="6,0" VerticalAlignment="Center" ToolTip="Collapse all outliner categories and level groups"/>
+                            <Border Style="{StaticResource EditorDockTitle}"><TextBlock Text="World Outliner" FontWeight="SemiBold"/></Border>
+                        </DockPanel>
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="8,8,8,0">
                             <TextBlock Text="Group by" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{StaticResource EditorMuted}"/>
                             <RadioButton x:Name="GroupByLevelButton" GroupName="OutlinerGrouping" Content="Level" IsChecked="{Binding GroupActorsByLevel}" Padding="10,4" ToolTip="Group actors by their level package"/>
                             <RadioButton x:Name="GroupByCategoryButton" GroupName="OutlinerGrouping" Content="Category" IsChecked="{Binding GroupActorsByCategory}" Padding="10,4" ToolTip="Group actors by category across all loaded levels"/>
                         </StackPanel>
-                        <xctk:WatermarkTextBox x:Name="ActorFilter_TextBox" DockPanel.Dock="Top" Watermark="Search actors, tags, or #ID" Margin="8" TextChanged="ActorFilter_TextBox_TextChanged" IsEnabled="{Binding HasAnyFileOpen}" AutomationProperties.Name="Search actors, tags, or export index"/>
-                        <DockPanel DockPanel.Dock="Top" Margin="8,0,8,8">
-                            <Button DockPanel.Dock="Right" Content="Go to" Click="GotoButton_Clicked" IsEnabled="{Binding HasAnyFileOpen}" Padding="8,3" Margin="5,0,0,0"/>
-                            <xctk:WatermarkTextBox x:Name="Goto_TextBox" Watermark="Export index" KeyUp="Goto_TextBox_KeyUp" IsEnabled="{Binding HasAnyFileOpen}" AutomationProperties.Name="Export index"/>
-                        </DockPanel>
+                        <Grid DockPanel.Dock="Top" Margin="8">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="60"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <xctk:WatermarkTextBox x:Name="ActorFilter_TextBox" Watermark="Search actors" TextChanged="ActorFilter_TextBox_TextChanged" IsEnabled="{Binding HasAnyFileOpen}" AutomationProperties.Name="Search actors, tags, or export index" ToolTip="Search actors, tags, or #ID"/>
+                            <xctk:WatermarkTextBox x:Name="Goto_TextBox" Grid.Column="1" Watermark="#ID" Margin="5,0,0,0" KeyUp="Goto_TextBox_KeyUp" IsEnabled="{Binding HasAnyFileOpen}" AutomationProperties.Name="Export index" ToolTip="Export index"/>
+                            <Button Grid.Column="2" Content="Go to" Click="GotoButton_Clicked" IsEnabled="{Binding HasAnyFileOpen}" Padding="8,3" Margin="5,0,0,0"/>
+                        </Grid>
                         <TextBlock DockPanel.Dock="Bottom" Text="{Binding Actors.BindableCount, StringFormat='{}{0} actors loaded'}" Margin="9,7" Foreground="{StaticResource EditorMuted}" FontSize="11"/>
                         <ListBox x:Name="MeshExportsList" ItemsSource="{Binding ActorsView}" SelectedItem="{Binding SelectedActor}" ItemContainerStyle="{StaticResource ActorRow}"
                                  VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.IsVirtualizingWhenGrouping="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True">

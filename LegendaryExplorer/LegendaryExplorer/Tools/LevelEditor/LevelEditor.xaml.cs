@@ -26,6 +26,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -86,6 +87,22 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             };
         }
         return state;
+    }
+
+    private void CollapseOutlinerGroups_Clicked(object sender, RoutedEventArgs e)
+    {
+        // Include cached groups hidden by the current search as well as unrealized groups.
+        foreach (var state in _outlinerGroupStates.Values) state.IsExpanded = false;
+        foreach (CollectionViewGroup group in ActorsView.Groups) CollapseGroup(group);
+
+        void CollapseGroup(CollectionViewGroup group)
+        {
+            GetOutlinerGroupState(group).IsExpanded = false;
+            if (!group.IsBottomLevel)
+            {
+                foreach (CollectionViewGroup child in group.Items) CollapseGroup(child);
+            }
+        }
     }
 
     private void RevealActorInOutliner(ActorProxy actor)
@@ -1052,6 +1069,29 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     public ICommand FocusFileCommand { get; set; }
     public ICommand SelectChangedActorCommand { get; set; }
     public ICommand SelectLightCommand { get; set; }
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+
+        // Handle unmodified shortcuts after controls have had a chance to process the key.
+        // Window InputBindings consume these keys even when a text editor has focus.
+        if (e.Handled || Keyboard.Modifiers != ModifierKeys.None
+            || Keyboard.FocusedElement is TextBoxBase or PasswordBox or ComboBox { IsEditable: true }) return;
+
+        ICommand command = e.Key switch
+        {
+            Key.F => FocusSelectedCommand,
+            Key.L => ToggleLocalCoordsCommand,
+            Key.NumPad5 => ToggleOrthoViewCommand,
+            _ => null
+        };
+        if (command?.CanExecute(null) == true)
+        {
+            command.Execute(null);
+            e.Handled = true;
+        }
+    }
+
     private void LoadCommands()
     {
         SetAssignmentPolicyCommand = new RelayCommand(policy => AssignmentPolicy = (LightAssignmentPolicy)policy);
