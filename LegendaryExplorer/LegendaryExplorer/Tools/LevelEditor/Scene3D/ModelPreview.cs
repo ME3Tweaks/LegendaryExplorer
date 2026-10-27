@@ -732,25 +732,11 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
         LODs.Add(new ModelPreviewLOD<TVertex>(mesh, sections));
     }
 
-    /// <summary>
-    /// Creates a preview of the given <see cref="StaticMesh"/>.
-    /// </summary>
-    /// <param name="staticLighting">A component's precomputed lighting for this LOD. The preview takes ownership of it</param>
-    /// <param name="deformation">For a spline mesh: its deformation, applied to the vertices (in component space)</param>
-    public ModelPreview(MeshRenderContext renderContext, StaticMesh m, int selectedLOD, MeshStaticLighting staticLighting = null,
-        IReadOnlyList<IEntry> materialOverrides = null, SplineMeshDeformation deformation = null)
+    /// <summary>For a spline mesh, the static mesh LOD its vertices are deformed from</summary>
+    private StaticMeshRenderData DeformedSource;
+
+    private static void AddVertices(StaticMeshRenderData lodModel, SplineMeshDeformation deformation, List<TVertex> vertices)
     {
-        RenderContext = renderContext;
-        if (selectedLOD < 0)  //PREVIEW BUG WORKAROUND
-            return;
-
-        // STEP 1: MESH
-        var lodModel = m.LODModels[selectedLOD];
-        var triangles = new List<Triangle>(lodModel.IndexBuffer.Length / 3);
-        var vertices = new List<TVertex>((int)lodModel.NumVertices);
-        // Gather all the vertex data
-        // Only one LOD? odd but I guess that's just how it rolls.
-
         StaticMeshVertexBuffer vertexBuffer = lodModel.VertexBuffer;
         for (int i = 0; i < lodModel.NumVertices; i++)
         {
@@ -775,6 +761,38 @@ public class ModelPreview<TVertex> : IDisposable where TVertex : IVertexBase
             if (deformation is not null) (p, tangentX, tangentZ) = deformation.Deform(p, tangentX, tangentZ);
             vertices.Add((TVertex)TVertex.Create(p, tangentX, tangentZ, uvs));
         }
+    }
+
+    /// <summary>Re-deforms a spline mesh preview's vertices in place, keeping its materials and lighting</summary>
+    public void Redeform(SplineMeshDeformation deformation)
+    {
+        if (DeformedSource is null || LODs.Count == 0) throw new InvalidOperationException("Only spline mesh previews can be re-deformed.");
+        Mesh<TVertex> mesh = LODs[0].Mesh;
+        mesh.Vertices.Clear();
+        AddVertices(DeformedSource, deformation, mesh.Vertices);
+        mesh.RebuildBuffer(RenderContext.Device);
+        //the bounds are rebuilt untransformed
+        mesh.LocalToWorld = mesh.LocalToWorld;
+    }
+
+    /// <summary>
+    /// Creates a preview of the given <see cref="StaticMesh"/>.
+    /// </summary>
+    /// <param name="staticLighting">A component's precomputed lighting for this LOD. The preview takes ownership of it</param>
+    /// <param name="deformation">For a spline mesh: its deformation, applied to the vertices (in component space)</param>
+    public ModelPreview(MeshRenderContext renderContext, StaticMesh m, int selectedLOD, MeshStaticLighting staticLighting = null,
+        IReadOnlyList<IEntry> materialOverrides = null, SplineMeshDeformation deformation = null)
+    {
+        RenderContext = renderContext;
+        if (selectedLOD < 0)  //PREVIEW BUG WORKAROUND
+            return;
+
+        // STEP 1: MESH
+        var lodModel = m.LODModels[selectedLOD];
+        var triangles = new List<Triangle>(lodModel.IndexBuffer.Length / 3);
+        var vertices = new List<TVertex>((int)lodModel.NumVertices);
+        if (deformation is not null) DeformedSource = lodModel;
+        AddVertices(lodModel, deformation, vertices);
 
         // Sometimes there might not be an index buffer.
         // If there is one, use that. 

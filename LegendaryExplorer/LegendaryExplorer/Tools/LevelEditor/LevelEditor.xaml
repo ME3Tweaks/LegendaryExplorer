@@ -453,6 +453,46 @@
                                         </StackPanel>
                                     </StackPanel>
                                 </Expander>
+                                <Expander Header="Spline point" IsExpanded="True" Padding="10,0,10,10" Visibility="{Binding IsSplineSelected, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding SelectedSpline.EditingStatus}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" Margin="0,6,0,8"/>
+                                        <StackPanel DataContext="{Binding SelectedSpline.Point}" IsEnabled="{Binding IsEditable}">
+                                            <Grid Margin="0,8,0,0">
+                                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="140"/></Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions><RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/></Grid.RowDefinitions>
+                                                <TextBlock Text="Tangent length" VerticalAlignment="Center" ToolTip="The curves' strength at this point, in world units. The arrow grabbers in the viewport drag it"/><xctk:SingleUpDown Grid.Column="1" Value="{Binding TangentLength}" Minimum="0" Increment="50" FormatString="F2" AutomationProperties.Name="Tangent length"/>
+                                                <TextBlock Grid.Row="1" Text="Tangent yaw · degrees" VerticalAlignment="Center" ToolTip="The curves' world heading at this point. The sphere grabbers in the viewport turn it"/><xctk:SingleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding TangentYaw}" Increment="5" FormatString="F2" AutomationProperties.Name="Tangent yaw"/>
+                                                <TextBlock Grid.Row="2" Text="Tangent pitch · degrees" VerticalAlignment="Center" ToolTip="The curves' world elevation at this point, from -90 (down) to 90 (up)"/><xctk:SingleUpDown Grid.Row="2" Grid.Column="1" Value="{Binding TangentPitch}" Minimum="-90" Maximum="90" Increment="5" FormatString="F2" AutomationProperties.Name="Tangent pitch"/>
+                                            </Grid>
+                                            <TextBlock Text="Tangent · actor space" Style="{StaticResource EditorSectionLabel}" ToolTip="SplineActorTangent: the curves' direction and strength at this point, in the point's own space"/>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                                <DockPanel><TextBlock Text="X" Background="{StaticResource EditorX}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown Value="{Binding TangentX}" Increment="50" FormatString="F2" AutomationProperties.Name="Tangent X"/></DockPanel>
+                                                <DockPanel Grid.Column="2"><TextBlock Text="Y" Background="{StaticResource EditorY}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown Value="{Binding TangentY}" Increment="50" FormatString="F2" AutomationProperties.Name="Tangent Y"/></DockPanel>
+                                                <DockPanel Grid.Column="4"><TextBlock Text="Z" Background="{StaticResource EditorZ}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown Value="{Binding TangentZ}" Increment="50" FormatString="F2" AutomationProperties.Name="Tangent Z"/></DockPanel>
+                                            </Grid>
+                                            <StackPanel Visibility="{Binding IsLoft, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                <TextBlock Text="Mesh X axis · world direction" Style="{StaticResource EditorSectionLabel}" ToolTip="WorldXDir: the direction the deformed mesh's X axis is turned towards along the connections leaving this point"/>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/><ColumnDefinition Width="4"/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                                    <DockPanel><TextBlock Text="X" Background="{StaticResource EditorX}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown Value="{Binding WorldXDirX}" Increment="0.1" FormatString="F3" AutomationProperties.Name="WorldXDir X"/></DockPanel>
+                                                    <DockPanel Grid.Column="2"><TextBlock Text="Y" Background="{StaticResource EditorY}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown Value="{Binding WorldXDirY}" Increment="0.1" FormatString="F3" AutomationProperties.Name="WorldXDir Y"/></DockPanel>
+                                                    <DockPanel Grid.Column="4"><TextBlock Text="Z" Background="{StaticResource EditorZ}" Style="{StaticResource EditorAxisLabel}"/><xctk:SingleUpDown Value="{Binding WorldXDirZ}" Increment="0.1" FormatString="F3" AutomationProperties.Name="WorldXDir Z"/></DockPanel>
+                                                </Grid>
+                                                <Grid Margin="0,8,0,0">
+                                                    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="140"/></Grid.ColumnDefinitions>
+                                                    <Grid.RowDefinitions><RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/></Grid.RowDefinitions>
+                                                    <TextBlock Text="Roll · degrees" VerticalAlignment="Center" ToolTip="Roll of the mesh around the spline at this point"/><xctk:SingleUpDown Grid.Column="1" Value="{Binding Roll}" Increment="5" FormatString="F2"/>
+                                                    <TextBlock Grid.Row="1" Text="Scale X" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="1" Grid.Column="1" Value="{Binding ScaleX}" Increment="0.1" FormatString="F3"/>
+                                                    <TextBlock Grid.Row="2" Text="Scale Y" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="2" Grid.Column="1" Value="{Binding ScaleY}" Increment="0.1" FormatString="F3"/>
+                                                    <TextBlock Grid.Row="3" Text="Offset X" VerticalAlignment="Center" ToolTip="Offset of the mesh from the spline, applied before scale and roll"/><xctk:SingleUpDown Grid.Row="3" Grid.Column="1" Value="{Binding OffsetX}" Increment="10" FormatString="F2"/>
+                                                    <TextBlock Grid.Row="4" Text="Offset Y" VerticalAlignment="Center"/><xctk:SingleUpDown Grid.Row="4" Grid.Column="1" Value="{Binding OffsetY}" Increment="10" FormatString="F2"/>
+                                                </Grid>
+                                                <CheckBox Content="Smooth roll and scale" IsChecked="{Binding SmoothInterpRollAndScale}" Margin="0,6,0,0" ToolTip="bSmoothInterpRollAndScale: ease roll, scale and offset along the connections leaving this point, instead of changing them linearly"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Expander>
                                 <Expander Header="Light" IsExpanded="True" Padding="10,0,10,10" Visibility="{Binding IsLightSelected, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <StackPanel>
                                     <StackPanel DataContext="{Binding SelectedLight}">

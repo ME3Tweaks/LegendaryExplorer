@@ -42,6 +42,8 @@ public class LevelEditorRenderContext : MeshRenderContext
 
     public readonly LightGizmo LightGizmo = new();
 
+    public readonly SplineTangentGizmo SplineGizmo = new();
+
     /// <summary>
     /// Lines and meshes drawn on top of the scene: widgets, gizmos, etc
     /// </summary>
@@ -139,14 +141,21 @@ public class LevelEditorRenderContext : MeshRenderContext
     /// </summary>
     public (Vector3 Origin, Vector3 Direction) GetPixelRay(int x, int y)
     {
-        Matrix4x4.Invert(Camera.ViewProjectionMatrix, out Matrix4x4 screenToWorld);
+        //unprojected into view space, then turned into the world: inverting the whole view-projection loses several pixels of precision
+        //tens of thousands of units from the world origin, where the near plane is a rounding error away from the eye
+        Matrix4x4.Invert(Camera.ProjectionMatrix, out Matrix4x4 clipToView);
         float ndcX = 2f * (x + 0.5f) / Width - 1;
         float ndcY = 1 - 2f * (y + 0.5f) / Height;
         //reversed depth: the near plane is at 1
-        Vector4 near = Vector4.Transform(new Vector4(ndcX, ndcY, 1, 1), screenToWorld);
-        Vector4 far = Vector4.Transform(new Vector4(ndcX, ndcY, 0.5f, 1), screenToWorld);
-        var origin = new Vector3(near.X, near.Y, near.Z) / near.W;
-        Vector3 direction = new Vector3(far.X, far.Y, far.Z) / far.W - origin;
+        Vector4 near = Vector4.Transform(new Vector4(ndcX, ndcY, 1, 1), clipToView);
+        Vector4 far = Vector4.Transform(new Vector4(ndcX, ndcY, 0.5f, 1), clipToView);
+        Vector3 nearView = new Vector3(near.X, near.Y, near.Z) / near.W;
+        Vector3 farView = new Vector3(far.X, far.Y, far.Z) / far.W;
+        //the view is a rotation and a translation, so its inverse rotation is its transpose
+        Matrix4x4 view = Camera.ViewMatrix;
+        Matrix4x4 viewToWorld = Matrix4x4.Transpose(view with { M41 = 0, M42 = 0, M43 = 0 });
+        Vector3 origin = Vector3.TransformNormal(nearView - view.Translation, viewToWorld);
+        Vector3 direction = Vector3.TransformNormal(farView - nearView, viewToWorld);
         return (origin, direction.LengthSquared() > 0 ? Vector3.Normalize(direction) : Camera.CameraForward);
     }
 
@@ -182,7 +191,8 @@ public class LevelEditorRenderContext : MeshRenderContext
         if (IsActorSelected(actor)) return true;
         if (actor is DecalActorProxy)
             return GetCategoryState("Effects helpers").IsVisible || GetCategoryState("Decals").IsVisible;
-        if (actor is EditorActorProxy) return GetCategoryState(actor.Category).IsVisible;
+        //helpers are shown by category, whatever bHidden says (plain spline points are editor-only)
+        if (actor is EditorActorProxy or SplineActorProxy { IsLoft: false }) return GetCategoryState(actor.Category).IsVisible;
         return GetCategoryState(actor.Category).IsVisible && (!actor.IsHidden || ShowHidden);
     }
 
@@ -195,6 +205,8 @@ public class LevelEditorRenderContext : MeshRenderContext
         ActorProxy actor => IsActorVisible(actor),
         AxisHitProxy => TransformWidget.Attach is { } actor && IsActorVisible(actor),
         LightHandleHitProxy => LightGizmo.Attach is ActorProxy light && IsActorVisible(light),
+        SplineTangentHitProxy => SplineGizmo.Attach is { } loft && IsActorVisible(loft),
+        SplinePointHitProxy point => IsActorVisible(point.Point),
         _ => true
     };
 
@@ -227,6 +239,11 @@ public class LevelEditorRenderContext : MeshRenderContext
             LightGizmo.EndDrag();
             return true;
         }
+        if (SplineGizmo.IsDragging)
+        {
+            SplineGizmo.EndDrag();
+            return true;
+        }
         if (base.MouseUp(button, x, y)) return true;
 
         if (HitBufferView is not null)
@@ -239,6 +256,10 @@ public class LevelEditorRenderContext : MeshRenderContext
                 case ActorProxy actor:
                     SelectActor?.Invoke(actor);
                     TransformWidget.Attach = actor;
+                    break;
+                case SplinePointHitProxy point:
+                    SelectActor?.Invoke(point.Point);
+                    TransformWidget.Attach = point.Point;
                     break;
                 case AxisHitProxy axisProxy:
                     TransformWidget.CurrentAxis = axisProxy.Axis;
@@ -263,6 +284,10 @@ public class LevelEditorRenderContext : MeshRenderContext
         {
             LightGizmo.EndDrag();
         }
+        if (SplineGizmo.IsDragging && Mouse.LeftButton is MouseButtonState.Released)
+        {
+            SplineGizmo.EndDrag();
+        }
         if (HitBufferView is not null)
         {
             IHitProxy selected = GetHitProxy(x, y);
@@ -277,6 +302,10 @@ public class LevelEditorRenderContext : MeshRenderContext
                 case LightHandleHitProxy handleProxy when button is MouseButtons.Left:
                     LightGizmo.BeginDrag(handleProxy.Handle);
                     if (LightGizmo.IsDragging) return true;
+                    break;
+                case SplineTangentHitProxy tangentProxy when button is MouseButtons.Left:
+                    SplineGizmo.BeginDrag(this, tangentProxy.Handle, x, y);
+                    if (SplineGizmo.IsDragging) return true;
                     break;
             }
         }
@@ -307,6 +336,16 @@ public class LevelEditorRenderContext : MeshRenderContext
             LightGizmo.Drag(this, x, y);
             return true;
         }
+        if (SplineGizmo.IsDragging)
+        {
+            if (Mouse.LeftButton is MouseButtonState.Released)
+            {
+                SplineGizmo.EndDrag();
+                return true;
+            }
+            SplineGizmo.Drag(this, x, y);
+            return true;
+        }
         if (base.MouseMove(x, y)) return true;
 
         if (HitBufferView is not null)
@@ -315,6 +354,7 @@ public class LevelEditorRenderContext : MeshRenderContext
 
             TransformWidget.CurrentAxis = EWidgetAxis.None;
             LightGizmo.HoveredHandle = LightHandle.None;
+            SplineGizmo.HoveredHandle = SplineTangentHandle.None;
             switch (selected)
             {
                 case AxisHitProxy axisProxy:
@@ -322,6 +362,9 @@ public class LevelEditorRenderContext : MeshRenderContext
                     break;
                 case LightHandleHitProxy handleProxy:
                     LightGizmo.HoveredHandle = handleProxy.Handle;
+                    break;
+                case SplineTangentHitProxy tangentProxy:
+                    SplineGizmo.HoveredHandle = tangentProxy.Handle;
                     break;
             }
         }
@@ -425,13 +468,19 @@ public class LevelEditorRenderContext : MeshRenderContext
         foreach (var decal in DrawList_3D.OfType<DecalActorProxy>()) decal.BindReceivers(this);
         foreach (var actor in actors)
         {
-            actor.HitID = HitProxies.Add(actor);
+            AddHitProxies(actor);
         }
         if (!DrawList_UI.Contains(LightGizmo))
         {
             //before the transform widget, so that the widget is drawn over the light's radius
             DrawList_UI.Insert(0, LightGizmo);
             LightGizmo.GetHandleHitProxies(ref HitProxies);
+        }
+        //read-only views use it too, to select loft points; it has no handles for them
+        if (!DrawList_UI.Contains(SplineGizmo))
+        {
+            DrawList_UI.Insert(0, SplineGizmo);
+            SplineGizmo.GetHandleHitProxies(ref HitProxies);
         }
         if (!IsReadOnly && !DrawList_UI.Contains(TransformWidget))
         {
@@ -459,6 +508,7 @@ public class LevelEditorRenderContext : MeshRenderContext
         TransformWidget.Attach = null;
         SelectedActor = null;
         LightGizmo.Attach = null;
+        SplineGizmo.Attach = null;
         HighlightedComponents.Clear();
         HighlightedLights.Clear();
     }
@@ -488,8 +538,15 @@ public class LevelEditorRenderContext : MeshRenderContext
         if (DrawList_3D.Remove(actor))
         {
             HitProxies.RemoveAt(actor.HitID);
+            if (actor is SplineActorProxy spline) HitProxies.RemoveAt(spline.PointHitProxy.HitID);
             if (SelectedActor == actor) SelectedActor = null;
         }
+    }
+
+    private void AddHitProxies(ActorProxy actor)
+    {
+        actor.HitID = HitProxies.Add(actor);
+        if (actor is SplineActorProxy spline) spline.PointHitProxy.HitID = HitProxies.Add(spline.PointHitProxy);
     }
 
     internal void AddActor(ActorProxy actor)
@@ -499,7 +556,7 @@ public class LevelEditorRenderContext : MeshRenderContext
         {
             DrawList_3D.Add(actor);
             foreach (var decal in DrawList_3D.OfType<DecalActorProxy>()) decal.BindReceivers(this);
-            actor.HitID = HitProxies.Add(actor);
+            AddHitProxies(actor);
         }
     }
 }

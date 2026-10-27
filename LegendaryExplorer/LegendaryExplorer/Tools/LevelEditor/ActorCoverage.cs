@@ -28,7 +28,7 @@ public sealed record ActorCoverage(ActorRepresentation Representation, string Re
 internal enum ActorKind
 {
     StaticMesh, SFXSkeletalMesh, SkeletalMesh, KAsset, DynamicMesh, Brush, Stunt,
-    Placeable, BioPawn, Pawn, Prefab, Grenade, Ammo, Pickup, Light, Collection, Decal, Terrain, SplineLoft, Foliage, Helper
+    Placeable, BioPawn, Pawn, Prefab, Grenade, Ammo, Pickup, Light, Collection, Decal, Terrain, SplineLoft, Spline, Foliage, Helper
 }
 
 internal sealed record ActorClassInfo(ActorKind Kind, string Category = null, string Reason = null, bool DataOnly = false);
@@ -64,6 +64,7 @@ internal static class ActorClassification
         if (Is("DecalActorBase")) return new(ActorKind.Decal);
         if (Is("Terrain")) return new(ActorKind.Terrain);
         if (Is("SplineLoftActor")) return new(ActorKind.SplineLoft);
+        if (Is("SplineActor")) return new(ActorKind.Spline);
 
         if (Is("WorldInfo") || Is("MaterialInstanceActor") || Is("BioSquad")
             || name is "BioPlayerSquad" or "BioWaypointSet" or "Route" or "BioSquadAmbient" or "BioSquadCombat"
@@ -74,7 +75,7 @@ internal static class ActorClassification
             return new(ActorKind.Helper, "Navigation", "Cover-slot bookkeeping. Inspect OwningSlot in Package Editor; the owning cover link is the spatial helper.", true);
         if (Is("PlayerStart") || name is "BioStartLocation" or "BioStartPoint")
             return new(ActorKind.Helper, "Gameplay", "Editable player/start transform; runtime spawning is not simulated.");
-        if (Is("NavigationPoint") || Is("BioPathPoint") || Is("SplineActor") || name == "PathTargetPoint")
+        if (Is("NavigationPoint") || Is("BioPathPoint") || name == "PathTargetPoint")
             return new(ActorKind.Helper, "Navigation", "Editable actor transform only; navigation topology and cover-slot shapes are not rebuilt.");
         if (Is("CameraActor") || Is("SceneCaptureActor"))
             return new(ActorKind.Helper, "Cameras", "Camera position and orientation only; camera preview and scene captures are not implemented.");

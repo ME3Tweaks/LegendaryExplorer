@@ -1,3 +1,4 @@
+using LegendaryExplorer.Tools.LevelEditor.Scene3D;
 using LegendaryExplorerCore.Packages;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
@@ -17,6 +18,9 @@ public interface IActorEditorContext
     void OnActorLightingEdited(MeshComponentProxy mesh, ActorLightingSettings before, ActorLightingSettings after) { }
 
     void OnDecalEdited(DecalActorProxy actor, DecalSettings before, DecalSettings after, string property) { }
+
+    /// <summary>A loft point's uncommitted spline values changed</summary>
+    void OnSplineEdited(SplineActorProxy actor, SplineLoftSettings before, SplineLoftSettings after, string property) { }
 
     /// <summary>The loaded, writable level that can receive a migrated decal.</summary>
     ExportEntry GetDecalDestinationLevel(IMEPackage package) => null;

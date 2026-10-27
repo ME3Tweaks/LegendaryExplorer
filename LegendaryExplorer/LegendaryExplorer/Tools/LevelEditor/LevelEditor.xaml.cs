@@ -402,7 +402,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
         RenderContext.PackageCache.PackageUpdated += QueuePreviewUpdate;
         RenderContext.TransformWidget.OnDragComplete = OnWidgetDragComplete;
         RenderContext.LightGizmo.OnDragComplete = OnLightGizmoDragComplete;
-        ActorsView = CollectionViewSource.GetDefaultView(Actors);
+        RenderContext.SplineGizmo.OnDragComplete = OnSplineGizmoDragComplete;
+        ActorsView =CollectionViewSource.GetDefaultView(Actors);
         ActorsView.Filter = ActorFilter;
         // A preview refresh can change a mesh's category (whether it's volumetric)
         if (ActorsView is ICollectionViewLiveShaping { CanChangeLiveGrouping: true } liveView)
@@ -526,7 +527,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void SelectActor(ActorProxy actor, bool focus)
     {
         // A handle drag belongs to the light it started on, so it's recorded before the gizmo moves to another
-        if (actor != selectedActor) RenderContext.LightGizmo.EndDrag();
+        if (actor != selectedActor)
+        {
+            RenderContext.LightGizmo.EndDrag();
+            RenderContext.SplineGizmo.EndDrag();
+        }
         var prev = selectedActor;
         RenderContext.SelectedActor = actor;
         if (SetProperty(ref selectedActor, actor, nameof(SelectedActor)))
@@ -560,6 +565,9 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             OnPropertyChanged(nameof(SelectedDecal));
             OnPropertyChanged(nameof(IsDecalSelected));
             SelectedDecal?.RefreshFilterCandidates();
+            RenderContext.SplineGizmo.Attach = selectedActor as SplineActorProxy;
+            OnPropertyChanged(nameof(SelectedSpline));
+            OnPropertyChanged(nameof(IsSplineSelected));
             RefreshLightingDiagnostics();
         }
         RenderContext.TransformWidget.Attach = selectedActor is { CanEditTransform: true, HasSpatialRepresentation: true }
@@ -1341,7 +1349,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
             }
             else
             {
-                if (actor.IsTransformDirty || actor is ILightProxy or DecalActorProxy) actor.CommitChanges();
+                // A loft point can be dirty without moving: its spline values, or a connection rebuilt because the next point moved
+                if (actor.IsTransformDirty || actor is ILightProxy or DecalActorProxy or SplineActorProxy) actor.CommitChanges();
             }
             foreach (var mesh in MeshComponents(actor)) mesh.ExistingLighting?.Commit();
             if (actor is not DecalActorProxy) actor.MarkClean();
@@ -1561,7 +1570,8 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     {
         // Package loading and shader preparation also read the scene on background threads.
         // Keep edits queued until those readers finish, and suspend rendering while replacing GPU resources. (Package saves aren't readers of the scene)
-        if (_busyCount > 0 || PreviewRefreshInProgress || RenderContext.TransformWidget.IsDragging || RenderContext.LightGizmo.IsDragging) return;
+        if (_busyCount > 0 || PreviewRefreshInProgress || RenderContext.TransformWidget.IsDragging || RenderContext.LightGizmo.IsDragging
+            || RenderContext.SplineGizmo.IsDragging) return;
         PreviewUpdateTimer.Stop();
         if (OpenFiles.Count == 0 || PreviewClosed)
         {
@@ -1849,6 +1859,16 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     {
         if (!_isApplyingUndoRedo) UndoHistory.Push(new DecalSettingsAction(actor, before, after, property));
     }
+
+    public SplineActorProxy SelectedSpline => selectedActor as SplineActorProxy;
+    public bool IsSplineSelected => SelectedSpline is not null;
+    public void OnSplineEdited(SplineActorProxy actor, SplineLoftSettings before, SplineLoftSettings after, string property)
+    {
+        //a handle drag is recorded once, when it ends
+        if (!_isApplyingUndoRedo && !RenderContext.SplineGizmo.IsDragging) UndoHistory.Push(new SplineSettingsAction(actor, before, after, property));
+    }
+    private void OnSplineGizmoDragComplete(SplineActorProxy actor, SplineLoftSettings before, SplineLoftSettings after) =>
+        UndoHistory.Push(new SplineSettingsAction(actor, before, after, "tangent"));
 
     private void RefreshDecalFilter_Click(object sender, RoutedEventArgs e) => SelectedDecal?.RefreshFilterCandidates();
     private void ClearDecalFilter_Click(object sender, RoutedEventArgs e) => SelectedDecal?.ClearFilter();

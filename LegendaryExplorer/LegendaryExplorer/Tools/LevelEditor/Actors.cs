@@ -398,6 +398,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
                 // Collection exports are expanded by the level loader, not previewed individually.
                 return false;
             case ActorKind.Helper:
+            case ActorKind.Spline:
             case ActorKind.Decal:
                 // Decal surfaces need their receiving actors loaded; an isolated export only has its helper.
                 return includeHelpers && actorExport.IsA("Actor");
@@ -421,7 +422,7 @@ public class ActorProxy : NotifyPropertyChangedBase, IDisposable, IHitProxy
                 ActorKind.KAsset => new KAssetProxy(context, actorExport),
                 ActorKind.Decal => new DecalActorProxy(context, actorExport),
                 ActorKind.Terrain => new TerrainProxy(context, actorExport),
-                ActorKind.SplineLoft => new SplineLoftActorProxy(context, actorExport),
+                ActorKind.SplineLoft or ActorKind.Spline => new SplineActorProxy(context, actorExport),
                 ActorKind.Foliage => new FoliageFactoryProxy(context, actorExport),
                 ActorKind.DynamicMesh => new DynamicSMActorProxy(context, actorExport),
                 ActorKind.Brush => new BrushProxy(context, actorExport),

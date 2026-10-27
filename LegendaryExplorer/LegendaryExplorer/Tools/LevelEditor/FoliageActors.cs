@@ -10,34 +10,6 @@ using System.Numerics;
 
 namespace LegendaryExplorer.Tools.LevelEditor;
 
-/// <summary>A SplineLoftActor's deformed meshes, one SplineMeshComponent per connection</summary>
-public sealed class SplineLoftActorProxy : ActorProxy
-{
-    public List<SplineMeshComponentProxy> SplineMeshComps = [];
-
-    public override string Category => "Spline meshes";
-
-    public SplineLoftActorProxy(IActorEditorContext context, ExportEntry actorExport) : base(context, actorExport)
-    {
-        AddComponentArray(context.RenderContext, ref SplineMeshComps);
-    }
-
-    public override ActorCoverage Coverage
-    {
-        get
-        {
-            int rendered = SplineMeshComps.Count(c => c.HasPreviewMesh);
-            if (rendered == 0)
-                return new(ActorRepresentation.Unsupported, SplineMeshComps.Count == 0
-                    ? "No SplineMeshComponent (an end point of the loft, or no connection)." : "No renderable spline mesh was loaded.");
-            return new(rendered < SplineMeshComps.Count ? ActorRepresentation.PartialScene : ActorRepresentation.SceneRendered,
-                $"{rendered} of {SplineMeshComps.Count} spline meshes deformed from their stored SplineParams (tangents, scale, offset, roll, SplineXDir, "
-                + "smooth interpolation) as the game's spline vertex factory does. The spline overlay and rebuilding connected SplineParams are not implemented: "
-                + "moving the actor moves its stored deformation rigidly.");
-        }
-    }
-}
-
 /// <summary>
 /// A FoliageFactory: its authoring volume, and the cooked instances of each of its FoliageComponents. The volume outline is drawn when the
 /// actor is selected or volumes are shown.

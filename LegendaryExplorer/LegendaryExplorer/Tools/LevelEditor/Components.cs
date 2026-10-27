@@ -553,13 +553,35 @@ public class StaticMeshComponentProxy : MeshComponentProxy
     }
 }
 
-/// <summary>A SplineMeshComponent: its static mesh's LOD 0 deformed along its stored SplineParams</summary>
+/// <summary>
+/// A SplineMeshComponent: its static mesh's LOD 0 deformed along its stored SplineParams, or along the ones its loft actor rebuilt after an edit
+/// </summary>
 public sealed class SplineMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent)
     : StaticMeshComponentProxy(context, componentExport, parent)
 {
+    /// <summary>The deformation the mesh is drawn with</summary>
     public SplineMeshDeformation Deformation { get; private set; }
+    /// <summary>The stored SplineParams' deformation</summary>
+    public SplineMeshDeformation StoredDeformation { get; private set; }
+    /// <summary>The deformed static mesh's bounds, which place it along the spline</summary>
+    public BoxSphereBounds MeshBounds { get; private set; }
 
-    protected override SplineMeshDeformation ReadDeformation(StaticMesh mesh) => Deformation = SplineMeshDeformation.Read(Properties, mesh.Bounds);
+    protected override SplineMeshDeformation ReadDeformation(StaticMesh mesh)
+    {
+        MeshBounds = mesh.Bounds;
+        return Deformation = StoredDeformation = SplineMeshDeformation.Read(Properties, mesh.Bounds);
+    }
+
+    /// <summary>Draws the mesh deformed by <paramref name="deformation"/> (its stored one, or a rebuilt one) without reloading it</summary>
+    internal void SetDeformation(SplineMeshDeformation deformation)
+    {
+        if (ReferenceEquals(deformation, Deformation)) return;
+        Deformation = deformation;
+        Mesh?.Redeform(deformation);
+    }
+
+    /// <summary>After a commit wrote <see cref="Deformation"/> to the component, it's the stored one</summary>
+    internal void AcceptDeformation() => StoredDeformation = Deformation;
 }
 
 public class SkeletalMeshComponentProxy : MeshComponentProxy

@@ -37,6 +37,39 @@ public sealed class SplineMeshDeformation
         };
     }
 
+    /// <summary>
+    /// Writes SplineParams (fields in SplineMeshParams' order, leaving out zeros as the cooked components do), and SplineXDir and bSmoothInterpRollScale
+    /// where they're already set or differ from the class defaults ((1,0,0) and false)
+    /// </summary>
+    public void Write(PropertyCollection componentProps)
+    {
+        var p = new PropertyCollection();
+        void V3(string name, Vector3 v) { if (v != Vector3.Zero) p.Add(CommonStructs.Vector3Prop(v, name)); }
+        void V2(string name, Vector2 v) { if (v != Vector2.Zero) p.Add(CommonStructs.Vector2Prop(v, name)); }
+        void F(string name, float f) { if (f != 0) p.Add(new FloatProperty(f, name)); }
+        V3("StartPos", StartPos); V3("StartTangent", StartTangent); V2("StartScale", StartScale); F("StartRoll", StartRoll); V2("StartOffset", StartOffset);
+        V3("EndPos", EndPos); V3("EndTangent", EndTangent); V2("EndScale", EndScale); F("EndRoll", EndRoll); V2("EndOffset", EndOffset);
+        componentProps.AddOrReplaceProp(new StructProperty("SplineMeshParams", p, "SplineParams"));
+        if (XDir != Vector3.UnitX || componentProps.ContainsNamedProp("SplineXDir"))
+            componentProps.AddOrReplaceProp(CommonStructs.Vector3Prop(XDir, "SplineXDir"));
+        if (SmoothInterpRollScale || componentProps.ContainsNamedProp("bSmoothInterpRollScale"))
+            componentProps.AddOrReplaceProp(new BoolProperty(SmoothInterpRollScale, "bSmoothInterpRollScale"));
+    }
+
+    /// <summary>The largest difference between this deformation's stored values and <paramref name="other"/>'s, relative to their magnitude (at least 1)</summary>
+    public float Difference(SplineMeshDeformation other)
+    {
+        float d = 0;
+        void V(Vector3 a, Vector3 b) => d = MathF.Max(d, (a - b).Length() / MathF.Max(1, MathF.Max(a.Length(), b.Length())));
+        void V2(Vector2 a, Vector2 b) => V(new Vector3(a, 0), new Vector3(b, 0));
+        V(StartPos, other.StartPos); V(StartTangent, other.StartTangent); V2(StartScale, other.StartScale); V2(StartOffset, other.StartOffset);
+        V(EndPos, other.EndPos); V(EndTangent, other.EndTangent); V2(EndScale, other.EndScale); V2(EndOffset, other.EndOffset);
+        V(XDir, other.XDir);
+        d = MathF.Max(d, MathF.Abs(StartRoll - other.StartRoll));
+        d = MathF.Max(d, MathF.Abs(EndRoll - other.EndRoll));
+        return SmoothInterpRollScale == other.SmoothInterpRollScale ? d : float.PositiveInfinity;
+    }
+
     public Vector3 EvalPosition(float a)
     {
         float a2 = a * a, a3 = a2 * a;
