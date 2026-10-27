@@ -33,7 +33,7 @@ public sealed class ActorLightingChannel : NotifyPropertyChangedBase
 /// <summary>Pending primitive lighting edits. The package is only changed by Commit; mesh reloads overlay these edits.</summary>
 public sealed class EditableActorLighting : NotifyPropertyChangedBase
 {
-    private readonly MeshComponentProxy Mesh;
+    internal MeshComponentProxy Mesh { get; private set; }
     private readonly MeshRenderContext Context;
     private ActorLightingSettings settings, cleanSettings;
     private readonly PropertyCollection ChannelFields;
@@ -102,6 +102,13 @@ public sealed class EditableActorLighting : NotifyPropertyChangedBase
             .Where(channel => ChannelFields?.Any(field => field.Name.Instanced == channel.name) == true)
             .Select(channel => new ActorLightingChannel(this, channel.name, channel.bit)).ToArray();
         RefreshEnvironments();
+    }
+
+    /// <summary>Keeps the inspector and undo actions attached when a spline connection replaces its mesh preview.</summary>
+    internal void Rebind(MeshComponentProxy mesh)
+    {
+        Mesh = mesh;
+        ReloadAndApply(mesh.Properties);
     }
 
     private ActorLightingSettings Read(PropertyCollection props)

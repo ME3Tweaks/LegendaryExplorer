@@ -30,6 +30,7 @@ public class PrimitiveComponentProxy : NotifyPropertyChangedBase, IDisposable
     public string ActorPropertyName { get; internal set; }
 
     protected readonly MeshRenderContext RenderContext;
+    protected readonly PropertyCollection PreviewProperties;
 
     private Rotator rotation;
     private Vector3 translation;
@@ -81,17 +82,18 @@ public class PrimitiveComponentProxy : NotifyPropertyChangedBase, IDisposable
     /// </summary>
     public bool HiddenGame { get; private set; }
 
-    protected PrimitiveComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent)
+    protected PrimitiveComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent, PropertyCollection previewProperties = null)
     {
         Actor = parent;
         Export = componentExport;
         RenderContext = context;
+        PreviewProperties = previewProperties;
         ReadProperties();
     }
 
     protected void ReadProperties()
     {
-        Properties = EffectiveLightingProperties.ReadPrimitive(Export, RenderContext.PackageCache);
+        Properties = PreviewProperties?.DeepClone() ?? EffectiveLightingProperties.ReadPrimitive(Export, RenderContext.PackageCache);
         if (this is MeshComponentProxy mesh) mesh.ExistingLighting?.ReloadAndApply(Properties);
         HiddenGame = Properties.GetProp<BoolProperty>("HiddenGame")?.Value ?? false;
 
@@ -247,6 +249,14 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
     public EditableActorLighting Lighting => lighting ??= new EditableActorLighting(this, RenderContext);
     internal EditableActorLighting ExistingLighting => lighting;
 
+    /// <summary>Transfers the connection's editable lighting model before loading the replacement mesh's rendering resources.</summary>
+    protected void RestoreLighting(EditableActorLighting value)
+    {
+        ActorPropertyName ??= value.ActorPropertyName;
+        lighting = value;
+        lighting.Rebind(this);
+    }
+
     /// <summary>
     /// How the mesh is part of the light environment that lights it, if it's lit by one
     /// </summary>
@@ -355,7 +365,7 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
         }
     }
 
-    protected MeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent) : base(context, componentExport, parent)
+    protected MeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent, PropertyCollection previewProperties = null) : base(context, componentExport, parent, previewProperties)
     {
         ReadMaterialOverrides();
     }
@@ -365,7 +375,8 @@ public abstract class MeshComponentProxy : PrimitiveComponentProxy
         MaterialOverrides.Clear();
         //as the bake reads them: from the nearest object in the archetype chain that sets them (an empty array overrides its archetypes' too),
         //including archetypes in other packages (prefabs in the persistent level, class defaults' subobjects), which condensed properties leave out
-        var (mats, package) = EffectiveLightingProperties.Inherited<ArrayProperty<ObjectProperty>>(Export, "Materials", RenderContext.PackageCache);
+        var (mats, package) = PreviewProperties is not null ? (PreviewProperties.GetProp<ArrayProperty<ObjectProperty>>("Materials"), Export.FileRef)
+            : EffectiveLightingProperties.Inherited<ArrayProperty<ObjectProperty>>(Export, "Materials", RenderContext.PackageCache);
         if (mats is not null)
         {
             MaterialOverrides.AddRange(mats.Select(x => x.Value != 0 ? x.ResolveToEntry(package) : null));
@@ -407,9 +418,12 @@ public class StaticMeshComponentProxy : MeshComponentProxy
 {
     private Mesh<WorldVertex> CollisionMesh;
     private PreviewMeshDependencies Dependencies;
+    private readonly bool preservePreviewLighting;
 
-    public StaticMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent) : base(context, componentExport, parent)
+    public StaticMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent, PropertyCollection previewProperties = null, bool preservePreviewLighting = false, EditableActorLighting lighting = null) : base(context, componentExport, parent, previewProperties)
     {
+        this.preservePreviewLighting = preservePreviewLighting;
+        if (lighting is not null) RestoreLighting(lighting);
         LoadMesh();
     }
 
@@ -417,7 +431,9 @@ public class StaticMeshComponentProxy : MeshComponentProxy
     {
         var context = RenderContext;
         Dependencies = new PreviewMeshDependencies(Export, context.PackageCache);
-        if (EffectiveLightingProperties.ResolveReference(Export, "StaticMesh", context.PackageCache) is { } meshExport)
+        var meshReference = PreviewProperties?.GetProp<ObjectProperty>("StaticMesh")?.ResolveToEntry(Export.FileRef);
+        if ((PreviewProperties is not null ? EffectiveLightingProperties.Resolve(meshReference, context.PackageCache)
+            : EffectiveLightingProperties.ResolveReference(Export, "StaticMesh", context.PackageCache)) is { } meshExport)
         {
             StaticMesh stm = meshExport.GetBinaryData<StaticMesh>();
             SplineMeshDeformation deformation = ReadDeformation(stm);
@@ -425,7 +441,7 @@ public class StaticMeshComponentProxy : MeshComponentProxy
             {
                 foreach (var element in stm.LODModels[LOD].Elements)
                     Dependencies.Track(meshExport.FileRef.GetEntry(element.Material));
-                MeshStaticLighting staticLighting = MeshStaticLighting.Create(context, Export, stm, LOD, Properties);
+                MeshStaticLighting staticLighting = MeshStaticLighting.Create(context, Export, stm, LOD, Properties, PreviewProperties is not null && !preservePreviewLighting);
                 Mesh = new ModelPreview<VertexType>(context, stm, LOD, staticLighting, MaterialOverrides, deformation);
                 MaterialOverrides.Clear();
                 MeshIFP = meshExport.InstancedFullPath;
@@ -556,8 +572,8 @@ public class StaticMeshComponentProxy : MeshComponentProxy
 /// <summary>
 /// A SplineMeshComponent: its static mesh's LOD 0 deformed along its stored SplineParams, or along the ones its loft actor rebuilt after an edit
 /// </summary>
-public sealed class SplineMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent)
-    : StaticMeshComponentProxy(context, componentExport, parent)
+public sealed class SplineMeshComponentProxy(MeshRenderContext context, ExportEntry componentExport, ActorProxy parent, PropertyCollection previewProperties = null, bool preservePreviewLighting = false, EditableActorLighting lighting = null)
+    : StaticMeshComponentProxy(context, componentExport, parent, previewProperties, preservePreviewLighting, lighting)
 {
     /// <summary>The deformation the mesh is drawn with</summary>
     public SplineMeshDeformation Deformation { get; private set; }

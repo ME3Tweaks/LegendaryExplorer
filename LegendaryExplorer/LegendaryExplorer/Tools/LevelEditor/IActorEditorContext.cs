@@ -22,6 +22,9 @@ public interface IActorEditorContext
     /// <summary>A loft point's uncommitted spline values changed</summary>
     void OnSplineEdited(SplineActorProxy actor, SplineLoftSettings before, SplineLoftSettings after, string property) { }
 
+    /// <summary>A spline topology or mesh edit, already applied as one undo step.</summary>
+    void OnSplineConnectionsEdited(IUndoAction action) { }
+
     /// <summary>The loaded, writable level that can receive a migrated decal.</summary>
     ExportEntry GetDecalDestinationLevel(IMEPackage package) => null;
 }

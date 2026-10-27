@@ -358,7 +358,7 @@ public sealed class MeshStaticLighting : IDisposable
     /// <summary>
     /// Reads a static mesh component's precomputed lighting for one LOD. Returns null if that isn't possible
     /// </summary>
-    public static MeshStaticLighting Create(MeshRenderContext context, ExportEntry componentExport, StaticMesh mesh, int lod, PropertyCollection condensedProps = null)
+    public static MeshStaticLighting Create(MeshRenderContext context, ExportEntry componentExport, StaticMesh mesh, int lod, PropertyCollection condensedProps = null, bool unbakedPreview = false)
     {
         if (!componentExport.Game.IsLEGame() || lod >= mesh.LODModels.Length)
         {
@@ -367,7 +367,7 @@ public sealed class MeshStaticLighting : IDisposable
         StaticMeshComponent component;
         try
         {
-            component = componentExport.GetBinaryData<StaticMeshComponent>();
+            component = unbakedPreview ? StaticMeshComponent.Create() : componentExport.GetBinaryData<StaticMeshComponent>();
         }
         catch
         {
@@ -378,10 +378,13 @@ public sealed class MeshStaticLighting : IDisposable
             OwnerActor = componentExport.Parent as ExportEntry,
             IsBakedClass = componentExport.ClassName == "StaticMeshComponent"
         };
-        context.CaptureAssignments(componentExport.FileRef);
-        staticLighting.SourceAssignments = context.AssignmentHistory.Get(componentExport, $"LOD{lod}");
+        if (!unbakedPreview)
+        {
+            context.CaptureAssignments(componentExport.FileRef);
+            staticLighting.SourceAssignments = context.AssignmentHistory.Get(componentExport, $"LOD{lod}");
+        }
         staticLighting.PreviewLod = lod;
-        PropertyCollection props = componentExport.GetProperties();
+        PropertyCollection props = unbakedPreview ? condensedProps : componentExport.GetProperties();
         if (props.GetProp<ArrayProperty<StructProperty>>("IrrelevantLights") is { } irrelevantLights)
         {
             foreach (StructProperty guidProp in irrelevantLights)

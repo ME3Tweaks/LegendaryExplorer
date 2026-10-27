@@ -144,9 +144,9 @@ public partial class ActorPreviewControl : ExportLoaderControl, IActorEditorCont
     }
 
     /// <summary>
-    /// Actor classes the level editor shows, but that a preview of the actor alone has nothing useful to show for (a light is just its icon)
+    /// Actor classes the level editor shows, but that have no useful standalone preview (lights are icons; spline lofts need their connected points)
     /// </summary>
-    private static readonly FrozenSet<string> ExcludedClasses = new[] { "Light" }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
+    private static readonly FrozenSet<string> ExcludedClasses = new[] { "Light", "SplineLoftActor" }.ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
     public override bool CanParse(ExportEntry exportEntry) =>
         !exportEntry.IsDefaultObject && ActorProxy.CanCreate(exportEntry) && !exportEntry.IsA(ExcludedClasses);

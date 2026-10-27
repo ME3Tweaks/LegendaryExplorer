@@ -226,9 +226,18 @@ public class LevelEditorRenderContext : MeshRenderContext
     }
 
     const int HitTestSize = 3;
+    private ModifierKeys? clickModifiers;
 
-    public override bool MouseUp(MouseButtons button, int x, int y)
+    public override bool MouseUp(MouseButtons button, int x, int y) => MouseUp(button, x, y, Keyboard.Modifiers);
+
+    /// <summary>Completes a viewport click with its mouse-down modifiers, including clicks on a spline actor's mesh.</summary>
+    public bool MouseUp(MouseButtons button, int x, int y, ModifierKeys modifiers)
     {
+        if (button is MouseButtons.Left)
+        {
+            modifiers = clickModifiers ?? modifiers;
+            clickModifiers = null;
+        }
         if (TransformWidget.IsDragging)
         {
             TransformWidget.EndDrag();
@@ -251,6 +260,7 @@ public class LevelEditorRenderContext : MeshRenderContext
             IHitProxy selected = GetHitProxy(x, y);
 
             TransformWidget.CurrentAxis = EWidgetAxis.None;
+            if (button is MouseButtons.Left && EditSplineConnection(selected, modifiers)) return true;
             switch (selected)
             {
                 case ActorProxy actor:
@@ -270,8 +280,12 @@ public class LevelEditorRenderContext : MeshRenderContext
         return false;
     }
 
-    public override bool MouseDown(MouseButtons button, int x, int y)
+    public override bool MouseDown(MouseButtons button, int x, int y) => MouseDown(button, x, y, Keyboard.Modifiers);
+
+    /// <summary>Starts a viewport click, retaining Ctrl/Shift even if released before the mouse button.</summary>
+    public bool MouseDown(MouseButtons button, int x, int y, ModifierKeys modifiers)
     {
+        if (button is MouseButtons.Left) clickModifiers = modifiers;
         if (TransformWidget.IsDragging)
         {
             //failsafe if mouseup event was not captured
@@ -310,6 +324,19 @@ public class LevelEditorRenderContext : MeshRenderContext
             }
         }
         return base.MouseDown(button, x, y);
+    }
+
+    /// <summary>Handles Ctrl clicks on spline markers or meshes through the real hit buffer; Shift breaks instead of connecting or flipping.</summary>
+    public bool EditSplineConnection(int x, int y, ModifierKeys modifiers) => EditSplineConnection(GetHitProxy(x, y), modifiers);
+
+    private bool EditSplineConnection(IHitProxy hit, ModifierKeys modifiers)
+    {
+        var target = hit switch { SplinePointHitProxy point => point.Point, SplineActorProxy actor => actor, _ => null };
+        if (!modifiers.HasFlag(ModifierKeys.Control) || SplineGizmo.Attach is not { } source
+            || target is null) return false;
+        if (modifiers.HasFlag(ModifierKeys.Shift)) source.BreakConnection(target);
+        else source.ConnectOrFlip(target);
+        return true;
     }
 
     public override bool MouseMove(int x, int y)

@@ -19,7 +19,7 @@ namespace LegendaryExplorer.Tools.LevelEditor;
 /// connecting to it, as UE3's editor does (ASplineActor::UpdateConnectedSplineComponents). A connection whose two points are as committed keeps its
 /// stored SplineComponent and SplineParams
 /// </summary>
-public sealed class SplineActorProxy : ActorProxy
+public sealed partial class SplineActorProxy : ActorProxy
 {
     /// <summary>SplineActor's SplineColor default, for the curves</summary>
     private static readonly Vector4 SplineColor = new(1, 0, 1, 0.7f);
@@ -44,8 +44,12 @@ public sealed class SplineActorProxy : ActorProxy
     private sealed class Connection(ExportEntry target, ExportEntry splineComponent, SplineMeshComponentProxy mesh)
     {
         public readonly ExportEntry Target = target;
-        public readonly ExportEntry SplineComponent = splineComponent;
-        public readonly SplineMeshComponentProxy Mesh = mesh;
+        public ExportEntry SplineComponent = splineComponent;
+        public SplineMeshComponentProxy Mesh = mesh;
+        public ExportEntry MeshExport = mesh?.Export;
+        public EditableActorLighting Lighting;
+        public string PreviewConfiguration;
+        public bool NeedsRebake;
         /// <summary>Why the connection can't be rebuilt at all, or null</summary>
         public string Defect;
         /// <summary>Why its mesh can't be deformed along it, or null</summary>
@@ -96,11 +100,12 @@ public sealed class SplineActorProxy : ActorProxy
         }
         Point = new EditableSplinePoint(this);
         PointHitProxy = new SplinePointHitProxy(this);
+        InitializeConnections();
         initialized = true;
     }
 
     /// <summary>This point and the loaded points connected to it, directly or through others, in either direction</summary>
-    internal List<SplineActorProxy> Network()
+    public List<SplineActorProxy> Network()
     {
         var points = LoadedPoints.ToList();
         var network = new List<SplineActorProxy> { this };
@@ -130,13 +135,13 @@ public sealed class SplineActorProxy : ActorProxy
     /// <summary>It moved or its spline values changed since the last commit, so its connections and the incoming ones are rebuilt</summary>
     private bool IsEdited => IsTransformDirty || settings != cleanSettings;
 
-    private IEnumerable<SplineActorProxy> LoadedPoints =>
+    internal IEnumerable<SplineActorProxy> LoadedPoints =>
         Editor?.RenderContext.DrawList_3D.OfType<SplineActorProxy>().Where(a => !a.IsDisposed && a.Pcc == Pcc) ?? [];
 
     private SplineActorProxy FindPoint(ExportEntry export) => export is null ? null : LoadedPoints.FirstOrDefault(a => a.Export == export);
 
     /// <summary>The loaded points with a connection to this one</summary>
-    private IEnumerable<SplineActorProxy> IncomingPoints => LoadedPoints.Where(a => a != this && a.connections.Any(c => c.Target == Export));
+    public IEnumerable<SplineActorProxy> IncomingPoints => LoadedPoints.Where(a => a != this && a.connections.Any(c => c.Target == Export));
 
     /// <summary>
     /// ASplineActor::UpdateSplineComponents, and for a loft ASplineLoftActor::UpdateSplineParams, for each connection: rebuilt from this point and the next
@@ -150,7 +155,7 @@ public sealed class SplineActorProxy : ActorProxy
             connection.CurveRebuilt = false;
             if (connection.Defect is not null) continue;
             var target = FindPoint(connection.Target);
-            bool edited = IsEdited || target?.IsEdited == true;
+            bool edited = IsEdited || target?.IsEdited == true || connection.SplineComponent is null || OutgoingTopologyDirty || MeshConfigurationDirty;
             if (edited && target is null) connection.Problem = "The point it connects to isn't loaded, so it can't be rebuilt.";
             connection.CurveRebuilt = edited && target is not null;
             if (connection.Mesh is null) continue;
@@ -212,7 +217,8 @@ public sealed class SplineActorProxy : ActorProxy
         ApplySettings(settings with { Tangent = Vector3.TransformNormal(worldTangent, worldToLocal) }, property);
     }
 
-    protected override bool HasUncommittedChanges() => base.HasUncommittedChanges() || settings != cleanSettings || connections.Any(c => c.IsRebuilt);
+    protected override bool HasUncommittedChanges() => base.HasUncommittedChanges() || settings != cleanSettings || connections.Any(c => c.IsRebuilt)
+        || TopologyDirty || MeshConfigurationDirty;
 
     public string EditingStatus
     {
@@ -224,6 +230,12 @@ public sealed class SplineActorProxy : ActorProxy
                 ? $"{rebuilt} of {connections.Count} connections rebuilt. Committing writes their spline curves"
                     + (IsLoft ? " and SplineParams; their baked lighting is kept until the level is rebaked." : ".")
                 : "Move or rotate this point, drag its tangent's grabbers, or edit its values to rebuild its connections and the ones ending here.";
+            if (TopologyDirty) status = "Connections changed. " + status;
+            if (IsLoft && connections.Any(c => c.Mesh is not null && (c.MeshExport is null || c.NeedsRebake)))
+                status += " New meshes have no baked lighting and need a rebake.";
+            if (MeshConfigurationDirty) status += " Reassigned meshes keep their existing baked lighting until a rebake.";
+            if (IsLoft && deformMesh == 0) status += " Assign a DeformMesh before adding outgoing connections or reversing incoming ones.";
+            if (ConnectionCommitProblem is { } problem) status += " Cannot commit: " + problem;
             return problems.Length > 0 ? status + " " + string.Join(" ", problems) : status;
         }
     }
@@ -232,14 +244,15 @@ public sealed class SplineActorProxy : ActorProxy
     {
         get
         {
-            const string editing = "Moving a point or editing its spline values rebuilds the connections as UE3's editor does; connections can't be added or removed.";
+            string editing = "Point, tangent and connection edits rebuild live."
+                + (connections.Any(c => c.NeedsRebake || c.Mesh is not null && c.MeshExport is null) ? " New meshes have no baked lighting and need a rebake." : "");
             if (!IsLoft)
                 return new(ActorRepresentation.EditorMarker, "Spline point; its connections' curves are drawn while Splines are shown. " + editing);
             int rendered = SplineMeshComps.Count(c => c.HasPreviewMesh);
             if (rendered == 0)
                 return new(ActorRepresentation.EditorMarker, SplineMeshComps.Count == 0
-                    ? "Loft spline point with no outgoing connection; the connections ending here are drawn by the points they start from."
-                    : "Loft spline point; no renderable spline mesh was loaded.");
+                    ? "Loft spline point with no outgoing mesh; the connections ending here are drawn by the points they start from. " + editing
+                    : "Loft spline point; no renderable spline mesh was loaded. " + editing);
             return new(rendered < SplineMeshComps.Count ? ActorRepresentation.PartialScene : ActorRepresentation.SceneRendered,
                 $"{rendered} of {SplineMeshComps.Count} spline meshes deformed along their connections as the game's spline vertex factory does. " + editing);
         }
@@ -248,6 +261,8 @@ public sealed class SplineActorProxy : ActorProxy
     public override void CommitChanges(PackageCache packageCache = null)
     {
         if (IsReadOnly) return;
+        ValidateConnectionsForCommit();
+        CommitConnections();
         settings.Write(Properties, defaults);
         base.CommitChanges(packageCache);
         foreach (var connection in connections)
@@ -275,6 +290,7 @@ public sealed class SplineActorProxy : ActorProxy
             connection.CurveRebuilt = false;
         }
         cleanSettings = settings;
+        AcceptConnections();
         base.MarkClean();
         Point.NotifySettings();
         OnPropertyChanged(nameof(EditingStatus));
@@ -282,6 +298,9 @@ public sealed class SplineActorProxy : ActorProxy
 
     public override bool TryRefreshPreview(IMEPackage package, HashSet<int> updatedExports, bool force = false)
     {
+        if (package == Pcc && (updatedExports.Contains(Export.UIndex)
+            || connections.Any(c => c.SplineComponent is not null && updatedExports.Contains(c.SplineComponent.UIndex)
+                || c.MeshExport is not null && updatedExports.Contains(c.MeshExport.UIndex) && c.MeshExport.ClassName != "SplineMeshComponent"))) return false;
         bool refreshed = base.TryRefreshPreview(package, updatedExports, force);
         //a reloaded mesh is drawn with its stored SplineParams again
         if (refreshed)
@@ -307,10 +326,10 @@ public sealed class SplineActorProxy : ActorProxy
         }
         //each point draws the curves of its own connections into the scene whenever it's shown. A selected point's network is also drawn over it by
         //the tangent gizmo
-        foreach (var curve in ConnectionCurves()) DrawCurve(context.WorldPrimitives, curve, SplineColor);
+        foreach (var curve in ConnectionCurves()) DrawCurve(context, context.WorldPrimitives, curve, SplineColor);
     }
 
-    internal static void DrawCurve(BatchedPrimitives primitives, InterpCurve<Vector3> curve, Vector4 color)
+    internal static void DrawCurve(LevelEditorRenderContext context, BatchedPrimitives primitives, InterpCurve<Vector3> curve, Vector4 color)
     {
         const int steps = 32;
         Vector3 previous = curve.Eval(0, Vector3.Zero);
@@ -320,6 +339,30 @@ public sealed class SplineActorProxy : ActorProxy
             primitives.AddLine(previous, point, color, NoHitId);
             previous = point;
         }
+        if (!TryGetDirectionArrow(curve, out Vector3 center, out Vector3 direction)) return;
+        // A small camera-facing arrowhead, in pixels, on the same depth layer as its curve. It doesn't pick or cover the point markers.
+        Vector3 side = Vector3.Cross(direction, context.Camera.CameraForward);
+        side = side.LengthSquared() > 1e-8f ? Vector3.Normalize(side) : LightProxyVisuals.Perpendiculars(direction).U;
+        float size = 10 * context.WorldUnitsPerPixel(center);
+        Vector3 tip = center + direction * (size / 2);
+        Vector3 tail = center - direction * (size / 2);
+        primitives.AddLine(tip, tail + side * (size * 0.4f), color, NoHitId);
+        primitives.AddLine(tip, tail - side * (size * 0.4f), color, NoHitId);
+    }
+
+    /// <summary>The position and unit direction at the parameter midpoint of a two-point UE3 Hermite spline; stationary points have no arrow.</summary>
+    public static bool TryGetDirectionArrow(InterpCurve<Vector3> curve, out Vector3 center, out Vector3 direction)
+    {
+        center = direction = Vector3.Zero;
+        if (curve.Points.Count != 2) return false;
+        var start = curve.Points[0]; var end = curve.Points[1];
+        center = curve.Eval((start.InVal + end.InVal) / 2, Vector3.Zero);
+        // Analytic midpoint derivative avoids subtracting nearby world positions far from the origin.
+        direction = (end.OutVal - start.OutVal) * 1.5f - (start.LeaveTangent + end.ArriveTangent) * ((end.InVal - start.InVal) * 0.25f);
+        float length = direction.Length();
+        if (!float.IsFinite(length) || length < 1e-6f) return false;
+        direction /= length;
+        return true;
     }
 
     internal static Vector4 CurveColor => SplineColor;
@@ -567,7 +610,10 @@ public class SplineTangentGizmo : UIElement
         foreach (var point in Attach.Network())
         {
             foreach (var curve in point.ConnectionCurves())
-                SplineActorProxy.DrawCurve(context.UIPrimitives, curve, LevelEditorRenderContext.HighlightColor with { W = 0.75f });
+                SplineActorProxy.DrawCurve(context, context.UIPrimitives, curve, LevelEditorRenderContext.HighlightColor with { W = 0.75f });
+        }
+        foreach (var point in Attach.LoadedPoints)
+        {
             if (!context.IsActorVisible(point)) continue;
             Vector4 color = point == Attach ? LevelEditorRenderContext.HighlightColor : SplineActorProxy.CurveColor with { W = 1 };
             DrawBox(context, point.Location, 5, color, point.PointHitProxy.HitID);

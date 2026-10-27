@@ -11,6 +11,7 @@ using LegendaryExplorerCore.Packages;
 using LegendaryExplorerCore.SharpDX;
 using LegendaryExplorerCore.Unreal;
 using LegendaryExplorerCore.Unreal.BinaryConverters;
+using LegendaryExplorerCore.Unreal.ObjectInfo;
 using Microsoft.Win32;
 using LegendaryExplorer.Tools.PackageEditor;
 using LegendaryExplorer.UserControls.ExportLoaderControls;
@@ -1322,11 +1323,13 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
                     }
                 }
             }
+            foreach (var spline in files.SelectMany(f => f.Actors).OfType<SplineActorProxy>().Where(s => s.IsDirty))
+                spline.ValidateConnectionsForCommit();
             migration = DecalPackageMigration.Prepare(files.SelectMany(f => f.Actors).OfType<DecalActorProxy>());
         }
         catch (Exception error) when (error is not OutOfMemoryException)
         {
-            MessageBox.Show(this, error.Message, "Decal reprojection");
+            MessageBox.Show(this, error.Message, "Commit Changes");
             return false;
         }
         using (migration)
@@ -1884,12 +1887,12 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     #region Lights
 
     public ObservableCollectionExtended<EditableActorLighting> SelectedActorLighting { get; } = [];
-    private readonly HashSet<MeshComponentProxy> PendingActorLightingEdits = [];
+    private readonly HashSet<EditableActorLighting> PendingActorLightingEdits = [];
 
     public void OnActorLightingEdited(MeshComponentProxy mesh, ActorLightingSettings before, ActorLightingSettings after)
     {
         if (!_isApplyingUndoRedo) UndoHistory.Push(new ActorLightingAction(mesh.Lighting, before, after));
-        PendingActorLightingEdits.Add(mesh);
+        PendingActorLightingEdits.Add(mesh.Lighting);
         LightDiagnosticsStale = true;
     }
 
@@ -1902,6 +1905,59 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
 
     public SplineActorProxy SelectedSpline => selectedActor as SplineActorProxy;
     public bool IsSplineSelected => SelectedSpline is not null;
+    public void OnSplineConnectionsEdited(IUndoAction action)
+    {
+        if (!_isApplyingUndoRedo) UndoHistory.Push(action);
+        LightDiagnosticsStale = true;
+    }
+    private void SplineConnection_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { DataContext: SplineConnectionItem item, Tag: string operation }) return;
+        switch (operation)
+        {
+            case "Break": item.Break(); break;
+            case "Reverse": item.Reverse(); break;
+            case "Straight": item.Straighten(); break;
+        }
+    }
+    private void SplineBreakAll_Click(object sender, RoutedEventArgs e) => SelectedSpline?.BreakAllConnections();
+    private void SplineReverseAll_Click(object sender, RoutedEventArgs e) => SelectedSpline?.ReverseWholeSpline();
+    private void SplineMesh_Click(object sender, RoutedEventArgs e)
+    {
+        if (SelectedSpline is not { IsLoft: true } point) return;
+        var mesh = EntrySelector.GetEntry<IEntry>(this, point.Export.FileRef, "Select DeformMesh", entry => entry.IsA("StaticMesh"));
+        if (mesh is not null) point.SetDeformMesh(mesh.UIndex, point.DeformMeshMaterials);
+    }
+    private void SplineClearMesh_Click(object sender, RoutedEventArgs e)
+    {
+        if (SelectedSpline is { } point) point.SetDeformMesh(0, point.DeformMeshMaterials);
+    }
+    private void SplineMaterials_Click(object sender, RoutedEventArgs e)
+    {
+        if (SelectedSpline is not { IsLoft: true } point) return;
+        var material = EntrySelector.GetEntry<IEntry>(this, point.Export.FileRef, "Add DeformMeshMaterials override", entry => entry.IsA("MaterialInterface"));
+        if (material is not null) point.SetDeformMesh(point.DeformMesh, point.DeformMeshMaterials.Append(material.UIndex));
+    }
+    private void SplineClearMaterials_Click(object sender, RoutedEventArgs e)
+    {
+        if (SelectedSpline is { } point) point.SetDeformMesh(point.DeformMesh, []);
+    }
+    private void SplineMaterialSlot_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { DataContext: SplineMaterialSlot slot, Tag: string operation }) return;
+        var values = slot.Point.DeformMeshMaterials.ToList();
+        switch (operation)
+        {
+            case "Choose":
+                var material = EntrySelector.GetEntry<IEntry>(this, slot.Point.Export.FileRef, $"Material override for slot {slot.Index}", entry => entry.IsA("MaterialInterface"));
+                if (material is null) return;
+                values[slot.Index] = material.UIndex;
+                break;
+            case "Clear": values[slot.Index] = 0; break;
+            case "Remove": values.RemoveAt(slot.Index); break;
+        }
+        slot.Point.SetDeformMesh(slot.Point.DeformMesh, values);
+    }
     public void OnSplineEdited(SplineActorProxy actor, SplineLoftSettings before, SplineLoftSettings after, string property)
     {
         //a handle drag is recorded once, when it ends
@@ -1950,9 +2006,11 @@ public partial class LevelEditor : NotifyPropertyChangedWindowBase, IActorEditor
     private void ApplyActorLightingEdits()
     {
         if (PendingActorLightingEdits.Count == 0 || PreviewRefreshInProgress) return;
-        foreach (var mesh in PendingActorLightingEdits)
+        foreach (var lighting in PendingActorLightingEdits)
         {
-            if (mesh.Actor is { IsDisposed: false, OwningFile: { } file } actor && OpenFiles.Contains(file) && file.Actors.Contains(actor))
+            var mesh = lighting.Mesh;
+            if (mesh.Actor is { IsDisposed: false, OwningFile: { } file } actor && actor.Components.Contains(mesh)
+                && OpenFiles.Contains(file) && file.Actors.Contains(actor))
                 mesh.RefreshPreview(mesh.Export.FileRef, new HashSet<int> { mesh.Export.UIndex }, force: true);
         }
         PendingActorLightingEdits.Clear();

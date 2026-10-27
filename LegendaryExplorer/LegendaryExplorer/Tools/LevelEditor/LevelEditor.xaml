@@ -456,7 +456,51 @@
                                 </Expander>
                                 <Expander Header="Spline point" IsExpanded="True" Padding="10,0,10,10" Visibility="{Binding IsSplineSelected, Converter={StaticResource BoolToVisibilityConverter}}">
                                     <StackPanel>
+                                        <StackPanel.Resources>
+                                            <DataTemplate x:Key="SplineConnectionTemplate">
+                                                <StackPanel Margin="0,4,0,6" IsEnabled="{Binding IsEditable}">
+                                                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap"/>
+                                                    <WrapPanel>
+                                                        <Button Content="Break" Tag="Break" Click="SplineConnection_Click" Margin="0,3,4,0"/>
+                                                        <Button Content="Reverse" Tag="Reverse" IsEnabled="{Binding CanReverse}" Click="SplineConnection_Click" Margin="0,3,4,0"/>
+                                                        <Button Content="Straight tangents" Tag="Straight" Click="SplineConnection_Click" Margin="0,3,0,0"/>
+                                                    </WrapPanel>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </StackPanel.Resources>
                                         <TextBlock Text="{Binding SelectedSpline.EditingStatus}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}" Margin="0,6,0,8"/>
+                                        <TextBlock Text="Ctrl+click a spline point or mesh to connect or flip. Ctrl+Shift+click breaks." TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}"/>
+                                        <TextBlock Text="Connections must join the same point type. Loft start points need a DeformMesh." TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}"/>
+                                        <StackPanel IsEnabled="{Binding SelectedSpline.Point.IsEditable}">
+                                            <WrapPanel Margin="0,6,0,0">
+                                                <Button Content="Break all" Click="SplineBreakAll_Click" Margin="0,0,4,0"/>
+                                                <Button Content="Reverse whole spline" Click="SplineReverseAll_Click"/>
+                                            </WrapPanel>
+                                            <TextBlock Text="Outgoing connections" Style="{StaticResource EditorSectionLabel}"/>
+                                            <ItemsControl ItemsSource="{Binding SelectedSpline.OutgoingConnections}" ItemTemplate="{StaticResource SplineConnectionTemplate}"/>
+                                            <TextBlock Text="Incoming connections" Style="{StaticResource EditorSectionLabel}"/>
+                                            <ItemsControl ItemsSource="{Binding SelectedSpline.IncomingConnections}" ItemTemplate="{StaticResource SplineConnectionTemplate}"/>
+                                            <StackPanel Visibility="{Binding SelectedSpline.IsLoft, Converter={StaticResource BoolToVisibilityConverter}}">
+                                                <TextBlock Text="DeformMesh" Style="{StaticResource EditorSectionLabel}"/>
+                                                <TextBlock Text="{Binding SelectedSpline.DeformMeshName}" TextWrapping="Wrap"/>
+                                                <WrapPanel><Button Content="Choose mesh…" Click="SplineMesh_Click" Margin="0,4,4,0"/><Button Content="Clear" IsEnabled="{Binding SelectedSpline.CanClearDeformMesh}" Click="SplineClearMesh_Click" Margin="0,4,0,0" ToolTip="Break outgoing connections before clearing the mesh."/></WrapPanel>
+                                                <TextBlock Text="DeformMeshMaterials · slot order" Style="{StaticResource EditorSectionLabel}"/>
+                                                <ItemsControl ItemsSource="{Binding SelectedSpline.MaterialSlots}">
+                                                    <ItemsControl.ItemTemplate><DataTemplate>
+                                                        <StackPanel Margin="0,3,0,4">
+                                                            <TextBlock Text="{Binding Index, StringFormat='Slot {0}'}"/>
+                                                            <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Foreground="{StaticResource EditorMuted}"/>
+                                                            <WrapPanel>
+                                                                <Button Content="Choose…" Tag="Choose" Click="SplineMaterialSlot_Click" Margin="0,3,4,0"/>
+                                                                <Button Content="Use mesh material" Tag="Clear" Click="SplineMaterialSlot_Click" Margin="0,3,4,0"/>
+                                                                <Button Content="Remove slot" Tag="Remove" Click="SplineMaterialSlot_Click" Margin="0,3,0,0"/>
+                                                            </WrapPanel>
+                                                        </StackPanel>
+                                                    </DataTemplate></ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                                <WrapPanel><Button Content="Add override…" Click="SplineMaterials_Click" Margin="0,4,4,0"/><Button Content="Clear overrides" Click="SplineClearMaterials_Click" Margin="0,4,0,0"/></WrapPanel>
+                                            </StackPanel>
+                                        </StackPanel>
                                         <StackPanel DataContext="{Binding SelectedSpline.Point}" IsEnabled="{Binding IsEditable}">
                                             <Grid Margin="0,8,0,0">
                                                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="140"/></Grid.ColumnDefinitions>
